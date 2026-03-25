@@ -98,17 +98,23 @@ function generatePackageJson(): Plugin {
 	};
 }
 
+const isStorybook = process.env.STORYBOOK === 'true';
+
 // https://vite.dev/config/
 export default defineConfig({
 	plugins: [
 		react(),
 		tailwindcss(),
-		dts({
-			entryRoot: '.',
-			exclude: ['**/*.stories.ts', '**/*.stories.tsx', '**/*.test.ts', '**/*.test.tsx']
-		}),
-		generatePackageJson(),
-		cleanDist()
+		...isStorybook
+			? []
+			: [
+					dts({
+						entryRoot: '.',
+						exclude: ['**/*.stories.ts', '**/*.stories.tsx', '**/*.test.ts', '**/*.test.tsx']
+					}),
+					generatePackageJson(),
+					cleanDist()
+				]
 	],
 	build: {
 		sourcemap: false,
