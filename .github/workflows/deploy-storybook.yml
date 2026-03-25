@@ -11,6 +11,10 @@ concurrency:
   group: pages
   cancel-in-progress: true
 
+env:
+  ACTIONS_RUNNER_DEBUG: true
+  ACTIONS_STEP_DEBUG: true
+
 jobs:
   build:
     name: '🔨 Build Storybook'
@@ -52,6 +56,18 @@ jobs:
             --exclude=.github \
             .
           gzip -9 "$RUNNER_TEMP/github-pages.tar"
+
+      - name: Inspect packaged artifact
+        run: |
+          ls -lh "$RUNNER_TEMP/github-pages.tar.gz"
+          gzip -t "$RUNNER_TEMP/github-pages.tar.gz"
+          tar -tzf "$RUNNER_TEMP/github-pages.tar.gz" | head -50
+
+      - name: Inspect storybook output
+        run: |
+          ls -lah
+          ls -lah storybook-static
+          find storybook-static -maxdepth 2 | head -100
 
       - name: '📤 Upload artifact'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
