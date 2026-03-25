@@ -1,0 +1,7 @@
+# Unignore lib folder for this package
+!lib/
+
+
+dist
+.vscode
+node_modules

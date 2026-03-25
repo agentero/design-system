@@ -1,0 +1,52 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "useTabs": true,
+  "printWidth": 100,
+  "tabWidth": 2,
+  "singleQuote": true,
+  "trailingComma": "none",
+  "bracketSameLine": true,
+  "bracketSpacing": true,
+  "arrowParens": "avoid",
+  "sortImports": {
+    "customGroups": [
+      {
+        "groupName": "server-only",
+        "elementNamePattern": ["server-only"]
+      },
+      {
+        "groupName": "react",
+        "elementNamePattern": ["react", "react-dom"]
+      },
+      {
+        "groupName": "agentero",
+        "elementNamePattern": ["@agentero/**"]
+      },
+      {
+        "groupName": "app-modules",
+        "elementNamePattern": ["lib/**", "modules/**"]
+      }
+    ],
+    "groups": [
+      "server-only",
+      "react",
+      "builtin",
+      "external",
+      "agentero",
+      "app-modules",
+      ["parent", "sibling", "index"],
+      "style",
+      "unknown"
+    ],
+    "newlinesBetween": true,
+    "order": "asc"
+  },
+  "overrides": [
+    {
+      "files": ["*.json"],
+      "options": {
+        "useTabs": false
+      }
+    }
+  ]
+}

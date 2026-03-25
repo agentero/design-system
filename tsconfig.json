@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "outDir": "dist",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2022",
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "incremental": true,
+    "noEmit": true,
+    "downlevelIteration": true,
+    "module": "ESNext",
+    "moduleDetection": "force",
+    "moduleResolution": "Bundler",
+    "noUncheckedIndexedAccess": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "declaration": true,
+    "paths": {
+      "lib/*": ["./lib/*"],
+      "lib": ["./lib/index.ts"],
+      "src/*": ["./src/*"]
+    }
+  },
+  "include": ["src", "lib"],
+  "exclude": ["node_modules", "dist"]
+}

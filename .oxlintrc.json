@@ -1,0 +1,53 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "react", "jest"],
+  "categories": {
+    "correctness": "error"
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true,
+    "jest": true
+  },
+  "globals": {
+    "React": "readonly",
+    "JSX": "readonly"
+  },
+  "rules": {
+    "no-console": "off",
+    "no-debugger": "off",
+    "no-alert": "error",
+    "no-empty-function": "off",
+    "require-await": "warn",
+    "no-duplicate-imports": "warn",
+    "no-dupe-class-members": "warn",
+    "no-array-constructor": "error",
+    "no-undef": "error",
+    "prefer-const": "error",
+    "no-unused-vars": "error",
+    "prefer-object-spread": "error",
+    "prefer-rest-params": "error",
+    "one-var": ["error", { "let": "never", "const": "never" }],
+
+    "typescript/no-unused-vars": "error",
+    "typescript/explicit-module-boundary-types": "off",
+    "typescript/ban-ts-comment": "off",
+    "typescript/explicit-function-return-type": "off",
+    "typescript/no-non-null-assertion": "off",
+    "typescript/no-empty-function": "off",
+    "typescript/no-use-before-define": "off",
+
+    "react/jsx-uses-vars": "error",
+    "react/no-unescaped-entities": "off",
+    "react/prop-types": "off",
+    "react/display-name": "off",
+    "react/no-unknown-property": ["error", { "ignore": ["css"] }]
+  },
+  "ignorePatterns": ["**/node_modules", "**/build/"],
+  "settings": {
+    "react": {
+      "version": "19"
+    }
+  }
+}

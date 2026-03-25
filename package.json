@@ -1,0 +1,57 @@
+{
+  "private": true,
+  "name": "@agentero/design-system",
+  "version": "1.0.0",
+  "type": "module",
+  "license": "Apache-2.0",
+  "sideEffects": false,
+  "exports": {
+    "./avatar": "./src/avatar/index.ts",
+    "./lib": "./lib/index.ts",
+    "./theme": "./themes/base.css"
+  },
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "tsc": "tsgo",
+    "lint": "oxlint src/ lib/ && yarn lint:format",
+    "lint:format": "oxfmt --check src/ lib/",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
+  "dependencies": {
+    "@radix-ui/react-avatar": "^1.1.11",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.5.0",
+    "tailwind-variants": "^3.2.2"
+  },
+  "devDependencies": {
+    "@chromatic-com/storybook": "^5.0.2",
+    "@storybook/addon-a11y": "^10.3.3",
+    "@storybook/addon-docs": "^10.3.3",
+    "@storybook/addon-mcp": "^0.4.2",
+    "@storybook/addon-vitest": "^10.3.3",
+    "@storybook/react-vite": "^10.3.3",
+    "@tailwindcss/vite": "^4.2.2",
+    "@types/node": "^25.5.0",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "@vitest/browser-playwright": "^4.1.1",
+    "@vitest/coverage-v8": "^4.1.1",
+    "oxfmt": "^0.41.0",
+    "oxlint": "^1.56.0",
+    "playwright": "^1.58.2",
+    "storybook": "^10.3.3",
+    "tailwindcss": "^4.2.2",
+    "@typescript/native-preview": "^7.0.0-dev.20260325.1",
+    "vite": "^8.0.2",
+    "vite-plugin-dts": "^4.5.4",
+    "vitest": "^4.1.1"
+  },
+  "peerDependencies": {
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "tailwindcss": "^4.0.0"
+  }
+}
