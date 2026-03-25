@@ -42,10 +42,24 @@ jobs:
       - name: '🔨 Build Storybook'
         run: yarn build-storybook
 
+      - name: '📦 Package Pages artifact'
+        run: |
+          tar \
+            --dereference --hard-dereference \
+            --directory storybook-static \
+            -cvf "$RUNNER_TEMP/github-pages.tar" \
+            --exclude=.git \
+            --exclude=.github \
+            .
+          gzip -9 "$RUNNER_TEMP/github-pages.tar"
+
       - name: '📤 Upload artifact'
-        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          path: storybook-static
+          name: github-pages
+          path: ${{ runner.temp }}/github-pages.tar.gz
+          retention-days: 1
+          if-no-files-found: error
 
   deploy:
     name: '🚀 Deploy Storybook'
