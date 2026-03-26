@@ -2,54 +2,47 @@ name: '🚀 Deploy Storybook'
 on:
   push:
     branches:
-      - 'master' # Use specific branch name
+      - 'master'
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
+
 concurrency:
   group: 'pages'
   cancel-in-progress: false
+
 jobs:
   deploy:
     name: '🚀 Deploy Storybook'
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - name: '📥 Checkout'
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          
+
       - name: '🟢 Setup Node'
         uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: yarn
-          
+
       - name: '💾 Cache dependencies'
-        uses: actions/cache@v5
+        uses: actions/cache@v4
         with:
           path: node_modules
           key: deps-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
-          
+
       - name: '📦 Install dependencies'
         run: yarn install --frozen-lockfile
-        
+
       - name: '🔨 Build Storybook'
         run: yarn build-storybook
-        
-      - name: '📤 Upload artifact'
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: 'storybook-static'
 
-      - id: deploy
-        name: '🚀 Deploy Storybook'
-        uses: actions/deploy-pages@v4
+      - name: '🚀 Deploy Storybook'
+        uses: JamesIves/github-pages-deploy-action@d92aa235d04922e8f08b40ce78cc5442fcfbfa2f # v4
         with:
-          token: ${{ github.token }}
+          branch: gh-pages
+          folder: storybook-static
+          clean-exclude: pr-preview/
