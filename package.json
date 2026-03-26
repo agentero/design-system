@@ -1,6 +1,6 @@
 {
   "name": "@agentero/design-system",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A React component library built with Tailwind CSS v4 and Radix UI primitives",
   "type": "module",
   "license": "Apache-2.0",
