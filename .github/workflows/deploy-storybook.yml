@@ -26,7 +26,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 34
+          node-version: 24
           cache: yarn # Adjust caching strategy and configuration if using other package managers
       - name: Install dependencies
         run: yarn install --frozen-lockfile # Replace with appropriate command if using other package managers
