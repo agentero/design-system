@@ -1,4 +1,4 @@
-name: Build and Publish Storybook to GitHub Pages
+name: '🚀 Deploy Storybook'
 on:
   push:
     branches:
@@ -14,32 +14,42 @@ concurrency:
   cancel-in-progress: false
 jobs:
   deploy:
+    name: '🚀 Deploy Storybook'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: '📥 Checkout'
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           fetch-depth: 0
-      - name: Setup Node
-        uses: actions/setup-node@v4
+          
+      - name: '🟢 Setup Node'
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: 24
-          cache: yarn # Adjust caching strategy and configuration if using other package managers
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile # Replace with appropriate command if using other package managers
-      - name: Build Storybook
+          cache: yarn
+          
+      - name: '💾 Cache dependencies'
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
+        with:
+          path: node_modules
+          key: deps-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+          
+      - name: '📦 Install dependencies'
+        run: yarn install --frozen-lockfile
+        
+      - name: '🔨 Build Storybook'
         run: yarn build-storybook
-      # Upload pages artifact
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        
+      - name: '📤 Upload artifact'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           path: 'storybook-static'
-      # Deploy to Github Pages
+
       - id: deploy
-        name: Deploy to GitHub Pages
+        name: '🚀 Deploy Storybook'
         uses: actions/deploy-pages@v4
         with:
           token: ${{ github.token }}
