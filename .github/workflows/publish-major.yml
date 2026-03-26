@@ -22,6 +22,8 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
+      - name: '🏷️ Fetch tags'
+        run: git fetch --tags origin
       - name: '🟢 Setup Node'
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
@@ -35,12 +37,19 @@ jobs:
           key: deps-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
       - name: '📦 Install dependencies'
         run: yarn install --frozen-lockfile
-      - name: '🔖 Bump major version'
+      - name: '🔖 Compute next major version'
         id: version
         run: |
-          npm version major --no-git-tag-version
-          VERSION=$(node -p "require('./package.json').version")
+          LATEST=$(git tag --list 'v*' --sort=-v:refname | head -n1 | sed 's/^v//')
+          if [ -z "$LATEST" ]; then
+            LATEST="0.0.0"
+          fi
+
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$LATEST"
+          MAJOR=$((MAJOR + 1))
+          VERSION="${MAJOR}.0.0"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          npm version "$VERSION" --no-git-tag-version
       - name: '🏗️ Build'
         run: yarn build
       - name: '🚀 Publish'
@@ -48,14 +57,12 @@ jobs:
         working-directory: dist
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: '📝 Commit version bump'
+      - name: '🏷️ Push tag'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
-          git add package.json
-          git commit -m "chore: release v${{ steps.version.outputs.version }} [skip ci]"
           git tag "v${{ steps.version.outputs.version }}"
-          git push origin master --tags
+          git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
+          git push origin "v${{ steps.version.outputs.version }}"
