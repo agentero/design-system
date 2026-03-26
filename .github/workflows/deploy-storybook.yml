@@ -21,18 +21,18 @@ jobs:
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - name: '📥 Checkout'
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           
       - name: '🟢 Setup Node'
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: yarn
           
       - name: '💾 Cache dependencies'
-        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
+        uses: actions/cache@v5
         with:
           path: node_modules
           key: deps-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
@@ -44,7 +44,7 @@ jobs:
         run: yarn build-storybook
         
       - name: '📤 Upload artifact'
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-pages-artifact@v3
         with:
           path: 'storybook-static'
 
