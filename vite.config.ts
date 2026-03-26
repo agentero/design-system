@@ -66,9 +66,14 @@ function generatePackageJson(): Plugin {
 			const distPkg = {
 				name: rootPkg.name,
 				version: rootPkg.version,
+				description: rootPkg.description,
 				type: rootPkg.type,
 				license: rootPkg.license,
 				sideEffects: false,
+				homepage: rootPkg.homepage,
+				repository: rootPkg.repository,
+				bugs: rootPkg.bugs,
+				keywords: rootPkg.keywords,
 				exports,
 				peerDependencies: rootPkg.peerDependencies,
 				dependencies: rootPkg.dependencies
