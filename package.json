@@ -1,10 +1,25 @@
 {
-  "private": true,
   "name": "@agentero/design-system",
-  "version": "1.0.0",
+  "version": "0.0.0",
+  "description": "A React component library built with Tailwind CSS v4 and Radix UI primitives",
   "type": "module",
   "license": "Apache-2.0",
   "sideEffects": false,
+  "homepage": "https://agentero.github.io/design-system/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agentero/design-system.git"
+  },
+  "bugs": {
+    "url": "https://github.com/agentero/design-system/issues"
+  },
+  "keywords": [
+    "react",
+    "design-system",
+    "components",
+    "tailwindcss",
+    "radix-ui"
+  ],
   "exports": {
     "./avatar": "./src/avatar/index.ts",
     "./lib": "./lib/index.ts",
