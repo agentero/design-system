@@ -7,6 +7,7 @@ import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { playwright } from '@vitest/browser-playwright';
+import { build as esbuild } from 'esbuild';
 import { globSync } from 'tinyglobby';
 import type { Plugin } from 'vite';
 import { defineConfig } from 'vite';
@@ -41,6 +42,40 @@ function cleanDist(): Plugin {
 	};
 }
 
+function bundleMcpServer(): Plugin {
+	return {
+		name: 'bundle-mcp-server',
+		async closeBundle() {
+			const distMcp = path.resolve(__dirname, 'dist', 'mcp');
+			const manifestsSrc = path.resolve(__dirname, 'storybook-static', 'manifests');
+
+			if (!fs.existsSync(path.join(manifestsSrc, 'components.json'))) {
+				console.warn(
+					'\n⚠ Skipping MCP server: storybook-static/manifests/components.json not found.' +
+						'\n  Run "yarn build-storybook" first to include the MCP server in the build.\n',
+				);
+				return;
+			}
+
+			await esbuild({
+				entryPoints: [path.resolve(__dirname, 'mcp', 'server.ts')],
+				bundle: true,
+				platform: 'node',
+				format: 'esm',
+				target: 'node20',
+				outfile: path.join(distMcp, 'server.mjs'),
+				banner: { js: '#!/usr/bin/env node' },
+			});
+
+			const manifestsDest = path.join(distMcp, 'manifests');
+			fs.mkdirSync(manifestsDest, { recursive: true });
+			for (const file of fs.readdirSync(manifestsSrc)) {
+				fs.copyFileSync(path.join(manifestsSrc, file), path.join(manifestsDest, file));
+			}
+		}
+	};
+}
+
 function generatePackageJson(): Plugin {
 	return {
 		name: 'generate-package-json',
@@ -61,6 +96,7 @@ function generatePackageJson(): Plugin {
 			};
 
 			exports['./theme'] = './theme/base.css';
+			exports['./mcp'] = './mcp/server.mjs';
 			exports['./package.json'] = './package.json';
 
 			const distPkg = {
@@ -75,6 +111,7 @@ function generatePackageJson(): Plugin {
 				bugs: rootPkg.bugs,
 				keywords: rootPkg.keywords,
 				exports,
+				bin: { 'design-system-mcp': './mcp/server.mjs' },
 				peerDependencies: rootPkg.peerDependencies,
 				dependencies: rootPkg.dependencies
 			};
@@ -118,6 +155,7 @@ export default defineConfig({
 						exclude: ['**/*.stories.ts', '**/*.stories.tsx', '**/*.test.ts', '**/*.test.tsx']
 					}),
 					generatePackageJson(),
+					bundleMcpServer(),
 					cleanDist()
 				]
 	],
