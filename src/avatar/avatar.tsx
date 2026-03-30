@@ -3,8 +3,9 @@
 import { ComponentPropsWithRef, createContext, ReactNode, use } from 'react';
 
 import * as AvatarPrimitive from '@radix-ui/react-avatar';
-import { cn } from 'lib';
 import { tv, VariantProps } from 'tailwind-variants';
+
+import { cn } from '../../lib';
 
 /**
  * Style recipe for Avatar using tailwind-variants.
