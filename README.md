@@ -52,16 +52,16 @@ cn('px-4 py-2', isActive && 'bg-blue-500', className);
 
 This package ships a [Model Context Protocol](https://modelcontextprotocol.io/) server that gives AI coding assistants access to component documentation, props, and usage examples — no Storybook runtime needed.
 
-Add to your project's `.claude/.mcp.json`:
+Add to your project's `.claude/mcp.json`:
 
 ```json
 {
-  "mcpServers": {
-    "design-system": {
-      "command": "node",
-      "args": ["./node_modules/@agentero/design-system/mcp/server.mjs"]
-    }
-  }
+	"mcpServers": {
+		"design-system": {
+			"command": "node",
+			"args": ["./node_modules/@agentero/design-system/mcp/server.mjs"]
+		}
+	}
 }
 ```
 
