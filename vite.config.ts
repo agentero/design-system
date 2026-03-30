@@ -80,6 +80,8 @@ function generatePackageJson(): Plugin {
 	return {
 		name: 'generate-package-json',
 		closeBundle() {
+			const pkg = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'package.json'), 'utf-8'));
+
 			const exports: Record<string, string | { types: string; import: string }> = {};
 
 			for (const file of componentEntries) {
@@ -100,20 +102,20 @@ function generatePackageJson(): Plugin {
 			exports['./package.json'] = './package.json';
 
 			const distPkg = {
-				name: rootPkg.name,
-				version: rootPkg.version,
-				description: rootPkg.description,
-				type: rootPkg.type,
-				license: rootPkg.license,
+				name: pkg.name,
+				version: pkg.version,
+				description: pkg.description,
+				type: pkg.type,
+				license: pkg.license,
 				sideEffects: false,
-				homepage: rootPkg.homepage,
-				repository: rootPkg.repository,
-				bugs: rootPkg.bugs,
-				keywords: rootPkg.keywords,
+				homepage: pkg.homepage,
+				repository: pkg.repository,
+				bugs: pkg.bugs,
+				keywords: pkg.keywords,
 				exports,
 				bin: { 'design-system-mcp': './mcp/server.mjs' },
-				peerDependencies: rootPkg.peerDependencies,
-				dependencies: rootPkg.dependencies
+				peerDependencies: pkg.peerDependencies,
+				dependencies: pkg.dependencies
 			};
 
 			const distDir = path.resolve(__dirname, 'dist');
