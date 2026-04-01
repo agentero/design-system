@@ -74,9 +74,13 @@ export const avatarRecipe = tv({
 			},
 			pentagon: {
 				root: [
-					'!border-none border-transparent',
+					'!border-none',
 					'[mask-image:url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzMiIGhlaWdodD0iMzMiIHZpZXdCb3g9IjAgMCAzMyAzMyIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTE0LjU2NTcgMC4yNTA5NzdDMTUuODM0OCAtMC4wODM2NTk0IDE3LjE2NTggLTAuMDgzNjU4NCAxOC40MzQ4IDAuMjUwOTc3QzE5Ljg5NDIgMC42MzU4OCAyMS4yMTMzIDEuNjMwODkgMjMuNjM0IDMuNDM3NUwyNy4yNDQ0IDYuMTMxODRDMjkuNjY3IDcuOTM5OCAzMC45OTMyIDguOTE5NzcgMzEuNzk4MSAxMC4yMjI3QzMyLjQ5NzcgMTEuMzU1IDMyLjkwNzYgMTIuNjQ5OCAzMi45ODk1IDEzLjk4NjNDMzMuMDgzNSAxNS41MjI3IDMyLjU3MjQgMTcuMTExOSAzMS42NDY3IDIwLjAzODFMMzAuMjY3OCAyNC4zOTc1QzI5LjM0MjUgMjcuMzIyNyAyOC44NDU4IDI4LjkxODIgMjcuODg4OSAzMC4xMDY0QzI3LjA1NjEgMzEuMTQwNiAyNS45ODA4IDMxLjk0MzIgMjQuNzYzIDMyLjQzODVDMjMuMzYxNSAzMy4wMDg0IDIxLjcyMzggMzMgMTguNzMxNyAzM0gxNC4yNjg4QzExLjI3NjcgMzMgOS42MzkwNCAzMy4wMDg0IDguMjM3NiAzMi40Mzg1QzcuMDE5NzUgMzEuOTQzMiA1Ljk0NDQ4IDMxLjE0MDYgNS4xMTE2MiAzMC4xMDY0QzQuMTU0NzIgMjguOTE4MiAzLjY1ODAyIDI3LjMyMjcgMi43MzI3MiAyNC4zOTc1TDEuMzUzODEgMjAuMDM4MUMwLjQyODE4NyAxNy4xMTE5IC0wLjA4Mjk0NiAxNS41MjI3IDAuMDExMDM5IDEzLjk4NjNDMC4wOTI5MDMgMTIuNjQ5OCAwLjUwMjg4MSAxMS4zNTUgMS4yMDI0NCAxMC4yMjI3QzIuMDA3NCA4LjkxOTc3IDMuMzMzNTggNy45Mzk4IDUuNzU2MTYgNi4xMzE4NEw5LjM2NjUxIDMuNDM3NUMxMS43ODcyIDEuNjMwODkgMTMuMTA2MyAwLjYzNTg4IDE0LjU2NTcgMC4yNTA5NzdaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K)]',
-					'[mask-size:contain] [mask-repeat:no-repeat] [mask-position:center]'
+					'[mask-size:contain] [mask-repeat:no-repeat] [mask-position:center]',
+					'after:content-[""] after:absolute after:inset-0 after:pointer-events-none after:z-[1]',
+					'after:bg-[var(--avatar-border-color,var(--color-border-default-base-primary))]',
+					'after:[mask-image:url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSItMC41IC0wLjUgMzQgMzQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTE0LjU2NTcgMC4yNTA5NzdDMTUuODM0OCAtMC4wODM2NTk0IDE3LjE2NTggLTAuMDgzNjU4NCAxOC40MzQ4IDAuMjUwOTc3QzE5Ljg5NDIgMC42MzU4OCAyMS4yMTMzIDEuNjMwODkgMjMuNjM0IDMuNDM3NUwyNy4yNDQ0IDYuMTMxODRDMjkuNjY3IDcuOTM5OCAzMC45OTMyIDguOTE5NzcgMzEuNzk4MSAxMC4yMjI3QzMyLjQ5NzcgMTEuMzU1IDMyLjkwNzYgMTIuNjQ5OCAzMi45ODk1IDEzLjk4NjNDMzMuMDgzNSAxNS41MjI3IDMyLjU3MjQgMTcuMTExOSAzMS42NDY3IDIwLjAzODFMMzAuMjY3OCAyNC4zOTc1QzI5LjM0MjUgMjcuMzIyNyAyOC44NDU4IDI4LjkxODIgMjcuODg4OSAzMC4xMDY0QzI3LjA1NjEgMzEuMTQwNiAyNS45ODA4IDMxLjk0MzIgMjQuNzYzIDMyLjQzODVDMjMuMzYxNSAzMy4wMDg0IDIxLjcyMzggMzMgMTguNzMxNyAzM0gxNC4yNjg4QzExLjI3NjcgMzMgOS42MzkwNCAzMy4wMDg0IDguMjM3NiAzMi40Mzg1QzcuMDE5NzUgMzEuOTQzMiA1Ljk0NDQ4IDMxLjE0MDYgNS4xMTE2MiAzMC4xMDY0QzQuMTU0NzIgMjguOTE4MiAzLjY1ODAyIDI3LjMyMjcgMi43MzI3MiAyNC4zOTc1TDEuMzUzODEgMjAuMDM4MUMwLjQyODE4NyAxNy4xMTE5IC0wLjA4Mjk0NiAxNS41MjI3IDAuMDExMDM5IDEzLjk4NjNDMC4wOTI5MDMgMTIuNjQ5OCAwLjUwMjg4MSAxMS4zNTUgMS4yMDI0NCAxMC4yMjI3QzIuMDA3NCA4LjkxOTc3IDMuMzMzNTggNy45Mzk4IDUuNzU2MTYgNi4xMzE4NEw5LjM2NjUxIDMuNDM3NUMxMS43ODcyIDEuNjMwODkgMTMuMTA2MyAwLjYzNTg4IDE0LjU2NTcgMC4yNTA5NzdaIiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjEiIHZlY3Rvci1lZmZlY3Q9Im5vbi1zY2FsaW5nLXN0cm9rZSIvPjwvc3ZnPg==)]',
+					'after:[mask-size:100%_100%] after:[mask-repeat:no-repeat] after:[mask-position:center]'
 				]
 			}
 		}
@@ -154,6 +158,12 @@ type AvatarProps = ComponentPropsWithRef<typeof AvatarPrimitive.Root> & {
 	/** Content rendered when `src` is missing or fails to load. Typically user initials (e.g., "JD") or an icon. */
 	fallback?: ReactNode;
 	/**
+	 * When provided, deterministically maps the string (typically a user name) to a
+	 * color from the palette, applying a light background, matching text color, and
+	 * border color. Useful for distinguishing users in lists without profile photos.
+	 */
+	colorize?: string;
+	/**
 	 * Controls the avatar dimensions. Defaults to `'md'` (40px).
 	 * - `xs` (24px) — inline indicators, dense lists
 	 * - `sm` (32px) — compact layouts, table rows
@@ -194,11 +204,62 @@ type AvatarProps = ComponentPropsWithRef<typeof AvatarPrimitive.Root> & {
  * @example
  * <Avatar fallback="JD" size="lg" variant="square" />
  */
-export const Avatar = ({ alt, src, fallback, size, variant, ref, ...props }: AvatarProps) => {
+export const Avatar = ({
+	alt,
+	src,
+	fallback,
+	colorize,
+	size,
+	variant,
+	ref,
+	...props
+}: AvatarProps) => {
+	const colorizeStyle = colorize ? getStyleFromColorize(colorize) : undefined;
+
 	return (
-		<AvatarRoot {...props} ref={ref} size={size} variant={variant}>
+		<AvatarRoot
+			{...props}
+			ref={ref}
+			size={size}
+			variant={variant}
+			style={{ ...colorizeStyle, ...props.style }}>
 			<AvatarImage alt={alt} src={src} />
 			<AvatarFallback>{fallback}</AvatarFallback>
 		</AvatarRoot>
 	);
+};
+
+const COLORIZE_PALETTE: { dark: string; light: string }[] = [
+	{ dark: '#434343', light: '#e3e3e3' }, // neutrals
+	{ dark: '#1e7b5f', light: '#d6f5ec' }, // brand
+	{ dark: '#054594', light: '#cee3fd' }, // blue
+	{ dark: '#4f0792', light: '#e6cefd' }, // purple
+	{ dark: '#8d0c40', light: '#fbd0e1' }, // pink
+	{ dark: '#954004', light: '#fee1cd' }, // orange
+	{ dark: '#821717', light: '#f7d4d4' }, // danger
+	{ dark: '#947005', light: '#fdf1ce' }, // warning
+	{ dark: '#0f8a2a', light: '#d1fada' } // positive
+];
+
+const getColorByName = (name: string) => {
+	const hash = name.split('').reduce((acc, char, index) => {
+		let power = 1;
+		for (let i = 0; i < index; i++) {
+			power *= 26;
+		}
+		return acc + (char.charCodeAt(0) - 97 + 1) * power;
+	}, 0);
+
+	const absHash = hash < 0 ? -hash : hash;
+	return COLORIZE_PALETTE[absHash % COLORIZE_PALETTE.length]!;
+};
+
+const getStyleFromColorize = (colorize: string) => {
+	const { dark, light } = getColorByName(colorize);
+
+	return {
+		color: dark,
+		backgroundColor: light,
+		borderColor: `var(--avatar-border-color, ${light})`
+	};
 };

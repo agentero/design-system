@@ -48,7 +48,7 @@ export const Default: Story = {};
  */
 export const WithImage: Story = {
 	args: {
-		src: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=128&h=128&fit=crop',
+		src: 'https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?&w=256&h=256&q=70&crop=focalpoint&fp-x=0.5&fp-y=0.3&fp-z=1&fit=crop',
 		alt: 'Alex Morgan'
 	}
 };
@@ -157,6 +157,38 @@ export const SizeXl: Story = {
 	args: { size: 'xl', fallback: 'XL' }
 };
 
+/* --------------- Colorize --------------- */
+
+/**
+ * The `colorize` prop deterministically maps a string (typically a user name)
+ * to a color from the palette, applying a tinted background and matching
+ * text color. Useful for distinguishing users in lists without profile photos.
+ *
+ * @summary Colorized avatar based on user name
+ */
+export const Colorized: Story = {
+	args: {
+		colorize: 'jane doe',
+		fallback: 'JD'
+	}
+};
+
+/**
+ * Multiple colorized avatars showing how different names map to different
+ * colors from the palette for visual distinction.
+ *
+ * @summary Multiple colorized avatars for visual distinction
+ */
+export const AllColorized: Story = {
+	render: () => (
+		<div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+			{['alice', 'bob', 'carol', 'dave', 'eve', 'frank', 'grace', 'henry', 'iris'].map(name => (
+				<Avatar key={name} size="lg" colorize={name} fallback={name.slice(0, 2).toUpperCase()} />
+			))}
+		</div>
+	)
+};
+
 /* --------------- Showcases --------------- */
 
 /**
@@ -170,6 +202,28 @@ export const AllSizes: Story = {
 		<div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
 			{(['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl'] as const).map(size => (
 				<Avatar key={size} size={size} fallback={size.toUpperCase()} />
+			))}
+		</div>
+	)
+};
+
+/**
+ * All sizes with a profile image to verify image scaling and quality
+ * across the full size range from `xs` (24px) to `4xl` (128px).
+ *
+ * @summary All avatar sizes with a profile image
+ */
+export const AllSizesWithImage: Story = {
+	render: () => (
+		<div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+			{(['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl'] as const).map(size => (
+				<Avatar
+					key={size}
+					size={size}
+					src="https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?&w=256&h=256&q=70&crop=focalpoint&fp-x=0.5&fp-y=0.3&fp-z=1&fit=crop"
+					alt="Alex Morgan"
+					fallback="AM"
+				/>
 			))}
 		</div>
 	)
@@ -191,6 +245,30 @@ export const AllVariants: Story = {
 					size="lg"
 					variant={variant}
 					fallback={variant.slice(0, 2).toUpperCase()}
+				/>
+			))}
+		</div>
+	)
+};
+
+/**
+ * All shape variants with a profile image to show how each mask clips
+ * the photo. Particularly useful for verifying the pentagon mask and
+ * pillow shape render correctly with real imagery.
+ *
+ * @summary All avatar shapes with a profile image
+ */
+export const AllVariantsWithImage: Story = {
+	render: () => (
+		<div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+			{(['circle', 'square', 'pillow', 'pentagon'] as const).map(variant => (
+				<Avatar
+					key={variant}
+					size="lg"
+					variant={variant}
+					src="https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?&w=256&h=256&q=70&crop=focalpoint&fp-x=0.5&fp-y=0.3&fp-z=1&fit=crop"
+					alt="Alex Morgan"
+					fallback="AM"
 				/>
 			))}
 		</div>
