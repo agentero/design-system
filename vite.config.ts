@@ -52,7 +52,7 @@ function bundleMcpServer(): Plugin {
 			if (!fs.existsSync(path.join(manifestsSrc, 'components.json'))) {
 				console.warn(
 					'\n⚠ Skipping MCP server: storybook-static/manifests/components.json not found.' +
-						'\n  Run "yarn build-storybook" first to include the MCP server in the build.\n',
+						'\n  Run "yarn build-storybook" first to include the MCP server in the build.\n'
 				);
 				return;
 			}
@@ -64,7 +64,7 @@ function bundleMcpServer(): Plugin {
 				format: 'esm',
 				target: 'node20',
 				outfile: path.join(distMcp, 'server.mjs'),
-				banner: { js: '#!/usr/bin/env node' },
+				banner: { js: '#!/usr/bin/env node' }
 			});
 
 			const manifestsDest = path.join(distMcp, 'manifests');
@@ -97,7 +97,7 @@ function generatePackageJson(): Plugin {
 				import: './lib/index.js'
 			};
 
-			exports['./theme'] = './theme/base.css';
+			exports['./theme.css'] = './theme/base.css';
 			exports['./mcp'] = './mcp/server.mjs';
 			exports['./package.json'] = './package.json';
 
@@ -149,7 +149,7 @@ export default defineConfig({
 	plugins: [
 		react(),
 		tailwindcss(),
-		...isStorybook
+		...(isStorybook
 			? []
 			: [
 					dts({
@@ -159,7 +159,7 @@ export default defineConfig({
 					generatePackageJson(),
 					bundleMcpServer(),
 					cleanDist()
-				]
+				])
 	],
 	build: {
 		sourcemap: false,
