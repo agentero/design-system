@@ -157,6 +157,45 @@ export const SizeXl: Story = {
 	args: { size: 'xl', fallback: 'XL' }
 };
 
+/* --------------- Colorize --------------- */
+
+/**
+ * The `colorize` prop deterministically maps a string (typically a user name)
+ * to a color from the palette, applying a tinted background and matching
+ * text color. Useful for distinguishing users in lists without profile photos.
+ *
+ * @summary Colorized avatar based on user name
+ */
+export const Colorized: Story = {
+	args: {
+		colorize: 'jane doe',
+		fallback: 'JD'
+	}
+};
+
+/**
+ * Multiple colorized avatars showing how different names map to different
+ * colors from the palette for visual distinction.
+ *
+ * @summary Multiple colorized avatars for visual distinction
+ */
+export const AllColorized: Story = {
+	render: () => (
+		<div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+			{['alice', 'bob', 'carol', 'dave', 'eve', 'frank', 'grace', 'henry', 'iris'].map(
+				name => (
+					<Avatar
+						key={name}
+						size="lg"
+						colorize={name}
+						fallback={name.slice(0, 2).toUpperCase()}
+					/>
+				)
+			)}
+		</div>
+	)
+};
+
 /* --------------- Showcases --------------- */
 
 /**

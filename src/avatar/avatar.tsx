@@ -158,6 +158,12 @@ type AvatarProps = ComponentPropsWithRef<typeof AvatarPrimitive.Root> & {
 	/** Content rendered when `src` is missing or fails to load. Typically user initials (e.g., "JD") or an icon. */
 	fallback?: ReactNode;
 	/**
+	 * When provided, deterministically maps the string (typically a user name) to a
+	 * color from the palette, applying a light background, matching text color, and
+	 * border color. Useful for distinguishing users in lists without profile photos.
+	 */
+	colorize?: string;
+	/**
 	 * Controls the avatar dimensions. Defaults to `'md'` (40px).
 	 * - `xs` (24px) — inline indicators, dense lists
 	 * - `sm` (32px) — compact layouts, table rows
@@ -198,11 +204,62 @@ type AvatarProps = ComponentPropsWithRef<typeof AvatarPrimitive.Root> & {
  * @example
  * <Avatar fallback="JD" size="lg" variant="square" />
  */
-export const Avatar = ({ alt, src, fallback, size, variant, ref, ...props }: AvatarProps) => {
+export const Avatar = ({
+	alt,
+	src,
+	fallback,
+	colorize,
+	size,
+	variant,
+	ref,
+	...props
+}: AvatarProps) => {
+	const colorizeStyle = colorize ? getStyleFromColorize(colorize) : undefined;
+
 	return (
-		<AvatarRoot {...props} ref={ref} size={size} variant={variant}>
+		<AvatarRoot
+			{...props}
+			ref={ref}
+			size={size}
+			variant={variant}
+			style={{ ...colorizeStyle, ...props.style }}>
 			<AvatarImage alt={alt} src={src} />
 			<AvatarFallback>{fallback}</AvatarFallback>
 		</AvatarRoot>
 	);
+};
+
+const COLORIZE_PALETTE: { dark: string; light: string }[] = [
+	{ dark: '#434343', light: '#e3e3e3' }, // neutrals
+	{ dark: '#1e7b5f', light: '#d6f5ec' }, // brand
+	{ dark: '#054594', light: '#cee3fd' }, // blue
+	{ dark: '#4f0792', light: '#e6cefd' }, // purple
+	{ dark: '#8d0c40', light: '#fbd0e1' }, // pink
+	{ dark: '#954004', light: '#fee1cd' }, // orange
+	{ dark: '#821717', light: '#f7d4d4' }, // danger
+	{ dark: '#947005', light: '#fdf1ce' }, // warning
+	{ dark: '#0f8a2a', light: '#d1fada' } // positive
+];
+
+const getColorByName = (name: string) => {
+	const hash = name.split('').reduce((acc, char, index) => {
+		let power = 1;
+		for (let i = 0; i < index; i++) {
+			power *= 26;
+		}
+		return acc + (char.charCodeAt(0) - 97 + 1) * power;
+	}, 0);
+
+	const absHash = hash < 0 ? -hash : hash;
+	return COLORIZE_PALETTE[absHash % COLORIZE_PALETTE.length]!;
+};
+
+const getStyleFromColorize = (colorize: string) => {
+	const { dark, light } = getColorByName(colorize);
+
+	return {
+		color: dark,
+		backgroundColor: light,
+		borderColor: `var(--avatar-border-color, ${light})`
+	};
 };
