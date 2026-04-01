@@ -182,16 +182,9 @@ export const Colorized: Story = {
 export const AllColorized: Story = {
 	render: () => (
 		<div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-			{['alice', 'bob', 'carol', 'dave', 'eve', 'frank', 'grace', 'henry', 'iris'].map(
-				name => (
-					<Avatar
-						key={name}
-						size="lg"
-						colorize={name}
-						fallback={name.slice(0, 2).toUpperCase()}
-					/>
-				)
-			)}
+			{['alice', 'bob', 'carol', 'dave', 'eve', 'frank', 'grace', 'henry', 'iris'].map(name => (
+				<Avatar key={name} size="lg" colorize={name} fallback={name.slice(0, 2).toUpperCase()} />
+			))}
 		</div>
 	)
 };
