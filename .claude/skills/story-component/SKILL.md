@@ -1,6 +1,6 @@
 ---
 name: story-component
-description: Create comprehensive Storybook stories for a React component following Storybook MCP best practices
+description: Use when creating or editing a `src/**/*.stories.tsx` file — produces a Storybook stories file with meta, a Default story, one story per variant, and feature/showcase stories following the MCP-manifest conventions (`@summary` tags, arg controls, realistic values). Triggers on new components (create the stories file), prop or variant changes (keep stories in sync), or explicit requests to write stories.
 allowed-tools: Read, Edit, Write, Glob, Grep, Agent
 argument-hint: [component-file-path]
 ---
