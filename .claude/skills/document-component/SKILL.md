@@ -1,6 +1,6 @@
 ---
 name: document-component
-description: Add comprehensive JSDoc documentation to a React component file following Storybook MCP best practices
+description: Use when authoring or modifying a component file in `src/**/*.tsx` (excluding stories) — adds or updates JSDoc on the exported component, props, sub-components, and hooks so `react-docgen-typescript` produces rich types for the Storybook docs page and the MCP manifest. Triggers on new component files, prop additions/renames, or explicit requests to document a component.
 allowed-tools: Read, Edit, Glob, Grep, Agent
 argument-hint: [component-file-path]
 ---
