@@ -22,6 +22,7 @@
   ],
   "exports": {
     "./avatar": "./src/avatar/index.ts",
+    "./button": "./src/button/index.ts",
     "./lib": "./lib/index.ts",
     "./theme": "./themes/base.css"
   },
@@ -70,6 +71,7 @@
     "vitest": "^4.1.1"
   },
   "peerDependencies": {
+    "next": ">=14.0.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "tailwindcss": "^4.0.0"
