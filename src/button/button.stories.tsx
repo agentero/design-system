@@ -152,9 +152,8 @@ export const Disabled: Story = {
 
 /**
  * Variant × size grid with leading and trailing icons. Icons stay full-size
- * while text truncates — the Button wraps text runs in `<span data-slot=
- * "button-label">` so overflow ellipsizes the label without shrinking the
- * icons.
+ * while text truncates — the Button wraps text runs in a labeled span so
+ * overflow ellipsizes the label without shrinking the icons.
  *
  * @summary Variant × size grid with leading + trailing icons
  */
