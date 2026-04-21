@@ -1,6 +1,13 @@
 'use client';
 
-import { ButtonHTMLAttributes, Children, isValidElement, ReactNode, Ref } from 'react';
+import {
+	ButtonHTMLAttributes,
+	Children,
+	cloneElement,
+	isValidElement,
+	ReactNode,
+	Ref
+} from 'react';
 
 import { Slot, Slottable } from '@radix-ui/react-slot';
 import { tv } from 'tailwind-variants';
@@ -412,18 +419,13 @@ const ButtonLoading = () => (
 	/>
 );
 
-const processChildrenForTruncation = (children: ReactNode): ReactNode => {
-	const childArray = Children.toArray(children);
-	const hasOnlyIcon = childArray.every(value => isValidElement(value));
-
-	if (hasOnlyIcon) {
-		return children;
-	}
+const processChildrenForTruncation = (children: ReactNode, hasOnlyIcon: boolean): ReactNode => {
+	if (hasOnlyIcon) return children;
 
 	const textNodes: ReactNode[] = [];
 	const result: ReactNode[] = [];
 
-	childArray.forEach(child => {
+	Children.forEach(children, child => {
 		if (isValidElement(child)) {
 			if (textNodes.length > 0) {
 				result.push(
@@ -524,6 +526,17 @@ export const Button = ({
 				'Button with no text and variant link is not supported. Use it with variant tertiary instead'
 			);
 		}
+
+		if (asChild && iconOnly && isValidElement<{ children?: ReactNode }>(children)) {
+			const hasText = Children.toArray(children.props.children).some(
+				value => !isValidElement(value)
+			);
+			if (hasText) {
+				console.warn(
+					'Button with asChild and iconOnly should only contain icon children; text found inside the wrapper element'
+				);
+			}
+		}
 	}
 
 	const mergedClassName = cn(
@@ -548,6 +561,15 @@ export const Button = ({
 			}
 		: { disabled: isDisabled };
 
+	const slotChildren =
+		asChild && isValidElement<{ children?: ReactNode }>(children)
+			? cloneElement(
+					children,
+					undefined,
+					processChildrenForTruncation(children.props.children, hasOnlyIcon)
+				)
+			: children;
+
 	return (
 		<Comp
 			data-slot="button"
@@ -556,7 +578,11 @@ export const Button = ({
 			className={mergedClassName}
 			ref={ref as Ref<HTMLButtonElement>}>
 			{loading && <ButtonLoading />}
-			{asChild ? <Slottable>{children}</Slottable> : processChildrenForTruncation(children)}
+			{asChild ? (
+				<Slottable>{slotChildren}</Slottable>
+			) : (
+				processChildrenForTruncation(children, hasOnlyIcon)
+			)}
 		</Comp>
 	);
 };
