@@ -1,7 +1,17 @@
 'use client';
 
-import { AnchorHTMLAttributes, ButtonHTMLAttributes, PropsWithChildren, Ref } from 'react';
+import {
+	AnchorHTMLAttributes,
+	ButtonHTMLAttributes,
+	Children,
+	ForwardedRef,
+	isValidElement,
+	PropsWithChildren,
+	ReactNode,
+	Ref
+} from 'react';
 
+import Link, { LinkProps } from 'next/link';
 import { tv } from 'tailwind-variants';
 
 import { cn } from '../../lib';
@@ -295,33 +305,144 @@ export type ButtonAsAnchor = ButtonBaseProps &
 	AnchorHTMLAttributes<HTMLAnchorElement> & { as?: 'a' };
 
 export type ButtonAsLink = ButtonBaseProps &
-	AnchorHTMLAttributes<HTMLAnchorElement> & { as?: 'link'; href: string };
+	LinkProps &
+	AnchorHTMLAttributes<HTMLAnchorElement> & { as?: 'link' };
 
 export type ButtonProps = ButtonAsButton | ButtonAsAnchor | ButtonAsLink;
 
+const ButtonLoading = () => (
+	<span
+		aria-label="loading"
+		role="status"
+		className={cn(
+			'absolute inset-0 grid place-items-center',
+			'rounded-[inherit] bg-inherit',
+			'before:content-[""] before:block before:size-[1em]',
+			'before:border-2 before:border-solid before:rounded-full',
+			'before:border-current before:border-t-transparent',
+			'before:animate-spin'
+		)}
+	/>
+);
+
+const processChildrenForTruncation = (children: ReactNode): ReactNode => {
+	const childArray = Children.toArray(children);
+	const hasOnlyIcon = childArray.every(value => isValidElement(value));
+
+	if (hasOnlyIcon) {
+		return children;
+	}
+
+	const textNodes: ReactNode[] = [];
+	const result: ReactNode[] = [];
+
+	childArray.forEach(child => {
+		if (isValidElement(child)) {
+			if (textNodes.length > 0) {
+				result.push(
+					<span key={`text-${result.length}`} data-slot="button-label">
+						{textNodes.splice(0, textNodes.length)}
+					</span>
+				);
+			}
+			result.push(child);
+		} else if (child) {
+			textNodes.push(child);
+		}
+	});
+
+	if (textNodes.length > 0) {
+		result.push(
+			<span key={`text-${result.length}`} data-slot="button-label">
+				{textNodes}
+			</span>
+		);
+	}
+
+	return result;
+};
+
 export const Button = ({
 	children,
-	as: _as,
-	variant: _variant,
-	size: _size,
-	status: _status,
-	loading: _loading,
-	rounded: _rounded,
-	align: _align,
-	fitContent: _fitContent,
+	as = 'button',
+	variant,
+	size,
+	status,
+	loading,
+	rounded,
+	align,
+	fitContent,
 	disabled,
 	ref,
 	className,
 	...props
 }: PropsWithChildren<ButtonProps>) => {
+	const hasOnlyIcon = Children.toArray(children).every(value => isValidElement(value));
+	const isDisabled = disabled || loading;
+
+	if (loading && variant === 'link') {
+		throw new Error('Button with variant link and loading is not supported');
+	}
+
+	if (hasOnlyIcon && variant === 'link') {
+		throw new Error(
+			'Button with no text and variant link is not supported. Use it with variant tertiary instead'
+		);
+	}
+
+	const mergedClassName = cn(
+		buttonStyle({
+			variant,
+			size,
+			hasOnlyIcon,
+			disabled: isDisabled,
+			status,
+			rounded,
+			align,
+			fitContent
+		}),
+		className
+	);
+
+	const content = (
+		<>
+			{loading && <ButtonLoading />}
+			{processChildrenForTruncation(children)}
+		</>
+	);
+
+	if (as === 'a') {
+		return (
+			<a
+				data-slot="button"
+				{...(props as AnchorHTMLAttributes<HTMLAnchorElement>)}
+				className={mergedClassName}
+				ref={ref as ForwardedRef<HTMLAnchorElement>}>
+				{content}
+			</a>
+		);
+	}
+
+	if (as === 'link') {
+		return (
+			<Link
+				data-slot="button"
+				{...(props as LinkProps & AnchorHTMLAttributes<HTMLAnchorElement>)}
+				className={mergedClassName}
+				ref={ref as ForwardedRef<HTMLAnchorElement>}>
+				{content}
+			</Link>
+		);
+	}
+
 	return (
 		<button
 			data-slot="button"
 			{...(props as ButtonHTMLAttributes<HTMLButtonElement>)}
-			disabled={disabled}
-			ref={ref as Ref<HTMLButtonElement>}
-			className={cn(className)}>
-			{children}
+			className={mergedClassName}
+			disabled={isDisabled}
+			ref={ref as ForwardedRef<HTMLButtonElement>}>
+			{content}
 		</button>
 	);
 };
