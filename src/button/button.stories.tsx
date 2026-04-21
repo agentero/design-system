@@ -179,7 +179,7 @@ export const WithIcons: Story = {
 
 /**
  * Icon-only buttons across the variant × size grid. Excludes `variant="link"`
- * — combining `link` with icon-only children throws at render time because
+ * — combining `link` with icon-only children logs a dev-only warning because
  * the link treatment has no padding to accommodate an icon alone.
  *
  * @summary Icon-only Button across variant × size (excluding `link`)
@@ -206,7 +206,7 @@ export const OnlyIcon: Story = {
  * Loading state across the variant × size grid. Each row shows two buttons
  * per size: one icon-only, one with text. Loading forces `disabled` and
  * overlays a spinner that inherits the variant's text color. Excludes
- * `variant="link"` — combining `link` with `loading` throws at render time.
+ * `variant="link"` — combining `link` with `loading` logs a dev-only warning.
  *
  * @summary Loading state across variant × size (excluding `link`)
  */

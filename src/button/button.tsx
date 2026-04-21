@@ -303,7 +303,7 @@ type ButtonBaseProps = {
 	 * the `iconOnly` prop to opt into the square icon-only layout.
 	 *
 	 * Not supported with `variant="link"` when children resolve to icons only
-	 * — passing both throws at render time.
+	 * — passing both logs a dev-only warning (silent in production).
 	 */
 	children?: ReactNode;
 	/**
@@ -332,7 +332,7 @@ type ButtonBaseProps = {
 	/**
 	 * When `true`, shows a spinner overlay and forces the button into a disabled
 	 * state to block further interaction. Not supported with `variant="link"` —
-	 * passing both throws at render time.
+	 * passing both logs a dev-only warning (silent in production).
 	 */
 	loading?: boolean;
 	/**
@@ -468,7 +468,7 @@ const processChildrenForTruncation = (children: ReactNode): ReactNode => {
  * Do **not** use Button for toggle states (prefer a Switch or ToggleButton),
  * for passive decorative anchors without action intent (use a plain `<a>`),
  * or with `variant="link"` when loading or when the button has no text
- * children — both combinations throw at render time.
+ * children — both combinations log a dev-only warning (silent in production).
  *
  * @summary Primary actionable control; renders a `<button>` or, with `asChild`, any nested element
  *
@@ -514,14 +514,16 @@ export const Button = ({
 		: Children.toArray(children).every(value => isValidElement(value));
 	const isDisabled = disabled || loading;
 
-	if (loading && variant === 'link') {
-		throw new Error('Button with variant link and loading is not supported');
-	}
+	if (process.env.NODE_ENV !== 'production') {
+		if (loading && variant === 'link') {
+			console.warn('Button with variant link and loading is not supported');
+		}
 
-	if (hasOnlyIcon && variant === 'link') {
-		throw new Error(
-			'Button with no text and variant link is not supported. Use it with variant tertiary instead'
-		);
+		if (hasOnlyIcon && variant === 'link') {
+			console.warn(
+				'Button with no text and variant link is not supported. Use it with variant tertiary instead'
+			);
+		}
 	}
 
 	const mergedClassName = cn(
