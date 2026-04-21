@@ -46,7 +46,10 @@ const meta = {
 	component: Button,
 	tags: ['autodocs'],
 	argTypes: {
-		children: { control: 'text' },
+		children: {
+			control: 'text',
+			table: { type: { summary: 'React.ReactNode' } }
+		},
 		variant: {
 			control: 'radio',
 			options: VARIANTS
