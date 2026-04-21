@@ -23,6 +23,7 @@
   "exports": {
     "./avatar": "./src/avatar/index.ts",
     "./lib": "./lib/index.ts",
+    "./loading": "./src/loading/index.ts",
     "./theme": "./themes/base.css"
   },
   "scripts": {
