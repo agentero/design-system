@@ -38,8 +38,9 @@ const Stack = ({ children }: { children: React.ReactNode }) => (
 /**
  * Button is the design system's primary actionable control. Pick `variant` to
  * express hierarchy, `size` for prominence, and `status="danger"` for
- * destructive actions. The polymorphic `as` prop renders a `<button>`, a plain
- * `<a>`, or a Next.js `<Link>` without changing the visual treatment.
+ * destructive actions. Pass `asChild` to render Button's styles on any nested
+ * element — a plain `<a>`, a framework `<Link>`, or a custom component —
+ * without Button binding to any particular framework.
  */
 const meta = {
 	title: 'Components/Button',
@@ -90,8 +91,8 @@ export const Default: Story = {};
 /**
  * All five variants at the default `sm` size. Variants express visual
  * hierarchy: `primary` for the main CTA, `secondary` / `tertiary` for
- * supporting actions, `ghost` on tinted surfaces, and `link` for inline
- * text actions.
+ * supporting actions, `ghost` for low-emphasis inline actions, and `link`
+ * for text-only actions.
  *
  * @summary All Button variants at default size
  */
@@ -130,9 +131,10 @@ export const Sizes: Story = {
 /* --------------- Disabled --------------- */
 
 /**
- * Disabled state across all variants. Rendered as `<a>` elements to show the
- * disabled treatment applied via className (native anchors ignore the
- * `disabled` attribute, so Button handles this at the styling level).
+ * Disabled state across all variants. Rendered via `asChild` with `<a>`
+ * children to show the disabled treatment applied via className — native
+ * anchors ignore the `disabled` attribute, so Button emits `aria-disabled`
+ * and `data-disabled` on the child instead.
  *
  * @summary Disabled treatment for every variant
  */
@@ -140,8 +142,8 @@ export const Disabled: Story = {
 	render: () => (
 		<Row>
 			{VARIANTS.map(variant => (
-				<Button as="a" key={variant} variant={variant} disabled>
-					{TEXT}
+				<Button asChild key={variant} variant={variant} disabled>
+					<a>{TEXT}</a>
 				</Button>
 			))}
 		</Row>
@@ -253,10 +255,12 @@ export const Status: Story = {
 			</Row>
 			<Row>
 				{VARIANTS.map(variant => (
-					<Button as="a" key={variant} variant={variant} status="danger" disabled>
-						<IconAdd />
-						{TEXT}
-						<IconAdd />
+					<Button asChild key={variant} variant={variant} status="danger" disabled>
+						<a>
+							<IconAdd />
+							{TEXT}
+							<IconAdd />
+						</a>
 					</Button>
 				))}
 			</Row>
@@ -290,28 +294,28 @@ export const Rounded: Story = {
 	)
 };
 
-/* --------------- Polymorphic --------------- */
+/* --------------- asChild --------------- */
 
 /**
- * Polymorphic rendering via `as`. `as="link"` renders a Next.js `<Link>` for
- * client-side navigation, while `as="a"` renders a plain `<a>` for external
- * URLs. Both preserve the Button's visual treatment.
+ * `asChild` renders Button's styles on the nested child element rather than
+ * on a `<button>` — the child receives Button's `className`, `ref`, and
+ * merged props via Radix's `Slot` primitive. Use it to turn any anchor or
+ * framework `Link` into a Button without coupling the design system to a
+ * router. In app code, swap the plain `<a>` below for your framework's Link
+ * (`next/link`, `react-router`, `@tanstack/react-router`, etc.).
  *
- * @summary `as="link"` (next/link) and `as="a"` (anchor) examples
+ * @summary `asChild` composes Button's styles onto any element
  */
-export const AsLink: Story = {
+export const AsChild: Story = {
 	render: () => (
 		<Row>
-			<Button as="link" href="/dashboard" variant="primary">
-				Go to dashboard
+			<Button asChild variant="primary">
+				<a href="/dashboard">Go to dashboard</a>
 			</Button>
-			<Button
-				as="a"
-				href="https://agentero.com"
-				target="_blank"
-				rel="noreferrer"
-				variant="secondary">
-				Visit Agentero
+			<Button asChild variant="secondary">
+				<a href="https://agentero.com" target="_blank" rel="noreferrer">
+					Visit Agentero
+				</a>
 			</Button>
 		</Row>
 	)

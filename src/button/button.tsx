@@ -1,16 +1,8 @@
 'use client';
 
-import {
-	AnchorHTMLAttributes,
-	ButtonHTMLAttributes,
-	Children,
-	ForwardedRef,
-	isValidElement,
-	ReactNode,
-	Ref
-} from 'react';
+import { ButtonHTMLAttributes, Children, isValidElement, ReactNode, Ref } from 'react';
 
-import Link, { LinkProps } from 'next/link';
+import { Slot, Slottable } from '@radix-ui/react-slot';
 import { tv } from 'tailwind-variants';
 
 import { cn } from '../../lib';
@@ -306,23 +298,20 @@ type ButtonBaseProps = {
 	 * shrinking adjacent icons; icon-only children switch the Button to a
 	 * square aspect ratio and trigger the icon-only layout.
 	 *
+	 * When `asChild` is set, the single child element is merged with Button's
+	 * props and styles; auto-detection of icon-only children is skipped — use
+	 * the `iconOnly` prop to opt into the square icon-only layout.
+	 *
 	 * Not supported with `variant="link"` when children resolve to icons only
 	 * — passing both throws at render time.
 	 */
 	children?: ReactNode;
 	/**
-	 * Element the Button renders as. Defaults to `'button'`.
-	 * - `'button'` — standard `<button>`, for actions that mutate state or trigger behavior.
-	 * - `'a'` — plain `<a>`, for external links or when `next/link` is not desired.
-	 * - `'link'` — Next.js `<Link>`, for client-side navigation within a Next app.
-	 */
-	as?: 'a' | 'link' | 'button';
-	/**
 	 * Visual hierarchy. Defaults to `'primary'`.
 	 * - `primary` — main call-to-action; use once per view.
 	 * - `secondary` — alternative action alongside a primary button.
 	 * - `tertiary` — low-emphasis action, subtle background.
-	 * - `ghost` — minimal background; use on tinted or dense surfaces.
+	 * - `ghost` — minimal background; low-emphasis action in dense layouts.
 	 * - `link` — inline text-style action; no padding or background.
 	 */
 	variant?: ButtonVariantType;
@@ -348,10 +337,18 @@ type ButtonBaseProps = {
 	loading?: boolean;
 	/**
 	 * Disables interaction and applies the disabled color treatment. Applied
-	 * via className so it also affects `as="a"` / `as="link"` anchors that
-	 * ignore the native `disabled` attribute.
+	 * via className so it still affects anchors rendered via `asChild`, which
+	 * ignore the native `disabled` attribute — in that case `aria-disabled`
+	 * and `data-disabled` are forwarded to the child element instead.
 	 */
 	disabled?: boolean;
+	/**
+	 * Forces the icon-only layout (square aspect ratio, no min-width). Useful
+	 * with `asChild` where the single wrapper child prevents auto-detection.
+	 * For non-`asChild` usage, prefer passing icon elements as children — the
+	 * icon-only layout is applied automatically.
+	 */
+	iconOnly?: boolean;
 	/**
 	 * When `true`, renders a fully pill-shaped button (rounded-full). Otherwise
 	 * uses the variant's default corner radius.
@@ -369,46 +366,36 @@ type ButtonBaseProps = {
 	fitContent?: boolean;
 	/**
 	 * Ref forwarded to the underlying element. Typed as a union covering both
-	 * `<button>` and `<a>` to accommodate the polymorphic `as` prop.
+	 * `<button>` and `<a>` because `asChild` lets consumers render either tag
+	 * (or any forwardRef component) through Radix's `Slot`.
 	 */
 	ref?: Ref<HTMLButtonElement | HTMLAnchorElement>;
 };
 
 /**
- * Button props when rendered as a native `<button>` element. Accepts all
- * standard `ButtonHTMLAttributes` in addition to the Button base props.
+ * Button props. Accepts all standard `<button>` attributes in addition to the
+ * Button base props. When `asChild` is `true`, Button renders its single child
+ * element as the underlying tag instead of a `<button>` — the child receives
+ * Button's `className`, `ref`, and forwarded props via Radix's `Slot`
+ * primitive, letting callers compose any element (plain `<a>`, a framework
+ * `<Link>`, etc.) without Button binding to a framework.
  *
- * @summary Button props specialized for `as="button"`
+ * @summary Props accepted by Button; use `asChild` to render a different element
  */
-export type ButtonAsButton = ButtonBaseProps &
-	ButtonHTMLAttributes<HTMLButtonElement> & { as?: 'button' };
-
-/**
- * Button props when rendered as a plain `<a>` element. Use for external links
- * or contexts where Next.js client-side routing is not desired.
- *
- * @summary Button props specialized for `as="a"`
- */
-export type ButtonAsAnchor = ButtonBaseProps &
-	AnchorHTMLAttributes<HTMLAnchorElement> & { as?: 'a' };
-
-/**
- * Button props when rendered as a Next.js `<Link>`. Accepts `next/link`
- * `LinkProps` (including `href`, `prefetch`, `replace`) plus anchor attributes.
- *
- * @summary Button props specialized for `as="link"` (Next.js Link)
- */
-export type ButtonAsLink = ButtonBaseProps &
-	LinkProps &
-	AnchorHTMLAttributes<HTMLAnchorElement> & { as?: 'link' };
-
-/**
- * Discriminated union of Button props across all three `as` targets.
- * TypeScript narrows to the correct attribute set based on the `as` value.
- *
- * @summary Union of Button props across `as="button" | "a" | "link"`
- */
-export type ButtonProps = ButtonAsButton | ButtonAsAnchor | ButtonAsLink;
+export type ButtonProps = ButtonBaseProps &
+	ButtonHTMLAttributes<HTMLButtonElement> & {
+		/**
+		 * When `true`, Button clones its single child element and merges
+		 * Button's `className`, `ref`, and event handlers onto it rather than
+		 * rendering a `<button>`. Use this to style any element (a plain `<a>`,
+		 * a framework `Link`, a `React.forwardRef` component) as a Button.
+		 *
+		 * When combined with `disabled`, Button emits `aria-disabled` and
+		 * `data-disabled` on the child instead of the native `disabled`
+		 * attribute (which is ignored by non-form-control elements).
+		 */
+		asChild?: boolean;
+	};
 
 const ButtonLoading = () => (
 	<span
@@ -464,13 +451,17 @@ const processChildrenForTruncation = (children: ReactNode): ReactNode => {
 
 /**
  * Button is the design system's primary actionable control. Use it for any
- * interaction that triggers behavior, submits a form, or navigates the user —
- * its polymorphic `as` prop renders a `<button>`, a plain `<a>`, or a Next.js
- * `<Link>` without changing the visual treatment.
+ * interaction that triggers behavior, submits a form, or navigates the user.
+ * By default Button renders a `<button>`; pass `asChild` to render its single
+ * child element as the underlying tag instead — Button merges its styles,
+ * `className`, `ref`, and props onto whatever the consumer nests. This keeps
+ * the design system framework-agnostic: route a plain `<a>`, a Next.js
+ * `<Link>`, a React Router `<Link>`, or any custom element through the same
+ * visual treatment.
  *
  * Pick `variant` to express hierarchy (`primary` for the main CTA,
- * `secondary` / `tertiary` for supporting actions, `ghost` on tinted
- * surfaces, `link` for inline text actions). Use `status="danger"` for
+ * `secondary` / `tertiary` for supporting actions, `ghost` for low-emphasis
+ * inline actions, `link` for text-only actions). Use `status="danger"` for
  * destructive actions and `loading` to block interaction while async work
  * resolves.
  *
@@ -479,7 +470,7 @@ const processChildrenForTruncation = (children: ReactNode): ReactNode => {
  * or with `variant="link"` when loading or when the button has no text
  * children — both combinations throw at render time.
  *
- * @summary Primary actionable control; renders button, anchor, or next/link
+ * @summary Primary actionable control; renders a `<button>` or, with `asChild`, any nested element
  *
  * @example
  * <Button variant="primary" size="sm" onClick={handleSave}>
@@ -487,8 +478,14 @@ const processChildrenForTruncation = (children: ReactNode): ReactNode => {
  * </Button>
  *
  * @example
- * <Button as="link" href="/dashboard" variant="secondary">
- *   Go to dashboard
+ * <Button asChild variant="secondary">
+ *   <a href="https://agentero.com" target="_blank" rel="noreferrer">Visit Agentero</a>
+ * </Button>
+ *
+ * @example
+ * // Framework-agnostic: wrap any Link implementation
+ * <Button asChild variant="primary">
+ *   <Link href="/dashboard">Go to dashboard</Link>
  * </Button>
  *
  * @example
@@ -498,7 +495,7 @@ const processChildrenForTruncation = (children: ReactNode): ReactNode => {
  */
 export const Button = ({
 	children,
-	as = 'button',
+	asChild,
 	variant,
 	size,
 	status,
@@ -507,11 +504,14 @@ export const Button = ({
 	align,
 	fitContent,
 	disabled,
+	iconOnly,
 	ref,
 	className,
 	...props
 }: ButtonProps) => {
-	const hasOnlyIcon = Children.toArray(children).every(value => isValidElement(value));
+	const hasOnlyIcon = asChild
+		? Boolean(iconOnly)
+		: Children.toArray(children).every(value => isValidElement(value));
 	const isDisabled = disabled || loading;
 
 	if (loading && variant === 'link') {
@@ -538,45 +538,23 @@ export const Button = ({
 		className
 	);
 
-	const content = (
-		<>
-			{loading && <ButtonLoading />}
-			{processChildrenForTruncation(children)}
-		</>
-	);
-
-	if (as === 'a') {
-		return (
-			<a
-				data-slot="button"
-				{...(props as AnchorHTMLAttributes<HTMLAnchorElement>)}
-				className={mergedClassName}
-				ref={ref as ForwardedRef<HTMLAnchorElement>}>
-				{content}
-			</a>
-		);
-	}
-
-	if (as === 'link') {
-		return (
-			<Link
-				data-slot="button"
-				{...(props as LinkProps & AnchorHTMLAttributes<HTMLAnchorElement>)}
-				className={mergedClassName}
-				ref={ref as ForwardedRef<HTMLAnchorElement>}>
-				{content}
-			</Link>
-		);
-	}
+	const Comp = asChild ? Slot : 'button';
+	const disabledAttrs = asChild
+		? {
+				'aria-disabled': isDisabled || undefined,
+				'data-disabled': isDisabled || undefined
+			}
+		: { disabled: isDisabled };
 
 	return (
-		<button
+		<Comp
 			data-slot="button"
-			{...(props as ButtonHTMLAttributes<HTMLButtonElement>)}
+			{...disabledAttrs}
+			{...props}
 			className={mergedClassName}
-			disabled={isDisabled}
-			ref={ref as ForwardedRef<HTMLButtonElement>}>
-			{content}
-		</button>
+			ref={ref as Ref<HTMLButtonElement>}>
+			{loading && <ButtonLoading />}
+			{asChild ? <Slottable>{children}</Slottable> : processChildrenForTruncation(children)}
+		</Comp>
 	);
 };
