@@ -17,13 +17,16 @@ import { tv } from 'tailwind-variants';
 import { cn } from '../../lib';
 
 /**
- * Style recipe for Button using tailwind-variants.
- * Defines a single-slot recipe with variants (`variant`, `size`, `status`,
- * `hasOnlyIcon`, `disabled`, `rounded`, `align`, `fitContent`) plus
- * compound variants for destructive and disabled states.
+ * Style recipe for Button using tailwind-variants. Single-slot recipe whose
+ * variants (`variant`, `size`, `status`, `hasOnlyIcon`, `disabled`, `rounded`,
+ * `align`, `fitContent`) plus compound variants drive destructive and disabled
+ * treatments. All colors route through design-system tokens defined in
+ * `themes/base.css`.
  *
- * Ported 1:1 from the legacy Panda `cva` recipe in `@agentero/ui`. All
- * colors route through design-system tokens defined in `themes/base.css`.
+ * Exported for advanced composition (e.g., styling a link or custom element
+ * to match a Button). Prefer rendering the `Button` component directly.
+ *
+ * @summary tailwind-variants recipe backing the Button component styles
  */
 export const buttonStyle = tv({
 	base: [
@@ -282,32 +285,119 @@ export const buttonStyle = tv({
 	}
 });
 
+/**
+ * Visual hierarchy levels supported by Button.
+ *
+ * @summary Button variant union (`primary`, `secondary`, `tertiary`, `ghost`, `link`)
+ */
 export type ButtonVariantType = 'primary' | 'secondary' | 'tertiary' | 'ghost' | 'link';
+
+/**
+ * Size scale supported by Button, from compact (`xs`) to prominent (`lg`).
+ *
+ * @summary Button size union (`xs`, `sm`, `md`, `lg`)
+ */
 export type ButtonSizeType = 'xs' | 'sm' | 'md' | 'lg';
 
 type ButtonBaseProps = {
+	/**
+	 * Element the Button renders as. Defaults to `'button'`.
+	 * - `'button'` — standard `<button>`, for actions that mutate state or trigger behavior.
+	 * - `'a'` — plain `<a>`, for external links or when `next/link` is not desired.
+	 * - `'link'` — Next.js `<Link>`, for client-side navigation within a Next app.
+	 */
 	as?: 'a' | 'link' | 'button';
+	/**
+	 * Visual hierarchy. Defaults to `'primary'`.
+	 * - `primary` — main call-to-action; use once per view.
+	 * - `secondary` — alternative action alongside a primary button.
+	 * - `tertiary` — low-emphasis action, subtle background.
+	 * - `ghost` — minimal background; use on tinted or dense surfaces.
+	 * - `link` — inline text-style action; no padding or background.
+	 */
 	variant?: ButtonVariantType;
+	/**
+	 * Control size. Defaults to `'sm'`.
+	 * - `xs` (24px) — dense toolbars, compact inline actions.
+	 * - `sm` (32px) — standard usage in forms and cards.
+	 * - `md` (40px) — prominent actions in modals or feature rows.
+	 * - `lg` (48px) — hero CTAs and full-width mobile actions.
+	 */
 	size?: ButtonSizeType;
+	/**
+	 * Semantic status override. Set to `'danger'` for destructive actions
+	 * (delete, remove, disconnect) — applies the destructive color treatment
+	 * across all variants.
+	 */
 	status?: 'danger';
+	/**
+	 * When `true`, shows a spinner overlay and forces the button into a disabled
+	 * state to block further interaction. Not supported with `variant="link"` —
+	 * passing both throws at render time.
+	 */
 	loading?: boolean;
+	/**
+	 * Disables interaction and applies the disabled color treatment. Applied
+	 * via className so it also affects `as="a"` / `as="link"` anchors that
+	 * ignore the native `disabled` attribute.
+	 */
 	disabled?: boolean;
+	/**
+	 * When `true`, renders a fully pill-shaped button (rounded-full). Otherwise
+	 * uses the variant's default corner radius.
+	 */
 	rounded?: boolean;
+	/**
+	 * Justifies children along the main axis. Defaults to `'center'`.
+	 * Use `'justify'` to push leading and trailing icons to the edges.
+	 */
 	align?: 'center' | 'start' | 'end' | 'justify';
+	/**
+	 * When `true`, removes the per-size `min-width` floor so the button hugs
+	 * its content. Useful for inline actions inside tight containers.
+	 */
 	fitContent?: boolean;
+	/**
+	 * Ref forwarded to the underlying element. Typed as a union covering both
+	 * `<button>` and `<a>` to accommodate the polymorphic `as` prop.
+	 */
 	ref?: Ref<HTMLButtonElement | HTMLAnchorElement>;
 };
 
+/**
+ * Button props when rendered as a native `<button>` element. Accepts all
+ * standard `ButtonHTMLAttributes` in addition to the Button base props.
+ *
+ * @summary Button props specialized for `as="button"`
+ */
 export type ButtonAsButton = ButtonBaseProps &
 	ButtonHTMLAttributes<HTMLButtonElement> & { as?: 'button' };
 
+/**
+ * Button props when rendered as a plain `<a>` element. Use for external links
+ * or contexts where Next.js client-side routing is not desired.
+ *
+ * @summary Button props specialized for `as="a"`
+ */
 export type ButtonAsAnchor = ButtonBaseProps &
 	AnchorHTMLAttributes<HTMLAnchorElement> & { as?: 'a' };
 
+/**
+ * Button props when rendered as a Next.js `<Link>`. Accepts `next/link`
+ * `LinkProps` (including `href`, `prefetch`, `replace`) plus anchor attributes.
+ *
+ * @summary Button props specialized for `as="link"` (Next.js Link)
+ */
 export type ButtonAsLink = ButtonBaseProps &
 	LinkProps &
 	AnchorHTMLAttributes<HTMLAnchorElement> & { as?: 'link' };
 
+/**
+ * Discriminated union of Button props across all three `as` targets.
+ * TypeScript narrows to the correct attribute set based on the `as` value.
+ *
+ * @summary Union of Button props across `as="button" | "a" | "link"`
+ */
 export type ButtonProps = ButtonAsButton | ButtonAsAnchor | ButtonAsLink;
 
 const ButtonLoading = () => (
@@ -362,6 +452,40 @@ const processChildrenForTruncation = (children: ReactNode): ReactNode => {
 	return result;
 };
 
+/**
+ * Button is the design system's primary actionable control. Use it for any
+ * interaction that triggers behavior, submits a form, or navigates the user —
+ * its polymorphic `as` prop renders a `<button>`, a plain `<a>`, or a Next.js
+ * `<Link>` without changing the visual treatment.
+ *
+ * Pick `variant` to express hierarchy (`primary` for the main CTA,
+ * `secondary` / `tertiary` for supporting actions, `ghost` on tinted
+ * surfaces, `link` for inline text actions). Use `status="danger"` for
+ * destructive actions and `loading` to block interaction while async work
+ * resolves.
+ *
+ * Do **not** use Button for toggle states (prefer a Switch or ToggleButton),
+ * for passive decorative anchors without action intent (use a plain `<a>`),
+ * or with `variant="link"` when loading or when the button has no text
+ * children — both combinations throw at render time.
+ *
+ * @summary Primary actionable control; renders button, anchor, or next/link
+ *
+ * @example
+ * <Button variant="primary" size="sm" onClick={handleSave}>
+ *   Save changes
+ * </Button>
+ *
+ * @example
+ * <Button as="link" href="/dashboard" variant="secondary">
+ *   Go to dashboard
+ * </Button>
+ *
+ * @example
+ * <Button variant="primary" status="danger" loading={isDeleting} onClick={handleDelete}>
+ *   Delete account
+ * </Button>
+ */
 export const Button = ({
 	children,
 	as = 'button',
