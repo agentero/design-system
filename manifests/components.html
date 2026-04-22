@@ -576,13 +576,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">2 components ok</span><span class="filter-pill ok" aria-disabled="true">27 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">3 components ok</span><span class="filter-pill ok" aria-disabled="true">34 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>1.9s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>1.7s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -1262,6 +1262,163 @@ variant?: ButtonVariantType</code></pre>
             &lt;/a&gt;
         &lt;/Button&gt;
     &lt;/Row&gt;
+);</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
+  aria-label="Loading">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Loading</h2>
+      <div class="badges">
+        <label for="c-2-components-loading-props" class="badge ok as-toggle">1 prop type</label>
+        
+        <label for="c-2-components-loading-stories" class="badge ok as-toggle">7 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/loading/loading.stories.tsx">components-loading · ./src/loading/loading.stories.tsx</div>
+    
+    <div class="hint">Loading displays a circular spinner that indicates an in-progress operation. Use for inline fetch, form submission, or asynchronous task indicators. The spinner inherits its color from the parent `color` and scales with the parent font size via `em`-based size variants (`sm`, `md`, `lg`).</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-2-components-loading-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  <input id="c-2-components-loading-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
+              <span class="badge ok">1 prop type</span>
+            </div>
+            <pre><code>Component: src/loading/loading.tsx::Loading</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>/**
+ * Controls the spinner diameter in `em` units relative to the parent font size.
+ * Defaults to `&#39;sm&#39;`.
+ * - `sm` (1em) — inline indicators, buttons, and compact layouts
+ * - `md` (1.5em) — cards, panels, and standalone loading states
+ * - `lg` (2em) — page-level or section-level loading
+ */
+size?: &quot;md&quot; | &quot;sm&quot; | &quot;lg&quot;</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Loading } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Default spinner at the `sm` size</div>
+              <div class="hint">The default spinner at `size=&quot;sm&quot;` (1em diameter), inheriting the current text color. Matches the out-of-the-box behavior when Loading is dropped into any layout.</div>
+              <pre><code>const Default = () =&gt; &lt;Loading size=&quot;sm&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Size Sm</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Small 1em spinner for inline indicators</div>
+              <div class="hint">Small spinner (1em diameter) — the default. Ideal for inline indicators, buttons, and compact layouts where the spinner needs to sit next to text.</div>
+              <pre><code>const SizeSm = () =&gt; &lt;Loading size=&quot;sm&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Size Md</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Medium 1.5em spinner for cards and panels</div>
+              <div class="hint">Medium spinner (1.5em diameter). Use for cards, panels, and standalone loading states where the spinner is the primary visual signal.</div>
+              <pre><code>const SizeMd = () =&gt; &lt;Loading size=&quot;md&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Size Lg</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Large 2em spinner for page or section loading</div>
+              <div class="hint">Large spinner (2em diameter). Use for page-level or section-level loading where the spinner needs more visual weight.</div>
+              <pre><code>const SizeLg = () =&gt; &lt;Loading size=&quot;lg&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Sizes</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Visual comparison of all three spinner sizes</div>
+              <div class="hint">All three sizes rendered side by side for visual comparison of the `em`-based scaling. Each spinner inherits the same parent text color.</div>
+              <pre><code>const Sizes = () =&gt; (
+    &lt;div style={{ display: &#39;flex&#39;, alignItems: &#39;center&#39;, gap: &#39;2rem&#39; }}&gt;
+        {([&#39;sm&#39;, &#39;md&#39;, &#39;lg&#39;] as const).map(size =&gt; (
+            &lt;Loading key={size} size={size} /&gt;
+        ))}
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Inherits Color</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Spinner color inherits from the parent text color</div>
+              <div class="hint">The spinner color tracks the parent `color` (text color) via `border-current`. Wrap Loading in any element with a text color utility — or set `color` on Loading itself — and the spinner adopts that color without extra props.</div>
+              <pre><code>const InheritsColor = () =&gt; (
+    &lt;div style={{ display: &#39;flex&#39;, alignItems: &#39;center&#39;, gap: &#39;2rem&#39; }}&gt;
+        &lt;div className=&quot;text-text-default-base-primary&quot;&gt;
+            &lt;Loading size=&quot;md&quot; /&gt;
+        &lt;/div&gt;
+        &lt;div className=&quot;text-text-default-brand-primary&quot;&gt;
+            &lt;Loading size=&quot;md&quot; /&gt;
+        &lt;/div&gt;
+        &lt;div className=&quot;text-text-default-danger-primary&quot;&gt;
+            &lt;Loading size=&quot;md&quot; /&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">On Dark Surface</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Spinner on a dark-background surface</div>
+              <div class="hint">Spinner on a dark surface to verify `border-current` contrast. The parent sets a light text color, which the spinner inherits so it remains visible against the dark background.</div>
+              <pre><code>const OnDarkSurface = () =&gt; (
+    &lt;div className=&quot;flex items-center gap-8 rounded-lg bg-bg-button-primary-enable p-8 text-text-default-base-inverse-primary&quot;&gt;
+        &lt;Loading size=&quot;sm&quot; /&gt;
+        &lt;Loading size=&quot;md&quot; /&gt;
+        &lt;Loading size=&quot;lg&quot; /&gt;
+    &lt;/div&gt;
 );</code></pre>
             </div>
         </div>
