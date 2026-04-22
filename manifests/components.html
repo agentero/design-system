@@ -576,13 +576,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">1 components ok</span><span class="filter-pill ok" aria-disabled="true">17 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">2 components ok</span><span class="filter-pill ok" aria-disabled="true">27 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>1.5s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>1.7s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -896,6 +896,374 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
             /&gt;
         ))}
     &lt;/div&gt;
+);</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
+  aria-label="Button">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Button</h2>
+      <div class="badges">
+        <label for="c-1-components-button-props" class="badge ok as-toggle">12 prop types</label>
+        
+        <label for="c-1-components-button-stories" class="badge ok as-toggle">10 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/button/button.stories.tsx">components-button · ./src/button/button.stories.tsx</div>
+    
+    <div class="hint">Button is the design system&#39;s primary actionable control. Pick `variant` to express hierarchy, `size` for prominence, and `status=&quot;danger&quot;` for destructive actions. Pass `asChild` to render Button&#39;s styles on any nested element — a plain `&lt;a&gt;`, a framework `&lt;Link&gt;`, or a custom component — without Button binding to any particular framework.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-1-components-button-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  <input id="c-1-components-button-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
+              <span class="badge ok">12 prop types</span>
+            </div>
+            <pre><code>Component: src/button/button.tsx::Button</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>/**
+ * Justifies children along the main axis. Defaults to `&#39;center&#39;`.
+ * Use `&#39;justify&#39;` to push leading and trailing icons to the edges.
+ */
+align?: &quot;center&quot; | &quot;start&quot; | &quot;end&quot; | &quot;justify&quot;
+
+/**
+ * When `true`, Button clones its single child element and merges
+ * Button&#39;s `className`, `ref`, and event handlers onto it rather than
+ * rendering a `&lt;button&gt;`. Use this to style any element (a plain `&lt;a&gt;`,
+ * a framework `Link`, a `React.forwardRef` component) as a Button.
+ * 
+ * When combined with `disabled`, Button emits `aria-disabled` and
+ * `data-disabled` on the child instead of the native `disabled`
+ * attribute (which is ignored by non-form-control elements).
+ */
+asChild?: boolean
+
+/**
+ * Content rendered inside the Button. Accepts a text label, icon elements,
+ * or any mix of both. Text runs are wrapped in a truncating
+ * `&lt;span data-slot=&quot;button-label&quot;&gt;` so the label ellipsizes without
+ * shrinking adjacent icons; icon-only children switch the Button to a
+ * square aspect ratio and trigger the icon-only layout.
+ * 
+ * When `asChild` is set, the single child element is merged with Button&#39;s
+ * props and styles; auto-detection of icon-only children is skipped — use
+ * the `iconOnly` prop to opt into the square icon-only layout.
+ * 
+ * Not supported with `variant=&quot;link&quot;` when children resolve to icons only
+ * — passing both logs a dev-only warning (silent in production).
+ */
+children?: ReactNode
+
+/**
+ * Disables interaction and applies the disabled color treatment. Applied
+ * via className so it still affects anchors rendered via `asChild`, which
+ * ignore the native `disabled` attribute — in that case `aria-disabled`
+ * and `data-disabled` are forwarded to the child element instead.
+ */
+disabled?: boolean
+
+/**
+ * When `true`, removes the per-size `min-width` floor so the button hugs
+ * its content. Useful for inline actions inside tight containers.
+ */
+fitContent?: boolean
+
+/**
+ * Forces the icon-only layout (square aspect ratio, no min-width). Useful
+ * with `asChild` where the single wrapper child prevents auto-detection.
+ * For non-`asChild` usage, prefer passing icon elements as children — the
+ * icon-only layout is applied automatically.
+ */
+iconOnly?: boolean
+
+/**
+ * When `true`, shows a spinner overlay and forces the button into a disabled
+ * state to block further interaction. Not supported with `variant=&quot;link&quot;` —
+ * passing both logs a dev-only warning (silent in production).
+ */
+loading?: boolean
+
+/**
+ * Ref forwarded to the underlying element. Typed as a union covering both
+ * `&lt;button&gt;` and `&lt;a&gt;` because `asChild` lets consumers render either tag
+ * (or any forwardRef component) through Radix&#39;s `Slot`.
+ */
+ref?: Ref&lt;HTMLButtonElement | HTMLAnchorElement&gt;
+
+/**
+ * When `true`, renders a fully pill-shaped button (rounded-full). Otherwise
+ * uses the variant&#39;s default corner radius.
+ */
+rounded?: boolean
+
+/**
+ * Control size. Defaults to `&#39;sm&#39;`.
+ * - `xs` (24px) — dense toolbars, compact inline actions.
+ * - `sm` (32px) — standard usage in forms and cards.
+ * - `md` (40px) — prominent actions in modals or feature rows.
+ * - `lg` (48px) — hero CTAs and full-width mobile actions.
+ */
+size?: ButtonSizeType
+
+/**
+ * Semantic status override. Set to `&#39;danger&#39;` for destructive actions
+ * (delete, remove, disconnect) — applies the destructive color treatment
+ * across all variants.
+ */
+status?: &quot;danger&quot;
+
+/**
+ * Visual hierarchy. Defaults to `&#39;primary&#39;`.
+ * - `primary` — main call-to-action; use once per view.
+ * - `secondary` — alternative action alongside a primary button.
+ * - `tertiary` — low-emphasis action, subtle background.
+ * - `ghost` — minimal background; low-emphasis action in dense layouts.
+ * - `link` — inline text-style action; no padding or background.
+ */
+variant?: ButtonVariantType</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Button } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Default args playground for Button</div>
+              <div class="hint">Args-controlled playground. Toggle `variant`, `size`, `status`, `loading`, `disabled`, and `rounded` from the Controls panel to explore every visual combination of the Button.</div>
+              <pre><code>const Default = () =&gt; &lt;Button variant=&quot;primary&quot; size=&quot;sm&quot;&gt;{TEXT}&lt;/Button&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Variants</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>All Button variants at default size</div>
+              <div class="hint">All five variants at the default `sm` size. Variants express visual hierarchy: `primary` for the main CTA, `secondary` / `tertiary` for supporting actions, `ghost` for low-emphasis inline actions, and `link` for text-only actions.</div>
+              <pre><code>const Variants = () =&gt; (
+    &lt;Row&gt;
+        {VARIANTS.map(variant =&gt; (
+            &lt;Button key={variant} variant={variant}&gt;
+                {TEXT}
+            &lt;/Button&gt;
+        ))}
+    &lt;/Row&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Sizes</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>All Button sizes at default variant</div>
+              <div class="hint">All four sizes at the default `primary` variant. Sizes scale from `xs` (24px) for dense toolbars up to `lg` (48px) for hero CTAs.</div>
+              <pre><code>const Sizes = () =&gt; (
+    &lt;Row&gt;
+        {SIZES.map(size =&gt; (
+            &lt;Button key={size} size={size}&gt;
+                {TEXT}
+            &lt;/Button&gt;
+        ))}
+    &lt;/Row&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Disabled</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Disabled treatment for every variant</div>
+              <div class="hint">Disabled state across all variants. Rendered via `asChild` with `&lt;a&gt;` children to show the disabled treatment applied via className — native anchors ignore the `disabled` attribute, so Button emits `aria-disabled` and `data-disabled` on the child instead.</div>
+              <pre><code>const Disabled = () =&gt; (
+    &lt;Row&gt;
+        {VARIANTS.map(variant =&gt; (
+            &lt;Button asChild key={variant} variant={variant} disabled&gt;
+                &lt;a&gt;{TEXT}&lt;/a&gt;
+            &lt;/Button&gt;
+        ))}
+    &lt;/Row&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Icons</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Variant × size grid with leading + trailing icons</div>
+              <div class="hint">Variant × size grid with leading and trailing icons. Icons stay full-size while text truncates — the Button wraps text runs in a labeled span so overflow ellipsizes the label without shrinking the icons.</div>
+              <pre><code>const WithIcons = () =&gt; (
+    &lt;Stack&gt;
+        {VARIANTS.map(variant =&gt; (
+            &lt;Row key={variant}&gt;
+                {SIZES.map(size =&gt; (
+                    &lt;Button key={size} variant={variant} size={size}&gt;
+                        &lt;IconAdd /&gt;
+                        {TEXT}
+                        &lt;IconAdd /&gt;
+                    &lt;/Button&gt;
+                ))}
+            &lt;/Row&gt;
+        ))}
+    &lt;/Stack&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Only Icon</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Icon-only Button across variant × size (excluding `link`)</div>
+              <div class="hint">Icon-only buttons across the variant × size grid. Excludes `variant=&quot;link&quot;` — combining `link` with icon-only children logs a dev-only warning because the link treatment has no padding to accommodate an icon alone.</div>
+              <pre><code>const OnlyIcon = () =&gt; (
+    &lt;Stack&gt;
+        {NON_LINK_VARIANTS.map(variant =&gt; (
+            &lt;Row key={variant}&gt;
+                {SIZES.map(size =&gt; (
+                    &lt;Button key={size} variant={variant} size={size} aria-label=&quot;Close&quot;&gt;
+                        &lt;IconClose /&gt;
+                    &lt;/Button&gt;
+                ))}
+            &lt;/Row&gt;
+        ))}
+    &lt;/Stack&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Loading</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Loading state across variant × size (excluding `link`)</div>
+              <div class="hint">Loading state across the variant × size grid. Each row shows two buttons per size: one icon-only, one with text. Loading forces `disabled` and overlays a spinner that inherits the variant&#39;s text color. Excludes `variant=&quot;link&quot;` — combining `link` with `loading` logs a dev-only warning.</div>
+              <pre><code>const Loading = () =&gt; (
+    &lt;Stack&gt;
+        {NON_LINK_VARIANTS.map(variant =&gt; (
+            &lt;Row key={variant}&gt;
+                {SIZES.map(size =&gt; (
+                    &lt;div key={size} style={{ display: &#39;flex&#39;, gap: &#39;0.5rem&#39;, alignItems: &#39;center&#39; }}&gt;
+                        &lt;Button variant={variant} size={size} loading aria-label=&quot;Loading&quot;&gt;
+                            &lt;IconAdd /&gt;
+                        &lt;/Button&gt;
+                        &lt;Button variant={variant} size={size} loading&gt;
+                            {TEXT}
+                        &lt;/Button&gt;
+                    &lt;/div&gt;
+                ))}
+            &lt;/Row&gt;
+        ))}
+    &lt;/Stack&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Status</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>`status=&quot;danger&quot;` across every variant, enabled + disabled</div>
+              <div class="hint">Destructive treatment via `status=&quot;danger&quot;`. The top row shows every variant enabled; the bottom row shows every variant disabled. Use `status=&quot;danger&quot;` for delete, remove, or disconnect actions regardless of variant.</div>
+              <pre><code>const Status = () =&gt; (
+    &lt;Stack&gt;
+        &lt;Row&gt;
+            {VARIANTS.map(variant =&gt; (
+                &lt;Button key={variant} variant={variant} status=&quot;danger&quot;&gt;
+                    &lt;IconAdd /&gt;
+                    {TEXT}
+                    &lt;IconAdd /&gt;
+                &lt;/Button&gt;
+            ))}
+        &lt;/Row&gt;
+        &lt;Row&gt;
+            {VARIANTS.map(variant =&gt; (
+                &lt;Button asChild key={variant} variant={variant} status=&quot;danger&quot; disabled&gt;
+                    &lt;a&gt;
+                        &lt;IconAdd /&gt;
+                        {TEXT}
+                        &lt;IconAdd /&gt;
+                    &lt;/a&gt;
+                &lt;/Button&gt;
+            ))}
+        &lt;/Row&gt;
+    &lt;/Stack&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Rounded</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>`rounded` pill shape across variant × size (excluding `link`)</div>
+              <div class="hint">Fully pill-shaped buttons across the variant × size grid. Excludes `variant=&quot;link&quot;` since the link treatment has no background to round.</div>
+              <pre><code>const Rounded = () =&gt; (
+    &lt;Stack&gt;
+        {NON_LINK_VARIANTS.map(variant =&gt; (
+            &lt;Row key={variant}&gt;
+                {SIZES.map(size =&gt; (
+                    &lt;Button key={size} variant={variant} size={size} rounded&gt;
+                        &lt;IconAdd /&gt;
+                        {TEXT}
+                        &lt;IconAdd /&gt;
+                    &lt;/Button&gt;
+                ))}
+            &lt;/Row&gt;
+        ))}
+    &lt;/Stack&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">As Child</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>`asChild` composes Button&#39;s styles onto any element</div>
+              <div class="hint">`asChild` renders Button&#39;s styles on the nested child element rather than on a `&lt;button&gt;` — the child receives Button&#39;s `className`, `ref`, and merged props via Radix&#39;s `Slot` primitive. Use it to turn any anchor or framework `Link` into a Button without coupling the design system to a router. In app code, swap the plain `&lt;a&gt;` below for your framework&#39;s Link (`next/link`, `react-router`, `@tanstack/react-router`, etc.).</div>
+              <pre><code>const AsChild = () =&gt; (
+    &lt;Row&gt;
+        &lt;Button asChild variant=&quot;primary&quot;&gt;
+            &lt;a href=&quot;/dashboard&quot;&gt;Go to dashboard&lt;/a&gt;
+        &lt;/Button&gt;
+        &lt;Button asChild variant=&quot;secondary&quot;&gt;
+            &lt;a href=&quot;https://agentero.com&quot; target=&quot;_blank&quot; rel=&quot;noreferrer&quot;&gt;
+                Visit Agentero
+            &lt;/a&gt;
+        &lt;/Button&gt;
+    &lt;/Row&gt;
 );</code></pre>
             </div>
         </div>
