@@ -1,13 +1,6 @@
 'use client';
 
-import {
-	ButtonHTMLAttributes,
-	Children,
-	cloneElement,
-	isValidElement,
-	ReactNode,
-	Ref
-} from 'react';
+import { ButtonHTMLAttributes, Children, isValidElement, ReactNode, Ref } from 'react';
 
 import { Slot, Slottable } from '@radix-ui/react-slot';
 import { tv } from 'tailwind-variants';
@@ -34,11 +27,6 @@ export const buttonStyle = tv({
 		'border border-solid border-transparent',
 		'transition-[background-color,border-color,color] duration-200',
 		'[-webkit-tap-highlight-color:transparent]',
-		'[&_[data-slot=button-label]]:overflow-hidden',
-		'[&_[data-slot=button-label]]:text-ellipsis',
-		'[&_[data-slot=button-label]]:whitespace-nowrap',
-		'[&_[data-slot=button-label]]:[flex:0_1_auto]',
-		'[&_[data-slot=button-label]]:min-w-0',
 		'[&_svg]:[flex:0_0_fit-content]',
 		'disabled:cursor-not-allowed disabled:pointer-events-none',
 		'focus-visible:outline-solid focus-visible:outline-2',
@@ -300,10 +288,8 @@ export type ButtonSizeType = 'xs' | 'sm' | 'md' | 'lg';
 type ButtonBaseProps = {
 	/**
 	 * Content rendered inside the Button. Accepts a text label, icon elements,
-	 * or any mix of both. Text runs are wrapped in a truncating
-	 * `<span data-slot="button-label">` so the label ellipsizes without
-	 * shrinking adjacent icons; icon-only children switch the Button to a
-	 * square aspect ratio and trigger the icon-only layout.
+	 * or any mix of both. Icon-only children switch the Button to a square
+	 * aspect ratio and trigger the icon-only layout.
 	 *
 	 * When `asChild` is set, the single child element is merged with Button's
 	 * props and styles; auto-detection of icon-only children is skipped — use
@@ -419,38 +405,6 @@ const ButtonLoading = () => (
 	/>
 );
 
-const processChildrenForTruncation = (children: ReactNode, hasOnlyIcon: boolean): ReactNode => {
-	if (hasOnlyIcon) return children;
-
-	const textNodes: ReactNode[] = [];
-	const result: ReactNode[] = [];
-
-	Children.forEach(children, child => {
-		if (isValidElement(child)) {
-			if (textNodes.length > 0) {
-				result.push(
-					<span key={`text-${result.length}`} data-slot="button-label">
-						{textNodes.splice(0, textNodes.length)}
-					</span>
-				);
-			}
-			result.push(child);
-		} else if (child) {
-			textNodes.push(child);
-		}
-	});
-
-	if (textNodes.length > 0) {
-		result.push(
-			<span key={`text-${result.length}`} data-slot="button-label">
-				{textNodes}
-			</span>
-		);
-	}
-
-	return result;
-};
-
 /**
  * Button is the design system's primary actionable control. Use it for any
  * interaction that triggers behavior, submits a form, or navigates the user.
@@ -561,15 +515,6 @@ export const Button = ({
 			}
 		: { disabled: isDisabled };
 
-	const slotChildren =
-		asChild && isValidElement<{ children?: ReactNode }>(children)
-			? cloneElement(
-					children,
-					undefined,
-					processChildrenForTruncation(children.props.children, hasOnlyIcon)
-				)
-			: children;
-
 	return (
 		<Comp
 			data-slot="button"
@@ -578,11 +523,7 @@ export const Button = ({
 			className={mergedClassName}
 			ref={ref as Ref<HTMLButtonElement>}>
 			{loading && <ButtonLoading />}
-			{asChild ? (
-				<Slottable>{slotChildren}</Slottable>
-			) : (
-				processChildrenForTruncation(children, hasOnlyIcon)
-			)}
+			{asChild ? <Slottable>{children}</Slottable> : children}
 		</Comp>
 	);
 };
