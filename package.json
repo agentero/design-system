@@ -24,6 +24,7 @@
     "./avatar": "./src/avatar/index.ts",
     "./button": "./src/button/index.ts",
     "./lib": "./lib/index.ts",
+    "./loading": "./src/loading/index.ts",
     "./theme": "./themes/base.css"
   },
   "scripts": {
