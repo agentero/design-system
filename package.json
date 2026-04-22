@@ -22,6 +22,7 @@
   ],
   "exports": {
     "./avatar": "./src/avatar/index.ts",
+    "./button": "./src/button/index.ts",
     "./lib": "./lib/index.ts",
     "./theme": "./themes/base.css"
   },
@@ -36,6 +37,7 @@
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.11",
+    "@radix-ui/react-slot": "^1.2.4",
     "clsx": "^2.1.1",
     "tailwind-merge": "^3.5.0",
     "tailwind-variants": "^3.2.2"
