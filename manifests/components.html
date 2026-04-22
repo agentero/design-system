@@ -965,10 +965,8 @@ asChild?: boolean
 
 /**
  * Content rendered inside the Button. Accepts a text label, icon elements,
- * or any mix of both. Text runs are wrapped in a truncating
- * `&lt;span data-slot=&quot;button-label&quot;&gt;` so the label ellipsizes without
- * shrinking adjacent icons; icon-only children switch the Button to a
- * square aspect ratio and trigger the icon-only layout.
+ * or any mix of both. Icon-only children switch the Button to a square
+ * aspect ratio and trigger the icon-only layout.
  * 
  * When `asChild` is set, the single child element is merged with Button&#39;s
  * props and styles; auto-detection of icon-only children is skipped — use
@@ -1127,7 +1125,7 @@ variant?: ButtonVariantType</code></pre>
                 <span class="badge ok">story ok</span>
               </div>
               <div>Variant × size grid with leading + trailing icons</div>
-              <div class="hint">Variant × size grid with leading and trailing icons. Icons stay full-size while text truncates — the Button wraps text runs in a labeled span so overflow ellipsizes the label without shrinking the icons.</div>
+              <div class="hint">Variant × size grid with leading and trailing icons.</div>
               <pre><code>const WithIcons = () =&gt; (
     &lt;Stack&gt;
         {VARIANTS.map(variant =&gt; (
