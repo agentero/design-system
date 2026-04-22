@@ -19,7 +19,7 @@ import { cn } from '../../lib';
  *
  * @summary tailwind-variants recipe backing the Button component styles
  */
-export const buttonStyle = tv({
+export const buttonRecipe = tv({
 	base: [
 		'relative inline-flex items-center',
 		'font-semibold rounded-md cursor-pointer',
@@ -494,7 +494,7 @@ export const Button = ({
 	}
 
 	const mergedClassName = cn(
-		buttonStyle({
+		buttonRecipe({
 			variant,
 			size,
 			hasOnlyIcon,
