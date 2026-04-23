@@ -576,17 +576,576 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">4 components ok</span><span class="filter-pill ok" aria-disabled="true">44 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">5 components ok</span><span class="filter-pill ok" aria-disabled="true">67 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>1.6s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>1.8s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
       
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
+  aria-label="Alert">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Alert</h2>
+      <div class="badges">
+        <label for="c-0-design-system-feedback-alert-props" class="badge ok as-toggle">6 prop types</label>
+        
+        <label for="c-0-design-system-feedback-alert-stories" class="badge ok as-toggle">23 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/alert/alert.stories.tsx">design-system-feedback-alert · ./src/alert/alert.stories.tsx</div>
+    
+    <div class="hint">Alert surfaces feedback about outcomes or state changes — success, danger, warning, or info. Compose it from `Alert.Content`, `Alert.Title`, `Alert.Paragraph`, `Alert.Actions`, and `Alert.Button` to build the layout your flow needs. Eight colors, two sizes, and a ghost mode cover most feedback scenarios.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-0-design-system-feedback-alert-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  <input id="c-0-design-system-feedback-alert-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
+              <span class="badge ok">6 prop types</span>
+            </div>
+            <pre><code>Component: src/alert/alert.tsx::Alert</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>/**
+ * Semantic color. Defaults to `&#39;neutral&#39;`.
+ * - `neutral` — generic info; no strong signal.
+ * - `success` — positive confirmation.
+ * - `danger` — error or destructive outcome.
+ * - `warning` — caution; user attention needed.
+ * - `info` — informational highlight.
+ * - `creative`, `dynamic`, `playful` — brand-aligned accents.
+ */
+color?: &quot;neutral&quot; | &quot;success&quot; | &quot;danger&quot; | &quot;warning&quot; | &quot;info&quot; | &quot;creative&quot; | &quot;dynamic&quot; | &quot;playful&quot; = neutral
+
+/**
+ * When `true`, removes background and padding so the alert blends inline
+ * with surrounding text (e.g., inline form field errors). Colors switch
+ * to the ghost token ramp for lower visual weight.
+ */
+ghost?: boolean = false
+
+/**
+ * When `true` (default), renders the built-in icon for the current `color`. Set to `false` to omit the icon entirely.
+ */
+hasIcon?: boolean = true
+
+/**
+ * Overrides the default icon for the current `color`. Receives the slot-computed className so color tokens still apply.
+ */
+icon?: ComponentType&lt;SVGProps&lt;SVGSVGElement&gt;&gt;
+
+/**
+ * Fires when the dismiss button is clicked. When provided, renders an `iconOnly` close button with `aria-label=&quot;Dismiss&quot;`.
+ */
+onDismiss?: (() =&gt; void)
+
+/**
+ * Size treatment. Defaults to `&#39;sm&#39;`.
+ * - `sm` — compact inline alerts (1rem padding, 14/12px typography).
+ * - `md` — prominent standalone alerts (2rem padding, 18/14px typography).
+ */
+size?: AlertSizeType = sm</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Alert } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Default args playground for Alert</div>
+              <div class="hint">Args-controlled playground. Toggle `color`, `size`, `ghost`, `hasIcon`, and `onDismiss` from the Controls panel to explore every visual combination.</div>
+              <pre><code>const Default = () =&gt; &lt;Alert
+    color=&quot;neutral&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Neutral</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Neutral color (default)</div>
+              <div class="hint">Neutral color is the default and carries no strong semantic signal — use it for generic inline information.</div>
+              <pre><code>const Neutral = () =&gt; &lt;Alert
+    color=&quot;neutral&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Success</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Success color for positive outcomes</div>
+              <div class="hint">Success color confirms a positive outcome — saved record, completed task, healthy state.</div>
+              <pre><code>const Success = () =&gt; &lt;Alert
+    color=&quot;success&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Danger</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Danger color for errors and destructive outcomes</div>
+              <div class="hint">Danger color flags errors and destructive outcomes that require the user&#39;s attention.</div>
+              <pre><code>const Danger = () =&gt; &lt;Alert
+    color=&quot;danger&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Warning</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Warning color for cautionary feedback</div>
+              <div class="hint">Warning color signals caution — the user should review before proceeding.</div>
+              <pre><code>const Warning = () =&gt; &lt;Alert
+    color=&quot;warning&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Info</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Info color for informational highlights</div>
+              <div class="hint">Info color highlights tips, hints, or secondary informational content.</div>
+              <pre><code>const Info = () =&gt; &lt;Alert
+    color=&quot;info&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Creative</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Creative brand accent color</div>
+              <div class="hint">Creative color uses a brand-aligned purple accent for marketing or onboarding moments.</div>
+              <pre><code>const Creative = () =&gt; &lt;Alert
+    color=&quot;creative&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Dynamic</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Dynamic brand accent color</div>
+              <div class="hint">Dynamic color uses a brand-aligned orange accent for activity or momentum-focused content.</div>
+              <pre><code>const Dynamic = () =&gt; &lt;Alert
+    color=&quot;dynamic&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Playful</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Playful brand accent color</div>
+              <div class="hint">Playful color uses a brand-aligned pink accent for lighter or celebratory content.</div>
+              <pre><code>const Playful = () =&gt; &lt;Alert
+    color=&quot;playful&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Ghost</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Ghost mode for inline, low-emphasis alerts</div>
+              <div class="hint">Ghost mode removes the background and padding so the alert blends inline with surrounding text (e.g., form field errors). Colors switch to the ghost token ramp for lower visual weight.</div>
+              <pre><code>const Ghost = () =&gt; &lt;Alert
+    color=&quot;danger&quot;
+    size=&quot;sm&quot;
+    ghost
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Small Size</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Small size (default, compact)</div>
+              <div class="hint">Small size (default) uses compact padding and 14/12px typography — suitable for inline alerts inside forms, tables, or cards.</div>
+              <pre><code>const SmallSize = () =&gt; &lt;Alert
+    color=&quot;neutral&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Medium Size</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Medium size (prominent, standalone)</div>
+              <div class="hint">Medium size uses larger padding and 18/14px typography — suitable for standalone alerts in empty states, modals, or dedicated feedback regions.</div>
+              <pre><code>const MediumSize = () =&gt; &lt;Alert
+    color=&quot;neutral&quot;
+    size=&quot;md&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Dismiss</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Alert with a dismiss button</div>
+              <div class="hint">Dismissible alert. Providing `onDismiss` shows an icon-only close button with `aria-label=&quot;Dismiss&quot;` that inherits the alert&#39;s color.</div>
+              <pre><code>const WithDismiss = () =&gt; &lt;Alert
+    color=&quot;warning&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Actions</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Alert with a trailing action button</div>
+              <div class="hint">Alert with a trailing action pinned to the right edge. Use `Alert.Actions` + `Alert.Button` for the common &quot;message + action&quot; pattern.</div>
+              <pre><code>const WithActions = () =&gt; &lt;Alert
+    color=&quot;info&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Update available&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Reload to apply the latest version.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+    &lt;Alert.Actions&gt;
+        &lt;Alert.Button onClick={() =&gt; {}}&gt;Reload&lt;/Alert.Button&gt;
+    &lt;/Alert.Actions&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Dismiss And Action</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Alert with both dismiss and action</div>
+              <div class="hint">Alert combining a dismiss button with a trailing action. Dismiss is pinned to the right edge after the actions.</div>
+              <pre><code>const WithDismissAndAction = () =&gt; &lt;Alert
+    color=&quot;warning&quot;
+    size=&quot;md&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Session expiring&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Renew to continue editing.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+    &lt;Alert.Actions&gt;
+        &lt;Alert.Button onClick={() =&gt; {}}&gt;Renew session&lt;/Alert.Button&gt;
+    &lt;/Alert.Actions&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Without Icon</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Alert without the default icon</div>
+              <div class="hint">Alert rendered without the built-in color icon. Use `hasIcon={false}` when the surrounding context already conveys the semantic intent.</div>
+              <pre><code>const WithoutIcon = () =&gt; &lt;Alert
+    color=&quot;info&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon={false}
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Custom Icon</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Alert with a custom icon override</div>
+              <div class="hint">Alert with a caller-supplied icon that replaces the default color icon. The custom icon receives the slot-computed className so color tokens still apply.</div>
+              <pre><code>const WithCustomIcon = () =&gt; &lt;Alert
+    color=&quot;creative&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon
+    icon={IconLightbulb}
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Paragraph Html</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Alert paragraph rendered from HTML</div>
+              <div class="hint">Alert rendering a paragraph from pre-sanitized HTML via `Alert.ParagraphHtml`. The caller is responsible for sanitizing the HTML string before passing it in.</div>
+              <pre><code>const WithParagraphHtml = () =&gt; &lt;Alert
+    color=&quot;success&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Formatted content&lt;/Alert.Title&gt;
+        &lt;Alert.ParagraphHtml
+            html=&quot;Review the &lt;strong&gt;terms&lt;/strong&gt; or &lt;a href=&#39;https://example.com&#39;&gt;read the docs&lt;/a&gt;.&quot; /&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Pictograms</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Alert with a pictogram illustration</div>
+              <div class="hint">Alert with a 64×64 pictogram in place of the inline icon. Use `Alert.Pictograms` when the message benefits from a richer illustration.</div>
+              <pre><code>const WithPictograms = () =&gt; &lt;Alert
+    color=&quot;info&quot;
+    size=&quot;md&quot;
+    ghost={false}
+    hasIcon={false}
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Pictograms&gt;
+        &lt;svg viewBox=&quot;0 0 64 64&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot; aria-hidden&gt;
+            &lt;circle cx=&quot;32&quot; cy=&quot;32&quot; r=&quot;28&quot; fill=&quot;currentColor&quot; opacity=&quot;0.15&quot; /&gt;
+            &lt;circle cx=&quot;32&quot; cy=&quot;32&quot; r=&quot;14&quot; fill=&quot;currentColor&quot; /&gt;
+        &lt;/svg&gt;
+    &lt;/Alert.Pictograms&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Pictogram example&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Pictograms scale to 64×64px regardless of the configured size.
+                            &lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Only Paragraph</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Alert with only a paragraph body</div>
+              <div class="hint">Alert rendered with only a paragraph — no title. The root omits `aria-labelledby` since there is no title to reference.</div>
+              <pre><code>const OnlyParagraph = () =&gt; &lt;Alert
+    color=&quot;neutral&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Paragraph&gt;This field is required.&lt;/Alert.Paragraph&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Actions Below</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Alert with actions placed below the content</div>
+              <div class="hint">Action button rendered inline below the paragraphs, inside `Alert.Content`, rather than pinned to the right via `Alert.Actions`.</div>
+              <pre><code>const WithActionsBelow = () =&gt; &lt;Alert
+    color=&quot;success&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Upload complete&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;12 documents were added to the policy.&lt;/Alert.Paragraph&gt;
+        &lt;div&gt;
+            &lt;Alert.Button onClick={() =&gt; {}}&gt;View documents&lt;/Alert.Button&gt;
+        &lt;/div&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">All Colors</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Visual comparison of all Alert colors</div>
+              <div class="hint">All eight colors in their primary (non-ghost) treatment, stacked for comparison. Each alert uses the built-in icon mapping for its color.</div>
+              <pre><code>const AllColors = () =&gt; (
+    &lt;Stack&gt;
+        {COLORS.map(color =&gt; (
+            &lt;Alert key={color} color={color}&gt;
+                &lt;Alert.Content&gt;
+                    &lt;Alert.Title&gt;{color}&lt;/Alert.Title&gt;
+                    &lt;Alert.Paragraph&gt;
+                        This is a {color} alert variant with the default icon.
+                    &lt;/Alert.Paragraph&gt;
+                &lt;/Alert.Content&gt;
+            &lt;/Alert&gt;
+        ))}
+    &lt;/Stack&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">All Ghost Colors</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Visual comparison of all Alert colors in ghost mode</div>
+              <div class="hint">All eight colors in ghost mode, stacked for comparison. Ghost alerts use a lower-weight token ramp and omit background + padding.</div>
+              <pre><code>const AllGhostColors = () =&gt; (
+    &lt;Stack&gt;
+        {COLORS.map(color =&gt; (
+            &lt;Alert key={color} color={color} ghost&gt;
+                &lt;Alert.Content&gt;
+                    &lt;Alert.Title&gt;{color} (ghost)&lt;/Alert.Title&gt;
+                    &lt;Alert.Paragraph&gt;
+                        This is a {color} ghost alert variant with the ghost icon color.
+                    &lt;/Alert.Paragraph&gt;
+                &lt;/Alert.Content&gt;
+            &lt;/Alert&gt;
+        ))}
+    &lt;/Stack&gt;
+);</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
 <article
   class="card 
   no-error 
@@ -599,9 +1158,9 @@
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Avatar</h2>
       <div class="badges">
-        <label for="c-0-components-avatar-props" class="badge ok as-toggle">7 prop types</label>
+        <label for="c-1-components-avatar-props" class="badge ok as-toggle">7 prop types</label>
         
-        <label for="c-0-components-avatar-stories" class="badge ok as-toggle">17 stories</label>
+        <label for="c-1-components-avatar-stories" class="badge ok as-toggle">17 stories</label>
         
       </div>
     </div>
@@ -614,9 +1173,9 @@
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-0-components-avatar-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-1-components-avatar-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-0-components-avatar-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-1-components-avatar-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -658,7 +1217,7 @@ fallback?: ReactNode
  * - `xl` (64px) — hero sections, prominent display
  * - `2xl` (80px), `3xl` (96px), `4xl` (128px) — large feature areas, profile pages
  */
-size?: &quot;md&quot; | &quot;xs&quot; | &quot;sm&quot; | &quot;lg&quot; | &quot;xl&quot; | &quot;2xl&quot; | &quot;3xl&quot; | &quot;4xl&quot;
+size?: &quot;sm&quot; | &quot;md&quot; | &quot;xs&quot; | &quot;lg&quot; | &quot;xl&quot; | &quot;2xl&quot; | &quot;3xl&quot; | &quot;4xl&quot;
 
 /**
  * Image URL to display. When unavailable or loading fails, `fallback` content is shown instead.
@@ -914,9 +1473,9 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Button</h2>
       <div class="badges">
-        <label for="c-1-components-button-props" class="badge ok as-toggle">12 prop types</label>
+        <label for="c-2-components-button-props" class="badge ok as-toggle">12 prop types</label>
         
-        <label for="c-1-components-button-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-2-components-button-stories" class="badge ok as-toggle">10 stories</label>
         
       </div>
     </div>
@@ -929,9 +1488,9 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-1-components-button-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-2-components-button-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-1-components-button-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-2-components-button-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -1280,9 +1839,9 @@ variant?: ButtonVariantType</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Divider</h2>
       <div class="badges">
-        <label for="c-2-components-divider-props" class="badge ok as-toggle">2 prop types</label>
+        <label for="c-3-components-divider-props" class="badge ok as-toggle">2 prop types</label>
         
-        <label for="c-2-components-divider-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-3-components-divider-stories" class="badge ok as-toggle">10 stories</label>
         
       </div>
     </div>
@@ -1295,9 +1854,9 @@ variant?: ButtonVariantType</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-2-components-divider-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-3-components-divider-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-2-components-divider-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-3-components-divider-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -1575,9 +2134,9 @@ label?: ReactNode</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Loading</h2>
       <div class="badges">
-        <label for="c-3-components-loading-props" class="badge ok as-toggle">1 prop type</label>
+        <label for="c-4-components-loading-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-3-components-loading-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-4-components-loading-stories" class="badge ok as-toggle">7 stories</label>
         
       </div>
     </div>
@@ -1590,9 +2149,9 @@ label?: ReactNode</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-3-components-loading-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-4-components-loading-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-3-components-loading-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-4-components-loading-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -1613,7 +2172,7 @@ label?: ReactNode</code></pre>
  * - `md` (1.5em) — cards, panels, and standalone loading states
  * - `lg` (2em) — page-level or section-level loading
  */
-size?: &quot;md&quot; | &quot;sm&quot; | &quot;lg&quot;</code></pre>
+size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
           </div>
         </div>
     
