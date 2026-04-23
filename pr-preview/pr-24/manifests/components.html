@@ -1342,16 +1342,19 @@ label?: ReactNode</code></pre>
               <div>Default horizontal decorative divider</div>
               <div class="hint">The default horizontal, decorative divider — a 1px line that spans the parent width. Use this form between stacked content blocks.</div>
               <pre><code>const Default = () =&gt; &lt;div
-    className=&quot;flex w-80 flex-col gap-4 rounded-lg border border-border-default-base-primary bg-bg-default-base-primary p-6&quot;&gt;
-    &lt;div className=&quot;flex flex-col gap-1&quot;&gt;
+    className={cn(
+        &#39;flex gap-4 rounded-lg border border-border-default-base-primary bg-bg-default-base-primary p-6&#39;,
+        args.orientation === &#39;vertical&#39; ? &#39;h-40 w-lg items-stretch&#39; : &#39;w-80 flex-col&#39;
+    )}&gt;
+    &lt;div className=&quot;flex flex-1 flex-col justify-center gap-1&quot;&gt;
         &lt;h3 className=&quot;text-base font-semibold text-text-default-base-primary&quot;&gt;First section&lt;/h3&gt;
-        &lt;p className=&quot;text-sm text-text-default-base-secondary&quot;&gt;Content above the divider. The divider visually breaks this from the next section.
+        &lt;p className=&quot;text-sm text-text-default-base-secondary&quot;&gt;Content on one side of the divider, visually separated from the other.
                             &lt;/p&gt;
     &lt;/div&gt;
     &lt;Divider orientation=&quot;horizontal&quot; decorative /&gt;
-    &lt;div className=&quot;flex flex-col gap-1&quot;&gt;
+    &lt;div className=&quot;flex flex-1 flex-col justify-center gap-1&quot;&gt;
         &lt;h3 className=&quot;text-base font-semibold text-text-default-base-primary&quot;&gt;Second section&lt;/h3&gt;
-        &lt;p className=&quot;text-sm text-text-default-base-secondary&quot;&gt;Content below the divider, clearly separated from the first.
+        &lt;p className=&quot;text-sm text-text-default-base-secondary&quot;&gt;Content on the other side of the divider, clearly separated from the first.
                             &lt;/p&gt;
     &lt;/div&gt;
 &lt;/div&gt;;</code></pre>
@@ -1447,21 +1450,21 @@ label?: ReactNode</code></pre>
               <pre><code>const InList = () =&gt; (
     &lt;div className=&quot;w-80 rounded-lg border border-border-default-base-primary bg-bg-default-base-primary&quot;&gt;
         &lt;div className=&quot;flex flex-col gap-1 px-4 py-3&quot;&gt;
-            &lt;h4 className=&quot;text-sm font-semibold text-text-default-base-primary&quot;&gt;Notification 1&lt;/h4&gt;
+            &lt;h4 className=&quot;text-sm text-text-default-base-primary&quot;&gt;Notification 1&lt;/h4&gt;
             &lt;p className=&quot;text-xs text-text-default-base-secondary&quot;&gt;
                 You have a new message from Jane.
             &lt;/p&gt;
         &lt;/div&gt;
         &lt;Divider /&gt;
         &lt;div className=&quot;flex flex-col gap-1 px-4 py-3&quot;&gt;
-            &lt;h4 className=&quot;text-sm font-semibold text-text-default-base-primary&quot;&gt;Notification 2&lt;/h4&gt;
+            &lt;h4 className=&quot;text-sm text-text-default-base-primary&quot;&gt;Notification 2&lt;/h4&gt;
             &lt;p className=&quot;text-xs text-text-default-base-secondary&quot;&gt;
                 Your report is ready to download.
             &lt;/p&gt;
         &lt;/div&gt;
         &lt;Divider /&gt;
         &lt;div className=&quot;flex flex-col gap-1 px-4 py-3&quot;&gt;
-            &lt;h4 className=&quot;text-sm font-semibold text-text-default-base-primary&quot;&gt;Notification 3&lt;/h4&gt;
+            &lt;h4 className=&quot;text-sm text-text-default-base-primary&quot;&gt;Notification 3&lt;/h4&gt;
             &lt;p className=&quot;text-xs text-text-default-base-secondary&quot;&gt;
                 System maintenance is scheduled for tonight.
             &lt;/p&gt;
@@ -1541,7 +1544,7 @@ label?: ReactNode</code></pre>
               <div>Vertical dividers separating inline elements</div>
               <div class="hint">Vertical dividers between inline elements. Common for separating a row of related controls or inline links without visual weight.</div>
               <pre><code>const VerticalBetweenElements = () =&gt; (
-    &lt;div className=&quot;flex h-10 items-center gap-3&quot;&gt;
+    &lt;div className=&quot;flex items-stretch gap-3&quot;&gt;
         &lt;Button variant=&quot;primary&quot; size=&quot;sm&quot;&gt;
             Button 1
         &lt;/Button&gt;
