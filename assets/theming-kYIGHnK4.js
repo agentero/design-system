@@ -1,1 +1,0 @@
-import{c as e,g as t}from"./theming-Chp_fIDx.js";e();export{t as color};
