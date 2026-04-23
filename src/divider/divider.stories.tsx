@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+import { cn } from '../../lib';
 import { Button } from '../button';
 import { Divider } from './divider';
 
@@ -43,18 +44,22 @@ type Story = StoryObj<typeof meta>;
  */
 export const Default: Story = {
 	render: args => (
-		<div className="flex w-80 flex-col gap-4 rounded-lg border border-border-default-base-primary bg-bg-default-base-primary p-6">
-			<div className="flex flex-col gap-1">
+		<div
+			className={cn(
+				'flex gap-4 rounded-lg border border-border-default-base-primary bg-bg-default-base-primary p-6',
+				args.orientation === 'vertical' ? 'h-40 w-lg items-stretch' : 'w-80 flex-col'
+			)}>
+			<div className="flex flex-1 flex-col justify-center gap-1">
 				<h3 className="text-base font-semibold text-text-default-base-primary">First section</h3>
 				<p className="text-sm text-text-default-base-secondary">
-					Content above the divider. The divider visually breaks this from the next section.
+					Content on one side of the divider, visually separated from the other.
 				</p>
 			</div>
 			<Divider {...args} />
-			<div className="flex flex-col gap-1">
+			<div className="flex flex-1 flex-col justify-center gap-1">
 				<h3 className="text-base font-semibold text-text-default-base-primary">Second section</h3>
 				<p className="text-sm text-text-default-base-secondary">
-					Content below the divider, clearly separated from the first.
+					Content on the other side of the divider, clearly separated from the first.
 				</p>
 			</div>
 		</div>
@@ -176,21 +181,21 @@ export const InList: Story = {
 	render: () => (
 		<div className="w-80 rounded-lg border border-border-default-base-primary bg-bg-default-base-primary">
 			<div className="flex flex-col gap-1 px-4 py-3">
-				<h4 className="text-sm font-semibold text-text-default-base-primary">Notification 1</h4>
+				<h4 className="text-sm text-text-default-base-primary">Notification 1</h4>
 				<p className="text-xs text-text-default-base-secondary">
 					You have a new message from Jane.
 				</p>
 			</div>
 			<Divider />
 			<div className="flex flex-col gap-1 px-4 py-3">
-				<h4 className="text-sm font-semibold text-text-default-base-primary">Notification 2</h4>
+				<h4 className="text-sm text-text-default-base-primary">Notification 2</h4>
 				<p className="text-xs text-text-default-base-secondary">
 					Your report is ready to download.
 				</p>
 			</div>
 			<Divider />
 			<div className="flex flex-col gap-1 px-4 py-3">
-				<h4 className="text-sm font-semibold text-text-default-base-primary">Notification 3</h4>
+				<h4 className="text-sm text-text-default-base-primary">Notification 3</h4>
 				<p className="text-xs text-text-default-base-secondary">
 					System maintenance is scheduled for tonight.
 				</p>
@@ -274,7 +279,7 @@ export const HorizontalInContent: Story = {
  */
 export const VerticalBetweenElements: Story = {
 	render: () => (
-		<div className="flex h-10 items-center gap-3">
+		<div className="flex items-stretch gap-3">
 			<Button variant="primary" size="sm">
 				Button 1
 			</Button>
