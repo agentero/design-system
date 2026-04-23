@@ -576,13 +576,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">3 components ok</span><span class="filter-pill ok" aria-disabled="true">34 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">4 components ok</span><span class="filter-pill ok" aria-disabled="true">44 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>1.7s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>1.8s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -1275,14 +1275,309 @@ variant?: ButtonVariantType</code></pre>
   no-story-error
   no-doc-error"
   role="listitem"
+  aria-label="Divider">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Divider</h2>
+      <div class="badges">
+        <label for="c-2-components-divider-props" class="badge ok as-toggle">2 prop types</label>
+        
+        <label for="c-2-components-divider-stories" class="badge ok as-toggle">10 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/divider/divider.stories.tsx">components-divider · ./src/divider/divider.stories.tsx</div>
+    
+    <div class="hint">Divider separates content visually along either a horizontal or vertical axis. Use between page or card sections, between inline items in a toolbar or list, or — with the `label` prop — to render an &quot;or&quot;-style break between options. Set `decorative={false}` when the separator carries semantic meaning so it&#39;s announced to assistive technologies.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-2-components-divider-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  <input id="c-2-components-divider-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
+              <span class="badge ok">2 prop types</span>
+            </div>
+            <pre><code>Component: src/divider/divider.tsx::Divider</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>asChild?: boolean
+
+/**
+ * Optional label rendered inline between two flanking 1px lines. When set,
+ * Divider renders a styled `&lt;div&gt;` (rather than the underlying separator
+ * primitive) so the label can sit centered between the two line segments.
+ */
+label?: ReactNode</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Button, Divider } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Default horizontal decorative divider</div>
+              <div class="hint">The default horizontal, decorative divider — a 1px line that spans the parent width. Use this form between stacked content blocks.</div>
+              <pre><code>const Default = () =&gt; &lt;div
+    className={cn(
+        &#39;flex gap-4 rounded-lg border border-border-default-base-primary bg-bg-default-base-primary p-6&#39;,
+        args.orientation === &#39;vertical&#39; ? &#39;h-40 w-lg items-stretch&#39; : &#39;w-80 flex-col&#39;
+    )}&gt;
+    &lt;div className=&quot;flex flex-1 flex-col justify-center gap-1&quot;&gt;
+        &lt;h3 className=&quot;text-base font-semibold text-text-default-base-primary&quot;&gt;First section&lt;/h3&gt;
+        &lt;p className=&quot;text-sm text-text-default-base-secondary&quot;&gt;Content on one side of the divider, visually separated from the other.
+                            &lt;/p&gt;
+    &lt;/div&gt;
+    &lt;Divider orientation=&quot;horizontal&quot; decorative /&gt;
+    &lt;div className=&quot;flex flex-1 flex-col justify-center gap-1&quot;&gt;
+        &lt;h3 className=&quot;text-base font-semibold text-text-default-base-primary&quot;&gt;Second section&lt;/h3&gt;
+        &lt;p className=&quot;text-sm text-text-default-base-secondary&quot;&gt;Content on the other side of the divider, clearly separated from the first.
+                            &lt;/p&gt;
+    &lt;/div&gt;
+&lt;/div&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Horizontal</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Horizontal 1px line spanning the parent width</div>
+              <div class="hint">Horizontal divider — a 1px line spanning the parent&#39;s full width. The default orientation; use to separate stacked content.</div>
+              <pre><code>const Horizontal = () =&gt; (
+    &lt;div className=&quot;w-80&quot;&gt;
+        &lt;Divider /&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Vertical</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Vertical 1px line spanning the parent height</div>
+              <div class="hint">Vertical divider — a 1px line spanning the parent&#39;s full height. Parent must establish a height (via `h-*` or an intrinsic flex item height) for the line to be visible.</div>
+              <pre><code>const Vertical = () =&gt; (
+    &lt;div className=&quot;flex h-24 items-stretch&quot;&gt;
+        &lt;Divider orientation=&quot;vertical&quot; /&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Label</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Horizontal divider with a centered &quot;or&quot; label</div>
+              <div class="hint">Labelled divider. The label sits centered between two flanking 1px lines — a common pattern for &quot;or&quot; breaks between authentication options.</div>
+              <pre><code>const WithLabel = () =&gt; &lt;div className=&quot;flex w-80 flex-col gap-2&quot;&gt;
+    &lt;Button variant=&quot;primary&quot;&gt;Continue with email&lt;/Button&gt;
+    &lt;Divider orientation=&quot;horizontal&quot; decorative label=&quot;or&quot; /&gt;
+    &lt;Button variant=&quot;secondary&quot;&gt;Continue with SSO&lt;/Button&gt;
+&lt;/div&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Vertical With Label</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Vertical divider with a centered label</div>
+              <div class="hint">Vertical divider with a label. The label sits between two stacked 1px line segments; use sparingly — horizontal labelled dividers are more common.</div>
+              <pre><code>const VerticalWithLabel = () =&gt; &lt;div
+    className=&quot;flex h-40 items-stretch gap-4 rounded-lg border border-border-default-base-primary bg-bg-default-base-primary p-6&quot;&gt;
+    &lt;div className=&quot;flex flex-col justify-center gap-1&quot;&gt;
+        &lt;h3 className=&quot;text-sm font-semibold text-text-default-base-primary&quot;&gt;Left panel&lt;/h3&gt;
+        &lt;p className=&quot;text-xs text-text-default-base-secondary&quot;&gt;Content on the left side&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;Divider orientation=&quot;vertical&quot; decorative label=&quot;OR&quot; /&gt;
+    &lt;div className=&quot;flex flex-col justify-center gap-1&quot;&gt;
+        &lt;h3 className=&quot;text-sm font-semibold text-text-default-base-primary&quot;&gt;Right panel&lt;/h3&gt;
+        &lt;p className=&quot;text-xs text-text-default-base-secondary&quot;&gt;Content on the right side&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/div&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Semantic</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Semantic separator announced to assistive technologies</div>
+              <div class="hint">Semantic divider (`decorative={false}`). Exposes `role=&quot;separator&quot;` and `aria-orientation` to assistive technologies, marking a meaningful section break rather than a purely visual one.</div>
+              <pre><code>const Semantic = () =&gt; &lt;div
+    className=&quot;flex w-80 flex-col gap-4 rounded-lg border border-border-default-base-primary bg-bg-default-base-primary p-6&quot;&gt;
+    &lt;section className=&quot;flex flex-col gap-1&quot;&gt;
+        &lt;h3 className=&quot;text-base font-semibold text-text-default-base-primary&quot;&gt;Section one&lt;/h3&gt;
+        &lt;p className=&quot;text-sm text-text-default-base-secondary&quot;&gt;Semantically separated from the next section for screen readers.
+                            &lt;/p&gt;
+    &lt;/section&gt;
+    &lt;Divider orientation=&quot;horizontal&quot; decorative={false} /&gt;
+    &lt;section className=&quot;flex flex-col gap-1&quot;&gt;
+        &lt;h3 className=&quot;text-base font-semibold text-text-default-base-primary&quot;&gt;Section two&lt;/h3&gt;
+        &lt;p className=&quot;text-sm text-text-default-base-secondary&quot;&gt;Screen readers will announce this as a separate section.
+                            &lt;/p&gt;
+    &lt;/section&gt;
+&lt;/div&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">In List</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Horizontal dividers between stacked list rows</div>
+              <div class="hint">Divider between list rows. Dividers delineate each item without the visual weight of a full border on every row.</div>
+              <pre><code>const InList = () =&gt; (
+    &lt;div className=&quot;w-80 rounded-lg border border-border-default-base-primary bg-bg-default-base-primary&quot;&gt;
+        &lt;div className=&quot;flex flex-col gap-1 px-4 py-3&quot;&gt;
+            &lt;h4 className=&quot;text-sm text-text-default-base-primary&quot;&gt;Notification 1&lt;/h4&gt;
+            &lt;p className=&quot;text-xs text-text-default-base-secondary&quot;&gt;
+                You have a new message from Jane.
+            &lt;/p&gt;
+        &lt;/div&gt;
+        &lt;Divider /&gt;
+        &lt;div className=&quot;flex flex-col gap-1 px-4 py-3&quot;&gt;
+            &lt;h4 className=&quot;text-sm text-text-default-base-primary&quot;&gt;Notification 2&lt;/h4&gt;
+            &lt;p className=&quot;text-xs text-text-default-base-secondary&quot;&gt;
+                Your report is ready to download.
+            &lt;/p&gt;
+        &lt;/div&gt;
+        &lt;Divider /&gt;
+        &lt;div className=&quot;flex flex-col gap-1 px-4 py-3&quot;&gt;
+            &lt;h4 className=&quot;text-sm text-text-default-base-primary&quot;&gt;Notification 3&lt;/h4&gt;
+            &lt;p className=&quot;text-xs text-text-default-base-secondary&quot;&gt;
+                System maintenance is scheduled for tonight.
+            &lt;/p&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">In Toolbar</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Vertical dividers grouping toolbar actions</div>
+              <div class="hint">Vertical dividers grouping related toolbar actions. Use to separate logical clusters of buttons (editing vs. history vs. settings) without visual weight.</div>
+              <pre><code>const InToolbar = () =&gt; (
+    &lt;div className=&quot;inline-flex h-10 items-center gap-1 rounded-lg border border-border-default-base-primary bg-bg-default-base-primary px-2 shadow-1&quot;&gt;
+        &lt;Button variant=&quot;ghost&quot; size=&quot;xs&quot;&gt;
+            Cut
+        &lt;/Button&gt;
+        &lt;Button variant=&quot;ghost&quot; size=&quot;xs&quot;&gt;
+            Copy
+        &lt;/Button&gt;
+        &lt;Button variant=&quot;ghost&quot; size=&quot;xs&quot;&gt;
+            Paste
+        &lt;/Button&gt;
+        &lt;Divider orientation=&quot;vertical&quot; className=&quot;mx-1 h-6&quot; /&gt;
+        &lt;Button variant=&quot;ghost&quot; size=&quot;xs&quot;&gt;
+            Undo
+        &lt;/Button&gt;
+        &lt;Button variant=&quot;ghost&quot; size=&quot;xs&quot;&gt;
+            Redo
+        &lt;/Button&gt;
+        &lt;Divider orientation=&quot;vertical&quot; className=&quot;mx-1 h-6&quot; /&gt;
+        &lt;Button variant=&quot;ghost&quot; size=&quot;xs&quot;&gt;
+            Settings
+        &lt;/Button&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Horizontal In Content</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Horizontal dividers between content sections</div>
+              <div class="hint">Horizontal dividers between content sections in a long-form layout. Helps create visual hierarchy in content-heavy pages.</div>
+              <pre><code>const HorizontalInContent = () =&gt; (
+    &lt;div className=&quot;flex w-96 flex-col gap-4 p-6&quot;&gt;
+        &lt;div className=&quot;flex flex-col gap-1&quot;&gt;
+            &lt;h3 className=&quot;text-base font-semibold text-text-default-base-primary&quot;&gt;Section title&lt;/h3&gt;
+            &lt;p className=&quot;text-sm text-text-default-base-secondary&quot;&gt;
+                Descriptive content for the first section. The divider below separates it from the next.
+            &lt;/p&gt;
+        &lt;/div&gt;
+        &lt;Divider /&gt;
+        &lt;div className=&quot;flex flex-col gap-1&quot;&gt;
+            &lt;h3 className=&quot;text-base font-semibold text-text-default-base-primary&quot;&gt;Another section&lt;/h3&gt;
+            &lt;p className=&quot;text-sm text-text-default-base-secondary&quot;&gt;
+                The second section is clearly separated from the previous one.
+            &lt;/p&gt;
+        &lt;/div&gt;
+        &lt;Divider /&gt;
+        &lt;div className=&quot;flex flex-col gap-1&quot;&gt;
+            &lt;h3 className=&quot;text-base font-semibold text-text-default-base-primary&quot;&gt;Final section&lt;/h3&gt;
+            &lt;p className=&quot;text-sm text-text-default-base-secondary&quot;&gt;
+                Dividers help establish visual hierarchy in content-heavy layouts.
+            &lt;/p&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Vertical Between Elements</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Vertical dividers separating inline elements</div>
+              <div class="hint">Vertical dividers between inline elements. Common for separating a row of related controls or inline links without visual weight.</div>
+              <pre><code>const VerticalBetweenElements = () =&gt; (
+    &lt;div className=&quot;flex items-stretch gap-3&quot;&gt;
+        &lt;Button variant=&quot;primary&quot; size=&quot;sm&quot;&gt;
+            Button 1
+        &lt;/Button&gt;
+        &lt;Divider orientation=&quot;vertical&quot; /&gt;
+        &lt;Button variant=&quot;primary&quot; size=&quot;sm&quot;&gt;
+            Button 2
+        &lt;/Button&gt;
+        &lt;Divider orientation=&quot;vertical&quot; /&gt;
+        &lt;Button variant=&quot;primary&quot; size=&quot;sm&quot;&gt;
+            Button 3
+        &lt;/Button&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
   aria-label="Loading">
   <div class="head">
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Loading</h2>
       <div class="badges">
-        <label for="c-2-components-loading-props" class="badge ok as-toggle">1 prop type</label>
+        <label for="c-3-components-loading-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-2-components-loading-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-3-components-loading-stories" class="badge ok as-toggle">7 stories</label>
         
       </div>
     </div>
@@ -1295,9 +1590,9 @@ variant?: ButtonVariantType</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-2-components-loading-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-3-components-loading-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-2-components-loading-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-3-components-loading-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
