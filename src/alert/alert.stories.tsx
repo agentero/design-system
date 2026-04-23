@@ -1,7 +1,21 @@
+import type { SVGProps } from 'react';
+
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Alert } from './alert';
-import { IconStar } from './icons';
+import { IconCheckCircle, IconErrorOutline, IconInfoOutline, IconStar, IconWarning } from './icons';
+
+const IconLightbulb = (props: SVGProps<SVGSVGElement>) => (
+	<svg
+		width="24"
+		height="24"
+		viewBox="0 0 24 24"
+		fill="none"
+		xmlns="http://www.w3.org/2000/svg"
+		{...props}>
+		<path d="M12 2a7 7 0 0 0-4 12.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26A7 7 0 0 0 12 2zm-2 18a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-1h-4v1z" />
+	</svg>
+);
 
 const COLORS = [
 	'neutral',
@@ -36,7 +50,19 @@ const meta = {
 		size: { control: 'radio', options: SIZES },
 		ghost: { control: 'boolean' },
 		hasIcon: { control: 'boolean' },
-		onDismiss: { control: 'boolean' }
+		onDismiss: { control: 'boolean' },
+		icon: {
+			control: 'select',
+			options: ['default', 'star', 'check', 'error', 'info', 'warning'],
+			mapping: {
+				default: undefined,
+				star: IconStar,
+				check: IconCheckCircle,
+				error: IconErrorOutline,
+				info: IconInfoOutline,
+				warning: IconWarning
+			}
+		}
 	},
 	args: {
 		color: 'neutral',
@@ -230,7 +256,7 @@ export const WithoutIcon: Story = {
  * @summary Alert with a custom icon override
  */
 export const WithCustomIcon: Story = {
-	args: { color: 'creative', icon: IconStar }
+	args: { color: 'creative', icon: IconLightbulb }
 };
 
 /**

@@ -413,7 +413,7 @@ const AlertActions = ({ className, children, ...props }: ComponentProps<'div'>) 
  * <Alert.Pictograms><MyIllustration /></Alert.Pictograms>
  */
 const AlertPictograms = ({ className, children, ...props }: ComponentProps<'div'>) => (
-	<div {...props} className={cn('[&_svg]:!h-16 [&_svg]:!w-16', className)}>
+	<div {...props} className={cn('[&_svg]:h-16! [&_svg]:w-16!', className)}>
 		{children}
 	</div>
 );
