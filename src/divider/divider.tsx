@@ -1,6 +1,6 @@
 'use client';
 
-import { ComponentPropsWithRef, ReactNode, Ref } from 'react';
+import { ComponentPropsWithRef, ReactNode } from 'react';
 
 import * as SeparatorPrimitive from '@radix-ui/react-separator';
 import { tv, VariantProps } from 'tailwind-variants';
@@ -138,21 +138,6 @@ export const Divider = ({
 	const hasLabel = label !== undefined && label !== null;
 	const styles = dividerRecipe({ orientation, hasLabel });
 
-	if (hasLabel) {
-		return (
-			<div
-				ref={ref as Ref<HTMLDivElement>}
-				data-slot="separator"
-				role={decorative ? undefined : 'separator'}
-				aria-orientation={decorative ? undefined : orientation}
-				data-orientation={orientation}
-				className={cn(styles.root(), className)}
-				{...props}>
-				<div className={styles.label()}>{label}</div>
-			</div>
-		);
-	}
-
 	return (
 		<SeparatorPrimitive.Root
 			ref={ref}
@@ -160,7 +145,8 @@ export const Divider = ({
 			decorative={decorative}
 			orientation={orientation}
 			className={cn(styles.root(), className)}
-			{...props}
-		/>
+			{...props}>
+			{hasLabel && <div className={styles.label()}>{label}</div>}
+		</SeparatorPrimitive.Root>
 	);
 };
