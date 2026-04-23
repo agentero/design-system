@@ -3,6 +3,14 @@ name: Publish
 on:
   push:
     branches: [master]
+    paths:
+      - 'src/**'
+      - '!src/**/*.stories.tsx'
+      - '!src/**/*.stories.ts'
+      - 'lib/**'
+      - 'themes/**'
+      - 'package.json'
+      - 'yarn.lock'
 
 permissions:
   contents: write
