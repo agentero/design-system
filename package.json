@@ -21,6 +21,7 @@
     "radix-ui"
   ],
   "exports": {
+    "./alert": "./src/alert/index.ts",
     "./avatar": "./src/avatar/index.ts",
     "./button": "./src/button/index.ts",
     "./divider": "./src/divider/index.ts",
