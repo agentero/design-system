@@ -6,10 +6,10 @@ import { cn } from '../../lib';
 
 /**
  * Style recipe for StatusBall using tailwind-variants. Defines a single `base`
- * (a 8px circle via `size-2 rounded-full`) and a `color` variant that swaps the
- * background token across the 8 legacy palette entries. Consumers typically
- * render `StatusBall` directly; import the recipe only when styling a custom
- * element to match a StatusBall.
+ * (a 8px circle via `size-2 rounded-full`) and a `color` variant that swaps
+ * the background across 8 semantic-intent tokens (`--color-bg-status-ball-*`).
+ * Consumers typically render `StatusBall` directly; import the recipe only
+ * when styling a custom element to match a StatusBall.
  *
  * @summary Tailwind-variants recipe for the StatusBall component
  */
@@ -17,18 +17,18 @@ export const statusBallRecipe = tv({
 	base: 'size-2 rounded-full',
 	variants: {
 		color: {
-			green: 'bg-positive-700',
-			blue: 'bg-blue-600',
-			yellow: 'bg-warning-700',
-			red: 'bg-danger-500',
-			purple: 'bg-purple-500',
-			pink: 'bg-pink-500',
-			orange: 'bg-orange-500',
-			gray: 'bg-slate-300'
+			success: 'bg-bg-status-ball-success',
+			info: 'bg-bg-status-ball-info',
+			warning: 'bg-bg-status-ball-warning',
+			danger: 'bg-bg-status-ball-danger',
+			creative: 'bg-bg-status-ball-creative',
+			dynamic: 'bg-bg-status-ball-dynamic',
+			playful: 'bg-bg-status-ball-playful',
+			neutral: 'bg-bg-status-ball-neutral'
 		}
 	},
 	defaultVariants: {
-		color: 'gray'
+		color: 'neutral'
 	}
 });
 
@@ -36,16 +36,17 @@ export type StatusBallVariants = VariantProps<typeof statusBallRecipe>;
 
 export type StatusBallProps = ComponentProps<'div'> & {
 	/**
-	 * Background color of the dot. Defaults to `'gray'`. Each option maps to a
-	 * fixed palette token rather than a semantic intent — pick the value that
-	 * matches your domain status mapping.
-	 * - `green` — positive / active / success states
-	 * - `blue` — informational / neutral-positive states
-	 * - `yellow` — warning / pending states
-	 * - `red` — danger / error / expired states
-	 * - `purple`, `pink`, `orange` — category colors for domain-specific
-	 *   statuses with no semantic fallback
-	 * - `gray` — inactive / unknown / default
+	 * Semantic intent of the dot. Defaults to `'neutral'`. Resolve a
+	 * domain-specific status to an intent via your own lookup table
+	 * (e.g., `active → success`, `expired → danger`).
+	 * - `success` — positive / active / confirmed states
+	 * - `info` — informational / scheduled / in-progress states
+	 * - `warning` — pending / approaching-expiration states
+	 * - `danger` — error / expired / blocking states
+	 * - `creative`, `dynamic`, `playful` — category intents for domain statuses
+	 *   without a direct success/info/warning/danger mapping (e.g., review,
+	 *   flagged, attention)
+	 * - `neutral` — inactive / unknown / default
 	 */
 	color?: StatusBallVariants['color'];
 };
@@ -57,10 +58,12 @@ export type StatusBallProps = ComponentProps<'div'> & {
  * glance. Pair it with text; the dot alone is not announced to assistive
  * technologies, so the surrounding label must carry the meaning.
  *
- * The 8 color names (`green`, `blue`, `yellow`, `red`, `purple`, `pink`,
- * `orange`, `gray`) map to fixed palette tokens and are intentionally flat —
- * consumers typically resolve a domain-specific status to a color via their
- * own lookup table (e.g., `active → green`, `expired → red`).
+ * The 8 intents (`success`, `info`, `warning`, `danger`, `creative`,
+ * `dynamic`, `playful`, `neutral`) map to semantic tokens
+ * (`--color-bg-status-ball-*`) and mirror the convention used by
+ * [Alert](?path=/docs/components-alert--docs). Consumers typically resolve a
+ * domain-specific status to an intent via their own lookup table
+ * (e.g., `active → success`, `expired → danger`).
  *
  * Do **not** use StatusBall as a progress or loading indicator — reach for
  * [Loading](?path=/docs/components-loading--docs) for async state. For
@@ -71,12 +74,12 @@ export type StatusBallProps = ComponentProps<'div'> & {
  *
  * @example
  * <div className="flex items-center gap-2">
- *   <StatusBall color="green" />
+ *   <StatusBall color="success" />
  *   <span>Active</span>
  * </div>
  *
  * @example
- * <StatusBall color={statusToColor[appointment.status]} />
+ * <StatusBall color={statusToIntent[appointment.status]} />
  */
 export const StatusBall = ({ color, className, ...props }: StatusBallProps) => (
 	<div data-slot="status-ball" className={cn(statusBallRecipe({ color }), className)} {...props} />

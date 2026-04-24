@@ -2,7 +2,16 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { StatusBall } from './status-ball';
 
-const COLORS = ['green', 'blue', 'yellow', 'red', 'purple', 'pink', 'orange', 'gray'] as const;
+const INTENTS = [
+	'success',
+	'info',
+	'warning',
+	'danger',
+	'creative',
+	'dynamic',
+	'playful',
+	'neutral'
+] as const;
 
 /**
  * StatusBall renders a small colored dot that marks the state of an adjacent
@@ -18,11 +27,11 @@ const meta = {
 	argTypes: {
 		color: {
 			control: 'select',
-			options: [undefined, ...COLORS]
+			options: [undefined, ...INTENTS]
 		}
 	},
 	args: {
-		color: 'gray'
+		color: 'neutral'
 	}
 } satisfies Meta<typeof StatusBall>;
 
@@ -30,10 +39,10 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 /**
- * The default dot — `color="gray"` for an unknown or inactive status. Drop
+ * The default dot — `color="neutral"` for an unknown or inactive status. Drop
  * next to a text label to surface state at a glance.
  *
- * @summary Default gray dot representing an inactive status
+ * @summary Default neutral dot representing an inactive status
  */
 export const Default: Story = {
 	render: args => (
@@ -43,26 +52,26 @@ export const Default: Story = {
 	)
 };
 
-/* --------------- Colors --------------- */
+/* --------------- Intents --------------- */
 
 /**
- * All 8 colors rendered in a single grid, each paired with a sample label.
- * Consumers typically drive the `color` prop from a domain-specific
- * status → color lookup table.
+ * All 8 semantic intents rendered in a single grid, each paired with a sample
+ * label. Consumers typically drive the `color` prop from a domain-specific
+ * status → intent lookup table.
  *
- * @summary Every color paired with a representative status label
+ * @summary Every intent paired with a representative status label
  */
-export const Colors: Story = {
+export const Intents: Story = {
 	render: () => {
-		const samples: { color: (typeof COLORS)[number]; label: string }[] = [
-			{ color: 'green', label: 'Active' },
-			{ color: 'blue', label: 'Scheduled' },
-			{ color: 'yellow', label: 'Pending' },
-			{ color: 'red', label: 'Expired' },
-			{ color: 'purple', label: 'In review' },
-			{ color: 'pink', label: 'Flagged' },
-			{ color: 'orange', label: 'Needs attention' },
-			{ color: 'gray', label: 'Inactive' }
+		const samples: { color: (typeof INTENTS)[number]; label: string }[] = [
+			{ color: 'success', label: 'Active' },
+			{ color: 'info', label: 'Scheduled' },
+			{ color: 'warning', label: 'Pending' },
+			{ color: 'danger', label: 'Expired' },
+			{ color: 'creative', label: 'In review' },
+			{ color: 'playful', label: 'Flagged' },
+			{ color: 'dynamic', label: 'Needs attention' },
+			{ color: 'neutral', label: 'Inactive' }
 		];
 
 		return (
@@ -79,83 +88,84 @@ export const Colors: Story = {
 };
 
 /**
- * Green dot for positive / active states — the most common pairing for "live"
- * records such as active licenses or confirmed appointments.
+ * Success dot for positive / active states — the most common pairing for
+ * "live" records such as active licenses or confirmed appointments.
  *
- * @summary Green dot for positive or active statuses
+ * @summary Success dot for positive or active statuses
  */
-export const Green: Story = {
-	args: { color: 'green' }
+export const Success: Story = {
+	args: { color: 'success' }
 };
 
 /**
- * Blue dot for informational or neutral-positive states — e.g., scheduled or
+ * Info dot for informational or neutral-positive states — e.g., scheduled or
  * queued records that are progressing normally.
  *
- * @summary Blue dot for informational statuses
+ * @summary Info dot for informational statuses
  */
-export const Blue: Story = {
-	args: { color: 'blue' }
+export const Info: Story = {
+	args: { color: 'info' }
 };
 
 /**
- * Yellow dot for warning or pending states — e.g., a license approaching
- * expiration or an appointment awaiting confirmation.
+ * Warning dot for pending states or records approaching a deadline — e.g., a
+ * license nearing expiration or an appointment awaiting confirmation.
  *
- * @summary Yellow dot for warning or pending statuses
+ * @summary Warning dot for pending or approaching-deadline statuses
  */
-export const Yellow: Story = {
-	args: { color: 'yellow' }
+export const Warning: Story = {
+	args: { color: 'warning' }
 };
 
 /**
- * Red dot for danger / error / expired states — e.g., an expired license or a
- * failed payment that blocks progress.
+ * Danger dot for error / expired / blocking states — e.g., an expired license
+ * or a failed payment that blocks progress.
  *
- * @summary Red dot for danger or error statuses
+ * @summary Danger dot for error or expired statuses
  */
-export const Red: Story = {
-	args: { color: 'red' }
+export const Danger: Story = {
+	args: { color: 'danger' }
 };
 
 /**
- * Purple dot for category-specific statuses without a semantic fallback —
- * often used for "in review" or "under assessment" domain states.
+ * Creative dot for category-specific statuses without a direct success/info/
+ * warning/danger mapping — often used for "in review" or "under assessment"
+ * domain states.
  *
- * @summary Purple dot for category-specific statuses
+ * @summary Creative dot for category-specific statuses
  */
-export const Purple: Story = {
-	args: { color: 'purple' }
+export const Creative: Story = {
+	args: { color: 'creative' }
 };
 
 /**
- * Pink dot for category-specific statuses — a distinct hue for flagged or
- * priority domain states that need to stand out from warnings.
+ * Dynamic dot for attention-worthy states that sit between warning and
+ * danger — e.g., records that need action soon but are not yet failed.
  *
- * @summary Pink dot for flagged or priority statuses
+ * @summary Dynamic dot for attention-needed statuses
  */
-export const Pink: Story = {
-	args: { color: 'pink' }
+export const Dynamic: Story = {
+	args: { color: 'dynamic' }
 };
 
 /**
- * Orange dot for attention-worthy states that sit between warning and danger —
- * e.g., records that need action soon but are not yet failed.
+ * Playful dot for flagged or priority domain states that need to stand out
+ * from warnings with a distinct hue.
  *
- * @summary Orange dot for attention-needed statuses
+ * @summary Playful dot for flagged or priority statuses
  */
-export const Orange: Story = {
-	args: { color: 'orange' }
+export const Playful: Story = {
+	args: { color: 'playful' }
 };
 
 /**
- * Gray dot for inactive, unknown, or default states — the fallback when no
- * other color applies.
+ * Neutral dot for inactive, unknown, or default states — the fallback when no
+ * other intent applies.
  *
- * @summary Gray dot for inactive or unknown statuses
+ * @summary Neutral dot for inactive or unknown statuses
  */
-export const Gray: Story = {
-	args: { color: 'gray' }
+export const Neutral: Story = {
+	args: { color: 'neutral' }
 };
 
 /* --------------- Usage examples --------------- */
@@ -170,10 +180,10 @@ export const Gray: Story = {
 export const InList: Story = {
 	render: () => {
 		const rows = [
-			{ color: 'green', name: 'Ada Lovelace', status: 'Active' },
-			{ color: 'yellow', name: 'Grace Hopper', status: 'Pending renewal' },
-			{ color: 'red', name: 'Alan Turing', status: 'Expired' },
-			{ color: 'gray', name: 'Katherine Johnson', status: 'Inactive' }
+			{ color: 'success', name: 'Ada Lovelace', status: 'Active' },
+			{ color: 'warning', name: 'Grace Hopper', status: 'Pending renewal' },
+			{ color: 'danger', name: 'Alan Turing', status: 'Expired' },
+			{ color: 'neutral', name: 'Katherine Johnson', status: 'Inactive' }
 		] as const;
 
 		return (
@@ -203,15 +213,15 @@ export const InPill: Story = {
 	render: () => (
 		<div className="flex flex-wrap items-center gap-2">
 			<span className="inline-flex items-center gap-1.5 rounded-full border border-border-default-base-primary bg-bg-default-base-primary px-2.5 py-1 text-xs text-text-default-base-primary">
-				<StatusBall color="green" />
+				<StatusBall color="success" />
 				Active
 			</span>
 			<span className="inline-flex items-center gap-1.5 rounded-full border border-border-default-base-primary bg-bg-default-base-primary px-2.5 py-1 text-xs text-text-default-base-primary">
-				<StatusBall color="yellow" />
+				<StatusBall color="warning" />
 				Pending
 			</span>
 			<span className="inline-flex items-center gap-1.5 rounded-full border border-border-default-base-primary bg-bg-default-base-primary px-2.5 py-1 text-xs text-text-default-base-primary">
-				<StatusBall color="red" />
+				<StatusBall color="danger" />
 				Expired
 			</span>
 		</div>
