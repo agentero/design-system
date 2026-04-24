@@ -378,7 +378,7 @@ export type ToastProps = {
  * renders into the same surface.
  *
  * Defaults: `position='bottom-right'`, `duration=5000`. The Toaster is sized
- * to `33.875rem` (`[--width:33.875rem]`) and each list item stretches to that
+ * to `23.75rem` (`[--width:23.75rem]`) and each list item stretches to that
  * width (`[&>li]:w-full`) so the DS Toast fills the Toaster row rather than
  * sonner's 356px default. The provider disables sonner's built-in close
  * button (`closeButton={false}`) — dismissal is rendered inside each Toast
