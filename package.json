@@ -27,6 +27,7 @@
     "./divider": "./src/divider/index.ts",
     "./lib": "./lib/index.ts",
     "./loading": "./src/loading/index.ts",
+    "./status-ball": "./src/status-ball/index.ts",
     "./theme": "./themes/base.css"
   },
   "scripts": {
