@@ -576,13 +576,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">7 components ok</span><span class="filter-pill ok" aria-disabled="true">95 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">7 components ok</span><span class="filter-pill ok" aria-disabled="true">90 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>2.1s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>2.0s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -2513,7 +2513,7 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
       <div class="badges">
         <label for="c-6-components-toast-props" class="badge ok as-toggle">11 prop types</label>
         
-        <label for="c-6-components-toast-stories" class="badge ok as-toggle">16 stories</label>
+        <label for="c-6-components-toast-stories" class="badge ok as-toggle">11 stories</label>
         
       </div>
     </div>
@@ -2628,82 +2628,45 @@ visibleToasts?: number</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">Neutral</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Neutral type (default when calling `toast()`)</div>
-              <div class="hint">Neutral toast — generic feedback with no strong semantic signal. This is what calling `toast(title)` without a typed helper produces.</div>
-              <pre><code>const Neutral = () =&gt; (
-    &lt;Button variant=&quot;secondary&quot; onClick={() =&gt; toast(&#39;Something happened&#39;)}&gt;
-        Show neutral toast
-    &lt;/Button&gt;
-);</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Success</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Success type for positive outcomes</div>
-              <div class="hint">Success toast — confirms a positive outcome.</div>
-              <pre><code>const Success = () =&gt; (
-    &lt;Button variant=&quot;secondary&quot; onClick={() =&gt; toast.success(&#39;Policy saved&#39;)}&gt;
-        Show success toast
-    &lt;/Button&gt;
-);</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Error</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Error type for failed operations</div>
-              <div class="hint">Error toast — flags an error or destructive outcome that needs the user&#39;s attention.</div>
-              <pre><code>const Error = () =&gt; (
-    &lt;Button variant=&quot;secondary&quot; onClick={() =&gt; toast.error(&#39;Failed to save&#39;)}&gt;
-        Show error toast
-    &lt;/Button&gt;
-);</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Warning</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Warning type for cautionary feedback</div>
-              <div class="hint">Warning toast — signals caution; the user should review before proceeding.</div>
-              <pre><code>const Warning = () =&gt; (
-    &lt;Button variant=&quot;secondary&quot; onClick={() =&gt; toast.warning(&#39;License expiring soon&#39;)}&gt;
-        Show warning toast
-    &lt;/Button&gt;
-);</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Info</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Info type for informational feedback</div>
-              <div class="hint">Info toast — highlights tips, hints, or secondary information.</div>
-              <pre><code>const Info = () =&gt; (
-    &lt;Button variant=&quot;secondary&quot; onClick={() =&gt; toast.info(&#39;Sync in progress&#39;)}&gt;
-        Show info toast
-    &lt;/Button&gt;
-);</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
                 <span class="ex-name">Inline</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Inline layout (default, compact row)</div>
-              <div class="hint">Inline layout (default). Compact single-line treatment — title + optional description render side-by-side on the same row. Use for short acknowledgments that don&#39;t need a colored rail.</div>
+              <div>Inline layout across all five semantic types</div>
+              <div class="hint">Inline layout (default). Compact single-line treatment — title + optional description render side-by-side on the same row. The `type` drives the icon color. Use for short acknowledgments that don&#39;t need a colored rail.</div>
               <pre><code>const Inline = () =&gt; (
-    &lt;Button
-        variant=&quot;secondary&quot;
-        onClick={() =&gt; toast(&#39;Changes saved&#39;, { description: &#39;Your edits are live.&#39; })}&gt;
-        Show inline toast
-    &lt;/Button&gt;
+    &lt;div style={{ display: &#39;flex&#39;, flexWrap: &#39;wrap&#39;, gap: &#39;0.5rem&#39; }}&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt; toast(&#39;Something happened&#39;, { description: &#39;Additional context.&#39; })}&gt;
+            Neutral
+        &lt;/Button&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt; toast.success(&#39;Policy saved&#39;, { description: &#39;Your edits are live.&#39; })}&gt;
+            Success
+        &lt;/Button&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast.error(&#39;Failed to save&#39;, { description: &#39;The file could not be processed.&#39; })
+            }&gt;
+            Error
+        &lt;/Button&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast.warning(&#39;License expiring soon&#39;, { description: &#39;Renew before end of month.&#39; })
+            }&gt;
+            Warning
+        &lt;/Button&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast.info(&#39;Sync in progress&#39;, { description: &#39;Please wait while we sync your data.&#39; })
+            }&gt;
+            Info
+        &lt;/Button&gt;
+    &lt;/div&gt;
 );</code></pre>
             </div>
             <div class="note ok">
@@ -2711,19 +2674,61 @@ visibleToasts?: number</code></pre>
                 <span class="ex-name">Expanded</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Expanded layout with colored left rail</div>
+              <div>Expanded layout across all five semantic types</div>
               <div class="hint">Expanded layout. Multi-line treatment with a 0.375rem colored left rail that tracks the toast&#39;s `type`. Use for feedback that benefits from a description on its own line or a trailing action button.</div>
               <pre><code>const Expanded = () =&gt; (
-    &lt;Button
-        variant=&quot;secondary&quot;
-        onClick={() =&gt;
-            toast.success(&#39;Changes saved&#39;, {
-                variant: &#39;expanded&#39;,
-                description: &#39;Your changes have been saved successfully.&#39;
-            })
-        }&gt;
-        Show expanded toast
-    &lt;/Button&gt;
+    &lt;div style={{ display: &#39;flex&#39;, flexWrap: &#39;wrap&#39;, gap: &#39;0.5rem&#39; }}&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast(&#39;Something happened&#39;, {
+                    variant: &#39;expanded&#39;,
+                    description: &#39;Additional context for the user.&#39;
+                })
+            }&gt;
+            Neutral
+        &lt;/Button&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast.success(&#39;Policy saved&#39;, {
+                    variant: &#39;expanded&#39;,
+                    description: &#39;Your changes have been saved successfully.&#39;
+                })
+            }&gt;
+            Success
+        &lt;/Button&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast.error(&#39;Failed to save&#39;, {
+                    variant: &#39;expanded&#39;,
+                    description: &#39;The file could not be processed.&#39;
+                })
+            }&gt;
+            Error
+        &lt;/Button&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast.warning(&#39;License expiring soon&#39;, {
+                    variant: &#39;expanded&#39;,
+                    description: &#39;Renew before the end of the month to avoid interruption.&#39;
+                })
+            }&gt;
+            Warning
+        &lt;/Button&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast.info(&#39;Sync in progress&#39;, {
+                    variant: &#39;expanded&#39;,
+                    description: &#39;Please wait while we sync your data.&#39;
+                })
+            }&gt;
+            Info
+        &lt;/Button&gt;
+    &lt;/div&gt;
 );</code></pre>
             </div>
             <div class="note ok">
