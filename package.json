@@ -27,6 +27,7 @@
     "./divider": "./src/divider/index.ts",
     "./lib": "./lib/index.ts",
     "./loading": "./src/loading/index.ts",
+    "./toast": "./src/toast/index.ts",
     "./theme": "./themes/base.css"
   },
   "scripts": {
@@ -43,6 +44,7 @@
     "@radix-ui/react-separator": "^1.1.8",
     "@radix-ui/react-slot": "^1.2.4",
     "clsx": "^2.1.1",
+    "sonner": "^2.0.7",
     "tailwind-merge": "^3.5.0",
     "tailwind-variants": "^3.2.2"
   },
