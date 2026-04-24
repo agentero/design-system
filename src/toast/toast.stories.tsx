@@ -83,9 +83,9 @@ export const Default: Story = {
 /* --------------- Layouts --------------- */
 
 /**
- * Inline layout (default). Compact single-line treatment — title + optional
- * description render side-by-side on the same row. The `type` drives the icon
- * color. Use for short acknowledgments that don't need a colored rail.
+ * Inline layout (default). Compact treatment — title with an optional
+ * description stacked directly below it. The `type` drives the icon color.
+ * Use for short acknowledgments that don't need a colored rail.
  *
  * @summary Inline layout across all five semantic types
  */

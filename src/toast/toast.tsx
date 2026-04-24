@@ -44,9 +44,7 @@ export const toastRecipe = tv({
 				root: 'rounded-lg p-2 gap-2 items-center',
 				iconWrapper: 'pl-1',
 				contentWrapper: 'flex-row items-center gap-0',
-				leading: 'inline gap-2',
-				title: 'inline [&:has(+p)]:pr-1',
-				description: 'inline',
+				leading: 'flex-col items-start gap-0',
 				trailing: 'pl-2'
 			},
 			expanded: {
@@ -210,7 +208,7 @@ const ToastContent = ({
  * @summary Options for the imperative `toast()` API
  */
 export type ToastOptions = {
-	/** Optional secondary text shown below (expanded) or beside (inline) the title. */
+	/** Optional secondary text shown below the title. */
 	description?: ReactNode;
 	/**
 	 * Layout variant. Defaults to `'inline'`.
@@ -409,6 +407,6 @@ export const Toast = ({
 		position={position}
 		duration={duration}
 		closeButton={false}
-		className={cn('![--width:33.875rem] [&>li]:w-full', className)}
+		className={cn('[--width:23.75rem]! [&>li]:w-full', className)}
 	/>
 );
