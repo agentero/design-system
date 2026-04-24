@@ -39,10 +39,10 @@ const meta = {
 		}
 	},
 	decorators: [
-		Story => (
+		(Story, { args }) => (
 			<>
 				<Story />
-				<Toast />
+				<Toast {...args} />
 			</>
 		)
 	]
@@ -59,6 +59,9 @@ type Story = StoryObj<typeof meta>;
  * @summary Default playground for the Toast provider
  */
 export const Default: Story = {
+	parameters: {
+		docs: { story: { inline: true } }
+	},
 	render: () => (
 		<Button variant="secondary" onClick={() => toast('Hello from Toast')}>
 			Show toast
