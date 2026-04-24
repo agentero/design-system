@@ -659,6 +659,21 @@
 	--color-icon-alert-ghost-dynamic: var(--color-orange-700);
 	--color-icon-alert-ghost-playful: var(--color-pink-600);
 
+  /* ========================================
+    * TOAST
+    * ======================================== */
+
+  /* Rail — colored left strip painted on expanded-layout toasts */
+  --color-rail-neutral: var(--color-neutrals-200);
+  --color-rail-success: var(--color-positive-500);
+  --color-rail-danger: var(--color-danger-500);
+  --color-rail-warning: var(--color-warning-500);
+  --color-rail-info: var(--color-blue-600);
+
+  /* Focus Ring */
+  --color-focus-ring-button-primary: var(--color-slate-800);
+  --color-focus-ring-button-destructive: var(--color-danger-500);
+  
 	/* ========================================
     * STATUS BALL
     * ======================================== */
