@@ -80,91 +80,50 @@ export const Default: Story = {
 	)
 };
 
-/* --------------- Types --------------- */
-
-/**
- * Neutral toast — generic feedback with no strong semantic signal. This is
- * what calling `toast(title)` without a typed helper produces.
- *
- * @summary Neutral type (default when calling `toast()`)
- */
-export const Neutral: Story = {
-	render: () => (
-		<Button variant="secondary" onClick={() => toast('Something happened')}>
-			Show neutral toast
-		</Button>
-	)
-};
-
-/**
- * Success toast — confirms a positive outcome.
- *
- * @summary Success type for positive outcomes
- */
-export const Success: Story = {
-	render: () => (
-		<Button variant="secondary" onClick={() => toast.success('Policy saved')}>
-			Show success toast
-		</Button>
-	)
-};
-
-/**
- * Error toast — flags an error or destructive outcome that needs the user's
- * attention.
- *
- * @summary Error type for failed operations
- */
-export const Error: Story = {
-	render: () => (
-		<Button variant="secondary" onClick={() => toast.error('Failed to save')}>
-			Show error toast
-		</Button>
-	)
-};
-
-/**
- * Warning toast — signals caution; the user should review before proceeding.
- *
- * @summary Warning type for cautionary feedback
- */
-export const Warning: Story = {
-	render: () => (
-		<Button variant="secondary" onClick={() => toast.warning('License expiring soon')}>
-			Show warning toast
-		</Button>
-	)
-};
-
-/**
- * Info toast — highlights tips, hints, or secondary information.
- *
- * @summary Info type for informational feedback
- */
-export const Info: Story = {
-	render: () => (
-		<Button variant="secondary" onClick={() => toast.info('Sync in progress')}>
-			Show info toast
-		</Button>
-	)
-};
-
 /* --------------- Layouts --------------- */
 
 /**
  * Inline layout (default). Compact single-line treatment — title + optional
- * description render side-by-side on the same row. Use for short
- * acknowledgments that don't need a colored rail.
+ * description render side-by-side on the same row. The `type` drives the icon
+ * color. Use for short acknowledgments that don't need a colored rail.
  *
- * @summary Inline layout (default, compact row)
+ * @summary Inline layout across all five semantic types
  */
 export const Inline: Story = {
 	render: () => (
-		<Button
-			variant="secondary"
-			onClick={() => toast('Changes saved', { description: 'Your edits are live.' })}>
-			Show inline toast
-		</Button>
+		<div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+			<Button
+				variant="secondary"
+				onClick={() => toast('Something happened', { description: 'Additional context.' })}>
+				Neutral
+			</Button>
+			<Button
+				variant="secondary"
+				onClick={() => toast.success('Policy saved', { description: 'Your edits are live.' })}>
+				Success
+			</Button>
+			<Button
+				variant="secondary"
+				onClick={() =>
+					toast.error('Failed to save', { description: 'The file could not be processed.' })
+				}>
+				Error
+			</Button>
+			<Button
+				variant="secondary"
+				onClick={() =>
+					toast.warning('License expiring soon', { description: 'Renew before end of month.' })
+				}>
+				Warning
+			</Button>
+			<Button
+				variant="secondary"
+				onClick={() =>
+					toast.info('Sync in progress', { description: 'Please wait while we sync your data.' })
+				}>
+				Info
+			</Button>
+		</div>
 	)
 };
 
@@ -173,20 +132,62 @@ export const Inline: Story = {
  * that tracks the toast's `type`. Use for feedback that benefits from a
  * description on its own line or a trailing action button.
  *
- * @summary Expanded layout with colored left rail
+ * @summary Expanded layout across all five semantic types
  */
 export const Expanded: Story = {
 	render: () => (
-		<Button
-			variant="secondary"
-			onClick={() =>
-				toast.success('Changes saved', {
-					variant: 'expanded',
-					description: 'Your changes have been saved successfully.'
-				})
-			}>
-			Show expanded toast
-		</Button>
+		<div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+			<Button
+				variant="secondary"
+				onClick={() =>
+					toast('Something happened', {
+						variant: 'expanded',
+						description: 'Additional context for the user.'
+					})
+				}>
+				Neutral
+			</Button>
+			<Button
+				variant="secondary"
+				onClick={() =>
+					toast.success('Policy saved', {
+						variant: 'expanded',
+						description: 'Your changes have been saved successfully.'
+					})
+				}>
+				Success
+			</Button>
+			<Button
+				variant="secondary"
+				onClick={() =>
+					toast.error('Failed to save', {
+						variant: 'expanded',
+						description: 'The file could not be processed.'
+					})
+				}>
+				Error
+			</Button>
+			<Button
+				variant="secondary"
+				onClick={() =>
+					toast.warning('License expiring soon', {
+						variant: 'expanded',
+						description: 'Renew before the end of the month to avoid interruption.'
+					})
+				}>
+				Warning
+			</Button>
+			<Button
+				variant="secondary"
+				onClick={() =>
+					toast.info('Sync in progress', {
+						variant: 'expanded',
+						description: 'Please wait while we sync your data.'
+					})
+				}>
+				Info
+			</Button>
+		</div>
 	)
 };
 
