@@ -39,7 +39,6 @@ export const Default: Story = {
 	render: args => (
 		<div className="flex items-center gap-2">
 			<StatusBall {...args} />
-			<span className="text-sm text-text-default-base-primary">Inactive</span>
 		</div>
 	)
 };
