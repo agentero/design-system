@@ -97,8 +97,7 @@ export const Neutral: Story = {
 };
 
 /**
- * Success toast — confirms a positive outcome. Uses the positive icon + color
- * tokens and a green left rail in the expanded layout.
+ * Success toast — confirms a positive outcome.
  *
  * @summary Success type for positive outcomes
  */
