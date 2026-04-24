@@ -582,7 +582,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>2.0s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>1.9s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -2332,29 +2332,29 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
                 <span class="ex-name">Default</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Default gray dot representing an inactive status</div>
-              <div class="hint">The default dot — `color=&quot;gray&quot;` for an unknown or inactive status. Drop next to a text label to surface state at a glance.</div>
+              <div>Default neutral dot representing an inactive status</div>
+              <div class="hint">The default dot — `color=&quot;neutral&quot;` for an unknown or inactive status. Drop next to a text label to surface state at a glance.</div>
               <pre><code>const Default = () =&gt; &lt;div className=&quot;flex items-center gap-2&quot;&gt;
-    &lt;StatusBall color=&quot;gray&quot; /&gt;
+    &lt;StatusBall color=&quot;neutral&quot; /&gt;
 &lt;/div&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">Colors</span>
+                <span class="ex-name">Intents</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Every color paired with a representative status label</div>
-              <div class="hint">All 8 colors rendered in a single grid, each paired with a sample label. Consumers typically drive the `color` prop from a domain-specific status → color lookup table.</div>
-              <pre><code>const Colors = () =&gt; {
-    const samples: { color: (typeof COLORS)[number]; label: string }[] = [
-        { color: &#39;green&#39;, label: &#39;Active&#39; },
-        { color: &#39;blue&#39;, label: &#39;Scheduled&#39; },
-        { color: &#39;yellow&#39;, label: &#39;Pending&#39; },
-        { color: &#39;red&#39;, label: &#39;Expired&#39; },
-        { color: &#39;purple&#39;, label: &#39;In review&#39; },
-        { color: &#39;pink&#39;, label: &#39;Flagged&#39; },
-        { color: &#39;orange&#39;, label: &#39;Needs attention&#39; },
-        { color: &#39;gray&#39;, label: &#39;Inactive&#39; }
+              <div>Every intent paired with a representative status label</div>
+              <div class="hint">All 8 semantic intents rendered in a single grid, each paired with a sample label. Consumers typically drive the `color` prop from a domain-specific status → intent lookup table.</div>
+              <pre><code>const Intents = () =&gt; {
+    const samples: { color: (typeof INTENTS)[number]; label: string }[] = [
+        { color: &#39;success&#39;, label: &#39;Active&#39; },
+        { color: &#39;info&#39;, label: &#39;Scheduled&#39; },
+        { color: &#39;warning&#39;, label: &#39;Pending&#39; },
+        { color: &#39;danger&#39;, label: &#39;Expired&#39; },
+        { color: &#39;creative&#39;, label: &#39;In review&#39; },
+        { color: &#39;playful&#39;, label: &#39;Flagged&#39; },
+        { color: &#39;dynamic&#39;, label: &#39;Needs attention&#39; },
+        { color: &#39;neutral&#39;, label: &#39;Inactive&#39; }
     ];
 
     return (
@@ -2371,75 +2371,75 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">Green</span>
+                <span class="ex-name">Success</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Green dot for positive or active statuses</div>
-              <div class="hint">Green dot for positive / active states — the most common pairing for &quot;live&quot; records such as active licenses or confirmed appointments.</div>
-              <pre><code>const Green = () =&gt; &lt;StatusBall color=&quot;green&quot; /&gt;;</code></pre>
+              <div>Success dot for positive or active statuses</div>
+              <div class="hint">Success dot for positive / active states — the most common pairing for &quot;live&quot; records such as active licenses or confirmed appointments.</div>
+              <pre><code>const Success = () =&gt; &lt;StatusBall color=&quot;success&quot; /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">Blue</span>
+                <span class="ex-name">Info</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Blue dot for informational statuses</div>
-              <div class="hint">Blue dot for informational or neutral-positive states — e.g., scheduled or queued records that are progressing normally.</div>
-              <pre><code>const Blue = () =&gt; &lt;StatusBall color=&quot;blue&quot; /&gt;;</code></pre>
+              <div>Info dot for informational statuses</div>
+              <div class="hint">Info dot for informational or neutral-positive states — e.g., scheduled or queued records that are progressing normally.</div>
+              <pre><code>const Info = () =&gt; &lt;StatusBall color=&quot;info&quot; /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">Yellow</span>
+                <span class="ex-name">Warning</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Yellow dot for warning or pending statuses</div>
-              <div class="hint">Yellow dot for warning or pending states — e.g., a license approaching expiration or an appointment awaiting confirmation.</div>
-              <pre><code>const Yellow = () =&gt; &lt;StatusBall color=&quot;yellow&quot; /&gt;;</code></pre>
+              <div>Warning dot for pending or approaching-deadline statuses</div>
+              <div class="hint">Warning dot for pending states or records approaching a deadline — e.g., a license nearing expiration or an appointment awaiting confirmation.</div>
+              <pre><code>const Warning = () =&gt; &lt;StatusBall color=&quot;warning&quot; /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">Red</span>
+                <span class="ex-name">Danger</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Red dot for danger or error statuses</div>
-              <div class="hint">Red dot for danger / error / expired states — e.g., an expired license or a failed payment that blocks progress.</div>
-              <pre><code>const Red = () =&gt; &lt;StatusBall color=&quot;red&quot; /&gt;;</code></pre>
+              <div>Danger dot for error or expired statuses</div>
+              <div class="hint">Danger dot for error / expired / blocking states — e.g., an expired license or a failed payment that blocks progress.</div>
+              <pre><code>const Danger = () =&gt; &lt;StatusBall color=&quot;danger&quot; /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">Purple</span>
+                <span class="ex-name">Creative</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Purple dot for category-specific statuses</div>
-              <div class="hint">Purple dot for category-specific statuses without a semantic fallback — often used for &quot;in review&quot; or &quot;under assessment&quot; domain states.</div>
-              <pre><code>const Purple = () =&gt; &lt;StatusBall color=&quot;purple&quot; /&gt;;</code></pre>
+              <div>Creative dot for category-specific statuses</div>
+              <div class="hint">Creative dot for category-specific statuses without a direct success/info/ warning/danger mapping — often used for &quot;in review&quot; or &quot;under assessment&quot; domain states.</div>
+              <pre><code>const Creative = () =&gt; &lt;StatusBall color=&quot;creative&quot; /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">Pink</span>
+                <span class="ex-name">Dynamic</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Pink dot for flagged or priority statuses</div>
-              <div class="hint">Pink dot for category-specific statuses — a distinct hue for flagged or priority domain states that need to stand out from warnings.</div>
-              <pre><code>const Pink = () =&gt; &lt;StatusBall color=&quot;pink&quot; /&gt;;</code></pre>
+              <div>Dynamic dot for attention-needed statuses</div>
+              <div class="hint">Dynamic dot for attention-worthy states that sit between warning and danger — e.g., records that need action soon but are not yet failed.</div>
+              <pre><code>const Dynamic = () =&gt; &lt;StatusBall color=&quot;dynamic&quot; /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">Orange</span>
+                <span class="ex-name">Playful</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Orange dot for attention-needed statuses</div>
-              <div class="hint">Orange dot for attention-worthy states that sit between warning and danger — e.g., records that need action soon but are not yet failed.</div>
-              <pre><code>const Orange = () =&gt; &lt;StatusBall color=&quot;orange&quot; /&gt;;</code></pre>
+              <div>Playful dot for flagged or priority statuses</div>
+              <div class="hint">Playful dot for flagged or priority domain states that need to stand out from warnings with a distinct hue.</div>
+              <pre><code>const Playful = () =&gt; &lt;StatusBall color=&quot;playful&quot; /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">Gray</span>
+                <span class="ex-name">Neutral</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Gray dot for inactive or unknown statuses</div>
-              <div class="hint">Gray dot for inactive, unknown, or default states — the fallback when no other color applies.</div>
-              <pre><code>const Gray = () =&gt; &lt;StatusBall color=&quot;gray&quot; /&gt;;</code></pre>
+              <div>Neutral dot for inactive or unknown statuses</div>
+              <div class="hint">Neutral dot for inactive, unknown, or default states — the fallback when no other intent applies.</div>
+              <pre><code>const Neutral = () =&gt; &lt;StatusBall color=&quot;neutral&quot; /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -2450,10 +2450,10 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
               <div class="hint">StatusBall inside a list row — the canonical production usage, mirroring the appointment and license list patterns in `producerflow/mono`. Each row pairs a dot with a label and supporting text.</div>
               <pre><code>const InList = () =&gt; {
     const rows = [
-        { color: &#39;green&#39;, name: &#39;Ada Lovelace&#39;, status: &#39;Active&#39; },
-        { color: &#39;yellow&#39;, name: &#39;Grace Hopper&#39;, status: &#39;Pending renewal&#39; },
-        { color: &#39;red&#39;, name: &#39;Alan Turing&#39;, status: &#39;Expired&#39; },
-        { color: &#39;gray&#39;, name: &#39;Katherine Johnson&#39;, status: &#39;Inactive&#39; }
+        { color: &#39;success&#39;, name: &#39;Ada Lovelace&#39;, status: &#39;Active&#39; },
+        { color: &#39;warning&#39;, name: &#39;Grace Hopper&#39;, status: &#39;Pending renewal&#39; },
+        { color: &#39;danger&#39;, name: &#39;Alan Turing&#39;, status: &#39;Expired&#39; },
+        { color: &#39;neutral&#39;, name: &#39;Katherine Johnson&#39;, status: &#39;Inactive&#39; }
     ] as const;
 
     return (
@@ -2481,15 +2481,15 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
               <pre><code>const InPill = () =&gt; (
     &lt;div className=&quot;flex flex-wrap items-center gap-2&quot;&gt;
         &lt;span className=&quot;inline-flex items-center gap-1.5 rounded-full border border-border-default-base-primary bg-bg-default-base-primary px-2.5 py-1 text-xs text-text-default-base-primary&quot;&gt;
-            &lt;StatusBall color=&quot;green&quot; /&gt;
+            &lt;StatusBall color=&quot;success&quot; /&gt;
             Active
         &lt;/span&gt;
         &lt;span className=&quot;inline-flex items-center gap-1.5 rounded-full border border-border-default-base-primary bg-bg-default-base-primary px-2.5 py-1 text-xs text-text-default-base-primary&quot;&gt;
-            &lt;StatusBall color=&quot;yellow&quot; /&gt;
+            &lt;StatusBall color=&quot;warning&quot; /&gt;
             Pending
         &lt;/span&gt;
         &lt;span className=&quot;inline-flex items-center gap-1.5 rounded-full border border-border-default-base-primary bg-bg-default-base-primary px-2.5 py-1 text-xs text-text-default-base-primary&quot;&gt;
-            &lt;StatusBall color=&quot;red&quot; /&gt;
+            &lt;StatusBall color=&quot;danger&quot; /&gt;
             Expired
         &lt;/span&gt;
     &lt;/div&gt;
