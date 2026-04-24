@@ -50,7 +50,7 @@ export const toastRecipe = tv({
 				trailing: 'pl-2'
 			},
 			expanded: {
-				root: 'rounded-md p-4 gap-1',
+				root: 'rounded-md p-4 gap-1 [background-size:0.375rem_100%] bg-left bg-no-repeat',
 				iconWrapper: '-mt-px',
 				contentWrapper: 'flex-col items-start gap-3',
 				leading: 'flex-col items-start gap-0 px-2',
@@ -65,49 +65,31 @@ export const toastRecipe = tv({
 			info: { icon: 'text-icon-default-info-primary' }
 		}
 	},
-	/*
-	 * The expanded layout paints a 0.375rem colored strip on the root's left
-	 * edge via a linear-gradient background. The five colors reach into the
-	 * raw palette ramp (`--color-neutrals-200`, `--color-positive-500`, etc.)
-	 * because there is no semantic `bg-accent-{type}` token pair for a flat
-	 * saturated fill. This is a documented `COLORIZE_PALETTE`-style exception
-	 * (see `src/avatar/avatar.tsx`); prefer semantic tokens everywhere else.
-	 */
 	compoundVariants: [
 		{
 			layout: 'expanded',
 			type: 'neutral',
-			class: {
-				root: 'bg-[linear-gradient(var(--color-neutrals-200),var(--color-neutrals-200))] [background-size:0.375rem_100%] bg-left bg-no-repeat'
-			}
+			class: { root: 'bg-[linear-gradient(var(--color-rail-neutral),var(--color-rail-neutral))]' }
 		},
 		{
 			layout: 'expanded',
 			type: 'success',
-			class: {
-				root: 'bg-[linear-gradient(var(--color-positive-500),var(--color-positive-500))] [background-size:0.375rem_100%] bg-left bg-no-repeat'
-			}
+			class: { root: 'bg-[linear-gradient(var(--color-rail-success),var(--color-rail-success))]' }
 		},
 		{
 			layout: 'expanded',
 			type: 'error',
-			class: {
-				root: 'bg-[linear-gradient(var(--color-danger-500),var(--color-danger-500))] [background-size:0.375rem_100%] bg-left bg-no-repeat'
-			}
+			class: { root: 'bg-[linear-gradient(var(--color-rail-danger),var(--color-rail-danger))]' }
 		},
 		{
 			layout: 'expanded',
 			type: 'warning',
-			class: {
-				root: 'bg-[linear-gradient(var(--color-warning-500),var(--color-warning-500))] [background-size:0.375rem_100%] bg-left bg-no-repeat'
-			}
+			class: { root: 'bg-[linear-gradient(var(--color-rail-warning),var(--color-rail-warning))]' }
 		},
 		{
 			layout: 'expanded',
 			type: 'info',
-			class: {
-				root: 'bg-[linear-gradient(var(--color-blue-600),var(--color-blue-600))] [background-size:0.375rem_100%] bg-left bg-no-repeat'
-			}
+			class: { root: 'bg-[linear-gradient(var(--color-rail-info),var(--color-rail-info))]' }
 		}
 	],
 	defaultVariants: { layout: 'inline', type: 'neutral' }
