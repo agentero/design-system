@@ -27,7 +27,16 @@ const meta = {
 				'bottom-right'
 			]
 		},
-		duration: { control: { type: 'number', min: 1000, step: 500 } }
+		duration: { control: { type: 'number', min: 1000, step: 500 } },
+		dir: { control: 'inline-radio', options: ['auto', 'ltr', 'rtl'] },
+		gap: { control: { type: 'number', min: 0, step: 2 } },
+		offset: { control: 'text' },
+		expand: { control: 'boolean' },
+		visibleToasts: { control: { type: 'number', min: 1, step: 1 } },
+		richColors: { control: 'boolean' },
+		invert: { control: 'boolean' },
+		hotkey: { table: { disable: true } },
+		className: { table: { disable: true } }
 	},
 	args: {
 		position: 'bottom-right',
@@ -63,9 +72,11 @@ export const Default: Story = {
 		docs: { story: { inline: true } }
 	},
 	render: () => (
-		<Button variant="secondary" onClick={() => toast('Hello from Toast')}>
-			Show toast
-		</Button>
+		<div style={{ minHeight: '240px' }}>
+			<Button variant="secondary" onClick={() => toast('Hello from Toast')}>
+				Show toast
+			</Button>
+		</div>
 	)
 };
 
