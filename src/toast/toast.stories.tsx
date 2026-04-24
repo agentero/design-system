@@ -33,6 +33,11 @@ const meta = {
 		position: 'bottom-right',
 		duration: 5000
 	},
+	parameters: {
+		docs: {
+			story: { inline: false, iframeHeight: 240 }
+		}
+	},
 	decorators: [
 		Story => (
 			<>
