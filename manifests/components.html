@@ -576,7 +576,7 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">6 components ok</span><span class="filter-pill ok" aria-disabled="true">79 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">7 components ok</span><span class="filter-pill ok" aria-disabled="true">90 stories ok</span></div>
   </div>
 </header>
 <main>
@@ -2493,6 +2493,432 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
             Expired
         &lt;/span&gt;
     &lt;/div&gt;
+);</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
+  aria-label="Toast">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Toast</h2>
+      <div class="badges">
+        <label for="c-6-components-toast-props" class="badge ok as-toggle">11 prop types</label>
+        
+        <label for="c-6-components-toast-stories" class="badge ok as-toggle">11 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/toast/toast.stories.tsx">components-toast · ./src/toast/toast.stories.tsx</div>
+    
+    <div class="hint">Toast renders transient feedback about an outcome — saved, failed, warning, info — without interrupting the user&#39;s flow. Mount `&lt;Toast /&gt;` once near the app root to register the provider, then call the imperative `toast()` API from anywhere in the tree. Five semantic types (`neutral`, `success`, `error`, `warning`, `info`) × two layouts (`inline`, `expanded`) cover the common feedback patterns.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-6-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  <input id="c-6-components-toast-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
+              <span class="badge ok">11 prop types</span>
+            </div>
+            <pre><code>Component: src/toast/toast.tsx::Toast</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>/**
+ * Additional className merged onto the sonner `&lt;Toaster&gt;` root.
+ */
+className?: string
+
+/**
+ * Text direction. Sonner forwards this to the rendered toaster root.
+ */
+dir?: &quot;auto&quot; | &quot;ltr&quot; | &quot;rtl&quot;
+
+/**
+ * Default auto-dismiss duration in ms for toasts fired against this provider. Defaults to `5000`.
+ */
+duration?: number = 5000
+
+/**
+ * When `true`, stack expands on hover instead of auto-collapsing.
+ */
+expand?: boolean
+
+/**
+ * Gap between stacked toasts, in pixels.
+ */
+gap?: number
+
+/**
+ * Keyboard shortcut used to focus the toaster.
+ */
+hotkey?: string[]
+
+/**
+ * When `true`, flips light/dark theme on the toaster root.
+ */
+invert?: boolean
+
+/**
+ * Offset from the screen edge, in pixels or as a CSS length.
+ */
+offset?: string | number
+
+/**
+ * Placement of the toaster on the screen. Defaults to `&#39;bottom-right&#39;`.
+ */
+position?: ToastPosition = bottom-right
+
+/**
+ * When `true`, sonner paints colored backgrounds per type (DS uses its own icon tokens by default).
+ */
+richColors?: boolean
+
+/**
+ * Maximum number of toasts rendered at once before earlier ones dismiss.
+ */
+visibleToasts?: number</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Button, Toast } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Default playground for the Toast provider</div>
+              <div class="hint">Args-controlled playground. Click the button to fire a neutral toast; tweak `position` and `duration` from the Controls panel to preview the provider defaults.</div>
+              <pre><code>const Default = () =&gt; (
+    &lt;div style={{ minHeight: &#39;240px&#39; }}&gt;
+        &lt;Button variant=&quot;secondary&quot; onClick={() =&gt; toast(&#39;Hello from Toast&#39;)}&gt;
+            Show toast
+        &lt;/Button&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Inline</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Inline layout across all five semantic types</div>
+              <div class="hint">Inline layout (default). Compact treatment — title with an optional description stacked directly below it. The `type` drives the icon color. Use for short acknowledgments that don&#39;t need a colored rail.</div>
+              <pre><code>const Inline = () =&gt; (
+    &lt;div style={{ display: &#39;flex&#39;, flexWrap: &#39;wrap&#39;, gap: &#39;0.5rem&#39; }}&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt; toast(&#39;Something happened&#39;, { description: &#39;Additional context.&#39; })}&gt;
+            Neutral
+        &lt;/Button&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt; toast.success(&#39;Policy saved&#39;, { description: &#39;Your edits are live.&#39; })}&gt;
+            Success
+        &lt;/Button&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast.error(&#39;Failed to save&#39;, { description: &#39;The file could not be processed.&#39; })
+            }&gt;
+            Error
+        &lt;/Button&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast.warning(&#39;License expiring soon&#39;, { description: &#39;Renew before end of month.&#39; })
+            }&gt;
+            Warning
+        &lt;/Button&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast.info(&#39;Sync in progress&#39;, { description: &#39;Please wait while we sync your data.&#39; })
+            }&gt;
+            Info
+        &lt;/Button&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Expanded</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Expanded layout across all five semantic types</div>
+              <div class="hint">Expanded layout. Multi-line treatment with a 0.375rem colored left rail that tracks the toast&#39;s `type`. Use for feedback that benefits from a description on its own line or a trailing action button.</div>
+              <pre><code>const Expanded = () =&gt; (
+    &lt;div style={{ display: &#39;flex&#39;, flexWrap: &#39;wrap&#39;, gap: &#39;0.5rem&#39; }}&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast(&#39;Something happened&#39;, {
+                    variant: &#39;expanded&#39;,
+                    description: &#39;Additional context for the user.&#39;
+                })
+            }&gt;
+            Neutral
+        &lt;/Button&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast.success(&#39;Policy saved&#39;, {
+                    variant: &#39;expanded&#39;,
+                    description: &#39;Your changes have been saved successfully.&#39;
+                })
+            }&gt;
+            Success
+        &lt;/Button&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast.error(&#39;Failed to save&#39;, {
+                    variant: &#39;expanded&#39;,
+                    description: &#39;The file could not be processed.&#39;
+                })
+            }&gt;
+            Error
+        &lt;/Button&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast.warning(&#39;License expiring soon&#39;, {
+                    variant: &#39;expanded&#39;,
+                    description: &#39;Renew before the end of the month to avoid interruption.&#39;
+                })
+            }&gt;
+            Warning
+        &lt;/Button&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast.info(&#39;Sync in progress&#39;, {
+                    variant: &#39;expanded&#39;,
+                    description: &#39;Please wait while we sync your data.&#39;
+                })
+            }&gt;
+            Info
+        &lt;/Button&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Action Object</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Toast with a structured action button</div>
+              <div class="hint">Toast with a structured `action` object. Passing `{ label, onClick }` renders the built-in secondary Button; the handler runs and the toast auto-dismisses afterward.</div>
+              <pre><code>const WithActionObject = () =&gt; (
+    &lt;Button
+        variant=&quot;secondary&quot;
+        onClick={() =&gt;
+            toast.error(&#39;Upload failed&#39;, {
+                variant: &#39;expanded&#39;,
+                description: &#39;The file could not be processed.&#39;,
+                action: { label: &#39;Retry&#39;, onClick: () =&gt; {} }
+            })
+        }&gt;
+        Show toast with action
+    &lt;/Button&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Action Node</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Toast with a custom ReactNode action</div>
+              <div class="hint">Toast with a raw-ReactNode `action`. Pass any JSX to render a custom trailing control — a link, a pair of buttons, etc. — when the default secondary Button doesn&#39;t fit.</div>
+              <pre><code>const WithActionNode = () =&gt; (
+    &lt;Button
+        variant=&quot;secondary&quot;
+        onClick={() =&gt;
+            toast(&#39;File uploaded&#39;, {
+                description: &#39;document.pdf is ready.&#39;,
+                action: (
+                    &lt;Button variant=&quot;link&quot; onClick={() =&gt; {}}&gt;
+                        View file
+                    &lt;/Button&gt;
+                )
+            })
+        }&gt;
+        Show toast with link action
+    &lt;/Button&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Action And Cancel</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Toast with an action and a cancel control</div>
+              <div class="hint">Toast with both `action` and `cancel`. Cancel renders as a ghost Button next to the action; its handler runs and the toast auto-dismisses.</div>
+              <pre><code>const WithActionAndCancel = () =&gt; (
+    &lt;Button
+        variant=&quot;secondary&quot;
+        onClick={() =&gt;
+            toast.success(&#39;Record archived&#39;, {
+                variant: &#39;expanded&#39;,
+                description: &#39;The record is hidden from the default view.&#39;,
+                action: { label: &#39;Undo&#39;, onClick: () =&gt; {} },
+                cancel: { label: &#39;Dismiss&#39;, onClick: () =&gt; {} }
+            })
+        }&gt;
+        Show toast with action + cancel
+    &lt;/Button&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Non Dismissible</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Non-dismissible toast (no close button)</div>
+              <div class="hint">Non-dismissible toast. Setting `dismissible: false` hides the close button; the toast still auto-dismisses when its `duration` elapses, or programmatically via `toast.dismiss(id)`.</div>
+              <pre><code>const NonDismissible = () =&gt; (
+    &lt;Button
+        variant=&quot;secondary&quot;
+        onClick={() =&gt;
+            toast.info(&#39;Sync in progress&#39;, {
+                dismissible: false,
+                description: &#39;Please wait while we sync your data.&#39;
+            })
+        }&gt;
+        Show non-dismissible toast
+    &lt;/Button&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Long Duration</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Toast with a custom `duration`</div>
+              <div class="hint">Long-duration toast. `duration` (in ms) overrides the provider default so long-running operations stay visible until they&#39;re relevant.</div>
+              <pre><code>const LongDuration = () =&gt; (
+    &lt;Button
+        variant=&quot;secondary&quot;
+        onClick={() =&gt;
+            toast.info(&#39;Uploading documents&#39;, {
+                description: &#39;This may take a moment.&#39;,
+                duration: 10_000
+            })
+        }&gt;
+        Show 10s toast
+    &lt;/Button&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Programmatic Dismiss</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Dismiss a toast programmatically via its id</div>
+              <div class="hint">Programmatic dismissal. `toast()` returns the toast id, which you can pass to `toast.dismiss(id)` to clear it before its duration elapses.</div>
+              <pre><code>const ProgrammaticDismiss = () =&gt; {
+    let toastId: string | number | undefined;
+    return (
+        &lt;div style={{ display: &#39;flex&#39;, gap: &#39;0.5rem&#39; }}&gt;
+            &lt;Button
+                variant=&quot;secondary&quot;
+                onClick={() =&gt; {
+                    toastId = toast.info(&#39;Uploading...&#39;, { duration: 60_000 });
+                }}&gt;
+                Start
+            &lt;/Button&gt;
+            &lt;Button
+                variant=&quot;ghost&quot;
+                onClick={() =&gt; {
+                    if (toastId !== undefined) toast.dismiss(toastId);
+                }}&gt;
+                Dismiss
+            &lt;/Button&gt;
+        &lt;/div&gt;
+    );
+};</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Promise</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Wire a toast to an async operation via `toast.promise`</div>
+              <div class="hint">`toast.promise` wires a toast to an async operation — loading while the promise is pending, success or error when it settles. Useful for save/submit flows where the outcome feeds back into the same toast.</div>
+              <pre><code>const WithPromise = () =&gt; {
+    const fakeFetch = () =&gt;
+        new Promise&lt;string&gt;((resolve, reject) =&gt; {
+            window.setTimeout(
+                () =&gt; (Math.random() &gt; 0.5 ? resolve(&#39;ok&#39;) : reject(new globalThis.Error(&#39;nope&#39;))),
+                1500
+            );
+        });
+    return (
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast.promise(fakeFetch(), {
+                    loading: &#39;Saving document…&#39;,
+                    success: &#39;Document saved&#39;,
+                    error: &#39;Save failed&#39;
+                })
+            }&gt;
+            Run promise
+        &lt;/Button&gt;
+    );
+};</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Custom Icon</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Override the default type-based icon</div>
+              <div class="hint">Custom `icon` override. Pass any ReactNode as `icon` to replace the type-based default — helpful when the toast reflects a domain-specific action (e.g., a sync icon for a sync-in-progress toast).</div>
+              <pre><code>const CustomIcon = () =&gt; (
+    &lt;Button
+        variant=&quot;secondary&quot;
+        onClick={() =&gt;
+            toast.success(&#39;Sync started&#39;, {
+                description: &#39;Data sync is in progress.&#39;,
+                icon: (
+                    &lt;svg viewBox=&quot;0 0 24 24&quot; width=&quot;24&quot; height=&quot;24&quot; fill=&quot;currentColor&quot; aria-hidden&gt;
+                        &lt;path d=&quot;M12 4V1L8 5l4 4V6c3.3 0 6 2.7 6 6 0 1-.3 2-.7 2.8l1.5 1.5C19.5 15 20 13.6 20 12c0-4.4-3.6-8-8-8zm0 14c-3.3 0-6-2.7-6-6 0-1 .3-2 .7-2.8L5.2 7.7C4.5 9 4 10.4 4 12c0 4.4 3.6 8 8 8v3l4-4-4-4v3z&quot; /&gt;
+                    &lt;/svg&gt;
+                )
+            })
+        }&gt;
+        Show toast with custom icon
+    &lt;/Button&gt;
 );</code></pre>
             </div>
         </div>
