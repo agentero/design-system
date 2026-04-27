@@ -576,13 +576,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">6 components ok</span><span class="filter-pill ok" aria-disabled="true">74 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">8 components ok</span><span class="filter-pill ok" aria-disabled="true">97 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>2.0s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>2.1s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -2657,6 +2657,652 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
         &lt;Loading size=&quot;md&quot; /&gt;
         &lt;Loading size=&quot;lg&quot; /&gt;
     &lt;/div&gt;
+);</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
+  aria-label="StatusBall">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> StatusBall</h2>
+      <div class="badges">
+        
+        
+        <label for="c-6-design-system-feedback-statusball-stories" class="badge ok as-toggle">12 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/status-ball/status-ball.stories.tsx">design-system-feedback-statusball · ./src/status-ball/status-ball.stories.tsx</div>
+    
+    <div class="hint">StatusBall renders a small colored dot that marks the state of an adjacent label — appointment confirmation, license validity, availability, or any list row where a single glyph of color communicates status. Pair it with text; the dot alone is not announced to assistive technologies, so the surrounding label must carry the meaning.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-6-design-system-feedback-statusball-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+
+  <div class="panels">
+    
+    
+    
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { StatusBall } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Default neutral dot representing an inactive status</div>
+              <div class="hint">The default dot — `color=&quot;neutral&quot;` for an unknown or inactive status. Drop next to a text label to surface state at a glance.</div>
+              <pre><code>const Default = () =&gt; &lt;div className=&quot;flex items-center gap-2&quot;&gt;
+    &lt;StatusBall color=&quot;neutral&quot; /&gt;
+&lt;/div&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Intents</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Every intent paired with a representative status label</div>
+              <div class="hint">All 8 semantic intents rendered in a single grid, each paired with a sample label. Consumers typically drive the `color` prop from a domain-specific status → intent lookup table.</div>
+              <pre><code>const Intents = () =&gt; {
+    const samples: { color: (typeof INTENTS)[number]; label: string }[] = [
+        { color: &#39;success&#39;, label: &#39;Active&#39; },
+        { color: &#39;info&#39;, label: &#39;Scheduled&#39; },
+        { color: &#39;warning&#39;, label: &#39;Pending&#39; },
+        { color: &#39;danger&#39;, label: &#39;Expired&#39; },
+        { color: &#39;creative&#39;, label: &#39;In review&#39; },
+        { color: &#39;playful&#39;, label: &#39;Flagged&#39; },
+        { color: &#39;dynamic&#39;, label: &#39;Needs attention&#39; },
+        { color: &#39;neutral&#39;, label: &#39;Inactive&#39; }
+    ];
+
+    return (
+        &lt;div className=&quot;grid grid-cols-2 gap-x-8 gap-y-3&quot;&gt;
+            {samples.map(({ color, label }) =&gt; (
+                &lt;div key={color} className=&quot;flex items-center gap-2&quot;&gt;
+                    &lt;StatusBall color={color} /&gt;
+                    &lt;span className=&quot;text-sm text-text-default-base-primary&quot;&gt;{label}&lt;/span&gt;
+                &lt;/div&gt;
+            ))}
+        &lt;/div&gt;
+    );
+};</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Success</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Success dot for positive or active statuses</div>
+              <div class="hint">Success dot for positive / active states — the most common pairing for &quot;live&quot; records such as active licenses or confirmed appointments.</div>
+              <pre><code>const Success = () =&gt; &lt;StatusBall color=&quot;success&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Info</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Info dot for informational statuses</div>
+              <div class="hint">Info dot for informational or neutral-positive states — e.g., scheduled or queued records that are progressing normally.</div>
+              <pre><code>const Info = () =&gt; &lt;StatusBall color=&quot;info&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Warning</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Warning dot for pending or approaching-deadline statuses</div>
+              <div class="hint">Warning dot for pending states or records approaching a deadline — e.g., a license nearing expiration or an appointment awaiting confirmation.</div>
+              <pre><code>const Warning = () =&gt; &lt;StatusBall color=&quot;warning&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Danger</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Danger dot for error or expired statuses</div>
+              <div class="hint">Danger dot for error / expired / blocking states — e.g., an expired license or a failed payment that blocks progress.</div>
+              <pre><code>const Danger = () =&gt; &lt;StatusBall color=&quot;danger&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Creative</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Creative dot for category-specific statuses</div>
+              <div class="hint">Creative dot for category-specific statuses without a direct success/info/ warning/danger mapping — often used for &quot;in review&quot; or &quot;under assessment&quot; domain states.</div>
+              <pre><code>const Creative = () =&gt; &lt;StatusBall color=&quot;creative&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Dynamic</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Dynamic dot for attention-needed statuses</div>
+              <div class="hint">Dynamic dot for attention-worthy states that sit between warning and danger — e.g., records that need action soon but are not yet failed.</div>
+              <pre><code>const Dynamic = () =&gt; &lt;StatusBall color=&quot;dynamic&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Playful</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Playful dot for flagged or priority statuses</div>
+              <div class="hint">Playful dot for flagged or priority domain states that need to stand out from warnings with a distinct hue.</div>
+              <pre><code>const Playful = () =&gt; &lt;StatusBall color=&quot;playful&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Neutral</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Neutral dot for inactive or unknown statuses</div>
+              <div class="hint">Neutral dot for inactive, unknown, or default states — the fallback when no other intent applies.</div>
+              <pre><code>const Neutral = () =&gt; &lt;StatusBall color=&quot;neutral&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">In List</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>StatusBall paired with labels inside a list</div>
+              <div class="hint">StatusBall inside a list row — the canonical production usage, mirroring the appointment and license list patterns in `producerflow/mono`. Each row pairs a dot with a label and supporting text.</div>
+              <pre><code>const InList = () =&gt; {
+    const rows = [
+        { color: &#39;success&#39;, name: &#39;Ada Lovelace&#39;, status: &#39;Active&#39; },
+        { color: &#39;warning&#39;, name: &#39;Grace Hopper&#39;, status: &#39;Pending renewal&#39; },
+        { color: &#39;danger&#39;, name: &#39;Alan Turing&#39;, status: &#39;Expired&#39; },
+        { color: &#39;neutral&#39;, name: &#39;Katherine Johnson&#39;, status: &#39;Inactive&#39; }
+    ] as const;
+
+    return (
+        &lt;ul className=&quot;w-80 divide-y divide-border-default-base-primary rounded-lg border border-border-default-base-primary bg-bg-default-base-primary&quot;&gt;
+            {rows.map(row =&gt; (
+                &lt;li key={row.name} className=&quot;flex items-center gap-3 px-4 py-3&quot;&gt;
+                    &lt;StatusBall color={row.color} /&gt;
+                    &lt;div className=&quot;flex flex-col&quot;&gt;
+                        &lt;span className=&quot;text-sm font-medium text-text-default-base-primary&quot;&gt;{row.name}&lt;/span&gt;
+                        &lt;span className=&quot;text-xs text-text-default-base-secondary&quot;&gt;{row.status}&lt;/span&gt;
+                    &lt;/div&gt;
+                &lt;/li&gt;
+            ))}
+        &lt;/ul&gt;
+    );
+};</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">In Pill</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>StatusBall inside a rounded status pill</div>
+              <div class="hint">StatusBall inside a status pill — a tinted badge that pairs the dot with a label in a single rounded container. Use when the status needs more visual weight than a bare list row provides.</div>
+              <pre><code>const InPill = () =&gt; (
+    &lt;div className=&quot;flex flex-wrap items-center gap-2&quot;&gt;
+        &lt;span className=&quot;inline-flex items-center gap-1.5 rounded-full border border-border-default-base-primary bg-bg-default-base-primary px-2.5 py-1 text-xs text-text-default-base-primary&quot;&gt;
+            &lt;StatusBall color=&quot;success&quot; /&gt;
+            Active
+        &lt;/span&gt;
+        &lt;span className=&quot;inline-flex items-center gap-1.5 rounded-full border border-border-default-base-primary bg-bg-default-base-primary px-2.5 py-1 text-xs text-text-default-base-primary&quot;&gt;
+            &lt;StatusBall color=&quot;warning&quot; /&gt;
+            Pending
+        &lt;/span&gt;
+        &lt;span className=&quot;inline-flex items-center gap-1.5 rounded-full border border-border-default-base-primary bg-bg-default-base-primary px-2.5 py-1 text-xs text-text-default-base-primary&quot;&gt;
+            &lt;StatusBall color=&quot;danger&quot; /&gt;
+            Expired
+        &lt;/span&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
+  aria-label="Toast">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Toast</h2>
+      <div class="badges">
+        <label for="c-7-components-toast-props" class="badge ok as-toggle">11 prop types</label>
+        
+        <label for="c-7-components-toast-stories" class="badge ok as-toggle">11 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/toast/toast.stories.tsx">components-toast · ./src/toast/toast.stories.tsx</div>
+    
+    <div class="hint">Toast renders transient feedback about an outcome — saved, failed, warning, info — without interrupting the user&#39;s flow. Mount `&lt;Toast /&gt;` once near the app root to register the provider, then call the imperative `toast()` API from anywhere in the tree. Five semantic types (`neutral`, `success`, `error`, `warning`, `info`) × two layouts (`inline`, `expanded`) cover the common feedback patterns.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-7-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  <input id="c-7-components-toast-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
+              <span class="badge ok">11 prop types</span>
+            </div>
+            <pre><code>Component: src/toast/toast.tsx::Toast</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>/**
+ * Additional className merged onto the sonner `&lt;Toaster&gt;` root.
+ */
+className?: string
+
+/**
+ * Text direction. Sonner forwards this to the rendered toaster root.
+ */
+dir?: &quot;auto&quot; | &quot;ltr&quot; | &quot;rtl&quot;
+
+/**
+ * Default auto-dismiss duration in ms for toasts fired against this provider. Defaults to `5000`.
+ */
+duration?: number = 5000
+
+/**
+ * When `true`, stack expands on hover instead of auto-collapsing.
+ */
+expand?: boolean
+
+/**
+ * Gap between stacked toasts, in pixels.
+ */
+gap?: number
+
+/**
+ * Keyboard shortcut used to focus the toaster.
+ */
+hotkey?: string[]
+
+/**
+ * When `true`, flips light/dark theme on the toaster root.
+ */
+invert?: boolean
+
+/**
+ * Offset from the screen edge, in pixels or as a CSS length.
+ */
+offset?: string | number
+
+/**
+ * Placement of the toaster on the screen. Defaults to `&#39;bottom-right&#39;`.
+ */
+position?: ToastPosition = bottom-right
+
+/**
+ * When `true`, sonner paints colored backgrounds per type (DS uses its own icon tokens by default).
+ */
+richColors?: boolean
+
+/**
+ * Maximum number of toasts rendered at once before earlier ones dismiss.
+ */
+visibleToasts?: number</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Button, Toast } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Default playground for the Toast provider</div>
+              <div class="hint">Args-controlled playground. Click the button to fire a neutral toast; tweak `position` and `duration` from the Controls panel to preview the provider defaults.</div>
+              <pre><code>const Default = () =&gt; (
+    &lt;div style={{ minHeight: &#39;240px&#39; }}&gt;
+        &lt;Button variant=&quot;secondary&quot; onClick={() =&gt; toast(&#39;Hello from Toast&#39;)}&gt;
+            Show toast
+        &lt;/Button&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Inline</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Inline layout across all five semantic types</div>
+              <div class="hint">Inline layout (default). Compact treatment — title with an optional description stacked directly below it. The `type` drives the icon color. Use for short acknowledgments that don&#39;t need a colored rail.</div>
+              <pre><code>const Inline = () =&gt; (
+    &lt;div style={{ display: &#39;flex&#39;, flexWrap: &#39;wrap&#39;, gap: &#39;0.5rem&#39; }}&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt; toast(&#39;Something happened&#39;, { description: &#39;Additional context.&#39; })}&gt;
+            Neutral
+        &lt;/Button&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt; toast.success(&#39;Policy saved&#39;, { description: &#39;Your edits are live.&#39; })}&gt;
+            Success
+        &lt;/Button&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast.error(&#39;Failed to save&#39;, { description: &#39;The file could not be processed.&#39; })
+            }&gt;
+            Error
+        &lt;/Button&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast.warning(&#39;License expiring soon&#39;, { description: &#39;Renew before end of month.&#39; })
+            }&gt;
+            Warning
+        &lt;/Button&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast.info(&#39;Sync in progress&#39;, { description: &#39;Please wait while we sync your data.&#39; })
+            }&gt;
+            Info
+        &lt;/Button&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Expanded</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Expanded layout across all five semantic types</div>
+              <div class="hint">Expanded layout. Multi-line treatment with a 0.375rem colored left rail that tracks the toast&#39;s `type`. Use for feedback that benefits from a description on its own line or a trailing action button.</div>
+              <pre><code>const Expanded = () =&gt; (
+    &lt;div style={{ display: &#39;flex&#39;, flexWrap: &#39;wrap&#39;, gap: &#39;0.5rem&#39; }}&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast(&#39;Something happened&#39;, {
+                    variant: &#39;expanded&#39;,
+                    description: &#39;Additional context for the user.&#39;
+                })
+            }&gt;
+            Neutral
+        &lt;/Button&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast.success(&#39;Policy saved&#39;, {
+                    variant: &#39;expanded&#39;,
+                    description: &#39;Your changes have been saved successfully.&#39;
+                })
+            }&gt;
+            Success
+        &lt;/Button&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast.error(&#39;Failed to save&#39;, {
+                    variant: &#39;expanded&#39;,
+                    description: &#39;The file could not be processed.&#39;
+                })
+            }&gt;
+            Error
+        &lt;/Button&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast.warning(&#39;License expiring soon&#39;, {
+                    variant: &#39;expanded&#39;,
+                    description: &#39;Renew before the end of the month to avoid interruption.&#39;
+                })
+            }&gt;
+            Warning
+        &lt;/Button&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast.info(&#39;Sync in progress&#39;, {
+                    variant: &#39;expanded&#39;,
+                    description: &#39;Please wait while we sync your data.&#39;
+                })
+            }&gt;
+            Info
+        &lt;/Button&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Action Object</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Toast with a structured action button</div>
+              <div class="hint">Toast with a structured `action` object. Passing `{ label, onClick }` renders the built-in secondary Button; the handler runs and the toast auto-dismisses afterward.</div>
+              <pre><code>const WithActionObject = () =&gt; (
+    &lt;Button
+        variant=&quot;secondary&quot;
+        onClick={() =&gt;
+            toast.error(&#39;Upload failed&#39;, {
+                variant: &#39;expanded&#39;,
+                description: &#39;The file could not be processed.&#39;,
+                action: { label: &#39;Retry&#39;, onClick: () =&gt; {} }
+            })
+        }&gt;
+        Show toast with action
+    &lt;/Button&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Action Node</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Toast with a custom ReactNode action</div>
+              <div class="hint">Toast with a raw-ReactNode `action`. Pass any JSX to render a custom trailing control — a link, a pair of buttons, etc. — when the default secondary Button doesn&#39;t fit.</div>
+              <pre><code>const WithActionNode = () =&gt; (
+    &lt;Button
+        variant=&quot;secondary&quot;
+        onClick={() =&gt;
+            toast(&#39;File uploaded&#39;, {
+                description: &#39;document.pdf is ready.&#39;,
+                action: (
+                    &lt;Button variant=&quot;link&quot; onClick={() =&gt; {}}&gt;
+                        View file
+                    &lt;/Button&gt;
+                )
+            })
+        }&gt;
+        Show toast with link action
+    &lt;/Button&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Action And Cancel</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Toast with an action and a cancel control</div>
+              <div class="hint">Toast with both `action` and `cancel`. Cancel renders as a ghost Button next to the action; its handler runs and the toast auto-dismisses.</div>
+              <pre><code>const WithActionAndCancel = () =&gt; (
+    &lt;Button
+        variant=&quot;secondary&quot;
+        onClick={() =&gt;
+            toast.success(&#39;Record archived&#39;, {
+                variant: &#39;expanded&#39;,
+                description: &#39;The record is hidden from the default view.&#39;,
+                action: { label: &#39;Undo&#39;, onClick: () =&gt; {} },
+                cancel: { label: &#39;Dismiss&#39;, onClick: () =&gt; {} }
+            })
+        }&gt;
+        Show toast with action + cancel
+    &lt;/Button&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Non Dismissible</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Non-dismissible toast (no close button)</div>
+              <div class="hint">Non-dismissible toast. Setting `dismissible: false` hides the close button; the toast still auto-dismisses when its `duration` elapses, or programmatically via `toast.dismiss(id)`.</div>
+              <pre><code>const NonDismissible = () =&gt; (
+    &lt;Button
+        variant=&quot;secondary&quot;
+        onClick={() =&gt;
+            toast.info(&#39;Sync in progress&#39;, {
+                dismissible: false,
+                description: &#39;Please wait while we sync your data.&#39;
+            })
+        }&gt;
+        Show non-dismissible toast
+    &lt;/Button&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Long Duration</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Toast with a custom `duration`</div>
+              <div class="hint">Long-duration toast. `duration` (in ms) overrides the provider default so long-running operations stay visible until they&#39;re relevant.</div>
+              <pre><code>const LongDuration = () =&gt; (
+    &lt;Button
+        variant=&quot;secondary&quot;
+        onClick={() =&gt;
+            toast.info(&#39;Uploading documents&#39;, {
+                description: &#39;This may take a moment.&#39;,
+                duration: 10_000
+            })
+        }&gt;
+        Show 10s toast
+    &lt;/Button&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Programmatic Dismiss</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Dismiss a toast programmatically via its id</div>
+              <div class="hint">Programmatic dismissal. `toast()` returns the toast id, which you can pass to `toast.dismiss(id)` to clear it before its duration elapses.</div>
+              <pre><code>const ProgrammaticDismiss = () =&gt; {
+    let toastId: string | number | undefined;
+    return (
+        &lt;div style={{ display: &#39;flex&#39;, gap: &#39;0.5rem&#39; }}&gt;
+            &lt;Button
+                variant=&quot;secondary&quot;
+                onClick={() =&gt; {
+                    toastId = toast.info(&#39;Uploading...&#39;, { duration: 60_000 });
+                }}&gt;
+                Start
+            &lt;/Button&gt;
+            &lt;Button
+                variant=&quot;ghost&quot;
+                onClick={() =&gt; {
+                    if (toastId !== undefined) toast.dismiss(toastId);
+                }}&gt;
+                Dismiss
+            &lt;/Button&gt;
+        &lt;/div&gt;
+    );
+};</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Promise</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Wire a toast to an async operation via `toast.promise`</div>
+              <div class="hint">`toast.promise` wires a toast to an async operation — loading while the promise is pending, success or error when it settles. Useful for save/submit flows where the outcome feeds back into the same toast.</div>
+              <pre><code>const WithPromise = () =&gt; {
+    const fakeFetch = () =&gt;
+        new Promise&lt;string&gt;((resolve, reject) =&gt; {
+            window.setTimeout(
+                () =&gt; (Math.random() &gt; 0.5 ? resolve(&#39;ok&#39;) : reject(new globalThis.Error(&#39;nope&#39;))),
+                1500
+            );
+        });
+    return (
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast.promise(fakeFetch(), {
+                    loading: &#39;Saving document…&#39;,
+                    success: &#39;Document saved&#39;,
+                    error: &#39;Save failed&#39;
+                })
+            }&gt;
+            Run promise
+        &lt;/Button&gt;
+    );
+};</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Custom Icon</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Override the default type-based icon</div>
+              <div class="hint">Custom `icon` override. Pass any ReactNode as `icon` to replace the type-based default — helpful when the toast reflects a domain-specific action (e.g., a sync icon for a sync-in-progress toast).</div>
+              <pre><code>const CustomIcon = () =&gt; (
+    &lt;Button
+        variant=&quot;secondary&quot;
+        onClick={() =&gt;
+            toast.success(&#39;Sync started&#39;, {
+                description: &#39;Data sync is in progress.&#39;,
+                icon: (
+                    &lt;svg viewBox=&quot;0 0 24 24&quot; width=&quot;24&quot; height=&quot;24&quot; fill=&quot;currentColor&quot; aria-hidden&gt;
+                        &lt;path d=&quot;M12 4V1L8 5l4 4V6c3.3 0 6 2.7 6 6 0 1-.3 2-.7 2.8l1.5 1.5C19.5 15 20 13.6 20 12c0-4.4-3.6-8-8-8zm0 14c-3.3 0-6-2.7-6-6 0-1 .3-2 .7-2.8L5.2 7.7C4.5 9 4 10.4 4 12c0 4.4 3.6 8 8 8v3l4-4-4-4v3z&quot; /&gt;
+                    &lt;/svg&gt;
+                )
+            })
+        }&gt;
+        Show toast with custom icon
+    &lt;/Button&gt;
 );</code></pre>
             </div>
         </div>
