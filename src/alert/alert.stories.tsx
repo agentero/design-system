@@ -42,7 +42,7 @@ const Stack = ({ children }: { children: React.ReactNode }) => (
  * feedback scenarios.
  */
 const meta = {
-	title: 'Design System/Feedback/Alert',
+	title: 'Components/Alert',
 	component: Alert,
 	tags: ['autodocs'],
 	argTypes: {
