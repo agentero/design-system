@@ -102,8 +102,8 @@ const Portal = DropdownMenuPrimitive.Portal;
  */
 const contentStyles = tv({
 	base: [
-		'z-[1000] flex flex-col rounded-lg bg-white p-1 shadow-xl',
-		'border border-gray-100',
+		'z-[1000] flex flex-col rounded-lg bg-bg-default-base-primary p-1 shadow-xl',
+		'border border-border-default-base-primary',
 		'will-change-[transform,opacity]',
 		'data-[state=open]:animate-[dropdownSlideIn_200ms_ease-out]',
 		'data-[state=closed]:animate-[dropdownSlideOut_150ms_ease-in]',
@@ -219,13 +219,13 @@ const Item = ({ className, ...props }: ItemProps) => (
 	<DropdownMenuPrimitive.Item
 		data-slot="dropdown-menu-item"
 		className={cn(
-			'flex items-center gap-2 bg-white px-3 py-1.75 text-sm text-gray-700',
+			'flex items-center gap-2 bg-bg-default-base-primary px-3 py-1.75 text-sm text-text-default-base-primary',
 			'cursor-pointer rounded-md no-underline transition-colors outline-none',
-			'min-w-[10rem]',
-			'data-[highlighted]:bg-bg-button-ghost-hover',
-			'data-[disabled]:pointer-events-none data-[disabled]:cursor-not-allowed',
-			'data-[disabled]:text-gray-400',
-			'data-[disabled]:active:bg-white',
+			'min-w-40',
+			'data-highlighted:bg-bg-default-base-primary-hover',
+			'data-disabled:pointer-events-none data-disabled:cursor-not-allowed',
+			'data-disabled:text-text-default-disable-primary',
+			'data-disabled:active:bg-bg-default-base-primary',
 			'[&>svg]:h-6',
 			'[&_path]:fill-icon-default-base-tertiary',
 			className
@@ -259,7 +259,10 @@ type SeparatorProps = ComponentProps<typeof DropdownMenuPrimitive.Separator>;
 const Separator = ({ className, ...props }: SeparatorProps) => (
 	<DropdownMenuPrimitive.Separator
 		data-slot="dropdown-menu-divider"
-		className={cn('-mx-1 my-1 w-[calc(100%+0.5rem)] border-t border-gray-100', className)}
+		className={cn(
+			'-mx-1 my-1 w-[calc(100%+0.5rem)] border-t border-border-menu-divider',
+			className
+		)}
 		{...props}
 	/>
 );
@@ -292,7 +295,7 @@ type LabelProps = ComponentProps<typeof DropdownMenuPrimitive.Label>;
 const Label = ({ className, ...props }: LabelProps) => (
 	<DropdownMenuPrimitive.Label
 		data-slot="dropdown-menu-label"
-		className={cn('px-3 py-1 text-xs text-gray-500', className)}
+		className={cn('px-3 py-1 text-xs text-text-default-base-tertiary', className)}
 		{...props}
 	/>
 );
@@ -372,13 +375,13 @@ const SubTrigger = ({ className, children, ...props }: SubTriggerProps) => (
 	<DropdownMenuPrimitive.SubTrigger
 		data-slot="dropdown-menu-sub-trigger"
 		className={cn(
-			'flex items-center gap-2 bg-white px-3 py-1.75 text-sm text-gray-700',
+			'flex items-center gap-2 bg-bg-default-base-primary px-3 py-1.75 text-sm text-text-default-base-primary',
 			'cursor-pointer rounded-md no-underline transition-colors outline-none',
-			'min-w-[10rem]',
-			'data-[highlighted]:bg-bg-button-ghost-hover',
-			'data-[state=open]:bg-bg-button-ghost-hover',
-			'data-[disabled]:pointer-events-none data-[disabled]:cursor-not-allowed',
-			'data-[disabled]:text-gray-400',
+			'min-w-40',
+			'data-highlighted:bg-bg-default-base-primary-hover',
+			'data-[state=open]:bg-bg-default-base-primary-hover',
+			'data-disabled:pointer-events-none data-disabled:cursor-not-allowed',
+			'data-disabled:text-text-default-disable-primary',
 			'[&>svg]:h-6',
 			'[&_path]:fill-icon-default-base-tertiary',
 			className
@@ -396,8 +399,8 @@ SubTrigger.displayName = 'DropdownMenu.SubTrigger';
  */
 const subContentStyles = tv({
 	base: [
-		'z-[1000] flex flex-col rounded-lg bg-white p-1 shadow-xl',
-		'border border-gray-100',
+		'z-[1000] flex flex-col rounded-lg bg-bg-default-base-primary p-1 shadow-xl',
+		'border border-border-default-base-primary',
 		'will-change-[transform,opacity]',
 		'data-[state=open]:animate-[dropdownSlideIn_200ms_ease-out]',
 		'data-[state=closed]:animate-[dropdownSlideOut_150ms_ease-in]',
