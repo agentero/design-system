@@ -28,7 +28,7 @@ import {
  */
 export const toastRecipe = tv({
 	slots: {
-		root: 'w-full flex items-start border border-border-default-base-primary bg-white text-text-default-base-primary shadow-xs',
+		root: 'w-full flex items-start border border-border-default-base-primary bg-bg-default-base-primary text-text-default-base-primary shadow-xs',
 		iconWrapper: 'shrink-0',
 		icon: 'size-6 [&_svg]:size-6 [&_path]:fill-current',
 		contentWrapper: 'flex flex-1 min-w-0',

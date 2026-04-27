@@ -21,7 +21,7 @@ const INTENTS = [
  * surrounding label must carry the meaning.
  */
 const meta = {
-	title: 'Design System/Feedback/StatusBall',
+	title: 'Components/StatusBall',
 	component: StatusBall,
 	tags: ['autodocs'],
 	argTypes: {
