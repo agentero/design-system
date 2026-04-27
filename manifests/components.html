@@ -576,13 +576,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">7 components ok</span><span class="filter-pill ok" aria-disabled="true">90 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">8 components ok</span><span class="filter-pill ok" aria-disabled="true">97 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>2.0s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>2.2s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -2129,14 +2129,398 @@ label?: ReactNode</code></pre>
   no-story-error
   no-doc-error"
   role="listitem"
+  aria-label="DropdownMenu.Root">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> DropdownMenu.Root</h2>
+      <div class="badges">
+        
+        
+        <label for="c-4-components-dropdownmenu-stories" class="badge ok as-toggle">7 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/dropdown-menu/dropdown-menu.stories.tsx">components-dropdownmenu · ./src/dropdown-menu/dropdown-menu.stories.tsx</div>
+    
+    <div class="hint">DropdownMenu is a compound overlay for secondary actions, bulk operations, or navigation shortcuts triggered off a button or icon. Compose it from `Root` / `Trigger` / `Portal` / `Content` and fill the menu with `Item`, `Separator`, `Label`, and — for nested flows — `Sub` / `SubTrigger` / `SubContent`. Built on Radix UI&#39;s DropdownMenu primitive, so keyboard navigation, focus trapping, typeahead, and collision detection come for free.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-4-components-dropdownmenu-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+
+  <div class="panels">
+    
+    
+    
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Button, DropdownMenu } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Basic menu with item rows and a separated destructive action</div>
+              <div class="hint">A minimal DropdownMenu with four `Item`s — edit/duplicate/archive plus a separator before a destructive delete. Use this as the starting point for most overflow menus.</div>
+              <pre><code>const Default = () =&gt; (
+    &lt;DropdownMenu.Root&gt;
+        &lt;DropdownMenu.Trigger asChild&gt;
+            &lt;Button size=&quot;md&quot; variant=&quot;secondary&quot;&gt;
+                Click me
+                &lt;IconKeyboardArrowDown /&gt;
+            &lt;/Button&gt;
+        &lt;/DropdownMenu.Trigger&gt;
+        &lt;DropdownMenu.Portal&gt;
+            &lt;DropdownMenu.Content&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Edit clicked&#39;)}&gt;Edit&lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Duplicate clicked&#39;)}&gt;
+                    Duplicate
+                &lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Archive clicked&#39;)}&gt;
+                    Archive
+                &lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Separator /&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Delete clicked&#39;)}&gt;
+                    &lt;span className=&quot;text-red-500&quot;&gt;Delete&lt;/span&gt;
+                &lt;/DropdownMenu.Item&gt;
+            &lt;/DropdownMenu.Content&gt;
+        &lt;/DropdownMenu.Portal&gt;
+    &lt;/DropdownMenu.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Groups And Dividers</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Menu with multiple `Separator`-split groups and a disabled item</div>
+              <div class="hint">Multiple clusters of `Item`s split by `Separator` rules — mirrors an &quot;edit history / clipboard / export&quot; overflow menu. Demonstrates the `disabled` state on a menu row.</div>
+              <pre><code>const WithGroupsAndDividers = () =&gt; (
+    &lt;DropdownMenu.Root&gt;
+        &lt;DropdownMenu.Trigger asChild&gt;
+            &lt;Button size=&quot;md&quot; variant=&quot;secondary&quot;&gt;
+                More Options
+                &lt;IconKeyboardArrowDown /&gt;
+            &lt;/Button&gt;
+        &lt;/DropdownMenu.Trigger&gt;
+        &lt;DropdownMenu.Portal&gt;
+            &lt;DropdownMenu.Content&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Undo&#39;)}&gt;Undo&lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Redo&#39;)}&gt;Redo&lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Separator /&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Copy&#39;)}&gt;Copy&lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Cut&#39;)}&gt;Cut&lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Paste&#39;)}&gt;Paste&lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Separator /&gt;
+                &lt;DropdownMenu.Item disabled&gt;Print (disabled)&lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Export&#39;)}&gt;Export&lt;/DropdownMenu.Item&gt;
+            &lt;/DropdownMenu.Content&gt;
+        &lt;/DropdownMenu.Portal&gt;
+    &lt;/DropdownMenu.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Icons</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Icon-leading items with a destructive delete row</div>
+              <div class="hint">Menu items with leading icons and a destructive row using the `data-[highlighted]:bg-red-100` + `text-red-500` escape hatch. Use this pattern when a row should read as destructive.</div>
+              <pre><code>const WithIcons = () =&gt; (
+    &lt;DropdownMenu.Root&gt;
+        &lt;DropdownMenu.Trigger asChild&gt;
+            &lt;Button size=&quot;md&quot; variant=&quot;secondary&quot;&gt;
+                Actions
+                &lt;IconKeyboardArrowDown /&gt;
+            &lt;/Button&gt;
+        &lt;/DropdownMenu.Trigger&gt;
+        &lt;DropdownMenu.Portal&gt;
+            &lt;DropdownMenu.Content&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Copy&#39;)}&gt;
+                    &lt;IconContentCopy /&gt;
+                    Copy
+                &lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Separator /&gt;
+                &lt;DropdownMenu.Item
+                    onSelect={() =&gt; console.log(&#39;Delete&#39;)}
+                    className=&quot;data-[highlighted]:bg-red-100&quot;&gt;
+                    &lt;IconDelete className=&quot;[&amp;&gt;path]:fill-red-500&quot; /&gt;
+                    &lt;span className=&quot;text-red-500&quot;&gt;Delete&lt;/span&gt;
+                &lt;/DropdownMenu.Item&gt;
+            &lt;/DropdownMenu.Content&gt;
+        &lt;/DropdownMenu.Portal&gt;
+    &lt;/DropdownMenu.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Group Titles</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Menu with `Label`-titled sections and a destructive logout row</div>
+              <div class="hint">`Label`-segmented Profile / Settings / Account sections with a destructive Logout row. Use `Label` to name groups that would otherwise be ambiguous from the item text alone.</div>
+              <pre><code>const WithGroupTitles = () =&gt; (
+    &lt;DropdownMenu.Root&gt;
+        &lt;DropdownMenu.Trigger asChild&gt;
+            &lt;Button size=&quot;md&quot; variant=&quot;secondary&quot;&gt;
+                Account Menu
+                &lt;IconKeyboardArrowDown /&gt;
+            &lt;/Button&gt;
+        &lt;/DropdownMenu.Trigger&gt;
+        &lt;DropdownMenu.Portal&gt;
+            &lt;DropdownMenu.Content&gt;
+                &lt;DropdownMenu.Label&gt;Profile&lt;/DropdownMenu.Label&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;View Profile&#39;)}&gt;
+                    View Profile
+                &lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Edit Profile&#39;)}&gt;
+                    Edit Profile
+                &lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Separator /&gt;
+                &lt;DropdownMenu.Label&gt;Settings&lt;/DropdownMenu.Label&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Preferences&#39;)}&gt;
+                    Preferences
+                &lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Privacy&#39;)}&gt;Privacy&lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Notifications&#39;)}&gt;
+                    Notifications
+                &lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Separator /&gt;
+                &lt;DropdownMenu.Label&gt;Account&lt;/DropdownMenu.Label&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Billing&#39;)}&gt;Billing&lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Item
+                    onSelect={() =&gt; console.log(&#39;Logout&#39;)}
+                    className=&quot;data-[highlighted]:bg-red-100&quot;&gt;
+                    &lt;span className=&quot;text-red-500&quot;&gt;Logout&lt;/span&gt;
+                &lt;/DropdownMenu.Item&gt;
+            &lt;/DropdownMenu.Content&gt;
+        &lt;/DropdownMenu.Portal&gt;
+    &lt;/DropdownMenu.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Submenu</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Single-level submenus for Share and Move-to flows</div>
+              <div class="hint">One level of nesting: Share and Move-to submenus wired via `Sub` / `SubTrigger` / `SubContent`. Each submenu is portaled independently so it escapes the parent&#39;s stacking context.</div>
+              <pre><code>const WithSubmenu = () =&gt; (
+    &lt;DropdownMenu.Root&gt;
+        &lt;DropdownMenu.Trigger asChild&gt;
+            &lt;Button size=&quot;md&quot; variant=&quot;secondary&quot;&gt;
+                File Options
+                &lt;IconKeyboardArrowDown /&gt;
+            &lt;/Button&gt;
+        &lt;/DropdownMenu.Trigger&gt;
+        &lt;DropdownMenu.Portal&gt;
+            &lt;DropdownMenu.Content&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;New File&#39;)}&gt;New File&lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Open&#39;)}&gt;Open&lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Separator /&gt;
+                &lt;DropdownMenu.Sub&gt;
+                    &lt;DropdownMenu.SubTrigger&gt;
+                        &lt;IconIosShare /&gt;
+                        Share
+                    &lt;/DropdownMenu.SubTrigger&gt;
+                    &lt;DropdownMenu.Portal&gt;
+                        &lt;DropdownMenu.SubContent&gt;
+                            &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Email&#39;)}&gt;Email&lt;/DropdownMenu.Item&gt;
+                            &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Slack&#39;)}&gt;Slack&lt;/DropdownMenu.Item&gt;
+                            &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Copy Link&#39;)}&gt;
+                                Copy Link
+                            &lt;/DropdownMenu.Item&gt;
+                        &lt;/DropdownMenu.SubContent&gt;
+                    &lt;/DropdownMenu.Portal&gt;
+                &lt;/DropdownMenu.Sub&gt;
+                &lt;DropdownMenu.Sub&gt;
+                    &lt;DropdownMenu.SubTrigger&gt;
+                        &lt;IconDriveFileMove /&gt;
+                        Move to
+                    &lt;/DropdownMenu.SubTrigger&gt;
+                    &lt;DropdownMenu.Portal&gt;
+                        &lt;DropdownMenu.SubContent&gt;
+                            &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Archive&#39;)}&gt;
+                                Archive
+                            &lt;/DropdownMenu.Item&gt;
+                            &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Projects&#39;)}&gt;
+                                Projects
+                            &lt;/DropdownMenu.Item&gt;
+                            &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Drafts&#39;)}&gt;Drafts&lt;/DropdownMenu.Item&gt;
+                        &lt;/DropdownMenu.SubContent&gt;
+                    &lt;/DropdownMenu.Portal&gt;
+                &lt;/DropdownMenu.Sub&gt;
+                &lt;DropdownMenu.Separator /&gt;
+                &lt;DropdownMenu.Item
+                    onSelect={() =&gt; console.log(&#39;Delete&#39;)}
+                    className=&quot;data-[highlighted]:bg-red-100&quot;&gt;
+                    &lt;IconDelete className=&quot;[&amp;&gt;path]:fill-red-500&quot; /&gt;
+                    &lt;span className=&quot;text-red-500&quot;&gt;Delete&lt;/span&gt;
+                &lt;/DropdownMenu.Item&gt;
+            &lt;/DropdownMenu.Content&gt;
+        &lt;/DropdownMenu.Portal&gt;
+    &lt;/DropdownMenu.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Nested Submenus</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Two-level nested submenus inside a parent menu</div>
+              <div class="hint">Two levels of nesting: Organization → Teams → (Engineering, Design). Deeper nesting is rarely a good UX — prefer splitting into separate screens once the tree grows past two levels.</div>
+              <pre><code>const NestedSubmenus = () =&gt; (
+    &lt;DropdownMenu.Root&gt;
+        &lt;DropdownMenu.Trigger asChild&gt;
+            &lt;Button size=&quot;md&quot; variant=&quot;secondary&quot;&gt;
+                Organization Menu
+                &lt;IconKeyboardArrowDown /&gt;
+            &lt;/Button&gt;
+        &lt;/DropdownMenu.Trigger&gt;
+        &lt;DropdownMenu.Portal&gt;
+            &lt;DropdownMenu.Content&gt;
+                &lt;DropdownMenu.Label&gt;Organization&lt;/DropdownMenu.Label&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Dashboard&#39;)}&gt;Dashboard&lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Sub&gt;
+                    &lt;DropdownMenu.SubTrigger&gt;
+                        &lt;IconPeople /&gt;
+                        Teams
+                    &lt;/DropdownMenu.SubTrigger&gt;
+                    &lt;DropdownMenu.Portal&gt;
+                        &lt;DropdownMenu.SubContent&gt;
+                            &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;View All Teams&#39;)}&gt;
+                                View All Teams
+                            &lt;/DropdownMenu.Item&gt;
+                            &lt;DropdownMenu.Separator /&gt;
+                            &lt;DropdownMenu.Sub&gt;
+                                &lt;DropdownMenu.SubTrigger&gt;Engineering&lt;/DropdownMenu.SubTrigger&gt;
+                                &lt;DropdownMenu.Portal&gt;
+                                    &lt;DropdownMenu.SubContent&gt;
+                                        &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Frontend&#39;)}&gt;
+                                            Frontend
+                                        &lt;/DropdownMenu.Item&gt;
+                                        &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Backend&#39;)}&gt;
+                                            Backend
+                                        &lt;/DropdownMenu.Item&gt;
+                                        &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;DevOps&#39;)}&gt;
+                                            DevOps
+                                        &lt;/DropdownMenu.Item&gt;
+                                    &lt;/DropdownMenu.SubContent&gt;
+                                &lt;/DropdownMenu.Portal&gt;
+                            &lt;/DropdownMenu.Sub&gt;
+                            &lt;DropdownMenu.Sub&gt;
+                                &lt;DropdownMenu.SubTrigger&gt;Design&lt;/DropdownMenu.SubTrigger&gt;
+                                &lt;DropdownMenu.Portal&gt;
+                                    &lt;DropdownMenu.SubContent&gt;
+                                        &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Product Design&#39;)}&gt;
+                                            Product Design
+                                        &lt;/DropdownMenu.Item&gt;
+                                        &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Brand&#39;)}&gt;
+                                            Brand
+                                        &lt;/DropdownMenu.Item&gt;
+                                    &lt;/DropdownMenu.SubContent&gt;
+                                &lt;/DropdownMenu.Portal&gt;
+                            &lt;/DropdownMenu.Sub&gt;
+                            &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Marketing&#39;)}&gt;
+                                Marketing
+                            &lt;/DropdownMenu.Item&gt;
+                        &lt;/DropdownMenu.SubContent&gt;
+                    &lt;/DropdownMenu.Portal&gt;
+                &lt;/DropdownMenu.Sub&gt;
+                &lt;DropdownMenu.Separator /&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Settings&#39;)}&gt;Settings&lt;/DropdownMenu.Item&gt;
+            &lt;/DropdownMenu.Content&gt;
+        &lt;/DropdownMenu.Portal&gt;
+    &lt;/DropdownMenu.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Submenu With Disabled Items</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Submenu with `disabled` items and a disabled `SubTrigger`</div>
+              <div class="hint">Submenu that contains `disabled` `Item`s alongside a fully-disabled `SubTrigger`. Use `disabled` sparingly — prefer hiding unavailable actions outright unless the user needs to see them and understand why.</div>
+              <pre><code>const SubmenuWithDisabledItems = () =&gt; (
+    &lt;DropdownMenu.Root&gt;
+        &lt;DropdownMenu.Trigger asChild&gt;
+            &lt;Button size=&quot;md&quot; variant=&quot;secondary&quot;&gt;
+                Document Actions
+                &lt;IconKeyboardArrowDown /&gt;
+            &lt;/Button&gt;
+        &lt;/DropdownMenu.Trigger&gt;
+        &lt;DropdownMenu.Portal&gt;
+            &lt;DropdownMenu.Content&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;View&#39;)}&gt;View&lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Edit&#39;)}&gt;Edit&lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Separator /&gt;
+                &lt;DropdownMenu.Sub&gt;
+                    &lt;DropdownMenu.SubTrigger&gt;
+                        &lt;IconContentCopy /&gt;
+                        Export as
+                    &lt;/DropdownMenu.SubTrigger&gt;
+                    &lt;DropdownMenu.Portal&gt;
+                        &lt;DropdownMenu.SubContent&gt;
+                            &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;PDF&#39;)}&gt;PDF&lt;/DropdownMenu.Item&gt;
+                            &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Word&#39;)}&gt;
+                                Word Document
+                            &lt;/DropdownMenu.Item&gt;
+                            &lt;DropdownMenu.Item disabled&gt;Excel (Premium only)&lt;/DropdownMenu.Item&gt;
+                            &lt;DropdownMenu.Item disabled&gt;PowerPoint (Premium only)&lt;/DropdownMenu.Item&gt;
+                        &lt;/DropdownMenu.SubContent&gt;
+                    &lt;/DropdownMenu.Portal&gt;
+                &lt;/DropdownMenu.Sub&gt;
+                &lt;DropdownMenu.Sub&gt;
+                    &lt;DropdownMenu.SubTrigger disabled&gt;
+                        &lt;IconIosShare /&gt;
+                        Share (Sign in required)
+                    &lt;/DropdownMenu.SubTrigger&gt;
+                    &lt;DropdownMenu.Portal&gt;
+                        &lt;DropdownMenu.SubContent&gt;
+                            &lt;DropdownMenu.Item&gt;Email&lt;/DropdownMenu.Item&gt;
+                            &lt;DropdownMenu.Item&gt;Link&lt;/DropdownMenu.Item&gt;
+                        &lt;/DropdownMenu.SubContent&gt;
+                    &lt;/DropdownMenu.Portal&gt;
+                &lt;/DropdownMenu.Sub&gt;
+            &lt;/DropdownMenu.Content&gt;
+        &lt;/DropdownMenu.Portal&gt;
+    &lt;/DropdownMenu.Root&gt;
+);</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
   aria-label="Loading">
   <div class="head">
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Loading</h2>
       <div class="badges">
-        <label for="c-4-components-loading-props" class="badge ok as-toggle">1 prop type</label>
+        <label for="c-5-components-loading-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-4-components-loading-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-5-components-loading-stories" class="badge ok as-toggle">7 stories</label>
         
       </div>
     </div>
@@ -2149,9 +2533,9 @@ label?: ReactNode</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-4-components-loading-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-5-components-loading-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-4-components-loading-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-5-components-loading-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -2293,7 +2677,7 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
       <div class="badges">
         
         
-        <label for="c-5-design-system-feedback-statusball-stories" class="badge ok as-toggle">12 stories</label>
+        <label for="c-6-design-system-feedback-statusball-stories" class="badge ok as-toggle">12 stories</label>
         
       </div>
     </div>
@@ -2306,7 +2690,7 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-5-design-system-feedback-statusball-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-6-design-system-feedback-statusball-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
@@ -2511,9 +2895,9 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Toast</h2>
       <div class="badges">
-        <label for="c-6-components-toast-props" class="badge ok as-toggle">11 prop types</label>
+        <label for="c-7-components-toast-props" class="badge ok as-toggle">11 prop types</label>
         
-        <label for="c-6-components-toast-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-7-components-toast-stories" class="badge ok as-toggle">11 stories</label>
         
       </div>
     </div>
@@ -2526,9 +2910,9 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-6-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-7-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-6-components-toast-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-7-components-toast-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
