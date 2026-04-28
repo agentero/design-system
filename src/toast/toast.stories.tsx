@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { RefreshCwIcon } from 'lucide-react';
 
+import { iconStyles } from '../../lib';
 import { Button } from '../button';
 import { Toast, toast } from './toast';
 
@@ -386,11 +388,7 @@ export const CustomIcon: Story = {
 			onClick={() =>
 				toast.success('Sync started', {
 					description: 'Data sync is in progress.',
-					icon: (
-						<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden>
-							<path d="M12 4V1L8 5l4 4V6c3.3 0 6 2.7 6 6 0 1-.3 2-.7 2.8l1.5 1.5C19.5 15 20 13.6 20 12c0-4.4-3.6-8-8-8zm0 14c-3.3 0-6-2.7-6-6 0-1 .3-2 .7-2.8L5.2 7.7C4.5 9 4 10.4 4 12c0 4.4 3.6 8 8 8v3l4-4-4-4v3z" />
-						</svg>
-					)
+					icon: <RefreshCwIcon className={iconStyles({ size: 'lg' })} />
 				})
 			}>
 			Show toast with custom icon

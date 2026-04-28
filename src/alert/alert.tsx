@@ -8,23 +8,23 @@ import {
 	isValidElement,
 	PropsWithChildren,
 	ReactNode,
-	SVGProps,
 	use,
 	useId
 } from 'react';
 
+import {
+	CircleAlertIcon,
+	CircleCheckIcon,
+	InfoIcon,
+	type LucideIcon,
+	StarIcon,
+	TriangleAlertIcon,
+	XIcon
+} from 'lucide-react';
 import { tv, VariantProps } from 'tailwind-variants';
 
-import { cn } from '../../lib';
+import { cn, iconStyles } from '../../lib';
 import { Button } from '../button';
-import {
-	IconCheckCircle,
-	IconClose,
-	IconErrorOutline,
-	IconInfoOutline,
-	IconStar,
-	IconWarning
-} from './icons';
 
 /**
  * Style recipe for Alert using tailwind-variants. Exposes five slots
@@ -48,7 +48,7 @@ export const alertRecipe = tv({
 		title: 'font-semibold',
 		paragraph: '',
 		content: 'flex flex-col h-full self-start',
-		icon: '[&_path]:fill-current'
+		icon: ''
 	},
 	variants: {
 		color: {
@@ -66,15 +66,13 @@ export const alertRecipe = tv({
 				root: 'px-4 py-3 gap-2',
 				title: 'text-sm',
 				paragraph: 'text-xs',
-				content: 'gap-1',
-				icon: 'size-5'
+				content: 'gap-1'
 			},
 			md: {
 				root: 'px-8 py-6 gap-4',
 				title: 'text-lg',
 				paragraph: 'text-sm',
-				content: 'gap-2',
-				icon: 'size-6'
+				content: 'gap-2'
 			}
 		},
 		ghost: {
@@ -274,16 +272,24 @@ export const useAlert = () => {
 };
 
 const iconMapping: {
-	[key in AlertColorType]: ComponentType<SVGProps<SVGSVGElement>>;
+	[key in AlertColorType]: LucideIcon;
 } = {
-	neutral: IconInfoOutline,
-	success: IconCheckCircle,
-	danger: IconErrorOutline,
-	warning: IconWarning,
-	info: IconInfoOutline,
-	creative: IconStar,
-	dynamic: IconInfoOutline,
-	playful: IconInfoOutline
+	neutral: InfoIcon,
+	success: CircleCheckIcon,
+	danger: CircleAlertIcon,
+	warning: TriangleAlertIcon,
+	info: InfoIcon,
+	creative: StarIcon,
+	dynamic: InfoIcon,
+	playful: InfoIcon
+};
+
+const mdIconClass = iconStyles({ size: 'md' });
+const lgIconClass = iconStyles({ size: 'lg' });
+
+const iconClassForAlertSize: Record<AlertSizeType, string> = {
+	sm: mdIconClass,
+	md: lgIconClass
 };
 
 /* --------------- Sub-components --------------- */
@@ -453,8 +459,21 @@ type AlertProps = {
 	onDismiss?: () => void;
 	/** When `true` (default), renders the built-in icon for the current `color`. Set to `false` to omit the icon entirely. */
 	hasIcon?: boolean;
-	/** Overrides the default icon for the current `color`. Receives the slot-computed className so color tokens still apply. */
-	icon?: ComponentType<SVGProps<SVGSVGElement>>;
+	/**
+	 * Overrides the default icon for the current `color`. Pass any `LucideIcon`
+	 * from `lucide-react` — Alert applies the size + color tokens via className,
+	 * so consumers don't need to style the icon themselves.
+	 *
+	 * @example
+	 * import { LightbulbIcon } from 'lucide-react';
+	 *
+	 * <Alert color="creative" icon={LightbulbIcon}>
+	 *   <Alert.Content>
+	 *     <Alert.Title>Pro tip</Alert.Title>
+	 *   </Alert.Content>
+	 * </Alert>
+	 */
+	icon?: LucideIcon;
 	/**
 	 * Semantic color. Defaults to `'neutral'`.
 	 * - `neutral` — generic info; no strong signal.
@@ -568,11 +587,16 @@ export const Alert = ({
 							aria-label="Dismiss"
 							className="text-current"
 							onClick={onDismiss}>
-							<IconClose className="[&_path]:fill-current" />
+							<XIcon />
 						</Button>
 					</div>
 				)}
-				{shouldRenderIcon && <Icon className={slotsStyles.icon()} data-slot="alert-icon" />}
+				{shouldRenderIcon && (
+					<Icon
+						className={cn(iconClassForAlertSize[size], slotsStyles.icon())}
+						data-slot="alert-icon"
+					/>
+				)}
 				<div id={descId} className="flex w-full items-center gap-10">
 					{children}
 				</div>
