@@ -1001,4 +1001,17 @@
 			animation: none;
 		}
 	}
+
+	/**
+	 * Global stroke width for lucide-react icons (default is 2).
+	 * Lucide adds the `.lucide` class to every rendered icon, so this rule
+	 * covers every icon in the consumer app — DS-internal and consumer-passed.
+	 * Per-instance overrides via the `strokeWidth` prop won't work because of
+	 * CSS specificity; use a `LucideProvider` wrapper for that case.
+	 *
+	 * @see https://lucide.dev/guide/react/advanced/global-styling
+	 */
+	.lucide {
+		stroke-width: 1.5;
+	}
 }

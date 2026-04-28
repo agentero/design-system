@@ -1,25 +1,25 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import {
-	AlertTriangle,
-	Bell,
-	Check,
-	ChevronRight,
-	Copy,
-	Download,
-	Filter,
-	Heart,
-	Home,
-	Info,
-	Mail,
-	Menu,
-	Plus,
-	Search,
-	Settings,
-	Star,
-	Trash2,
-	Upload,
-	User,
-	X
+	BellIcon,
+	CheckIcon,
+	ChevronRightIcon,
+	CopyIcon,
+	DownloadIcon,
+	FilterIcon,
+	HeartIcon,
+	HomeIcon,
+	InfoIcon,
+	MailIcon,
+	MenuIcon,
+	PlusIcon,
+	SearchIcon,
+	SettingsIcon,
+	StarIcon,
+	Trash2Icon,
+	TriangleAlertIcon,
+	UploadIcon,
+	UserIcon,
+	XIcon
 } from 'lucide-react';
 
 import { iconStyles } from '../../lib/icon-styles';
@@ -45,8 +45,9 @@ export default meta;
 type Story = StoryObj;
 
 /**
- * Three canonical sizes — `sm` (16px), `md` (20px, default), `lg` (24px).
- * Apply via `iconStyles({ size })` on any SVG from `lucide-react`.
+ * Three canonical sizes — `sm` (14px, default), `md` (16px), `lg` (20px).
+ * Apply via `iconStyles({ size })` on any SVG from `lucide-react`. Calling
+ * `iconStyles()` with no args returns the default `sm`.
  *
  * @summary Canonical icon sizes
  */
@@ -54,16 +55,16 @@ export const Sizes: Story = {
 	render: () => (
 		<div className="flex items-end gap-8">
 			<div className="flex flex-col items-center gap-2">
-				<ChevronRight className={iconStyles({ size: 'sm' })} />
-				<span className="text-xs">sm (16px)</span>
+				<ChevronRightIcon className={iconStyles()} />
+				<span className="text-xs">sm (14px)</span>
 			</div>
 			<div className="flex flex-col items-center gap-2">
-				<ChevronRight className={iconStyles({ size: 'md' })} />
-				<span className="text-xs">md (20px)</span>
+				<ChevronRightIcon className={iconStyles({ size: 'md' })} />
+				<span className="text-xs">md (16px)</span>
 			</div>
 			<div className="flex flex-col items-center gap-2">
-				<ChevronRight className={iconStyles({ size: 'lg' })} />
-				<span className="text-xs">lg (24px)</span>
+				<ChevronRightIcon className={iconStyles({ size: 'lg' })} />
+				<span className="text-xs">lg (20px)</span>
 			</div>
 		</div>
 	)
@@ -80,23 +81,23 @@ export const Colors: Story = {
 	render: () => (
 		<div className="flex gap-8">
 			<div className="flex flex-col items-center gap-2 text-icon-default-base-primary">
-				<Bell className={iconStyles()} />
+				<BellIcon className={iconStyles()} />
 				<span className="text-xs">primary</span>
 			</div>
 			<div className="flex flex-col items-center gap-2 text-icon-default-base-secondary">
-				<Bell className={iconStyles()} />
+				<BellIcon className={iconStyles()} />
 				<span className="text-xs">secondary</span>
 			</div>
 			<div className="flex flex-col items-center gap-2 text-icon-default-base-tertiary">
-				<Bell className={iconStyles()} />
+				<BellIcon className={iconStyles()} />
 				<span className="text-xs">tertiary</span>
 			</div>
 			<div className="flex flex-col items-center gap-2 text-bg-default-danger-primary">
-				<AlertTriangle className={iconStyles()} />
+				<TriangleAlertIcon className={iconStyles()} />
 				<span className="text-xs">danger</span>
 			</div>
 			<div className="flex flex-col items-center gap-2 text-bg-default-positive-primary">
-				<Check className={iconStyles()} />
+				<CheckIcon className={iconStyles()} />
 				<span className="text-xs">positive</span>
 			</div>
 		</div>
@@ -112,26 +113,26 @@ export const Colors: Story = {
 export const Gallery: Story = {
 	render: () => {
 		const icons = [
-			{ name: 'Home', Icon: Home },
-			{ name: 'Search', Icon: Search },
-			{ name: 'User', Icon: User },
-			{ name: 'Settings', Icon: Settings },
-			{ name: 'Bell', Icon: Bell },
-			{ name: 'Mail', Icon: Mail },
-			{ name: 'Heart', Icon: Heart },
-			{ name: 'Star', Icon: Star },
-			{ name: 'Plus', Icon: Plus },
-			{ name: 'X', Icon: X },
-			{ name: 'Check', Icon: Check },
-			{ name: 'Menu', Icon: Menu },
-			{ name: 'ChevronRight', Icon: ChevronRight },
-			{ name: 'Info', Icon: Info },
-			{ name: 'AlertTriangle', Icon: AlertTriangle },
-			{ name: 'Trash2', Icon: Trash2 },
-			{ name: 'Download', Icon: Download },
-			{ name: 'Upload', Icon: Upload },
-			{ name: 'Copy', Icon: Copy },
-			{ name: 'Filter', Icon: Filter }
+			{ name: 'HomeIcon', Icon: HomeIcon },
+			{ name: 'SearchIcon', Icon: SearchIcon },
+			{ name: 'UserIcon', Icon: UserIcon },
+			{ name: 'SettingsIcon', Icon: SettingsIcon },
+			{ name: 'BellIcon', Icon: BellIcon },
+			{ name: 'MailIcon', Icon: MailIcon },
+			{ name: 'HeartIcon', Icon: HeartIcon },
+			{ name: 'StarIcon', Icon: StarIcon },
+			{ name: 'PlusIcon', Icon: PlusIcon },
+			{ name: 'XIcon', Icon: XIcon },
+			{ name: 'CheckIcon', Icon: CheckIcon },
+			{ name: 'MenuIcon', Icon: MenuIcon },
+			{ name: 'ChevronRightIcon', Icon: ChevronRightIcon },
+			{ name: 'InfoIcon', Icon: InfoIcon },
+			{ name: 'TriangleAlertIcon', Icon: TriangleAlertIcon },
+			{ name: 'Trash2Icon', Icon: Trash2Icon },
+			{ name: 'DownloadIcon', Icon: DownloadIcon },
+			{ name: 'UploadIcon', Icon: UploadIcon },
+			{ name: 'CopyIcon', Icon: CopyIcon },
+			{ name: 'FilterIcon', Icon: FilterIcon }
 		];
 
 		return (
@@ -158,7 +159,7 @@ export const Gallery: Story = {
 export const InComposition: Story = {
 	render: () => (
 		<div className="flex items-center gap-2 rounded-full bg-bg-button-primary-enable px-4 py-2 text-icon-button-primary-enable">
-			<Plus className={iconStyles({ size: 'sm' })} />
+			<PlusIcon className={iconStyles()} />
 			<span className="text-sm">Create agent</span>
 		</div>
 	)

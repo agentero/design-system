@@ -9,23 +9,27 @@ import { tv, type VariantProps } from 'tailwind-variants';
  * should always reference this recipe from their own `tv` slots rather than
  * hand-rolling sizes.
  *
+ * Sizes: `sm` (14px, default), `md` (16px), `lg` (20px). Calling `iconStyles()`
+ * with no args returns the default `sm`.
+ *
  * @example
- * import { ChevronRight } from 'lucide-react';
+ * import { ChevronRightIcon } from 'lucide-react';
  * import { iconStyles } from '@agentero/design-system/lib';
  *
- * <ChevronRight className={iconStyles({ size: 'md' })} />
+ * <ChevronRightIcon className={iconStyles()} />
+ * <ChevronRightIcon className={iconStyles({ size: 'lg' })} />
  */
 export const iconStyles = tv({
 	base: 'shrink-0',
 	variants: {
 		size: {
-			sm: 'size-4', // 16px
-			md: 'size-5', // 20px
-			lg: 'size-6' // 24px
+			sm: 'size-3.5', // 14px
+			md: 'size-4', // 16px
+			lg: 'size-5' // 20px
 		}
 	},
 	defaultVariants: {
-		size: 'md'
+		size: 'sm'
 	}
 });
 
