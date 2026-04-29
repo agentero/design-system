@@ -1,0 +1,3319 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Components Manifest</title>
+  <style>
+      :root {
+          --bg: #0b0c10;
+          --panel: #121318;
+          --muted: #9aa0a6;
+          --fg: #e8eaed;
+          --ok: #22c55e;
+          --info: #1e88e5;
+          --err: #c62828;
+          --ok-bg: #0c1a13;
+          --info-bg: #0c1624;
+          --err-bg: #1a0e0e;
+          --chip: #1f2330;
+          --border: #2b2f3a;
+          --link: #8ab4f8;
+          --active-ring: 1px; /* 1px active ring for pills and toggles */
+      }
+
+      * {
+          box-sizing: border-box;
+      }
+
+      html,
+      body {
+          margin: 0;
+          background: var(--bg);
+          color: var(--fg);
+          font: 14px/1.5 system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Ubuntu,
+          Cantarell,
+          'Helvetica Neue',
+          Arial,
+          'Noto Sans';
+      }
+
+      .wrap {
+          max-width: 1100px;
+          margin: 0 auto;
+          padding: 16px 20px;
+      }
+
+      header {
+          position: sticky;
+          top: 0;
+          backdrop-filter: blur(6px);
+          background: color-mix(in srgb, var(--bg) 84%, transparent);
+          border-bottom: 1px solid var(--border);
+          z-index: 10;
+      }
+
+      h1 {
+          font-size: 20px;
+          margin: 0 0 6px;
+      }
+
+      .summary {
+          display: flex;
+          gap: 12px;
+          flex-wrap: wrap;
+          align-items: center;
+      }
+
+      /* Top filter pills */
+      .filter-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 6px 12px;
+          border: 1px solid var(--border);
+          border-radius: 999px;
+          background: var(--panel);
+          text-decoration: none;
+          cursor: pointer;
+          user-select: none;
+          color: var(--fg);
+      }
+
+      .filter-pill.ok {
+          color: #b9f6ca;
+          border-color: color-mix(in srgb, var(--ok) 55%, var(--border));
+          background: color-mix(in srgb, var(--ok) 18%, #000);
+      }
+
+      .filter-pill.info {
+          color: #b3d9ff;
+          border-color: color-mix(in srgb, var(--info) 55%, var(--border));
+          background: var(--info-bg);
+      }
+
+      .filter-pill.err {
+          color: #ff9aa0;
+          border-color: color-mix(in srgb, var(--err) 55%, var(--border));
+          background: var(--err-bg);
+      }
+
+      .filter-pill.all {
+          color: #d7dbe0;
+          border-color: var(--border);
+          background: var(--panel);
+      }
+
+      .filter-pill[aria-disabled='true'] {
+          cursor: default;
+          text-decoration: none;
+      }
+
+      .filter-pill:focus,
+      .filter-pill:active {
+          outline: none;
+          box-shadow: none;
+      }
+
+      /* Selected top pill ring via :target */
+      #filter-all:target ~ header .filter-pill[data-k='all'],
+      #filter-errors:target ~ header .filter-pill[data-k='errors'],
+      #filter-infos:target ~ header .filter-pill[data-k='infos'],
+      #filter-story-errors:target ~ header .filter-pill[data-k='story-errors'],
+      #filter-doc-errors:target ~ header .filter-pill[data-k='docs'],
+      #filter-docs:target ~ header .filter-pill[data-k='docs'] {
+          box-shadow: 0 0 0 var(--active-ring) currentColor;
+          border-color: currentColor;
+      }
+
+      /* Hidden targets for filtering */
+      #filter-all,
+      #filter-errors,
+      #filter-infos,
+      #filter-story-errors,
+      #filter-doc-errors,
+      #filter-docs {
+          display: none;
+      }
+
+      main {
+          padding: 36px 0 40px;
+      }
+
+      .grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 18px;
+      }
+
+      /* one card per row */
+
+      .card {
+          border: 1px solid var(--border);
+          background: var(--panel);
+          border-radius: 14px;
+          padding: 14px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+      }
+
+      .head {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+      }
+
+      .title {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 10px;
+      }
+
+      .title h2 {
+          font-size: 16px;
+          margin: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+      }
+
+      .meta {
+          font-size: 12px;
+          color: var(--muted);
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+      }
+
+      .kv {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 6px;
+      }
+
+      .chip {
+          font-size: 12px;
+          padding: 4px 8px;
+          border-radius: 999px;
+          background: var(--chip);
+          border: 1px solid var(--border);
+      }
+
+      .hint {
+          color: var(--muted);
+          font-size: 12px;
+      }
+
+      .badges {
+          display: flex;
+          gap: 8px;
+          flex-wrap: wrap;
+      }
+
+      /* Per-card badges: labels become toggles when clickable */
+      .badge {
+          font-size: 12px;
+          padding: 3px 8px;
+          border-radius: 999px;
+          border: 1px solid var(--border);
+          background: var(--chip);
+          color: #d7dbe0;
+      }
+
+      .badge.ok {
+          color: #b9f6ca;
+          border-color: color-mix(in srgb, var(--ok) 55%, var(--border));
+      }
+
+      .badge.info {
+          color: #b3d9ff;
+          border-color: color-mix(in srgb, var(--info) 55%, var(--border));
+      }
+
+      .badge.err {
+          color: #ff9aa0;
+          border-color: color-mix(in srgb, var(--err) 55%, var(--border));
+      }
+
+      .as-toggle {
+          cursor: pointer;
+      }
+
+      /* 1px ring on active toggle */
+      .tg-err:checked + label.as-toggle,
+      .tg-info:checked + label.as-toggle,
+      .tg-stories:checked + label.as-toggle,
+      .tg-docs:checked + label.as-toggle,
+      .tg-content:checked + label.as-toggle,
+      .tg-props:checked + label.as-toggle {
+          box-shadow: 0 0 0 var(--active-ring) currentColor;
+          border-color: currentColor;
+      }
+
+      /* Panels: hidden by default, shown when respective toggle checked */
+      .panels {
+          display: grid;
+          gap: 10px;
+      }
+
+      .panel {
+          display: none;
+      }
+
+      .tg-err:checked ~ .panels .panel-err {
+          display: grid;
+      }
+
+      .tg-info:checked ~ .panels .panel-info {
+          display: grid;
+          gap: 8px;
+      }
+
+      .tg-stories:checked ~ .panels .panel-stories {
+          display: grid;
+          gap: 8px;
+      }
+
+      .tg-docs:checked ~ .panels .panel-docs {
+          display: grid;
+          gap: 8px;
+      }
+
+      .tg-content:checked ~ .panels .panel-content {
+          display: grid;
+          gap: 8px;
+      }
+
+      .tg-props:checked ~ .panels .panel-props {
+          display: grid;
+      }
+
+      /* Colored notes for prop type error + info */
+      .note {
+          padding: 12px;
+          border: 1px solid var(--border);
+          border-radius: 10px;
+      }
+
+      .note.err {
+          border-color: color-mix(in srgb, var(--err) 55%, var(--border));
+          background: var(--err-bg);
+          color: #ffd1d4;
+      }
+
+      .note.info {
+          border-color: color-mix(in srgb, var(--info) 55%, var(--border));
+          background: var(--info-bg);
+          color: #d6e8ff;
+      }
+
+      .note.ok {
+          border-color: color-mix(in srgb, var(--ok) 55%, var(--border));
+          background: var(--ok-bg);
+          color: var(--fg);
+      }
+
+      .note-title {
+          font-weight: 600;
+          margin-bottom: 6px;
+      }
+
+      .note-body {
+          white-space: normal;
+      }
+
+      /* Story error cards */
+      .ex {
+          padding: 10px;
+          border: 1px solid var(--border);
+          border-radius: 10px;
+          background: #0f131b;
+      }
+
+      .ex.err {
+          border-color: color-mix(in srgb, var(--err) 55%, var(--border));
+      }
+
+      .row {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          flex-wrap: wrap;
+      }
+
+      .status-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          display: inline-block;
+      }
+
+      .dot-ok {
+          background: var(--ok);
+      }
+
+      .dot-err {
+          background: var(--err);
+      }
+
+      .ex-name {
+          font-weight: 600;
+      }
+
+      /* Error groups (visible in errors filter) */
+      .error-groups {
+          display: none;
+          margin-bottom: 16px;
+      }
+
+      .group {
+          border: 1px solid var(--border);
+          background: var(--panel);
+          border-radius: 14px;
+          overflow: hidden;
+      }
+
+      .group + .group {
+          margin-top: 12px;
+      }
+
+      .group-header {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 12px 14px;
+          cursor: pointer;
+          border-bottom: 1px solid var(--border);
+      }
+
+      .group-header:hover {
+          background: #141722;
+      }
+
+      .group-title {
+          font-weight: 600;
+          flex: 1;
+      }
+
+      .group-count {
+          font-size: 12px;
+          color: var(--muted);
+      }
+
+      .group-cards {
+          display: none;
+          padding: 12px;
+      }
+
+      .group .card {
+          margin: 12px 0;
+      }
+
+      .group .card:first-child {
+          margin-top: 0;
+      }
+
+      .group .card:last-child {
+          margin-bottom: 0;
+      }
+
+      /* caret rotation */
+      .group-tg:checked + label .caret {
+          transform: rotate(90deg);
+      }
+
+      .caret {
+          transition: transform 0.15s ease;
+      }
+
+      /* toggle body */
+      .group-tg:checked ~ .group-cards {
+          display: block;
+      }
+
+      /* CSS-only filtering of cards via top pills */
+      #filter-errors:target ~ main .card:not(.has-error):not(.has-story-error) {
+          display: none;
+      }
+
+      #filter-infos:target ~ main .card:not(.has-info) {
+          display: none;
+      }
+
+      #filter-story-errors:target ~ main .card:not(.has-story-error) {
+          display: none;
+      }
+
+      #filter-doc-errors:target ~ main .card:not(.has-doc-error) {
+          display: none;
+      }
+
+      #filter-docs:target ~ main .card:has(> .tg-docs),
+      #filter-docs:target ~ main .card.is-doc {
+          display: block;
+      }
+
+      #filter-docs:target ~ main .card:not(:has(> .tg-docs)):not(.is-doc) {
+          display: none;
+      }
+
+      #filter-all:target ~ main .card {
+          display: block;
+      }
+
+      /* In errors view, hide standalone component-error cards in the regular grid (they will appear in groups) */
+      #filter-errors:target ~ main .grid .card.has-error {
+          display: none;
+      }
+
+      /* Show grouped section only in errors view */
+      #filter-errors:target ~ main .error-groups {
+          display: block;
+      }
+
+      /* Section titles */
+      .section-title {
+          font-size: 16px;
+          font-weight: 600;
+          color: var(--muted);
+          margin: 24px 0 12px;
+          padding-bottom: 8px;
+          border-bottom: 1px solid var(--border);
+      }
+      .section-title:first-child {
+          margin-top: 0;
+      }
+
+      /* When a toggle is checked, show the corresponding panel */
+      .card > .tg-err:checked ~ .panels .panel-err {
+          display: grid;
+      }
+      
+      .card > .tg-info:checked ~ .panels .panel-info {
+          display: grid;
+      }
+      
+      .card > .tg-stories:checked ~ .panels .panel-stories {
+          display: grid;
+      }
+
+      .card > .tg-docs:checked ~ .panels .panel-docs {
+          display: grid;
+      }
+
+      .card > .tg-content:checked ~ .panels .panel-content {
+          display: grid;
+      }
+
+      /* Add vertical spacing around panels only when any panel is visible */
+      .card > .tg-err:checked ~ .panels,
+      .card > .tg-info:checked ~ .panels,
+      .card > .tg-stories:checked ~ .panels,
+      .card > .tg-docs:checked ~ .panels,
+      .card > .tg-content:checked ~ .panels,
+      .card > .tg-props:checked ~ .panels {
+          margin: 10px 0;
+      }
+
+      /* Optional: a subtle 1px ring on the active badge, using :has() if available */
+      @supports selector(.card:has(.tg-err:checked)) {
+          .card:has(.tg-err:checked) label[for$='-err'],
+          .card:has(.tg-info:checked) label[for$='-info'],
+          .card:has(.tg-stories:checked) label[for$='-stories'],
+          .card:has(.tg-docs:checked) label[for$='-docs'],
+          .card:has(.tg-content:checked) label[for$='-content'],
+          .card:has(.tg-props:checked) label[for$='-props'] {
+              box-shadow: 0 0 0 1px currentColor;
+              border-color: currentColor;
+          }
+      }
+
+      /* Wrap long lines in code blocks at ~120 characters */
+      pre, code {
+          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      }
+      pre {
+          white-space: pre-wrap;
+          overflow-wrap: anywhere;
+          word-break: break-word;
+          overflow-x: auto; /* fallback for extremely long tokens */
+          margin: 8px 0 0;
+      }
+      pre > code {
+          display: block;
+          white-space: inherit;
+          overflow-wrap: inherit;
+          word-break: inherit;
+          inline-size: min(100%, 120ch);
+      }
+
+      /* MDX content container for docs */
+      .mdx-content {
+          background: #0f131b;
+          border: 1px solid var(--border);
+          border-radius: 10px;
+          padding: 12px;
+          max-height: 400px;
+          overflow-y: auto;
+          margin-top: 8px;
+      }
+  </style>
+</head>
+<body>
+<!-- Hidden targets for the top-level filters -->
+<span id="filter-all"></span>
+<span id="filter-errors"></span>
+<span id="filter-infos"></span>
+<span id="filter-story-errors"></span>
+<span id="filter-doc-errors"></span>
+<span id="filter-docs"></span>
+<header>
+  <div class="wrap">
+    <h1>Manifest Debugger</h1>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">8 components ok</span><span class="filter-pill ok" aria-disabled="true">97 stories ok</span></div>
+  </div>
+</header>
+<main>
+  <div class="wrap">
+    <div class="note ok" style="margin-bottom: 16px;">
+              Using <code>react-docgen-typescript</code>. Generation took <strong>2.3s</strong>.
+            </div>
+    <h2 class="section-title">Components</h2>
+    <div class="grid" role="list">
+      
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
+  aria-label="Alert">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Alert</h2>
+      <div class="badges">
+        <label for="c-0-components-alert-props" class="badge ok as-toggle">6 prop types</label>
+        
+        <label for="c-0-components-alert-stories" class="badge ok as-toggle">23 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/alert/alert.stories.tsx">components-alert · ./src/alert/alert.stories.tsx</div>
+    
+    <div class="hint">Alert surfaces feedback about outcomes or state changes — success, danger, warning, or info. Compose it from `Alert.Content`, `Alert.Title`, `Alert.Paragraph`, `Alert.Actions`, and `Alert.Button` to build the layout your flow needs. Eight colors, two sizes, and a ghost mode cover most feedback scenarios.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-0-components-alert-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  <input id="c-0-components-alert-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
+              <span class="badge ok">6 prop types</span>
+            </div>
+            <pre><code>Component: src/alert/alert.tsx::Alert</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>/**
+ * Semantic color. Defaults to `&#39;neutral&#39;`.
+ * - `neutral` — generic info; no strong signal.
+ * - `success` — positive confirmation.
+ * - `danger` — error or destructive outcome.
+ * - `warning` — caution; user attention needed.
+ * - `info` — informational highlight.
+ * - `creative`, `dynamic`, `playful` — brand-aligned accents.
+ */
+color?: &quot;neutral&quot; | &quot;success&quot; | &quot;danger&quot; | &quot;warning&quot; | &quot;info&quot; | &quot;creative&quot; | &quot;dynamic&quot; | &quot;playful&quot; = neutral
+
+/**
+ * When `true`, removes background and padding so the alert blends inline
+ * with surrounding text (e.g., inline form field errors). Colors switch
+ * to the ghost token ramp for lower visual weight.
+ */
+ghost?: boolean = false
+
+/**
+ * When `true` (default), renders the built-in icon for the current `color`. Set to `false` to omit the icon entirely.
+ */
+hasIcon?: boolean = true
+
+/**
+ * Overrides the default icon for the current `color`. Receives the slot-computed className so color tokens still apply.
+ */
+icon?: ComponentType&lt;SVGProps&lt;SVGSVGElement&gt;&gt;
+
+/**
+ * Fires when the dismiss button is clicked. When provided, renders an `iconOnly` close button with `aria-label=&quot;Dismiss&quot;`.
+ */
+onDismiss?: (() =&gt; void)
+
+/**
+ * Size treatment. Defaults to `&#39;sm&#39;`.
+ * - `sm` — compact inline alerts (1rem padding, 14/12px typography).
+ * - `md` — prominent standalone alerts (2rem padding, 18/14px typography).
+ */
+size?: AlertSizeType = sm</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Alert } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Default args playground for Alert</div>
+              <div class="hint">Args-controlled playground. Toggle `color`, `size`, `ghost`, `hasIcon`, and `onDismiss` from the Controls panel to explore every visual combination.</div>
+              <pre><code>const Default = () =&gt; &lt;Alert
+    color=&quot;neutral&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Neutral</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Neutral color (default)</div>
+              <div class="hint">Neutral color is the default and carries no strong semantic signal — use it for generic inline information.</div>
+              <pre><code>const Neutral = () =&gt; &lt;Alert
+    color=&quot;neutral&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Success</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Success color for positive outcomes</div>
+              <div class="hint">Success color confirms a positive outcome — saved record, completed task, healthy state.</div>
+              <pre><code>const Success = () =&gt; &lt;Alert
+    color=&quot;success&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Danger</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Danger color for errors and destructive outcomes</div>
+              <div class="hint">Danger color flags errors and destructive outcomes that require the user&#39;s attention.</div>
+              <pre><code>const Danger = () =&gt; &lt;Alert
+    color=&quot;danger&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Warning</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Warning color for cautionary feedback</div>
+              <div class="hint">Warning color signals caution — the user should review before proceeding.</div>
+              <pre><code>const Warning = () =&gt; &lt;Alert
+    color=&quot;warning&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Info</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Info color for informational highlights</div>
+              <div class="hint">Info color highlights tips, hints, or secondary informational content.</div>
+              <pre><code>const Info = () =&gt; &lt;Alert
+    color=&quot;info&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Creative</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Creative brand accent color</div>
+              <div class="hint">Creative color uses a brand-aligned purple accent for marketing or onboarding moments.</div>
+              <pre><code>const Creative = () =&gt; &lt;Alert
+    color=&quot;creative&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Dynamic</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Dynamic brand accent color</div>
+              <div class="hint">Dynamic color uses a brand-aligned orange accent for activity or momentum-focused content.</div>
+              <pre><code>const Dynamic = () =&gt; &lt;Alert
+    color=&quot;dynamic&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Playful</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Playful brand accent color</div>
+              <div class="hint">Playful color uses a brand-aligned pink accent for lighter or celebratory content.</div>
+              <pre><code>const Playful = () =&gt; &lt;Alert
+    color=&quot;playful&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Ghost</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Ghost mode for inline, low-emphasis alerts</div>
+              <div class="hint">Ghost mode removes the background and padding so the alert blends inline with surrounding text (e.g., form field errors). Colors switch to the ghost token ramp for lower visual weight.</div>
+              <pre><code>const Ghost = () =&gt; &lt;Alert
+    color=&quot;danger&quot;
+    size=&quot;sm&quot;
+    ghost
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Small Size</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Small size (default, compact)</div>
+              <div class="hint">Small size (default) uses compact padding and 14/12px typography — suitable for inline alerts inside forms, tables, or cards.</div>
+              <pre><code>const SmallSize = () =&gt; &lt;Alert
+    color=&quot;neutral&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Medium Size</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Medium size (prominent, standalone)</div>
+              <div class="hint">Medium size uses larger padding and 18/14px typography — suitable for standalone alerts in empty states, modals, or dedicated feedback regions.</div>
+              <pre><code>const MediumSize = () =&gt; &lt;Alert
+    color=&quot;neutral&quot;
+    size=&quot;md&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Dismiss</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Alert with a dismiss button</div>
+              <div class="hint">Dismissible alert. Providing `onDismiss` shows an icon-only close button with `aria-label=&quot;Dismiss&quot;` that inherits the alert&#39;s color.</div>
+              <pre><code>const WithDismiss = () =&gt; &lt;Alert
+    color=&quot;warning&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Actions</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Alert with a trailing action button</div>
+              <div class="hint">Alert with a trailing action pinned to the right edge. Use `Alert.Actions` + `Alert.Button` for the common &quot;message + action&quot; pattern.</div>
+              <pre><code>const WithActions = () =&gt; &lt;Alert
+    color=&quot;info&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Update available&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Reload to apply the latest version.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+    &lt;Alert.Actions&gt;
+        &lt;Alert.Button onClick={() =&gt; {}}&gt;Reload&lt;/Alert.Button&gt;
+    &lt;/Alert.Actions&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Dismiss And Action</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Alert with both dismiss and action</div>
+              <div class="hint">Alert combining a dismiss button with a trailing action. Dismiss is pinned to the right edge after the actions.</div>
+              <pre><code>const WithDismissAndAction = () =&gt; &lt;Alert
+    color=&quot;warning&quot;
+    size=&quot;md&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Session expiring&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Renew to continue editing.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+    &lt;Alert.Actions&gt;
+        &lt;Alert.Button onClick={() =&gt; {}}&gt;Renew session&lt;/Alert.Button&gt;
+    &lt;/Alert.Actions&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Without Icon</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Alert without the default icon</div>
+              <div class="hint">Alert rendered without the built-in color icon. Use `hasIcon={false}` when the surrounding context already conveys the semantic intent.</div>
+              <pre><code>const WithoutIcon = () =&gt; &lt;Alert
+    color=&quot;info&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon={false}
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Custom Icon</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Alert with a custom icon override</div>
+              <div class="hint">Alert with a caller-supplied icon that replaces the default color icon. The custom icon receives the slot-computed className so color tokens still apply.</div>
+              <pre><code>const WithCustomIcon = () =&gt; &lt;Alert
+    color=&quot;creative&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon
+    icon={IconLightbulb}
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Paragraph Html</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Alert paragraph rendered from HTML</div>
+              <div class="hint">Alert rendering a paragraph from pre-sanitized HTML via `Alert.ParagraphHtml`. The caller is responsible for sanitizing the HTML string before passing it in.</div>
+              <pre><code>const WithParagraphHtml = () =&gt; &lt;Alert
+    color=&quot;success&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Formatted content&lt;/Alert.Title&gt;
+        &lt;Alert.ParagraphHtml
+            html=&quot;Review the &lt;strong&gt;terms&lt;/strong&gt; or &lt;a href=&#39;https://example.com&#39;&gt;read the docs&lt;/a&gt;.&quot; /&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Pictograms</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Alert with a pictogram illustration</div>
+              <div class="hint">Alert with a 64×64 pictogram in place of the inline icon. Use `Alert.Pictograms` when the message benefits from a richer illustration.</div>
+              <pre><code>const WithPictograms = () =&gt; &lt;Alert
+    color=&quot;info&quot;
+    size=&quot;md&quot;
+    ghost={false}
+    hasIcon={false}
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Pictograms&gt;
+        &lt;svg viewBox=&quot;0 0 64 64&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot; aria-hidden&gt;
+            &lt;circle cx=&quot;32&quot; cy=&quot;32&quot; r=&quot;28&quot; fill=&quot;currentColor&quot; opacity=&quot;0.15&quot; /&gt;
+            &lt;circle cx=&quot;32&quot; cy=&quot;32&quot; r=&quot;14&quot; fill=&quot;currentColor&quot; /&gt;
+        &lt;/svg&gt;
+    &lt;/Alert.Pictograms&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Pictogram example&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;Pictograms scale to 64×64px regardless of the configured size.
+                            &lt;/Alert.Paragraph&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Only Paragraph</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Alert with only a paragraph body</div>
+              <div class="hint">Alert rendered with only a paragraph — no title. The root omits `aria-labelledby` since there is no title to reference.</div>
+              <pre><code>const OnlyParagraph = () =&gt; &lt;Alert
+    color=&quot;neutral&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Paragraph&gt;This field is required.&lt;/Alert.Paragraph&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Actions Below</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Alert with actions placed below the content</div>
+              <div class="hint">Action button rendered inline below the paragraphs, inside `Alert.Content`, rather than pinned to the right via `Alert.Actions`.</div>
+              <pre><code>const WithActionsBelow = () =&gt; &lt;Alert
+    color=&quot;success&quot;
+    size=&quot;sm&quot;
+    ghost={false}
+    hasIcon
+    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+    &lt;Alert.Content&gt;
+        &lt;Alert.Title&gt;Upload complete&lt;/Alert.Title&gt;
+        &lt;Alert.Paragraph&gt;12 documents were added to the policy.&lt;/Alert.Paragraph&gt;
+        &lt;div&gt;
+            &lt;Alert.Button onClick={() =&gt; {}}&gt;View documents&lt;/Alert.Button&gt;
+        &lt;/div&gt;
+    &lt;/Alert.Content&gt;
+&lt;/Alert&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">All Colors</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Visual comparison of all Alert colors</div>
+              <div class="hint">All eight colors in their primary (non-ghost) treatment, stacked for comparison. Each alert uses the built-in icon mapping for its color.</div>
+              <pre><code>const AllColors = () =&gt; (
+    &lt;Stack&gt;
+        {COLORS.map(color =&gt; (
+            &lt;Alert key={color} color={color}&gt;
+                &lt;Alert.Content&gt;
+                    &lt;Alert.Title&gt;{color}&lt;/Alert.Title&gt;
+                    &lt;Alert.Paragraph&gt;
+                        This is a {color} alert variant with the default icon.
+                    &lt;/Alert.Paragraph&gt;
+                &lt;/Alert.Content&gt;
+            &lt;/Alert&gt;
+        ))}
+    &lt;/Stack&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">All Ghost Colors</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Visual comparison of all Alert colors in ghost mode</div>
+              <div class="hint">All eight colors in ghost mode, stacked for comparison. Ghost alerts use a lower-weight token ramp and omit background + padding.</div>
+              <pre><code>const AllGhostColors = () =&gt; (
+    &lt;Stack&gt;
+        {COLORS.map(color =&gt; (
+            &lt;Alert key={color} color={color} ghost&gt;
+                &lt;Alert.Content&gt;
+                    &lt;Alert.Title&gt;{color} (ghost)&lt;/Alert.Title&gt;
+                    &lt;Alert.Paragraph&gt;
+                        This is a {color} ghost alert variant with the ghost icon color.
+                    &lt;/Alert.Paragraph&gt;
+                &lt;/Alert.Content&gt;
+            &lt;/Alert&gt;
+        ))}
+    &lt;/Stack&gt;
+);</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
+  aria-label="Avatar">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Avatar</h2>
+      <div class="badges">
+        <label for="c-1-components-avatar-props" class="badge ok as-toggle">7 prop types</label>
+        
+        <label for="c-1-components-avatar-stories" class="badge ok as-toggle">17 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/avatar/avatar.stories.tsx">components-avatar · ./src/avatar/avatar.stories.tsx</div>
+    
+    <div class="hint">Avatar displays a user&#39;s profile image, initials, or a fallback icon. Use for user identification in lists, headers, cards, and comment threads. Supports multiple shapes (`circle`, `square`, `pillow`, `pentagon`) and sizes from `xs` (24px) to `4xl` (128px).</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-1-components-avatar-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  <input id="c-1-components-avatar-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
+              <span class="badge ok">7 prop types</span>
+            </div>
+            <pre><code>Component: src/avatar/avatar.tsx::Avatar</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>/**
+ * Accessible alt text describing the avatar image. Required when `src` is provided.
+ */
+alt?: string
+
+asChild?: boolean
+
+/**
+ * When provided, deterministically maps the string (typically a user name) to a
+ * color from the palette, applying a light background, matching text color, and
+ * border color. Useful for distinguishing users in lists without profile photos.
+ */
+colorize?: string
+
+/**
+ * Content rendered when `src` is missing or fails to load. Typically user initials (e.g., &quot;JD&quot;) or an icon.
+ */
+fallback?: ReactNode
+
+/**
+ * Controls the avatar dimensions. Defaults to `&#39;md&#39;` (40px).
+ * - `xs` (24px) — inline indicators, dense lists
+ * - `sm` (32px) — compact layouts, table rows
+ * - `md` (40px) — standard usage, cards, headers
+ * - `lg` (48px) — profile sections, detail views
+ * - `xl` (64px) — hero sections, prominent display
+ * - `2xl` (80px), `3xl` (96px), `4xl` (128px) — large feature areas, profile pages
+ */
+size?: &quot;sm&quot; | &quot;md&quot; | &quot;xs&quot; | &quot;lg&quot; | &quot;xl&quot; | &quot;2xl&quot; | &quot;3xl&quot; | &quot;4xl&quot;
+
+/**
+ * Image URL to display. When unavailable or loading fails, `fallback` content is shown instead.
+ */
+src?: string
+
+/**
+ * Shape of the avatar container. Defaults to `&#39;circle&#39;`.
+ * - `circle` — standard round avatar for user photos
+ * - `square` — rounded rectangle, suitable for workspace or team icons
+ * - `pillow` — soft, organic squircle shape
+ * - `pentagon` — distinctive five-sided shape for unique visual identity
+ */
+variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;pentagon&quot;</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Avatar } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Default avatar with fallback initials</div>
+              <div class="hint">The default avatar with fallback initials. Renders as a medium circle when no image source is provided.</div>
+              <pre><code>const Default = () =&gt; &lt;Avatar fallback=&quot;JD&quot; size=&quot;md&quot; variant=&quot;circle&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Image</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Avatar with a profile image</div>
+              <div class="hint">Avatar displaying a user profile photo. The image fills the avatar shape and the fallback is hidden while the image loads successfully.</div>
+              <pre><code>const WithImage = () =&gt; &lt;Avatar
+    fallback=&quot;JD&quot;
+    size=&quot;md&quot;
+    variant=&quot;circle&quot;
+    src=&quot;https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?&amp;w=256&amp;h=256&amp;q=70&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.3&amp;fp-z=1&amp;fit=crop&quot;
+    alt=&quot;Alex Morgan&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Fallback Initials</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Fallback content shown when image is unavailable</div>
+              <div class="hint">When the image fails to load, the fallback content is displayed. Pass initials, an icon, or any ReactNode as the `fallback` prop.</div>
+              <pre><code>const WithFallbackInitials = () =&gt; &lt;Avatar
+    fallback=&quot;AM&quot;
+    size=&quot;md&quot;
+    variant=&quot;circle&quot;
+    src=&quot;https://broken-url.example/photo.jpg&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Circle</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Circle-shaped avatar (default)</div>
+              <div class="hint">The circle variant is the default shape, ideal for user profile photos.</div>
+              <pre><code>const Circle = () =&gt; &lt;Avatar fallback=&quot;CR&quot; size=&quot;md&quot; variant=&quot;circle&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Square</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Square-shaped avatar for workspaces</div>
+              <div class="hint">The square variant uses a rounded rectangle, suitable for workspace, team, or organization icons.</div>
+              <pre><code>const Square = () =&gt; &lt;Avatar fallback=&quot;WS&quot; size=&quot;md&quot; variant=&quot;square&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Pillow</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Pillow-shaped avatar with organic squircle</div>
+              <div class="hint">The pillow variant uses a soft, organic squircle shape for a friendly and distinctive appearance.</div>
+              <pre><code>const Pillow = () =&gt; &lt;Avatar fallback=&quot;PL&quot; size=&quot;md&quot; variant=&quot;pillow&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Pentagon</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Pentagon-shaped avatar for unique identity</div>
+              <div class="hint">The pentagon variant uses a five-sided mask for a unique visual identity. Note: the border is hidden in this variant due to the mask shape.</div>
+              <pre><code>const Pentagon = () =&gt; &lt;Avatar fallback=&quot;PT&quot; size=&quot;md&quot; variant=&quot;pentagon&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Size Xs</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Extra-small 24px avatar</div>
+              <div class="hint">Extra-small avatar (24px) for dense lists and inline indicators.</div>
+              <pre><code>const SizeXs = () =&gt; &lt;Avatar fallback=&quot;XS&quot; size=&quot;xs&quot; variant=&quot;circle&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Size Sm</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Small 32px avatar</div>
+              <div class="hint">Small avatar (32px) for compact layouts and table rows.</div>
+              <pre><code>const SizeSm = () =&gt; &lt;Avatar fallback=&quot;SM&quot; size=&quot;sm&quot; variant=&quot;circle&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Size Lg</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Large 48px avatar</div>
+              <div class="hint">Large avatar (48px) for profile sections and detail views.</div>
+              <pre><code>const SizeLg = () =&gt; &lt;Avatar fallback=&quot;LG&quot; size=&quot;lg&quot; variant=&quot;circle&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Size Xl</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Extra-large 64px avatar</div>
+              <div class="hint">Extra-large avatar (64px) for hero sections and prominent display.</div>
+              <pre><code>const SizeXl = () =&gt; &lt;Avatar fallback=&quot;XL&quot; size=&quot;xl&quot; variant=&quot;circle&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Colorized</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Colorized avatar based on user name</div>
+              <div class="hint">The `colorize` prop deterministically maps a string (typically a user name) to a color from the palette, applying a tinted background and matching text color. Useful for distinguishing users in lists without profile photos.</div>
+              <pre><code>const Colorized = () =&gt; &lt;Avatar fallback=&quot;JD&quot; size=&quot;md&quot; variant=&quot;circle&quot; colorize=&quot;jane doe&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">All Colorized</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Multiple colorized avatars for visual distinction</div>
+              <div class="hint">Multiple colorized avatars showing how different names map to different colors from the palette for visual distinction.</div>
+              <pre><code>const AllColorized = () =&gt; (
+    &lt;div style={{ display: &#39;flex&#39;, alignItems: &#39;center&#39;, gap: &#39;1rem&#39; }}&gt;
+        {[&#39;alice&#39;, &#39;bob&#39;, &#39;carol&#39;, &#39;dave&#39;, &#39;eve&#39;, &#39;frank&#39;, &#39;grace&#39;, &#39;henry&#39;, &#39;iris&#39;].map(name =&gt; (
+            &lt;Avatar key={name} size=&quot;lg&quot; colorize={name} fallback={name.slice(0, 2).toUpperCase()} /&gt;
+        ))}
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">All Sizes</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Visual comparison of all avatar sizes</div>
+              <div class="hint">All available sizes displayed together for visual comparison. Sizes range from `xs` (24px) to `4xl` (128px).</div>
+              <pre><code>const AllSizes = () =&gt; (
+    &lt;div style={{ display: &#39;flex&#39;, alignItems: &#39;center&#39;, gap: &#39;1rem&#39; }}&gt;
+        {([&#39;xs&#39;, &#39;sm&#39;, &#39;md&#39;, &#39;lg&#39;, &#39;xl&#39;, &#39;2xl&#39;, &#39;3xl&#39;, &#39;4xl&#39;] as const).map(size =&gt; (
+            &lt;Avatar key={size} size={size} fallback={size.toUpperCase()} /&gt;
+        ))}
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">All Sizes With Image</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>All avatar sizes with a profile image</div>
+              <div class="hint">All sizes with a profile image to verify image scaling and quality across the full size range from `xs` (24px) to `4xl` (128px).</div>
+              <pre><code>const AllSizesWithImage = () =&gt; (
+    &lt;div style={{ display: &#39;flex&#39;, alignItems: &#39;center&#39;, gap: &#39;1rem&#39; }}&gt;
+        {([&#39;xs&#39;, &#39;sm&#39;, &#39;md&#39;, &#39;lg&#39;, &#39;xl&#39;, &#39;2xl&#39;, &#39;3xl&#39;, &#39;4xl&#39;] as const).map(size =&gt; (
+            &lt;Avatar
+                key={size}
+                size={size}
+                src=&quot;https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?&amp;w=256&amp;h=256&amp;q=70&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.3&amp;fp-z=1&amp;fit=crop&quot;
+                alt=&quot;Alex Morgan&quot;
+                fallback=&quot;AM&quot;
+            /&gt;
+        ))}
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">All Variants</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Visual comparison of all avatar shapes</div>
+              <div class="hint">All available shape variants displayed together for visual comparison. Each variant serves a different use case: user photos, workspaces, friendly branding, and unique identity.</div>
+              <pre><code>const AllVariants = () =&gt; (
+    &lt;div style={{ display: &#39;flex&#39;, alignItems: &#39;center&#39;, gap: &#39;1rem&#39; }}&gt;
+        {([&#39;circle&#39;, &#39;square&#39;, &#39;pillow&#39;, &#39;pentagon&#39;] as const).map(variant =&gt; (
+            &lt;Avatar
+                key={variant}
+                size=&quot;lg&quot;
+                variant={variant}
+                fallback={variant.slice(0, 2).toUpperCase()}
+            /&gt;
+        ))}
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">All Variants With Image</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>All avatar shapes with a profile image</div>
+              <div class="hint">All shape variants with a profile image to show how each mask clips the photo. Particularly useful for verifying the pentagon mask and pillow shape render correctly with real imagery.</div>
+              <pre><code>const AllVariantsWithImage = () =&gt; (
+    &lt;div style={{ display: &#39;flex&#39;, alignItems: &#39;center&#39;, gap: &#39;1rem&#39; }}&gt;
+        {([&#39;circle&#39;, &#39;square&#39;, &#39;pillow&#39;, &#39;pentagon&#39;] as const).map(variant =&gt; (
+            &lt;Avatar
+                key={variant}
+                size=&quot;lg&quot;
+                variant={variant}
+                src=&quot;https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?&amp;w=256&amp;h=256&amp;q=70&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.3&amp;fp-z=1&amp;fit=crop&quot;
+                alt=&quot;Alex Morgan&quot;
+                fallback=&quot;AM&quot;
+            /&gt;
+        ))}
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
+  aria-label="Button">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Button</h2>
+      <div class="badges">
+        <label for="c-2-components-button-props" class="badge ok as-toggle">12 prop types</label>
+        
+        <label for="c-2-components-button-stories" class="badge ok as-toggle">10 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/button/button.stories.tsx">components-button · ./src/button/button.stories.tsx</div>
+    
+    <div class="hint">Button is the design system&#39;s primary actionable control. Pick `variant` to express hierarchy, `size` for prominence, and `status=&quot;danger&quot;` for destructive actions. Pass `asChild` to render Button&#39;s styles on any nested element — a plain `&lt;a&gt;`, a framework `&lt;Link&gt;`, or a custom component — without Button binding to any particular framework.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-2-components-button-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  <input id="c-2-components-button-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
+              <span class="badge ok">12 prop types</span>
+            </div>
+            <pre><code>Component: src/button/button.tsx::Button</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>/**
+ * Justifies children along the main axis. Defaults to `&#39;center&#39;`.
+ * Use `&#39;justify&#39;` to push leading and trailing icons to the edges.
+ */
+align?: &quot;center&quot; | &quot;start&quot; | &quot;end&quot; | &quot;justify&quot;
+
+/**
+ * When `true`, Button clones its single child element and merges
+ * Button&#39;s `className`, `ref`, and event handlers onto it rather than
+ * rendering a `&lt;button&gt;`. Use this to style any element (a plain `&lt;a&gt;`,
+ * a framework `Link`, a `React.forwardRef` component) as a Button.
+ * 
+ * When combined with `disabled`, Button emits `aria-disabled` and
+ * `data-disabled` on the child instead of the native `disabled`
+ * attribute (which is ignored by non-form-control elements).
+ */
+asChild?: boolean
+
+/**
+ * Content rendered inside the Button. Accepts a text label, icon elements,
+ * or any mix of both. Icon-only children switch the Button to a square
+ * aspect ratio and trigger the icon-only layout.
+ * 
+ * When `asChild` is set, the single child element is merged with Button&#39;s
+ * props and styles; auto-detection of icon-only children is skipped — use
+ * the `iconOnly` prop to opt into the square icon-only layout.
+ * 
+ * Not supported with `variant=&quot;link&quot;` when children resolve to icons only
+ * — passing both logs a dev-only warning (silent in production).
+ */
+children?: ReactNode
+
+/**
+ * Disables interaction and applies the disabled color treatment. Applied
+ * via className so it still affects anchors rendered via `asChild`, which
+ * ignore the native `disabled` attribute — in that case `aria-disabled`
+ * and `data-disabled` are forwarded to the child element instead.
+ */
+disabled?: boolean
+
+/**
+ * When `true`, removes the per-size `min-width` floor so the button hugs
+ * its content. Useful for inline actions inside tight containers.
+ */
+fitContent?: boolean
+
+/**
+ * Forces the icon-only layout (square aspect ratio, no min-width). Useful
+ * with `asChild` where the single wrapper child prevents auto-detection.
+ * For non-`asChild` usage, prefer passing icon elements as children — the
+ * icon-only layout is applied automatically.
+ */
+iconOnly?: boolean
+
+/**
+ * When `true`, shows a spinner overlay and forces the button into a disabled
+ * state to block further interaction. Not supported with `variant=&quot;link&quot;` —
+ * passing both logs a dev-only warning (silent in production).
+ */
+loading?: boolean
+
+/**
+ * Ref forwarded to the underlying element. Typed as a union covering both
+ * `&lt;button&gt;` and `&lt;a&gt;` because `asChild` lets consumers render either tag
+ * (or any forwardRef component) through Radix&#39;s `Slot`.
+ */
+ref?: Ref&lt;HTMLButtonElement | HTMLAnchorElement&gt;
+
+/**
+ * When `true`, renders a fully pill-shaped button (rounded-full). Otherwise
+ * uses the variant&#39;s default corner radius.
+ */
+rounded?: boolean
+
+/**
+ * Control size. Defaults to `&#39;sm&#39;`.
+ * - `xs` (24px) — dense toolbars, compact inline actions.
+ * - `sm` (32px) — standard usage in forms and cards.
+ * - `md` (40px) — prominent actions in modals or feature rows.
+ * - `lg` (48px) — hero CTAs and full-width mobile actions.
+ */
+size?: ButtonSizeType
+
+/**
+ * Semantic status override. Set to `&#39;danger&#39;` for destructive actions
+ * (delete, remove, disconnect) — applies the destructive color treatment
+ * across all variants.
+ */
+status?: &quot;danger&quot;
+
+/**
+ * Visual hierarchy. Defaults to `&#39;primary&#39;`.
+ * - `primary` — main call-to-action; use once per view.
+ * - `secondary` — alternative action alongside a primary button.
+ * - `tertiary` — low-emphasis action, subtle background.
+ * - `ghost` — minimal background; low-emphasis action in dense layouts.
+ * - `link` — inline text-style action; no padding or background.
+ */
+variant?: ButtonVariantType</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Button } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Default args playground for Button</div>
+              <div class="hint">Args-controlled playground. Toggle `variant`, `size`, `status`, `loading`, `disabled`, and `rounded` from the Controls panel to explore every visual combination of the Button.</div>
+              <pre><code>const Default = () =&gt; &lt;Button variant=&quot;primary&quot; size=&quot;sm&quot;&gt;{TEXT}&lt;/Button&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Variants</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>All Button variants at default size</div>
+              <div class="hint">All five variants at the default `sm` size. Variants express visual hierarchy: `primary` for the main CTA, `secondary` / `tertiary` for supporting actions, `ghost` for low-emphasis inline actions, and `link` for text-only actions.</div>
+              <pre><code>const Variants = () =&gt; (
+    &lt;Row&gt;
+        {VARIANTS.map(variant =&gt; (
+            &lt;Button key={variant} variant={variant}&gt;
+                {TEXT}
+            &lt;/Button&gt;
+        ))}
+    &lt;/Row&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Sizes</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>All Button sizes at default variant</div>
+              <div class="hint">All four sizes at the default `primary` variant. Sizes scale from `xs` (24px) for dense toolbars up to `lg` (48px) for hero CTAs.</div>
+              <pre><code>const Sizes = () =&gt; (
+    &lt;Row&gt;
+        {SIZES.map(size =&gt; (
+            &lt;Button key={size} size={size}&gt;
+                {TEXT}
+            &lt;/Button&gt;
+        ))}
+    &lt;/Row&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Disabled</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Disabled treatment for every variant</div>
+              <div class="hint">Disabled state across all variants. Rendered via `asChild` with `&lt;a&gt;` children to show the disabled treatment applied via className — native anchors ignore the `disabled` attribute, so Button emits `aria-disabled` and `data-disabled` on the child instead.</div>
+              <pre><code>const Disabled = () =&gt; (
+    &lt;Row&gt;
+        {VARIANTS.map(variant =&gt; (
+            &lt;Button asChild key={variant} variant={variant} disabled&gt;
+                &lt;a&gt;{TEXT}&lt;/a&gt;
+            &lt;/Button&gt;
+        ))}
+    &lt;/Row&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Icons</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Variant × size grid with leading + trailing icons</div>
+              <div class="hint">Variant × size grid with leading and trailing icons.</div>
+              <pre><code>const WithIcons = () =&gt; (
+    &lt;Stack&gt;
+        {VARIANTS.map(variant =&gt; (
+            &lt;Row key={variant}&gt;
+                {SIZES.map(size =&gt; (
+                    &lt;Button key={size} variant={variant} size={size}&gt;
+                        &lt;IconAdd /&gt;
+                        {TEXT}
+                        &lt;IconAdd /&gt;
+                    &lt;/Button&gt;
+                ))}
+            &lt;/Row&gt;
+        ))}
+    &lt;/Stack&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Only Icon</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Icon-only Button across variant × size (excluding `link`)</div>
+              <div class="hint">Icon-only buttons across the variant × size grid. Excludes `variant=&quot;link&quot;` — combining `link` with icon-only children logs a dev-only warning because the link treatment has no padding to accommodate an icon alone.</div>
+              <pre><code>const OnlyIcon = () =&gt; (
+    &lt;Stack&gt;
+        {NON_LINK_VARIANTS.map(variant =&gt; (
+            &lt;Row key={variant}&gt;
+                {SIZES.map(size =&gt; (
+                    &lt;Button key={size} variant={variant} size={size} aria-label=&quot;Close&quot;&gt;
+                        &lt;IconClose /&gt;
+                    &lt;/Button&gt;
+                ))}
+            &lt;/Row&gt;
+        ))}
+    &lt;/Stack&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Loading</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Loading state across variant × size (excluding `link`)</div>
+              <div class="hint">Loading state across the variant × size grid. Each row shows two buttons per size: one icon-only, one with text. Loading forces `disabled` and overlays a spinner that inherits the variant&#39;s text color. Excludes `variant=&quot;link&quot;` — combining `link` with `loading` logs a dev-only warning.</div>
+              <pre><code>const Loading = () =&gt; (
+    &lt;Stack&gt;
+        {NON_LINK_VARIANTS.map(variant =&gt; (
+            &lt;Row key={variant}&gt;
+                {SIZES.map(size =&gt; (
+                    &lt;div key={size} style={{ display: &#39;flex&#39;, gap: &#39;0.5rem&#39;, alignItems: &#39;center&#39; }}&gt;
+                        &lt;Button variant={variant} size={size} loading aria-label=&quot;Loading&quot;&gt;
+                            &lt;IconAdd /&gt;
+                        &lt;/Button&gt;
+                        &lt;Button variant={variant} size={size} loading&gt;
+                            {TEXT}
+                        &lt;/Button&gt;
+                    &lt;/div&gt;
+                ))}
+            &lt;/Row&gt;
+        ))}
+    &lt;/Stack&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Status</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>`status=&quot;danger&quot;` across every variant, enabled + disabled</div>
+              <div class="hint">Destructive treatment via `status=&quot;danger&quot;`. The top row shows every variant enabled; the bottom row shows every variant disabled. Use `status=&quot;danger&quot;` for delete, remove, or disconnect actions regardless of variant.</div>
+              <pre><code>const Status = () =&gt; (
+    &lt;Stack&gt;
+        &lt;Row&gt;
+            {VARIANTS.map(variant =&gt; (
+                &lt;Button key={variant} variant={variant} status=&quot;danger&quot;&gt;
+                    &lt;IconAdd /&gt;
+                    {TEXT}
+                    &lt;IconAdd /&gt;
+                &lt;/Button&gt;
+            ))}
+        &lt;/Row&gt;
+        &lt;Row&gt;
+            {VARIANTS.map(variant =&gt; (
+                &lt;Button asChild key={variant} variant={variant} status=&quot;danger&quot; disabled&gt;
+                    &lt;a&gt;
+                        &lt;IconAdd /&gt;
+                        {TEXT}
+                        &lt;IconAdd /&gt;
+                    &lt;/a&gt;
+                &lt;/Button&gt;
+            ))}
+        &lt;/Row&gt;
+    &lt;/Stack&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Rounded</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>`rounded` pill shape across variant × size (excluding `link`)</div>
+              <div class="hint">Fully pill-shaped buttons across the variant × size grid. Excludes `variant=&quot;link&quot;` since the link treatment has no background to round.</div>
+              <pre><code>const Rounded = () =&gt; (
+    &lt;Stack&gt;
+        {NON_LINK_VARIANTS.map(variant =&gt; (
+            &lt;Row key={variant}&gt;
+                {SIZES.map(size =&gt; (
+                    &lt;Button key={size} variant={variant} size={size} rounded&gt;
+                        &lt;IconAdd /&gt;
+                        {TEXT}
+                        &lt;IconAdd /&gt;
+                    &lt;/Button&gt;
+                ))}
+            &lt;/Row&gt;
+        ))}
+    &lt;/Stack&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">As Child</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>`asChild` composes Button&#39;s styles onto any element</div>
+              <div class="hint">`asChild` renders Button&#39;s styles on the nested child element rather than on a `&lt;button&gt;` — the child receives Button&#39;s `className`, `ref`, and merged props via Radix&#39;s `Slot` primitive. Use it to turn any anchor or framework `Link` into a Button without coupling the design system to a router. In app code, swap the plain `&lt;a&gt;` below for your framework&#39;s Link (`next/link`, `react-router`, `@tanstack/react-router`, etc.).</div>
+              <pre><code>const AsChild = () =&gt; (
+    &lt;Row&gt;
+        &lt;Button asChild variant=&quot;primary&quot;&gt;
+            &lt;a href=&quot;/dashboard&quot;&gt;Go to dashboard&lt;/a&gt;
+        &lt;/Button&gt;
+        &lt;Button asChild variant=&quot;secondary&quot;&gt;
+            &lt;a href=&quot;https://agentero.com&quot; target=&quot;_blank&quot; rel=&quot;noreferrer&quot;&gt;
+                Visit Agentero
+            &lt;/a&gt;
+        &lt;/Button&gt;
+    &lt;/Row&gt;
+);</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
+  aria-label="Divider">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Divider</h2>
+      <div class="badges">
+        <label for="c-3-components-divider-props" class="badge ok as-toggle">2 prop types</label>
+        
+        <label for="c-3-components-divider-stories" class="badge ok as-toggle">10 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/divider/divider.stories.tsx">components-divider · ./src/divider/divider.stories.tsx</div>
+    
+    <div class="hint">Divider separates content visually along either a horizontal or vertical axis. Use between page or card sections, between inline items in a toolbar or list, or — with the `label` prop — to render an &quot;or&quot;-style break between options. Set `decorative={false}` when the separator carries semantic meaning so it&#39;s announced to assistive technologies.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-3-components-divider-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  <input id="c-3-components-divider-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
+              <span class="badge ok">2 prop types</span>
+            </div>
+            <pre><code>Component: src/divider/divider.tsx::Divider</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>asChild?: boolean
+
+/**
+ * Optional label rendered inline between two flanking 1px lines. When set,
+ * Divider renders a styled `&lt;div&gt;` (rather than the underlying separator
+ * primitive) so the label can sit centered between the two line segments.
+ */
+label?: ReactNode</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Button, Divider } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Default horizontal decorative divider</div>
+              <div class="hint">The default horizontal, decorative divider — a 1px line that spans the parent width. Use this form between stacked content blocks.</div>
+              <pre><code>const Default = () =&gt; &lt;div
+    className={cn(
+        &#39;flex gap-4 rounded-lg border border-border-default-base-primary bg-bg-default-base-primary p-6&#39;,
+        args.orientation === &#39;vertical&#39; ? &#39;h-40 w-lg items-stretch&#39; : &#39;w-80 flex-col&#39;
+    )}&gt;
+    &lt;div className=&quot;flex flex-1 flex-col justify-center gap-1&quot;&gt;
+        &lt;h3 className=&quot;text-base font-semibold text-text-default-base-primary&quot;&gt;First section&lt;/h3&gt;
+        &lt;p className=&quot;text-sm text-text-default-base-secondary&quot;&gt;Content on one side of the divider, visually separated from the other.
+                            &lt;/p&gt;
+    &lt;/div&gt;
+    &lt;Divider orientation=&quot;horizontal&quot; decorative /&gt;
+    &lt;div className=&quot;flex flex-1 flex-col justify-center gap-1&quot;&gt;
+        &lt;h3 className=&quot;text-base font-semibold text-text-default-base-primary&quot;&gt;Second section&lt;/h3&gt;
+        &lt;p className=&quot;text-sm text-text-default-base-secondary&quot;&gt;Content on the other side of the divider, clearly separated from the first.
+                            &lt;/p&gt;
+    &lt;/div&gt;
+&lt;/div&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Horizontal</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Horizontal 1px line spanning the parent width</div>
+              <div class="hint">Horizontal divider — a 1px line spanning the parent&#39;s full width. The default orientation; use to separate stacked content.</div>
+              <pre><code>const Horizontal = () =&gt; (
+    &lt;div className=&quot;w-80&quot;&gt;
+        &lt;Divider /&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Vertical</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Vertical 1px line spanning the parent height</div>
+              <div class="hint">Vertical divider — a 1px line spanning the parent&#39;s full height. Parent must establish a height (via `h-*` or an intrinsic flex item height) for the line to be visible.</div>
+              <pre><code>const Vertical = () =&gt; (
+    &lt;div className=&quot;flex h-24 items-stretch&quot;&gt;
+        &lt;Divider orientation=&quot;vertical&quot; /&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Label</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Horizontal divider with a centered &quot;or&quot; label</div>
+              <div class="hint">Labelled divider. The label sits centered between two flanking 1px lines — a common pattern for &quot;or&quot; breaks between authentication options.</div>
+              <pre><code>const WithLabel = () =&gt; &lt;div className=&quot;flex w-80 flex-col gap-2&quot;&gt;
+    &lt;Button variant=&quot;primary&quot;&gt;Continue with email&lt;/Button&gt;
+    &lt;Divider orientation=&quot;horizontal&quot; decorative label=&quot;or&quot; /&gt;
+    &lt;Button variant=&quot;secondary&quot;&gt;Continue with SSO&lt;/Button&gt;
+&lt;/div&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Vertical With Label</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Vertical divider with a centered label</div>
+              <div class="hint">Vertical divider with a label. The label sits between two stacked 1px line segments; use sparingly — horizontal labelled dividers are more common.</div>
+              <pre><code>const VerticalWithLabel = () =&gt; &lt;div
+    className=&quot;flex h-40 items-stretch gap-4 rounded-lg border border-border-default-base-primary bg-bg-default-base-primary p-6&quot;&gt;
+    &lt;div className=&quot;flex flex-col justify-center gap-1&quot;&gt;
+        &lt;h3 className=&quot;text-sm font-semibold text-text-default-base-primary&quot;&gt;Left panel&lt;/h3&gt;
+        &lt;p className=&quot;text-xs text-text-default-base-secondary&quot;&gt;Content on the left side&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;Divider orientation=&quot;vertical&quot; decorative label=&quot;OR&quot; /&gt;
+    &lt;div className=&quot;flex flex-col justify-center gap-1&quot;&gt;
+        &lt;h3 className=&quot;text-sm font-semibold text-text-default-base-primary&quot;&gt;Right panel&lt;/h3&gt;
+        &lt;p className=&quot;text-xs text-text-default-base-secondary&quot;&gt;Content on the right side&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/div&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Semantic</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Semantic separator announced to assistive technologies</div>
+              <div class="hint">Semantic divider (`decorative={false}`). Exposes `role=&quot;separator&quot;` and `aria-orientation` to assistive technologies, marking a meaningful section break rather than a purely visual one.</div>
+              <pre><code>const Semantic = () =&gt; &lt;div
+    className=&quot;flex w-80 flex-col gap-4 rounded-lg border border-border-default-base-primary bg-bg-default-base-primary p-6&quot;&gt;
+    &lt;section className=&quot;flex flex-col gap-1&quot;&gt;
+        &lt;h3 className=&quot;text-base font-semibold text-text-default-base-primary&quot;&gt;Section one&lt;/h3&gt;
+        &lt;p className=&quot;text-sm text-text-default-base-secondary&quot;&gt;Semantically separated from the next section for screen readers.
+                            &lt;/p&gt;
+    &lt;/section&gt;
+    &lt;Divider orientation=&quot;horizontal&quot; decorative={false} /&gt;
+    &lt;section className=&quot;flex flex-col gap-1&quot;&gt;
+        &lt;h3 className=&quot;text-base font-semibold text-text-default-base-primary&quot;&gt;Section two&lt;/h3&gt;
+        &lt;p className=&quot;text-sm text-text-default-base-secondary&quot;&gt;Screen readers will announce this as a separate section.
+                            &lt;/p&gt;
+    &lt;/section&gt;
+&lt;/div&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">In List</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Horizontal dividers between stacked list rows</div>
+              <div class="hint">Divider between list rows. Dividers delineate each item without the visual weight of a full border on every row.</div>
+              <pre><code>const InList = () =&gt; (
+    &lt;div className=&quot;w-80 rounded-lg border border-border-default-base-primary bg-bg-default-base-primary&quot;&gt;
+        &lt;div className=&quot;flex flex-col gap-1 px-4 py-3&quot;&gt;
+            &lt;h4 className=&quot;text-sm text-text-default-base-primary&quot;&gt;Notification 1&lt;/h4&gt;
+            &lt;p className=&quot;text-xs text-text-default-base-secondary&quot;&gt;
+                You have a new message from Jane.
+            &lt;/p&gt;
+        &lt;/div&gt;
+        &lt;Divider /&gt;
+        &lt;div className=&quot;flex flex-col gap-1 px-4 py-3&quot;&gt;
+            &lt;h4 className=&quot;text-sm text-text-default-base-primary&quot;&gt;Notification 2&lt;/h4&gt;
+            &lt;p className=&quot;text-xs text-text-default-base-secondary&quot;&gt;
+                Your report is ready to download.
+            &lt;/p&gt;
+        &lt;/div&gt;
+        &lt;Divider /&gt;
+        &lt;div className=&quot;flex flex-col gap-1 px-4 py-3&quot;&gt;
+            &lt;h4 className=&quot;text-sm text-text-default-base-primary&quot;&gt;Notification 3&lt;/h4&gt;
+            &lt;p className=&quot;text-xs text-text-default-base-secondary&quot;&gt;
+                System maintenance is scheduled for tonight.
+            &lt;/p&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">In Toolbar</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Vertical dividers grouping toolbar actions</div>
+              <div class="hint">Vertical dividers grouping related toolbar actions. Use to separate logical clusters of buttons (editing vs. history vs. settings) without visual weight.</div>
+              <pre><code>const InToolbar = () =&gt; (
+    &lt;div className=&quot;inline-flex h-10 items-center gap-1 rounded-lg border border-border-default-base-primary bg-bg-default-base-primary px-2 shadow-1&quot;&gt;
+        &lt;Button variant=&quot;ghost&quot; size=&quot;xs&quot;&gt;
+            Cut
+        &lt;/Button&gt;
+        &lt;Button variant=&quot;ghost&quot; size=&quot;xs&quot;&gt;
+            Copy
+        &lt;/Button&gt;
+        &lt;Button variant=&quot;ghost&quot; size=&quot;xs&quot;&gt;
+            Paste
+        &lt;/Button&gt;
+        &lt;Divider orientation=&quot;vertical&quot; className=&quot;mx-1 h-6&quot; /&gt;
+        &lt;Button variant=&quot;ghost&quot; size=&quot;xs&quot;&gt;
+            Undo
+        &lt;/Button&gt;
+        &lt;Button variant=&quot;ghost&quot; size=&quot;xs&quot;&gt;
+            Redo
+        &lt;/Button&gt;
+        &lt;Divider orientation=&quot;vertical&quot; className=&quot;mx-1 h-6&quot; /&gt;
+        &lt;Button variant=&quot;ghost&quot; size=&quot;xs&quot;&gt;
+            Settings
+        &lt;/Button&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Horizontal In Content</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Horizontal dividers between content sections</div>
+              <div class="hint">Horizontal dividers between content sections in a long-form layout. Helps create visual hierarchy in content-heavy pages.</div>
+              <pre><code>const HorizontalInContent = () =&gt; (
+    &lt;div className=&quot;flex w-96 flex-col gap-4 p-6&quot;&gt;
+        &lt;div className=&quot;flex flex-col gap-1&quot;&gt;
+            &lt;h3 className=&quot;text-base font-semibold text-text-default-base-primary&quot;&gt;Section title&lt;/h3&gt;
+            &lt;p className=&quot;text-sm text-text-default-base-secondary&quot;&gt;
+                Descriptive content for the first section. The divider below separates it from the next.
+            &lt;/p&gt;
+        &lt;/div&gt;
+        &lt;Divider /&gt;
+        &lt;div className=&quot;flex flex-col gap-1&quot;&gt;
+            &lt;h3 className=&quot;text-base font-semibold text-text-default-base-primary&quot;&gt;Another section&lt;/h3&gt;
+            &lt;p className=&quot;text-sm text-text-default-base-secondary&quot;&gt;
+                The second section is clearly separated from the previous one.
+            &lt;/p&gt;
+        &lt;/div&gt;
+        &lt;Divider /&gt;
+        &lt;div className=&quot;flex flex-col gap-1&quot;&gt;
+            &lt;h3 className=&quot;text-base font-semibold text-text-default-base-primary&quot;&gt;Final section&lt;/h3&gt;
+            &lt;p className=&quot;text-sm text-text-default-base-secondary&quot;&gt;
+                Dividers help establish visual hierarchy in content-heavy layouts.
+            &lt;/p&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Vertical Between Elements</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Vertical dividers separating inline elements</div>
+              <div class="hint">Vertical dividers between inline elements. Common for separating a row of related controls or inline links without visual weight.</div>
+              <pre><code>const VerticalBetweenElements = () =&gt; (
+    &lt;div className=&quot;flex items-stretch gap-3&quot;&gt;
+        &lt;Button variant=&quot;primary&quot; size=&quot;sm&quot;&gt;
+            Button 1
+        &lt;/Button&gt;
+        &lt;Divider orientation=&quot;vertical&quot; /&gt;
+        &lt;Button variant=&quot;primary&quot; size=&quot;sm&quot;&gt;
+            Button 2
+        &lt;/Button&gt;
+        &lt;Divider orientation=&quot;vertical&quot; /&gt;
+        &lt;Button variant=&quot;primary&quot; size=&quot;sm&quot;&gt;
+            Button 3
+        &lt;/Button&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
+  aria-label="DropdownMenu.Root">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> DropdownMenu.Root</h2>
+      <div class="badges">
+        
+        
+        <label for="c-4-components-dropdownmenu-stories" class="badge ok as-toggle">7 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/dropdown-menu/dropdown-menu.stories.tsx">components-dropdownmenu · ./src/dropdown-menu/dropdown-menu.stories.tsx</div>
+    
+    <div class="hint">DropdownMenu is a compound overlay for secondary actions, bulk operations, or navigation shortcuts triggered off a button or icon. Compose it from `Root` / `Trigger` / `Portal` / `Content` and fill the menu with `Item`, `Separator`, `Label`, and — for nested flows — `Sub` / `SubTrigger` / `SubContent`. Built on Radix UI&#39;s DropdownMenu primitive, so keyboard navigation, focus trapping, typeahead, and collision detection come for free.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-4-components-dropdownmenu-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+
+  <div class="panels">
+    
+    
+    
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Button, DropdownMenu } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Basic menu with item rows and a separated destructive action</div>
+              <div class="hint">A minimal DropdownMenu with four `Item`s — edit/duplicate/archive plus a separator before a destructive delete. Use this as the starting point for most overflow menus.</div>
+              <pre><code>const Default = () =&gt; (
+    &lt;DropdownMenu.Root&gt;
+        &lt;DropdownMenu.Trigger asChild&gt;
+            &lt;Button size=&quot;md&quot; variant=&quot;secondary&quot;&gt;
+                Click me
+                &lt;IconKeyboardArrowDown /&gt;
+            &lt;/Button&gt;
+        &lt;/DropdownMenu.Trigger&gt;
+        &lt;DropdownMenu.Portal&gt;
+            &lt;DropdownMenu.Content&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Edit clicked&#39;)}&gt;Edit&lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Duplicate clicked&#39;)}&gt;
+                    Duplicate
+                &lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Archive clicked&#39;)}&gt;
+                    Archive
+                &lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Separator /&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Delete clicked&#39;)}&gt;
+                    &lt;span className=&quot;text-red-500&quot;&gt;Delete&lt;/span&gt;
+                &lt;/DropdownMenu.Item&gt;
+            &lt;/DropdownMenu.Content&gt;
+        &lt;/DropdownMenu.Portal&gt;
+    &lt;/DropdownMenu.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Groups And Dividers</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Menu with multiple `Separator`-split groups and a disabled item</div>
+              <div class="hint">Multiple clusters of `Item`s split by `Separator` rules — mirrors an &quot;edit history / clipboard / export&quot; overflow menu. Demonstrates the `disabled` state on a menu row.</div>
+              <pre><code>const WithGroupsAndDividers = () =&gt; (
+    &lt;DropdownMenu.Root&gt;
+        &lt;DropdownMenu.Trigger asChild&gt;
+            &lt;Button size=&quot;md&quot; variant=&quot;secondary&quot;&gt;
+                More Options
+                &lt;IconKeyboardArrowDown /&gt;
+            &lt;/Button&gt;
+        &lt;/DropdownMenu.Trigger&gt;
+        &lt;DropdownMenu.Portal&gt;
+            &lt;DropdownMenu.Content&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Undo&#39;)}&gt;Undo&lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Redo&#39;)}&gt;Redo&lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Separator /&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Copy&#39;)}&gt;Copy&lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Cut&#39;)}&gt;Cut&lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Paste&#39;)}&gt;Paste&lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Separator /&gt;
+                &lt;DropdownMenu.Item disabled&gt;Print (disabled)&lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Export&#39;)}&gt;Export&lt;/DropdownMenu.Item&gt;
+            &lt;/DropdownMenu.Content&gt;
+        &lt;/DropdownMenu.Portal&gt;
+    &lt;/DropdownMenu.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Icons</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Icon-leading items with a destructive delete row</div>
+              <div class="hint">Menu items with leading icons and a destructive row using the `data-[highlighted]:bg-red-100` + `text-red-500` escape hatch. Use this pattern when a row should read as destructive.</div>
+              <pre><code>const WithIcons = () =&gt; (
+    &lt;DropdownMenu.Root&gt;
+        &lt;DropdownMenu.Trigger asChild&gt;
+            &lt;Button size=&quot;md&quot; variant=&quot;secondary&quot;&gt;
+                Actions
+                &lt;IconKeyboardArrowDown /&gt;
+            &lt;/Button&gt;
+        &lt;/DropdownMenu.Trigger&gt;
+        &lt;DropdownMenu.Portal&gt;
+            &lt;DropdownMenu.Content&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Copy&#39;)}&gt;
+                    &lt;IconContentCopy /&gt;
+                    Copy
+                &lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Separator /&gt;
+                &lt;DropdownMenu.Item
+                    onSelect={() =&gt; console.log(&#39;Delete&#39;)}
+                    className=&quot;data-[highlighted]:bg-red-100&quot;&gt;
+                    &lt;IconDelete className=&quot;[&amp;&gt;path]:fill-red-500&quot; /&gt;
+                    &lt;span className=&quot;text-red-500&quot;&gt;Delete&lt;/span&gt;
+                &lt;/DropdownMenu.Item&gt;
+            &lt;/DropdownMenu.Content&gt;
+        &lt;/DropdownMenu.Portal&gt;
+    &lt;/DropdownMenu.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Group Titles</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Menu with `Label`-titled sections and a destructive logout row</div>
+              <div class="hint">`Label`-segmented Profile / Settings / Account sections with a destructive Logout row. Use `Label` to name groups that would otherwise be ambiguous from the item text alone.</div>
+              <pre><code>const WithGroupTitles = () =&gt; (
+    &lt;DropdownMenu.Root&gt;
+        &lt;DropdownMenu.Trigger asChild&gt;
+            &lt;Button size=&quot;md&quot; variant=&quot;secondary&quot;&gt;
+                Account Menu
+                &lt;IconKeyboardArrowDown /&gt;
+            &lt;/Button&gt;
+        &lt;/DropdownMenu.Trigger&gt;
+        &lt;DropdownMenu.Portal&gt;
+            &lt;DropdownMenu.Content&gt;
+                &lt;DropdownMenu.Label&gt;Profile&lt;/DropdownMenu.Label&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;View Profile&#39;)}&gt;
+                    View Profile
+                &lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Edit Profile&#39;)}&gt;
+                    Edit Profile
+                &lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Separator /&gt;
+                &lt;DropdownMenu.Label&gt;Settings&lt;/DropdownMenu.Label&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Preferences&#39;)}&gt;
+                    Preferences
+                &lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Privacy&#39;)}&gt;Privacy&lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Notifications&#39;)}&gt;
+                    Notifications
+                &lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Separator /&gt;
+                &lt;DropdownMenu.Label&gt;Account&lt;/DropdownMenu.Label&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Billing&#39;)}&gt;Billing&lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Item
+                    onSelect={() =&gt; console.log(&#39;Logout&#39;)}
+                    className=&quot;data-[highlighted]:bg-red-100&quot;&gt;
+                    &lt;span className=&quot;text-red-500&quot;&gt;Logout&lt;/span&gt;
+                &lt;/DropdownMenu.Item&gt;
+            &lt;/DropdownMenu.Content&gt;
+        &lt;/DropdownMenu.Portal&gt;
+    &lt;/DropdownMenu.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Submenu</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Single-level submenus for Share and Move-to flows</div>
+              <div class="hint">One level of nesting: Share and Move-to submenus wired via `Sub` / `SubTrigger` / `SubContent`. Each submenu is portaled independently so it escapes the parent&#39;s stacking context.</div>
+              <pre><code>const WithSubmenu = () =&gt; (
+    &lt;DropdownMenu.Root&gt;
+        &lt;DropdownMenu.Trigger asChild&gt;
+            &lt;Button size=&quot;md&quot; variant=&quot;secondary&quot;&gt;
+                File Options
+                &lt;IconKeyboardArrowDown /&gt;
+            &lt;/Button&gt;
+        &lt;/DropdownMenu.Trigger&gt;
+        &lt;DropdownMenu.Portal&gt;
+            &lt;DropdownMenu.Content&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;New File&#39;)}&gt;New File&lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Open&#39;)}&gt;Open&lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Separator /&gt;
+                &lt;DropdownMenu.Sub&gt;
+                    &lt;DropdownMenu.SubTrigger&gt;
+                        &lt;IconIosShare /&gt;
+                        Share
+                    &lt;/DropdownMenu.SubTrigger&gt;
+                    &lt;DropdownMenu.Portal&gt;
+                        &lt;DropdownMenu.SubContent&gt;
+                            &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Email&#39;)}&gt;Email&lt;/DropdownMenu.Item&gt;
+                            &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Slack&#39;)}&gt;Slack&lt;/DropdownMenu.Item&gt;
+                            &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Copy Link&#39;)}&gt;
+                                Copy Link
+                            &lt;/DropdownMenu.Item&gt;
+                        &lt;/DropdownMenu.SubContent&gt;
+                    &lt;/DropdownMenu.Portal&gt;
+                &lt;/DropdownMenu.Sub&gt;
+                &lt;DropdownMenu.Sub&gt;
+                    &lt;DropdownMenu.SubTrigger&gt;
+                        &lt;IconDriveFileMove /&gt;
+                        Move to
+                    &lt;/DropdownMenu.SubTrigger&gt;
+                    &lt;DropdownMenu.Portal&gt;
+                        &lt;DropdownMenu.SubContent&gt;
+                            &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Archive&#39;)}&gt;
+                                Archive
+                            &lt;/DropdownMenu.Item&gt;
+                            &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Projects&#39;)}&gt;
+                                Projects
+                            &lt;/DropdownMenu.Item&gt;
+                            &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Drafts&#39;)}&gt;Drafts&lt;/DropdownMenu.Item&gt;
+                        &lt;/DropdownMenu.SubContent&gt;
+                    &lt;/DropdownMenu.Portal&gt;
+                &lt;/DropdownMenu.Sub&gt;
+                &lt;DropdownMenu.Separator /&gt;
+                &lt;DropdownMenu.Item
+                    onSelect={() =&gt; console.log(&#39;Delete&#39;)}
+                    className=&quot;data-[highlighted]:bg-red-100&quot;&gt;
+                    &lt;IconDelete className=&quot;[&amp;&gt;path]:fill-red-500&quot; /&gt;
+                    &lt;span className=&quot;text-red-500&quot;&gt;Delete&lt;/span&gt;
+                &lt;/DropdownMenu.Item&gt;
+            &lt;/DropdownMenu.Content&gt;
+        &lt;/DropdownMenu.Portal&gt;
+    &lt;/DropdownMenu.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Nested Submenus</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Two-level nested submenus inside a parent menu</div>
+              <div class="hint">Two levels of nesting: Organization → Teams → (Engineering, Design). Deeper nesting is rarely a good UX — prefer splitting into separate screens once the tree grows past two levels.</div>
+              <pre><code>const NestedSubmenus = () =&gt; (
+    &lt;DropdownMenu.Root&gt;
+        &lt;DropdownMenu.Trigger asChild&gt;
+            &lt;Button size=&quot;md&quot; variant=&quot;secondary&quot;&gt;
+                Organization Menu
+                &lt;IconKeyboardArrowDown /&gt;
+            &lt;/Button&gt;
+        &lt;/DropdownMenu.Trigger&gt;
+        &lt;DropdownMenu.Portal&gt;
+            &lt;DropdownMenu.Content&gt;
+                &lt;DropdownMenu.Label&gt;Organization&lt;/DropdownMenu.Label&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Dashboard&#39;)}&gt;Dashboard&lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Sub&gt;
+                    &lt;DropdownMenu.SubTrigger&gt;
+                        &lt;IconPeople /&gt;
+                        Teams
+                    &lt;/DropdownMenu.SubTrigger&gt;
+                    &lt;DropdownMenu.Portal&gt;
+                        &lt;DropdownMenu.SubContent&gt;
+                            &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;View All Teams&#39;)}&gt;
+                                View All Teams
+                            &lt;/DropdownMenu.Item&gt;
+                            &lt;DropdownMenu.Separator /&gt;
+                            &lt;DropdownMenu.Sub&gt;
+                                &lt;DropdownMenu.SubTrigger&gt;Engineering&lt;/DropdownMenu.SubTrigger&gt;
+                                &lt;DropdownMenu.Portal&gt;
+                                    &lt;DropdownMenu.SubContent&gt;
+                                        &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Frontend&#39;)}&gt;
+                                            Frontend
+                                        &lt;/DropdownMenu.Item&gt;
+                                        &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Backend&#39;)}&gt;
+                                            Backend
+                                        &lt;/DropdownMenu.Item&gt;
+                                        &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;DevOps&#39;)}&gt;
+                                            DevOps
+                                        &lt;/DropdownMenu.Item&gt;
+                                    &lt;/DropdownMenu.SubContent&gt;
+                                &lt;/DropdownMenu.Portal&gt;
+                            &lt;/DropdownMenu.Sub&gt;
+                            &lt;DropdownMenu.Sub&gt;
+                                &lt;DropdownMenu.SubTrigger&gt;Design&lt;/DropdownMenu.SubTrigger&gt;
+                                &lt;DropdownMenu.Portal&gt;
+                                    &lt;DropdownMenu.SubContent&gt;
+                                        &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Product Design&#39;)}&gt;
+                                            Product Design
+                                        &lt;/DropdownMenu.Item&gt;
+                                        &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Brand&#39;)}&gt;
+                                            Brand
+                                        &lt;/DropdownMenu.Item&gt;
+                                    &lt;/DropdownMenu.SubContent&gt;
+                                &lt;/DropdownMenu.Portal&gt;
+                            &lt;/DropdownMenu.Sub&gt;
+                            &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Marketing&#39;)}&gt;
+                                Marketing
+                            &lt;/DropdownMenu.Item&gt;
+                        &lt;/DropdownMenu.SubContent&gt;
+                    &lt;/DropdownMenu.Portal&gt;
+                &lt;/DropdownMenu.Sub&gt;
+                &lt;DropdownMenu.Separator /&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Settings&#39;)}&gt;Settings&lt;/DropdownMenu.Item&gt;
+            &lt;/DropdownMenu.Content&gt;
+        &lt;/DropdownMenu.Portal&gt;
+    &lt;/DropdownMenu.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Submenu With Disabled Items</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Submenu with `disabled` items and a disabled `SubTrigger`</div>
+              <div class="hint">Submenu that contains `disabled` `Item`s alongside a fully-disabled `SubTrigger`. Use `disabled` sparingly — prefer hiding unavailable actions outright unless the user needs to see them and understand why.</div>
+              <pre><code>const SubmenuWithDisabledItems = () =&gt; (
+    &lt;DropdownMenu.Root&gt;
+        &lt;DropdownMenu.Trigger asChild&gt;
+            &lt;Button size=&quot;md&quot; variant=&quot;secondary&quot;&gt;
+                Document Actions
+                &lt;IconKeyboardArrowDown /&gt;
+            &lt;/Button&gt;
+        &lt;/DropdownMenu.Trigger&gt;
+        &lt;DropdownMenu.Portal&gt;
+            &lt;DropdownMenu.Content&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;View&#39;)}&gt;View&lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Edit&#39;)}&gt;Edit&lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Separator /&gt;
+                &lt;DropdownMenu.Sub&gt;
+                    &lt;DropdownMenu.SubTrigger&gt;
+                        &lt;IconContentCopy /&gt;
+                        Export as
+                    &lt;/DropdownMenu.SubTrigger&gt;
+                    &lt;DropdownMenu.Portal&gt;
+                        &lt;DropdownMenu.SubContent&gt;
+                            &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;PDF&#39;)}&gt;PDF&lt;/DropdownMenu.Item&gt;
+                            &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Word&#39;)}&gt;
+                                Word Document
+                            &lt;/DropdownMenu.Item&gt;
+                            &lt;DropdownMenu.Item disabled&gt;Excel (Premium only)&lt;/DropdownMenu.Item&gt;
+                            &lt;DropdownMenu.Item disabled&gt;PowerPoint (Premium only)&lt;/DropdownMenu.Item&gt;
+                        &lt;/DropdownMenu.SubContent&gt;
+                    &lt;/DropdownMenu.Portal&gt;
+                &lt;/DropdownMenu.Sub&gt;
+                &lt;DropdownMenu.Sub&gt;
+                    &lt;DropdownMenu.SubTrigger disabled&gt;
+                        &lt;IconIosShare /&gt;
+                        Share (Sign in required)
+                    &lt;/DropdownMenu.SubTrigger&gt;
+                    &lt;DropdownMenu.Portal&gt;
+                        &lt;DropdownMenu.SubContent&gt;
+                            &lt;DropdownMenu.Item&gt;Email&lt;/DropdownMenu.Item&gt;
+                            &lt;DropdownMenu.Item&gt;Link&lt;/DropdownMenu.Item&gt;
+                        &lt;/DropdownMenu.SubContent&gt;
+                    &lt;/DropdownMenu.Portal&gt;
+                &lt;/DropdownMenu.Sub&gt;
+            &lt;/DropdownMenu.Content&gt;
+        &lt;/DropdownMenu.Portal&gt;
+    &lt;/DropdownMenu.Root&gt;
+);</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
+  aria-label="Loading">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Loading</h2>
+      <div class="badges">
+        <label for="c-5-components-loading-props" class="badge ok as-toggle">1 prop type</label>
+        
+        <label for="c-5-components-loading-stories" class="badge ok as-toggle">7 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/loading/loading.stories.tsx">components-loading · ./src/loading/loading.stories.tsx</div>
+    
+    <div class="hint">Loading displays a circular spinner that indicates an in-progress operation. Use for inline fetch, form submission, or asynchronous task indicators. The spinner inherits its color from the parent `color` and scales with the parent font size via `em`-based size variants (`sm`, `md`, `lg`).</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-5-components-loading-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  <input id="c-5-components-loading-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
+              <span class="badge ok">1 prop type</span>
+            </div>
+            <pre><code>Component: src/loading/loading.tsx::Loading</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>/**
+ * Controls the spinner diameter in `em` units relative to the parent font size.
+ * Defaults to `&#39;sm&#39;`.
+ * - `sm` (1em) — inline indicators, buttons, and compact layouts
+ * - `md` (1.5em) — cards, panels, and standalone loading states
+ * - `lg` (2em) — page-level or section-level loading
+ */
+size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Loading } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Default spinner at the `sm` size</div>
+              <div class="hint">The default spinner at `size=&quot;sm&quot;` (1em diameter), inheriting the current text color. Matches the out-of-the-box behavior when Loading is dropped into any layout.</div>
+              <pre><code>const Default = () =&gt; &lt;Loading size=&quot;sm&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Size Sm</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Small 1em spinner for inline indicators</div>
+              <div class="hint">Small spinner (1em diameter) — the default. Ideal for inline indicators, buttons, and compact layouts where the spinner needs to sit next to text.</div>
+              <pre><code>const SizeSm = () =&gt; &lt;Loading size=&quot;sm&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Size Md</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Medium 1.5em spinner for cards and panels</div>
+              <div class="hint">Medium spinner (1.5em diameter). Use for cards, panels, and standalone loading states where the spinner is the primary visual signal.</div>
+              <pre><code>const SizeMd = () =&gt; &lt;Loading size=&quot;md&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Size Lg</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Large 2em spinner for page or section loading</div>
+              <div class="hint">Large spinner (2em diameter). Use for page-level or section-level loading where the spinner needs more visual weight.</div>
+              <pre><code>const SizeLg = () =&gt; &lt;Loading size=&quot;lg&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Sizes</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Visual comparison of all three spinner sizes</div>
+              <div class="hint">All three sizes rendered side by side for visual comparison of the `em`-based scaling. Each spinner inherits the same parent text color.</div>
+              <pre><code>const Sizes = () =&gt; (
+    &lt;div style={{ display: &#39;flex&#39;, alignItems: &#39;center&#39;, gap: &#39;2rem&#39; }}&gt;
+        {([&#39;sm&#39;, &#39;md&#39;, &#39;lg&#39;] as const).map(size =&gt; (
+            &lt;Loading key={size} size={size} /&gt;
+        ))}
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Inherits Color</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Spinner color inherits from the parent text color</div>
+              <div class="hint">The spinner color tracks the parent `color` (text color) via `border-current`. Wrap Loading in any element with a text color utility — or set `color` on Loading itself — and the spinner adopts that color without extra props.</div>
+              <pre><code>const InheritsColor = () =&gt; (
+    &lt;div style={{ display: &#39;flex&#39;, alignItems: &#39;center&#39;, gap: &#39;2rem&#39; }}&gt;
+        &lt;div className=&quot;text-text-default-base-primary&quot;&gt;
+            &lt;Loading size=&quot;md&quot; /&gt;
+        &lt;/div&gt;
+        &lt;div className=&quot;text-text-default-brand-primary&quot;&gt;
+            &lt;Loading size=&quot;md&quot; /&gt;
+        &lt;/div&gt;
+        &lt;div className=&quot;text-text-default-danger-primary&quot;&gt;
+            &lt;Loading size=&quot;md&quot; /&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">On Dark Surface</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Spinner on a dark-background surface</div>
+              <div class="hint">Spinner on a dark surface to verify `border-current` contrast. The parent sets a light text color, which the spinner inherits so it remains visible against the dark background.</div>
+              <pre><code>const OnDarkSurface = () =&gt; (
+    &lt;div className=&quot;flex items-center gap-8 rounded-lg bg-bg-button-primary-enable p-8 text-text-default-base-inverse-primary&quot;&gt;
+        &lt;Loading size=&quot;sm&quot; /&gt;
+        &lt;Loading size=&quot;md&quot; /&gt;
+        &lt;Loading size=&quot;lg&quot; /&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
+  aria-label="StatusBall">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> StatusBall</h2>
+      <div class="badges">
+        
+        
+        <label for="c-6-components-statusball-stories" class="badge ok as-toggle">12 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/status-ball/status-ball.stories.tsx">components-statusball · ./src/status-ball/status-ball.stories.tsx</div>
+    
+    <div class="hint">StatusBall renders a small colored dot that marks the state of an adjacent label — appointment confirmation, license validity, availability, or any list row where a single glyph of color communicates status. Pair it with text; the dot alone is not announced to assistive technologies, so the surrounding label must carry the meaning.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-6-components-statusball-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+
+  <div class="panels">
+    
+    
+    
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { StatusBall } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Default neutral dot representing an inactive status</div>
+              <div class="hint">The default dot — `color=&quot;neutral&quot;` for an unknown or inactive status. Drop next to a text label to surface state at a glance.</div>
+              <pre><code>const Default = () =&gt; &lt;div className=&quot;flex items-center gap-2&quot;&gt;
+    &lt;StatusBall color=&quot;neutral&quot; /&gt;
+&lt;/div&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Intents</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Every intent paired with a representative status label</div>
+              <div class="hint">All 8 semantic intents rendered in a single grid, each paired with a sample label. Consumers typically drive the `color` prop from a domain-specific status → intent lookup table.</div>
+              <pre><code>const Intents = () =&gt; {
+    const samples: { color: (typeof INTENTS)[number]; label: string }[] = [
+        { color: &#39;success&#39;, label: &#39;Active&#39; },
+        { color: &#39;info&#39;, label: &#39;Scheduled&#39; },
+        { color: &#39;warning&#39;, label: &#39;Pending&#39; },
+        { color: &#39;danger&#39;, label: &#39;Expired&#39; },
+        { color: &#39;creative&#39;, label: &#39;In review&#39; },
+        { color: &#39;playful&#39;, label: &#39;Flagged&#39; },
+        { color: &#39;dynamic&#39;, label: &#39;Needs attention&#39; },
+        { color: &#39;neutral&#39;, label: &#39;Inactive&#39; }
+    ];
+
+    return (
+        &lt;div className=&quot;grid grid-cols-2 gap-x-8 gap-y-3&quot;&gt;
+            {samples.map(({ color, label }) =&gt; (
+                &lt;div key={color} className=&quot;flex items-center gap-2&quot;&gt;
+                    &lt;StatusBall color={color} /&gt;
+                    &lt;span className=&quot;text-sm text-text-default-base-primary&quot;&gt;{label}&lt;/span&gt;
+                &lt;/div&gt;
+            ))}
+        &lt;/div&gt;
+    );
+};</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Success</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Success dot for positive or active statuses</div>
+              <div class="hint">Success dot for positive / active states — the most common pairing for &quot;live&quot; records such as active licenses or confirmed appointments.</div>
+              <pre><code>const Success = () =&gt; &lt;StatusBall color=&quot;success&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Info</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Info dot for informational statuses</div>
+              <div class="hint">Info dot for informational or neutral-positive states — e.g., scheduled or queued records that are progressing normally.</div>
+              <pre><code>const Info = () =&gt; &lt;StatusBall color=&quot;info&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Warning</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Warning dot for pending or approaching-deadline statuses</div>
+              <div class="hint">Warning dot for pending states or records approaching a deadline — e.g., a license nearing expiration or an appointment awaiting confirmation.</div>
+              <pre><code>const Warning = () =&gt; &lt;StatusBall color=&quot;warning&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Danger</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Danger dot for error or expired statuses</div>
+              <div class="hint">Danger dot for error / expired / blocking states — e.g., an expired license or a failed payment that blocks progress.</div>
+              <pre><code>const Danger = () =&gt; &lt;StatusBall color=&quot;danger&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Creative</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Creative dot for category-specific statuses</div>
+              <div class="hint">Creative dot for category-specific statuses without a direct success/info/ warning/danger mapping — often used for &quot;in review&quot; or &quot;under assessment&quot; domain states.</div>
+              <pre><code>const Creative = () =&gt; &lt;StatusBall color=&quot;creative&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Dynamic</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Dynamic dot for attention-needed statuses</div>
+              <div class="hint">Dynamic dot for attention-worthy states that sit between warning and danger — e.g., records that need action soon but are not yet failed.</div>
+              <pre><code>const Dynamic = () =&gt; &lt;StatusBall color=&quot;dynamic&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Playful</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Playful dot for flagged or priority statuses</div>
+              <div class="hint">Playful dot for flagged or priority domain states that need to stand out from warnings with a distinct hue.</div>
+              <pre><code>const Playful = () =&gt; &lt;StatusBall color=&quot;playful&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Neutral</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Neutral dot for inactive or unknown statuses</div>
+              <div class="hint">Neutral dot for inactive, unknown, or default states — the fallback when no other intent applies.</div>
+              <pre><code>const Neutral = () =&gt; &lt;StatusBall color=&quot;neutral&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">In List</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>StatusBall paired with labels inside a list</div>
+              <div class="hint">StatusBall inside a list row — the canonical production usage, mirroring the appointment and license list patterns in `producerflow/mono`. Each row pairs a dot with a label and supporting text.</div>
+              <pre><code>const InList = () =&gt; {
+    const rows = [
+        { color: &#39;success&#39;, name: &#39;Ada Lovelace&#39;, status: &#39;Active&#39; },
+        { color: &#39;warning&#39;, name: &#39;Grace Hopper&#39;, status: &#39;Pending renewal&#39; },
+        { color: &#39;danger&#39;, name: &#39;Alan Turing&#39;, status: &#39;Expired&#39; },
+        { color: &#39;neutral&#39;, name: &#39;Katherine Johnson&#39;, status: &#39;Inactive&#39; }
+    ] as const;
+
+    return (
+        &lt;ul className=&quot;w-80 divide-y divide-border-default-base-primary rounded-lg border border-border-default-base-primary bg-bg-default-base-primary&quot;&gt;
+            {rows.map(row =&gt; (
+                &lt;li key={row.name} className=&quot;flex items-center gap-3 px-4 py-3&quot;&gt;
+                    &lt;StatusBall color={row.color} /&gt;
+                    &lt;div className=&quot;flex flex-col&quot;&gt;
+                        &lt;span className=&quot;text-sm font-medium text-text-default-base-primary&quot;&gt;{row.name}&lt;/span&gt;
+                        &lt;span className=&quot;text-xs text-text-default-base-secondary&quot;&gt;{row.status}&lt;/span&gt;
+                    &lt;/div&gt;
+                &lt;/li&gt;
+            ))}
+        &lt;/ul&gt;
+    );
+};</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">In Pill</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>StatusBall inside a rounded status pill</div>
+              <div class="hint">StatusBall inside a status pill — a tinted badge that pairs the dot with a label in a single rounded container. Use when the status needs more visual weight than a bare list row provides.</div>
+              <pre><code>const InPill = () =&gt; (
+    &lt;div className=&quot;flex flex-wrap items-center gap-2&quot;&gt;
+        &lt;span className=&quot;inline-flex items-center gap-1.5 rounded-full border border-border-default-base-primary bg-bg-default-base-primary px-2.5 py-1 text-xs text-text-default-base-primary&quot;&gt;
+            &lt;StatusBall color=&quot;success&quot; /&gt;
+            Active
+        &lt;/span&gt;
+        &lt;span className=&quot;inline-flex items-center gap-1.5 rounded-full border border-border-default-base-primary bg-bg-default-base-primary px-2.5 py-1 text-xs text-text-default-base-primary&quot;&gt;
+            &lt;StatusBall color=&quot;warning&quot; /&gt;
+            Pending
+        &lt;/span&gt;
+        &lt;span className=&quot;inline-flex items-center gap-1.5 rounded-full border border-border-default-base-primary bg-bg-default-base-primary px-2.5 py-1 text-xs text-text-default-base-primary&quot;&gt;
+            &lt;StatusBall color=&quot;danger&quot; /&gt;
+            Expired
+        &lt;/span&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
+  aria-label="Toast">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Toast</h2>
+      <div class="badges">
+        <label for="c-7-components-toast-props" class="badge ok as-toggle">11 prop types</label>
+        
+        <label for="c-7-components-toast-stories" class="badge ok as-toggle">11 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/toast/toast.stories.tsx">components-toast · ./src/toast/toast.stories.tsx</div>
+    
+    <div class="hint">Toast renders transient feedback about an outcome — saved, failed, warning, info — without interrupting the user&#39;s flow. Mount `&lt;Toast /&gt;` once near the app root to register the provider, then call the imperative `toast()` API from anywhere in the tree. Five semantic types (`neutral`, `success`, `error`, `warning`, `info`) × two layouts (`inline`, `expanded`) cover the common feedback patterns.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-7-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  <input id="c-7-components-toast-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
+              <span class="badge ok">11 prop types</span>
+            </div>
+            <pre><code>Component: src/toast/toast.tsx::Toast</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>/**
+ * Additional className merged onto the sonner `&lt;Toaster&gt;` root.
+ */
+className?: string
+
+/**
+ * Text direction. Sonner forwards this to the rendered toaster root.
+ */
+dir?: &quot;auto&quot; | &quot;ltr&quot; | &quot;rtl&quot;
+
+/**
+ * Default auto-dismiss duration in ms for toasts fired against this provider. Defaults to `5000`.
+ */
+duration?: number = 5000
+
+/**
+ * When `true`, stack expands on hover instead of auto-collapsing.
+ */
+expand?: boolean
+
+/**
+ * Gap between stacked toasts, in pixels.
+ */
+gap?: number
+
+/**
+ * Keyboard shortcut used to focus the toaster.
+ */
+hotkey?: string[]
+
+/**
+ * When `true`, flips light/dark theme on the toaster root.
+ */
+invert?: boolean
+
+/**
+ * Offset from the screen edge, in pixels or as a CSS length.
+ */
+offset?: string | number
+
+/**
+ * Placement of the toaster on the screen. Defaults to `&#39;bottom-right&#39;`.
+ */
+position?: ToastPosition = bottom-right
+
+/**
+ * When `true`, sonner paints colored backgrounds per type (DS uses its own icon tokens by default).
+ */
+richColors?: boolean
+
+/**
+ * Maximum number of toasts rendered at once before earlier ones dismiss.
+ */
+visibleToasts?: number</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Button, Toast } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Default playground for the Toast provider</div>
+              <div class="hint">Args-controlled playground. Click the button to fire a neutral toast; tweak `position` and `duration` from the Controls panel to preview the provider defaults.</div>
+              <pre><code>const Default = () =&gt; (
+    &lt;div style={{ minHeight: &#39;240px&#39; }}&gt;
+        &lt;Button variant=&quot;secondary&quot; onClick={() =&gt; toast(&#39;Hello from Toast&#39;)}&gt;
+            Show toast
+        &lt;/Button&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Inline</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Inline layout across all five semantic types</div>
+              <div class="hint">Inline layout (default). Compact treatment — title with an optional description stacked directly below it. The `type` drives the icon color. Use for short acknowledgments that don&#39;t need a colored rail.</div>
+              <pre><code>const Inline = () =&gt; (
+    &lt;div style={{ display: &#39;flex&#39;, flexWrap: &#39;wrap&#39;, gap: &#39;0.5rem&#39; }}&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt; toast(&#39;Something happened&#39;, { description: &#39;Additional context.&#39; })}&gt;
+            Neutral
+        &lt;/Button&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt; toast.success(&#39;Policy saved&#39;, { description: &#39;Your edits are live.&#39; })}&gt;
+            Success
+        &lt;/Button&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast.error(&#39;Failed to save&#39;, { description: &#39;The file could not be processed.&#39; })
+            }&gt;
+            Error
+        &lt;/Button&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast.warning(&#39;License expiring soon&#39;, { description: &#39;Renew before end of month.&#39; })
+            }&gt;
+            Warning
+        &lt;/Button&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast.info(&#39;Sync in progress&#39;, { description: &#39;Please wait while we sync your data.&#39; })
+            }&gt;
+            Info
+        &lt;/Button&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Expanded</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Expanded layout across all five semantic types</div>
+              <div class="hint">Expanded layout. Multi-line treatment with a 0.375rem colored left rail that tracks the toast&#39;s `type`. Use for feedback that benefits from a description on its own line or a trailing action button.</div>
+              <pre><code>const Expanded = () =&gt; (
+    &lt;div style={{ display: &#39;flex&#39;, flexWrap: &#39;wrap&#39;, gap: &#39;0.5rem&#39; }}&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast(&#39;Something happened&#39;, {
+                    variant: &#39;expanded&#39;,
+                    description: &#39;Additional context for the user.&#39;
+                })
+            }&gt;
+            Neutral
+        &lt;/Button&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast.success(&#39;Policy saved&#39;, {
+                    variant: &#39;expanded&#39;,
+                    description: &#39;Your changes have been saved successfully.&#39;
+                })
+            }&gt;
+            Success
+        &lt;/Button&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast.error(&#39;Failed to save&#39;, {
+                    variant: &#39;expanded&#39;,
+                    description: &#39;The file could not be processed.&#39;
+                })
+            }&gt;
+            Error
+        &lt;/Button&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast.warning(&#39;License expiring soon&#39;, {
+                    variant: &#39;expanded&#39;,
+                    description: &#39;Renew before the end of the month to avoid interruption.&#39;
+                })
+            }&gt;
+            Warning
+        &lt;/Button&gt;
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast.info(&#39;Sync in progress&#39;, {
+                    variant: &#39;expanded&#39;,
+                    description: &#39;Please wait while we sync your data.&#39;
+                })
+            }&gt;
+            Info
+        &lt;/Button&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Action Object</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Toast with a structured action button</div>
+              <div class="hint">Toast with a structured `action` object. Passing `{ label, onClick }` renders the built-in secondary Button; the handler runs and the toast auto-dismisses afterward.</div>
+              <pre><code>const WithActionObject = () =&gt; (
+    &lt;Button
+        variant=&quot;secondary&quot;
+        onClick={() =&gt;
+            toast.error(&#39;Upload failed&#39;, {
+                variant: &#39;expanded&#39;,
+                description: &#39;The file could not be processed.&#39;,
+                action: { label: &#39;Retry&#39;, onClick: () =&gt; {} }
+            })
+        }&gt;
+        Show toast with action
+    &lt;/Button&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Action Node</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Toast with a custom ReactNode action</div>
+              <div class="hint">Toast with a raw-ReactNode `action`. Pass any JSX to render a custom trailing control — a link, a pair of buttons, etc. — when the default secondary Button doesn&#39;t fit.</div>
+              <pre><code>const WithActionNode = () =&gt; (
+    &lt;Button
+        variant=&quot;secondary&quot;
+        onClick={() =&gt;
+            toast(&#39;File uploaded&#39;, {
+                description: &#39;document.pdf is ready.&#39;,
+                action: (
+                    &lt;Button variant=&quot;link&quot; onClick={() =&gt; {}}&gt;
+                        View file
+                    &lt;/Button&gt;
+                )
+            })
+        }&gt;
+        Show toast with link action
+    &lt;/Button&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Action And Cancel</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Toast with an action and a cancel control</div>
+              <div class="hint">Toast with both `action` and `cancel`. Cancel renders as a ghost Button next to the action; its handler runs and the toast auto-dismisses.</div>
+              <pre><code>const WithActionAndCancel = () =&gt; (
+    &lt;Button
+        variant=&quot;secondary&quot;
+        onClick={() =&gt;
+            toast.success(&#39;Record archived&#39;, {
+                variant: &#39;expanded&#39;,
+                description: &#39;The record is hidden from the default view.&#39;,
+                action: { label: &#39;Undo&#39;, onClick: () =&gt; {} },
+                cancel: { label: &#39;Dismiss&#39;, onClick: () =&gt; {} }
+            })
+        }&gt;
+        Show toast with action + cancel
+    &lt;/Button&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Non Dismissible</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Non-dismissible toast (no close button)</div>
+              <div class="hint">Non-dismissible toast. Setting `dismissible: false` hides the close button; the toast still auto-dismisses when its `duration` elapses, or programmatically via `toast.dismiss(id)`.</div>
+              <pre><code>const NonDismissible = () =&gt; (
+    &lt;Button
+        variant=&quot;secondary&quot;
+        onClick={() =&gt;
+            toast.info(&#39;Sync in progress&#39;, {
+                dismissible: false,
+                description: &#39;Please wait while we sync your data.&#39;
+            })
+        }&gt;
+        Show non-dismissible toast
+    &lt;/Button&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Long Duration</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Toast with a custom `duration`</div>
+              <div class="hint">Long-duration toast. `duration` (in ms) overrides the provider default so long-running operations stay visible until they&#39;re relevant.</div>
+              <pre><code>const LongDuration = () =&gt; (
+    &lt;Button
+        variant=&quot;secondary&quot;
+        onClick={() =&gt;
+            toast.info(&#39;Uploading documents&#39;, {
+                description: &#39;This may take a moment.&#39;,
+                duration: 10_000
+            })
+        }&gt;
+        Show 10s toast
+    &lt;/Button&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Programmatic Dismiss</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Dismiss a toast programmatically via its id</div>
+              <div class="hint">Programmatic dismissal. `toast()` returns the toast id, which you can pass to `toast.dismiss(id)` to clear it before its duration elapses.</div>
+              <pre><code>const ProgrammaticDismiss = () =&gt; {
+    let toastId: string | number | undefined;
+    return (
+        &lt;div style={{ display: &#39;flex&#39;, gap: &#39;0.5rem&#39; }}&gt;
+            &lt;Button
+                variant=&quot;secondary&quot;
+                onClick={() =&gt; {
+                    toastId = toast.info(&#39;Uploading...&#39;, { duration: 60_000 });
+                }}&gt;
+                Start
+            &lt;/Button&gt;
+            &lt;Button
+                variant=&quot;ghost&quot;
+                onClick={() =&gt; {
+                    if (toastId !== undefined) toast.dismiss(toastId);
+                }}&gt;
+                Dismiss
+            &lt;/Button&gt;
+        &lt;/div&gt;
+    );
+};</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Promise</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Wire a toast to an async operation via `toast.promise`</div>
+              <div class="hint">`toast.promise` wires a toast to an async operation — loading while the promise is pending, success or error when it settles. Useful for save/submit flows where the outcome feeds back into the same toast.</div>
+              <pre><code>const WithPromise = () =&gt; {
+    const fakeFetch = () =&gt;
+        new Promise&lt;string&gt;((resolve, reject) =&gt; {
+            window.setTimeout(
+                () =&gt; (Math.random() &gt; 0.5 ? resolve(&#39;ok&#39;) : reject(new globalThis.Error(&#39;nope&#39;))),
+                1500
+            );
+        });
+    return (
+        &lt;Button
+            variant=&quot;secondary&quot;
+            onClick={() =&gt;
+                toast.promise(fakeFetch(), {
+                    loading: &#39;Saving document…&#39;,
+                    success: &#39;Document saved&#39;,
+                    error: &#39;Save failed&#39;
+                })
+            }&gt;
+            Run promise
+        &lt;/Button&gt;
+    );
+};</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Custom Icon</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Override the default type-based icon</div>
+              <div class="hint">Custom `icon` override. Pass any ReactNode as `icon` to replace the type-based default — helpful when the toast reflects a domain-specific action (e.g., a sync icon for a sync-in-progress toast).</div>
+              <pre><code>const CustomIcon = () =&gt; (
+    &lt;Button
+        variant=&quot;secondary&quot;
+        onClick={() =&gt;
+            toast.success(&#39;Sync started&#39;, {
+                description: &#39;Data sync is in progress.&#39;,
+                icon: (
+                    &lt;svg viewBox=&quot;0 0 24 24&quot; width=&quot;24&quot; height=&quot;24&quot; fill=&quot;currentColor&quot; aria-hidden&gt;
+                        &lt;path d=&quot;M12 4V1L8 5l4 4V6c3.3 0 6 2.7 6 6 0 1-.3 2-.7 2.8l1.5 1.5C19.5 15 20 13.6 20 12c0-4.4-3.6-8-8-8zm0 14c-3.3 0-6-2.7-6-6 0-1 .3-2 .7-2.8L5.2 7.7C4.5 9 4 10.4 4 12c0 4.4 3.6 8 8 8v3l4-4-4-4v3z&quot; /&gt;
+                    &lt;/svg&gt;
+                )
+            })
+        }&gt;
+        Show toast with custom icon
+    &lt;/Button&gt;
+);</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
+    </div>
+    
+    
+    
+  </div>
+</main>
+</body>
+</html>  
