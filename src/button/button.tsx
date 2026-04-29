@@ -28,11 +28,7 @@ export const buttonRecipe = tv({
 		'transition-[background-color,border-color,color] duration-200',
 		'[-webkit-tap-highlight-color:transparent]',
 		'[&_svg]:[flex:0_0_fit-content]',
-		// Legacy `@agentero/icons` SVGs hardcode `fill="#hex"` on their paths,
-		// which beats the variant's `[&_svg]:fill-…` rule. Forcing the path
-		// to inherit lets the variant's fill reach it (CSS rules win over
-		// presentation attributes).
-		'[&_svg_path]:fill-[inherit]',
+		'[&_svg_path[fill]]:fill-current',
 		'disabled:cursor-not-allowed disabled:pointer-events-none',
 		'focus-visible:outline-solid focus-visible:outline-2',
 		'focus-visible:outline-offset-[0.125rem]',
