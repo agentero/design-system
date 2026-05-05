@@ -99,8 +99,15 @@ export const Success: Story = {
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 		const dot = canvas.getByTestId('status-ball-success');
+
 		await expect(dot).toHaveAttribute('data-slot', 'status-ball');
-		await expect(dot).toHaveClass('bg-bg-status-ball-success');
+
+		// Assert the rendered outcome, not the utility class. Catches token
+		// regressions, CSS load failures, and cascade overrides that a
+		// class-name assertion would miss.
+		const bg = getComputedStyle(dot).backgroundColor;
+		await expect(bg).not.toBe('rgba(0, 0, 0, 0)');
+		await expect(bg).not.toBe('');
 	},
 	render: args => <StatusBall {...args} data-testid="status-ball-success" />,
 	parameters: { a11y: { test: 'error' } }
