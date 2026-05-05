@@ -100,14 +100,21 @@ export const Success: Story = {
 		const canvas = within(canvasElement);
 		const dot = canvas.getByTestId('status-ball-success');
 
+		// Structural contract — public API of the DS.
 		await expect(dot).toHaveAttribute('data-slot', 'status-ball');
 
-		// Assert the rendered outcome, not the utility class. Catches token
-		// regressions, CSS load failures, and cascade overrides that a
-		// class-name assertion would miss.
-		const bg = getComputedStyle(dot).backgroundColor;
-		await expect(bg).not.toBe('rgba(0, 0, 0, 0)');
-		await expect(bg).not.toBe('');
+		// Visual outcomes from the resolved CSS, not from the utility class.
+		// Catches token regressions, CSS load failures, and cascade overrides.
+		const styles = getComputedStyle(dot);
+
+		// Geometry from the base recipe: `size-2 rounded-full`.
+		await expect(styles.width).toBe('8px');
+		await expect(styles.height).toBe('8px');
+		await expect(parseFloat(styles.borderRadius)).toBeGreaterThan(0);
+
+		// Color from the `success` variant: token resolved to a visible value.
+		await expect(styles.backgroundColor).not.toBe('rgba(0, 0, 0, 0)');
+		await expect(styles.backgroundColor).not.toBe('');
 	},
 	render: args => <StatusBall {...args} data-testid="status-ball-success" />,
 	parameters: { a11y: { test: 'error' } }
