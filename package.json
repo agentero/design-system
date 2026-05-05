@@ -33,13 +33,15 @@
     "./theme": "./themes/base.css"
   },
   "scripts": {
+    "postinstall": "playwright install chromium",
     "dev": "vite dev",
     "build": "vite build",
     "tsc": "tsgo",
     "lint": "oxlint src/ lib/ && yarn lint:format",
     "lint:format": "oxfmt --check src/ lib/",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "test": "vitest run --project=storybook"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.11",

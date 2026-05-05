@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, within } from 'storybook/test';
 
 import { StatusBall } from './status-ball';
 
@@ -94,7 +95,15 @@ export const Intents: Story = {
  * @summary Success dot for positive or active statuses
  */
 export const Success: Story = {
-	args: { color: 'success' }
+	args: { color: 'success' },
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const dot = canvas.getByTestId('status-ball-success');
+		await expect(dot).toHaveAttribute('data-slot', 'status-ball');
+		await expect(dot).toHaveClass('bg-bg-status-ball-success');
+	},
+	render: args => <StatusBall {...args} data-testid="status-ball-success" />,
+	parameters: { a11y: { test: 'error' } }
 };
 
 /**
