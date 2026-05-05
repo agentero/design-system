@@ -112,9 +112,17 @@ export const Success: Story = {
 		await expect(styles.height).toBe('8px');
 		await expect(parseFloat(styles.borderRadius)).toBeGreaterThan(0);
 
-		// Color from the `success` variant: token resolved to a visible value.
+		// Color comes from the `success` token specifically, not a fallback or
+		// unrelated source. Survives intentional token tweaks (both sides update
+		// together) but catches broken chains, missing CSS, and cascade overrides.
+		const probe = document.createElement('div');
+		probe.style.backgroundColor = 'var(--color-bg-status-ball-success)';
+		canvasElement.appendChild(probe);
+		const expectedBg = getComputedStyle(probe).backgroundColor;
+		probe.remove();
+
 		await expect(styles.backgroundColor).not.toBe('rgba(0, 0, 0, 0)');
-		await expect(styles.backgroundColor).not.toBe('');
+		await expect(styles.backgroundColor).toBe(expectedBg);
 	},
 	render: args => <StatusBall {...args} data-testid="status-ball-success" />,
 	parameters: { a11y: { test: 'error' } }
