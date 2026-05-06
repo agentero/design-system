@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, within } from 'storybook/test';
 
 import { StatusBall } from './status-ball';
 
@@ -94,7 +95,31 @@ export const Intents: Story = {
  * @summary Success dot for positive or active statuses
  */
 export const Success: Story = {
-	args: { color: 'success' }
+	args: { color: 'success' },
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const dot = canvas.getByTestId('status-ball-success');
+
+		// Structural contract — public API of the DS.
+		await expect(dot).toHaveAttribute('data-slot', 'status-ball');
+
+		// Visual outcomes from the resolved CSS, not from the utility class.
+		// Catches token regressions, CSS load failures, and cascade overrides.
+		const styles = getComputedStyle(dot);
+
+		// Geometry from the base recipe: `size-2 rounded-full`.
+		await expect(styles.width).toBe('8px');
+		await expect(styles.height).toBe('8px');
+		await expect(parseFloat(styles.borderRadius)).toBeGreaterThan(0);
+
+		// Color matches the `success` token's resolved value (`--color-positive-700`
+		// → `#0f8a2a`). Hardcoding the rgb instead of probing the variable means
+		// intentional token tweaks must update this test on purpose, and gives us a
+		// per-theme assertion when dark / marketplace / producerflow modes land.
+		await expect(styles.backgroundColor).toBe('rgb(15, 138, 42)');
+	},
+	render: args => <StatusBall {...args} data-testid="status-ball-success" />,
+	parameters: { a11y: { test: 'error' } }
 };
 
 /**
