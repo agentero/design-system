@@ -576,13 +576,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">8 components ok</span><span class="filter-pill ok" aria-disabled="true">97 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">9 components ok</span><span class="filter-pill ok" aria-disabled="true">104 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>2.4s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>2.5s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -2665,6 +2665,167 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
   no-story-error
   no-doc-error"
   role="listitem"
+  aria-label="Pagination">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Pagination</h2>
+      <div class="badges">
+        <label for="c-6-components-pagination-props" class="badge ok as-toggle">5 prop types</label>
+        
+        <label for="c-6-components-pagination-stories" class="badge ok as-toggle">7 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/pagination/pagination.stories.tsx">components-pagination · ./src/pagination/pagination.stories.tsx</div>
+    
+    <div class="hint">Pagination is a 1-indexed paged navigation control with previous/next icon buttons, numeric page buttons, and a leading &quot;X - Y of Z&quot; entries summary. The page list collapses long ranges with `…` ellipses so the control stays compact regardless of total page count. Use it for lists, tables, or grids that are split across pages.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-6-components-pagination-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  <input id="c-6-components-pagination-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
+              <span class="badge ok">5 prop types</span>
+            </div>
+            <pre><code>Component: src/pagination/pagination.tsx::Pagination</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>className?: string
+
+currentPage: number
+
+onPageChange: (page: number) =&gt; void
+
+pageSize: number
+
+totalCount: number</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Pagination } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Default args playground for Pagination</div>
+              <div class="hint">Default args playground. The first page of a 1,000-item list paged 10 at a time — renders pages 1–5, an ellipsis, and the last page (100), with the previous-page button disabled because we&#39;re on page 1.</div>
+              <pre><code>const Default = () =&gt; &lt;Pagination currentPage={1} totalCount={1000} pageSize={10} onPageChange={fn()} /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Few Pages</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Short page list with no ellipsis collapse</div>
+              <div class="hint">Short list whose total pages fit in the visible window — no ellipsis is rendered. Exercises the `totalPageNumbers &gt;= totalPageCount` branch in `getPages`.</div>
+              <pre><code>const FewPages = () =&gt; &lt;Pagination
+    currentPage={2}
+    totalCount={30}
+    pageSize={10}
+    onPageChange={(page: number) =&gt; console.log(&#39;onPageChange&#39;, page)} /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Dots Right</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Right-side ellipsis only (current page near start)</div>
+              <div class="hint">Current page sits near the start of the range — left ellipsis is hidden, right ellipsis is shown, and the last page button anchors the right edge.</div>
+              <pre><code>const DotsRight = () =&gt; &lt;Pagination
+    currentPage={2}
+    totalCount={1000}
+    pageSize={10}
+    onPageChange={(page: number) =&gt; console.log(&#39;onPageChange&#39;, page)} /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Dots Left</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Left-side ellipsis only (current page near end)</div>
+              <div class="hint">Current page sits near the end of the range — left ellipsis is shown, right ellipsis is hidden, and the first page button anchors the left edge.</div>
+              <pre><code>const DotsLeft = () =&gt; &lt;Pagination
+    currentPage={99}
+    totalCount={1000}
+    pageSize={10}
+    onPageChange={(page: number) =&gt; console.log(&#39;onPageChange&#39;, page)} /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Dots Both</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Both ellipses visible (current page in middle)</div>
+              <div class="hint">Current page sits in the middle of the range — both ellipses are visible, with the first and last page buttons anchoring each edge.</div>
+              <pre><code>const DotsBoth = () =&gt; &lt;Pagination
+    currentPage={50}
+    totalCount={1000}
+    pageSize={10}
+    onPageChange={(page: number) =&gt; console.log(&#39;onPageChange&#39;, page)} /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Last Page</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Last page selected with disabled next button</div>
+              <div class="hint">Last page selected — the next-page button is disabled and the active page indicator sits on the trailing number.</div>
+              <pre><code>const LastPage = () =&gt; &lt;Pagination currentPage={100} totalCount={1000} pageSize={10} onPageChange={fn()} /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Controlled</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Interactive controlled example backed by `useState`</div>
+              <div class="hint">Interactive controlled example. Local `useState` owns the page; clicking a page, previous, or next button updates it so the active page indicator and entries summary follow along.</div>
+              <pre><code>const Controlled = ({ totalCount, pageSize }) =&gt; {
+    const [page, setPage] = useState(1);
+
+    return (
+        &lt;Pagination
+            currentPage={page}
+            totalCount={totalCount}
+            pageSize={pageSize}
+            onPageChange={setPage}
+        /&gt;
+    );
+};</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
   aria-label="StatusBall">
   <div class="head">
     <div class="title">
@@ -2672,7 +2833,7 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
       <div class="badges">
         
         
-        <label for="c-6-components-statusball-stories" class="badge ok as-toggle">12 stories</label>
+        <label for="c-7-components-statusball-stories" class="badge ok as-toggle">12 stories</label>
         
       </div>
     </div>
@@ -2685,7 +2846,7 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-6-components-statusball-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-7-components-statusball-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
@@ -2890,9 +3051,9 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Toast</h2>
       <div class="badges">
-        <label for="c-7-components-toast-props" class="badge ok as-toggle">11 prop types</label>
+        <label for="c-8-components-toast-props" class="badge ok as-toggle">11 prop types</label>
         
-        <label for="c-7-components-toast-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-8-components-toast-stories" class="badge ok as-toggle">11 stories</label>
         
       </div>
     </div>
@@ -2905,9 +3066,9 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-7-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-8-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-7-components-toast-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-8-components-toast-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
