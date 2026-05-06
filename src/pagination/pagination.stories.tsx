@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { Pagination } from './pagination';
 
@@ -40,7 +41,34 @@ type Story = StoryObj<typeof meta>;
  *
  * @summary Default args playground for Pagination
  */
-export const Default: Story = {};
+export const Default: Story = {
+	args: { onPageChange: fn() },
+	argTypes: { onPageChange: { control: false, action: 'onPageChange' } },
+	parameters: { a11y: { test: 'error' } },
+	play: async ({ canvasElement, args }) => {
+		const canvas = within(canvasElement);
+
+		const nav = canvas.getByRole('navigation', { name: 'Pagination' });
+		await expect(nav).toBeInTheDocument();
+		await expect(canvas.getByText(/1 - 10 of 1,000/)).toBeInTheDocument();
+
+		const prev = canvas.getByRole('button', { name: 'Go to previous page' });
+		const next = canvas.getByRole('button', { name: 'Go to next page' });
+		await expect(prev).toBeDisabled();
+		await expect(next).toBeEnabled();
+
+		const page1 = canvas.getByRole('button', { name: '1' });
+		const page2 = canvas.getByRole('button', { name: '2' });
+		await expect(page1).toHaveAttribute('aria-current', 'page');
+		await expect(page2).not.toHaveAttribute('aria-current');
+
+		await userEvent.click(canvas.getByRole('button', { name: '3' }));
+		await expect(args.onPageChange).toHaveBeenLastCalledWith(3);
+
+		await userEvent.click(next);
+		await expect(args.onPageChange).toHaveBeenLastCalledWith(2);
+	}
+};
 
 /**
  * Short list whose total pages fit in the visible window — no ellipsis is
@@ -90,7 +118,29 @@ export const DotsBoth: Story = {
  * @summary Last page selected with disabled next button
  */
 export const LastPage: Story = {
-	args: { currentPage: 100, totalCount: 1000, pageSize: 10 }
+	args: {
+		currentPage: 100,
+		totalCount: 1000,
+		pageSize: 10,
+		onPageChange: fn()
+	},
+	argTypes: { onPageChange: { control: false, action: 'onPageChange' } },
+	play: async ({ canvasElement, args }) => {
+		const canvas = within(canvasElement);
+
+		const prev = canvas.getByRole('button', { name: 'Go to previous page' });
+		const next = canvas.getByRole('button', { name: 'Go to next page' });
+		await expect(prev).toBeEnabled();
+		await expect(next).toBeDisabled();
+
+		await expect(canvas.getByRole('button', { name: '100' })).toHaveAttribute(
+			'aria-current',
+			'page'
+		);
+
+		await userEvent.click(prev);
+		await expect(args.onPageChange).toHaveBeenLastCalledWith(99);
+	}
 };
 
 /**
@@ -112,5 +162,17 @@ export const Controlled: Story = {
 				onPageChange={setPage}
 			/>
 		);
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		await expect(await canvas.findByRole('button', { current: 'page' })).toHaveTextContent('1');
+
+		const next = canvas.getByRole('button', { name: 'Go to next page' });
+		await userEvent.click(next);
+		await userEvent.click(next);
+
+		await expect(await canvas.findByRole('button', { current: 'page' })).toHaveTextContent('3');
+		await expect(canvas.getByText(/21 - 30 of 1,000/)).toBeInTheDocument();
 	}
 };
