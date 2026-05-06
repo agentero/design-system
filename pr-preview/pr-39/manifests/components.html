@@ -582,7 +582,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>2.3s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>2.2s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -919,12 +919,7 @@ size?: AlertSizeType = sm</code></pre>
               </div>
               <div>Alert with a dismiss button</div>
               <div class="hint">Dismissible alert. Providing `onDismiss` shows an icon-only close button with `aria-label=&quot;Dismiss&quot;` that inherits the alert&#39;s color.</div>
-              <pre><code>const WithDismiss = () =&gt; &lt;Alert
-    color=&quot;warning&quot;
-    size=&quot;sm&quot;
-    ghost={false}
-    hasIcon
-    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+              <pre><code>const WithDismiss = () =&gt; &lt;Alert color=&quot;warning&quot; size=&quot;sm&quot; ghost={false} hasIcon onDismiss={fn()}&gt;
     &lt;Alert.Content&gt;
         &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
         &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
@@ -2737,11 +2732,7 @@ totalCount: number</code></pre>
               </div>
               <div>Default args playground for Pagination</div>
               <div class="hint">Default args playground. The first page of a 1,000-item list paged 10 at a time — renders pages 1–5, an ellipsis, and the last page (100), with the previous-page button disabled because we&#39;re on page 1.</div>
-              <pre><code>const Default = () =&gt; &lt;Pagination
-    currentPage={1}
-    totalCount={1000}
-    pageSize={10}
-    onPageChange={(page: number) =&gt; console.log(&#39;onPageChange&#39;, page)} /&gt;;</code></pre>
+              <pre><code>const Default = () =&gt; &lt;Pagination currentPage={1} totalCount={1000} pageSize={10} onPageChange={fn()} /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -2802,11 +2793,7 @@ totalCount: number</code></pre>
               </div>
               <div>Last page selected with disabled next button</div>
               <div class="hint">Last page selected — the next-page button is disabled and the active page indicator sits on the trailing number.</div>
-              <pre><code>const LastPage = () =&gt; &lt;Pagination
-    currentPage={100}
-    totalCount={1000}
-    pageSize={10}
-    onPageChange={(page: number) =&gt; console.log(&#39;onPageChange&#39;, page)} /&gt;;</code></pre>
+              <pre><code>const LastPage = () =&gt; &lt;Pagination currentPage={100} totalCount={1000} pageSize={10} onPageChange={fn()} /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -2929,7 +2916,7 @@ totalCount: number</code></pre>
               </div>
               <div>Success dot for positive or active statuses</div>
               <div class="hint">Success dot for positive / active states — the most common pairing for &quot;live&quot; records such as active licenses or confirmed appointments.</div>
-              <pre><code>const Success = () =&gt; &lt;StatusBall color=&quot;success&quot; /&gt;;</code></pre>
+              <pre><code>const Success = () =&gt; &lt;StatusBall color=&quot;success&quot; data-testid=&quot;status-ball-success&quot; /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
