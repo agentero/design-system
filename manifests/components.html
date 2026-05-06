@@ -582,7 +582,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>1.7s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>2.4s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -919,12 +919,7 @@ size?: AlertSizeType = sm</code></pre>
               </div>
               <div>Alert with a dismiss button</div>
               <div class="hint">Dismissible alert. Providing `onDismiss` shows an icon-only close button with `aria-label=&quot;Dismiss&quot;` that inherits the alert&#39;s color.</div>
-              <pre><code>const WithDismiss = () =&gt; &lt;Alert
-    color=&quot;warning&quot;
-    size=&quot;sm&quot;
-    ghost={false}
-    hasIcon
-    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+              <pre><code>const WithDismiss = () =&gt; &lt;Alert color=&quot;warning&quot; size=&quot;sm&quot; ghost={false} hasIcon onDismiss={fn()}&gt;
     &lt;Alert.Content&gt;
         &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
         &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
@@ -2760,7 +2755,7 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
               </div>
               <div>Success dot for positive or active statuses</div>
               <div class="hint">Success dot for positive / active states — the most common pairing for &quot;live&quot; records such as active licenses or confirmed appointments.</div>
-              <pre><code>const Success = () =&gt; &lt;StatusBall color=&quot;success&quot; /&gt;;</code></pre>
+              <pre><code>const Success = () =&gt; &lt;StatusBall color=&quot;success&quot; data-testid=&quot;status-ball-success&quot; /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
