@@ -28,6 +28,7 @@
     "./dropdown-menu": "./src/dropdown-menu/index.ts",
     "./lib": "./lib/index.ts",
     "./loading": "./src/loading/index.ts",
+    "./pagination": "./src/pagination/index.ts",
     "./status-ball": "./src/status-ball/index.ts",
     "./toast": "./src/toast/index.ts",
     "./theme": "./themes/base.css"
