@@ -36,6 +36,29 @@ Add the design system as a Tailwind source so that the CSS for component classes
 import { ComponentName } from '@agentero/design-system/ComponentName';
 ```
 
+## Icons
+
+Icons are imported from the `/icons` subpath:
+
+```tsx
+import { IconCheckCircle } from '@agentero/design-system/icons';
+
+<IconCheckCircle />
+<IconCheckCircle width={32} height={32} />
+<IconCheckCircle className="text-green-500" />
+```
+
+Each icon is a thin wrapper around its `<svg>` and forwards all standard `SVGProps`. Set size with `width`/`height`. The bundle mirrors the build pattern from `@agentero/icons` in `producerflow/mono` — esbuild + SVGR + SVGO — producing a single ESM bundle at `lib/icons/`. Every rendered `<svg>` carries a `data-icon="<kebab-name>"` attribute and runtime-unique internal IDs, so multiple instances stack safely on a page and can be targeted with `[data-icon="..."]` selectors.
+
+### Adding a new icon
+
+1. Export the source SVG.
+2. Save it as `src/icons/svg/<name>.svg` (kebab-case).
+3. Add `export { default as Icon<Name> } from './svg/<name>.svg';` to `src/icons/index.ts`.
+4. Run `yarn build:icons` (or rely on `postinstall`).
+
+The new icon appears automatically in the `Icons/Gallery` Storybook story — no story file to write.
+
 ## Utilities
 
 ### `cn`

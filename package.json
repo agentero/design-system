@@ -26,6 +26,10 @@
     "./button": "./src/button/index.ts",
     "./divider": "./src/divider/index.ts",
     "./dropdown-menu": "./src/dropdown-menu/index.ts",
+    "./icons": {
+      "types": "./lib/icons/index.d.ts",
+      "default": "./lib/icons/index.jsx"
+    },
     "./lib": "./lib/index.ts",
     "./loading": "./src/loading/index.ts",
     "./pagination": "./src/pagination/index.ts",
@@ -34,12 +38,13 @@
     "./theme": "./themes/base.css"
   },
   "scripts": {
-    "postinstall": "playwright install chromium",
+    "postinstall": "playwright install chromium && yarn build:icons",
     "dev": "vite dev",
-    "build": "vite build",
+    "build": "yarn build:icons && vite build",
+    "build:icons": "node scripts/build-icons.mjs",
     "tsc": "tsgo",
-    "lint": "oxlint src/ lib/ && yarn lint:format",
-    "lint:format": "oxfmt --check src/ lib/",
+    "lint": "oxlint src/ lib/ '!lib/icons/**' && yarn lint:format",
+    "lint:format": "oxfmt --check src/ lib/ '!lib/icons/**'",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "test": "vitest run --project=storybook"
@@ -62,6 +67,8 @@
     "@storybook/addon-vitest": "^10.3.3",
     "@storybook/mcp": "^0.6.1",
     "@storybook/react-vite": "^10.3.3",
+    "@svgr/plugin-jsx": "^8.1.0",
+    "@svgr/plugin-svgo": "^8.1.0",
     "@tailwindcss/vite": "^4.2.2",
     "@tmcp/adapter-valibot": "^0.1.5",
     "@tmcp/transport-stdio": "^0.4.2",
@@ -73,6 +80,7 @@
     "@vitest/browser-playwright": "^4.1.1",
     "@vitest/coverage-v8": "^4.1.1",
     "esbuild": "^0.27.4",
+    "esbuild-plugin-svgr": "^3.1.1",
     "oxfmt": "^0.41.0",
     "oxlint": "^1.56.0",
     "playwright": "^1.58.2",
