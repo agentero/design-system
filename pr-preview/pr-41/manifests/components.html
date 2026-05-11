@@ -2539,26 +2539,25 @@ label?: ReactNode</code></pre>
     <div class="note err">
       <div class="note-title">Prop type error</div>
       <div class="note-body"><pre><code>We could not detect the component from your story file. Specify meta.component.
-  20 |  * no per-icon story files needed.
-  21 |  */
-&gt; 22 | const meta = {
+  19 |  * no per-icon story files needed.
+  20 |  */
+&gt; 21 | const meta = {
      | ^
-  23 | 	title: &#39;Components/Icons&#39;,
-  24 | 	argTypes: {
-  25 | 		size: { control: { type: &#39;number&#39;, min: 16, max: 96, step: 4 } }
+  22 | 	title: &#39;Components/Icons&#39;,
+  23 | 	argTypes: {
+  24 | 		size: { control: { type: &#39;number&#39;, min: 16, max: 96, step: 4 } }
 
 ./src/icons/Icons.stories.tsx:
-import type { ComponentType } from &#39;react&#39;;
+import type { ComponentType, SVGProps } from &#39;react&#39;;
 
 import type { Meta, StoryObj } from &#39;@storybook/react-vite&#39;;
 
-import * as IconsModule from &#39;./index&#39;;
-import type { IconProps } from &#39;./types&#39;;
+import * as IconsModule from &#39;@agentero/design-system/icons&#39;;
 
-type IconEntry = [string, ComponentType&lt;IconProps&gt;];
+type IconEntry = [string, ComponentType&lt;SVGProps&lt;SVGSVGElement&gt;&gt;];
 
 const icons = (Object.entries(IconsModule) as [string, unknown][]).filter(
-	([name, value]) =&gt; name.startsWith(&#39;Icon&#39;) &amp;&amp; value != null
+	([name, value]) =&gt; name.startsWith(&#39;Icon&#39;) &amp;&amp; typeof value === &#39;function&#39;
 ) as IconEntry[];
 
 type GalleryArgs = { size: number };
@@ -2566,7 +2565,7 @@ type GalleryArgs = { size: number };
 /**
  * Auto-discovering gallery of every icon exported from
  * `@agentero/design-system/icons`. New icons appear here automatically once
- * they&#39;re added to `src/icons/manifest.json` and `yarn gen:icons` is run —
+ * they&#39;re added to `src/icons/manifest.json` and `yarn build:icons` is run —
  * no per-icon story files needed.
  */
 const meta = {
@@ -2594,7 +2593,7 @@ export const Gallery: Story = {
 				&lt;div
 					key={name}
 					className=&quot;flex flex-col items-center gap-2 rounded-lg border border-border-default-base-primary p-4&quot;&gt;
-					&lt;Icon size={size} /&gt;
+					&lt;Icon width={size} height={size} fill=&quot;currentColor&quot; /&gt;
 					&lt;code className=&quot;text-xs text-text-default-base-secondary&quot;&gt;{name}&lt;/code&gt;
 				&lt;/div&gt;
 			))}
@@ -2638,7 +2637,7 @@ export const Gallery: Story = {
             &lt;div
                 key={name}
                 className=&quot;flex flex-col items-center gap-2 rounded-lg border border-border-default-base-primary p-4&quot;&gt;
-                &lt;Icon size={size} /&gt;
+                &lt;Icon width={size} height={size} fill=&quot;currentColor&quot; /&gt;
                 &lt;code className=&quot;text-xs text-text-default-base-secondary&quot;&gt;{name}&lt;/code&gt;
             &lt;/div&gt;
         ))}
@@ -3661,26 +3660,25 @@ visibleToasts?: number</code></pre>
     <div class="note err">
       <div class="note-title">Prop type error</div>
       <div class="note-body"><pre><code>We could not detect the component from your story file. Specify meta.component.
-  20 |  * no per-icon story files needed.
-  21 |  */
-&gt; 22 | const meta = {
+  19 |  * no per-icon story files needed.
+  20 |  */
+&gt; 21 | const meta = {
      | ^
-  23 | 	title: &#39;Components/Icons&#39;,
-  24 | 	argTypes: {
-  25 | 		size: { control: { type: &#39;number&#39;, min: 16, max: 96, step: 4 } }
+  22 | 	title: &#39;Components/Icons&#39;,
+  23 | 	argTypes: {
+  24 | 		size: { control: { type: &#39;number&#39;, min: 16, max: 96, step: 4 } }
 
 ./src/icons/Icons.stories.tsx:
-import type { ComponentType } from &#39;react&#39;;
+import type { ComponentType, SVGProps } from &#39;react&#39;;
 
 import type { Meta, StoryObj } from &#39;@storybook/react-vite&#39;;
 
-import * as IconsModule from &#39;./index&#39;;
-import type { IconProps } from &#39;./types&#39;;
+import * as IconsModule from &#39;@agentero/design-system/icons&#39;;
 
-type IconEntry = [string, ComponentType&lt;IconProps&gt;];
+type IconEntry = [string, ComponentType&lt;SVGProps&lt;SVGSVGElement&gt;&gt;];
 
 const icons = (Object.entries(IconsModule) as [string, unknown][]).filter(
-	([name, value]) =&gt; name.startsWith(&#39;Icon&#39;) &amp;&amp; value != null
+	([name, value]) =&gt; name.startsWith(&#39;Icon&#39;) &amp;&amp; typeof value === &#39;function&#39;
 ) as IconEntry[];
 
 type GalleryArgs = { size: number };
@@ -3688,7 +3686,7 @@ type GalleryArgs = { size: number };
 /**
  * Auto-discovering gallery of every icon exported from
  * `@agentero/design-system/icons`. New icons appear here automatically once
- * they&#39;re added to `src/icons/manifest.json` and `yarn gen:icons` is run —
+ * they&#39;re added to `src/icons/manifest.json` and `yarn build:icons` is run —
  * no per-icon story files needed.
  */
 const meta = {
@@ -3716,7 +3714,7 @@ export const Gallery: Story = {
 				&lt;div
 					key={name}
 					className=&quot;flex flex-col items-center gap-2 rounded-lg border border-border-default-base-primary p-4&quot;&gt;
-					&lt;Icon size={size} /&gt;
+					&lt;Icon width={size} height={size} fill=&quot;currentColor&quot; /&gt;
 					&lt;code className=&quot;text-xs text-text-default-base-secondary&quot;&gt;{name}&lt;/code&gt;
 				&lt;/div&gt;
 			))}
@@ -3760,7 +3758,7 @@ export const Gallery: Story = {
             &lt;div
                 key={name}
                 className=&quot;flex flex-col items-center gap-2 rounded-lg border border-border-default-base-primary p-4&quot;&gt;
-                &lt;Icon size={size} /&gt;
+                &lt;Icon width={size} height={size} fill=&quot;currentColor&quot; /&gt;
                 &lt;code className=&quot;text-xs text-text-default-base-secondary&quot;&gt;{name}&lt;/code&gt;
             &lt;/div&gt;
         ))}
