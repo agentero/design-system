@@ -20,12 +20,37 @@ const __dirname =
 		? globalThis.__dirname
 		: path.dirname(fileURLToPath(import.meta.url));
 
-const componentEntries = globSync('src/*/index.{ts,tsx}');
+const componentEntries = globSync('src/*/index.{ts,tsx}').filter(
+	file => path.basename(path.dirname(file)) !== 'icons'
+);
 
 const entry = Object.fromEntries([
 	...componentEntries.map(file => [`src/${path.basename(path.dirname(file))}/index`, `./${file}`]),
 	['lib/index', './lib/index.ts']
 ]);
+
+function copyIconsToDist(): Plugin {
+	return {
+		name: 'copy-icons-to-dist',
+		closeBundle() {
+			const srcDir = path.resolve(__dirname, 'lib', 'icons');
+			const destDir = path.resolve(__dirname, 'dist', 'lib', 'icons');
+
+			if (!fs.existsSync(srcDir)) {
+				console.warn(
+					'\n⚠ Skipping icons copy: lib/icons/ not found.' +
+						'\n  Run "yarn build:icons" before "yarn build".\n'
+				);
+				return;
+			}
+
+			fs.mkdirSync(destDir, { recursive: true });
+			for (const file of fs.readdirSync(srcDir)) {
+				fs.copyFileSync(path.join(srcDir, file), path.join(destDir, file));
+			}
+		}
+	};
+}
 
 function cleanDist(): Plugin {
 	return {
@@ -82,7 +107,10 @@ function generatePackageJson(): Plugin {
 		closeBundle() {
 			const pkg = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'package.json'), 'utf-8'));
 
-			const exports: Record<string, string | { types: string; import: string }> = {};
+			const exports: Record<
+				string,
+				string | { types: string; import?: string; default?: string }
+			> = {};
 
 			for (const file of componentEntries) {
 				const name = path.basename(path.dirname(file));
@@ -95,6 +123,11 @@ function generatePackageJson(): Plugin {
 			exports['./lib'] = {
 				types: './lib/index.d.ts',
 				import: './lib/index.js'
+			};
+
+			exports['./icons'] = {
+				types: './lib/icons/index.d.ts',
+				default: './lib/icons/index.jsx'
 			};
 
 			exports['./theme.css'] = './theme/base.css';
@@ -154,10 +187,17 @@ export default defineConfig({
 			: [
 					dts({
 						entryRoot: '.',
-						exclude: ['**/*.stories.ts', '**/*.stories.tsx', '**/*.test.ts', '**/*.test.tsx']
+						exclude: [
+							'**/*.stories.ts',
+							'**/*.stories.tsx',
+							'**/*.test.ts',
+							'**/*.test.tsx',
+							'src/icons/**'
+						]
 					}),
 					generatePackageJson(),
 					bundleMcpServer(),
+					copyIconsToDist(),
 					cleanDist()
 				])
 	],

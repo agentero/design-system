@@ -1,6 +1,8 @@
 # Unignore lib folder for this package
 !lib/
 
+# Generated icons bundle (rebuilt via postinstall)
+lib/icons/
 
 dist
 .vscode
