@@ -582,7 +582,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>2.3s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>2.1s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -2508,27 +2508,27 @@ label?: ReactNode</code></pre>
   no-story-error
   no-doc-error"
   role="listitem"
-  aria-label="Icons">
+  aria-label="Gallery">
   <div class="head">
     <div class="title">
-      <h2><span class="status-dot dot-err"></span> Icons</h2>
+      <h2><span class="status-dot dot-err"></span> Gallery</h2>
       <div class="badges">
-        <label for="c-5-components-icons-err" class="badge err as-toggle">prop type error</label>
-        <label for="c-5-components-icons-info" class="badge info as-toggle">2 infos</label>
-        <label for="c-5-components-icons-stories" class="badge ok as-toggle">1 story</label>
+        <label for="c-5-icons-gallery-err" class="badge err as-toggle">prop type error</label>
+        <label for="c-5-icons-gallery-info" class="badge info as-toggle">2 infos</label>
+        <label for="c-5-icons-gallery-stories" class="badge ok as-toggle">1 story</label>
         
       </div>
     </div>
-    <div class="meta" title="./src/icons/Icons.stories.tsx">components-icons · ./src/icons/Icons.stories.tsx</div>
+    <div class="meta" title="./src/icons/Icons.stories.tsx">icons-gallery · ./src/icons/Icons.stories.tsx</div>
     
     
     
   </div>
 
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
-  <input id="c-5-components-icons-err" class="tg tg-err" type="checkbox" hidden />
-  <input id="c-5-components-icons-info" class="tg tg-info" type="checkbox" hidden />
-  <input id="c-5-components-icons-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-5-icons-gallery-err" class="tg tg-err" type="checkbox" hidden />
+  <input id="c-5-icons-gallery-info" class="tg tg-info" type="checkbox" hidden />
+  <input id="c-5-icons-gallery-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
@@ -2543,19 +2543,18 @@ label?: ReactNode</code></pre>
   22 |  */
 &gt; 23 | const meta = {
      | ^
-  24 | 	title: &#39;Components/Icons&#39;,
+  24 | 	title: &#39;Icons/Gallery&#39;,
   25 | 	argTypes: {
   26 | 		size: { control: { type: &#39;number&#39;, min: 16, max: 96, step: 4 } }
 
 ./src/icons/Icons.stories.tsx:
-import type { ComponentType } from &#39;react&#39;;
+import type { ComponentType, SVGProps } from &#39;react&#39;;
 
 import type { Meta, StoryObj } from &#39;@storybook/react-vite&#39;;
 
-import * as IconsModule from &#39;./index&#39;;
-import type { IconProps } from &#39;./types&#39;;
+import * as IconsModule from &#39;@agentero/design-system/icons&#39;;
 
-type IconComponent = ComponentType&lt;IconProps&gt;;
+type IconComponent = ComponentType&lt;SVGProps&lt;SVGSVGElement&gt;&gt;;
 
 const icons = Object.entries(IconsModule).filter(
 	([name, value]) =&gt; name.startsWith(&#39;Icon&#39;) &amp;&amp; typeof value === &#39;function&#39;
@@ -2565,13 +2564,14 @@ type GalleryArgs = { size: number };
 
 /**
  * Visual gallery of every icon exported from `@agentero/design-system/icons`.
- * Adding a new icon (drop SVG → `yarn gen:icons` → re-export from `index.ts`)
- * makes it appear here automatically; no story file to write.
+ * Each icon is auto-discovered from the package&#39;s public exports — drop a new
+ * SVG into `src/icons/svg/`, add a line to `src/icons/index.ts`, and it shows
+ * up here on the next build.
  *
  * @summary Auto-discovered grid of all design-system icons
  */
 const meta = {
-	title: &#39;Components/Icons&#39;,
+	title: &#39;Icons/Gallery&#39;,
 	argTypes: {
 		size: { control: { type: &#39;number&#39;, min: 16, max: 96, step: 4 } }
 	},
@@ -2584,7 +2584,7 @@ type Story = StoryObj&lt;GalleryArgs&gt;;
 /**
  * Renders one card per exported icon with its component name underneath.
  * Use the `size` control to verify icons scale cleanly across the supported
- * range. The icon color is driven by the surrounding `currentColor`.
+ * range.
  *
  * @summary Auto-discovered icon grid with a size scrubber
  */
@@ -2594,8 +2594,8 @@ export const Gallery: Story = {
 			{icons.map(([name, Icon]) =&gt; (
 				&lt;div
 					key={name}
-					className=&quot;flex flex-col items-center gap-2 rounded-md border border-border-default-base-primary p-4&quot;&gt;
-					&lt;Icon size={size} /&gt;
+					className=&quot;flex flex-col items-center gap-2 rounded-md border border-border-default-base-primary p-4 [&amp;_path]:fill-current&quot;&gt;
+					&lt;Icon width={size} height={size} /&gt;
 					&lt;code className=&quot;text-xs&quot;&gt;{name}&lt;/code&gt;
 				&lt;/div&gt;
 			))}
@@ -2614,7 +2614,7 @@ export const Gallery: Story = {
     </div>
     <div class="note info">
       <div class="note-title">Info</div>
-      <div class="note-body">Specify an @import jsdoc tag on your component or your stories meta such as @import import { Icons } from &#39;my-design-system&#39;;</div>
+      <div class="note-body">Specify an @import jsdoc tag on your component or your stories meta such as @import import { Gallery } from &#39;my-design-system&#39;;</div>
     </div>
         </div>
     
@@ -2632,14 +2632,14 @@ export const Gallery: Story = {
                 <span class="badge ok">story ok</span>
               </div>
               <div>Auto-discovered icon grid with a size scrubber</div>
-              <div class="hint">Renders one card per exported icon with its component name underneath. Use the `size` control to verify icons scale cleanly across the supported range. The icon color is driven by the surrounding `currentColor`.</div>
+              <div class="hint">Renders one card per exported icon with its component name underneath. Use the `size` control to verify icons scale cleanly across the supported range.</div>
               <pre><code>const Gallery = ({ size }) =&gt; (
     &lt;div className=&quot;grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-6 p-4 text-text-default-base-primary&quot;&gt;
         {icons.map(([name, Icon]) =&gt; (
             &lt;div
                 key={name}
-                className=&quot;flex flex-col items-center gap-2 rounded-md border border-border-default-base-primary p-4&quot;&gt;
-                &lt;Icon size={size} /&gt;
+                className=&quot;flex flex-col items-center gap-2 rounded-md border border-border-default-base-primary p-4 [&amp;_path]:fill-current&quot;&gt;
+                &lt;Icon width={size} height={size} /&gt;
                 &lt;code className=&quot;text-xs&quot;&gt;{name}&lt;/code&gt;
             &lt;/div&gt;
         ))}
@@ -3631,27 +3631,27 @@ visibleToasts?: number</code></pre>
   no-story-error
   no-doc-error"
   role="listitem"
-  aria-label="Icons">
+  aria-label="Gallery">
   <div class="head">
     <div class="title">
-      <h2><span class="status-dot dot-err"></span> Icons</h2>
+      <h2><span class="status-dot dot-err"></span> Gallery</h2>
       <div class="badges">
-        <label for="c-error-0-components-icons-err" class="badge err as-toggle">prop type error</label>
-        <label for="c-error-0-components-icons-info" class="badge info as-toggle">2 infos</label>
-        <label for="c-error-0-components-icons-stories" class="badge ok as-toggle">1 story</label>
+        <label for="c-error-0-icons-gallery-err" class="badge err as-toggle">prop type error</label>
+        <label for="c-error-0-icons-gallery-info" class="badge info as-toggle">2 infos</label>
+        <label for="c-error-0-icons-gallery-stories" class="badge ok as-toggle">1 story</label>
         
       </div>
     </div>
-    <div class="meta" title="./src/icons/Icons.stories.tsx">components-icons · ./src/icons/Icons.stories.tsx</div>
+    <div class="meta" title="./src/icons/Icons.stories.tsx">icons-gallery · ./src/icons/Icons.stories.tsx</div>
     
     
     
   </div>
 
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
-  <input id="c-error-0-components-icons-err" class="tg tg-err" type="checkbox" hidden />
-  <input id="c-error-0-components-icons-info" class="tg tg-info" type="checkbox" hidden />
-  <input id="c-error-0-components-icons-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-error-0-icons-gallery-err" class="tg tg-err" type="checkbox" hidden />
+  <input id="c-error-0-icons-gallery-info" class="tg tg-info" type="checkbox" hidden />
+  <input id="c-error-0-icons-gallery-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
@@ -3666,19 +3666,18 @@ visibleToasts?: number</code></pre>
   22 |  */
 &gt; 23 | const meta = {
      | ^
-  24 | 	title: &#39;Components/Icons&#39;,
+  24 | 	title: &#39;Icons/Gallery&#39;,
   25 | 	argTypes: {
   26 | 		size: { control: { type: &#39;number&#39;, min: 16, max: 96, step: 4 } }
 
 ./src/icons/Icons.stories.tsx:
-import type { ComponentType } from &#39;react&#39;;
+import type { ComponentType, SVGProps } from &#39;react&#39;;
 
 import type { Meta, StoryObj } from &#39;@storybook/react-vite&#39;;
 
-import * as IconsModule from &#39;./index&#39;;
-import type { IconProps } from &#39;./types&#39;;
+import * as IconsModule from &#39;@agentero/design-system/icons&#39;;
 
-type IconComponent = ComponentType&lt;IconProps&gt;;
+type IconComponent = ComponentType&lt;SVGProps&lt;SVGSVGElement&gt;&gt;;
 
 const icons = Object.entries(IconsModule).filter(
 	([name, value]) =&gt; name.startsWith(&#39;Icon&#39;) &amp;&amp; typeof value === &#39;function&#39;
@@ -3688,13 +3687,14 @@ type GalleryArgs = { size: number };
 
 /**
  * Visual gallery of every icon exported from `@agentero/design-system/icons`.
- * Adding a new icon (drop SVG → `yarn gen:icons` → re-export from `index.ts`)
- * makes it appear here automatically; no story file to write.
+ * Each icon is auto-discovered from the package&#39;s public exports — drop a new
+ * SVG into `src/icons/svg/`, add a line to `src/icons/index.ts`, and it shows
+ * up here on the next build.
  *
  * @summary Auto-discovered grid of all design-system icons
  */
 const meta = {
-	title: &#39;Components/Icons&#39;,
+	title: &#39;Icons/Gallery&#39;,
 	argTypes: {
 		size: { control: { type: &#39;number&#39;, min: 16, max: 96, step: 4 } }
 	},
@@ -3707,7 +3707,7 @@ type Story = StoryObj&lt;GalleryArgs&gt;;
 /**
  * Renders one card per exported icon with its component name underneath.
  * Use the `size` control to verify icons scale cleanly across the supported
- * range. The icon color is driven by the surrounding `currentColor`.
+ * range.
  *
  * @summary Auto-discovered icon grid with a size scrubber
  */
@@ -3717,8 +3717,8 @@ export const Gallery: Story = {
 			{icons.map(([name, Icon]) =&gt; (
 				&lt;div
 					key={name}
-					className=&quot;flex flex-col items-center gap-2 rounded-md border border-border-default-base-primary p-4&quot;&gt;
-					&lt;Icon size={size} /&gt;
+					className=&quot;flex flex-col items-center gap-2 rounded-md border border-border-default-base-primary p-4 [&amp;_path]:fill-current&quot;&gt;
+					&lt;Icon width={size} height={size} /&gt;
 					&lt;code className=&quot;text-xs&quot;&gt;{name}&lt;/code&gt;
 				&lt;/div&gt;
 			))}
@@ -3737,7 +3737,7 @@ export const Gallery: Story = {
     </div>
     <div class="note info">
       <div class="note-title">Info</div>
-      <div class="note-body">Specify an @import jsdoc tag on your component or your stories meta such as @import import { Icons } from &#39;my-design-system&#39;;</div>
+      <div class="note-body">Specify an @import jsdoc tag on your component or your stories meta such as @import import { Gallery } from &#39;my-design-system&#39;;</div>
     </div>
         </div>
     
@@ -3755,14 +3755,14 @@ export const Gallery: Story = {
                 <span class="badge ok">story ok</span>
               </div>
               <div>Auto-discovered icon grid with a size scrubber</div>
-              <div class="hint">Renders one card per exported icon with its component name underneath. Use the `size` control to verify icons scale cleanly across the supported range. The icon color is driven by the surrounding `currentColor`.</div>
+              <div class="hint">Renders one card per exported icon with its component name underneath. Use the `size` control to verify icons scale cleanly across the supported range.</div>
               <pre><code>const Gallery = ({ size }) =&gt; (
     &lt;div className=&quot;grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-6 p-4 text-text-default-base-primary&quot;&gt;
         {icons.map(([name, Icon]) =&gt; (
             &lt;div
                 key={name}
-                className=&quot;flex flex-col items-center gap-2 rounded-md border border-border-default-base-primary p-4&quot;&gt;
-                &lt;Icon size={size} /&gt;
+                className=&quot;flex flex-col items-center gap-2 rounded-md border border-border-default-base-primary p-4 [&amp;_path]:fill-current&quot;&gt;
+                &lt;Icon width={size} height={size} /&gt;
                 &lt;code className=&quot;text-xs&quot;&gt;{name}&lt;/code&gt;
             &lt;/div&gt;
         ))}
