@@ -26,6 +26,7 @@ import {
 	XIcon
 } from 'lucide-react';
 
+import { cn } from '../../lib';
 import { iconStyles } from '../../lib/icon-styles';
 
 /**
@@ -302,6 +303,170 @@ export const BoundingBoxComparison: Story = {
 					actually paints — that is the &ldquo;visual bounding box&rdquo; the designer is asking
 					about. The viewBox attribute is identical across all four columns; only the geometry
 					differs.
+				</p>
+			</div>
+		);
+	}
+};
+
+/**
+ * Renders an Alert-shaped container with both the current master geometry
+ * (Material Symbols inline, `size-5`/`size-6` icon slot) and the PR #20
+ * geometry (lucide, `iconStyles({ size: 'md' })`/`iconStyles({ size: 'lg' })`
+ * — i.e. `size-4`/`size-5`) so the visual delta the designer is seeing in
+ * production-shaped UI is reproducible side by side.
+ *
+ * Two distinct effects combine here:
+ *
+ * 1. **Size shrink** — PR #20's `iconStyles` recipe tops out at `lg=20px`,
+ *    so what was a 24px icon in master is now 20px (and the `sm` slot drops
+ *    from 20px to 16px).
+ * 2. **Interior padding** — lucide leaves ~2–3px of air inside its viewBox;
+ *    Material Symbols `opsz=24` fills the box edge-to-edge.
+ *
+ * @summary Side-by-side Alert: master geometry vs PR #20 geometry
+ */
+export const InAlertContext: Story = {
+	render: () => {
+		const rows = [
+			{
+				key: 'success',
+				bgClass: 'bg-bg-alert-primary-success',
+				textClass: 'text-text-alert-primary-success',
+				iconColorClass: 'text-icon-alert-primary-success',
+				material: MaterialCheckCircle,
+				lucide: CircleCheckIcon,
+				title: 'Quote sent',
+				body: 'The carrier received your request.'
+			},
+			{
+				key: 'danger',
+				bgClass: 'bg-bg-alert-primary-danger',
+				textClass: 'text-text-alert-primary-danger',
+				iconColorClass: 'text-icon-alert-primary-danger',
+				material: MaterialErrorOutline,
+				lucide: CircleAlertIcon,
+				title: 'Submission failed',
+				body: 'Carrier returned an error. Retry shortly.'
+			},
+			{
+				key: 'warning',
+				bgClass: 'bg-bg-alert-primary-warning',
+				textClass: 'text-text-alert-primary-warning',
+				iconColorClass: 'text-icon-alert-primary-warning',
+				material: MaterialWarning,
+				lucide: TriangleAlertIcon,
+				title: 'Missing information',
+				body: 'Three required fields need attention.'
+			},
+			{
+				key: 'info',
+				bgClass: 'bg-bg-alert-primary-info',
+				textClass: 'text-text-alert-primary-info',
+				iconColorClass: 'text-icon-alert-primary-info',
+				material: MaterialErrorOutline,
+				lucide: InfoIcon,
+				title: 'Heads up',
+				body: 'Effective dates updated for this carrier.'
+			}
+		];
+
+		const renderColumn = (
+			heading: string,
+			subheading: string,
+			alertSize: 'sm' | 'md',
+			variant: 'master' | 'lucide'
+		) => {
+			const rootSize = alertSize === 'sm' ? 'px-4 py-3 gap-2' : 'px-8 py-6 gap-4';
+			const contentSize = alertSize === 'sm' ? 'gap-1' : 'gap-2';
+			const titleSize = alertSize === 'sm' ? 'text-sm' : 'text-lg';
+			const paragraphSize = alertSize === 'sm' ? 'text-xs' : 'text-sm';
+
+			const iconSizeClass =
+				variant === 'master'
+					? alertSize === 'sm'
+						? 'size-5'
+						: 'size-6'
+					: alertSize === 'sm'
+						? 'size-4'
+						: 'size-5';
+
+			return (
+				<div className="flex flex-col gap-3">
+					<div className="flex flex-col gap-0.5">
+						<span className="text-sm font-semibold text-text-default-base-primary">{heading}</span>
+						<span className="text-xs text-text-default-base-tertiary">{subheading}</span>
+					</div>
+					{rows.map(row => {
+						const Icon = variant === 'master' ? row.material : row.lucide;
+						const iconClass =
+							variant === 'master'
+								? cn('shrink-0 [&_path]:fill-current', iconSizeClass, row.iconColorClass)
+								: cn('shrink-0', iconSizeClass, row.iconColorClass);
+						return (
+							<div
+								key={`${row.key}-${variant}-${alertSize}`}
+								className={cn('flex items-start rounded-md', rootSize, row.bgClass, row.textClass)}>
+								<Icon className={iconClass} />
+								<div className={cn('flex flex-col self-start', contentSize)}>
+									<span className={cn('-mt-px font-semibold', titleSize)}>{row.title}</span>
+									<span className={paragraphSize}>{row.body}</span>
+								</div>
+							</div>
+						);
+					})}
+				</div>
+			);
+		};
+
+		return (
+			<div className="flex flex-col gap-8">
+				<section className="flex flex-col gap-3">
+					<h3 className="text-base font-semibold text-text-default-base-primary">
+						Alert size <code>sm</code>
+					</h3>
+					<div className="grid grid-cols-2 gap-6">
+						{renderColumn(
+							'Master (today)',
+							'Material Symbols inline · icon slot size-5 (20px)',
+							'sm',
+							'master'
+						)}
+						{renderColumn(
+							'PR #20 (lucide)',
+							'lucide · iconStyles({ size: md }) = size-4 (16px)',
+							'sm',
+							'lucide'
+						)}
+					</div>
+				</section>
+
+				<section className="flex flex-col gap-3">
+					<h3 className="text-base font-semibold text-text-default-base-primary">
+						Alert size <code>md</code>
+					</h3>
+					<div className="grid grid-cols-2 gap-6">
+						{renderColumn(
+							'Master (today)',
+							'Material Symbols inline · icon slot size-6 (24px)',
+							'md',
+							'master'
+						)}
+						{renderColumn(
+							'PR #20 (lucide)',
+							'lucide · iconStyles({ size: lg }) = size-5 (20px)',
+							'md',
+							'lucide'
+						)}
+					</div>
+				</section>
+
+				<p className="max-w-2xl text-xs text-text-default-base-secondary">
+					Two effects stack between columns: the icon is both smaller (PR #20's{' '}
+					<code>iconStyles</code> tops out at <code>lg=20px</code>) and more loosely packed (lucide
+					leaves ~2–3px of air inside its viewBox). Adopting lucide alone — without extending{' '}
+					<code>iconStyles</code> with an <code>xl=24px</code> step — cannot match the master
+					rendering.
 				</p>
 			</div>
 		);
