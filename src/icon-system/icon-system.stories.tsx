@@ -375,7 +375,7 @@ export const InAlertContext: Story = {
 			heading: string,
 			subheading: string,
 			alertSize: 'sm' | 'md',
-			variant: 'master' | 'lucide'
+			variant: 'master' | 'lucide' | 'lucide-xl'
 		) => {
 			const rootSize = alertSize === 'sm' ? 'px-4 py-3 gap-2' : 'px-8 py-6 gap-4';
 			const contentSize = alertSize === 'sm' ? 'gap-1' : 'gap-2';
@@ -387,9 +387,13 @@ export const InAlertContext: Story = {
 					? alertSize === 'sm'
 						? 'size-5'
 						: 'size-6'
-					: alertSize === 'sm'
-						? 'size-4'
-						: 'size-5';
+					: variant === 'lucide-xl'
+						? alertSize === 'sm'
+							? 'size-5'
+							: 'size-6'
+						: alertSize === 'sm'
+							? 'size-4'
+							: 'size-5';
 
 			return (
 				<div className="flex flex-col gap-3">
@@ -425,18 +429,24 @@ export const InAlertContext: Story = {
 					<h3 className="text-base font-semibold text-text-default-base-primary">
 						Alert size <code>sm</code>
 					</h3>
-					<div className="grid grid-cols-2 gap-6">
+					<div className="grid grid-cols-3 gap-6">
 						{renderColumn(
 							'Master (today)',
-							'Material Symbols inline · icon slot size-5 (20px)',
+							'Material Symbols · size-5 (20px footprint)',
 							'sm',
 							'master'
 						)}
 						{renderColumn(
 							'PR #20 (lucide)',
-							'lucide · iconStyles({ size: md }) = size-4 (16px)',
+							'lucide · iconStyles md = size-4 (16px footprint)',
 							'sm',
 							'lucide'
+						)}
+						{renderColumn(
+							'PR #20 + iconStyles xl',
+							'lucide · proposed xl = size-5 (20px footprint)',
+							'sm',
+							'lucide-xl'
 						)}
 					</div>
 				</section>
@@ -445,28 +455,35 @@ export const InAlertContext: Story = {
 					<h3 className="text-base font-semibold text-text-default-base-primary">
 						Alert size <code>md</code>
 					</h3>
-					<div className="grid grid-cols-2 gap-6">
+					<div className="grid grid-cols-3 gap-6">
 						{renderColumn(
 							'Master (today)',
-							'Material Symbols inline · icon slot size-6 (24px)',
+							'Material Symbols · size-6 (24px footprint)',
 							'md',
 							'master'
 						)}
 						{renderColumn(
 							'PR #20 (lucide)',
-							'lucide · iconStyles({ size: lg }) = size-5 (20px)',
+							'lucide · iconStyles lg = size-5 (20px footprint)',
 							'md',
 							'lucide'
+						)}
+						{renderColumn(
+							'PR #20 + iconStyles xl',
+							'lucide · proposed xl = size-6 (24px footprint)',
+							'md',
+							'lucide-xl'
 						)}
 					</div>
 				</section>
 
 				<p className="max-w-2xl text-xs text-text-default-base-secondary">
-					Two effects stack between columns: the icon is both smaller (PR #20's{' '}
-					<code>iconStyles</code> tops out at <code>lg=20px</code>) and more loosely packed (lucide
-					leaves ~2–3px of air inside its viewBox). Adopting lucide alone — without extending{' '}
-					<code>iconStyles</code> with an <code>xl=24px</code> step — cannot match the master
-					rendering.
+					The third column is what the Alert would render if <code>iconStyles</code> grew an{' '}
+					<code>xl=24px</code> step and the Alert recipe pointed to it. The{' '}
+					<strong>footprint reserved</strong> for the icon now matches master, which restores the
+					external spacing (icon → text gap, component proportions) the designer is flagging. The
+					glyph itself is still lucide stroke=2, so the inked content inside the box stays outlined
+					rather than filled — but the surrounding rhythm of the component lines up with today.
 				</p>
 			</div>
 		);
