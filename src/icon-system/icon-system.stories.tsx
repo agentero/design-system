@@ -292,12 +292,7 @@ export const BoundingBoxComparison: Story = {
 							</div>
 							<div key={`${label}-lucide-28`} className="flex items-center">
 								<div className={cellBox}>
-									<Lucide
-										className="size-7 text-icon-default-base-primary"
-										fill="#111827"
-										stroke-width="1"
-										stroke="#fff"
-									/>
+									<Lucide className="size-7 text-icon-default-base-primary" stroke-width="1" />
 								</div>
 							</div>
 						</>
