@@ -576,13 +576,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><a class="filter-pill err" data-k="errors" href="#filter-errors">1/9 prop type error</a><a class="filter-pill info" data-k="infos" href="#filter-infos">1/9 info</a><span class="filter-pill ok" aria-disabled="true">101 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><a class="filter-pill err" data-k="errors" href="#filter-errors">1/10 prop type error</a><a class="filter-pill info" data-k="infos" href="#filter-infos">1/10 info</a><span class="filter-pill ok" aria-disabled="true">110 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>2.4s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>2.5s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -928,12 +928,7 @@ size?: AlertSizeType = sm</code></pre>
               </div>
               <div>Alert with a dismiss button</div>
               <div class="hint">Dismissible alert. Providing `onDismiss` shows an icon-only close button with `aria-label=&quot;Dismiss&quot;` that inherits the alert&#39;s color.</div>
-              <pre><code>const WithDismiss = () =&gt; &lt;Alert
-    color=&quot;warning&quot;
-    size=&quot;sm&quot;
-    ghost={false}
-    hasIcon
-    onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
+              <pre><code>const WithDismiss = () =&gt; &lt;Alert color=&quot;warning&quot; size=&quot;sm&quot; ghost={false} hasIcon onDismiss={fn()}&gt;
     &lt;Alert.Content&gt;
         &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
         &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
@@ -2538,7 +2533,7 @@ import {
       <div class="badges">
         <label for="c-5-foundations-icons-err" class="badge err as-toggle">prop type error</label>
         <label for="c-5-foundations-icons-info" class="badge info as-toggle">1 info</label>
-        <label for="c-5-foundations-icons-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-5-foundations-icons-stories" class="badge ok as-toggle">6 stories</label>
         
       </div>
     </div>
@@ -2562,20 +2557,24 @@ import {
     <div class="note err">
       <div class="note-title">Prop type error</div>
       <div class="note-body"><pre><code>We could not detect the component from your story file. Specify meta.component.
-  34 |  * via semantic tokens, and a sample set of the most-used icons.
-  35 |  */
-&gt; 36 | const meta: Meta = {
+  68 |  * via semantic tokens, and a sample set of the most-used icons.
+  69 |  */
+&gt; 70 | const meta: Meta = {
      | ^
-  37 | 	title: &#39;Foundations/Icons&#39;,
-  38 | 	parameters: {
-  39 | 		layout: &#39;padded&#39;
+  71 | 	title: &#39;Foundations/Icons&#39;,
+  72 | 	parameters: {
+  73 | 		layout: &#39;padded&#39;
 
 ./src/icon-system/icon-system.stories.tsx:
+import { SVGProps } from &#39;react&#39;;
+
 import type { Meta, StoryObj } from &#39;@storybook/react-vite&#39;;
 import {
 	BellIcon,
 	CheckIcon,
 	ChevronRightIcon,
+	CircleAlertIcon,
+	CircleCheckIcon,
 	CopyIcon,
 	DownloadIcon,
 	FilterIcon,
@@ -2595,7 +2594,37 @@ import {
 	XIcon
 } from &#39;lucide-react&#39;;
 
+import { cn } from &#39;../../lib&#39;;
 import { iconStyles } from &#39;../../lib/icon-styles&#39;;
+
+/**
+ * Inline Material Symbols `opsz=24` SVGs preserved from master for visual
+ * comparison only. These match the geometry currently shipping in production
+ * (before the lucide migration). Kept local to this story file — not exported.
+ */
+const MaterialCheckCircle = (props: SVGProps&lt;SVGSVGElement&gt;) =&gt; (
+	&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;currentColor&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot; {...props}&gt;
+		&lt;path d=&quot;M10.5808 14.1462L8.25765 11.8231C8.1192 11.6846 7.94517 11.6138 7.73555 11.6106C7.52593 11.6074 7.34869 11.6782 7.20382 11.8231C7.05896 11.968 6.98653 12.1436 6.98653 12.35C6.98653 12.5564 7.05896 12.732 7.20382 12.8769L9.94805 15.6211C10.1288 15.8019 10.3397 15.8923 10.5808 15.8923C10.8218 15.8923 11.0327 15.8019 11.2134 15.6211L16.7769 10.0577C16.9153 9.91923 16.9862 9.7452 16.9894 9.53558C16.9926 9.32596 16.9218 9.14872 16.7769 9.00386C16.632 8.85899 16.4564 8.78656 16.25 8.78656C16.0436 8.78656 15.8679 8.85899 15.7231 9.00386L10.5808 14.1462ZM12.0016 21.5C10.6877 21.5 9.45268 21.2506 8.29655 20.752C7.1404 20.2533 6.13472 19.5766 5.2795 18.7217C4.42427 17.8669 3.74721 16.8616 3.24833 15.706C2.74944 14.5504 2.5 13.3156 2.5 12.0017C2.5 10.6877 2.74933 9.45271 3.248 8.29658C3.74667 7.14043 4.42342 6.13475 5.27825 5.27953C6.1331 4.4243 7.13834 3.74724 8.29398 3.24836C9.44959 2.74947 10.6844 2.50003 11.9983 2.50003C13.3122 2.50003 14.5473 2.74936 15.7034 3.24803C16.8596 3.7467 17.8652 4.42345 18.7205 5.27828C19.5757 6.13313 20.2527 7.13837 20.7516 8.29401C21.2505 9.44962 21.5 10.6844 21.5 11.9983C21.5 13.3123 21.2506 14.5473 20.752 15.7034C20.2533 16.8596 19.5765 17.8653 18.7217 18.7205C17.8669 19.5757 16.8616 20.2528 15.706 20.7517C14.5504 21.2505 13.3156 21.5 12.0016 21.5ZM12 20C14.2333 20 16.125 19.225 17.675 17.675C19.225 16.125 20 14.2333 20 12C20 9.76667 19.225 7.87501 17.675 6.32501C16.125 4.77501 14.2333 4.00001 12 4.00001C9.76664 4.00001 7.87498 4.77501 6.32498 6.32501C4.77498 7.87501 3.99998 9.76667 3.99998 12C3.99998 14.2333 4.77498 16.125 6.32498 17.675C7.87498 19.225 9.76664 20 12 20Z&quot; /&gt;
+	&lt;/svg&gt;
+);
+
+const MaterialErrorOutline = (props: SVGProps&lt;SVGSVGElement&gt;) =&gt; (
+	&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;currentColor&quot; {...props}&gt;
+		&lt;path d=&quot;M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z&quot; /&gt;
+	&lt;/svg&gt;
+);
+
+const MaterialWarning = (props: SVGProps&lt;SVGSVGElement&gt;) =&gt; (
+	&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;currentColor&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot; {...props}&gt;
+		&lt;path d=&quot;M3.42555 20.4999C3.25605 20.4999 3.10382 20.4585 2.96887 20.3756C2.83392 20.2928 2.72897 20.1836 2.654 20.048C2.57602 19.9134 2.53312 19.7676 2.52532 19.6105C2.51752 19.4535 2.5599 19.2979 2.65245 19.1439L11.2132 4.35609C11.3057 4.20206 11.4216 4.08819 11.5607 4.01447C11.6998 3.94074 11.8462 3.90387 12.0001 3.90387C12.1539 3.90387 12.3004 3.94074 12.4395 4.01447C12.5786 4.08819 12.6944 4.20206 12.787 4.35609L21.3477 19.1439C21.4403 19.2979 21.4827 19.4535 21.4749 19.6105C21.4671 19.7676 21.4242 19.9134 21.3462 20.048C21.2712 20.1836 21.1663 20.2928 21.0313 20.3756C20.8964 20.4585 20.7441 20.4999 20.5746 20.4999H3.42555ZM4.4501 19H19.5501L12.0001 5.99997L4.4501 19ZM12.0001 17.8076C12.2289 17.8076 12.4208 17.7302 12.5756 17.5754C12.7304 17.4206 12.8078 17.2288 12.8078 17C12.8078 16.7711 12.7304 16.5793 12.5756 16.4245C12.4208 16.2697 12.2289 16.1923 12.0001 16.1923C11.7712 16.1923 11.5794 16.2697 11.4246 16.4245C11.2698 16.5793 11.1924 16.7711 11.1924 17C11.1924 17.2288 11.2698 17.4206 11.4246 17.5754C11.5794 17.7302 11.7712 17.8076 12.0001 17.8076ZM12.0004 15.1923C12.213 15.1923 12.3911 15.1204 12.5347 14.9767C12.6783 14.8329 12.7501 14.6548 12.7501 14.4423V10.9423C12.7501 10.7298 12.6782 10.5517 12.5344 10.4079C12.3906 10.2642 12.2124 10.1923 11.9998 10.1923C11.7872 10.1923 11.6091 10.2642 11.4655 10.4079C11.3219 10.5517 11.2501 10.7298 11.2501 10.9423V14.4423C11.2501 14.6548 11.322 14.8329 11.4658 14.9767C11.6096 15.1204 11.7878 15.1923 12.0004 15.1923Z&quot; /&gt;
+	&lt;/svg&gt;
+);
+
+const MaterialClose = (props: SVGProps&lt;SVGSVGElement&gt;) =&gt; (
+	&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;currentColor&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot; {...props}&gt;
+		&lt;path d=&quot;M12 13.0538L6.92689 18.1269C6.78844 18.2654 6.6144 18.3362 6.40479 18.3394C6.19519 18.3426 6.01795 18.2718 5.87309 18.1269C5.7282 17.982 5.65576 17.8064 5.65576 17.6C5.65576 17.3936 5.7282 17.218 5.87309 17.0731L10.9462 12L5.87309 6.92689C5.73462 6.78844 5.66379 6.6144 5.66059 6.40479C5.65737 6.19519 5.7282 6.01795 5.87309 5.87309C6.01795 5.7282 6.19359 5.65576 6.39999 5.65576C6.60639 5.65576 6.78202 5.7282 6.92689 5.87309L12 10.9462L17.0731 5.87309C17.2115 5.73462 17.3856 5.66379 17.5952 5.66059C17.8048 5.65737 17.982 5.7282 18.1269 5.87309C18.2718 6.01795 18.3442 6.19359 18.3442 6.39999C18.3442 6.60639 18.2718 6.78202 18.1269 6.92689L13.0538 12L18.1269 17.0731C18.2654 17.2115 18.3362 17.3856 18.3394 17.5952C18.3426 17.8048 18.2718 17.982 18.1269 18.1269C17.982 18.2718 17.8064 18.3442 17.6 18.3442C17.3936 18.3442 17.218 18.2718 17.0731 18.1269L12 13.0538Z&quot; /&gt;
+	&lt;/svg&gt;
+);
 
 /**
  * The design system does not wrap icons — consumers install `lucide-react`
@@ -2737,6 +2766,287 @@ export const InComposition: Story = {
 		&lt;/div&gt;
 	)
 };
+
+/**
+ * Side-by-side comparison of the icons currently shipping in master
+ * (Material Symbols `opsz=24`, filled) against the proposed lucide
+ * replacements. Each cell renders inside a 24×24 outlined box so the
+ * **visual bounding box** of the glyph is comparable, not just the SVG
+ * `viewBox`.
+ *
+ * Lucide ships icons at `stroke-width=2` with a generous interior padding
+ * — at the same 24px container, the inked area is noticeably smaller than
+ * a filled Material Symbol. Two mitigations are shown:
+ *
+ * - **Lucide stroke 3** — pushes the stroke toward the visual weight of a
+ *   filled Material Symbol; risks losing legibility at small sizes
+ *   (sm=14px / md=16px).
+ * - **Lucide @ 28px** — renders the icon larger so the inked area matches
+ *   Material Symbols. Requires component-level spacing adjustments.
+ *
+ * Use this story to decide whether lucide&#39;s native look is acceptable, or
+ * whether the DS should switch to the Material Symbols pipeline (PR #40/#41).
+ *
+ * @summary Bounding-box parity check: Material Symbols vs lucide
+ */
+export const BoundingBoxComparison: Story = {
+	render: () =&gt; {
+		const rows = [
+			{
+				label: &#39;check-circle (success)&#39;,
+				material: MaterialCheckCircle,
+				lucide: CircleCheckIcon
+			},
+			{
+				label: &#39;error-outline (danger)&#39;,
+				material: MaterialErrorOutline,
+				lucide: CircleAlertIcon
+			},
+			{
+				label: &#39;warning (warning)&#39;,
+				material: MaterialWarning,
+				lucide: TriangleAlertIcon
+			},
+			{ label: &#39;close (dismiss)&#39;, material: MaterialClose, lucide: XIcon }
+		];
+
+		const cellBox =
+			&#39;flex h-6 w-6 items-center justify-center outline outline-1 outline-bg-default-base-tertiary&#39;;
+
+		return (
+			&lt;div className=&quot;flex flex-col gap-6&quot;&gt;
+				&lt;div className=&quot;grid grid-cols-[12rem_repeat(4,minmax(0,1fr))] items-center gap-x-6 gap-y-3 text-xs&quot;&gt;
+					&lt;span className=&quot;text-text-default-base-secondary&quot;&gt;icon&lt;/span&gt;
+					&lt;span className=&quot;text-text-default-base-secondary&quot;&gt;
+						Material Symbols
+						&lt;br /&gt;
+						&lt;span className=&quot;text-text-default-base-tertiary&quot;&gt;opsz=24, filled&lt;/span&gt;
+					&lt;/span&gt;
+					&lt;span className=&quot;text-text-default-base-secondary&quot;&gt;
+						Lucide @ 24px
+						&lt;br /&gt;
+						&lt;span className=&quot;text-text-default-base-tertiary&quot;&gt;stroke=2 (default)&lt;/span&gt;
+					&lt;/span&gt;
+					&lt;span className=&quot;text-text-default-base-secondary&quot;&gt;
+						Lucide stroke 3
+						&lt;br /&gt;
+						&lt;span className=&quot;text-text-default-base-tertiary&quot;&gt;heaviest @ 24px&lt;/span&gt;
+					&lt;/span&gt;
+					&lt;span className=&quot;text-text-default-base-secondary&quot;&gt;
+						Lucide @ 28px
+						&lt;br /&gt;
+						&lt;span className=&quot;text-text-default-base-tertiary&quot;&gt;oversized to match&lt;/span&gt;
+					&lt;/span&gt;
+
+					{rows.map(({ label, material: Material, lucide: Lucide }) =&gt; (
+						&lt;&gt;
+							&lt;span key={`${label}-label`} className=&quot;text-text-default-base-primary&quot;&gt;
+								{label}
+							&lt;/span&gt;
+							&lt;div key={`${label}-ms`} className=&quot;flex items-center&quot;&gt;
+								&lt;div className={cellBox}&gt;
+									&lt;Material className=&quot;size-6 text-icon-default-base-primary&quot; /&gt;
+								&lt;/div&gt;
+							&lt;/div&gt;
+							&lt;div key={`${label}-lucide`} className=&quot;flex items-center&quot;&gt;
+								&lt;div className={cellBox}&gt;
+									&lt;Lucide className=&quot;size-6 text-icon-default-base-primary&quot; /&gt;
+								&lt;/div&gt;
+							&lt;/div&gt;
+							&lt;div key={`${label}-lucide-3`} className=&quot;flex items-center&quot;&gt;
+								&lt;div className={cellBox}&gt;
+									&lt;Lucide className=&quot;size-6 text-icon-default-base-primary&quot; strokeWidth={3} /&gt;
+								&lt;/div&gt;
+							&lt;/div&gt;
+							&lt;div key={`${label}-lucide-28`} className=&quot;flex items-center&quot;&gt;
+								&lt;div className={cellBox}&gt;
+						
+									&lt;Lucide className=&quot;size-7 text-icon-default-base-primary&quot;  fill=&quot;#111827&quot; stroke-width=&quot;1&quot; stroke=&quot;#fff&quot;/&gt;
+								&lt;/div&gt;
+							&lt;/div&gt;
+						&lt;/&gt;
+					))}
+				&lt;/div&gt;
+
+				&lt;p className=&quot;max-w-xl text-xs text-text-default-base-secondary&quot;&gt;
+					The outlined box on every cell is exactly 24×24. Compare how much of that box each glyph
+					actually paints — that is the &amp;ldquo;visual bounding box&amp;rdquo; the designer is asking
+					about. The viewBox attribute is identical across all four columns; only the geometry
+					differs.
+				&lt;/p&gt;
+			&lt;/div&gt;
+		);
+	}
+};
+
+/**
+ * Renders an Alert-shaped container with both the current master geometry
+ * (Material Symbols inline, `size-5`/`size-6` icon slot) and the PR #20
+ * geometry (lucide, `iconStyles({ size: &#39;md&#39; })`/`iconStyles({ size: &#39;lg&#39; })`
+ * — i.e. `size-4`/`size-5`) so the visual delta the designer is seeing in
+ * production-shaped UI is reproducible side by side.
+ *
+ * Two distinct effects combine here:
+ *
+ * 1. **Size shrink** — PR #20&#39;s `iconStyles` recipe tops out at `lg=20px`,
+ *    so what was a 24px icon in master is now 20px (and the `sm` slot drops
+ *    from 20px to 16px).
+ * 2. **Interior padding** — lucide leaves ~2–3px of air inside its viewBox;
+ *    Material Symbols `opsz=24` fills the box edge-to-edge.
+ *
+ * @summary Side-by-side Alert: master geometry vs PR #20 geometry
+ */
+export const InAlertContext: Story = {
+	render: () =&gt; {
+		const rows = [
+			{
+				key: &#39;success&#39;,
+				bgClass: &#39;bg-bg-alert-primary-success&#39;,
+				textClass: &#39;text-text-alert-primary-success&#39;,
+				iconColorClass: &#39;text-icon-alert-primary-success&#39;,
+				material: MaterialCheckCircle,
+				lucide: CircleCheckIcon,
+				title: &#39;Quote sent&#39;,
+				body: &#39;The carrier received your request.&#39;
+			},
+			{
+				key: &#39;danger&#39;,
+				bgClass: &#39;bg-bg-alert-primary-danger&#39;,
+				textClass: &#39;text-text-alert-primary-danger&#39;,
+				iconColorClass: &#39;text-icon-alert-primary-danger&#39;,
+				material: MaterialErrorOutline,
+				lucide: CircleAlertIcon,
+				title: &#39;Submission failed&#39;,
+				body: &#39;Carrier returned an error. Retry shortly.&#39;
+			},
+			{
+				key: &#39;warning&#39;,
+				bgClass: &#39;bg-bg-alert-primary-warning&#39;,
+				textClass: &#39;text-text-alert-primary-warning&#39;,
+				iconColorClass: &#39;text-icon-alert-primary-warning&#39;,
+				material: MaterialWarning,
+				lucide: TriangleAlertIcon,
+				title: &#39;Missing information&#39;,
+				body: &#39;Three required fields need attention.&#39;
+			},
+			{
+				key: &#39;info&#39;,
+				bgClass: &#39;bg-bg-alert-primary-info&#39;,
+				textClass: &#39;text-text-alert-primary-info&#39;,
+				iconColorClass: &#39;text-icon-alert-primary-info&#39;,
+				material: MaterialErrorOutline,
+				lucide: InfoIcon,
+				title: &#39;Heads up&#39;,
+				body: &#39;Effective dates updated for this carrier.&#39;
+			}
+		];
+
+		const renderColumn = (
+			heading: string,
+			subheading: string,
+			alertSize: &#39;sm&#39; | &#39;md&#39;,
+			variant: &#39;master&#39; | &#39;lucide&#39; | &#39;lucide-xl&#39;
+		) =&gt; {
+			const rootSize = alertSize === &#39;sm&#39; ? &#39;px-4 py-3 gap-2&#39; : &#39;px-8 py-6 gap-4&#39;;
+			const contentSize = alertSize === &#39;sm&#39; ? &#39;gap-1&#39; : &#39;gap-2&#39;;
+			const titleSize = alertSize === &#39;sm&#39; ? &#39;text-sm&#39; : &#39;text-lg&#39;;
+			const paragraphSize = alertSize === &#39;sm&#39; ? &#39;text-xs&#39; : &#39;text-sm&#39;;
+
+			const iconSizeClass =
+				variant === &#39;master&#39;
+					? alertSize === &#39;sm&#39;
+						? &#39;size-5&#39;
+						: &#39;size-6&#39;
+					: variant === &#39;lucide-xl&#39;
+						? alertSize === &#39;sm&#39;
+							? &#39;size-5&#39;
+							: &#39;size-6&#39;
+						: alertSize === &#39;sm&#39;
+							? &#39;size-4&#39;
+							: &#39;size-5&#39;;
+
+			return (
+				&lt;div className=&quot;flex flex-col gap-3&quot;&gt;
+					&lt;div className=&quot;flex flex-col gap-0.5&quot;&gt;
+						&lt;span className=&quot;text-sm font-semibold text-text-default-base-primary&quot;&gt;{heading}&lt;/span&gt;
+						&lt;span className=&quot;text-xs text-text-default-base-tertiary&quot;&gt;{subheading}&lt;/span&gt;
+					&lt;/div&gt;
+					{rows.map(row =&gt; {
+						const Icon = variant === &#39;master&#39; ? row.material : row.lucide;
+						const iconClass =
+							variant === &#39;master&#39;
+								? cn(&#39;shrink-0 [&amp;_path]:fill-current&#39;, iconSizeClass, row.iconColorClass)
+								: cn(&#39;shrink-0&#39;, iconSizeClass, row.iconColorClass);
+						return (
+							&lt;div
+								key={`${row.key}-${variant}-${alertSize}`}
+								className={cn(&#39;flex items-start rounded-md&#39;, rootSize, row.bgClass, row.textClass)}&gt;
+								&lt;Icon className={iconClass} /&gt;
+								&lt;div className={cn(&#39;flex flex-col self-start&#39;, contentSize)}&gt;
+									&lt;span className={cn(&#39;-mt-px font-semibold&#39;, titleSize)}&gt;{row.title}&lt;/span&gt;
+									&lt;span className={paragraphSize}&gt;{row.body}&lt;/span&gt;
+								&lt;/div&gt;
+							&lt;/div&gt;
+						);
+					})}
+				&lt;/div&gt;
+			);
+		};
+
+		return (
+			&lt;div className=&quot;flex flex-col gap-8&quot;&gt;
+				&lt;section className=&quot;flex flex-col gap-3&quot;&gt;
+					&lt;h3 className=&quot;text-base font-semibold text-text-default-base-primary&quot;&gt;
+						Alert size &lt;code&gt;sm&lt;/code&gt;
+					&lt;/h3&gt;
+					&lt;div className=&quot;grid grid-cols-3 gap-6&quot;&gt;
+						{renderColumn(
+							&#39;Master (today)&#39;,
+							&#39;Material Symbols · size-5 (20px footprint)&#39;,
+							&#39;sm&#39;,
+							&#39;master&#39;
+						)}
+						{renderColumn(
+							&#39;PR #20 + iconStyles xl&#39;,
+							&#39;lucide · proposed xl = size-5 (20px footprint)&#39;,
+							&#39;sm&#39;,
+							&#39;lucide-xl&#39;
+						)}
+					&lt;/div&gt;
+				&lt;/section&gt;
+
+				&lt;section className=&quot;flex flex-col gap-3&quot;&gt;
+					&lt;h3 className=&quot;text-base font-semibold text-text-default-base-primary&quot;&gt;
+						Alert size &lt;code&gt;md&lt;/code&gt;
+					&lt;/h3&gt;
+					&lt;div className=&quot;grid grid-cols-3 gap-6&quot;&gt;
+						{renderColumn(
+							&#39;Master (today)&#39;,
+							&#39;Material Symbols · size-6 (24px footprint)&#39;,
+							&#39;md&#39;,
+							&#39;master&#39;
+						)}
+						{renderColumn(
+							&#39;PR #20 + iconStyles xl&#39;,
+							&#39;lucide · proposed xl = size-6 (24px footprint)&#39;,
+							&#39;md&#39;,
+							&#39;lucide-xl&#39;
+						)}
+					&lt;/div&gt;
+				&lt;/section&gt;
+
+				&lt;p className=&quot;max-w-2xl text-xs text-text-default-base-secondary&quot;&gt;
+					The third column is what the Alert would render if &lt;code&gt;iconStyles&lt;/code&gt; grew an{&#39; &#39;}
+					&lt;code&gt;xl=24px&lt;/code&gt; step and the Alert recipe pointed to it. The{&#39; &#39;}
+					&lt;strong&gt;footprint reserved&lt;/strong&gt; for the icon now matches master, which restores the
+					external spacing (icon → text gap, component proportions) the designer is flagging. The
+					glyph itself is still lucide stroke=2, so the inked content inside the box stays outlined
+					rather than filled — but the surrounding rhythm of the component lines up with today.
+				&lt;/p&gt;
+			&lt;/div&gt;
+		);
+	}
+};
 </code></pre></div>
     </div>
         </div>
@@ -2876,6 +3186,258 @@ export const InComposition: Story = {
         &lt;span className=&quot;text-sm&quot;&gt;Create agent&lt;/span&gt;
     &lt;/div&gt;
 );</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Bounding Box Comparison</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Bounding-box parity check: Material Symbols vs lucide</div>
+              <div class="hint">Side-by-side comparison of the icons currently shipping in master (Material Symbols `opsz=24`, filled) against the proposed lucide replacements. Each cell renders inside a 24×24 outlined box so the **visual bounding box** of the glyph is comparable, not just the SVG `viewBox`. Lucide ships icons at `stroke-width=2` with a generous interior padding — at the same 24px container, the inked area is noticeably smaller than a filled Material Symbol. Two mitigations are shown: - **Lucide stroke 3** — pushes the stroke toward the visual weight of a filled Material Symbol; risks losing legibility at small sizes (sm=14px / md=16px). - **Lucide @ 28px** — renders the icon larger so the inked area matches Material Symbols. Requires component-level spacing adjustments. Use this story to decide whether lucide&#39;s native look is acceptable, or whether the DS should switch to the Material Symbols pipeline (PR #40/#41).</div>
+              <pre><code>const BoundingBoxComparison = () =&gt; {
+    const rows = [
+        {
+            label: &#39;check-circle (success)&#39;,
+            material: MaterialCheckCircle,
+            lucide: CircleCheckIcon
+        },
+        {
+            label: &#39;error-outline (danger)&#39;,
+            material: MaterialErrorOutline,
+            lucide: CircleAlertIcon
+        },
+        {
+            label: &#39;warning (warning)&#39;,
+            material: MaterialWarning,
+            lucide: TriangleAlertIcon
+        },
+        { label: &#39;close (dismiss)&#39;, material: MaterialClose, lucide: XIcon }
+    ];
+
+    const cellBox =
+        &#39;flex h-6 w-6 items-center justify-center outline outline-1 outline-bg-default-base-tertiary&#39;;
+
+    return (
+        &lt;div className=&quot;flex flex-col gap-6&quot;&gt;
+            &lt;div className=&quot;grid grid-cols-[12rem_repeat(4,minmax(0,1fr))] items-center gap-x-6 gap-y-3 text-xs&quot;&gt;
+                &lt;span className=&quot;text-text-default-base-secondary&quot;&gt;icon&lt;/span&gt;
+                &lt;span className=&quot;text-text-default-base-secondary&quot;&gt;
+                    Material Symbols
+                    &lt;br /&gt;
+                    &lt;span className=&quot;text-text-default-base-tertiary&quot;&gt;opsz=24, filled&lt;/span&gt;
+                &lt;/span&gt;
+                &lt;span className=&quot;text-text-default-base-secondary&quot;&gt;
+                    Lucide @ 24px
+                    &lt;br /&gt;
+                    &lt;span className=&quot;text-text-default-base-tertiary&quot;&gt;stroke=2 (default)&lt;/span&gt;
+                &lt;/span&gt;
+                &lt;span className=&quot;text-text-default-base-secondary&quot;&gt;
+                    Lucide stroke 3
+                    &lt;br /&gt;
+                    &lt;span className=&quot;text-text-default-base-tertiary&quot;&gt;heaviest @ 24px&lt;/span&gt;
+                &lt;/span&gt;
+                &lt;span className=&quot;text-text-default-base-secondary&quot;&gt;
+                    Lucide @ 28px
+                    &lt;br /&gt;
+                    &lt;span className=&quot;text-text-default-base-tertiary&quot;&gt;oversized to match&lt;/span&gt;
+                &lt;/span&gt;
+
+                {rows.map(({ label, material: Material, lucide: Lucide }) =&gt; (
+                    &lt;&gt;
+                        &lt;span key={`${label}-label`} className=&quot;text-text-default-base-primary&quot;&gt;
+                            {label}
+                        &lt;/span&gt;
+                        &lt;div key={`${label}-ms`} className=&quot;flex items-center&quot;&gt;
+                            &lt;div className={cellBox}&gt;
+                                &lt;Material className=&quot;size-6 text-icon-default-base-primary&quot; /&gt;
+                            &lt;/div&gt;
+                        &lt;/div&gt;
+                        &lt;div key={`${label}-lucide`} className=&quot;flex items-center&quot;&gt;
+                            &lt;div className={cellBox}&gt;
+                                &lt;Lucide className=&quot;size-6 text-icon-default-base-primary&quot; /&gt;
+                            &lt;/div&gt;
+                        &lt;/div&gt;
+                        &lt;div key={`${label}-lucide-3`} className=&quot;flex items-center&quot;&gt;
+                            &lt;div className={cellBox}&gt;
+                                &lt;Lucide className=&quot;size-6 text-icon-default-base-primary&quot; strokeWidth={3} /&gt;
+                            &lt;/div&gt;
+                        &lt;/div&gt;
+                        &lt;div key={`${label}-lucide-28`} className=&quot;flex items-center&quot;&gt;
+                            &lt;div className={cellBox}&gt;
+                    
+                                &lt;Lucide className=&quot;size-7 text-icon-default-base-primary&quot;  fill=&quot;#111827&quot; stroke-width=&quot;1&quot; stroke=&quot;#fff&quot;/&gt;
+                            &lt;/div&gt;
+                        &lt;/div&gt;
+                    &lt;/&gt;
+                ))}
+            &lt;/div&gt;
+
+            &lt;p className=&quot;max-w-xl text-xs text-text-default-base-secondary&quot;&gt;
+                The outlined box on every cell is exactly 24×24. Compare how much of that box each glyph
+                actually paints — that is the &amp;ldquo;visual bounding box&amp;rdquo; the designer is asking
+                about. The viewBox attribute is identical across all four columns; only the geometry
+                differs.
+            &lt;/p&gt;
+        &lt;/div&gt;
+    );
+};</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">In Alert Context</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Side-by-side Alert: master geometry vs PR #20 geometry</div>
+              <div class="hint">Renders an Alert-shaped container with both the current master geometry (Material Symbols inline, `size-5`/`size-6` icon slot) and the PR #20 geometry (lucide, `iconStyles({ size: &#39;md&#39; })`/`iconStyles({ size: &#39;lg&#39; })` — i.e. `size-4`/`size-5`) so the visual delta the designer is seeing in production-shaped UI is reproducible side by side. Two distinct effects combine here: 1. **Size shrink** — PR #20&#39;s `iconStyles` recipe tops out at `lg=20px`, so what was a 24px icon in master is now 20px (and the `sm` slot drops from 20px to 16px). 2. **Interior padding** — lucide leaves ~2–3px of air inside its viewBox; Material Symbols `opsz=24` fills the box edge-to-edge.</div>
+              <pre><code>const InAlertContext = () =&gt; {
+    const rows = [
+        {
+            key: &#39;success&#39;,
+            bgClass: &#39;bg-bg-alert-primary-success&#39;,
+            textClass: &#39;text-text-alert-primary-success&#39;,
+            iconColorClass: &#39;text-icon-alert-primary-success&#39;,
+            material: MaterialCheckCircle,
+            lucide: CircleCheckIcon,
+            title: &#39;Quote sent&#39;,
+            body: &#39;The carrier received your request.&#39;
+        },
+        {
+            key: &#39;danger&#39;,
+            bgClass: &#39;bg-bg-alert-primary-danger&#39;,
+            textClass: &#39;text-text-alert-primary-danger&#39;,
+            iconColorClass: &#39;text-icon-alert-primary-danger&#39;,
+            material: MaterialErrorOutline,
+            lucide: CircleAlertIcon,
+            title: &#39;Submission failed&#39;,
+            body: &#39;Carrier returned an error. Retry shortly.&#39;
+        },
+        {
+            key: &#39;warning&#39;,
+            bgClass: &#39;bg-bg-alert-primary-warning&#39;,
+            textClass: &#39;text-text-alert-primary-warning&#39;,
+            iconColorClass: &#39;text-icon-alert-primary-warning&#39;,
+            material: MaterialWarning,
+            lucide: TriangleAlertIcon,
+            title: &#39;Missing information&#39;,
+            body: &#39;Three required fields need attention.&#39;
+        },
+        {
+            key: &#39;info&#39;,
+            bgClass: &#39;bg-bg-alert-primary-info&#39;,
+            textClass: &#39;text-text-alert-primary-info&#39;,
+            iconColorClass: &#39;text-icon-alert-primary-info&#39;,
+            material: MaterialErrorOutline,
+            lucide: InfoIcon,
+            title: &#39;Heads up&#39;,
+            body: &#39;Effective dates updated for this carrier.&#39;
+        }
+    ];
+
+    const renderColumn = (
+        heading: string,
+        subheading: string,
+        alertSize: &#39;sm&#39; | &#39;md&#39;,
+        variant: &#39;master&#39; | &#39;lucide&#39; | &#39;lucide-xl&#39;
+    ) =&gt; {
+        const rootSize = alertSize === &#39;sm&#39; ? &#39;px-4 py-3 gap-2&#39; : &#39;px-8 py-6 gap-4&#39;;
+        const contentSize = alertSize === &#39;sm&#39; ? &#39;gap-1&#39; : &#39;gap-2&#39;;
+        const titleSize = alertSize === &#39;sm&#39; ? &#39;text-sm&#39; : &#39;text-lg&#39;;
+        const paragraphSize = alertSize === &#39;sm&#39; ? &#39;text-xs&#39; : &#39;text-sm&#39;;
+
+        const iconSizeClass =
+            variant === &#39;master&#39;
+                ? alertSize === &#39;sm&#39;
+                    ? &#39;size-5&#39;
+                    : &#39;size-6&#39;
+                : variant === &#39;lucide-xl&#39;
+                    ? alertSize === &#39;sm&#39;
+                        ? &#39;size-5&#39;
+                        : &#39;size-6&#39;
+                    : alertSize === &#39;sm&#39;
+                        ? &#39;size-4&#39;
+                        : &#39;size-5&#39;;
+
+        return (
+            &lt;div className=&quot;flex flex-col gap-3&quot;&gt;
+                &lt;div className=&quot;flex flex-col gap-0.5&quot;&gt;
+                    &lt;span className=&quot;text-sm font-semibold text-text-default-base-primary&quot;&gt;{heading}&lt;/span&gt;
+                    &lt;span className=&quot;text-xs text-text-default-base-tertiary&quot;&gt;{subheading}&lt;/span&gt;
+                &lt;/div&gt;
+                {rows.map(row =&gt; {
+                    const Icon = variant === &#39;master&#39; ? row.material : row.lucide;
+                    const iconClass =
+                        variant === &#39;master&#39;
+                            ? cn(&#39;shrink-0 [&amp;_path]:fill-current&#39;, iconSizeClass, row.iconColorClass)
+                            : cn(&#39;shrink-0&#39;, iconSizeClass, row.iconColorClass);
+                    return (
+                        &lt;div
+                            key={`${row.key}-${variant}-${alertSize}`}
+                            className={cn(&#39;flex items-start rounded-md&#39;, rootSize, row.bgClass, row.textClass)}&gt;
+                            &lt;Icon className={iconClass} /&gt;
+                            &lt;div className={cn(&#39;flex flex-col self-start&#39;, contentSize)}&gt;
+                                &lt;span className={cn(&#39;-mt-px font-semibold&#39;, titleSize)}&gt;{row.title}&lt;/span&gt;
+                                &lt;span className={paragraphSize}&gt;{row.body}&lt;/span&gt;
+                            &lt;/div&gt;
+                        &lt;/div&gt;
+                    );
+                })}
+            &lt;/div&gt;
+        );
+    };
+
+    return (
+        &lt;div className=&quot;flex flex-col gap-8&quot;&gt;
+            &lt;section className=&quot;flex flex-col gap-3&quot;&gt;
+                &lt;h3 className=&quot;text-base font-semibold text-text-default-base-primary&quot;&gt;
+                    Alert size &lt;code&gt;sm&lt;/code&gt;
+                &lt;/h3&gt;
+                &lt;div className=&quot;grid grid-cols-3 gap-6&quot;&gt;
+                    {renderColumn(
+                        &#39;Master (today)&#39;,
+                        &#39;Material Symbols · size-5 (20px footprint)&#39;,
+                        &#39;sm&#39;,
+                        &#39;master&#39;
+                    )}
+                    {renderColumn(
+                        &#39;PR #20 + iconStyles xl&#39;,
+                        &#39;lucide · proposed xl = size-5 (20px footprint)&#39;,
+                        &#39;sm&#39;,
+                        &#39;lucide-xl&#39;
+                    )}
+                &lt;/div&gt;
+            &lt;/section&gt;
+
+            &lt;section className=&quot;flex flex-col gap-3&quot;&gt;
+                &lt;h3 className=&quot;text-base font-semibold text-text-default-base-primary&quot;&gt;
+                    Alert size &lt;code&gt;md&lt;/code&gt;
+                &lt;/h3&gt;
+                &lt;div className=&quot;grid grid-cols-3 gap-6&quot;&gt;
+                    {renderColumn(
+                        &#39;Master (today)&#39;,
+                        &#39;Material Symbols · size-6 (24px footprint)&#39;,
+                        &#39;md&#39;,
+                        &#39;master&#39;
+                    )}
+                    {renderColumn(
+                        &#39;PR #20 + iconStyles xl&#39;,
+                        &#39;lucide · proposed xl = size-6 (24px footprint)&#39;,
+                        &#39;md&#39;,
+                        &#39;lucide-xl&#39;
+                    )}
+                &lt;/div&gt;
+            &lt;/section&gt;
+
+            &lt;p className=&quot;max-w-2xl text-xs text-text-default-base-secondary&quot;&gt;
+                The third column is what the Alert would render if &lt;code&gt;iconStyles&lt;/code&gt; grew an{&#39; &#39;}
+                &lt;code&gt;xl=24px&lt;/code&gt; step and the Alert recipe pointed to it. The{&#39; &#39;}
+                &lt;strong&gt;footprint reserved&lt;/strong&gt; for the icon now matches master, which restores the
+                external spacing (icon → text gap, component proportions) the designer is flagging. The
+                glyph itself is still lucide stroke=2, so the inked content inside the box stays outlined
+                rather than filled — but the surrounding rhythm of the component lines up with today.
+            &lt;/p&gt;
+        &lt;/div&gt;
+    );
+};</code></pre>
             </div>
         </div>
     
@@ -3045,6 +3607,167 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
   no-story-error
   no-doc-error"
   role="listitem"
+  aria-label="Pagination">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Pagination</h2>
+      <div class="badges">
+        <label for="c-7-components-pagination-props" class="badge ok as-toggle">5 prop types</label>
+        
+        <label for="c-7-components-pagination-stories" class="badge ok as-toggle">7 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/pagination/pagination.stories.tsx">components-pagination · ./src/pagination/pagination.stories.tsx</div>
+    
+    <div class="hint">Pagination is a 1-indexed paged navigation control with previous/next icon buttons, numeric page buttons, and a leading &quot;X - Y of Z&quot; entries summary. The page list collapses long ranges with `…` ellipses so the control stays compact regardless of total page count. Use it for lists, tables, or grids that are split across pages.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-7-components-pagination-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  <input id="c-7-components-pagination-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
+              <span class="badge ok">5 prop types</span>
+            </div>
+            <pre><code>Component: src/pagination/pagination.tsx::Pagination</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>className?: string
+
+currentPage: number
+
+onPageChange: (page: number) =&gt; void
+
+pageSize: number
+
+totalCount: number</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Pagination } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Default args playground for Pagination</div>
+              <div class="hint">Default args playground. The first page of a 1,000-item list paged 10 at a time — renders pages 1–5, an ellipsis, and the last page (100), with the previous-page button disabled because we&#39;re on page 1.</div>
+              <pre><code>const Default = () =&gt; &lt;Pagination currentPage={1} totalCount={1000} pageSize={10} onPageChange={fn()} /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Few Pages</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Short page list with no ellipsis collapse</div>
+              <div class="hint">Short list whose total pages fit in the visible window — no ellipsis is rendered. Exercises the `totalPageNumbers &gt;= totalPageCount` branch in `getPages`.</div>
+              <pre><code>const FewPages = () =&gt; &lt;Pagination
+    currentPage={2}
+    totalCount={30}
+    pageSize={10}
+    onPageChange={(page: number) =&gt; console.log(&#39;onPageChange&#39;, page)} /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Dots Right</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Right-side ellipsis only (current page near start)</div>
+              <div class="hint">Current page sits near the start of the range — left ellipsis is hidden, right ellipsis is shown, and the last page button anchors the right edge.</div>
+              <pre><code>const DotsRight = () =&gt; &lt;Pagination
+    currentPage={2}
+    totalCount={1000}
+    pageSize={10}
+    onPageChange={(page: number) =&gt; console.log(&#39;onPageChange&#39;, page)} /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Dots Left</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Left-side ellipsis only (current page near end)</div>
+              <div class="hint">Current page sits near the end of the range — left ellipsis is shown, right ellipsis is hidden, and the first page button anchors the left edge.</div>
+              <pre><code>const DotsLeft = () =&gt; &lt;Pagination
+    currentPage={99}
+    totalCount={1000}
+    pageSize={10}
+    onPageChange={(page: number) =&gt; console.log(&#39;onPageChange&#39;, page)} /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Dots Both</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Both ellipses visible (current page in middle)</div>
+              <div class="hint">Current page sits in the middle of the range — both ellipses are visible, with the first and last page buttons anchoring each edge.</div>
+              <pre><code>const DotsBoth = () =&gt; &lt;Pagination
+    currentPage={50}
+    totalCount={1000}
+    pageSize={10}
+    onPageChange={(page: number) =&gt; console.log(&#39;onPageChange&#39;, page)} /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Last Page</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Last page selected with disabled next button</div>
+              <div class="hint">Last page selected — the next-page button is disabled and the active page indicator sits on the trailing number.</div>
+              <pre><code>const LastPage = () =&gt; &lt;Pagination currentPage={100} totalCount={1000} pageSize={10} onPageChange={fn()} /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Controlled</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Interactive controlled example backed by `useState`</div>
+              <div class="hint">Interactive controlled example. Local `useState` owns the page; clicking a page, previous, or next button updates it so the active page indicator and entries summary follow along.</div>
+              <pre><code>const Controlled = ({ totalCount, pageSize }) =&gt; {
+    const [page, setPage] = useState(1);
+
+    return (
+        &lt;Pagination
+            currentPage={page}
+            totalCount={totalCount}
+            pageSize={pageSize}
+            onPageChange={setPage}
+        /&gt;
+    );
+};</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
   aria-label="StatusBall">
   <div class="head">
     <div class="title">
@@ -3052,7 +3775,7 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
       <div class="badges">
         
         
-        <label for="c-7-components-statusball-stories" class="badge ok as-toggle">12 stories</label>
+        <label for="c-8-components-statusball-stories" class="badge ok as-toggle">12 stories</label>
         
       </div>
     </div>
@@ -3065,7 +3788,7 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-7-components-statusball-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-8-components-statusball-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
@@ -3135,7 +3858,7 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
               </div>
               <div>Success dot for positive or active statuses</div>
               <div class="hint">Success dot for positive / active states — the most common pairing for &quot;live&quot; records such as active licenses or confirmed appointments.</div>
-              <pre><code>const Success = () =&gt; &lt;StatusBall color=&quot;success&quot; /&gt;;</code></pre>
+              <pre><code>const Success = () =&gt; &lt;StatusBall color=&quot;success&quot; data-testid=&quot;status-ball-success&quot; /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -3270,9 +3993,9 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Toast</h2>
       <div class="badges">
-        <label for="c-8-components-toast-props" class="badge ok as-toggle">11 prop types</label>
+        <label for="c-9-components-toast-props" class="badge ok as-toggle">11 prop types</label>
         
-        <label for="c-8-components-toast-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-9-components-toast-stories" class="badge ok as-toggle">11 stories</label>
         
       </div>
     </div>
@@ -3285,9 +4008,9 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-8-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-9-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-8-components-toast-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-9-components-toast-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -3705,7 +4428,7 @@ import { RefreshCwIcon } from "lucide-react";</code></pre>
       <div class="badges">
         <label for="c-error-0-foundations-icons-err" class="badge err as-toggle">prop type error</label>
         <label for="c-error-0-foundations-icons-info" class="badge info as-toggle">1 info</label>
-        <label for="c-error-0-foundations-icons-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-error-0-foundations-icons-stories" class="badge ok as-toggle">6 stories</label>
         
       </div>
     </div>
@@ -3729,20 +4452,24 @@ import { RefreshCwIcon } from "lucide-react";</code></pre>
     <div class="note err">
       <div class="note-title">Prop type error</div>
       <div class="note-body"><pre><code>We could not detect the component from your story file. Specify meta.component.
-  34 |  * via semantic tokens, and a sample set of the most-used icons.
-  35 |  */
-&gt; 36 | const meta: Meta = {
+  68 |  * via semantic tokens, and a sample set of the most-used icons.
+  69 |  */
+&gt; 70 | const meta: Meta = {
      | ^
-  37 | 	title: &#39;Foundations/Icons&#39;,
-  38 | 	parameters: {
-  39 | 		layout: &#39;padded&#39;
+  71 | 	title: &#39;Foundations/Icons&#39;,
+  72 | 	parameters: {
+  73 | 		layout: &#39;padded&#39;
 
 ./src/icon-system/icon-system.stories.tsx:
+import { SVGProps } from &#39;react&#39;;
+
 import type { Meta, StoryObj } from &#39;@storybook/react-vite&#39;;
 import {
 	BellIcon,
 	CheckIcon,
 	ChevronRightIcon,
+	CircleAlertIcon,
+	CircleCheckIcon,
 	CopyIcon,
 	DownloadIcon,
 	FilterIcon,
@@ -3762,7 +4489,37 @@ import {
 	XIcon
 } from &#39;lucide-react&#39;;
 
+import { cn } from &#39;../../lib&#39;;
 import { iconStyles } from &#39;../../lib/icon-styles&#39;;
+
+/**
+ * Inline Material Symbols `opsz=24` SVGs preserved from master for visual
+ * comparison only. These match the geometry currently shipping in production
+ * (before the lucide migration). Kept local to this story file — not exported.
+ */
+const MaterialCheckCircle = (props: SVGProps&lt;SVGSVGElement&gt;) =&gt; (
+	&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;currentColor&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot; {...props}&gt;
+		&lt;path d=&quot;M10.5808 14.1462L8.25765 11.8231C8.1192 11.6846 7.94517 11.6138 7.73555 11.6106C7.52593 11.6074 7.34869 11.6782 7.20382 11.8231C7.05896 11.968 6.98653 12.1436 6.98653 12.35C6.98653 12.5564 7.05896 12.732 7.20382 12.8769L9.94805 15.6211C10.1288 15.8019 10.3397 15.8923 10.5808 15.8923C10.8218 15.8923 11.0327 15.8019 11.2134 15.6211L16.7769 10.0577C16.9153 9.91923 16.9862 9.7452 16.9894 9.53558C16.9926 9.32596 16.9218 9.14872 16.7769 9.00386C16.632 8.85899 16.4564 8.78656 16.25 8.78656C16.0436 8.78656 15.8679 8.85899 15.7231 9.00386L10.5808 14.1462ZM12.0016 21.5C10.6877 21.5 9.45268 21.2506 8.29655 20.752C7.1404 20.2533 6.13472 19.5766 5.2795 18.7217C4.42427 17.8669 3.74721 16.8616 3.24833 15.706C2.74944 14.5504 2.5 13.3156 2.5 12.0017C2.5 10.6877 2.74933 9.45271 3.248 8.29658C3.74667 7.14043 4.42342 6.13475 5.27825 5.27953C6.1331 4.4243 7.13834 3.74724 8.29398 3.24836C9.44959 2.74947 10.6844 2.50003 11.9983 2.50003C13.3122 2.50003 14.5473 2.74936 15.7034 3.24803C16.8596 3.7467 17.8652 4.42345 18.7205 5.27828C19.5757 6.13313 20.2527 7.13837 20.7516 8.29401C21.2505 9.44962 21.5 10.6844 21.5 11.9983C21.5 13.3123 21.2506 14.5473 20.752 15.7034C20.2533 16.8596 19.5765 17.8653 18.7217 18.7205C17.8669 19.5757 16.8616 20.2528 15.706 20.7517C14.5504 21.2505 13.3156 21.5 12.0016 21.5ZM12 20C14.2333 20 16.125 19.225 17.675 17.675C19.225 16.125 20 14.2333 20 12C20 9.76667 19.225 7.87501 17.675 6.32501C16.125 4.77501 14.2333 4.00001 12 4.00001C9.76664 4.00001 7.87498 4.77501 6.32498 6.32501C4.77498 7.87501 3.99998 9.76667 3.99998 12C3.99998 14.2333 4.77498 16.125 6.32498 17.675C7.87498 19.225 9.76664 20 12 20Z&quot; /&gt;
+	&lt;/svg&gt;
+);
+
+const MaterialErrorOutline = (props: SVGProps&lt;SVGSVGElement&gt;) =&gt; (
+	&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;currentColor&quot; {...props}&gt;
+		&lt;path d=&quot;M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z&quot; /&gt;
+	&lt;/svg&gt;
+);
+
+const MaterialWarning = (props: SVGProps&lt;SVGSVGElement&gt;) =&gt; (
+	&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;currentColor&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot; {...props}&gt;
+		&lt;path d=&quot;M3.42555 20.4999C3.25605 20.4999 3.10382 20.4585 2.96887 20.3756C2.83392 20.2928 2.72897 20.1836 2.654 20.048C2.57602 19.9134 2.53312 19.7676 2.52532 19.6105C2.51752 19.4535 2.5599 19.2979 2.65245 19.1439L11.2132 4.35609C11.3057 4.20206 11.4216 4.08819 11.5607 4.01447C11.6998 3.94074 11.8462 3.90387 12.0001 3.90387C12.1539 3.90387 12.3004 3.94074 12.4395 4.01447C12.5786 4.08819 12.6944 4.20206 12.787 4.35609L21.3477 19.1439C21.4403 19.2979 21.4827 19.4535 21.4749 19.6105C21.4671 19.7676 21.4242 19.9134 21.3462 20.048C21.2712 20.1836 21.1663 20.2928 21.0313 20.3756C20.8964 20.4585 20.7441 20.4999 20.5746 20.4999H3.42555ZM4.4501 19H19.5501L12.0001 5.99997L4.4501 19ZM12.0001 17.8076C12.2289 17.8076 12.4208 17.7302 12.5756 17.5754C12.7304 17.4206 12.8078 17.2288 12.8078 17C12.8078 16.7711 12.7304 16.5793 12.5756 16.4245C12.4208 16.2697 12.2289 16.1923 12.0001 16.1923C11.7712 16.1923 11.5794 16.2697 11.4246 16.4245C11.2698 16.5793 11.1924 16.7711 11.1924 17C11.1924 17.2288 11.2698 17.4206 11.4246 17.5754C11.5794 17.7302 11.7712 17.8076 12.0001 17.8076ZM12.0004 15.1923C12.213 15.1923 12.3911 15.1204 12.5347 14.9767C12.6783 14.8329 12.7501 14.6548 12.7501 14.4423V10.9423C12.7501 10.7298 12.6782 10.5517 12.5344 10.4079C12.3906 10.2642 12.2124 10.1923 11.9998 10.1923C11.7872 10.1923 11.6091 10.2642 11.4655 10.4079C11.3219 10.5517 11.2501 10.7298 11.2501 10.9423V14.4423C11.2501 14.6548 11.322 14.8329 11.4658 14.9767C11.6096 15.1204 11.7878 15.1923 12.0004 15.1923Z&quot; /&gt;
+	&lt;/svg&gt;
+);
+
+const MaterialClose = (props: SVGProps&lt;SVGSVGElement&gt;) =&gt; (
+	&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;currentColor&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot; {...props}&gt;
+		&lt;path d=&quot;M12 13.0538L6.92689 18.1269C6.78844 18.2654 6.6144 18.3362 6.40479 18.3394C6.19519 18.3426 6.01795 18.2718 5.87309 18.1269C5.7282 17.982 5.65576 17.8064 5.65576 17.6C5.65576 17.3936 5.7282 17.218 5.87309 17.0731L10.9462 12L5.87309 6.92689C5.73462 6.78844 5.66379 6.6144 5.66059 6.40479C5.65737 6.19519 5.7282 6.01795 5.87309 5.87309C6.01795 5.7282 6.19359 5.65576 6.39999 5.65576C6.60639 5.65576 6.78202 5.7282 6.92689 5.87309L12 10.9462L17.0731 5.87309C17.2115 5.73462 17.3856 5.66379 17.5952 5.66059C17.8048 5.65737 17.982 5.7282 18.1269 5.87309C18.2718 6.01795 18.3442 6.19359 18.3442 6.39999C18.3442 6.60639 18.2718 6.78202 18.1269 6.92689L13.0538 12L18.1269 17.0731C18.2654 17.2115 18.3362 17.3856 18.3394 17.5952C18.3426 17.8048 18.2718 17.982 18.1269 18.1269C17.982 18.2718 17.8064 18.3442 17.6 18.3442C17.3936 18.3442 17.218 18.2718 17.0731 18.1269L12 13.0538Z&quot; /&gt;
+	&lt;/svg&gt;
+);
 
 /**
  * The design system does not wrap icons — consumers install `lucide-react`
@@ -3904,6 +4661,287 @@ export const InComposition: Story = {
 		&lt;/div&gt;
 	)
 };
+
+/**
+ * Side-by-side comparison of the icons currently shipping in master
+ * (Material Symbols `opsz=24`, filled) against the proposed lucide
+ * replacements. Each cell renders inside a 24×24 outlined box so the
+ * **visual bounding box** of the glyph is comparable, not just the SVG
+ * `viewBox`.
+ *
+ * Lucide ships icons at `stroke-width=2` with a generous interior padding
+ * — at the same 24px container, the inked area is noticeably smaller than
+ * a filled Material Symbol. Two mitigations are shown:
+ *
+ * - **Lucide stroke 3** — pushes the stroke toward the visual weight of a
+ *   filled Material Symbol; risks losing legibility at small sizes
+ *   (sm=14px / md=16px).
+ * - **Lucide @ 28px** — renders the icon larger so the inked area matches
+ *   Material Symbols. Requires component-level spacing adjustments.
+ *
+ * Use this story to decide whether lucide&#39;s native look is acceptable, or
+ * whether the DS should switch to the Material Symbols pipeline (PR #40/#41).
+ *
+ * @summary Bounding-box parity check: Material Symbols vs lucide
+ */
+export const BoundingBoxComparison: Story = {
+	render: () =&gt; {
+		const rows = [
+			{
+				label: &#39;check-circle (success)&#39;,
+				material: MaterialCheckCircle,
+				lucide: CircleCheckIcon
+			},
+			{
+				label: &#39;error-outline (danger)&#39;,
+				material: MaterialErrorOutline,
+				lucide: CircleAlertIcon
+			},
+			{
+				label: &#39;warning (warning)&#39;,
+				material: MaterialWarning,
+				lucide: TriangleAlertIcon
+			},
+			{ label: &#39;close (dismiss)&#39;, material: MaterialClose, lucide: XIcon }
+		];
+
+		const cellBox =
+			&#39;flex h-6 w-6 items-center justify-center outline outline-1 outline-bg-default-base-tertiary&#39;;
+
+		return (
+			&lt;div className=&quot;flex flex-col gap-6&quot;&gt;
+				&lt;div className=&quot;grid grid-cols-[12rem_repeat(4,minmax(0,1fr))] items-center gap-x-6 gap-y-3 text-xs&quot;&gt;
+					&lt;span className=&quot;text-text-default-base-secondary&quot;&gt;icon&lt;/span&gt;
+					&lt;span className=&quot;text-text-default-base-secondary&quot;&gt;
+						Material Symbols
+						&lt;br /&gt;
+						&lt;span className=&quot;text-text-default-base-tertiary&quot;&gt;opsz=24, filled&lt;/span&gt;
+					&lt;/span&gt;
+					&lt;span className=&quot;text-text-default-base-secondary&quot;&gt;
+						Lucide @ 24px
+						&lt;br /&gt;
+						&lt;span className=&quot;text-text-default-base-tertiary&quot;&gt;stroke=2 (default)&lt;/span&gt;
+					&lt;/span&gt;
+					&lt;span className=&quot;text-text-default-base-secondary&quot;&gt;
+						Lucide stroke 3
+						&lt;br /&gt;
+						&lt;span className=&quot;text-text-default-base-tertiary&quot;&gt;heaviest @ 24px&lt;/span&gt;
+					&lt;/span&gt;
+					&lt;span className=&quot;text-text-default-base-secondary&quot;&gt;
+						Lucide @ 28px
+						&lt;br /&gt;
+						&lt;span className=&quot;text-text-default-base-tertiary&quot;&gt;oversized to match&lt;/span&gt;
+					&lt;/span&gt;
+
+					{rows.map(({ label, material: Material, lucide: Lucide }) =&gt; (
+						&lt;&gt;
+							&lt;span key={`${label}-label`} className=&quot;text-text-default-base-primary&quot;&gt;
+								{label}
+							&lt;/span&gt;
+							&lt;div key={`${label}-ms`} className=&quot;flex items-center&quot;&gt;
+								&lt;div className={cellBox}&gt;
+									&lt;Material className=&quot;size-6 text-icon-default-base-primary&quot; /&gt;
+								&lt;/div&gt;
+							&lt;/div&gt;
+							&lt;div key={`${label}-lucide`} className=&quot;flex items-center&quot;&gt;
+								&lt;div className={cellBox}&gt;
+									&lt;Lucide className=&quot;size-6 text-icon-default-base-primary&quot; /&gt;
+								&lt;/div&gt;
+							&lt;/div&gt;
+							&lt;div key={`${label}-lucide-3`} className=&quot;flex items-center&quot;&gt;
+								&lt;div className={cellBox}&gt;
+									&lt;Lucide className=&quot;size-6 text-icon-default-base-primary&quot; strokeWidth={3} /&gt;
+								&lt;/div&gt;
+							&lt;/div&gt;
+							&lt;div key={`${label}-lucide-28`} className=&quot;flex items-center&quot;&gt;
+								&lt;div className={cellBox}&gt;
+						
+									&lt;Lucide className=&quot;size-7 text-icon-default-base-primary&quot;  fill=&quot;#111827&quot; stroke-width=&quot;1&quot; stroke=&quot;#fff&quot;/&gt;
+								&lt;/div&gt;
+							&lt;/div&gt;
+						&lt;/&gt;
+					))}
+				&lt;/div&gt;
+
+				&lt;p className=&quot;max-w-xl text-xs text-text-default-base-secondary&quot;&gt;
+					The outlined box on every cell is exactly 24×24. Compare how much of that box each glyph
+					actually paints — that is the &amp;ldquo;visual bounding box&amp;rdquo; the designer is asking
+					about. The viewBox attribute is identical across all four columns; only the geometry
+					differs.
+				&lt;/p&gt;
+			&lt;/div&gt;
+		);
+	}
+};
+
+/**
+ * Renders an Alert-shaped container with both the current master geometry
+ * (Material Symbols inline, `size-5`/`size-6` icon slot) and the PR #20
+ * geometry (lucide, `iconStyles({ size: &#39;md&#39; })`/`iconStyles({ size: &#39;lg&#39; })`
+ * — i.e. `size-4`/`size-5`) so the visual delta the designer is seeing in
+ * production-shaped UI is reproducible side by side.
+ *
+ * Two distinct effects combine here:
+ *
+ * 1. **Size shrink** — PR #20&#39;s `iconStyles` recipe tops out at `lg=20px`,
+ *    so what was a 24px icon in master is now 20px (and the `sm` slot drops
+ *    from 20px to 16px).
+ * 2. **Interior padding** — lucide leaves ~2–3px of air inside its viewBox;
+ *    Material Symbols `opsz=24` fills the box edge-to-edge.
+ *
+ * @summary Side-by-side Alert: master geometry vs PR #20 geometry
+ */
+export const InAlertContext: Story = {
+	render: () =&gt; {
+		const rows = [
+			{
+				key: &#39;success&#39;,
+				bgClass: &#39;bg-bg-alert-primary-success&#39;,
+				textClass: &#39;text-text-alert-primary-success&#39;,
+				iconColorClass: &#39;text-icon-alert-primary-success&#39;,
+				material: MaterialCheckCircle,
+				lucide: CircleCheckIcon,
+				title: &#39;Quote sent&#39;,
+				body: &#39;The carrier received your request.&#39;
+			},
+			{
+				key: &#39;danger&#39;,
+				bgClass: &#39;bg-bg-alert-primary-danger&#39;,
+				textClass: &#39;text-text-alert-primary-danger&#39;,
+				iconColorClass: &#39;text-icon-alert-primary-danger&#39;,
+				material: MaterialErrorOutline,
+				lucide: CircleAlertIcon,
+				title: &#39;Submission failed&#39;,
+				body: &#39;Carrier returned an error. Retry shortly.&#39;
+			},
+			{
+				key: &#39;warning&#39;,
+				bgClass: &#39;bg-bg-alert-primary-warning&#39;,
+				textClass: &#39;text-text-alert-primary-warning&#39;,
+				iconColorClass: &#39;text-icon-alert-primary-warning&#39;,
+				material: MaterialWarning,
+				lucide: TriangleAlertIcon,
+				title: &#39;Missing information&#39;,
+				body: &#39;Three required fields need attention.&#39;
+			},
+			{
+				key: &#39;info&#39;,
+				bgClass: &#39;bg-bg-alert-primary-info&#39;,
+				textClass: &#39;text-text-alert-primary-info&#39;,
+				iconColorClass: &#39;text-icon-alert-primary-info&#39;,
+				material: MaterialErrorOutline,
+				lucide: InfoIcon,
+				title: &#39;Heads up&#39;,
+				body: &#39;Effective dates updated for this carrier.&#39;
+			}
+		];
+
+		const renderColumn = (
+			heading: string,
+			subheading: string,
+			alertSize: &#39;sm&#39; | &#39;md&#39;,
+			variant: &#39;master&#39; | &#39;lucide&#39; | &#39;lucide-xl&#39;
+		) =&gt; {
+			const rootSize = alertSize === &#39;sm&#39; ? &#39;px-4 py-3 gap-2&#39; : &#39;px-8 py-6 gap-4&#39;;
+			const contentSize = alertSize === &#39;sm&#39; ? &#39;gap-1&#39; : &#39;gap-2&#39;;
+			const titleSize = alertSize === &#39;sm&#39; ? &#39;text-sm&#39; : &#39;text-lg&#39;;
+			const paragraphSize = alertSize === &#39;sm&#39; ? &#39;text-xs&#39; : &#39;text-sm&#39;;
+
+			const iconSizeClass =
+				variant === &#39;master&#39;
+					? alertSize === &#39;sm&#39;
+						? &#39;size-5&#39;
+						: &#39;size-6&#39;
+					: variant === &#39;lucide-xl&#39;
+						? alertSize === &#39;sm&#39;
+							? &#39;size-5&#39;
+							: &#39;size-6&#39;
+						: alertSize === &#39;sm&#39;
+							? &#39;size-4&#39;
+							: &#39;size-5&#39;;
+
+			return (
+				&lt;div className=&quot;flex flex-col gap-3&quot;&gt;
+					&lt;div className=&quot;flex flex-col gap-0.5&quot;&gt;
+						&lt;span className=&quot;text-sm font-semibold text-text-default-base-primary&quot;&gt;{heading}&lt;/span&gt;
+						&lt;span className=&quot;text-xs text-text-default-base-tertiary&quot;&gt;{subheading}&lt;/span&gt;
+					&lt;/div&gt;
+					{rows.map(row =&gt; {
+						const Icon = variant === &#39;master&#39; ? row.material : row.lucide;
+						const iconClass =
+							variant === &#39;master&#39;
+								? cn(&#39;shrink-0 [&amp;_path]:fill-current&#39;, iconSizeClass, row.iconColorClass)
+								: cn(&#39;shrink-0&#39;, iconSizeClass, row.iconColorClass);
+						return (
+							&lt;div
+								key={`${row.key}-${variant}-${alertSize}`}
+								className={cn(&#39;flex items-start rounded-md&#39;, rootSize, row.bgClass, row.textClass)}&gt;
+								&lt;Icon className={iconClass} /&gt;
+								&lt;div className={cn(&#39;flex flex-col self-start&#39;, contentSize)}&gt;
+									&lt;span className={cn(&#39;-mt-px font-semibold&#39;, titleSize)}&gt;{row.title}&lt;/span&gt;
+									&lt;span className={paragraphSize}&gt;{row.body}&lt;/span&gt;
+								&lt;/div&gt;
+							&lt;/div&gt;
+						);
+					})}
+				&lt;/div&gt;
+			);
+		};
+
+		return (
+			&lt;div className=&quot;flex flex-col gap-8&quot;&gt;
+				&lt;section className=&quot;flex flex-col gap-3&quot;&gt;
+					&lt;h3 className=&quot;text-base font-semibold text-text-default-base-primary&quot;&gt;
+						Alert size &lt;code&gt;sm&lt;/code&gt;
+					&lt;/h3&gt;
+					&lt;div className=&quot;grid grid-cols-3 gap-6&quot;&gt;
+						{renderColumn(
+							&#39;Master (today)&#39;,
+							&#39;Material Symbols · size-5 (20px footprint)&#39;,
+							&#39;sm&#39;,
+							&#39;master&#39;
+						)}
+						{renderColumn(
+							&#39;PR #20 + iconStyles xl&#39;,
+							&#39;lucide · proposed xl = size-5 (20px footprint)&#39;,
+							&#39;sm&#39;,
+							&#39;lucide-xl&#39;
+						)}
+					&lt;/div&gt;
+				&lt;/section&gt;
+
+				&lt;section className=&quot;flex flex-col gap-3&quot;&gt;
+					&lt;h3 className=&quot;text-base font-semibold text-text-default-base-primary&quot;&gt;
+						Alert size &lt;code&gt;md&lt;/code&gt;
+					&lt;/h3&gt;
+					&lt;div className=&quot;grid grid-cols-3 gap-6&quot;&gt;
+						{renderColumn(
+							&#39;Master (today)&#39;,
+							&#39;Material Symbols · size-6 (24px footprint)&#39;,
+							&#39;md&#39;,
+							&#39;master&#39;
+						)}
+						{renderColumn(
+							&#39;PR #20 + iconStyles xl&#39;,
+							&#39;lucide · proposed xl = size-6 (24px footprint)&#39;,
+							&#39;md&#39;,
+							&#39;lucide-xl&#39;
+						)}
+					&lt;/div&gt;
+				&lt;/section&gt;
+
+				&lt;p className=&quot;max-w-2xl text-xs text-text-default-base-secondary&quot;&gt;
+					The third column is what the Alert would render if &lt;code&gt;iconStyles&lt;/code&gt; grew an{&#39; &#39;}
+					&lt;code&gt;xl=24px&lt;/code&gt; step and the Alert recipe pointed to it. The{&#39; &#39;}
+					&lt;strong&gt;footprint reserved&lt;/strong&gt; for the icon now matches master, which restores the
+					external spacing (icon → text gap, component proportions) the designer is flagging. The
+					glyph itself is still lucide stroke=2, so the inked content inside the box stays outlined
+					rather than filled — but the surrounding rhythm of the component lines up with today.
+				&lt;/p&gt;
+			&lt;/div&gt;
+		);
+	}
+};
 </code></pre></div>
     </div>
         </div>
@@ -4043,6 +5081,258 @@ export const InComposition: Story = {
         &lt;span className=&quot;text-sm&quot;&gt;Create agent&lt;/span&gt;
     &lt;/div&gt;
 );</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Bounding Box Comparison</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Bounding-box parity check: Material Symbols vs lucide</div>
+              <div class="hint">Side-by-side comparison of the icons currently shipping in master (Material Symbols `opsz=24`, filled) against the proposed lucide replacements. Each cell renders inside a 24×24 outlined box so the **visual bounding box** of the glyph is comparable, not just the SVG `viewBox`. Lucide ships icons at `stroke-width=2` with a generous interior padding — at the same 24px container, the inked area is noticeably smaller than a filled Material Symbol. Two mitigations are shown: - **Lucide stroke 3** — pushes the stroke toward the visual weight of a filled Material Symbol; risks losing legibility at small sizes (sm=14px / md=16px). - **Lucide @ 28px** — renders the icon larger so the inked area matches Material Symbols. Requires component-level spacing adjustments. Use this story to decide whether lucide&#39;s native look is acceptable, or whether the DS should switch to the Material Symbols pipeline (PR #40/#41).</div>
+              <pre><code>const BoundingBoxComparison = () =&gt; {
+    const rows = [
+        {
+            label: &#39;check-circle (success)&#39;,
+            material: MaterialCheckCircle,
+            lucide: CircleCheckIcon
+        },
+        {
+            label: &#39;error-outline (danger)&#39;,
+            material: MaterialErrorOutline,
+            lucide: CircleAlertIcon
+        },
+        {
+            label: &#39;warning (warning)&#39;,
+            material: MaterialWarning,
+            lucide: TriangleAlertIcon
+        },
+        { label: &#39;close (dismiss)&#39;, material: MaterialClose, lucide: XIcon }
+    ];
+
+    const cellBox =
+        &#39;flex h-6 w-6 items-center justify-center outline outline-1 outline-bg-default-base-tertiary&#39;;
+
+    return (
+        &lt;div className=&quot;flex flex-col gap-6&quot;&gt;
+            &lt;div className=&quot;grid grid-cols-[12rem_repeat(4,minmax(0,1fr))] items-center gap-x-6 gap-y-3 text-xs&quot;&gt;
+                &lt;span className=&quot;text-text-default-base-secondary&quot;&gt;icon&lt;/span&gt;
+                &lt;span className=&quot;text-text-default-base-secondary&quot;&gt;
+                    Material Symbols
+                    &lt;br /&gt;
+                    &lt;span className=&quot;text-text-default-base-tertiary&quot;&gt;opsz=24, filled&lt;/span&gt;
+                &lt;/span&gt;
+                &lt;span className=&quot;text-text-default-base-secondary&quot;&gt;
+                    Lucide @ 24px
+                    &lt;br /&gt;
+                    &lt;span className=&quot;text-text-default-base-tertiary&quot;&gt;stroke=2 (default)&lt;/span&gt;
+                &lt;/span&gt;
+                &lt;span className=&quot;text-text-default-base-secondary&quot;&gt;
+                    Lucide stroke 3
+                    &lt;br /&gt;
+                    &lt;span className=&quot;text-text-default-base-tertiary&quot;&gt;heaviest @ 24px&lt;/span&gt;
+                &lt;/span&gt;
+                &lt;span className=&quot;text-text-default-base-secondary&quot;&gt;
+                    Lucide @ 28px
+                    &lt;br /&gt;
+                    &lt;span className=&quot;text-text-default-base-tertiary&quot;&gt;oversized to match&lt;/span&gt;
+                &lt;/span&gt;
+
+                {rows.map(({ label, material: Material, lucide: Lucide }) =&gt; (
+                    &lt;&gt;
+                        &lt;span key={`${label}-label`} className=&quot;text-text-default-base-primary&quot;&gt;
+                            {label}
+                        &lt;/span&gt;
+                        &lt;div key={`${label}-ms`} className=&quot;flex items-center&quot;&gt;
+                            &lt;div className={cellBox}&gt;
+                                &lt;Material className=&quot;size-6 text-icon-default-base-primary&quot; /&gt;
+                            &lt;/div&gt;
+                        &lt;/div&gt;
+                        &lt;div key={`${label}-lucide`} className=&quot;flex items-center&quot;&gt;
+                            &lt;div className={cellBox}&gt;
+                                &lt;Lucide className=&quot;size-6 text-icon-default-base-primary&quot; /&gt;
+                            &lt;/div&gt;
+                        &lt;/div&gt;
+                        &lt;div key={`${label}-lucide-3`} className=&quot;flex items-center&quot;&gt;
+                            &lt;div className={cellBox}&gt;
+                                &lt;Lucide className=&quot;size-6 text-icon-default-base-primary&quot; strokeWidth={3} /&gt;
+                            &lt;/div&gt;
+                        &lt;/div&gt;
+                        &lt;div key={`${label}-lucide-28`} className=&quot;flex items-center&quot;&gt;
+                            &lt;div className={cellBox}&gt;
+                    
+                                &lt;Lucide className=&quot;size-7 text-icon-default-base-primary&quot;  fill=&quot;#111827&quot; stroke-width=&quot;1&quot; stroke=&quot;#fff&quot;/&gt;
+                            &lt;/div&gt;
+                        &lt;/div&gt;
+                    &lt;/&gt;
+                ))}
+            &lt;/div&gt;
+
+            &lt;p className=&quot;max-w-xl text-xs text-text-default-base-secondary&quot;&gt;
+                The outlined box on every cell is exactly 24×24. Compare how much of that box each glyph
+                actually paints — that is the &amp;ldquo;visual bounding box&amp;rdquo; the designer is asking
+                about. The viewBox attribute is identical across all four columns; only the geometry
+                differs.
+            &lt;/p&gt;
+        &lt;/div&gt;
+    );
+};</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">In Alert Context</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Side-by-side Alert: master geometry vs PR #20 geometry</div>
+              <div class="hint">Renders an Alert-shaped container with both the current master geometry (Material Symbols inline, `size-5`/`size-6` icon slot) and the PR #20 geometry (lucide, `iconStyles({ size: &#39;md&#39; })`/`iconStyles({ size: &#39;lg&#39; })` — i.e. `size-4`/`size-5`) so the visual delta the designer is seeing in production-shaped UI is reproducible side by side. Two distinct effects combine here: 1. **Size shrink** — PR #20&#39;s `iconStyles` recipe tops out at `lg=20px`, so what was a 24px icon in master is now 20px (and the `sm` slot drops from 20px to 16px). 2. **Interior padding** — lucide leaves ~2–3px of air inside its viewBox; Material Symbols `opsz=24` fills the box edge-to-edge.</div>
+              <pre><code>const InAlertContext = () =&gt; {
+    const rows = [
+        {
+            key: &#39;success&#39;,
+            bgClass: &#39;bg-bg-alert-primary-success&#39;,
+            textClass: &#39;text-text-alert-primary-success&#39;,
+            iconColorClass: &#39;text-icon-alert-primary-success&#39;,
+            material: MaterialCheckCircle,
+            lucide: CircleCheckIcon,
+            title: &#39;Quote sent&#39;,
+            body: &#39;The carrier received your request.&#39;
+        },
+        {
+            key: &#39;danger&#39;,
+            bgClass: &#39;bg-bg-alert-primary-danger&#39;,
+            textClass: &#39;text-text-alert-primary-danger&#39;,
+            iconColorClass: &#39;text-icon-alert-primary-danger&#39;,
+            material: MaterialErrorOutline,
+            lucide: CircleAlertIcon,
+            title: &#39;Submission failed&#39;,
+            body: &#39;Carrier returned an error. Retry shortly.&#39;
+        },
+        {
+            key: &#39;warning&#39;,
+            bgClass: &#39;bg-bg-alert-primary-warning&#39;,
+            textClass: &#39;text-text-alert-primary-warning&#39;,
+            iconColorClass: &#39;text-icon-alert-primary-warning&#39;,
+            material: MaterialWarning,
+            lucide: TriangleAlertIcon,
+            title: &#39;Missing information&#39;,
+            body: &#39;Three required fields need attention.&#39;
+        },
+        {
+            key: &#39;info&#39;,
+            bgClass: &#39;bg-bg-alert-primary-info&#39;,
+            textClass: &#39;text-text-alert-primary-info&#39;,
+            iconColorClass: &#39;text-icon-alert-primary-info&#39;,
+            material: MaterialErrorOutline,
+            lucide: InfoIcon,
+            title: &#39;Heads up&#39;,
+            body: &#39;Effective dates updated for this carrier.&#39;
+        }
+    ];
+
+    const renderColumn = (
+        heading: string,
+        subheading: string,
+        alertSize: &#39;sm&#39; | &#39;md&#39;,
+        variant: &#39;master&#39; | &#39;lucide&#39; | &#39;lucide-xl&#39;
+    ) =&gt; {
+        const rootSize = alertSize === &#39;sm&#39; ? &#39;px-4 py-3 gap-2&#39; : &#39;px-8 py-6 gap-4&#39;;
+        const contentSize = alertSize === &#39;sm&#39; ? &#39;gap-1&#39; : &#39;gap-2&#39;;
+        const titleSize = alertSize === &#39;sm&#39; ? &#39;text-sm&#39; : &#39;text-lg&#39;;
+        const paragraphSize = alertSize === &#39;sm&#39; ? &#39;text-xs&#39; : &#39;text-sm&#39;;
+
+        const iconSizeClass =
+            variant === &#39;master&#39;
+                ? alertSize === &#39;sm&#39;
+                    ? &#39;size-5&#39;
+                    : &#39;size-6&#39;
+                : variant === &#39;lucide-xl&#39;
+                    ? alertSize === &#39;sm&#39;
+                        ? &#39;size-5&#39;
+                        : &#39;size-6&#39;
+                    : alertSize === &#39;sm&#39;
+                        ? &#39;size-4&#39;
+                        : &#39;size-5&#39;;
+
+        return (
+            &lt;div className=&quot;flex flex-col gap-3&quot;&gt;
+                &lt;div className=&quot;flex flex-col gap-0.5&quot;&gt;
+                    &lt;span className=&quot;text-sm font-semibold text-text-default-base-primary&quot;&gt;{heading}&lt;/span&gt;
+                    &lt;span className=&quot;text-xs text-text-default-base-tertiary&quot;&gt;{subheading}&lt;/span&gt;
+                &lt;/div&gt;
+                {rows.map(row =&gt; {
+                    const Icon = variant === &#39;master&#39; ? row.material : row.lucide;
+                    const iconClass =
+                        variant === &#39;master&#39;
+                            ? cn(&#39;shrink-0 [&amp;_path]:fill-current&#39;, iconSizeClass, row.iconColorClass)
+                            : cn(&#39;shrink-0&#39;, iconSizeClass, row.iconColorClass);
+                    return (
+                        &lt;div
+                            key={`${row.key}-${variant}-${alertSize}`}
+                            className={cn(&#39;flex items-start rounded-md&#39;, rootSize, row.bgClass, row.textClass)}&gt;
+                            &lt;Icon className={iconClass} /&gt;
+                            &lt;div className={cn(&#39;flex flex-col self-start&#39;, contentSize)}&gt;
+                                &lt;span className={cn(&#39;-mt-px font-semibold&#39;, titleSize)}&gt;{row.title}&lt;/span&gt;
+                                &lt;span className={paragraphSize}&gt;{row.body}&lt;/span&gt;
+                            &lt;/div&gt;
+                        &lt;/div&gt;
+                    );
+                })}
+            &lt;/div&gt;
+        );
+    };
+
+    return (
+        &lt;div className=&quot;flex flex-col gap-8&quot;&gt;
+            &lt;section className=&quot;flex flex-col gap-3&quot;&gt;
+                &lt;h3 className=&quot;text-base font-semibold text-text-default-base-primary&quot;&gt;
+                    Alert size &lt;code&gt;sm&lt;/code&gt;
+                &lt;/h3&gt;
+                &lt;div className=&quot;grid grid-cols-3 gap-6&quot;&gt;
+                    {renderColumn(
+                        &#39;Master (today)&#39;,
+                        &#39;Material Symbols · size-5 (20px footprint)&#39;,
+                        &#39;sm&#39;,
+                        &#39;master&#39;
+                    )}
+                    {renderColumn(
+                        &#39;PR #20 + iconStyles xl&#39;,
+                        &#39;lucide · proposed xl = size-5 (20px footprint)&#39;,
+                        &#39;sm&#39;,
+                        &#39;lucide-xl&#39;
+                    )}
+                &lt;/div&gt;
+            &lt;/section&gt;
+
+            &lt;section className=&quot;flex flex-col gap-3&quot;&gt;
+                &lt;h3 className=&quot;text-base font-semibold text-text-default-base-primary&quot;&gt;
+                    Alert size &lt;code&gt;md&lt;/code&gt;
+                &lt;/h3&gt;
+                &lt;div className=&quot;grid grid-cols-3 gap-6&quot;&gt;
+                    {renderColumn(
+                        &#39;Master (today)&#39;,
+                        &#39;Material Symbols · size-6 (24px footprint)&#39;,
+                        &#39;md&#39;,
+                        &#39;master&#39;
+                    )}
+                    {renderColumn(
+                        &#39;PR #20 + iconStyles xl&#39;,
+                        &#39;lucide · proposed xl = size-6 (24px footprint)&#39;,
+                        &#39;md&#39;,
+                        &#39;lucide-xl&#39;
+                    )}
+                &lt;/div&gt;
+            &lt;/section&gt;
+
+            &lt;p className=&quot;max-w-2xl text-xs text-text-default-base-secondary&quot;&gt;
+                The third column is what the Alert would render if &lt;code&gt;iconStyles&lt;/code&gt; grew an{&#39; &#39;}
+                &lt;code&gt;xl=24px&lt;/code&gt; step and the Alert recipe pointed to it. The{&#39; &#39;}
+                &lt;strong&gt;footprint reserved&lt;/strong&gt; for the icon now matches master, which restores the
+                external spacing (icon → text gap, component proportions) the designer is flagging. The
+                glyph itself is still lucide stroke=2, so the inked content inside the box stays outlined
+                rather than filled — but the surrounding rhythm of the component lines up with today.
+            &lt;/p&gt;
+        &lt;/div&gt;
+    );
+};</code></pre>
             </div>
         </div>
     
