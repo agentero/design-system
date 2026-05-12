@@ -36,6 +36,35 @@ Add the design system as a Tailwind source so that the CSS for component classes
 import { ComponentName } from '@agentero/design-system/ComponentName';
 ```
 
+## Icons
+
+Import icons from the `/icons` subpath:
+
+```tsx
+import { IconCheckCircle, IconInfoFilled } from '@agentero/design-system/icons';
+
+<IconCheckCircle />                  {/* unfilled */}
+<IconInfoFilled />                   {/* filled */}
+<IconCheckCircle width={32} height={32} />
+<IconCheckCircle className="text-green-500" />
+```
+
+The icons module mirrors the build pattern of `@agentero/icons` in `producerflow/mono` (esbuild + SVGR + SVGO), with SVGs sourced automatically from Google's official [`@material-symbols/svg-400`](https://www.npmjs.com/package/@material-symbols/svg-400) package (Apache-2.0). Style is **rounded**, matching the working set in Figma.
+
+### Adding a new icon
+
+1. Find the icon name on https://fonts.google.com/icons.
+2. Add the filename (without `.svg`) to `src/icons/manifest.json`:
+   - Unfilled: just the snake_case name, e.g. `"check_circle"`.
+   - Filled: append `-fill`, e.g. `"check_circle-fill"`.
+3. Run `yarn build:icons` (the `postinstall` hook also runs it).
+
+The sync script copies the SVG from `@material-symbols/svg-400/rounded/` and regenerates `src/icons/index.ts`. Filenames ending in `-fill` produce component names suffixed with `Filled` (e.g. `IconCheckCircleFilled`). The build produces the bundled output at `lib/icons/`. The new icon appears automatically in the `Icons/Gallery` Storybook story.
+
+**Note on style**: `@material-symbols/svg-400` only ships at `opsz=48`, so icons may render slightly thinner at small display sizes than `opsz=24` exports from Figma.
+
+Every rendered `<svg>` gets `data-icon="<kebab-name>"` and unique internal IDs. Filled variants preserve the `-fill` suffix in `data-icon`, enabling selectors like `[data-icon$="-fill"]` to target all filled icons in CSS or tests.
+
 ## Utilities
 
 ### `cn`
