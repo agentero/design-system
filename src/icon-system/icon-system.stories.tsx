@@ -210,8 +210,9 @@ export const InComposition: Story = {
  * — at the same 24px container, the inked area is noticeably smaller than
  * a filled Material Symbol. Two mitigations are shown:
  *
- * - **Lucide stroke 2.5** — bumps the stroke weight, fills more of the
- *   bounding box visually without changing the size.
+ * - **Lucide stroke 3** — pushes the stroke toward the visual weight of a
+ *   filled Material Symbol; risks losing legibility at small sizes
+ *   (sm=14px / md=16px).
  * - **Lucide @ 28px** — renders the icon larger so the inked area matches
  *   Material Symbols. Requires component-level spacing adjustments.
  *
@@ -259,9 +260,9 @@ export const BoundingBoxComparison: Story = {
 						<span className="text-text-default-base-tertiary">stroke=2 (default)</span>
 					</span>
 					<span className="text-text-default-base-secondary">
-						Lucide stroke 2.5
+						Lucide stroke 3
 						<br />
-						<span className="text-text-default-base-tertiary">heavier @ 24px</span>
+						<span className="text-text-default-base-tertiary">heaviest @ 24px</span>
 					</span>
 					<span className="text-text-default-base-secondary">
 						Lucide @ 28px
@@ -284,14 +285,15 @@ export const BoundingBoxComparison: Story = {
 									<Lucide className="size-6 text-icon-default-base-primary" />
 								</div>
 							</div>
-							<div key={`${label}-lucide-25`} className="flex items-center">
+							<div key={`${label}-lucide-3`} className="flex items-center">
 								<div className={cellBox}>
-									<Lucide className="size-6 text-icon-default-base-primary" strokeWidth={2.5} />
+									<Lucide className="size-6 text-icon-default-base-primary" strokeWidth={3} />
 								</div>
 							</div>
 							<div key={`${label}-lucide-28`} className="flex items-center">
 								<div className={cellBox}>
-									<Lucide className="size-7 text-icon-default-base-primary" />
+						
+									<Lucide className="size-7 text-icon-default-base-primary"  fill="#111827" stroke-width="1" stroke="#fff"/>
 								</div>
 							</div>
 						</>
@@ -437,12 +439,6 @@ export const InAlertContext: Story = {
 							'master'
 						)}
 						{renderColumn(
-							'PR #20 (lucide)',
-							'lucide · iconStyles md = size-4 (16px footprint)',
-							'sm',
-							'lucide'
-						)}
-						{renderColumn(
 							'PR #20 + iconStyles xl',
 							'lucide · proposed xl = size-5 (20px footprint)',
 							'sm',
@@ -461,12 +457,6 @@ export const InAlertContext: Story = {
 							'Material Symbols · size-6 (24px footprint)',
 							'md',
 							'master'
-						)}
-						{renderColumn(
-							'PR #20 (lucide)',
-							'lucide · iconStyles lg = size-5 (20px footprint)',
-							'md',
-							'lucide'
 						)}
 						{renderColumn(
 							'PR #20 + iconStyles xl',
