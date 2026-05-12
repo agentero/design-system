@@ -7,6 +7,7 @@ import {
 	StarIcon,
 	TriangleAlertIcon
 } from 'lucide-react';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { Alert } from './alert';
 
@@ -186,7 +187,27 @@ export const MediumSize: Story = { args: { size: 'md' } };
  * @summary Alert with a dismiss button
  */
 export const WithDismiss: Story = {
-	args: { color: 'warning', onDismiss: (() => {}) as never }
+	args: { color: 'warning', onDismiss: fn() },
+	argTypes: { onDismiss: { control: false, action: 'onDismiss' } },
+	render: args => (
+		<Alert {...args}>
+			<Alert.Content>
+				<Alert.Title>Title</Alert.Title>
+				<Alert.Paragraph>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</Alert.Paragraph>
+			</Alert.Content>
+		</Alert>
+	),
+	play: async ({ canvasElement, args }) => {
+		const canvas = within(canvasElement);
+
+		const root = canvas.getByRole('alert');
+		await expect(root).toHaveAttribute('data-slot', 'alert-root');
+		await expect(root).toHaveAccessibleName('Title');
+
+		const dismiss = canvas.getByRole('button', { name: 'Dismiss' });
+		await userEvent.click(dismiss);
+		await expect(args.onDismiss).toHaveBeenCalledTimes(1);
+	}
 };
 
 /**

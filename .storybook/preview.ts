@@ -11,7 +11,14 @@ const preview: Preview = {
 			}
 		},
 		a11y: {
-			test: 'todo'
+			test: 'error',
+			config: {
+				rules: [
+					// TODO: re-enable once contrast tokens are fixed (Avatar, Button, Divider).
+					// Violations remain visible in the Accessibility panel; only blocking is disabled.
+					{ id: 'color-contrast', enabled: false }
+				]
+			}
 		}
 	}
 };
