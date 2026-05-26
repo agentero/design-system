@@ -83,11 +83,75 @@ export const avatarRecipe = tv({
 					'after:[mask-size:100%_100%] after:[mask-repeat:no-repeat] after:[mask-position:center]'
 				]
 			}
+		},
+		type: {
+			photo: {},
+			initials: {},
+			isotype: {}
 		}
 	},
+	compoundVariants: [
+		{
+			type: 'isotype',
+			size: 'xs',
+			className: {
+				image: 'w-4 h-4'
+			}
+		},
+		{
+			type: 'isotype',
+			size: 'sm',
+			className: {
+				image: 'w-5 h-5'
+			}
+		},
+		{
+			type: 'isotype',
+			size: 'md',
+			className: {
+				image: 'w-6 h-6'
+			}
+		},
+		{
+			type: 'isotype',
+			size: 'lg',
+			className: {
+				image: 'w-7 h-7'
+			}
+		},
+		{
+			type: 'isotype',
+			size: 'xl',
+			className: {
+				image: 'w-8 h-8'
+			}
+		},
+		{
+			type: 'isotype',
+			size: '2xl',
+			className: {
+				image: 'w-10 h-10'
+			}
+		},
+		{
+			type: 'isotype',
+			size: '3xl',
+			className: {
+				image: 'w-12 h-12'
+			}
+		},
+		{
+			type: 'isotype',
+			size: '4xl',
+			className: {
+				image: 'w-16 h-16'
+			}
+		}
+	],
 	defaultVariants: {
 		size: 'md',
-		variant: 'circle'
+		variant: 'circle',
+		type: 'photo'
 	}
 });
 
@@ -120,11 +184,11 @@ export const useAvatar = () => {
 
 type AvatarRootProps = ComponentPropsWithRef<typeof AvatarPrimitive.Root> & AvatarVariants;
 
-const AvatarRoot = ({ size, variant, ...props }: AvatarRootProps) => {
-	const styles = avatarRecipe({ size, variant });
+const AvatarRoot = ({ size, variant, type, ...props }: AvatarRootProps) => {
+	const styles = avatarRecipe({ size, variant, type });
 
 	return (
-		<AvatarContext value={{ size, variant, slotsStyles: styles }}>
+		<AvatarContext value={{ size, variant, type, slotsStyles: styles }}>
 			<AvatarPrimitive.Root {...props} className={cn(styles.root(), props.className)} />
 		</AvatarContext>
 	);
@@ -181,6 +245,14 @@ type AvatarProps = ComponentPropsWithRef<typeof AvatarPrimitive.Root> & {
 	 * - `pentagon` — distinctive five-sided shape for unique visual identity
 	 */
 	variant?: AvatarVariants['variant'];
+	/**
+	 * Content type the avatar represents. Defaults to `'photo'`.
+	 * - `photo` — a user's profile photograph filling the avatar shape
+	 * - `initials` — text initials standing in for a missing photo
+	 * - `isotype` — a brand or organization icon rendered smaller than the avatar
+	 *   so it sits centered inside the shape instead of filling it
+	 */
+	type?: AvatarVariants['type'];
 };
 
 /**
@@ -211,6 +283,7 @@ export const Avatar = ({
 	colorize,
 	size,
 	variant,
+	type,
 	ref,
 	...props
 }: AvatarProps) => {
@@ -222,6 +295,7 @@ export const Avatar = ({
 			ref={ref}
 			size={size}
 			variant={variant}
+			type={type}
 			style={{ ...colorizeStyle, ...props.style }}>
 			<AvatarImage alt={alt} src={src} />
 			<AvatarFallback>{fallback}</AvatarFallback>

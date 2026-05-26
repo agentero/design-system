@@ -5,8 +5,9 @@ import { Avatar } from './avatar';
 /**
  * Avatar displays a user's profile image, initials, or a fallback icon.
  * Use for user identification in lists, headers, cards, and comment threads.
- * Supports multiple shapes (`circle`, `square`, `pillow`, `pentagon`) and
- * sizes from `xs` (24px) to `4xl` (128px).
+ * Supports multiple shapes (`circle`, `square`, `pillow`, `pentagon`),
+ * content types (`photo`, `initials`, `isotype`), and sizes from `xs` (24px)
+ * to `4xl` (128px).
  */
 const meta = {
 	title: 'Components/Avatar',
@@ -20,12 +21,19 @@ const meta = {
 		variant: {
 			control: 'radio',
 			options: ['circle', 'square', 'pillow', 'pentagon']
+		},
+		type: {
+			control: 'radio',
+			options: ['photo', 'initials', 'isotype'],
+			description:
+				'Content type the avatar represents. `photo` fills the shape, `initials` shows text, `isotype` renders a brand icon smaller than the shape so it sits centered inside.'
 		}
 	},
 	args: {
 		fallback: 'JD',
 		size: 'md',
-		variant: 'circle'
+		variant: 'circle',
+		type: 'photo'
 	}
 } satisfies Meta<typeof Avatar>;
 
@@ -117,6 +125,109 @@ export const Pentagon: Story = {
 		variant: 'pentagon',
 		fallback: 'PT'
 	}
+};
+
+/* --------------- Types --------------- */
+
+/**
+ * The `photo` type is the default. The image fills the avatar shape edge-to-edge,
+ * which is ideal for user profile photographs.
+ *
+ * @summary Photo type fills the avatar shape edge-to-edge
+ */
+export const TypePhoto: Story = {
+	args: {
+		type: 'photo',
+		src: 'https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?&w=256&h=256&q=70&crop=focalpoint&fp-x=0.5&fp-y=0.3&fp-z=1&fit=crop',
+		alt: 'Alex Morgan',
+		fallback: 'AM'
+	}
+};
+
+/**
+ * The `initials` type is intended when no image is available and the avatar
+ * stands in for a user with their initials. The fallback text is centered
+ * within the avatar shape.
+ *
+ * @summary Initials type for users without a profile photo
+ */
+export const TypeInitials: Story = {
+	args: {
+		type: 'initials',
+		fallback: 'JD'
+	}
+};
+
+/**
+ * The `isotype` type renders the image smaller than the avatar shape so a
+ * brand or organization icon sits centered inside the container rather than
+ * filling it. Use for workspace, team, or company avatars where a logo
+ * should remain legible inside the bounding shape.
+ *
+ * @summary Isotype type centers a brand icon inside the shape
+ */
+export const TypeIsotype: Story = {
+	args: {
+		type: 'isotype',
+		variant: 'square',
+		src: 'https://cdn.simpleicons.org/figma',
+		alt: 'Figma',
+		fallback: 'FG'
+	}
+};
+
+/**
+ * All content types shown side by side: `photo` fills the shape, `initials`
+ * centers text, and `isotype` shrinks a brand icon inside the bounding shape.
+ *
+ * @summary Visual comparison of all avatar content types
+ */
+export const AllTypes: Story = {
+	render: () => (
+		<div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+			<Avatar
+				size="lg"
+				type="photo"
+				src="https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?&w=256&h=256&q=70&crop=focalpoint&fp-x=0.5&fp-y=0.3&fp-z=1&fit=crop"
+				alt="Alex Morgan"
+				fallback="AM"
+			/>
+			<Avatar size="lg" type="initials" fallback="JD" />
+			<Avatar
+				size="lg"
+				type="isotype"
+				variant="square"
+				src="https://cdn.simpleicons.org/figma"
+				alt="Figma"
+				fallback="FG"
+			/>
+		</div>
+	)
+};
+
+/**
+ * The isotype icon scales proportionally smaller than the avatar shape at
+ * every size, keeping a consistent inset around the logo from `xs` (24px)
+ * to `4xl` (128px).
+ *
+ * @summary Isotype scaling across all avatar sizes
+ */
+export const AllSizesIsotype: Story = {
+	render: () => (
+		<div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+			{(['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl'] as const).map(size => (
+				<Avatar
+					key={size}
+					size={size}
+					type="isotype"
+					variant="square"
+					src="https://cdn.simpleicons.org/figma"
+					alt="Figma"
+					fallback="FG"
+				/>
+			))}
+		</div>
+	)
 };
 
 /* --------------- Sizes --------------- */
