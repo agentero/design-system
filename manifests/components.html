@@ -576,7 +576,7 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">9 components ok</span><span class="filter-pill ok" aria-disabled="true">104 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">9 components ok</span><span class="filter-pill ok" aria-disabled="true">109 stories ok</span></div>
   </div>
 </header>
 <main>
@@ -1153,15 +1153,15 @@ size?: AlertSizeType = sm</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Avatar</h2>
       <div class="badges">
-        <label for="c-1-components-avatar-props" class="badge ok as-toggle">7 prop types</label>
+        <label for="c-1-components-avatar-props" class="badge ok as-toggle">8 prop types</label>
         
-        <label for="c-1-components-avatar-stories" class="badge ok as-toggle">17 stories</label>
+        <label for="c-1-components-avatar-stories" class="badge ok as-toggle">22 stories</label>
         
       </div>
     </div>
     <div class="meta" title="./src/avatar/avatar.stories.tsx">components-avatar · ./src/avatar/avatar.stories.tsx</div>
     
-    <div class="hint">Avatar displays a user&#39;s profile image, initials, or a fallback icon. Use for user identification in lists, headers, cards, and comment threads. Supports multiple shapes (`circle`, `square`, `pillow`, `pentagon`) and sizes from `xs` (24px) to `4xl` (128px).</div>
+    <div class="hint">Avatar displays a user&#39;s profile image, initials, or a fallback icon. Use for user identification in lists, headers, cards, and comment threads. Supports multiple shapes (`circle`, `square`, `pillow`, `pentagon`), content types (`photo`, `initials`, `isotype`), and sizes from `xs` (24px) to `4xl` (128px).</div>
     
   </div>
 
@@ -1180,7 +1180,7 @@ size?: AlertSizeType = sm</code></pre>
           <div class="note ok">
             <div class="row">
               <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
-              <span class="badge ok">7 prop types</span>
+              <span class="badge ok">8 prop types</span>
             </div>
             <pre><code>Component: src/avatar/avatar.tsx::Avatar</code></pre>
             <pre><code>Props:</code></pre>
@@ -1220,6 +1220,15 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;xs&quot; | &quot;lg&quot; | &quot
 src?: string
 
 /**
+ * Content type the avatar represents. Defaults to `&#39;photo&#39;`.
+ * - `photo` — a user&#39;s profile photograph filling the avatar shape
+ * - `initials` — text initials standing in for a missing photo
+ * - `isotype` — a brand or organization icon rendered smaller than the avatar
+ *   so it sits centered inside the shape instead of filling it
+ */
+type?: &quot;isotype&quot; | &quot;photo&quot; | &quot;initials&quot;
+
+/**
  * Shape of the avatar container. Defaults to `&#39;circle&#39;`.
  * - `circle` — standard round avatar for user photos
  * - `square` — rounded rectangle, suitable for workspace or team icons
@@ -1249,7 +1258,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
               </div>
               <div>Default avatar with fallback initials</div>
               <div class="hint">The default avatar with fallback initials. Renders as a medium circle when no image source is provided.</div>
-              <pre><code>const Default = () =&gt; &lt;Avatar fallback=&quot;JD&quot; size=&quot;md&quot; variant=&quot;circle&quot; /&gt;;</code></pre>
+              <pre><code>const Default = () =&gt; &lt;Avatar fallback=&quot;JD&quot; size=&quot;md&quot; variant=&quot;circle&quot; type=&quot;photo&quot; /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -1262,6 +1271,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
     fallback=&quot;JD&quot;
     size=&quot;md&quot;
     variant=&quot;circle&quot;
+    type=&quot;photo&quot;
     src=&quot;https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?&amp;w=256&amp;h=256&amp;q=70&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.3&amp;fp-z=1&amp;fit=crop&quot;
     alt=&quot;Alex Morgan&quot; /&gt;;</code></pre>
             </div>
@@ -1276,6 +1286,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
     fallback=&quot;AM&quot;
     size=&quot;md&quot;
     variant=&quot;circle&quot;
+    type=&quot;photo&quot;
     src=&quot;https://broken-url.example/photo.jpg&quot; /&gt;;</code></pre>
             </div>
             <div class="note ok">
@@ -1285,7 +1296,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
               </div>
               <div>Circle-shaped avatar (default)</div>
               <div class="hint">The circle variant is the default shape, ideal for user profile photos.</div>
-              <pre><code>const Circle = () =&gt; &lt;Avatar fallback=&quot;CR&quot; size=&quot;md&quot; variant=&quot;circle&quot; /&gt;;</code></pre>
+              <pre><code>const Circle = () =&gt; &lt;Avatar fallback=&quot;CR&quot; size=&quot;md&quot; variant=&quot;circle&quot; type=&quot;photo&quot; /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -1294,7 +1305,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
               </div>
               <div>Square-shaped avatar for workspaces</div>
               <div class="hint">The square variant uses a rounded rectangle, suitable for workspace, team, or organization icons.</div>
-              <pre><code>const Square = () =&gt; &lt;Avatar fallback=&quot;WS&quot; size=&quot;md&quot; variant=&quot;square&quot; /&gt;;</code></pre>
+              <pre><code>const Square = () =&gt; &lt;Avatar fallback=&quot;WS&quot; size=&quot;md&quot; variant=&quot;square&quot; type=&quot;photo&quot; /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -1303,7 +1314,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
               </div>
               <div>Pillow-shaped avatar with organic squircle</div>
               <div class="hint">The pillow variant uses a soft, organic squircle shape for a friendly and distinctive appearance.</div>
-              <pre><code>const Pillow = () =&gt; &lt;Avatar fallback=&quot;PL&quot; size=&quot;md&quot; variant=&quot;pillow&quot; /&gt;;</code></pre>
+              <pre><code>const Pillow = () =&gt; &lt;Avatar fallback=&quot;PL&quot; size=&quot;md&quot; variant=&quot;pillow&quot; type=&quot;photo&quot; /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -1312,7 +1323,97 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
               </div>
               <div>Pentagon-shaped avatar for unique identity</div>
               <div class="hint">The pentagon variant uses a five-sided mask for a unique visual identity. Note: the border is hidden in this variant due to the mask shape.</div>
-              <pre><code>const Pentagon = () =&gt; &lt;Avatar fallback=&quot;PT&quot; size=&quot;md&quot; variant=&quot;pentagon&quot; /&gt;;</code></pre>
+              <pre><code>const Pentagon = () =&gt; &lt;Avatar fallback=&quot;PT&quot; size=&quot;md&quot; variant=&quot;pentagon&quot; type=&quot;photo&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Type Photo</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Photo type fills the avatar shape edge-to-edge</div>
+              <div class="hint">The `photo` type is the default. The image fills the avatar shape edge-to-edge, which is ideal for user profile photographs.</div>
+              <pre><code>const TypePhoto = () =&gt; &lt;Avatar
+    fallback=&quot;AM&quot;
+    size=&quot;md&quot;
+    variant=&quot;circle&quot;
+    type=&quot;photo&quot;
+    src=&quot;https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?&amp;w=256&amp;h=256&amp;q=70&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.3&amp;fp-z=1&amp;fit=crop&quot;
+    alt=&quot;Alex Morgan&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Type Initials</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Initials type for users without a profile photo</div>
+              <div class="hint">The `initials` type is intended when no image is available and the avatar stands in for a user with their initials. The fallback text is centered within the avatar shape.</div>
+              <pre><code>const TypeInitials = () =&gt; &lt;Avatar fallback=&quot;JD&quot; size=&quot;md&quot; variant=&quot;circle&quot; type=&quot;initials&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Type Isotype</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Isotype type centers a brand icon inside the shape</div>
+              <div class="hint">The `isotype` type renders the image smaller than the avatar shape so a brand or organization icon sits centered inside the container rather than filling it. Use for workspace, team, or company avatars where a logo should remain legible inside the bounding shape.</div>
+              <pre><code>const TypeIsotype = () =&gt; &lt;Avatar
+    fallback=&quot;FG&quot;
+    size=&quot;md&quot;
+    variant=&quot;square&quot;
+    type=&quot;isotype&quot;
+    src=&quot;https://cdn.simpleicons.org/figma&quot;
+    alt=&quot;Figma&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">All Types</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Visual comparison of all avatar content types</div>
+              <div class="hint">All content types shown side by side: `photo` fills the shape, `initials` centers text, and `isotype` shrinks a brand icon inside the bounding shape.</div>
+              <pre><code>const AllTypes = () =&gt; (
+    &lt;div style={{ display: &#39;flex&#39;, alignItems: &#39;center&#39;, gap: &#39;1rem&#39; }}&gt;
+        &lt;Avatar
+            size=&quot;lg&quot;
+            type=&quot;photo&quot;
+            src=&quot;https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?&amp;w=256&amp;h=256&amp;q=70&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.3&amp;fp-z=1&amp;fit=crop&quot;
+            alt=&quot;Alex Morgan&quot;
+            fallback=&quot;AM&quot;
+        /&gt;
+        &lt;Avatar size=&quot;lg&quot; type=&quot;initials&quot; fallback=&quot;JD&quot; /&gt;
+        &lt;Avatar
+            size=&quot;lg&quot;
+            type=&quot;isotype&quot;
+            variant=&quot;square&quot;
+            src=&quot;https://cdn.simpleicons.org/figma&quot;
+            alt=&quot;Figma&quot;
+            fallback=&quot;FG&quot;
+        /&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">All Sizes Isotype</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Isotype scaling across all avatar sizes</div>
+              <div class="hint">The isotype icon scales proportionally smaller than the avatar shape at every size, keeping a consistent inset around the logo from `xs` (24px) to `4xl` (128px).</div>
+              <pre><code>const AllSizesIsotype = () =&gt; (
+    &lt;div style={{ display: &#39;flex&#39;, alignItems: &#39;center&#39;, gap: &#39;1rem&#39; }}&gt;
+        {([&#39;xs&#39;, &#39;sm&#39;, &#39;md&#39;, &#39;lg&#39;, &#39;xl&#39;, &#39;2xl&#39;, &#39;3xl&#39;, &#39;4xl&#39;] as const).map(size =&gt; (
+            &lt;Avatar
+                key={size}
+                size={size}
+                type=&quot;isotype&quot;
+                variant=&quot;square&quot;
+                src=&quot;https://cdn.simpleicons.org/figma&quot;
+                alt=&quot;Figma&quot;
+                fallback=&quot;FG&quot;
+            /&gt;
+        ))}
+    &lt;/div&gt;
+);</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -1321,7 +1422,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
               </div>
               <div>Extra-small 24px avatar</div>
               <div class="hint">Extra-small avatar (24px) for dense lists and inline indicators.</div>
-              <pre><code>const SizeXs = () =&gt; &lt;Avatar fallback=&quot;XS&quot; size=&quot;xs&quot; variant=&quot;circle&quot; /&gt;;</code></pre>
+              <pre><code>const SizeXs = () =&gt; &lt;Avatar fallback=&quot;XS&quot; size=&quot;xs&quot; variant=&quot;circle&quot; type=&quot;photo&quot; /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -1330,7 +1431,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
               </div>
               <div>Small 32px avatar</div>
               <div class="hint">Small avatar (32px) for compact layouts and table rows.</div>
-              <pre><code>const SizeSm = () =&gt; &lt;Avatar fallback=&quot;SM&quot; size=&quot;sm&quot; variant=&quot;circle&quot; /&gt;;</code></pre>
+              <pre><code>const SizeSm = () =&gt; &lt;Avatar fallback=&quot;SM&quot; size=&quot;sm&quot; variant=&quot;circle&quot; type=&quot;photo&quot; /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -1339,7 +1440,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
               </div>
               <div>Large 48px avatar</div>
               <div class="hint">Large avatar (48px) for profile sections and detail views.</div>
-              <pre><code>const SizeLg = () =&gt; &lt;Avatar fallback=&quot;LG&quot; size=&quot;lg&quot; variant=&quot;circle&quot; /&gt;;</code></pre>
+              <pre><code>const SizeLg = () =&gt; &lt;Avatar fallback=&quot;LG&quot; size=&quot;lg&quot; variant=&quot;circle&quot; type=&quot;photo&quot; /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -1348,7 +1449,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
               </div>
               <div>Extra-large 64px avatar</div>
               <div class="hint">Extra-large avatar (64px) for hero sections and prominent display.</div>
-              <pre><code>const SizeXl = () =&gt; &lt;Avatar fallback=&quot;XL&quot; size=&quot;xl&quot; variant=&quot;circle&quot; /&gt;;</code></pre>
+              <pre><code>const SizeXl = () =&gt; &lt;Avatar fallback=&quot;XL&quot; size=&quot;xl&quot; variant=&quot;circle&quot; type=&quot;photo&quot; /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -1357,7 +1458,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
               </div>
               <div>Colorized avatar based on user name</div>
               <div class="hint">The `colorize` prop deterministically maps a string (typically a user name) to a color from the palette, applying a tinted background and matching text color. Useful for distinguishing users in lists without profile photos.</div>
-              <pre><code>const Colorized = () =&gt; &lt;Avatar fallback=&quot;JD&quot; size=&quot;md&quot; variant=&quot;circle&quot; colorize=&quot;jane doe&quot; /&gt;;</code></pre>
+              <pre><code>const Colorized = () =&gt; &lt;Avatar fallback=&quot;JD&quot; size=&quot;md&quot; variant=&quot;circle&quot; type=&quot;photo&quot; colorize=&quot;jane doe&quot; /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
