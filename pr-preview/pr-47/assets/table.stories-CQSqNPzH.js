@@ -1,0 +1,134 @@
+import{a as e,n as t}from"./chunk-BneVvdWh.js";import{S as n}from"./iframe-BHG3HOPa.js";import{t as r}from"./jsx-runtime-D16BNjX-.js";import{t as i}from"./button-BA6Xi7A-.js";import{t as a}from"./button-C2vj0ayY.js";import{n as o,t as s}from"./table-5R78A_Gn.js";var c,l,u,d,f,p,m,h,g,_,v,y,b,x,S,C,w,T,E,D;t((()=>{c=e(n(),1),a(),o(),l=r(),{expect:u,within:d}=__STORYBOOK_MODULE_TEST__,f=[{id:`1`,name:`Alice Williams`,email:`alice@example.com`,role:`Admin`,amount:`$1,200`},{id:`2`,name:`Bob Johnson`,email:`bob@example.com`,role:`User`,amount:`$340`},{id:`3`,name:`Charlie Brown`,email:`charlie@example.com`,role:`User`,amount:`$980`},{id:`4`,name:`Diana Prince`,email:`diana@example.com`,role:`Editor`,amount:`$2,450`},{id:`5`,name:`Evan Davis`,email:`evan@example.com`,role:`User`,amount:`$75`},{id:`6`,name:`Fiona Clark`,email:`fiona@example.com`,role:`Admin`,amount:`$610`},{id:`7`,name:`George Hill`,email:`george@example.com`,role:`User`,amount:`$1,890`},{id:`8`,name:`Hannah Scott`,email:`hannah@example.com`,role:`Editor`,amount:`$430`}],p=e=>(0,l.jsx)(`svg`,{width:`24`,height:`24`,viewBox:`0 0 24 24`,fill:`none`,...e,children:(0,l.jsx)(`path`,{fill:`currentColor`,d:`M5.154 19H6.39l9.26-9.26-1.237-1.236-9.26 9.26zM4.558 20.5a.88.88 0 0 1-.646-.259.88.88 0 0 1-.258-.645v-2.094q0-.18.065-.344a.9.9 0 0 1 .206-.304L15.483 5.156q.222-.202.49-.312a1.5 1.5 0 0 1 .562-.11q.291 0 .555.11.264.11.46.33l1.207 1.221q.22.197.323.461.103.264.103.552 0 .291-.106.556a1.4 1.4 0 0 1-.32.49L7.3 20.229a1.3 1.3 0 0 1-.304.206 1.4 1.4 0 0 1-.344.065z`})}),m=e=>(0,l.jsx)(`svg`,{width:`24`,height:`24`,viewBox:`0 0 24 24`,fill:`none`,...e,children:(0,l.jsx)(`path`,{fill:`currentColor`,d:`M7.308 20.5q-.749 0-1.278-.53a1.74 1.74 0 0 1-.53-1.278V6h-.25a.73.73 0 0 1-.535-.215.73.73 0 0 1-.215-.535q0-.32.215-.535A.73.73 0 0 1 5.25 4.5H9q0-.367.259-.626a.85.85 0 0 1 .626-.259h4.23q.368 0 .626.26A.85.85 0 0 1 15 4.5h3.75q.32 0 .535.215a.73.73 0 0 1 .215.535.73.73 0 0 1-.215.535.73.73 0 0 1-.535.215h-.25v12.692q0 .749-.53 1.278-.53.53-1.278.53zM17 6H7v12.692a.3.3 0 0 0 .087.221.3.3 0 0 0 .22.087h9.385a.3.3 0 0 0 .221-.087.3.3 0 0 0 .087-.22z`})}),h=(e,t={})=>(0,l.jsxs)(s.Root,{...e,children:[(0,l.jsx)(s.Head,{children:(0,l.jsxs)(s.Row,{children:[t.checkbox&&(0,l.jsx)(s.Header,{children:(0,l.jsx)(`input`,{type:`checkbox`,"aria-label":`Select all rows`})}),(0,l.jsx)(s.Header,{children:`Name`}),(0,l.jsx)(s.Header,{children:`Email`}),(0,l.jsx)(s.Header,{children:`Role`}),(0,l.jsx)(s.Header,{style:{textAlign:`right`},children:`Amount`}),t.actions&&(0,l.jsx)(s.Header,{children:(0,l.jsx)(`span`,{className:`sr-only`,children:`Actions`})})]})}),(0,l.jsxs)(s.Body,{children:[f.map(e=>(0,l.jsxs)(s.Row,{children:[t.checkbox&&(0,l.jsx)(s.Cell,{children:(0,l.jsx)(`input`,{type:`checkbox`,"aria-label":`Select ${e.name}`})}),(0,l.jsx)(s.Cell,{className:`font-bold`,children:e.name}),(0,l.jsx)(s.Cell,{className:`text-text-default-base-secondary`,children:e.email}),(0,l.jsx)(s.Cell,{children:e.role}),(0,l.jsx)(s.Cell,{style:{textAlign:`right`},children:e.amount}),t.actions&&(0,l.jsx)(s.Cell,{style:{width:`0.0625rem`,position:`sticky`,right:0},children:(0,l.jsxs)(s.RowActions,{children:[(0,l.jsx)(i,{variant:`ghost`,size:`sm`,iconOnly:!0,"aria-label":`Edit ${e.name}`,children:(0,l.jsx)(p,{})}),(0,l.jsx)(i,{variant:`ghost`,size:`sm`,iconOnly:!0,"aria-label":`Delete ${e.name}`,children:(0,l.jsx)(m,{})})]})})]},e.id)),t.totals&&(0,l.jsxs)(s.Row,{children:[(0,l.jsx)(s.Cell,{className:`font-bold`,children:`Total`}),(0,l.jsx)(s.Cell,{}),(0,l.jsx)(s.Cell,{}),(0,l.jsx)(s.Cell,{className:`font-bold`,style:{textAlign:`right`},children:`$8,375`})]})]})]}),g={title:`Components/Table`,component:s.Root,tags:[`autodocs`],parameters:{layout:`fullscreen`,docs:{description:{component:`Table is the low-level, presentational table primitive: native \`<table>\`
+markup with theming for scrolling, sticky header/footer rows, sizing, cell
+padding, row dividers, hover states, and expandable rows. Use it when you
+render rows yourself; for sorting/toolbar/pagination over data, prefer
+\`DataTable\`, which is built on top of it.`}}},argTypes:{size:{control:`inline-radio`,options:[`xxs`,`xs`,`sm`,`md`]},enclosed:{control:`boolean`},embed:{control:`boolean`},clean:{control:`boolean`},sticky:{control:`inline-radio`,options:[void 0,`header`,`footer`,`headerAndFooter`]},maxHeight:{control:`number`}},args:{size:`md`,enclosed:!0,embed:!1,clean:!1},render:e=>h(e),decorators:[e=>(0,l.jsx)(`div`,{className:`flex h-112 flex-col p-4`,children:(0,l.jsx)(e,{})})]},_={parameters:{a11y:{test:`error`}},play:async({canvasElement:e})=>{let t=d(e);await u(t.getByText(`Alice Williams`)).toBeInTheDocument(),await u(t.getByRole(`columnheader`,{name:`Name`})).toBeInTheDocument()}},v={render:()=>(0,l.jsx)(`div`,{className:`flex flex-col gap-6`,children:[`xxs`,`xs`,`sm`,`md`].map(e=>(0,l.jsxs)(`div`,{className:`flex flex-col gap-1`,children:[(0,l.jsxs)(`span`,{className:`text-xs text-text-default-base-tertiary`,children:[`size="`,e,`"`]}),h({size:e})]},e))})},y={args:{enclosed:!1}},b={args:{sticky:`header`,maxHeight:220}},x={args:{sticky:`headerAndFooter`,maxHeight:220},render:e=>h(e,{totals:!0})},S={args:{embed:!0,enclosed:!1}},C={args:{clean:!0,enclosed:!1}},w={render:e=>h(e,{checkbox:!0})},T={args:{enclosed:!1},render:e=>h(e,{actions:!0}),play:async({canvasElement:e})=>{let t=d(e);await u(t.getAllByRole(`button`,{name:/Edit /})).toHaveLength(f.length),await u(t.getAllByRole(`button`,{name:/Delete /})).toHaveLength(f.length)}},E={render:e=>(0,l.jsx)(()=>{let[t,n]=(0,c.useState)(f[0].id);return(0,l.jsxs)(s.Root,{...e,children:[(0,l.jsx)(s.Head,{children:(0,l.jsxs)(s.Row,{children:[(0,l.jsx)(s.Header,{children:(0,l.jsx)(`span`,{className:`sr-only`,children:`Expand`})}),(0,l.jsx)(s.Header,{children:`Name`}),(0,l.jsx)(s.Header,{children:`Email`}),(0,l.jsx)(s.Header,{children:`Role`})]})}),(0,l.jsx)(s.Body,{children:f.slice(0,4).map(e=>(0,l.jsxs)(c.Fragment,{children:[(0,l.jsxs)(s.Row,{children:[(0,l.jsx)(s.Cell,{children:(0,l.jsx)(s.ExpandButton,{isExpanded:t===e.id,toggleExpanded:()=>n(t===e.id?null:e.id),"aria-label":`Toggle ${e.name}`})}),(0,l.jsx)(s.Cell,{className:`font-bold`,children:e.name}),(0,l.jsx)(s.Cell,{className:`text-text-default-base-secondary`,children:e.email}),(0,l.jsx)(s.Cell,{children:e.role})]}),t===e.id&&(0,l.jsx)(s.ExpandedRow,{children:(0,l.jsx)(s.Cell,{colSpan:4,children:(0,l.jsxs)(`div`,{className:`py-2 text-text-default-base-secondary`,children:[`Extended details for `,e.name,` — `,e.amount,` lifetime value.`]})})})]},e.id))})]})},{})},_.parameters={..._.parameters,docs:{..._.parameters?.docs,source:{originalSource:`{
+  parameters: {
+    a11y: {
+      test: 'error'
+    }
+  },
+  play: async ({
+    canvasElement
+  }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText('Alice Williams')).toBeInTheDocument();
+    await expect(canvas.getByRole('columnheader', {
+      name: 'Name'
+    })).toBeInTheDocument();
+  }
+}`,..._.parameters?.docs?.source},description:{story:`Default args playground — \`md\` size, enclosed (bordered) container.
+
+@summary Default bordered table`,..._.parameters?.docs?.description}}},v.parameters={...v.parameters,docs:{...v.parameters?.docs,source:{originalSource:`{
+  render: () => <div className="flex flex-col gap-6">
+            {(['xxs', 'xs', 'sm', 'md'] as const).map(size => <div key={size} className="flex flex-col gap-1">
+                    <span className="text-xs text-text-default-base-tertiary">size=&quot;{size}&quot;</span>
+                    {renderTable({
+        size
+      })}
+                </div>)}
+        </div>
+}`,...v.parameters?.docs?.source},description:{story:"All four densities stacked for comparison. `size` drives header height and\ncell vertical padding (and tightens the inline gutters at `xxs`).\n\n@summary size — xxs / xs / sm / md",...v.parameters?.docs?.description}}},y.parameters={...y.parameters,docs:{...y.parameters?.docs,source:{originalSource:`{
+  args: {
+    enclosed: false
+  }
+}`,...y.parameters?.docs?.source},description:{story:"`enclosed={false}` drops the rounded border, letting the table sit flush\ninside a page or card (this is what `DataTable` uses).\n\n@summary enclosed=false — borderless",...y.parameters?.docs?.description}}},b.parameters={...b.parameters,docs:{...b.parameters?.docs,source:{originalSource:`{
+  args: {
+    sticky: 'header',
+    maxHeight: 220
+  }
+}`,...b.parameters?.docs?.source},description:{story:'`sticky="header"` pins the header row while the body scrolls; the divider\ntravels with it as a box-shadow. Needs a height cap (`maxHeight`) to scroll.\n\n@summary sticky="header" with a scrolling body',...b.parameters?.docs?.description}}},x.parameters={...x.parameters,docs:{...x.parameters?.docs,source:{originalSource:`{
+  args: {
+    sticky: 'headerAndFooter',
+    maxHeight: 220
+  },
+  render: args => renderTable(args, {
+    totals: true
+  })
+}`,...x.parameters?.docs?.source},description:{story:`\`sticky="headerAndFooter"\` pins both the header and the last body row (a
+totals row here) while the middle scrolls.
+
+@summary sticky="headerAndFooter" with a pinned totals row`,...x.parameters?.docs?.description}}},S.parameters={...S.parameters,docs:{...S.parameters?.docs,source:{originalSource:`{
+  args: {
+    embed: true,
+    enclosed: false
+  }
+}`,...S.parameters?.docs?.source},description:{story:`\`embed\` removes the per-row dividers and pulls the edge cells in to a 1rem
+gutter — the spacing used when a table is embedded in a page (no card).
+
+@summary embed — no row dividers, 1rem edge gutter`,...S.parameters?.docs?.description}}},C.parameters={...C.parameters,docs:{...C.parameters?.docs,source:{originalSource:`{
+  args: {
+    clean: true,
+    enclosed: false
+  }
+}`,...C.parameters?.docs?.source},description:{story:`\`clean\` switches to separated borders with pill-rounded rows and a wider
+edge gutter — a card-list look.
+
+@summary clean — rounded, separated rows`,...C.parameters?.docs?.description}}},w.parameters={...w.parameters,docs:{...w.parameters?.docs,source:{originalSource:`{
+  render: args => renderTable(args, {
+    checkbox: true
+  })
+}`,...w.parameters?.docs?.source},description:{story:`A leading checkbox column. Cells containing a checkbox collapse to zero width
+and drop their trailing padding, so the column hugs the control.
+
+@summary Selectable rows with a collapsing checkbox column`,...w.parameters?.docs?.description}}},T.parameters={...T.parameters,docs:{...T.parameters?.docs,source:{originalSource:`{
+  args: {
+    enclosed: false
+  },
+  render: args => renderTable(args, {
+    actions: true
+  }),
+  play: async ({
+    canvasElement
+  }) => {
+    const canvas = within(canvasElement);
+    // Controls are present in the DOM (hidden until row hover, a visual-only behavior).
+    await expect(canvas.getAllByRole('button', {
+      name: /Edit /
+    })).toHaveLength(ROWS.length);
+    await expect(canvas.getAllByRole('button', {
+      name: /Delete /
+    })).toHaveLength(ROWS.length);
+  }
+}`,...T.parameters?.docs?.source},description:{story:`Hover-revealed row actions pinned to the trailing edge. The controls fade in
+on row hover with a gradient mask over the row content behind them.
+
+@summary Hover-revealed row actions`,...T.parameters?.docs?.description}}},E.parameters={...E.parameters,docs:{...E.parameters?.docs,source:{originalSource:`{
+  render: args => {
+    const Demo = () => {
+      const [openId, setOpenId] = useState<string | null>(ROWS[0]!.id);
+      return <Table.Root {...args}>
+                    <Table.Head>
+                        <Table.Row>
+                            <Table.Header>
+                                <span className="sr-only">Expand</span>
+                            </Table.Header>
+                            <Table.Header>Name</Table.Header>
+                            <Table.Header>Email</Table.Header>
+                            <Table.Header>Role</Table.Header>
+                        </Table.Row>
+                    </Table.Head>
+                    <Table.Body>
+                        {ROWS.slice(0, 4).map(row => <Fragment key={row.id}>
+                                <Table.Row>
+                                    <Table.Cell>
+                                        <Table.ExpandButton isExpanded={openId === row.id} toggleExpanded={() => setOpenId(openId === row.id ? null : row.id)} aria-label={\`Toggle \${row.name}\`} />
+                                    </Table.Cell>
+                                    <Table.Cell className="font-bold">{row.name}</Table.Cell>
+                                    <Table.Cell className="text-text-default-base-secondary">{row.email}</Table.Cell>
+                                    <Table.Cell>{row.role}</Table.Cell>
+                                </Table.Row>
+                                {openId === row.id && <Table.ExpandedRow>
+                                        <Table.Cell colSpan={4}>
+                                            <div className="py-2 text-text-default-base-secondary">
+                                                Extended details for {row.name} — {row.amount} lifetime value.
+                                            </div>
+                                        </Table.Cell>
+                                    </Table.ExpandedRow>}
+                            </Fragment>)}
+                    </Table.Body>
+                </Table.Root>;
+    };
+    return <Demo />;
+  }
+}`,...E.parameters?.docs?.source},description:{story:"Expandable rows: `Table.ExpandButton` toggles a `Table.ExpandedRow` detail\npanel beneath its parent row (the chevron rotates while open).\n\n@summary Expandable rows with a detail panel",...E.parameters?.docs?.description}}},D=[`Default`,`Sizes`,`Borderless`,`StickyHeader`,`StickyHeaderAndFooter`,`Embed`,`Clean`,`WithCheckbox`,`WithRowActions`,`ExpandableRows`]}))();export{y as Borderless,C as Clean,_ as Default,S as Embed,E as ExpandableRows,v as Sizes,b as StickyHeader,x as StickyHeaderAndFooter,w as WithCheckbox,T as WithRowActions,D as __namedExportsOrder,g as default};
