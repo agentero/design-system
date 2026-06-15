@@ -34,7 +34,6 @@
     "./theme": "./themes/base.css"
   },
   "scripts": {
-    "postinstall": "playwright install chromium",
     "dev": "vite dev",
     "build": "vite build",
     "tsc": "tsgo",
