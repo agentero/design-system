@@ -676,20 +676,6 @@
 	--color-focus-ring-button-primary: var(--color-slate-800);
 	--color-focus-ring-button-destructive: var(--color-danger-500);
 
-	/* ========================================
-    * STATUS BALL
-    * ======================================== */
-
-	/* Status Ball Backgrounds */
-	--color-bg-status-ball-success: var(--color-positive-700);
-	--color-bg-status-ball-info: var(--color-blue-600);
-	--color-bg-status-ball-warning: var(--color-warning-700);
-	--color-bg-status-ball-danger: var(--color-danger-500);
-	--color-bg-status-ball-creative: var(--color-purple-500);
-	--color-bg-status-ball-dynamic: var(--color-orange-500);
-	--color-bg-status-ball-playful: var(--color-pink-500);
-	--color-bg-status-ball-neutral: var(--color-neutrals-300);
-
 	/* Focus Ring */
 	--color-focus-ring-button-primary: var(--color-slate-800);
 	--color-focus-ring-button-brand: var(--color-slate-800);
