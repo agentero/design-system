@@ -1,14 +1,14 @@
-/* Storybook-only: load Inter so the canvas matches the theme's font token
-   (--font-family-body: 'Inter'). Weights mirror portal-ui's _document.tsx
-   (only 400 & 600), so font-light/font-bold resolve to the same nearest faces
-   the app renders. The published library does not bundle fonts; consumers do. */
+/* Storybook-only: load Inter so the canvas renders in the theme's body font
+   token (--font-family-body: 'Inter'). Only the 400 and 600 weights are
+   loaded, so lighter/bolder utilities resolve to the nearest available face.
+   The published library bundles no fonts. */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 @import 'tailwindcss';
 @import '../themes/base.css';
 
-/* Storybook-only: match portal-ui's global text rendering (its Panda reset sets
-   antialiased). Without this the canvas uses subpixel-antialiasing, which makes
-   the same font/weights look heavier than the app. */
+/* Storybook-only: enable antialiasing so the canvas type matches typical app
+   rendering. Without it the canvas uses subpixel-antialiasing, which makes the
+   same font and weights look heavier. */
 body {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;

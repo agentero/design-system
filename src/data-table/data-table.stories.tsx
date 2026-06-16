@@ -11,8 +11,8 @@ import { DataTable } from './data-table';
 import { Table } from './table';
 
 /* -------------------------------------------------------------------------- */
-/* Inline icons / badges standing in for the consumer's own components         */
-/* (e.g. @agentero/icons, @agentero/ui Tag). The DataTable itself ships none.  */
+/* Inline icons / badges that stand in for application-provided components in   */
+/* these stories. The DataTable itself ships none.                             */
 /* -------------------------------------------------------------------------- */
 
 const IconMoreVert = (props: SVGProps<SVGSVGElement>) => (
@@ -50,7 +50,7 @@ const statusLabel: Record<LeadStatus, string> = {
 };
 
 /* -------------------------------------------------------------------------- */
-/* Sample data mirroring the portal-ui Leads page                              */
+/* Sample data for a representative leads-management table                      */
 /* -------------------------------------------------------------------------- */
 
 type Lead = {
@@ -177,8 +177,8 @@ const columns = [
 		header: 'Status',
 		enableSorting: false,
 		meta: { style: { width: '8.75rem' } },
-		// NOTE: portal-ui renders this with a Tag/Badge. The new DS has no Tag yet,
-		// so we show plain text rather than faking a component that isn't migrated.
+		// NOTE: a status badge would normally render here, but the DS has no Tag
+		// component yet, so we show plain text rather than faking one.
 		cell: ({ row }) => statusLabel[row.original.status]
 	}),
 	columnHelper.display({
@@ -217,13 +217,11 @@ const columns = [
 
 /**
  * DataTable is the data-driven table compound built on TanStack Table. This
- * story mirrors the portal-ui Leads page (`/leads`): an `Applicant` column with
- * a name + address, contact info, insurance type with an icon, a sortable
- * `Created` column, a status badge, and hover-revealed row actions (open + a
- * kebab menu). The toolbar (search + filters) and the footer pagination are
- * **separate components** the consumer composes inside `ToolBar` / `Footer`.
- * Default edge padding matches the marketplace layout, so no negative-margin
- * hacks are needed.
+ * story shows a representative leads table: an `Applicant` column with a name +
+ * address, contact info, insurance type with an icon, a sortable `Created`
+ * column, a status badge, and hover-revealed row actions (open + a kebab menu).
+ * The toolbar (search + filters) and the footer pagination are **separate
+ * components** composed inside `ToolBar` / `Footer`.
  */
 const meta = {
 	title: 'Components/DataTable',
@@ -243,11 +241,11 @@ export default meta;
 type Story = StoryObj;
 
 /**
- * The Leads page composition: sortable `Created` column, a status badge, row
+ * A leads-table composition: sortable `Created` column, a status badge, row
  * navigation via `rowHref`, hover-revealed actions, a search input + filters in
  * the toolbar, and pagination in the footer.
  *
- * @summary Clone of the portal-ui Leads table
+ * @summary Representative leads table composition
  */
 export const Leads: Story = {
 	render: () => {
