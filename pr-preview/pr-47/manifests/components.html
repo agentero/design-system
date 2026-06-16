@@ -576,13 +576,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">10 components ok</span><span class="filter-pill ok" aria-disabled="true">110 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">10 components ok</span><span class="filter-pill ok" aria-disabled="true">109 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>2.4s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>1.9s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -3065,13 +3065,13 @@ totalCount: number</code></pre>
       <div class="badges">
         
         
-        <label for="c-8-components-table-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-8-components-table-stories" class="badge ok as-toggle">9 stories</label>
         
       </div>
     </div>
     <div class="meta" title="./src/data-table/table.stories.tsx">components-table · ./src/data-table/table.stories.tsx</div>
     
-    <div class="hint">Table is the low-level, presentational table primitive: native `&lt;table&gt;` markup with theming for scrolling, sticky header/footer rows, sizing, cell padding, row dividers, hover states, and expandable rows. Use it when you render rows yourself; for sorting/toolbar/pagination over data, prefer `DataTable`, which is built on top of it.</div>
+    <div class="hint">Table is the low-level, presentational table primitive: native `&lt;table&gt;` markup with theming for scrolling, sticky header/footer rows, cell padding, row dividers, hover states, and expandable rows. Use it when you render rows yourself; for sorting/toolbar/pagination over data, prefer `DataTable`, which is built on top of it.</div>
     
   </div>
 
@@ -3106,26 +3106,8 @@ import { Fragment } from "react";</code></pre>
                 <span class="badge ok">story ok</span>
               </div>
               <div>Default bordered table</div>
-              <div class="hint">Default args playground — `md` size, enclosed (bordered) container.</div>
+              <div class="hint">Default args playground — enclosed (bordered) container.</div>
               <pre><code>const Default = args =&gt; renderTable(args);</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Sizes</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>size — xxs / xs / sm / md</div>
-              <div class="hint">All four densities stacked for comparison. `size` drives header height and cell vertical padding (and tightens the inline gutters at `xxs`).</div>
-              <pre><code>const Sizes = () =&gt; (
-    &lt;div className=&quot;flex flex-col gap-6&quot;&gt;
-        {([&#39;xxs&#39;, &#39;xs&#39;, &#39;sm&#39;, &#39;md&#39;] as const).map(size =&gt; (
-            &lt;div key={size} className=&quot;flex flex-col gap-1&quot;&gt;
-                &lt;span className=&quot;text-xs text-text-default-base-tertiary&quot;&gt;size=&amp;quot;{size}&amp;quot;&lt;/span&gt;
-                {renderTable({ size })}
-            &lt;/div&gt;
-        ))}
-    &lt;/div&gt;
-);</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
