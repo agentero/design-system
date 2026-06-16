@@ -108,8 +108,8 @@ const renderTable = (
 
 /**
  * Table is the low-level, presentational table primitive: native `<table>`
- * markup with theming for scrolling, sticky header/footer rows, sizing, cell
- * padding, row dividers, hover states, and expandable rows. Use it when you
+ * markup with theming for scrolling, sticky header/footer rows, cell padding,
+ * row dividers, hover states, and expandable rows. Use it when you
  * render rows yourself; for sorting/toolbar/pagination over data, prefer
  * `DataTable`, which is built on top of it.
  */
@@ -119,7 +119,6 @@ const meta = {
 	tags: ['autodocs'],
 	parameters: { layout: 'fullscreen' },
 	argTypes: {
-		size: { control: 'inline-radio', options: ['xxs', 'xs', 'sm', 'md'] },
 		enclosed: { control: 'boolean' },
 		embed: { control: 'boolean' },
 		clean: { control: 'boolean' },
@@ -129,7 +128,7 @@ const meta = {
 		},
 		maxHeight: { control: 'number' }
 	},
-	args: { size: 'md', enclosed: true, embed: false, clean: false },
+	args: { enclosed: true, embed: false, clean: false },
 	render: args => renderTable(args),
 	decorators: [
 		Story => (
@@ -144,7 +143,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 /**
- * Default args playground — `md` size, enclosed (bordered) container.
+ * Default args playground — enclosed (bordered) container.
  *
  * @summary Default bordered table
  */
@@ -155,25 +154,6 @@ export const Default: Story = {
 		await expect(canvas.getByText('Alice Williams')).toBeInTheDocument();
 		await expect(canvas.getByRole('columnheader', { name: 'Name' })).toBeInTheDocument();
 	}
-};
-
-/**
- * All four densities stacked for comparison. `size` drives header height and
- * cell vertical padding (and tightens the inline gutters at `xxs`).
- *
- * @summary size — xxs / xs / sm / md
- */
-export const Sizes: Story = {
-	render: () => (
-		<div className="flex flex-col gap-6">
-			{(['xxs', 'xs', 'sm', 'md'] as const).map(size => (
-				<div key={size} className="flex flex-col gap-1">
-					<span className="text-xs text-text-default-base-tertiary">size=&quot;{size}&quot;</span>
-					{renderTable({ size })}
-				</div>
-			))}
-		</div>
-	)
 };
 
 /**

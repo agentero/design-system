@@ -184,8 +184,6 @@ const headerCell = tv({
 const isInteractiveElement = (target: HTMLElement) => !!target.closest('a, button, [role="menu"]');
 
 type DataTableTableProps = PropsWithChildren<{
-	/** Row density. Defaults to `'sm'`. */
-	size?: TableRootProps['size'];
 	/** Which edges stay sticky on scroll. Defaults to `'header'`. */
 	sticky?: TableRootProps['sticky'];
 	/** Wraps the table in a rounded border. Defaults to `false` (full-page table). */
@@ -200,10 +198,10 @@ type DataTableTableProps = PropsWithChildren<{
  * when `onRowClick` or `rowHref` is set. Pass a custom empty state as children
  * (defaults to "No results.").
  *
- * The `size`, `sticky`, `enclosed`, and `embed` props are forwarded to the
- * underlying `Table.Root`. Their defaults suit a full-page table embedded in a
- * padded page layout; override them per consumer when a table needs a different
- * density, sticky behavior, enclosure, or edge gutter.
+ * The `sticky`, `enclosed`, and `embed` props are forwarded to the underlying
+ * `Table.Root`. Their defaults suit a full-page table embedded in a padded page
+ * layout; override them per consumer when a table needs different sticky
+ * behavior, enclosure, or edge gutter.
  *
  * @summary Renders headers and rows, with sorting and row navigation
  *
@@ -216,7 +214,6 @@ type DataTableTableProps = PropsWithChildren<{
  */
 const DataTableTable = ({
 	children = <DataTableEmptyState />,
-	size = 'sm',
 	sticky = 'header',
 	enclosed = false,
 	embed = true
@@ -238,7 +235,7 @@ const DataTableTable = ({
 				'flex min-h-0 flex-1 flex-col transition-opacity duration-150',
 				isLoading && 'opacity-50'
 			)}>
-			<Table.Root size={size} sticky={sticky} enclosed={enclosed} embed={embed} ref={scrollRef}>
+			<Table.Root sticky={sticky} enclosed={enclosed} embed={embed} ref={scrollRef}>
 				<Table.Head>
 					{table.getHeaderGroups().map(headerGroup => (
 						<Table.Row key={headerGroup.id}>

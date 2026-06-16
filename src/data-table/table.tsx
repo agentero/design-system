@@ -26,13 +26,10 @@ const CELL_INLINE_PADDING =
 	'ps-[var(--table-cell-padding-inline)] pe-[var(--table-cell-padding-inline)] first:ps-[var(--table-cell-padding-inline-ends)] last:pe-[var(--table-cell-padding-inline-ends)] has-[[type=checkbox]]:w-0 has-[[type=checkbox]]:pe-0';
 
 /**
- * Style recipe for the Table container. Owns only the `root` wrapper, the
- * `scroll` viewport, and the `<table>` element. The per-part styling (cell
- * padding, heights, sticky, dividers) is resolved once by `Table.Root` from the
- * header/cell/row recipes and shared with the parts via context. Spacing flows
- * from two custom properties set here (`--table-cell-padding-inline`,
- * `--table-cell-padding-inline-ends`), so a variant retunes spacing by
- * overriding two variables.
+ * Style recipe for the Table container (`root` wrapper, `scroll` viewport,
+ * `<table>`). Inline spacing flows from two custom properties set here
+ * (`--table-cell-padding-inline`, `--table-cell-padding-inline-ends`), so the
+ * `embed`/`clean` variants retune the edge gutter by overriding one variable.
  *
  * @summary tailwind-variants recipe backing the Table container styles
  */
@@ -46,14 +43,6 @@ export const tableRecipe = tv({
 		table: 'w-full has-[[data-slot=table-empty-state]]:h-full'
 	},
 	variants: {
-		size: {
-			xxs: {
-				root: '[--table-cell-padding-inline:0.125rem] [--table-cell-padding-inline-ends:0.25rem]'
-			},
-			xs: {},
-			sm: {},
-			md: {}
-		},
 		enclosed: {
 			true: { root: 'rounded-md border border-border-default-base-primary' }
 		},
@@ -73,8 +62,7 @@ export const tableRecipe = tv({
 		sticky: { header: {}, footer: {}, headerAndFooter: {} }
 	},
 	defaultVariants: {
-		enclosed: true,
-		size: 'md'
+		enclosed: true
 	}
 });
 
@@ -123,11 +111,11 @@ const TableRoot = ({
 	ref,
 	...variants
 }: PropsWithChildren<TableRootProps>) => {
-	const { size, sticky, embed, clean } = variants;
+	const { sticky, embed, clean } = variants;
 	const styles = tableRecipe(variants);
 	const slots: TableSlotClasses = {
-		header: headerStyles({ size, sticky: isHeaderSticky(sticky), clean }),
-		cell: cellStyles({ size, clean }),
+		header: headerStyles({ sticky: isHeaderSticky(sticky), clean }),
+		cell: cellStyles({ clean }),
 		headRow: rowStyles({ body: false }),
 		bodyRow: rowStyles({
 			body: true,
@@ -231,16 +219,14 @@ const TableRow = ({ className, ...props }: ComponentProps<'tr'>) => {
 TableRow.displayName = 'Table.Row';
 
 const headerStyles = tv({
-	base: `text-left align-middle text-sm font-light whitespace-nowrap text-text-default-base-tertiary ${CELL_INLINE_PADDING}`,
+	base: `h-12 text-left align-middle text-sm font-light whitespace-nowrap text-text-default-base-tertiary ${CELL_INLINE_PADDING}`,
 	variants: {
-		size: { xxs: 'h-8 py-0.5', xs: 'h-8', sm: 'h-10', md: 'h-12' },
 		sticky: {
 			true: 'sticky top-0 z-[1] bg-bg-default-base-primary shadow-[0_0.03125rem_0_0_var(--color-border-default-base-primary)]',
 			false: ''
 		},
 		clean: { true: 'first:rounded-l-xl last:rounded-r-xl', false: '' }
-	},
-	defaultVariants: { size: 'md' }
+	}
 });
 
 /**
@@ -260,12 +246,12 @@ const TableHeader = ({
 TableHeader.displayName = 'Table.Header';
 
 const cellStyles = tv({
-	base: `align-middle text-sm whitespace-nowrap ${CELL_INLINE_PADDING}`,
+	// `h-16` fixes the row at 64px; no vertical padding so multi-line content
+	// stays centered within it (via `align-middle`) instead of overflowing.
+	base: `h-16 align-middle text-sm whitespace-nowrap ${CELL_INLINE_PADDING}`,
 	variants: {
-		size: { xxs: 'py-0.5', xs: 'py-2', sm: 'py-4', md: 'py-6' },
 		clean: { true: 'first:rounded-l-xl last:rounded-r-xl', false: '' }
-	},
-	defaultVariants: { size: 'md' }
+	}
 });
 
 /**
@@ -364,7 +350,7 @@ TableRowActions.displayName = 'Table.RowActions';
 /**
  * Table is the low-level, presentational table primitive — a thin, themed
  * wrapper over native `<table>` markup that handles scrolling, sticky
- * header/footer rows, sizing, cell padding, row separators, hover states, and
+ * header/footer rows, cell padding, row separators, hover states, and
  * expandable rows. Compose it from `Root` / `Head` / `Body` / `Row` /
  * `Header` / `Cell`, plus `ExpandButton` / `ExpandedRow` for expandable rows
  * and `RowActions` for hover-revealed row controls.
@@ -373,7 +359,7 @@ TableRowActions.displayName = 'Table.RowActions';
  * sorting, an empty state, a toolbar, and pagination, prefer the higher-level
  * `DataTable`, which is built on top of this primitive.
  *
- * @summary Low-level themed table primitive (scrolling, sticky, sizing, rows)
+ * @summary Low-level themed table primitive (scrolling, sticky, rows)
  * @namespace Table
  */
 export const Table = {
