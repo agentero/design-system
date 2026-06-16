@@ -25,7 +25,7 @@ import { tv } from 'tailwind-variants';
 import { cn } from '../../lib';
 import { Pagination, type PaginationProps } from '../pagination';
 import { IconArrowUpward, IconSwapVert } from './icons';
-import { Table } from './table';
+import { Table, type TableRootProps } from './table';
 
 /* ------------ Column meta ------------ */
 
@@ -183,11 +183,27 @@ const headerCell = tv({
 
 const isInteractiveElement = (target: HTMLElement) => !!target.closest('a, button, [role="menu"]');
 
+type DataTableTableProps = PropsWithChildren<{
+	/** Row density. Defaults to `'sm'`. */
+	size?: TableRootProps['size'];
+	/** Which edges stay sticky on scroll. Defaults to `'header'`. */
+	sticky?: TableRootProps['sticky'];
+	/** Wraps the table in a rounded border. Defaults to `false` (full-page table). */
+	enclosed?: TableRootProps['enclosed'];
+	/** Tightens the edge gutter for a table embedded in a padded page container. Defaults to `true`. */
+	embed?: TableRootProps['embed'];
+}>;
+
 /**
  * Renders the table headers and rows from the table instance. Sortable columns
  * show a sort affordance and toggle sorting on click; rows become clickable
  * when `onRowClick` or `rowHref` is set. Pass a custom empty state as children
  * (defaults to "No results.").
+ *
+ * The `size`, `sticky`, `enclosed`, and `embed` props are forwarded to the
+ * underlying `Table.Root`. Their defaults suit a full-page table embedded in a
+ * padded page layout; override them per consumer when a table needs a different
+ * density, sticky behavior, enclosure, or edge gutter.
  *
  * @summary Renders headers and rows, with sorting and row navigation
  *
@@ -198,7 +214,13 @@ const isInteractiveElement = (target: HTMLElement) => !!target.closest('a, butto
  * </DataTable.Table>
  * ```
  */
-const DataTableTable = ({ children = <DataTableEmptyState /> }: PropsWithChildren) => {
+const DataTableTable = ({
+	children = <DataTableEmptyState />,
+	size = 'sm',
+	sticky = 'header',
+	enclosed = false,
+	embed = true
+}: DataTableTableProps) => {
 	const {
 		table,
 		isLoading,
@@ -216,7 +238,7 @@ const DataTableTable = ({ children = <DataTableEmptyState /> }: PropsWithChildre
 				'flex min-h-0 flex-1 flex-col transition-opacity duration-150',
 				isLoading && 'opacity-50'
 			)}>
-			<Table.Root size="sm" sticky="header" enclosed={false} embed={true} ref={scrollRef}>
+			<Table.Root size={size} sticky={sticky} enclosed={enclosed} embed={embed} ref={scrollRef}>
 				<Table.Head>
 					{table.getHeaderGroups().map(headerGroup => (
 						<Table.Row key={headerGroup.id}>

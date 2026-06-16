@@ -57,8 +57,9 @@ export const tableRecipe = tv({
 		enclosed: {
 			true: { root: 'rounded-md border border-border-default-base-primary' }
 		},
-		// Edge cells sit 1rem from the table edge (the marketplace spacing) instead
-		// of the default 1.5rem gutter — this is what removes the page-level hacks.
+		// For a table embedded in a padded page container: edge cells sit 1rem from
+		// the table edge instead of the default 1.5rem gutter, so the table aligns
+		// with the surrounding layout without page-level margin hacks.
 		embed: {
 			true: { root: '[--table-cell-padding-inline-ends:1rem]' }
 		},
