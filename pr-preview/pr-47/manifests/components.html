@@ -582,7 +582,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>2.6s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>2.7s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -1943,7 +1943,7 @@ variant?: ButtonVariantType</code></pre>
     </div>
     <div class="meta" title="./src/data-table/data-table.stories.tsx">components-datatable · ./src/data-table/data-table.stories.tsx</div>
     
-    <div class="hint">DataTable is the data-driven table compound built on TanStack Table. This story mirrors the portal-ui Leads page (`/leads`): an `Applicant` column with a name + address, contact info, insurance type with an icon, a sortable `Created` column, a status badge, and hover-revealed row actions (open + a kebab menu). The toolbar (search + filters) and the footer pagination are **separate components** the consumer composes inside `ToolBar` / `Footer`. Default edge padding matches the marketplace layout, so no negative-margin hacks are needed.</div>
+    <div class="hint">DataTable is the data-driven table compound built on TanStack Table. This story shows a representative leads table: an `Applicant` column with a name + address, contact info, insurance type with an icon, a sortable `Created` column, a status badge, and hover-revealed row actions (open + a kebab menu). The toolbar (search + filters) and the footer pagination are **separate components** composed inside `ToolBar` / `Footer`.</div>
     
   </div>
 
@@ -1976,8 +1976,8 @@ variant?: ButtonVariantType</code></pre>
                 <span class="ex-name">Leads</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Clone of the portal-ui Leads table</div>
-              <div class="hint">The Leads page composition: sortable `Created` column, a status badge, row navigation via `rowHref`, hover-revealed actions, a search input + filters in the toolbar, and pagination in the footer.</div>
+              <div>Representative leads table composition</div>
+              <div class="hint">A leads-table composition: sortable `Created` column, a status badge, row navigation via `rowHref`, hover-revealed actions, a search input + filters in the toolbar, and pagination in the footer.</div>
               <pre><code>const Leads = () =&gt; {
     const [sorting, setSorting] = useState&lt;SortingState&gt;([]);
     const [page, setPage] = useState(1);
