@@ -24,6 +24,7 @@
     "./alert": "./src/alert/index.ts",
     "./avatar": "./src/avatar/index.ts",
     "./button": "./src/button/index.ts",
+    "./data-table": "./src/data-table/index.ts",
     "./divider": "./src/divider/index.ts",
     "./dropdown-menu": "./src/dropdown-menu/index.ts",
     "./lib": "./lib/index.ts",
@@ -79,12 +80,14 @@
     "tmcp": "^1.19.3",
     "vite": "^8.0.2",
     "vite-plugin-dts": "^4.5.4",
-    "vitest": "^4.1.1"
+    "vitest": "^4.1.1",
+    "@tanstack/react-table": "^8.21.3"
   },
   "peerDependencies": {
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "tailwindcss": "^4.0.0"
+    "tailwindcss": "^4.0.0",
+    "@tanstack/react-table": "^8.21.3"
   },
   "resolutions": {
     "lodash": "^4.18.1"
