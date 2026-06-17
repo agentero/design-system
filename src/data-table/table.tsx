@@ -181,10 +181,10 @@ const TableRow = ({ className, ...props }: ComponentProps<'tr'>) => {
 TableRow.displayName = 'Table.Row';
 
 const headerStyles = tv({
-	base: `h-12 text-left align-middle text-sm font-light whitespace-nowrap text-text-default-base-tertiary ${CELL_INLINE_PADDING}`,
+	base: `h-12 border-b border-border-default-base-primary text-left align-middle text-sm font-light whitespace-nowrap text-text-default-base-tertiary ${CELL_INLINE_PADDING}`,
 	variants: {
 		sticky: {
-			true: 'sticky top-0 z-[1] bg-bg-default-base-primary shadow-[0_0.03125rem_0_0_var(--color-border-default-base-primary)]',
+			true: 'sticky top-0 z-[1] bg-bg-default-base-primary',
 			false: ''
 		}
 	}
