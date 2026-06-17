@@ -30,9 +30,8 @@ import { Table, type TableRootProps } from './table';
 /* ------------ Column meta ------------ */
 
 /**
- * Shape a column's `meta` may carry. Spread onto the underlying `<th>`/`<td>`,
- * so any cell HTML attribute is accepted; `style.textAlign` additionally
- * drives header content alignment.
+ * Shape a column's `meta` may carry; spread onto the `<th>`/`<td>`.
+ * `style.textAlign` also drives header content alignment.
  */
 export type DataTableColumnMeta = HTMLAttributes<HTMLTableCellElement> & {
 	style?: CSSProperties;
@@ -76,19 +75,14 @@ type DataTableRootProps<TData extends RowData> = DataTableProps<TData> & {
 	onRowClick?: (row: TData) => void;
 	/** Returns an href for a row; the row becomes a link (see `linkComponent`). */
 	rowHref?: (row: TData) => string;
-	/**
-	 * Element used to render the per-row navigation link when `rowHref` is set.
-	 * Defaults to a native `'a'`. Pass a framework link (e.g. Next.js `Link`) to
-	 * get client-side navigation.
-	 */
+	/** Renders the per-row link when `rowHref` is set. Defaults to `'a'`; pass a
+	 * framework link (e.g. Next.js `Link`) for client-side navigation. */
 	linkComponent?: ElementType;
 };
 
 /**
- * Root of the DataTable. Creates the TanStack table instance from the supplied
- * `data`/`columns` (plus any TanStack options) and provides it to the
- * subcomponents. Accepts `isLoading`, `onRowClick`, `rowHref`, and
- * `linkComponent`.
+ * Root of the DataTable. Builds the TanStack table instance from `data`/`columns`
+ * (plus any TanStack options) and shares it with the subcomponents.
  *
  * @summary DataTable root that builds the table instance and shares context
  *
@@ -136,9 +130,8 @@ Root.displayName = 'DataTable.Root';
 /* ------------ DataTable Toolbar ------------ */
 
 /**
- * Toolbar strip above the table for search inputs, filters, and actions.
- * Separated from the table body by a bottom border. Its horizontal padding
- * (`px-4`) matches the table's edge cells so toolbar and column content align.
+ * Toolbar strip above the table for search, filters, and actions. Its `px-4`
+ * matches the table's edge cells so toolbar and column content align.
  *
  * @summary Toolbar row above the table for filters and actions
  */
@@ -165,8 +158,8 @@ const orderIconStyles = tv({
 	}
 });
 
-// Shared by the sortable <button> and the static <div>: resets so a <button>
-// inherits the header's font and fills the cell, letting `align` work.
+// Shared by the sortable <button> and static <div>: resets so a <button>
+// inherits the header font and fills the cell, letting `align` work.
 const headerCell = tv({
 	base: 'flex w-full appearance-none items-center bg-transparent p-0 text-left [font:inherit]',
 	variants: {
@@ -184,24 +177,19 @@ const headerCell = tv({
 const isInteractiveElement = (target: HTMLElement) => !!target.closest('a, button, [role="menu"]');
 
 type DataTableTableProps = PropsWithChildren<{
+	/** Row density: `sm` (48px), `md` (64px), `lg` (88px). Defaults to `'md'`. */
+	size?: TableRootProps['size'];
 	/** Which edges stay sticky on scroll. Defaults to `'header'`. */
 	sticky?: TableRootProps['sticky'];
-	/** Wraps the table in a rounded border. Defaults to `false` (full-page table). */
-	enclosed?: TableRootProps['enclosed'];
-	/** Tightens the edge gutter for a table embedded in a padded page container. Defaults to `true`. */
+	/** Embedded-in-page style: drops the row dividers and tightens the edge gutter to 1rem. Defaults to `true`. */
 	embed?: TableRootProps['embed'];
 }>;
 
 /**
- * Renders the table headers and rows from the table instance. Sortable columns
- * show a sort affordance and toggle sorting on click; rows become clickable
- * when `onRowClick` or `rowHref` is set. Pass a custom empty state as children
- * (defaults to "No results.").
- *
- * The `sticky`, `enclosed`, and `embed` props are forwarded to the underlying
- * `Table.Root`. Their defaults suit a full-page table embedded in a padded page
- * layout; override them per consumer when a table needs different sticky
- * behavior, enclosure, or edge gutter.
+ * Renders the headers and rows from the table instance. Sortable columns toggle
+ * sorting on click; rows become clickable when `onRowClick` or `rowHref` is set.
+ * Pass a custom empty state as children. `size`/`sticky`/`embed` forward to
+ * `Table.Root`.
  *
  * @summary Renders headers and rows, with sorting and row navigation
  *
@@ -214,8 +202,8 @@ type DataTableTableProps = PropsWithChildren<{
  */
 const DataTableTable = ({
 	children = <DataTableEmptyState />,
+	size = 'md',
 	sticky = 'header',
-	enclosed = false,
 	embed = true
 }: DataTableTableProps) => {
 	const {
@@ -235,7 +223,7 @@ const DataTableTable = ({
 				'flex min-h-0 flex-1 flex-col transition-opacity duration-150',
 				isLoading && 'opacity-50'
 			)}>
-			<Table.Root sticky={sticky} enclosed={enclosed} embed={embed} ref={scrollRef}>
+			<Table.Root size={size} sticky={sticky} embed={embed} ref={scrollRef}>
 				<Table.Head>
 					{table.getHeaderGroups().map(headerGroup => (
 						<Table.Row key={headerGroup.id}>
@@ -419,14 +407,10 @@ const DataTablePagination = (props: PaginationProps) => {
 DataTablePagination.displayName = 'DataTable.Pagination';
 
 /**
- * DataTable is the data-driven table compound, built on TanStack Table and the
- * `Table` primitive. Compose it from `Root` (owns the table instance) with
- * `ToolBar` for filters/actions, `Table` for the headers and rows (sorting,
- * row navigation, empty state), and `Footer` + `Pagination` for paging.
- *
- * Use it for sortable, paginated, server- or client-driven tables. When you
- * render rows by hand and don't need TanStack, drop down to the `Table`
- * primitive instead.
+ * Data-driven table compound built on TanStack Table and the `Table` primitive.
+ * Compose `Root` (owns the table instance) with `ToolBar`, `Table` (headers/rows,
+ * sorting, navigation, empty state), and `Footer` + `Pagination`. For hand-rendered
+ * rows without TanStack, drop to the `Table` primitive.
  *
  * @summary Data-driven table compound (sorting, toolbar, pagination) over TanStack
  * @see {@link https://tanstack.com/table/latest|TanStack Table}

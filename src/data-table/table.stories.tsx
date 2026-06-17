@@ -37,10 +37,7 @@ const IconDelete = (props: SVGProps<SVGSVGElement>) => (
 	</svg>
 );
 
-/**
- * Builds a standard table from the Root variant args. `extras` toggles optional
- * columns/features so the structural stories stay terse.
- */
+/** Builds a standard table from the Root args; `extras` toggles optional columns. */
 const renderTable = (
 	args: Partial<TableRootProps>,
 	extras: { checkbox?: boolean; actions?: boolean; totals?: boolean } = {}
@@ -107,11 +104,9 @@ const renderTable = (
 };
 
 /**
- * Table is the low-level, presentational table primitive: native `<table>`
- * markup with theming for scrolling, sticky header/footer rows, cell padding,
- * row dividers, hover states, and expandable rows. Use it when you
- * render rows yourself; for sorting/toolbar/pagination over data, prefer
- * `DataTable`, which is built on top of it.
+ * Low-level presentational table primitive: native `<table>` markup themed for
+ * scrolling, sticky rows, cell padding, dividers, hover, and expandable rows.
+ * For sorting/toolbar/pagination, prefer `DataTable`.
  */
 const meta = {
 	title: 'Components/Table',
@@ -119,16 +114,14 @@ const meta = {
 	tags: ['autodocs'],
 	parameters: { layout: 'fullscreen' },
 	argTypes: {
-		enclosed: { control: 'boolean' },
+		size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
 		embed: { control: 'boolean' },
-		clean: { control: 'boolean' },
 		sticky: {
 			control: 'inline-radio',
-			options: [undefined, 'header', 'footer', 'headerAndFooter']
-		},
-		maxHeight: { control: 'number' }
+			options: [undefined, 'header', 'headerAndFooter']
+		}
 	},
-	args: { enclosed: true, embed: false, clean: false },
+	args: { size: 'md', embed: false },
 	render: args => renderTable(args),
 	decorators: [
 		Story => (
@@ -143,9 +136,9 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 /**
- * Default args playground — enclosed (bordered) container.
+ * Default args playground.
  *
- * @summary Default bordered table
+ * @summary Default table
  */
 export const Default: Story = {
 	parameters: { a11y: { test: 'error' } },
@@ -157,59 +150,67 @@ export const Default: Story = {
 };
 
 /**
- * `enclosed={false}` drops the rounded border, letting the table sit flush
- * inside a page or card (this is what `DataTable` uses).
+ * The three row densities. `size` sets row min-height: sm 48 / md 64 / lg 88px.
  *
- * @summary enclosed=false — borderless
+ * @summary size — sm / md / lg
  */
-export const Borderless: Story = {
-	args: { enclosed: false }
+export const Sizes: Story = {
+	render: () => (
+		<div className="flex flex-col gap-6">
+			{(['sm', 'md', 'lg'] as const).map(size => (
+				<div key={size} className="flex flex-col gap-1">
+					<span className="text-xs text-text-default-base-tertiary">size=&quot;{size}&quot;</span>
+					{renderTable({ size })}
+				</div>
+			))}
+		</div>
+	)
 };
 
 /**
- * `sticky="header"` pins the header row while the body scrolls; the divider
- * travels with it as a box-shadow. Needs a height cap (`maxHeight`) to scroll.
+ * `sticky="header"` pins the header while the body scrolls. Needs a bounded-height parent.
  *
  * @summary sticky="header" with a scrolling body
  */
 export const StickyHeader: Story = {
-	args: { sticky: 'header', maxHeight: 220 }
+	args: { sticky: 'header' },
+	decorators: [
+		Story => (
+			<div className="flex h-55 flex-col">
+				<Story />
+			</div>
+		)
+	]
 };
 
 /**
- * `sticky="headerAndFooter"` pins both the header and the last body row (a
- * totals row here) while the middle scrolls.
+ * `sticky="headerAndFooter"` pins the header and the last body row (totals here).
  *
  * @summary sticky="headerAndFooter" with a pinned totals row
  */
 export const StickyHeaderAndFooter: Story = {
-	args: { sticky: 'headerAndFooter', maxHeight: 220 },
-	render: args => renderTable(args, { totals: true })
+	args: { sticky: 'headerAndFooter' },
+	render: args => renderTable(args, { totals: true }),
+	decorators: [
+		Story => (
+			<div className="flex h-55 flex-col">
+				<Story />
+			</div>
+		)
+	]
 };
 
 /**
- * `embed` removes the per-row dividers and pulls the edge cells in to a 1rem
- * gutter — the spacing used when a table is embedded in a page (no card).
+ * `embed` drops the per-row dividers and tightens the edge gutter to 1rem.
  *
  * @summary embed — no row dividers, 1rem edge gutter
  */
 export const Embed: Story = {
-	args: { embed: true, enclosed: false }
+	args: { embed: true }
 };
 
 /**
- * `clean` switches to separated borders with pill-rounded rows and a wider
- * edge gutter — a card-list look.
- *
- * @summary clean — rounded, separated rows
- */
-export const Clean: Story = {
-	args: { clean: true, enclosed: false }
-};
-
-/**
- * A leading checkbox column. Cells containing a checkbox collapse to zero width
- * and drop their trailing padding, so the column hugs the control.
+ * A leading checkbox column; checkbox cells collapse to zero width.
  *
  * @summary Selectable rows with a collapsing checkbox column
  */
@@ -218,13 +219,11 @@ export const WithCheckbox: Story = {
 };
 
 /**
- * Hover-revealed row actions pinned to the trailing edge. The controls fade in
- * on row hover with a gradient mask over the row content behind them.
+ * Hover-revealed row actions pinned to the trailing edge.
  *
  * @summary Hover-revealed row actions
  */
 export const WithRowActions: Story = {
-	args: { enclosed: false },
 	render: args => renderTable(args, { actions: true }),
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -235,8 +234,7 @@ export const WithRowActions: Story = {
 };
 
 /**
- * Expandable rows: `Table.ExpandButton` toggles a `Table.ExpandedRow` detail
- * panel beneath its parent row (the chevron rotates while open).
+ * `Table.ExpandButton` toggles a `Table.ExpandedRow` detail panel under its row.
  *
  * @summary Expandable rows with a detail panel
  */
