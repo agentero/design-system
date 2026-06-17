@@ -122,14 +122,7 @@ const meta = {
 		}
 	},
 	args: { size: 'md', embed: false },
-	render: args => renderTable(args),
-	decorators: [
-		Story => (
-			<div className="flex h-112 flex-col p-4">
-				<Story />
-			</div>
-		)
-	]
+	render: args => renderTable(args)
 } satisfies Meta<typeof Table.Root>;
 
 export default meta;
