@@ -576,13 +576,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">8 components ok</span><span class="filter-pill ok" aria-disabled="true">97 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">10 components ok</span><span class="filter-pill ok" aria-disabled="true">108 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>2.2s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>2.4s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -1930,14 +1930,145 @@ variant?: ButtonVariantType</code></pre>
   no-story-error
   no-doc-error"
   role="listitem"
+  aria-label="DataTable.Root">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> DataTable.Root</h2>
+      <div class="badges">
+        
+        
+        <label for="c-3-components-datatable-stories" class="badge ok as-toggle">3 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/data-table/data-table.stories.tsx">components-datatable · ./src/data-table/data-table.stories.tsx</div>
+    
+    <div class="hint">DataTable is the data-driven table compound built on TanStack Table. This story shows a representative leads table: an `Applicant` column with a name + address, contact info, insurance type with an icon, a sortable `Created` column, a status badge, and hover-revealed row actions (open + a kebab menu). The toolbar (search + filters) and the footer pagination are **separate components** composed inside `ToolBar` / `Footer`.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-3-components-datatable-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+
+  <div class="panels">
+    
+    
+    
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Button, DataTable, DropdownMenu, Pagination, Table } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Leads</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Representative leads table composition</div>
+              <div class="hint">A leads-table composition: sortable `Created` column, a status badge, row navigation via `rowHref`, hover-revealed actions, a search input + filters in the toolbar, and pagination in the footer.</div>
+              <pre><code>const Leads = () =&gt; {
+    const [sorting, setSorting] = useState&lt;SortingState&gt;([]);
+    const [page, setPage] = useState(1);
+    const [search, setSearch] = useState(&#39;&#39;);
+
+    const data = useMemo(
+        () =&gt; LEADS.filter(l =&gt; l.contact.toLowerCase().includes(search.toLowerCase())),
+        [search]
+    );
+
+    return (
+        &lt;DataTable.Root
+            data={data}
+            columns={columns}
+            state={{ sorting }}
+            onSortingChange={setSorting}
+            getSortedRowModel={getSortedRowModel()}
+            enableSortingRemoval={false}
+            rowHref={lead =&gt; `/leads/${lead.leadId}`}&gt;
+            &lt;DataTable.ToolBar&gt;
+                &lt;input
+                    value={search}
+                    onChange={e =&gt; setSearch(e.target.value)}
+                    placeholder=&quot;Search...&quot;
+                    aria-label=&quot;Search leads&quot;
+                    className=&quot;h-8 w-60 rounded-md border border-border-default-base-primary px-3 text-sm outline-none&quot;
+                /&gt;
+                &lt;Button variant=&quot;secondary&quot; size=&quot;sm&quot;&gt;
+                    Filters
+                &lt;/Button&gt;
+            &lt;/DataTable.ToolBar&gt;
+
+            &lt;DataTable.Table /&gt;
+
+            &lt;DataTable.Footer&gt;
+                &lt;Pagination
+                    totalCount={LEADS.length}
+                    currentPage={page}
+                    pageSize={10}
+                    onPageChange={setPage}
+                /&gt;
+            &lt;/DataTable.Footer&gt;
+        &lt;/DataTable.Root&gt;
+    );
+};</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Empty</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Empty state when there are no rows</div>
+              <div class="hint">No rows: the table renders its default empty state instead of body rows.</div>
+              <pre><code>const Empty = () =&gt; (
+    &lt;DataTable.Root data={[] as Lead[]} columns={columns}&gt;
+        &lt;DataTable.Table /&gt;
+    &lt;/DataTable.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Loading</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Loading state dims the table and hides the empty state</div>
+              <div class="hint">Loading: the body is dimmed and the empty state is suppressed while data is in flight.</div>
+              <pre><code>const Loading = () =&gt; (
+    &lt;DataTable.Root data={[] as Lead[]} columns={columns} isLoading&gt;
+        &lt;DataTable.Table /&gt;
+    &lt;/DataTable.Root&gt;
+);</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
   aria-label="Divider">
   <div class="head">
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Divider</h2>
       <div class="badges">
-        <label for="c-3-components-divider-props" class="badge ok as-toggle">2 prop types</label>
+        <label for="c-4-components-divider-props" class="badge ok as-toggle">2 prop types</label>
         
-        <label for="c-3-components-divider-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-4-components-divider-stories" class="badge ok as-toggle">10 stories</label>
         
       </div>
     </div>
@@ -1950,9 +2081,9 @@ variant?: ButtonVariantType</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-3-components-divider-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-4-components-divider-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-3-components-divider-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-4-components-divider-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -2232,7 +2363,7 @@ label?: ReactNode</code></pre>
       <div class="badges">
         
         
-        <label for="c-4-components-dropdownmenu-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-5-components-dropdownmenu-stories" class="badge ok as-toggle">7 stories</label>
         
       </div>
     </div>
@@ -2245,7 +2376,7 @@ label?: ReactNode</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-4-components-dropdownmenu-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-5-components-dropdownmenu-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
@@ -2614,9 +2745,9 @@ label?: ReactNode</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Loading</h2>
       <div class="badges">
-        <label for="c-5-components-loading-props" class="badge ok as-toggle">1 prop type</label>
+        <label for="c-6-components-loading-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-5-components-loading-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-6-components-loading-stories" class="badge ok as-toggle">7 stories</label>
         
       </div>
     </div>
@@ -2629,9 +2760,9 @@ label?: ReactNode</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-5-components-loading-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-6-components-loading-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-5-components-loading-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-6-components-loading-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -2771,9 +2902,9 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Pagination</h2>
       <div class="badges">
-        <label for="c-6-components-pagination-props" class="badge ok as-toggle">5 prop types</label>
+        <label for="c-7-components-pagination-props" class="badge ok as-toggle">5 prop types</label>
         
-        <label for="c-6-components-pagination-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-7-components-pagination-stories" class="badge ok as-toggle">7 stories</label>
         
       </div>
     </div>
@@ -2786,9 +2917,9 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-6-components-pagination-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-7-components-pagination-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-6-components-pagination-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-7-components-pagination-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -2927,14 +3058,194 @@ totalCount: number</code></pre>
   no-story-error
   no-doc-error"
   role="listitem"
+  aria-label="Table.Root">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Table.Root</h2>
+      <div class="badges">
+        
+        
+        <label for="c-8-components-table-stories" class="badge ok as-toggle">8 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/data-table/table.stories.tsx">components-table · ./src/data-table/table.stories.tsx</div>
+    
+    <div class="hint">Low-level presentational table primitive: native `&lt;table&gt;` markup themed for scrolling, sticky rows, cell padding, dividers, hover, and expandable rows. For sorting/toolbar/pagination, prefer `DataTable`.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-8-components-table-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+
+  <div class="panels">
+    
+    
+    
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Button, Table } from "@agentero/design-system";
+import { Fragment } from "react";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Default table</div>
+              <div class="hint">Default args playground.</div>
+              <pre><code>const Default = args =&gt; renderTable(args);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Sizes</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>size — sm / md / lg</div>
+              <div class="hint">The three row densities. `size` sets row min-height: sm 48 / md 64 / lg 88px.</div>
+              <pre><code>const Sizes = () =&gt; (
+    &lt;div className=&quot;flex flex-col gap-6&quot;&gt;
+        {([&#39;sm&#39;, &#39;md&#39;, &#39;lg&#39;] as const).map(size =&gt; (
+            &lt;div key={size} className=&quot;flex flex-col gap-1&quot;&gt;
+                &lt;span className=&quot;text-xs text-text-default-base-tertiary&quot;&gt;size=&amp;quot;{size}&amp;quot;&lt;/span&gt;
+                {renderTable({ size })}
+            &lt;/div&gt;
+        ))}
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Sticky Header</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>sticky=&quot;header&quot; with a scrolling body</div>
+              <div class="hint">`sticky=&quot;header&quot;` pins the header while the body scrolls. Needs a bounded-height parent.</div>
+              <pre><code>const StickyHeader = args =&gt; renderTable(args);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Sticky Header And Footer</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>sticky=&quot;headerAndFooter&quot; with a pinned totals row</div>
+              <div class="hint">`sticky=&quot;headerAndFooter&quot;` pins the header and the last body row (totals here).</div>
+              <pre><code>const StickyHeaderAndFooter = args =&gt; renderTable(args, { totals: true });</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Embed</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>embed — no row dividers, 1rem edge gutter</div>
+              <div class="hint">`embed` drops the per-row dividers and tightens the edge gutter to 1rem.</div>
+              <pre><code>const Embed = args =&gt; renderTable(args);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Checkbox</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Selectable rows with a collapsing checkbox column</div>
+              <div class="hint">A leading checkbox column; checkbox cells collapse to zero width.</div>
+              <pre><code>const WithCheckbox = args =&gt; renderTable(args, { checkbox: true });</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Row Actions</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Hover-revealed row actions</div>
+              <div class="hint">Hover-revealed row actions pinned to the trailing edge.</div>
+              <pre><code>const WithRowActions = args =&gt; renderTable(args, { actions: true });</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Expandable Rows</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Expandable rows with a detail panel</div>
+              <div class="hint">`Table.ExpandButton` toggles a `Table.ExpandedRow` detail panel under its row.</div>
+              <pre><code>const ExpandableRows = args =&gt; {
+    const Demo = () =&gt; {
+        const [openId, setOpenId] = useState&lt;string | null&gt;(ROWS[0]!.id);
+        return (
+            &lt;Table.Root {...args}&gt;
+                &lt;Table.Head&gt;
+                    &lt;Table.Row&gt;
+                        &lt;Table.Header&gt;
+                            &lt;span className=&quot;sr-only&quot;&gt;Expand&lt;/span&gt;
+                        &lt;/Table.Header&gt;
+                        &lt;Table.Header&gt;Name&lt;/Table.Header&gt;
+                        &lt;Table.Header&gt;Email&lt;/Table.Header&gt;
+                        &lt;Table.Header&gt;Role&lt;/Table.Header&gt;
+                    &lt;/Table.Row&gt;
+                &lt;/Table.Head&gt;
+                &lt;Table.Body&gt;
+                    {ROWS.slice(0, 4).map(row =&gt; (
+                        &lt;Fragment key={row.id}&gt;
+                            &lt;Table.Row&gt;
+                                &lt;Table.Cell&gt;
+                                    &lt;Table.ExpandButton
+                                        isExpanded={openId === row.id}
+                                        toggleExpanded={() =&gt; setOpenId(openId === row.id ? null : row.id)}
+                                        aria-label={`Toggle ${row.name}`}
+                                    /&gt;
+                                &lt;/Table.Cell&gt;
+                                &lt;Table.Cell className=&quot;font-bold&quot;&gt;{row.name}&lt;/Table.Cell&gt;
+                                &lt;Table.Cell className=&quot;text-text-default-base-secondary&quot;&gt;{row.email}&lt;/Table.Cell&gt;
+                                &lt;Table.Cell&gt;{row.role}&lt;/Table.Cell&gt;
+                            &lt;/Table.Row&gt;
+                            {openId === row.id &amp;&amp; (
+                                &lt;Table.ExpandedRow&gt;
+                                    &lt;Table.Cell colSpan={4}&gt;
+                                        &lt;div className=&quot;py-2 text-text-default-base-secondary&quot;&gt;
+                                            Extended details for {row.name} — {row.amount} lifetime value.
+                                        &lt;/div&gt;
+                                    &lt;/Table.Cell&gt;
+                                &lt;/Table.ExpandedRow&gt;
+                            )}
+                        &lt;/Fragment&gt;
+                    ))}
+                &lt;/Table.Body&gt;
+            &lt;/Table.Root&gt;
+        );
+    };
+    return &lt;Demo /&gt;;
+};</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
   aria-label="Toast">
   <div class="head">
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Toast</h2>
       <div class="badges">
-        <label for="c-7-components-toast-props" class="badge ok as-toggle">11 prop types</label>
+        <label for="c-9-components-toast-props" class="badge ok as-toggle">11 prop types</label>
         
-        <label for="c-7-components-toast-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-9-components-toast-stories" class="badge ok as-toggle">11 stories</label>
         
       </div>
     </div>
@@ -2947,9 +3258,9 @@ totalCount: number</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-7-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-9-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-7-components-toast-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-9-components-toast-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
