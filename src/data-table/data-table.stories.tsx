@@ -1,4 +1,4 @@
-import { SVGProps, useMemo, useState } from 'react';
+import { ComponentProps, SVGProps, useMemo, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { createColumnHelper, getSortedRowModel, type SortingState } from '@tanstack/react-table';
@@ -239,6 +239,36 @@ const meta = {
 
 export default meta;
 type Story = StoryObj;
+
+/**
+ * Playground for `DataTable.Table` display props — toggle `size`, `embed`,
+ * `enclosed`, and `sticky` from the controls panel.
+ *
+ * @summary Display props playground (size / embed / enclosed / sticky)
+ */
+export const Playground: Story = {
+	argTypes: {
+		size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
+		embed: { control: 'boolean' },
+		enclosed: { control: 'boolean' },
+		sticky: { control: 'inline-radio', options: [undefined, 'header', 'headerAndFooter'] }
+	},
+	args: { size: 'md', embed: true, enclosed: false, sticky: 'header' },
+	render: (args: ComponentProps<typeof DataTable.Table>) => (
+		// `enclosed` is a bordered card, so give it breathing room from the canvas
+		// edges; `contents` keeps the layout untouched when it's off.
+		<div className={args.enclosed ? 'flex min-h-0 flex-1 flex-col p-4' : 'contents'}>
+			<DataTable.Root data={LEADS} columns={columns}>
+				<DataTable.Table
+					size={args.size}
+					embed={args.embed}
+					enclosed={args.enclosed}
+					sticky={args.sticky}
+				/>
+			</DataTable.Root>
+		</div>
+	)
+};
 
 /**
  * A leads-table composition: sortable `Created` column, a status badge, row
