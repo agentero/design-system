@@ -31,7 +31,8 @@ import { Table, type TableRootProps } from './table';
 
 /**
  * Shape a column's `meta` may carry; spread onto the `<th>`/`<td>`.
- * `style.textAlign` also drives header content alignment.
+ * Right alignment of the header content is derived from either `style.textAlign: 'right'`
+ * or a `text-right` utility in `className`.
  */
 export type DataTableColumnMeta = HTMLAttributes<HTMLTableCellElement> & {
 	style?: CSSProperties;
@@ -183,6 +184,8 @@ type DataTableTableProps = PropsWithChildren<{
 	sticky?: TableRootProps['sticky'];
 	/** Embedded-in-page style: drops the row dividers and tightens the edge gutter to 1rem. Defaults to `true`. */
 	embed?: TableRootProps['embed'];
+	/** Wrap the table in a bordered, rounded container (standalone "card" look). Defaults to `false`. */
+	enclosed?: TableRootProps['enclosed'];
 }>;
 
 /**
@@ -204,7 +207,8 @@ const DataTableTable = ({
 	children = <DataTableEmptyState />,
 	size = 'md',
 	sticky = 'header',
-	embed = true
+	embed = true,
+	enclosed = false
 }: DataTableTableProps) => {
 	const {
 		table,
@@ -223,7 +227,7 @@ const DataTableTable = ({
 				'flex min-h-0 flex-1 flex-col transition-opacity duration-150',
 				isLoading && 'opacity-50'
 			)}>
-			<Table.Root size={size} sticky={sticky} embed={embed} ref={scrollRef}>
+			<Table.Root size={size} sticky={sticky} embed={embed} enclosed={enclosed} ref={scrollRef}>
 				<Table.Head>
 					{table.getHeaderGroups().map(headerGroup => (
 						<Table.Row key={headerGroup.id}>
@@ -231,7 +235,10 @@ const DataTableTable = ({
 								const meta = header.column.columnDef.meta as DataTableColumnMeta | undefined;
 								const canSort = header.column.getCanSort();
 								const sorted = header.column.getIsSorted();
-								const align = meta?.style?.textAlign === 'right' ? 'right' : 'left';
+								const align =
+									meta?.style?.textAlign === 'right' || meta?.className?.includes('text-right')
+										? 'right'
+										: 'left';
 								const content = header.isPlaceholder ? null : (
 									<>
 										{flexRender(header.column.columnDef.header, header.getContext())}

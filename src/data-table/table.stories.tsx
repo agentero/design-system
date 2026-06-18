@@ -116,6 +116,7 @@ const meta = {
 	argTypes: {
 		size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
 		embed: { control: 'boolean' },
+		enclosed: { control: 'boolean' },
 		sticky: {
 			control: 'inline-radio',
 			options: [undefined, 'header', 'headerAndFooter']
@@ -200,6 +201,16 @@ export const StickyHeaderAndFooter: Story = {
  */
 export const Embed: Story = {
 	args: { embed: true }
+};
+
+/**
+ * `enclosed` wraps the table in a bordered, rounded container — the standalone
+ * "card" look, as opposed to a full-bleed page table.
+ *
+ * @summary enclosed — bordered, rounded card container
+ */
+export const Enclosed: Story = {
+	args: { enclosed: true }
 };
 
 /**

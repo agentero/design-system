@@ -42,6 +42,11 @@ export const tableRecipe = tv({
 		embed: {
 			true: { root: '[--table-cell-padding-inline-ends:1rem]' }
 		},
+		// Wraps the table in a bordered, rounded container (the standalone "card" look,
+		// as opposed to a full-bleed page table).
+		enclosed: {
+			true: { root: 'rounded-lg border border-border-default-base-primary' }
+		},
 		sticky: { header: {}, headerAndFooter: {} }
 	},
 	defaultVariants: {
