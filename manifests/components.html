@@ -576,13 +576,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">10 components ok</span><span class="filter-pill ok" aria-disabled="true">108 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">10 components ok</span><span class="filter-pill ok" aria-disabled="true">110 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>2.7s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>2.4s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -1937,7 +1937,7 @@ variant?: ButtonVariantType</code></pre>
       <div class="badges">
         
         
-        <label for="c-3-components-datatable-stories" class="badge ok as-toggle">3 stories</label>
+        <label for="c-3-components-datatable-stories" class="badge ok as-toggle">4 stories</label>
         
       </div>
     </div>
@@ -1971,6 +1971,20 @@ variant?: ButtonVariantType</code></pre>
               </div>
           
           
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Playground</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Display props playground (size / embed / enclosed / sticky)</div>
+              <div class="hint">Playground for `DataTable.Table` display props — toggle `size`, `embed`, `enclosed`, and `sticky` from the controls panel.</div>
+              <pre><code>const Playground = () =&gt; &lt;div
+    className={args.enclosed ? &#39;flex min-h-0 flex-1 flex-col p-4&#39; : &#39;contents&#39;}&gt;
+    &lt;DataTable.Root data={LEADS} columns={columns}&gt;
+        &lt;DataTable.Table size=&quot;md&quot; embed enclosed={false} sticky=&quot;header&quot; /&gt;
+    &lt;/DataTable.Root&gt;
+&lt;/div&gt;;</code></pre>
+            </div>
             <div class="note ok">
               <div class="row">
                 <span class="ex-name">Leads</span>
@@ -3065,7 +3079,7 @@ totalCount: number</code></pre>
       <div class="badges">
         
         
-        <label for="c-8-components-table-stories" class="badge ok as-toggle">8 stories</label>
+        <label for="c-8-components-table-stories" class="badge ok as-toggle">9 stories</label>
         
       </div>
     </div>
@@ -3153,6 +3167,15 @@ import { Fragment } from "react";</code></pre>
               <div>embed — no row dividers, 1rem edge gutter</div>
               <div class="hint">`embed` drops the per-row dividers and tightens the edge gutter to 1rem.</div>
               <pre><code>const Embed = args =&gt; renderTable(args);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Enclosed</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>enclosed — bordered, rounded card container</div>
+              <div class="hint">`enclosed` wraps the table in a bordered, rounded container — the standalone &quot;card&quot; look, as opposed to a full-bleed page table.</div>
+              <pre><code>const Enclosed = args =&gt; renderTable(args);</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
