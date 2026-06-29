@@ -30,6 +30,7 @@
     "./lib": "./lib/index.ts",
     "./loading": "./src/loading/index.ts",
     "./pagination": "./src/pagination/index.ts",
+    "./slideshow": "./src/slideshow/index.ts",
     "./toast": "./src/toast/index.ts",
     "./theme": "./themes/base.css"
   },
@@ -49,6 +50,8 @@
     "@radix-ui/react-separator": "^1.1.8",
     "@radix-ui/react-slot": "^1.2.4",
     "clsx": "^2.1.1",
+    "embla-carousel-autoplay": "^8.6.0",
+    "embla-carousel-react": "^8.6.0",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.5.0",
     "tailwind-variants": "^3.2.2"
