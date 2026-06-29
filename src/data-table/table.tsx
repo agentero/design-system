@@ -31,7 +31,7 @@ export const tableRecipe = tv({
 	slots: {
 		root: [
 			'flex min-h-0 flex-1 flex-col overflow-hidden',
-			'[--table-cell-padding-inline:1rem] [--table-cell-padding-inline-ends:1.5rem]'
+			'[--table-cell-padding-inline:1.25rem] [--table-cell-padding-inline-ends:1.25rem]'
 		],
 		scroll: 'min-h-0 flex-1 overflow-auto focus-visible:outline-none',
 		table: 'w-full has-[[data-slot=table-empty-state]]:h-full'
@@ -40,7 +40,7 @@ export const tableRecipe = tv({
 		// Row density, resolved into the cell min-height by `Table.Root`.
 		size: { sm: {}, md: {}, lg: {} },
 		embed: {
-			true: { root: '[--table-cell-padding-inline-ends:1rem]' }
+			true: { root: '[--table-cell-padding-inline-ends:1.25rem]' }
 		},
 		// Wraps the table in a bordered, rounded container (the standalone "card" look,
 		// as opposed to a full-bleed page table).
