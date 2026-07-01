@@ -576,7 +576,7 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">10 components ok</span><span class="filter-pill ok" aria-disabled="true">110 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">11 components ok</span><span class="filter-pill ok" aria-disabled="true">117 stories ok</span></div>
   </div>
 </header>
 <main>
@@ -594,14 +594,169 @@
   no-story-error
   no-doc-error"
   role="listitem"
+  aria-label="Accordion.Root">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Accordion.Root</h2>
+      <div class="badges">
+        
+        
+        <label for="c-0-components-accordion-stories" class="badge ok as-toggle">7 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/accordion/accordion.stories.tsx">components-accordion · ./src/accordion/accordion.stories.tsx</div>
+    
+    <div class="hint">Stacked, collapsible sections built on Radix UI&#39;s Accordion (keyboard nav and ARIA come for free). Compose `Root` with `Item`s, each holding a `Trigger` and `Content`. `type=&quot;single&quot;` (optionally `collapsible`) opens one at a time; `type=&quot;multiple&quot;` opens sections independently. `enclosed` renders the group as a bordered card.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-0-components-accordion-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+
+  <div class="panels">
+    
+    
+    
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Accordion, IconKeyboardArrowDown } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Exclusive accordion: one item open at a time, `collapsible` lets it close.</div>
+              <pre><code>const Default = () =&gt; &lt;Accordion.Root type=&quot;single&quot; collapsible enclosed={false} disabled={false}&gt;
+    &lt;FaqItems /&gt;
+&lt;/Accordion.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Multiple</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">`type=&quot;multiple&quot;` lets several sections stay open at once.</div>
+              <pre><code>const Multiple = () =&gt; (
+    &lt;Accordion.Root type=&quot;multiple&quot; defaultValue={[&#39;covered&#39;, &#39;payment&#39;]}&gt;
+        &lt;FaqItems /&gt;
+    &lt;/Accordion.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Enclosed</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">`enclosed` wraps the group in a bordered card (default borderless on top).</div>
+              <pre><code>const Enclosed = () =&gt; (
+    &lt;div className=&quot;flex flex-col gap-8&quot;&gt;
+        &lt;Accordion.Root type=&quot;multiple&quot; defaultValue={[&#39;covered&#39;]}&gt;
+            &lt;FaqItems /&gt;
+        &lt;/Accordion.Root&gt;
+        &lt;Accordion.Root type=&quot;multiple&quot; enclosed defaultValue={[&#39;claim&#39;]}&gt;
+            &lt;FaqItems /&gt;
+        &lt;/Accordion.Root&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Custom Trigger</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">`asChild` delegates the trigger to a custom element; the built-in chevron is omitted.</div>
+              <pre><code>const CustomTrigger = () =&gt; (
+    &lt;Accordion.Root type=&quot;single&quot; collapsible defaultValue=&quot;covered&quot;&gt;
+        &lt;Accordion.Item value=&quot;covered&quot;&gt;
+            &lt;Accordion.Trigger asChild&gt;
+                &lt;button className=&quot;group flex w-full items-center gap-2 py-4 text-left text-base font-semibold&quot;&gt;
+                    &lt;IconKeyboardArrowDown className=&quot;size-5 shrink-0 transition-transform duration-200 group-data-[state=open]:rotate-180&quot; /&gt;
+                    What is covered?
+                &lt;/button&gt;
+            &lt;/Accordion.Trigger&gt;
+            &lt;Accordion.Content&gt;{FAQS[0].answer}&lt;/Accordion.Content&gt;
+        &lt;/Accordion.Item&gt;
+    &lt;/Accordion.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Styled Titles</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">The consumer controls title weight/size via the children passed to `Trigger`.</div>
+              <pre><code>const StyledTitles = () =&gt; &lt;Accordion.Root type=&quot;single&quot; collapsible&gt;
+    {FAQS.map(({ value, question, answer }) =&gt; (
+        &lt;Accordion.Item key={value} value={value}&gt;
+            &lt;Accordion.Trigger&gt;
+                &lt;span className=&quot;text-lg font-bold&quot;&gt;{question}&lt;/span&gt;
+            &lt;/Accordion.Trigger&gt;
+            &lt;Accordion.Content&gt;{answer}&lt;/Accordion.Content&gt;
+        &lt;/Accordion.Item&gt;
+    ))}
+&lt;/Accordion.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Expand Collapse</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">`collapsible` lets clicking the open item close it (reach an all-closed state).</div>
+              <pre><code>const ExpandCollapse = () =&gt; &lt;Accordion.Root type=&quot;single&quot; collapsible&gt;
+    &lt;FaqItems /&gt;
+&lt;/Accordion.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Non Collapsible</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Without `collapsible`, clicking the already-open item keeps it open.</div>
+              <pre><code>const NonCollapsible = () =&gt; &lt;Accordion.Root type=&quot;single&quot; collapsible={false} defaultValue=&quot;covered&quot;&gt;
+    &lt;FaqItems /&gt;
+&lt;/Accordion.Root&gt;;</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
   aria-label="Alert">
   <div class="head">
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Alert</h2>
       <div class="badges">
-        <label for="c-0-components-alert-props" class="badge ok as-toggle">6 prop types</label>
+        <label for="c-1-components-alert-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-0-components-alert-stories" class="badge ok as-toggle">23 stories</label>
+        <label for="c-1-components-alert-stories" class="badge ok as-toggle">23 stories</label>
         
       </div>
     </div>
@@ -614,9 +769,9 @@
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-0-components-alert-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-1-components-alert-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-0-components-alert-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-1-components-alert-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -1153,9 +1308,9 @@ size?: AlertSizeType = sm</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Avatar</h2>
       <div class="badges">
-        <label for="c-1-components-avatar-props" class="badge ok as-toggle">8 prop types</label>
+        <label for="c-2-components-avatar-props" class="badge ok as-toggle">8 prop types</label>
         
-        <label for="c-1-components-avatar-stories" class="badge ok as-toggle">22 stories</label>
+        <label for="c-2-components-avatar-stories" class="badge ok as-toggle">22 stories</label>
         
       </div>
     </div>
@@ -1168,9 +1323,9 @@ size?: AlertSizeType = sm</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-1-components-avatar-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-2-components-avatar-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-1-components-avatar-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-2-components-avatar-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -1569,9 +1724,9 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Button</h2>
       <div class="badges">
-        <label for="c-2-components-button-props" class="badge ok as-toggle">12 prop types</label>
+        <label for="c-3-components-button-props" class="badge ok as-toggle">12 prop types</label>
         
-        <label for="c-2-components-button-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-3-components-button-stories" class="badge ok as-toggle">10 stories</label>
         
       </div>
     </div>
@@ -1584,9 +1739,9 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-2-components-button-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-3-components-button-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-2-components-button-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-3-components-button-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -1937,7 +2092,7 @@ variant?: ButtonVariantType</code></pre>
       <div class="badges">
         
         
-        <label for="c-3-components-datatable-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-4-components-datatable-stories" class="badge ok as-toggle">4 stories</label>
         
       </div>
     </div>
@@ -1950,7 +2105,7 @@ variant?: ButtonVariantType</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-3-components-datatable-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-4-components-datatable-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
@@ -2080,9 +2235,9 @@ variant?: ButtonVariantType</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Divider</h2>
       <div class="badges">
-        <label for="c-4-components-divider-props" class="badge ok as-toggle">2 prop types</label>
+        <label for="c-5-components-divider-props" class="badge ok as-toggle">2 prop types</label>
         
-        <label for="c-4-components-divider-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-5-components-divider-stories" class="badge ok as-toggle">10 stories</label>
         
       </div>
     </div>
@@ -2095,9 +2250,9 @@ variant?: ButtonVariantType</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-4-components-divider-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-5-components-divider-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-4-components-divider-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-5-components-divider-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -2377,7 +2532,7 @@ label?: ReactNode</code></pre>
       <div class="badges">
         
         
-        <label for="c-5-components-dropdownmenu-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-6-components-dropdownmenu-stories" class="badge ok as-toggle">7 stories</label>
         
       </div>
     </div>
@@ -2390,7 +2545,7 @@ label?: ReactNode</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-5-components-dropdownmenu-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-6-components-dropdownmenu-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
@@ -2759,9 +2914,9 @@ label?: ReactNode</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Loading</h2>
       <div class="badges">
-        <label for="c-6-components-loading-props" class="badge ok as-toggle">1 prop type</label>
+        <label for="c-7-components-loading-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-6-components-loading-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-7-components-loading-stories" class="badge ok as-toggle">7 stories</label>
         
       </div>
     </div>
@@ -2774,9 +2929,9 @@ label?: ReactNode</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-6-components-loading-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-7-components-loading-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-6-components-loading-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-7-components-loading-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -2916,9 +3071,9 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Pagination</h2>
       <div class="badges">
-        <label for="c-7-components-pagination-props" class="badge ok as-toggle">5 prop types</label>
+        <label for="c-8-components-pagination-props" class="badge ok as-toggle">5 prop types</label>
         
-        <label for="c-7-components-pagination-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-8-components-pagination-stories" class="badge ok as-toggle">7 stories</label>
         
       </div>
     </div>
@@ -2931,9 +3086,9 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-7-components-pagination-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-8-components-pagination-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-7-components-pagination-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-8-components-pagination-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -3079,7 +3234,7 @@ totalCount: number</code></pre>
       <div class="badges">
         
         
-        <label for="c-8-components-table-stories" class="badge ok as-toggle">9 stories</label>
+        <label for="c-9-components-table-stories" class="badge ok as-toggle">9 stories</label>
         
       </div>
     </div>
@@ -3092,7 +3247,7 @@ totalCount: number</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-8-components-table-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-9-components-table-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
@@ -3266,9 +3421,9 @@ import { Fragment } from "react";</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Toast</h2>
       <div class="badges">
-        <label for="c-9-components-toast-props" class="badge ok as-toggle">11 prop types</label>
+        <label for="c-10-components-toast-props" class="badge ok as-toggle">11 prop types</label>
         
-        <label for="c-9-components-toast-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-10-components-toast-stories" class="badge ok as-toggle">11 stories</label>
         
       </div>
     </div>
@@ -3281,9 +3436,9 @@ import { Fragment } from "react";</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-9-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-10-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-9-components-toast-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-10-components-toast-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
