@@ -21,6 +21,7 @@
     "radix-ui"
   ],
   "exports": {
+    "./accordion": "./src/accordion/index.ts",
     "./alert": "./src/alert/index.ts",
     "./avatar": "./src/avatar/index.ts",
     "./button": "./src/button/index.ts",
@@ -44,6 +45,7 @@
     "test": "vitest run --project=storybook"
   },
   "dependencies": {
+    "@radix-ui/react-accordion": "^1.2.14",
     "@radix-ui/react-avatar": "^1.1.11",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
     "@radix-ui/react-separator": "^1.1.8",
@@ -62,6 +64,7 @@
     "@storybook/mcp": "^0.6.1",
     "@storybook/react-vite": "^10.3.3",
     "@tailwindcss/vite": "^4.2.2",
+    "@tanstack/react-table": "^8.21.3",
     "@tmcp/adapter-valibot": "^0.1.5",
     "@tmcp/transport-stdio": "^0.4.2",
     "@types/node": "^25.5.0",
@@ -80,14 +83,13 @@
     "tmcp": "^1.19.3",
     "vite": "^8.0.2",
     "vite-plugin-dts": "^4.5.4",
-    "vitest": "^4.1.1",
-    "@tanstack/react-table": "^8.21.3"
+    "vitest": "^4.1.1"
   },
   "peerDependencies": {
+    "@tanstack/react-table": "^8.21.3",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "tailwindcss": "^4.0.0",
-    "@tanstack/react-table": "^8.21.3"
+    "tailwindcss": "^4.0.0"
   },
   "resolutions": {
     "lodash": "^4.18.1",
