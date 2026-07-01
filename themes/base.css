@@ -683,6 +683,58 @@
 	--color-focus-ring-button-destructive: var(--color-danger-500);
 
 	/* ========================================
+    * TAG
+    * ======================================== */
+
+	--color-bg-tag-neutral-enable: var(--color-slate-050);
+	--color-bg-tag-neutral-hover: var(--color-slate-100);
+	--color-border-tag-neutral: var(--color-slate-200);
+	--color-text-tag-neutral: var(--color-slate-700);
+	--color-icon-tag-neutral: var(--color-slate-700);
+
+	--color-bg-tag-positive-enable: var(--color-positive-050);
+	--color-bg-tag-positive-hover: var(--color-positive-100);
+	--color-border-tag-positive: var(--color-positive-200);
+	--color-text-tag-positive: var(--color-positive-700);
+	--color-icon-tag-positive: var(--color-positive-700);
+
+	--color-bg-tag-danger-enable: var(--color-danger-050);
+	--color-bg-tag-danger-hover: var(--color-danger-100);
+	--color-border-tag-danger: var(--color-danger-200);
+	--color-text-tag-danger: var(--color-danger-500);
+	--color-icon-tag-danger: var(--color-danger-500);
+
+	--color-bg-tag-warning-enable: var(--color-warning-050);
+	--color-bg-tag-warning-hover: var(--color-warning-050);
+	--color-border-tag-warning: var(--color-warning-300);
+	--color-text-tag-warning: var(--color-warning-700);
+	--color-icon-tag-warning: var(--color-warning-700);
+
+	--color-bg-tag-informative-enable: var(--color-blue-050);
+	--color-bg-tag-informative-hover: var(--color-blue-100);
+	--color-border-tag-informative: var(--color-blue-200);
+	--color-text-tag-informative: var(--color-blue-600);
+	--color-icon-tag-informative: var(--color-blue-600);
+
+	--color-bg-tag-creative-enable: var(--color-purple-050);
+	--color-bg-tag-creative-hover: var(--color-purple-100);
+	--color-border-tag-creative: var(--color-purple-200);
+	--color-text-tag-creative: var(--color-purple-600);
+	--color-icon-tag-creative: var(--color-purple-600);
+
+	--color-bg-tag-dynamic-enable: var(--color-orange-050);
+	--color-bg-tag-dynamic-hover: var(--color-orange-100);
+	--color-border-tag-dynamic: var(--color-orange-200);
+	--color-text-tag-dynamic: var(--color-orange-500);
+	--color-icon-tag-dynamic: var(--color-orange-500);
+
+	--color-bg-tag-playful-enable: var(--color-pink-050);
+	--color-bg-tag-playful-hover: var(--color-pink-100);
+	--color-border-tag-playful: var(--color-pink-200);
+	--color-text-tag-playful: var(--color-pink-400);
+	--color-icon-tag-playful: var(--color-pink-400);
+
+	/* ========================================
     * SPACING
     * ======================================== */
 

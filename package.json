@@ -30,6 +30,7 @@
     "./lib": "./lib/index.ts",
     "./loading": "./src/loading/index.ts",
     "./pagination": "./src/pagination/index.ts",
+    "./tag": "./src/tag/index.ts",
     "./toast": "./src/toast/index.ts",
     "./theme": "./themes/base.css"
   },
