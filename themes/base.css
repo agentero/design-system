@@ -996,6 +996,24 @@
 		}
 	}
 
+	@keyframes accordionDown {
+		from {
+			height: 0;
+		}
+		to {
+			height: var(--radix-accordion-content-height);
+		}
+	}
+
+	@keyframes accordionUp {
+		from {
+			height: var(--radix-accordion-content-height);
+		}
+		to {
+			height: 0;
+		}
+	}
+
 	html {
 		/* body.md textStyle from Panda → text-base */
 		font-size: var(--text-base);
