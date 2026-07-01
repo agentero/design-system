@@ -154,7 +154,7 @@ export const Tag = ({
 	...props
 }: TagProps) => {
 	const Comp = asChild ? Slot : 'span';
-	
+
 	// asChild the content lives inside the wrapper child, so inspect its children.
 	const content =
 		asChild && isValidElement<{ children?: ReactNode }>(children)
