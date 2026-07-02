@@ -576,7 +576,7 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">11 components ok</span><span class="filter-pill ok" aria-disabled="true">117 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">12 components ok</span><span class="filter-pill ok" aria-disabled="true">127 stories ok</span></div>
   </div>
 </header>
 <main>
@@ -3416,14 +3416,388 @@ import { Fragment } from "react";</code></pre>
   no-story-error
   no-doc-error"
   role="listitem"
+  aria-label="Tag">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Tag</h2>
+      <div class="badges">
+        <label for="c-10-components-tag-props" class="badge ok as-toggle">6 prop types</label>
+        
+        <label for="c-10-components-tag-stories" class="badge ok as-toggle">10 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/tag/tag.stories.tsx">components-tag · ./src/tag/tag.stories.tsx</div>
+    
+    <div class="hint">Tag is a compact semantic label for statuses, categories, counts, and attributes. Pick `color` for meaning, `variant` for fill emphasis, and `size` for prominence. A plain Tag is a static badge; pass `asChild` to make it an interactive link or button, which adds the pointer cursor and hover fill.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-10-components-tag-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  <input id="c-10-components-tag-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
+              <span class="badge ok">6 prop types</span>
+            </div>
+            <pre><code>Component: src/tag/tag.tsx::Tag</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>/**
+ * Render the single child element instead of a `&lt;span&gt;` (via Radix `Slot`),
+ * keeping Tag framework-agnostic. Marks the Tag interactive: adds the pointer
+ * cursor and the hover fill (a plain `&lt;span&gt;` Tag is a static badge).
+ */
+asChild?: boolean
+
+color?: &quot;neutral&quot; | &quot;danger&quot; | &quot;warning&quot; | &quot;creative&quot; | &quot;dynamic&quot; | &quot;playful&quot; | &quot;positive&quot; | &quot;informative&quot;
+
+pill?: boolean
+
+size?: &quot;sm&quot; | &quot;md&quot; | &quot;xs&quot;
+
+truncate?: boolean
+
+variant?: &quot;ghost&quot; | &quot;secondary&quot; | &quot;tertiary&quot; | &quot;invisible&quot;</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Tag } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Default args playground for Tag</div>
+              <div class="hint">Args-controlled playground. Toggle `color`, `variant`, `size`, `pill`, and `truncate` from the Controls panel to explore every visual combination.</div>
+              <pre><code>const Default = () =&gt; &lt;Tag color=&quot;neutral&quot; variant=&quot;secondary&quot; size=&quot;sm&quot;&gt;Default&lt;/Tag&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Sizes</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>All three sizes across icon-only, icon + text, and text-only</div>
+              <div class="hint">The three sizes — `xs` (20px), `sm` (24px, default), and `md` (32px) — each shown icon-only, icon + text, and text-only so the type and icon scale are visible.</div>
+              <pre><code>const Sizes = () =&gt; (
+    &lt;Stack&gt;
+        {([&#39;xs&#39;, &#39;sm&#39;, &#39;md&#39;] as const).map(size =&gt; (
+            &lt;Stack gap=&quot;0.5rem&quot; key={size}&gt;
+                &lt;strong&gt;{size}:&lt;/strong&gt;
+                &lt;Row&gt;
+                    &lt;Tag
+                        size={size}
+                        color=&quot;informative&quot;
+                        variant=&quot;secondary&quot;
+                        role=&quot;img&quot;
+                        aria-label={`${size} icon only`}&gt;
+                        &lt;IconAdd /&gt;
+                    &lt;/Tag&gt;
+                    &lt;Tag size={size} color=&quot;informative&quot; variant=&quot;secondary&quot;&gt;
+                        &lt;IconAdd /&gt;
+                        {size}
+                    &lt;/Tag&gt;
+                    &lt;Tag size={size} color=&quot;informative&quot; variant=&quot;secondary&quot;&gt;
+                        {size}
+                    &lt;/Tag&gt;
+                &lt;/Row&gt;
+            &lt;/Stack&gt;
+        ))}
+    &lt;/Stack&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Styles</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Rounded (default) vs pill</div>
+              <div class="hint">The `Style` axis: the default rounded corners (top row) versus `pill` fully rounded (bottom row), shown across every fill variant.</div>
+              <pre><code>const Styles = () =&gt; (
+    &lt;Stack gap=&quot;0.5rem&quot;&gt;
+        &lt;Row&gt;
+            {VARIANTS.map(variant =&gt; (
+                &lt;Tag key={variant} color=&quot;informative&quot; variant={variant}&gt;
+                    {variant}
+                &lt;/Tag&gt;
+            ))}
+        &lt;/Row&gt;
+        &lt;Row&gt;
+            {VARIANTS.map(variant =&gt; (
+                &lt;Tag key={variant} color=&quot;informative&quot; variant={variant} pill&gt;
+                    {variant}
+                &lt;/Tag&gt;
+            ))}
+        &lt;/Row&gt;
+    &lt;/Stack&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Interactive</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Static badge vs interactive (asChild) hover</div>
+              <div class="hint">Static badge vs interactive Tag. A plain `&lt;span&gt;` badge has no hover; pass `asChild` with a `&lt;button&gt;` (or `&lt;a&gt;`) to make it interactive — that adds the pointer cursor and reveals the hover fill on `:hover`. Hover the middle and right Tags to see it.</div>
+              <pre><code>const Interactive = () =&gt; (
+    &lt;Row&gt;
+        &lt;Tag color=&quot;informative&quot; variant=&quot;secondary&quot;&gt;
+            badge
+        &lt;/Tag&gt;
+        &lt;Tag color=&quot;informative&quot; variant=&quot;secondary&quot; asChild&gt;
+            &lt;button type=&quot;button&quot;&gt;interactive&lt;/button&gt;
+        &lt;/Tag&gt;
+        &lt;Tag color=&quot;informative&quot; variant=&quot;secondary&quot; asChild aria-label=&quot;add&quot;&gt;
+            &lt;button type=&quot;button&quot;&gt;
+                &lt;IconAdd /&gt;
+            &lt;/button&gt;
+        &lt;/Tag&gt;
+    &lt;/Row&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Secondary</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>`secondary` variant across all colors</div>
+              <div class="hint">`secondary` fills with a tinted background plus a matching border, shown across every color.</div>
+              <pre><code>const Secondary = () =&gt; (
+    &lt;Row&gt;
+        {COLORS.map(color =&gt; (
+            &lt;Tag key={color} variant=&quot;secondary&quot; color={color}&gt;
+                {color}
+            &lt;/Tag&gt;
+        ))}
+    &lt;/Row&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Tertiary</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>`tertiary` variant across all colors</div>
+              <div class="hint">`tertiary` (default) fills with a tinted background and no border, shown across every color.</div>
+              <pre><code>const Tertiary = () =&gt; (
+    &lt;Row&gt;
+        {COLORS.map(color =&gt; (
+            &lt;Tag key={color} variant=&quot;tertiary&quot; color={color}&gt;
+                {color}
+            &lt;/Tag&gt;
+        ))}
+    &lt;/Row&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Ghost</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>`ghost` variant across all colors</div>
+              <div class="hint">`ghost` shows colored text alone with no background or border, across every color.</div>
+              <pre><code>const Ghost = () =&gt; (
+    &lt;Row&gt;
+        {COLORS.map(color =&gt; (
+            &lt;Tag key={color} variant=&quot;ghost&quot; color={color}&gt;
+                {color}
+            &lt;/Tag&gt;
+        ))}
+    &lt;/Row&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Invisible</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>`invisible` variant as span and as interactive button</div>
+              <div class="hint">`invisible` stays fully transparent until hovered, then reveals its fill. The top row renders plain `&lt;span&gt;` Tags; the bottom row renders interactive Tags via `asChild` with a `&lt;button&gt;` child.</div>
+              <pre><code>const Invisible = () =&gt; (
+    &lt;Stack gap=&quot;0.5rem&quot;&gt;
+        &lt;Row&gt;
+            {COLORS.map(color =&gt; (
+                &lt;Tag key={color} variant=&quot;invisible&quot; color={color}&gt;
+                    {color}
+                &lt;/Tag&gt;
+            ))}
+        &lt;/Row&gt;
+        &lt;Row&gt;
+            {COLORS.map(color =&gt; (
+                &lt;Tag key={color} variant=&quot;invisible&quot; color={color} asChild&gt;
+                    &lt;button type=&quot;button&quot;&gt;{color}&lt;/button&gt;
+                &lt;/Tag&gt;
+            ))}
+        &lt;/Row&gt;
+    &lt;/Stack&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Icon</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Variant × color grid with icons</div>
+              <div class="hint">Every variant for every color rendered with a leading and trailing icon. Icons are tinted with each color&#39;s `icon-tag-*` token.</div>
+              <pre><code>const WithIcon = () =&gt; (
+    &lt;Stack&gt;
+        {COLORS.map(color =&gt; (
+            &lt;Row key={color}&gt;
+                {VARIANTS.map(variant =&gt; (
+                    &lt;Tag key={variant} color={color} variant={variant}&gt;
+                        &lt;IconAdd /&gt;
+                        tag
+                        &lt;IconAdd /&gt;
+                    &lt;/Tag&gt;
+                ))}
+            &lt;/Row&gt;
+        ))}
+    &lt;/Stack&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Colors</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Variant × color matrix — default, pill, button, and icon layouts</div>
+              <div class="hint">Full matrix: every variant for every color, repeated as default, as `pill`, as an interactive `asChild` `&lt;button&gt;`, with a single leading icon, with leading + trailing icons, and icon-only.</div>
+              <pre><code>const Colors = () =&gt; (
+    &lt;div style={{ display: &#39;flex&#39;, gap: &#39;4rem&#39;, flexWrap: &#39;wrap&#39; }}&gt;
+        &lt;Stack&gt;
+            {COLORS.map(color =&gt; (
+                &lt;Stack gap=&quot;0.5rem&quot; key={color}&gt;
+                    &lt;strong&gt;{color}:&lt;/strong&gt;
+                    &lt;Row&gt;
+                        {VARIANTS.map(variant =&gt; (
+                            &lt;Tag key={variant} color={color} variant={variant}&gt;
+                                {variant}
+                            &lt;/Tag&gt;
+                        ))}
+                    &lt;/Row&gt;
+                &lt;/Stack&gt;
+            ))}
+        &lt;/Stack&gt;
+        &lt;Stack&gt;
+            {COLORS.map(color =&gt; (
+                &lt;Stack gap=&quot;0.5rem&quot; key={color}&gt;
+                    &lt;strong&gt;{color} with pill:&lt;/strong&gt;
+                    &lt;Row&gt;
+                        {VARIANTS.map(variant =&gt; (
+                            &lt;Tag key={variant} color={color} variant={variant} pill&gt;
+                                {variant}
+                            &lt;/Tag&gt;
+                        ))}
+                    &lt;/Row&gt;
+                &lt;/Stack&gt;
+            ))}
+        &lt;/Stack&gt;
+        &lt;Stack&gt;
+            {COLORS.map(color =&gt; (
+                &lt;Stack gap=&quot;0.5rem&quot; key={color}&gt;
+                    &lt;strong&gt;{color} as button:&lt;/strong&gt;
+                    &lt;Row&gt;
+                        {VARIANTS.map(variant =&gt; (
+                            &lt;Tag key={variant} color={color} variant={variant} asChild&gt;
+                                &lt;button type=&quot;button&quot;&gt;{variant}&lt;/button&gt;
+                            &lt;/Tag&gt;
+                        ))}
+                    &lt;/Row&gt;
+                &lt;/Stack&gt;
+            ))}
+        &lt;/Stack&gt;
+        &lt;Stack&gt;
+            {COLORS.map(color =&gt; (
+                &lt;Stack gap=&quot;0.5rem&quot; key={color}&gt;
+                    &lt;strong&gt;{color} with icon:&lt;/strong&gt;
+                    &lt;Row&gt;
+                        {VARIANTS.map(variant =&gt; (
+                            &lt;Tag key={variant} color={color} variant={variant}&gt;
+                                &lt;IconAdd /&gt;
+                                {variant}
+                            &lt;/Tag&gt;
+                        ))}
+                    &lt;/Row&gt;
+                &lt;/Stack&gt;
+            ))}
+        &lt;/Stack&gt;
+        &lt;Stack&gt;
+            {COLORS.map(color =&gt; (
+                &lt;Stack gap=&quot;0.5rem&quot; key={color}&gt;
+                    &lt;strong&gt;{color} with icons:&lt;/strong&gt;
+                    &lt;Row&gt;
+                        {VARIANTS.map(variant =&gt; (
+                            &lt;Tag key={variant} color={color} variant={variant}&gt;
+                                &lt;IconAdd /&gt;
+                                {variant}
+                                &lt;IconAdd /&gt;
+                            &lt;/Tag&gt;
+                        ))}
+                    &lt;/Row&gt;
+                &lt;/Stack&gt;
+            ))}
+        &lt;/Stack&gt;
+        &lt;Stack&gt;
+            {COLORS.map(color =&gt; (
+                &lt;Stack gap=&quot;0.5rem&quot; key={color}&gt;
+                    &lt;strong&gt;{color} icon only:&lt;/strong&gt;
+                    &lt;Row&gt;
+                        {VARIANTS.map(variant =&gt; (
+                            &lt;Tag
+                                key={variant}
+                                color={color}
+                                variant={variant}
+                                role=&quot;img&quot;
+                                aria-label={`${color} ${variant}`}&gt;
+                                &lt;IconAdd /&gt;
+                            &lt;/Tag&gt;
+                        ))}
+                    &lt;/Row&gt;
+                &lt;/Stack&gt;
+            ))}
+        &lt;/Stack&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
   aria-label="Toast">
   <div class="head">
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Toast</h2>
       <div class="badges">
-        <label for="c-10-components-toast-props" class="badge ok as-toggle">11 prop types</label>
+        <label for="c-11-components-toast-props" class="badge ok as-toggle">11 prop types</label>
         
-        <label for="c-10-components-toast-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-11-components-toast-stories" class="badge ok as-toggle">11 stories</label>
         
       </div>
     </div>
@@ -3436,9 +3810,9 @@ import { Fragment } from "react";</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-10-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-11-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-10-components-toast-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-11-components-toast-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
