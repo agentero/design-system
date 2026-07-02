@@ -1,2 +1,15 @@
-@import "tailwindcss";
-@import "../themes/base.css";
+/* Storybook-only: load Inter so the canvas renders in the theme's body font
+   token (--font-family-body: 'Inter'). Only the 400 and 600 weights are
+   loaded, so lighter/bolder utilities resolve to the nearest available face.
+   The published library bundles no fonts. */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+@import 'tailwindcss';
+@import '../themes/base.css';
+
+/* Storybook-only: enable antialiasing so the canvas type matches typical app
+   rendering. Without it the canvas uses subpixel-antialiasing, which makes the
+   same font and weights look heavier. */
+body {
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
