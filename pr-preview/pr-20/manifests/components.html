@@ -576,17 +576,172 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><a class="filter-pill err" data-k="errors" href="#filter-errors">2/11 prop type errors</a><a class="filter-pill info" data-k="infos" href="#filter-infos">2/11 infos</a><span class="filter-pill ok" aria-disabled="true">111 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><a class="filter-pill err" data-k="errors" href="#filter-errors">2/14 prop type errors</a><a class="filter-pill info" data-k="infos" href="#filter-infos">2/14 infos</a><span class="filter-pill ok" aria-disabled="true">134 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>2.5s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>3.0s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
       
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
+  aria-label="Accordion.Root">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Accordion.Root</h2>
+      <div class="badges">
+        
+        
+        <label for="c-0-components-accordion-stories" class="badge ok as-toggle">7 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/accordion/accordion.stories.tsx">components-accordion · ./src/accordion/accordion.stories.tsx</div>
+    
+    <div class="hint">Stacked, collapsible sections built on Radix UI&#39;s Accordion (keyboard nav and ARIA come for free). Compose `Root` with `Item`s, each holding a `Trigger` and `Content`. `type=&quot;single&quot;` (optionally `collapsible`) opens one at a time; `type=&quot;multiple&quot;` opens sections independently. `enclosed` renders the group as a bordered card.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-0-components-accordion-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+
+  <div class="panels">
+    
+    
+    
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Accordion, IconKeyboardArrowDown } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Exclusive accordion: one item open at a time, `collapsible` lets it close.</div>
+              <pre><code>const Default = () =&gt; &lt;Accordion.Root type=&quot;single&quot; collapsible enclosed={false} disabled={false}&gt;
+    &lt;FaqItems /&gt;
+&lt;/Accordion.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Multiple</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">`type=&quot;multiple&quot;` lets several sections stay open at once.</div>
+              <pre><code>const Multiple = () =&gt; (
+    &lt;Accordion.Root type=&quot;multiple&quot; defaultValue={[&#39;covered&#39;, &#39;payment&#39;]}&gt;
+        &lt;FaqItems /&gt;
+    &lt;/Accordion.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Enclosed</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">`enclosed` wraps the group in a bordered card (default borderless on top).</div>
+              <pre><code>const Enclosed = () =&gt; (
+    &lt;div className=&quot;flex flex-col gap-8&quot;&gt;
+        &lt;Accordion.Root type=&quot;multiple&quot; defaultValue={[&#39;covered&#39;]}&gt;
+            &lt;FaqItems /&gt;
+        &lt;/Accordion.Root&gt;
+        &lt;Accordion.Root type=&quot;multiple&quot; enclosed defaultValue={[&#39;claim&#39;]}&gt;
+            &lt;FaqItems /&gt;
+        &lt;/Accordion.Root&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Custom Trigger</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">`asChild` delegates the trigger to a custom element; the built-in chevron is omitted.</div>
+              <pre><code>const CustomTrigger = () =&gt; (
+    &lt;Accordion.Root type=&quot;single&quot; collapsible defaultValue=&quot;covered&quot;&gt;
+        &lt;Accordion.Item value=&quot;covered&quot;&gt;
+            &lt;Accordion.Trigger asChild&gt;
+                &lt;button className=&quot;group flex w-full items-center gap-2 py-4 text-left text-base font-semibold&quot;&gt;
+                    &lt;IconKeyboardArrowDown className=&quot;size-5 shrink-0 transition-transform duration-200 group-data-[state=open]:rotate-180&quot; /&gt;
+                    What is covered?
+                &lt;/button&gt;
+            &lt;/Accordion.Trigger&gt;
+            &lt;Accordion.Content&gt;{FAQS[0].answer}&lt;/Accordion.Content&gt;
+        &lt;/Accordion.Item&gt;
+    &lt;/Accordion.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Styled Titles</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">The consumer controls title weight/size via the children passed to `Trigger`.</div>
+              <pre><code>const StyledTitles = () =&gt; &lt;Accordion.Root type=&quot;single&quot; collapsible&gt;
+    {FAQS.map(({ value, question, answer }) =&gt; (
+        &lt;Accordion.Item key={value} value={value}&gt;
+            &lt;Accordion.Trigger&gt;
+                &lt;span className=&quot;text-lg font-bold&quot;&gt;{question}&lt;/span&gt;
+            &lt;/Accordion.Trigger&gt;
+            &lt;Accordion.Content&gt;{answer}&lt;/Accordion.Content&gt;
+        &lt;/Accordion.Item&gt;
+    ))}
+&lt;/Accordion.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Expand Collapse</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">`collapsible` lets clicking the open item close it (reach an all-closed state).</div>
+              <pre><code>const ExpandCollapse = () =&gt; &lt;Accordion.Root type=&quot;single&quot; collapsible&gt;
+    &lt;FaqItems /&gt;
+&lt;/Accordion.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Non Collapsible</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Without `collapsible`, clicking the already-open item keeps it open.</div>
+              <pre><code>const NonCollapsible = () =&gt; &lt;Accordion.Root type=&quot;single&quot; collapsible={false} defaultValue=&quot;covered&quot;&gt;
+    &lt;FaqItems /&gt;
+&lt;/Accordion.Root&gt;;</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
 <article
   class="card 
   no-error 
@@ -599,9 +754,9 @@
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Alert</h2>
       <div class="badges">
-        <label for="c-0-components-alert-props" class="badge ok as-toggle">6 prop types</label>
+        <label for="c-1-components-alert-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-0-components-alert-stories" class="badge ok as-toggle">23 stories</label>
+        <label for="c-1-components-alert-stories" class="badge ok as-toggle">23 stories</label>
         
       </div>
     </div>
@@ -614,9 +769,9 @@
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-0-components-alert-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-1-components-alert-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-0-components-alert-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-1-components-alert-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -1162,24 +1317,24 @@ size?: AlertSizeType = sm</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Avatar</h2>
       <div class="badges">
-        <label for="c-1-components-avatar-props" class="badge ok as-toggle">7 prop types</label>
+        <label for="c-2-components-avatar-props" class="badge ok as-toggle">8 prop types</label>
         
-        <label for="c-1-components-avatar-stories" class="badge ok as-toggle">17 stories</label>
+        <label for="c-2-components-avatar-stories" class="badge ok as-toggle">22 stories</label>
         
       </div>
     </div>
     <div class="meta" title="./src/avatar/avatar.stories.tsx">components-avatar · ./src/avatar/avatar.stories.tsx</div>
     
-    <div class="hint">Avatar displays a user&#39;s profile image, initials, or a fallback icon. Use for user identification in lists, headers, cards, and comment threads. Supports multiple shapes (`circle`, `square`, `pillow`, `pentagon`) and sizes from `xs` (24px) to `4xl` (128px).</div>
+    <div class="hint">Avatar displays a user&#39;s profile image, initials, or a fallback icon. Use for user identification in lists, headers, cards, and comment threads. Supports multiple shapes (`circle`, `square`, `pillow`, `pentagon`), content types (`photo`, `initials`, `isotype`), and sizes from `xs` (24px) to `4xl` (128px).</div>
     
   </div>
 
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-1-components-avatar-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-2-components-avatar-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-1-components-avatar-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-2-components-avatar-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -1189,7 +1344,7 @@ size?: AlertSizeType = sm</code></pre>
           <div class="note ok">
             <div class="row">
               <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
-              <span class="badge ok">7 prop types</span>
+              <span class="badge ok">8 prop types</span>
             </div>
             <pre><code>Component: src/avatar/avatar.tsx::Avatar</code></pre>
             <pre><code>Props:</code></pre>
@@ -1229,6 +1384,15 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;xs&quot; | &quot;lg&quot; | &quot
 src?: string
 
 /**
+ * Content type the avatar represents. Defaults to `&#39;photo&#39;`.
+ * - `photo` — a user&#39;s profile photograph filling the avatar shape
+ * - `initials` — text initials standing in for a missing photo
+ * - `isotype` — a brand or organization icon rendered smaller than the avatar
+ *   so it sits centered inside the shape instead of filling it
+ */
+type?: &quot;isotype&quot; | &quot;photo&quot; | &quot;initials&quot;
+
+/**
  * Shape of the avatar container. Defaults to `&#39;circle&#39;`.
  * - `circle` — standard round avatar for user photos
  * - `square` — rounded rectangle, suitable for workspace or team icons
@@ -1258,7 +1422,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
               </div>
               <div>Default avatar with fallback initials</div>
               <div class="hint">The default avatar with fallback initials. Renders as a medium circle when no image source is provided.</div>
-              <pre><code>const Default = () =&gt; &lt;Avatar fallback=&quot;JD&quot; size=&quot;md&quot; variant=&quot;circle&quot; /&gt;;</code></pre>
+              <pre><code>const Default = () =&gt; &lt;Avatar fallback=&quot;JD&quot; size=&quot;md&quot; variant=&quot;circle&quot; type=&quot;photo&quot; /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -1271,6 +1435,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
     fallback=&quot;JD&quot;
     size=&quot;md&quot;
     variant=&quot;circle&quot;
+    type=&quot;photo&quot;
     src=&quot;https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?&amp;w=256&amp;h=256&amp;q=70&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.3&amp;fp-z=1&amp;fit=crop&quot;
     alt=&quot;Alex Morgan&quot; /&gt;;</code></pre>
             </div>
@@ -1285,6 +1450,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
     fallback=&quot;AM&quot;
     size=&quot;md&quot;
     variant=&quot;circle&quot;
+    type=&quot;photo&quot;
     src=&quot;https://broken-url.example/photo.jpg&quot; /&gt;;</code></pre>
             </div>
             <div class="note ok">
@@ -1294,7 +1460,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
               </div>
               <div>Circle-shaped avatar (default)</div>
               <div class="hint">The circle variant is the default shape, ideal for user profile photos.</div>
-              <pre><code>const Circle = () =&gt; &lt;Avatar fallback=&quot;CR&quot; size=&quot;md&quot; variant=&quot;circle&quot; /&gt;;</code></pre>
+              <pre><code>const Circle = () =&gt; &lt;Avatar fallback=&quot;CR&quot; size=&quot;md&quot; variant=&quot;circle&quot; type=&quot;photo&quot; /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -1303,7 +1469,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
               </div>
               <div>Square-shaped avatar for workspaces</div>
               <div class="hint">The square variant uses a rounded rectangle, suitable for workspace, team, or organization icons.</div>
-              <pre><code>const Square = () =&gt; &lt;Avatar fallback=&quot;WS&quot; size=&quot;md&quot; variant=&quot;square&quot; /&gt;;</code></pre>
+              <pre><code>const Square = () =&gt; &lt;Avatar fallback=&quot;WS&quot; size=&quot;md&quot; variant=&quot;square&quot; type=&quot;photo&quot; /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -1312,7 +1478,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
               </div>
               <div>Pillow-shaped avatar with organic squircle</div>
               <div class="hint">The pillow variant uses a soft, organic squircle shape for a friendly and distinctive appearance.</div>
-              <pre><code>const Pillow = () =&gt; &lt;Avatar fallback=&quot;PL&quot; size=&quot;md&quot; variant=&quot;pillow&quot; /&gt;;</code></pre>
+              <pre><code>const Pillow = () =&gt; &lt;Avatar fallback=&quot;PL&quot; size=&quot;md&quot; variant=&quot;pillow&quot; type=&quot;photo&quot; /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -1321,7 +1487,97 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
               </div>
               <div>Pentagon-shaped avatar for unique identity</div>
               <div class="hint">The pentagon variant uses a five-sided mask for a unique visual identity. Note: the border is hidden in this variant due to the mask shape.</div>
-              <pre><code>const Pentagon = () =&gt; &lt;Avatar fallback=&quot;PT&quot; size=&quot;md&quot; variant=&quot;pentagon&quot; /&gt;;</code></pre>
+              <pre><code>const Pentagon = () =&gt; &lt;Avatar fallback=&quot;PT&quot; size=&quot;md&quot; variant=&quot;pentagon&quot; type=&quot;photo&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Type Photo</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Photo type fills the avatar shape edge-to-edge</div>
+              <div class="hint">The `photo` type is the default. The image fills the avatar shape edge-to-edge, which is ideal for user profile photographs.</div>
+              <pre><code>const TypePhoto = () =&gt; &lt;Avatar
+    fallback=&quot;AM&quot;
+    size=&quot;md&quot;
+    variant=&quot;circle&quot;
+    type=&quot;photo&quot;
+    src=&quot;https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?&amp;w=256&amp;h=256&amp;q=70&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.3&amp;fp-z=1&amp;fit=crop&quot;
+    alt=&quot;Alex Morgan&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Type Initials</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Initials type for users without a profile photo</div>
+              <div class="hint">The `initials` type is intended when no image is available and the avatar stands in for a user with their initials. The fallback text is centered within the avatar shape.</div>
+              <pre><code>const TypeInitials = () =&gt; &lt;Avatar fallback=&quot;JD&quot; size=&quot;md&quot; variant=&quot;circle&quot; type=&quot;initials&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Type Isotype</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Isotype type centers a brand icon inside the shape</div>
+              <div class="hint">The `isotype` type renders the image smaller than the avatar shape so a brand or organization icon sits centered inside the container rather than filling it. Use for workspace, team, or company avatars where a logo should remain legible inside the bounding shape.</div>
+              <pre><code>const TypeIsotype = () =&gt; &lt;Avatar
+    fallback=&quot;FG&quot;
+    size=&quot;md&quot;
+    variant=&quot;square&quot;
+    type=&quot;isotype&quot;
+    src=&quot;https://cdn.simpleicons.org/figma&quot;
+    alt=&quot;Figma&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">All Types</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Visual comparison of all avatar content types</div>
+              <div class="hint">All content types shown side by side: `photo` fills the shape, `initials` centers text, and `isotype` shrinks a brand icon inside the bounding shape.</div>
+              <pre><code>const AllTypes = () =&gt; (
+    &lt;div style={{ display: &#39;flex&#39;, alignItems: &#39;center&#39;, gap: &#39;1rem&#39; }}&gt;
+        &lt;Avatar
+            size=&quot;lg&quot;
+            type=&quot;photo&quot;
+            src=&quot;https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?&amp;w=256&amp;h=256&amp;q=70&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.3&amp;fp-z=1&amp;fit=crop&quot;
+            alt=&quot;Alex Morgan&quot;
+            fallback=&quot;AM&quot;
+        /&gt;
+        &lt;Avatar size=&quot;lg&quot; type=&quot;initials&quot; fallback=&quot;JD&quot; /&gt;
+        &lt;Avatar
+            size=&quot;lg&quot;
+            type=&quot;isotype&quot;
+            variant=&quot;square&quot;
+            src=&quot;https://cdn.simpleicons.org/figma&quot;
+            alt=&quot;Figma&quot;
+            fallback=&quot;FG&quot;
+        /&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">All Sizes Isotype</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Isotype scaling across all avatar sizes</div>
+              <div class="hint">The isotype icon scales proportionally smaller than the avatar shape at every size, keeping a consistent inset around the logo from `xs` (24px) to `4xl` (128px).</div>
+              <pre><code>const AllSizesIsotype = () =&gt; (
+    &lt;div style={{ display: &#39;flex&#39;, alignItems: &#39;center&#39;, gap: &#39;1rem&#39; }}&gt;
+        {([&#39;xs&#39;, &#39;sm&#39;, &#39;md&#39;, &#39;lg&#39;, &#39;xl&#39;, &#39;2xl&#39;, &#39;3xl&#39;, &#39;4xl&#39;] as const).map(size =&gt; (
+            &lt;Avatar
+                key={size}
+                size={size}
+                type=&quot;isotype&quot;
+                variant=&quot;square&quot;
+                src=&quot;https://cdn.simpleicons.org/figma&quot;
+                alt=&quot;Figma&quot;
+                fallback=&quot;FG&quot;
+            /&gt;
+        ))}
+    &lt;/div&gt;
+);</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -1330,7 +1586,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
               </div>
               <div>Extra-small 24px avatar</div>
               <div class="hint">Extra-small avatar (24px) for dense lists and inline indicators.</div>
-              <pre><code>const SizeXs = () =&gt; &lt;Avatar fallback=&quot;XS&quot; size=&quot;xs&quot; variant=&quot;circle&quot; /&gt;;</code></pre>
+              <pre><code>const SizeXs = () =&gt; &lt;Avatar fallback=&quot;XS&quot; size=&quot;xs&quot; variant=&quot;circle&quot; type=&quot;photo&quot; /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -1339,7 +1595,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
               </div>
               <div>Small 32px avatar</div>
               <div class="hint">Small avatar (32px) for compact layouts and table rows.</div>
-              <pre><code>const SizeSm = () =&gt; &lt;Avatar fallback=&quot;SM&quot; size=&quot;sm&quot; variant=&quot;circle&quot; /&gt;;</code></pre>
+              <pre><code>const SizeSm = () =&gt; &lt;Avatar fallback=&quot;SM&quot; size=&quot;sm&quot; variant=&quot;circle&quot; type=&quot;photo&quot; /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -1348,7 +1604,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
               </div>
               <div>Large 48px avatar</div>
               <div class="hint">Large avatar (48px) for profile sections and detail views.</div>
-              <pre><code>const SizeLg = () =&gt; &lt;Avatar fallback=&quot;LG&quot; size=&quot;lg&quot; variant=&quot;circle&quot; /&gt;;</code></pre>
+              <pre><code>const SizeLg = () =&gt; &lt;Avatar fallback=&quot;LG&quot; size=&quot;lg&quot; variant=&quot;circle&quot; type=&quot;photo&quot; /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -1357,7 +1613,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
               </div>
               <div>Extra-large 64px avatar</div>
               <div class="hint">Extra-large avatar (64px) for hero sections and prominent display.</div>
-              <pre><code>const SizeXl = () =&gt; &lt;Avatar fallback=&quot;XL&quot; size=&quot;xl&quot; variant=&quot;circle&quot; /&gt;;</code></pre>
+              <pre><code>const SizeXl = () =&gt; &lt;Avatar fallback=&quot;XL&quot; size=&quot;xl&quot; variant=&quot;circle&quot; type=&quot;photo&quot; /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -1366,7 +1622,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
               </div>
               <div>Colorized avatar based on user name</div>
               <div class="hint">The `colorize` prop deterministically maps a string (typically a user name) to a color from the palette, applying a tinted background and matching text color. Useful for distinguishing users in lists without profile photos.</div>
-              <pre><code>const Colorized = () =&gt; &lt;Avatar fallback=&quot;JD&quot; size=&quot;md&quot; variant=&quot;circle&quot; colorize=&quot;jane doe&quot; /&gt;;</code></pre>
+              <pre><code>const Colorized = () =&gt; &lt;Avatar fallback=&quot;JD&quot; size=&quot;md&quot; variant=&quot;circle&quot; type=&quot;photo&quot; colorize=&quot;jane doe&quot; /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -1477,9 +1733,9 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Button</h2>
       <div class="badges">
-        <label for="c-2-components-button-props" class="badge ok as-toggle">12 prop types</label>
+        <label for="c-3-components-button-props" class="badge ok as-toggle">12 prop types</label>
         
-        <label for="c-2-components-button-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-3-components-button-stories" class="badge ok as-toggle">10 stories</label>
         
       </div>
     </div>
@@ -1492,9 +1748,9 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-2-components-button-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-3-components-button-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-2-components-button-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-3-components-button-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -1839,14 +2095,159 @@ import { PlusIcon, XIcon } from "lucide-react";</code></pre>
   no-story-error
   no-doc-error"
   role="listitem"
+  aria-label="DataTable.Root">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> DataTable.Root</h2>
+      <div class="badges">
+        
+        
+        <label for="c-4-components-datatable-stories" class="badge ok as-toggle">4 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/data-table/data-table.stories.tsx">components-datatable · ./src/data-table/data-table.stories.tsx</div>
+    
+    <div class="hint">DataTable is the data-driven table compound built on TanStack Table. This story shows a representative leads table: an `Applicant` column with a name + address, contact info, insurance type with an icon, a sortable `Created` column, a status badge, and hover-revealed row actions (open + a kebab menu). The toolbar (search + filters) and the footer pagination are **separate components** composed inside `ToolBar` / `Footer`.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-4-components-datatable-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+
+  <div class="panels">
+    
+    
+    
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Button, DataTable, DropdownMenu, Pagination, Table } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Playground</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Display props playground (size / embed / enclosed / sticky)</div>
+              <div class="hint">Playground for `DataTable.Table` display props — toggle `size`, `embed`, `enclosed`, and `sticky` from the controls panel.</div>
+              <pre><code>const Playground = () =&gt; &lt;div
+    className={args.enclosed ? &#39;flex min-h-0 flex-1 flex-col p-4&#39; : &#39;contents&#39;}&gt;
+    &lt;DataTable.Root data={LEADS} columns={columns}&gt;
+        &lt;DataTable.Table size=&quot;md&quot; embed enclosed={false} sticky=&quot;header&quot; /&gt;
+    &lt;/DataTable.Root&gt;
+&lt;/div&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Leads</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Representative leads table composition</div>
+              <div class="hint">A leads-table composition: sortable `Created` column, a status badge, row navigation via `rowHref`, hover-revealed actions, a search input + filters in the toolbar, and pagination in the footer.</div>
+              <pre><code>const Leads = () =&gt; {
+    const [sorting, setSorting] = useState&lt;SortingState&gt;([]);
+    const [page, setPage] = useState(1);
+    const [search, setSearch] = useState(&#39;&#39;);
+
+    const data = useMemo(
+        () =&gt; LEADS.filter(l =&gt; l.contact.toLowerCase().includes(search.toLowerCase())),
+        [search]
+    );
+
+    return (
+        &lt;DataTable.Root
+            data={data}
+            columns={columns}
+            state={{ sorting }}
+            onSortingChange={setSorting}
+            getSortedRowModel={getSortedRowModel()}
+            enableSortingRemoval={false}
+            rowHref={lead =&gt; `/leads/${lead.leadId}`}&gt;
+            &lt;DataTable.ToolBar&gt;
+                &lt;input
+                    value={search}
+                    onChange={e =&gt; setSearch(e.target.value)}
+                    placeholder=&quot;Search...&quot;
+                    aria-label=&quot;Search leads&quot;
+                    className=&quot;h-8 w-60 rounded-md border border-border-default-base-primary px-3 text-sm outline-none&quot;
+                /&gt;
+                &lt;Button variant=&quot;secondary&quot; size=&quot;sm&quot;&gt;
+                    Filters
+                &lt;/Button&gt;
+            &lt;/DataTable.ToolBar&gt;
+
+            &lt;DataTable.Table /&gt;
+
+            &lt;DataTable.Footer&gt;
+                &lt;Pagination
+                    totalCount={LEADS.length}
+                    currentPage={page}
+                    pageSize={10}
+                    onPageChange={setPage}
+                /&gt;
+            &lt;/DataTable.Footer&gt;
+        &lt;/DataTable.Root&gt;
+    );
+};</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Empty</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Empty state when there are no rows</div>
+              <div class="hint">No rows: the table renders its default empty state instead of body rows.</div>
+              <pre><code>const Empty = () =&gt; (
+    &lt;DataTable.Root data={[] as Lead[]} columns={columns}&gt;
+        &lt;DataTable.Table /&gt;
+    &lt;/DataTable.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Loading</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Loading state dims the table and hides the empty state</div>
+              <div class="hint">Loading: the body is dimmed and the empty state is suppressed while data is in flight.</div>
+              <pre><code>const Loading = () =&gt; (
+    &lt;DataTable.Root data={[] as Lead[]} columns={columns} isLoading&gt;
+        &lt;DataTable.Table /&gt;
+    &lt;/DataTable.Root&gt;
+);</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
   aria-label="Divider">
   <div class="head">
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Divider</h2>
       <div class="badges">
-        <label for="c-3-components-divider-props" class="badge ok as-toggle">2 prop types</label>
+        <label for="c-5-components-divider-props" class="badge ok as-toggle">2 prop types</label>
         
-        <label for="c-3-components-divider-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-5-components-divider-stories" class="badge ok as-toggle">10 stories</label>
         
       </div>
     </div>
@@ -1859,9 +2260,9 @@ import { PlusIcon, XIcon } from "lucide-react";</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-3-components-divider-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-5-components-divider-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-3-components-divider-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-5-components-divider-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -2141,7 +2542,7 @@ label?: ReactNode</code></pre>
       <div class="badges">
         
         
-        <label for="c-4-components-dropdownmenu-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-6-components-dropdownmenu-stories" class="badge ok as-toggle">7 stories</label>
         
       </div>
     </div>
@@ -2154,7 +2555,7 @@ label?: ReactNode</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-4-components-dropdownmenu-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-6-components-dropdownmenu-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
@@ -2531,9 +2932,9 @@ import {
     <div class="title">
       <h2><span class="status-dot dot-err"></span> Icons</h2>
       <div class="badges">
-        <label for="c-5-foundations-icons-err" class="badge err as-toggle">prop type error</label>
-        <label for="c-5-foundations-icons-info" class="badge info as-toggle">1 info</label>
-        <label for="c-5-foundations-icons-stories" class="badge ok as-toggle">6 stories</label>
+        <label for="c-7-foundations-icons-err" class="badge err as-toggle">prop type error</label>
+        <label for="c-7-foundations-icons-info" class="badge info as-toggle">1 info</label>
+        <label for="c-7-foundations-icons-stories" class="badge ok as-toggle">6 stories</label>
         
       </div>
     </div>
@@ -2544,9 +2945,9 @@ import {
   </div>
 
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
-  <input id="c-5-foundations-icons-err" class="tg tg-err" type="checkbox" hidden />
-  <input id="c-5-foundations-icons-info" class="tg tg-info" type="checkbox" hidden />
-  <input id="c-5-foundations-icons-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-7-foundations-icons-err" class="tg tg-err" type="checkbox" hidden />
+  <input id="c-7-foundations-icons-info" class="tg tg-info" type="checkbox" hidden />
+  <input id="c-7-foundations-icons-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
@@ -3453,9 +3854,9 @@ export const InAlertContext: Story = {
     <div class="title">
       <h2><span class="status-dot dot-err"></span> InNavContext</h2>
       <div class="badges">
-        <label for="c-6-foundations-icons-in-nav-context-err" class="badge err as-toggle">prop type error</label>
-        <label for="c-6-foundations-icons-in-nav-context-info" class="badge info as-toggle">2 infos</label>
-        <label for="c-6-foundations-icons-in-nav-context-stories" class="badge ok as-toggle">1 story</label>
+        <label for="c-8-foundations-icons-in-nav-context-err" class="badge err as-toggle">prop type error</label>
+        <label for="c-8-foundations-icons-in-nav-context-info" class="badge info as-toggle">2 infos</label>
+        <label for="c-8-foundations-icons-in-nav-context-stories" class="badge ok as-toggle">1 story</label>
         
       </div>
     </div>
@@ -3466,9 +3867,9 @@ export const InAlertContext: Story = {
   </div>
 
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
-  <input id="c-6-foundations-icons-in-nav-context-err" class="tg tg-err" type="checkbox" hidden />
-  <input id="c-6-foundations-icons-in-nav-context-info" class="tg tg-info" type="checkbox" hidden />
-  <input id="c-6-foundations-icons-in-nav-context-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-8-foundations-icons-in-nav-context-err" class="tg tg-err" type="checkbox" hidden />
+  <input id="c-8-foundations-icons-in-nav-context-info" class="tg tg-info" type="checkbox" hidden />
+  <input id="c-8-foundations-icons-in-nav-context-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
@@ -3935,9 +4336,9 @@ export const SideBySide: Story = {
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Loading</h2>
       <div class="badges">
-        <label for="c-7-components-loading-props" class="badge ok as-toggle">1 prop type</label>
+        <label for="c-9-components-loading-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-7-components-loading-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-9-components-loading-stories" class="badge ok as-toggle">7 stories</label>
         
       </div>
     </div>
@@ -3950,9 +4351,9 @@ export const SideBySide: Story = {
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-7-components-loading-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-9-components-loading-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-7-components-loading-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-9-components-loading-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -4092,9 +4493,9 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Pagination</h2>
       <div class="badges">
-        <label for="c-8-components-pagination-props" class="badge ok as-toggle">5 prop types</label>
+        <label for="c-10-components-pagination-props" class="badge ok as-toggle">5 prop types</label>
         
-        <label for="c-8-components-pagination-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-10-components-pagination-stories" class="badge ok as-toggle">7 stories</label>
         
       </div>
     </div>
@@ -4107,9 +4508,9 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-8-components-pagination-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-10-components-pagination-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-8-components-pagination-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-10-components-pagination-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -4248,27 +4649,27 @@ totalCount: number</code></pre>
   no-story-error
   no-doc-error"
   role="listitem"
-  aria-label="StatusBall">
+  aria-label="Table.Root">
   <div class="head">
     <div class="title">
-      <h2><span class="status-dot dot-ok"></span> StatusBall</h2>
+      <h2><span class="status-dot dot-ok"></span> Table.Root</h2>
       <div class="badges">
         
         
-        <label for="c-9-components-statusball-stories" class="badge ok as-toggle">12 stories</label>
+        <label for="c-11-components-table-stories" class="badge ok as-toggle">9 stories</label>
         
       </div>
     </div>
-    <div class="meta" title="./src/status-ball/status-ball.stories.tsx">components-statusball · ./src/status-ball/status-ball.stories.tsx</div>
+    <div class="meta" title="./src/data-table/table.stories.tsx">components-table · ./src/data-table/table.stories.tsx</div>
     
-    <div class="hint">StatusBall renders a small colored dot that marks the state of an adjacent label — appointment confirmation, license validity, availability, or any list row where a single glyph of color communicates status. Pair it with text; the dot alone is not announced to assistive technologies, so the surrounding label must carry the meaning.</div>
+    <div class="hint">Low-level presentational table primitive: native `&lt;table&gt;` markup themed for scrolling, sticky rows, cell padding, dividers, hover, and expandable rows. For sorting/toolbar/pagination, prefer `DataTable`.</div>
     
   </div>
 
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-9-components-statusball-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-11-components-table-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
@@ -4285,7 +4686,8 @@ totalCount: number</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { StatusBall } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Button, Table } from "@agentero/design-system";
+import { Fragment } from "react";</code></pre>
               </div>
           
           
@@ -4294,166 +4696,508 @@ totalCount: number</code></pre>
                 <span class="ex-name">Default</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Default neutral dot representing an inactive status</div>
-              <div class="hint">The default dot — `color=&quot;neutral&quot;` for an unknown or inactive status. Drop next to a text label to surface state at a glance.</div>
-              <pre><code>const Default = () =&gt; &lt;div className=&quot;flex items-center gap-2&quot;&gt;
-    &lt;StatusBall color=&quot;neutral&quot; /&gt;
-&lt;/div&gt;;</code></pre>
+              <div>Default table</div>
+              <div class="hint">Default args playground.</div>
+              <pre><code>const Default = args =&gt; renderTable(args);</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">Intents</span>
+                <span class="ex-name">Sizes</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Every intent paired with a representative status label</div>
-              <div class="hint">All 8 semantic intents rendered in a single grid, each paired with a sample label. Consumers typically drive the `color` prop from a domain-specific status → intent lookup table.</div>
-              <pre><code>const Intents = () =&gt; {
-    const samples: { color: (typeof INTENTS)[number]; label: string }[] = [
-        { color: &#39;success&#39;, label: &#39;Active&#39; },
-        { color: &#39;info&#39;, label: &#39;Scheduled&#39; },
-        { color: &#39;warning&#39;, label: &#39;Pending&#39; },
-        { color: &#39;danger&#39;, label: &#39;Expired&#39; },
-        { color: &#39;creative&#39;, label: &#39;In review&#39; },
-        { color: &#39;playful&#39;, label: &#39;Flagged&#39; },
-        { color: &#39;dynamic&#39;, label: &#39;Needs attention&#39; },
-        { color: &#39;neutral&#39;, label: &#39;Inactive&#39; }
-    ];
-
-    return (
-        &lt;div className=&quot;grid grid-cols-2 gap-x-8 gap-y-3&quot;&gt;
-            {samples.map(({ color, label }) =&gt; (
-                &lt;div key={color} className=&quot;flex items-center gap-2&quot;&gt;
-                    &lt;StatusBall color={color} /&gt;
-                    &lt;span className=&quot;text-sm text-text-default-base-primary&quot;&gt;{label}&lt;/span&gt;
-                &lt;/div&gt;
-            ))}
-        &lt;/div&gt;
-    );
+              <div>size — sm / md / lg</div>
+              <div class="hint">The three row densities. `size` sets row min-height: sm 48 / md 64 / lg 88px.</div>
+              <pre><code>const Sizes = () =&gt; (
+    &lt;div className=&quot;flex flex-col gap-6&quot;&gt;
+        {([&#39;sm&#39;, &#39;md&#39;, &#39;lg&#39;] as const).map(size =&gt; (
+            &lt;div key={size} className=&quot;flex flex-col gap-1&quot;&gt;
+                &lt;span className=&quot;text-xs text-text-default-base-tertiary&quot;&gt;size=&amp;quot;{size}&amp;quot;&lt;/span&gt;
+                {renderTable({ size })}
+            &lt;/div&gt;
+        ))}
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Sticky Header</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>sticky=&quot;header&quot; with a scrolling body</div>
+              <div class="hint">`sticky=&quot;header&quot;` pins the header while the body scrolls. Needs a bounded-height parent.</div>
+              <pre><code>const StickyHeader = args =&gt; renderTable(args);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Sticky Header And Footer</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>sticky=&quot;headerAndFooter&quot; with a pinned totals row</div>
+              <div class="hint">`sticky=&quot;headerAndFooter&quot;` pins the header and the last body row (totals here).</div>
+              <pre><code>const StickyHeaderAndFooter = args =&gt; renderTable(args, { totals: true });</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Embed</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>embed — no row dividers, 1rem edge gutter</div>
+              <div class="hint">`embed` drops the per-row dividers and tightens the edge gutter to 1rem.</div>
+              <pre><code>const Embed = args =&gt; renderTable(args);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Enclosed</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>enclosed — bordered, rounded card container</div>
+              <div class="hint">`enclosed` wraps the table in a bordered, rounded container — the standalone &quot;card&quot; look, as opposed to a full-bleed page table.</div>
+              <pre><code>const Enclosed = args =&gt; renderTable(args);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Checkbox</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Selectable rows with a collapsing checkbox column</div>
+              <div class="hint">A leading checkbox column; checkbox cells collapse to zero width.</div>
+              <pre><code>const WithCheckbox = args =&gt; renderTable(args, { checkbox: true });</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Row Actions</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Hover-revealed row actions</div>
+              <div class="hint">Hover-revealed row actions pinned to the trailing edge.</div>
+              <pre><code>const WithRowActions = args =&gt; renderTable(args, { actions: true });</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Expandable Rows</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Expandable rows with a detail panel</div>
+              <div class="hint">`Table.ExpandButton` toggles a `Table.ExpandedRow` detail panel under its row.</div>
+              <pre><code>const ExpandableRows = args =&gt; {
+    const Demo = () =&gt; {
+        const [openId, setOpenId] = useState&lt;string | null&gt;(ROWS[0]!.id);
+        return (
+            &lt;Table.Root {...args}&gt;
+                &lt;Table.Head&gt;
+                    &lt;Table.Row&gt;
+                        &lt;Table.Header&gt;
+                            &lt;span className=&quot;sr-only&quot;&gt;Expand&lt;/span&gt;
+                        &lt;/Table.Header&gt;
+                        &lt;Table.Header&gt;Name&lt;/Table.Header&gt;
+                        &lt;Table.Header&gt;Email&lt;/Table.Header&gt;
+                        &lt;Table.Header&gt;Role&lt;/Table.Header&gt;
+                    &lt;/Table.Row&gt;
+                &lt;/Table.Head&gt;
+                &lt;Table.Body&gt;
+                    {ROWS.slice(0, 4).map(row =&gt; (
+                        &lt;Fragment key={row.id}&gt;
+                            &lt;Table.Row&gt;
+                                &lt;Table.Cell&gt;
+                                    &lt;Table.ExpandButton
+                                        isExpanded={openId === row.id}
+                                        toggleExpanded={() =&gt; setOpenId(openId === row.id ? null : row.id)}
+                                        aria-label={`Toggle ${row.name}`}
+                                    /&gt;
+                                &lt;/Table.Cell&gt;
+                                &lt;Table.Cell className=&quot;font-bold&quot;&gt;{row.name}&lt;/Table.Cell&gt;
+                                &lt;Table.Cell className=&quot;text-text-default-base-secondary&quot;&gt;{row.email}&lt;/Table.Cell&gt;
+                                &lt;Table.Cell&gt;{row.role}&lt;/Table.Cell&gt;
+                            &lt;/Table.Row&gt;
+                            {openId === row.id &amp;&amp; (
+                                &lt;Table.ExpandedRow&gt;
+                                    &lt;Table.Cell colSpan={4}&gt;
+                                        &lt;div className=&quot;py-2 text-text-default-base-secondary&quot;&gt;
+                                            Extended details for {row.name} — {row.amount} lifetime value.
+                                        &lt;/div&gt;
+                                    &lt;/Table.Cell&gt;
+                                &lt;/Table.ExpandedRow&gt;
+                            )}
+                        &lt;/Fragment&gt;
+                    ))}
+                &lt;/Table.Body&gt;
+            &lt;/Table.Root&gt;
+        );
+    };
+    return &lt;Demo /&gt;;
 };</code></pre>
             </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Success</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Success dot for positive or active statuses</div>
-              <div class="hint">Success dot for positive / active states — the most common pairing for &quot;live&quot; records such as active licenses or confirmed appointments.</div>
-              <pre><code>const Success = () =&gt; &lt;StatusBall color=&quot;success&quot; data-testid=&quot;status-ball-success&quot; /&gt;;</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Info</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Info dot for informational statuses</div>
-              <div class="hint">Info dot for informational or neutral-positive states — e.g., scheduled or queued records that are progressing normally.</div>
-              <pre><code>const Info = () =&gt; &lt;StatusBall color=&quot;info&quot; /&gt;;</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Warning</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Warning dot for pending or approaching-deadline statuses</div>
-              <div class="hint">Warning dot for pending states or records approaching a deadline — e.g., a license nearing expiration or an appointment awaiting confirmation.</div>
-              <pre><code>const Warning = () =&gt; &lt;StatusBall color=&quot;warning&quot; /&gt;;</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Danger</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Danger dot for error or expired statuses</div>
-              <div class="hint">Danger dot for error / expired / blocking states — e.g., an expired license or a failed payment that blocks progress.</div>
-              <pre><code>const Danger = () =&gt; &lt;StatusBall color=&quot;danger&quot; /&gt;;</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Creative</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Creative dot for category-specific statuses</div>
-              <div class="hint">Creative dot for category-specific statuses without a direct success/info/ warning/danger mapping — often used for &quot;in review&quot; or &quot;under assessment&quot; domain states.</div>
-              <pre><code>const Creative = () =&gt; &lt;StatusBall color=&quot;creative&quot; /&gt;;</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Dynamic</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Dynamic dot for attention-needed statuses</div>
-              <div class="hint">Dynamic dot for attention-worthy states that sit between warning and danger — e.g., records that need action soon but are not yet failed.</div>
-              <pre><code>const Dynamic = () =&gt; &lt;StatusBall color=&quot;dynamic&quot; /&gt;;</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Playful</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Playful dot for flagged or priority statuses</div>
-              <div class="hint">Playful dot for flagged or priority domain states that need to stand out from warnings with a distinct hue.</div>
-              <pre><code>const Playful = () =&gt; &lt;StatusBall color=&quot;playful&quot; /&gt;;</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Neutral</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Neutral dot for inactive or unknown statuses</div>
-              <div class="hint">Neutral dot for inactive, unknown, or default states — the fallback when no other intent applies.</div>
-              <pre><code>const Neutral = () =&gt; &lt;StatusBall color=&quot;neutral&quot; /&gt;;</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">In List</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>StatusBall paired with labels inside a list</div>
-              <div class="hint">StatusBall inside a list row — the canonical production usage, mirroring the appointment and license list patterns in `producerflow/mono`. Each row pairs a dot with a label and supporting text.</div>
-              <pre><code>const InList = () =&gt; {
-    const rows = [
-        { color: &#39;success&#39;, name: &#39;Ada Lovelace&#39;, status: &#39;Active&#39; },
-        { color: &#39;warning&#39;, name: &#39;Grace Hopper&#39;, status: &#39;Pending renewal&#39; },
-        { color: &#39;danger&#39;, name: &#39;Alan Turing&#39;, status: &#39;Expired&#39; },
-        { color: &#39;neutral&#39;, name: &#39;Katherine Johnson&#39;, status: &#39;Inactive&#39; }
-    ] as const;
+        </div>
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
+  aria-label="Tag">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Tag</h2>
+      <div class="badges">
+        <label for="c-12-components-tag-props" class="badge ok as-toggle">6 prop types</label>
+        
+        <label for="c-12-components-tag-stories" class="badge ok as-toggle">10 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/tag/tag.stories.tsx">components-tag · ./src/tag/tag.stories.tsx</div>
+    
+    <div class="hint">Tag is a compact semantic label for statuses, categories, counts, and attributes. Pick `color` for meaning, `variant` for fill emphasis, and `size` for prominence. A plain Tag is a static badge; pass `asChild` to make it an interactive link or button, which adds the pointer cursor and hover fill.</div>
+    
+  </div>
 
-    return (
-        &lt;ul className=&quot;w-80 divide-y divide-border-default-base-primary rounded-lg border border-border-default-base-primary bg-bg-default-base-primary&quot;&gt;
-            {rows.map(row =&gt; (
-                &lt;li key={row.name} className=&quot;flex items-center gap-3 px-4 py-3&quot;&gt;
-                    &lt;StatusBall color={row.color} /&gt;
-                    &lt;div className=&quot;flex flex-col&quot;&gt;
-                        &lt;span className=&quot;text-sm font-medium text-text-default-base-primary&quot;&gt;{row.name}&lt;/span&gt;
-                        &lt;span className=&quot;text-xs text-text-default-base-secondary&quot;&gt;{row.status}&lt;/span&gt;
-                    &lt;/div&gt;
-                &lt;/li&gt;
-            ))}
-        &lt;/ul&gt;
-    );
-};</code></pre>
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-12-components-tag-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  <input id="c-12-components-tag-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
+              <span class="badge ok">6 prop types</span>
+            </div>
+            <pre><code>Component: src/tag/tag.tsx::Tag</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>/**
+ * Render the single child element instead of a `&lt;span&gt;` (via Radix `Slot`),
+ * keeping Tag framework-agnostic. Marks the Tag interactive: adds the pointer
+ * cursor and the hover fill (a plain `&lt;span&gt;` Tag is a static badge).
+ */
+asChild?: boolean
+
+color?: &quot;neutral&quot; | &quot;danger&quot; | &quot;warning&quot; | &quot;creative&quot; | &quot;dynamic&quot; | &quot;playful&quot; | &quot;positive&quot; | &quot;informative&quot;
+
+pill?: boolean
+
+size?: &quot;sm&quot; | &quot;md&quot; | &quot;xs&quot;
+
+truncate?: boolean
+
+variant?: &quot;ghost&quot; | &quot;secondary&quot; | &quot;tertiary&quot; | &quot;invisible&quot;</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Tag } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Default args playground for Tag</div>
+              <div class="hint">Args-controlled playground. Toggle `color`, `variant`, `size`, `pill`, and `truncate` from the Controls panel to explore every visual combination.</div>
+              <pre><code>const Default = () =&gt; &lt;Tag color=&quot;neutral&quot; variant=&quot;secondary&quot; size=&quot;sm&quot;&gt;Default&lt;/Tag&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">In Pill</span>
+                <span class="ex-name">Sizes</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>StatusBall inside a rounded status pill</div>
-              <div class="hint">StatusBall inside a status pill — a tinted badge that pairs the dot with a label in a single rounded container. Use when the status needs more visual weight than a bare list row provides.</div>
-              <pre><code>const InPill = () =&gt; (
-    &lt;div className=&quot;flex flex-wrap items-center gap-2&quot;&gt;
-        &lt;span className=&quot;inline-flex items-center gap-1.5 rounded-full border border-border-default-base-primary bg-bg-default-base-primary px-2.5 py-1 text-xs text-text-default-base-primary&quot;&gt;
-            &lt;StatusBall color=&quot;success&quot; /&gt;
-            Active
-        &lt;/span&gt;
-        &lt;span className=&quot;inline-flex items-center gap-1.5 rounded-full border border-border-default-base-primary bg-bg-default-base-primary px-2.5 py-1 text-xs text-text-default-base-primary&quot;&gt;
-            &lt;StatusBall color=&quot;warning&quot; /&gt;
-            Pending
-        &lt;/span&gt;
-        &lt;span className=&quot;inline-flex items-center gap-1.5 rounded-full border border-border-default-base-primary bg-bg-default-base-primary px-2.5 py-1 text-xs text-text-default-base-primary&quot;&gt;
-            &lt;StatusBall color=&quot;danger&quot; /&gt;
-            Expired
-        &lt;/span&gt;
+              <div>All three sizes across icon-only, icon + text, and text-only</div>
+              <div class="hint">The three sizes — `xs` (20px), `sm` (24px, default), and `md` (32px) — each shown icon-only, icon + text, and text-only so the type and icon scale are visible.</div>
+              <pre><code>const Sizes = () =&gt; (
+    &lt;Stack&gt;
+        {([&#39;xs&#39;, &#39;sm&#39;, &#39;md&#39;] as const).map(size =&gt; (
+            &lt;Stack gap=&quot;0.5rem&quot; key={size}&gt;
+                &lt;strong&gt;{size}:&lt;/strong&gt;
+                &lt;Row&gt;
+                    &lt;Tag
+                        size={size}
+                        color=&quot;informative&quot;
+                        variant=&quot;secondary&quot;
+                        role=&quot;img&quot;
+                        aria-label={`${size} icon only`}&gt;
+                        &lt;IconAdd /&gt;
+                    &lt;/Tag&gt;
+                    &lt;Tag size={size} color=&quot;informative&quot; variant=&quot;secondary&quot;&gt;
+                        &lt;IconAdd /&gt;
+                        {size}
+                    &lt;/Tag&gt;
+                    &lt;Tag size={size} color=&quot;informative&quot; variant=&quot;secondary&quot;&gt;
+                        {size}
+                    &lt;/Tag&gt;
+                &lt;/Row&gt;
+            &lt;/Stack&gt;
+        ))}
+    &lt;/Stack&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Styles</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Rounded (default) vs pill</div>
+              <div class="hint">The `Style` axis: the default rounded corners (top row) versus `pill` fully rounded (bottom row), shown across every fill variant.</div>
+              <pre><code>const Styles = () =&gt; (
+    &lt;Stack gap=&quot;0.5rem&quot;&gt;
+        &lt;Row&gt;
+            {VARIANTS.map(variant =&gt; (
+                &lt;Tag key={variant} color=&quot;informative&quot; variant={variant}&gt;
+                    {variant}
+                &lt;/Tag&gt;
+            ))}
+        &lt;/Row&gt;
+        &lt;Row&gt;
+            {VARIANTS.map(variant =&gt; (
+                &lt;Tag key={variant} color=&quot;informative&quot; variant={variant} pill&gt;
+                    {variant}
+                &lt;/Tag&gt;
+            ))}
+        &lt;/Row&gt;
+    &lt;/Stack&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Interactive</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Static badge vs interactive (asChild) hover</div>
+              <div class="hint">Static badge vs interactive Tag. A plain `&lt;span&gt;` badge has no hover; pass `asChild` with a `&lt;button&gt;` (or `&lt;a&gt;`) to make it interactive — that adds the pointer cursor and reveals the hover fill on `:hover`. Hover the middle and right Tags to see it.</div>
+              <pre><code>const Interactive = () =&gt; (
+    &lt;Row&gt;
+        &lt;Tag color=&quot;informative&quot; variant=&quot;secondary&quot;&gt;
+            badge
+        &lt;/Tag&gt;
+        &lt;Tag color=&quot;informative&quot; variant=&quot;secondary&quot; asChild&gt;
+            &lt;button type=&quot;button&quot;&gt;interactive&lt;/button&gt;
+        &lt;/Tag&gt;
+        &lt;Tag color=&quot;informative&quot; variant=&quot;secondary&quot; asChild aria-label=&quot;add&quot;&gt;
+            &lt;button type=&quot;button&quot;&gt;
+                &lt;IconAdd /&gt;
+            &lt;/button&gt;
+        &lt;/Tag&gt;
+    &lt;/Row&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Secondary</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>`secondary` variant across all colors</div>
+              <div class="hint">`secondary` fills with a tinted background plus a matching border, shown across every color.</div>
+              <pre><code>const Secondary = () =&gt; (
+    &lt;Row&gt;
+        {COLORS.map(color =&gt; (
+            &lt;Tag key={color} variant=&quot;secondary&quot; color={color}&gt;
+                {color}
+            &lt;/Tag&gt;
+        ))}
+    &lt;/Row&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Tertiary</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>`tertiary` variant across all colors</div>
+              <div class="hint">`tertiary` (default) fills with a tinted background and no border, shown across every color.</div>
+              <pre><code>const Tertiary = () =&gt; (
+    &lt;Row&gt;
+        {COLORS.map(color =&gt; (
+            &lt;Tag key={color} variant=&quot;tertiary&quot; color={color}&gt;
+                {color}
+            &lt;/Tag&gt;
+        ))}
+    &lt;/Row&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Ghost</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>`ghost` variant across all colors</div>
+              <div class="hint">`ghost` shows colored text alone with no background or border, across every color.</div>
+              <pre><code>const Ghost = () =&gt; (
+    &lt;Row&gt;
+        {COLORS.map(color =&gt; (
+            &lt;Tag key={color} variant=&quot;ghost&quot; color={color}&gt;
+                {color}
+            &lt;/Tag&gt;
+        ))}
+    &lt;/Row&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Invisible</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>`invisible` variant as span and as interactive button</div>
+              <div class="hint">`invisible` stays fully transparent until hovered, then reveals its fill. The top row renders plain `&lt;span&gt;` Tags; the bottom row renders interactive Tags via `asChild` with a `&lt;button&gt;` child.</div>
+              <pre><code>const Invisible = () =&gt; (
+    &lt;Stack gap=&quot;0.5rem&quot;&gt;
+        &lt;Row&gt;
+            {COLORS.map(color =&gt; (
+                &lt;Tag key={color} variant=&quot;invisible&quot; color={color}&gt;
+                    {color}
+                &lt;/Tag&gt;
+            ))}
+        &lt;/Row&gt;
+        &lt;Row&gt;
+            {COLORS.map(color =&gt; (
+                &lt;Tag key={color} variant=&quot;invisible&quot; color={color} asChild&gt;
+                    &lt;button type=&quot;button&quot;&gt;{color}&lt;/button&gt;
+                &lt;/Tag&gt;
+            ))}
+        &lt;/Row&gt;
+    &lt;/Stack&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Icon</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Variant × color grid with icons</div>
+              <div class="hint">Every variant for every color rendered with a leading and trailing icon. Icons are tinted with each color&#39;s `icon-tag-*` token.</div>
+              <pre><code>const WithIcon = () =&gt; (
+    &lt;Stack&gt;
+        {COLORS.map(color =&gt; (
+            &lt;Row key={color}&gt;
+                {VARIANTS.map(variant =&gt; (
+                    &lt;Tag key={variant} color={color} variant={variant}&gt;
+                        &lt;IconAdd /&gt;
+                        tag
+                        &lt;IconAdd /&gt;
+                    &lt;/Tag&gt;
+                ))}
+            &lt;/Row&gt;
+        ))}
+    &lt;/Stack&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Colors</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Variant × color matrix — default, pill, button, and icon layouts</div>
+              <div class="hint">Full matrix: every variant for every color, repeated as default, as `pill`, as an interactive `asChild` `&lt;button&gt;`, with a single leading icon, with leading + trailing icons, and icon-only.</div>
+              <pre><code>const Colors = () =&gt; (
+    &lt;div style={{ display: &#39;flex&#39;, gap: &#39;4rem&#39;, flexWrap: &#39;wrap&#39; }}&gt;
+        &lt;Stack&gt;
+            {COLORS.map(color =&gt; (
+                &lt;Stack gap=&quot;0.5rem&quot; key={color}&gt;
+                    &lt;strong&gt;{color}:&lt;/strong&gt;
+                    &lt;Row&gt;
+                        {VARIANTS.map(variant =&gt; (
+                            &lt;Tag key={variant} color={color} variant={variant}&gt;
+                                {variant}
+                            &lt;/Tag&gt;
+                        ))}
+                    &lt;/Row&gt;
+                &lt;/Stack&gt;
+            ))}
+        &lt;/Stack&gt;
+        &lt;Stack&gt;
+            {COLORS.map(color =&gt; (
+                &lt;Stack gap=&quot;0.5rem&quot; key={color}&gt;
+                    &lt;strong&gt;{color} with pill:&lt;/strong&gt;
+                    &lt;Row&gt;
+                        {VARIANTS.map(variant =&gt; (
+                            &lt;Tag key={variant} color={color} variant={variant} pill&gt;
+                                {variant}
+                            &lt;/Tag&gt;
+                        ))}
+                    &lt;/Row&gt;
+                &lt;/Stack&gt;
+            ))}
+        &lt;/Stack&gt;
+        &lt;Stack&gt;
+            {COLORS.map(color =&gt; (
+                &lt;Stack gap=&quot;0.5rem&quot; key={color}&gt;
+                    &lt;strong&gt;{color} as button:&lt;/strong&gt;
+                    &lt;Row&gt;
+                        {VARIANTS.map(variant =&gt; (
+                            &lt;Tag key={variant} color={color} variant={variant} asChild&gt;
+                                &lt;button type=&quot;button&quot;&gt;{variant}&lt;/button&gt;
+                            &lt;/Tag&gt;
+                        ))}
+                    &lt;/Row&gt;
+                &lt;/Stack&gt;
+            ))}
+        &lt;/Stack&gt;
+        &lt;Stack&gt;
+            {COLORS.map(color =&gt; (
+                &lt;Stack gap=&quot;0.5rem&quot; key={color}&gt;
+                    &lt;strong&gt;{color} with icon:&lt;/strong&gt;
+                    &lt;Row&gt;
+                        {VARIANTS.map(variant =&gt; (
+                            &lt;Tag key={variant} color={color} variant={variant}&gt;
+                                &lt;IconAdd /&gt;
+                                {variant}
+                            &lt;/Tag&gt;
+                        ))}
+                    &lt;/Row&gt;
+                &lt;/Stack&gt;
+            ))}
+        &lt;/Stack&gt;
+        &lt;Stack&gt;
+            {COLORS.map(color =&gt; (
+                &lt;Stack gap=&quot;0.5rem&quot; key={color}&gt;
+                    &lt;strong&gt;{color} with icons:&lt;/strong&gt;
+                    &lt;Row&gt;
+                        {VARIANTS.map(variant =&gt; (
+                            &lt;Tag key={variant} color={color} variant={variant}&gt;
+                                &lt;IconAdd /&gt;
+                                {variant}
+                                &lt;IconAdd /&gt;
+                            &lt;/Tag&gt;
+                        ))}
+                    &lt;/Row&gt;
+                &lt;/Stack&gt;
+            ))}
+        &lt;/Stack&gt;
+        &lt;Stack&gt;
+            {COLORS.map(color =&gt; (
+                &lt;Stack gap=&quot;0.5rem&quot; key={color}&gt;
+                    &lt;strong&gt;{color} icon only:&lt;/strong&gt;
+                    &lt;Row&gt;
+                        {VARIANTS.map(variant =&gt; (
+                            &lt;Tag
+                                key={variant}
+                                color={color}
+                                variant={variant}
+                                role=&quot;img&quot;
+                                aria-label={`${color} ${variant}`}&gt;
+                                &lt;IconAdd /&gt;
+                            &lt;/Tag&gt;
+                        ))}
+                    &lt;/Row&gt;
+                &lt;/Stack&gt;
+            ))}
+        &lt;/Stack&gt;
     &lt;/div&gt;
 );</code></pre>
             </div>
@@ -4473,9 +5217,9 @@ totalCount: number</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Toast</h2>
       <div class="badges">
-        <label for="c-10-components-toast-props" class="badge ok as-toggle">11 prop types</label>
+        <label for="c-13-components-toast-props" class="badge ok as-toggle">11 prop types</label>
         
-        <label for="c-10-components-toast-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-13-components-toast-stories" class="badge ok as-toggle">11 stories</label>
         
       </div>
     </div>
@@ -4488,9 +5232,9 @@ totalCount: number</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-10-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-13-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-10-components-toast-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-13-components-toast-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
