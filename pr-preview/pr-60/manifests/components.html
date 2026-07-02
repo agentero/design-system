@@ -582,7 +582,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>3.0s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>3.4s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -2940,13 +2940,13 @@ label?: ReactNode</code></pre>
     <div class="note err">
       <div class="note-title">Prop type error</div>
       <div class="note-body"><pre><code>We could not detect the component from your story file. Specify meta.component.
-  35 |  * set of the most-used ones.
-  36 |  */
-&gt; 37 | const meta: Meta = {
+  32 |  * set of the most-used ones.
+  33 |  */
+&gt; 34 | const meta: Meta = {
      | ^
-  38 | 	title: &#39;Foundations/Icons&#39;,
-  39 | 	parameters: {
-  40 | 		layout: &#39;padded&#39;
+  35 | 	title: &#39;Foundations/Icons&#39;,
+  36 | 	parameters: {
+  37 | 		layout: &#39;padded&#39;
 
 ./src/icon-system/icon-system.stories.tsx:
 import type { Meta, StoryObj } from &#39;@storybook/react-vite&#39;;
@@ -2973,14 +2973,11 @@ import {
 	XIcon
 } from &#39;lucide-react&#39;;
 
-import { iconStyles } from &#39;../../lib/icon-styles&#39;;
-
 /**
  * The design system does not wrap icons — consumers install `lucide-react`
  * directly (declared as a `peerDependency`) and style any icon with Tailwind
- * classes: `size-*` for size and `text-*` tokens for color. The optional
- * `iconStyles` helper from `@agentero/design-system/lib` just adds `shrink-0`
- * (so icons don&#39;t collapse in a flex row) and merges the classes you pass.
+ * classes: `size-*` for size and `text-*` tokens for color. Add `shrink-0`
+ * when an icon sits next to text in a flex row so it doesn&#39;t collapse.
  *
  * This page is a living reference: how to size and color icons, plus a sample
  * set of the most-used ones.
@@ -2998,8 +2995,7 @@ type Story = StoryObj;
 
 /**
  * Size is set with a Tailwind `size-*` class straight on the icon — the DS
- * doesn&#39;t impose a scale. Wrap it with `iconStyles({ className })` to also get
- * `shrink-0`, or write `size-N shrink-0` yourself.
+ * doesn&#39;t impose a scale.
  *
  * @summary Sizing icons with Tailwind classes
  */
@@ -3007,19 +3003,19 @@ export const Sizes: Story = {
 	render: () =&gt; (
 		&lt;div className=&quot;flex items-end gap-8&quot;&gt;
 			&lt;div className=&quot;flex flex-col items-center gap-2&quot;&gt;
-				&lt;ChevronRightIcon className={iconStyles({ className: &#39;size-3.5&#39; })} /&gt;
+				&lt;ChevronRightIcon className=&quot;size-3.5&quot; /&gt;
 				&lt;span className=&quot;text-xs&quot;&gt;size-3.5 (14px)&lt;/span&gt;
 			&lt;/div&gt;
 			&lt;div className=&quot;flex flex-col items-center gap-2&quot;&gt;
-				&lt;ChevronRightIcon className={iconStyles({ className: &#39;size-4&#39; })} /&gt;
+				&lt;ChevronRightIcon className=&quot;size-4&quot; /&gt;
 				&lt;span className=&quot;text-xs&quot;&gt;size-4 (16px)&lt;/span&gt;
 			&lt;/div&gt;
 			&lt;div className=&quot;flex flex-col items-center gap-2&quot;&gt;
-				&lt;ChevronRightIcon className={iconStyles({ className: &#39;size-5&#39; })} /&gt;
+				&lt;ChevronRightIcon className=&quot;size-5&quot; /&gt;
 				&lt;span className=&quot;text-xs&quot;&gt;size-5 (20px)&lt;/span&gt;
 			&lt;/div&gt;
 			&lt;div className=&quot;flex flex-col items-center gap-2&quot;&gt;
-				&lt;ChevronRightIcon className={iconStyles({ className: &#39;size-6&#39; })} /&gt;
+				&lt;ChevronRightIcon className=&quot;size-6&quot; /&gt;
 				&lt;span className=&quot;text-xs&quot;&gt;size-6 (24px)&lt;/span&gt;
 			&lt;/div&gt;
 		&lt;/div&gt;
@@ -3037,23 +3033,23 @@ export const Colors: Story = {
 	render: () =&gt; (
 		&lt;div className=&quot;flex gap-8&quot;&gt;
 			&lt;div className=&quot;flex flex-col items-center gap-2 text-icon-default-base-primary&quot;&gt;
-				&lt;BellIcon className={iconStyles({ className: &#39;size-5&#39; })} /&gt;
+				&lt;BellIcon className=&quot;size-5&quot; /&gt;
 				&lt;span className=&quot;text-xs&quot;&gt;primary&lt;/span&gt;
 			&lt;/div&gt;
 			&lt;div className=&quot;flex flex-col items-center gap-2 text-icon-default-base-secondary&quot;&gt;
-				&lt;BellIcon className={iconStyles({ className: &#39;size-5&#39; })} /&gt;
+				&lt;BellIcon className=&quot;size-5&quot; /&gt;
 				&lt;span className=&quot;text-xs&quot;&gt;secondary&lt;/span&gt;
 			&lt;/div&gt;
 			&lt;div className=&quot;flex flex-col items-center gap-2 text-icon-default-base-tertiary&quot;&gt;
-				&lt;BellIcon className={iconStyles({ className: &#39;size-5&#39; })} /&gt;
+				&lt;BellIcon className=&quot;size-5&quot; /&gt;
 				&lt;span className=&quot;text-xs&quot;&gt;tertiary&lt;/span&gt;
 			&lt;/div&gt;
 			&lt;div className=&quot;flex flex-col items-center gap-2 text-bg-default-danger-primary&quot;&gt;
-				&lt;TriangleAlertIcon className={iconStyles({ className: &#39;size-5&#39; })} /&gt;
+				&lt;TriangleAlertIcon className=&quot;size-5&quot; /&gt;
 				&lt;span className=&quot;text-xs&quot;&gt;danger&lt;/span&gt;
 			&lt;/div&gt;
 			&lt;div className=&quot;flex flex-col items-center gap-2 text-bg-default-positive-primary&quot;&gt;
-				&lt;CheckIcon className={iconStyles({ className: &#39;size-5&#39; })} /&gt;
+				&lt;CheckIcon className=&quot;size-5&quot; /&gt;
 				&lt;span className=&quot;text-xs&quot;&gt;positive&lt;/span&gt;
 			&lt;/div&gt;
 		&lt;/div&gt;
@@ -3094,7 +3090,7 @@ export const Gallery: Story = {
 		return (
 			&lt;div className=&quot;flex flex-wrap items-center gap-4 text-icon-default-base-primary&quot;&gt;
 				{icons.map(({ name, Icon }) =&gt; (
-					&lt;Icon key={name} className={iconStyles({ className: &#39;size-6&#39; })} /&gt;
+					&lt;Icon key={name} className=&quot;size-6&quot; /&gt;
 				))}
 			&lt;/div&gt;
 		);
@@ -3102,15 +3098,16 @@ export const Gallery: Story = {
 };
 
 /**
- * Icons composed inside another element: size with `size-*`, let color inherit
- * from the parent&#39;s text token. `iconStyles` keeps the icon from shrinking.
+ * Icons composed next to text: size with `size-*`, add `shrink-0` so the icon
+ * doesn&#39;t collapse in the flex row, and let color inherit from the parent&#39;s
+ * text token.
  *
  * @summary Icon within a button-like composition
  */
 export const InComposition: Story = {
 	render: () =&gt; (
 		&lt;div className=&quot;flex items-center gap-2 rounded-full bg-bg-button-primary-enable px-4 py-2 text-icon-button-primary-enable&quot;&gt;
-			&lt;PlusIcon className={iconStyles({ className: &#39;size-4&#39; })} /&gt;
+			&lt;PlusIcon className=&quot;size-4 shrink-0&quot; /&gt;
 			&lt;span className=&quot;text-sm&quot;&gt;Create agent&lt;/span&gt;
 		&lt;/div&gt;
 	)
@@ -3146,23 +3143,23 @@ export const InComposition: Story = {
                 <span class="badge ok">story ok</span>
               </div>
               <div>Sizing icons with Tailwind classes</div>
-              <div class="hint">Size is set with a Tailwind `size-*` class straight on the icon — the DS doesn&#39;t impose a scale. Wrap it with `iconStyles({ className })` to also get `shrink-0`, or write `size-N shrink-0` yourself.</div>
+              <div class="hint">Size is set with a Tailwind `size-*` class straight on the icon — the DS doesn&#39;t impose a scale.</div>
               <pre><code>const Sizes = () =&gt; (
     &lt;div className=&quot;flex items-end gap-8&quot;&gt;
         &lt;div className=&quot;flex flex-col items-center gap-2&quot;&gt;
-            &lt;ChevronRightIcon className={iconStyles({ className: &#39;size-3.5&#39; })} /&gt;
+            &lt;ChevronRightIcon className=&quot;size-3.5&quot; /&gt;
             &lt;span className=&quot;text-xs&quot;&gt;size-3.5 (14px)&lt;/span&gt;
         &lt;/div&gt;
         &lt;div className=&quot;flex flex-col items-center gap-2&quot;&gt;
-            &lt;ChevronRightIcon className={iconStyles({ className: &#39;size-4&#39; })} /&gt;
+            &lt;ChevronRightIcon className=&quot;size-4&quot; /&gt;
             &lt;span className=&quot;text-xs&quot;&gt;size-4 (16px)&lt;/span&gt;
         &lt;/div&gt;
         &lt;div className=&quot;flex flex-col items-center gap-2&quot;&gt;
-            &lt;ChevronRightIcon className={iconStyles({ className: &#39;size-5&#39; })} /&gt;
+            &lt;ChevronRightIcon className=&quot;size-5&quot; /&gt;
             &lt;span className=&quot;text-xs&quot;&gt;size-5 (20px)&lt;/span&gt;
         &lt;/div&gt;
         &lt;div className=&quot;flex flex-col items-center gap-2&quot;&gt;
-            &lt;ChevronRightIcon className={iconStyles({ className: &#39;size-6&#39; })} /&gt;
+            &lt;ChevronRightIcon className=&quot;size-6&quot; /&gt;
             &lt;span className=&quot;text-xs&quot;&gt;size-6 (24px)&lt;/span&gt;
         &lt;/div&gt;
     &lt;/div&gt;
@@ -3178,23 +3175,23 @@ export const InComposition: Story = {
               <pre><code>const Colors = () =&gt; (
     &lt;div className=&quot;flex gap-8&quot;&gt;
         &lt;div className=&quot;flex flex-col items-center gap-2 text-icon-default-base-primary&quot;&gt;
-            &lt;BellIcon className={iconStyles({ className: &#39;size-5&#39; })} /&gt;
+            &lt;BellIcon className=&quot;size-5&quot; /&gt;
             &lt;span className=&quot;text-xs&quot;&gt;primary&lt;/span&gt;
         &lt;/div&gt;
         &lt;div className=&quot;flex flex-col items-center gap-2 text-icon-default-base-secondary&quot;&gt;
-            &lt;BellIcon className={iconStyles({ className: &#39;size-5&#39; })} /&gt;
+            &lt;BellIcon className=&quot;size-5&quot; /&gt;
             &lt;span className=&quot;text-xs&quot;&gt;secondary&lt;/span&gt;
         &lt;/div&gt;
         &lt;div className=&quot;flex flex-col items-center gap-2 text-icon-default-base-tertiary&quot;&gt;
-            &lt;BellIcon className={iconStyles({ className: &#39;size-5&#39; })} /&gt;
+            &lt;BellIcon className=&quot;size-5&quot; /&gt;
             &lt;span className=&quot;text-xs&quot;&gt;tertiary&lt;/span&gt;
         &lt;/div&gt;
         &lt;div className=&quot;flex flex-col items-center gap-2 text-bg-default-danger-primary&quot;&gt;
-            &lt;TriangleAlertIcon className={iconStyles({ className: &#39;size-5&#39; })} /&gt;
+            &lt;TriangleAlertIcon className=&quot;size-5&quot; /&gt;
             &lt;span className=&quot;text-xs&quot;&gt;danger&lt;/span&gt;
         &lt;/div&gt;
         &lt;div className=&quot;flex flex-col items-center gap-2 text-bg-default-positive-primary&quot;&gt;
-            &lt;CheckIcon className={iconStyles({ className: &#39;size-5&#39; })} /&gt;
+            &lt;CheckIcon className=&quot;size-5&quot; /&gt;
             &lt;span className=&quot;text-xs&quot;&gt;positive&lt;/span&gt;
         &lt;/div&gt;
     &lt;/div&gt;
@@ -3234,7 +3231,7 @@ export const InComposition: Story = {
     return (
         &lt;div className=&quot;flex flex-wrap items-center gap-4 text-icon-default-base-primary&quot;&gt;
             {icons.map(({ name, Icon }) =&gt; (
-                &lt;Icon key={name} className={iconStyles({ className: &#39;size-6&#39; })} /&gt;
+                &lt;Icon key={name} className=&quot;size-6&quot; /&gt;
             ))}
         &lt;/div&gt;
     );
@@ -3246,10 +3243,10 @@ export const InComposition: Story = {
                 <span class="badge ok">story ok</span>
               </div>
               <div>Icon within a button-like composition</div>
-              <div class="hint">Icons composed inside another element: size with `size-*`, let color inherit from the parent&#39;s text token. `iconStyles` keeps the icon from shrinking.</div>
+              <div class="hint">Icons composed next to text: size with `size-*`, add `shrink-0` so the icon doesn&#39;t collapse in the flex row, and let color inherit from the parent&#39;s text token.</div>
               <pre><code>const InComposition = () =&gt; (
     &lt;div className=&quot;flex items-center gap-2 rounded-full bg-bg-button-primary-enable px-4 py-2 text-icon-button-primary-enable&quot;&gt;
-        &lt;PlusIcon className={iconStyles({ className: &#39;size-4&#39; })} /&gt;
+        &lt;PlusIcon className=&quot;size-4 shrink-0&quot; /&gt;
         &lt;span className=&quot;text-sm&quot;&gt;Create agent&lt;/span&gt;
     &lt;/div&gt;
 );</code></pre>
@@ -4613,13 +4610,13 @@ visibleToasts?: number</code></pre>
     <div class="note err">
       <div class="note-title">Prop type error</div>
       <div class="note-body"><pre><code>We could not detect the component from your story file. Specify meta.component.
-  35 |  * set of the most-used ones.
-  36 |  */
-&gt; 37 | const meta: Meta = {
+  32 |  * set of the most-used ones.
+  33 |  */
+&gt; 34 | const meta: Meta = {
      | ^
-  38 | 	title: &#39;Foundations/Icons&#39;,
-  39 | 	parameters: {
-  40 | 		layout: &#39;padded&#39;
+  35 | 	title: &#39;Foundations/Icons&#39;,
+  36 | 	parameters: {
+  37 | 		layout: &#39;padded&#39;
 
 ./src/icon-system/icon-system.stories.tsx:
 import type { Meta, StoryObj } from &#39;@storybook/react-vite&#39;;
@@ -4646,14 +4643,11 @@ import {
 	XIcon
 } from &#39;lucide-react&#39;;
 
-import { iconStyles } from &#39;../../lib/icon-styles&#39;;
-
 /**
  * The design system does not wrap icons — consumers install `lucide-react`
  * directly (declared as a `peerDependency`) and style any icon with Tailwind
- * classes: `size-*` for size and `text-*` tokens for color. The optional
- * `iconStyles` helper from `@agentero/design-system/lib` just adds `shrink-0`
- * (so icons don&#39;t collapse in a flex row) and merges the classes you pass.
+ * classes: `size-*` for size and `text-*` tokens for color. Add `shrink-0`
+ * when an icon sits next to text in a flex row so it doesn&#39;t collapse.
  *
  * This page is a living reference: how to size and color icons, plus a sample
  * set of the most-used ones.
@@ -4671,8 +4665,7 @@ type Story = StoryObj;
 
 /**
  * Size is set with a Tailwind `size-*` class straight on the icon — the DS
- * doesn&#39;t impose a scale. Wrap it with `iconStyles({ className })` to also get
- * `shrink-0`, or write `size-N shrink-0` yourself.
+ * doesn&#39;t impose a scale.
  *
  * @summary Sizing icons with Tailwind classes
  */
@@ -4680,19 +4673,19 @@ export const Sizes: Story = {
 	render: () =&gt; (
 		&lt;div className=&quot;flex items-end gap-8&quot;&gt;
 			&lt;div className=&quot;flex flex-col items-center gap-2&quot;&gt;
-				&lt;ChevronRightIcon className={iconStyles({ className: &#39;size-3.5&#39; })} /&gt;
+				&lt;ChevronRightIcon className=&quot;size-3.5&quot; /&gt;
 				&lt;span className=&quot;text-xs&quot;&gt;size-3.5 (14px)&lt;/span&gt;
 			&lt;/div&gt;
 			&lt;div className=&quot;flex flex-col items-center gap-2&quot;&gt;
-				&lt;ChevronRightIcon className={iconStyles({ className: &#39;size-4&#39; })} /&gt;
+				&lt;ChevronRightIcon className=&quot;size-4&quot; /&gt;
 				&lt;span className=&quot;text-xs&quot;&gt;size-4 (16px)&lt;/span&gt;
 			&lt;/div&gt;
 			&lt;div className=&quot;flex flex-col items-center gap-2&quot;&gt;
-				&lt;ChevronRightIcon className={iconStyles({ className: &#39;size-5&#39; })} /&gt;
+				&lt;ChevronRightIcon className=&quot;size-5&quot; /&gt;
 				&lt;span className=&quot;text-xs&quot;&gt;size-5 (20px)&lt;/span&gt;
 			&lt;/div&gt;
 			&lt;div className=&quot;flex flex-col items-center gap-2&quot;&gt;
-				&lt;ChevronRightIcon className={iconStyles({ className: &#39;size-6&#39; })} /&gt;
+				&lt;ChevronRightIcon className=&quot;size-6&quot; /&gt;
 				&lt;span className=&quot;text-xs&quot;&gt;size-6 (24px)&lt;/span&gt;
 			&lt;/div&gt;
 		&lt;/div&gt;
@@ -4710,23 +4703,23 @@ export const Colors: Story = {
 	render: () =&gt; (
 		&lt;div className=&quot;flex gap-8&quot;&gt;
 			&lt;div className=&quot;flex flex-col items-center gap-2 text-icon-default-base-primary&quot;&gt;
-				&lt;BellIcon className={iconStyles({ className: &#39;size-5&#39; })} /&gt;
+				&lt;BellIcon className=&quot;size-5&quot; /&gt;
 				&lt;span className=&quot;text-xs&quot;&gt;primary&lt;/span&gt;
 			&lt;/div&gt;
 			&lt;div className=&quot;flex flex-col items-center gap-2 text-icon-default-base-secondary&quot;&gt;
-				&lt;BellIcon className={iconStyles({ className: &#39;size-5&#39; })} /&gt;
+				&lt;BellIcon className=&quot;size-5&quot; /&gt;
 				&lt;span className=&quot;text-xs&quot;&gt;secondary&lt;/span&gt;
 			&lt;/div&gt;
 			&lt;div className=&quot;flex flex-col items-center gap-2 text-icon-default-base-tertiary&quot;&gt;
-				&lt;BellIcon className={iconStyles({ className: &#39;size-5&#39; })} /&gt;
+				&lt;BellIcon className=&quot;size-5&quot; /&gt;
 				&lt;span className=&quot;text-xs&quot;&gt;tertiary&lt;/span&gt;
 			&lt;/div&gt;
 			&lt;div className=&quot;flex flex-col items-center gap-2 text-bg-default-danger-primary&quot;&gt;
-				&lt;TriangleAlertIcon className={iconStyles({ className: &#39;size-5&#39; })} /&gt;
+				&lt;TriangleAlertIcon className=&quot;size-5&quot; /&gt;
 				&lt;span className=&quot;text-xs&quot;&gt;danger&lt;/span&gt;
 			&lt;/div&gt;
 			&lt;div className=&quot;flex flex-col items-center gap-2 text-bg-default-positive-primary&quot;&gt;
-				&lt;CheckIcon className={iconStyles({ className: &#39;size-5&#39; })} /&gt;
+				&lt;CheckIcon className=&quot;size-5&quot; /&gt;
 				&lt;span className=&quot;text-xs&quot;&gt;positive&lt;/span&gt;
 			&lt;/div&gt;
 		&lt;/div&gt;
@@ -4767,7 +4760,7 @@ export const Gallery: Story = {
 		return (
 			&lt;div className=&quot;flex flex-wrap items-center gap-4 text-icon-default-base-primary&quot;&gt;
 				{icons.map(({ name, Icon }) =&gt; (
-					&lt;Icon key={name} className={iconStyles({ className: &#39;size-6&#39; })} /&gt;
+					&lt;Icon key={name} className=&quot;size-6&quot; /&gt;
 				))}
 			&lt;/div&gt;
 		);
@@ -4775,15 +4768,16 @@ export const Gallery: Story = {
 };
 
 /**
- * Icons composed inside another element: size with `size-*`, let color inherit
- * from the parent&#39;s text token. `iconStyles` keeps the icon from shrinking.
+ * Icons composed next to text: size with `size-*`, add `shrink-0` so the icon
+ * doesn&#39;t collapse in the flex row, and let color inherit from the parent&#39;s
+ * text token.
  *
  * @summary Icon within a button-like composition
  */
 export const InComposition: Story = {
 	render: () =&gt; (
 		&lt;div className=&quot;flex items-center gap-2 rounded-full bg-bg-button-primary-enable px-4 py-2 text-icon-button-primary-enable&quot;&gt;
-			&lt;PlusIcon className={iconStyles({ className: &#39;size-4&#39; })} /&gt;
+			&lt;PlusIcon className=&quot;size-4 shrink-0&quot; /&gt;
 			&lt;span className=&quot;text-sm&quot;&gt;Create agent&lt;/span&gt;
 		&lt;/div&gt;
 	)
@@ -4819,23 +4813,23 @@ export const InComposition: Story = {
                 <span class="badge ok">story ok</span>
               </div>
               <div>Sizing icons with Tailwind classes</div>
-              <div class="hint">Size is set with a Tailwind `size-*` class straight on the icon — the DS doesn&#39;t impose a scale. Wrap it with `iconStyles({ className })` to also get `shrink-0`, or write `size-N shrink-0` yourself.</div>
+              <div class="hint">Size is set with a Tailwind `size-*` class straight on the icon — the DS doesn&#39;t impose a scale.</div>
               <pre><code>const Sizes = () =&gt; (
     &lt;div className=&quot;flex items-end gap-8&quot;&gt;
         &lt;div className=&quot;flex flex-col items-center gap-2&quot;&gt;
-            &lt;ChevronRightIcon className={iconStyles({ className: &#39;size-3.5&#39; })} /&gt;
+            &lt;ChevronRightIcon className=&quot;size-3.5&quot; /&gt;
             &lt;span className=&quot;text-xs&quot;&gt;size-3.5 (14px)&lt;/span&gt;
         &lt;/div&gt;
         &lt;div className=&quot;flex flex-col items-center gap-2&quot;&gt;
-            &lt;ChevronRightIcon className={iconStyles({ className: &#39;size-4&#39; })} /&gt;
+            &lt;ChevronRightIcon className=&quot;size-4&quot; /&gt;
             &lt;span className=&quot;text-xs&quot;&gt;size-4 (16px)&lt;/span&gt;
         &lt;/div&gt;
         &lt;div className=&quot;flex flex-col items-center gap-2&quot;&gt;
-            &lt;ChevronRightIcon className={iconStyles({ className: &#39;size-5&#39; })} /&gt;
+            &lt;ChevronRightIcon className=&quot;size-5&quot; /&gt;
             &lt;span className=&quot;text-xs&quot;&gt;size-5 (20px)&lt;/span&gt;
         &lt;/div&gt;
         &lt;div className=&quot;flex flex-col items-center gap-2&quot;&gt;
-            &lt;ChevronRightIcon className={iconStyles({ className: &#39;size-6&#39; })} /&gt;
+            &lt;ChevronRightIcon className=&quot;size-6&quot; /&gt;
             &lt;span className=&quot;text-xs&quot;&gt;size-6 (24px)&lt;/span&gt;
         &lt;/div&gt;
     &lt;/div&gt;
@@ -4851,23 +4845,23 @@ export const InComposition: Story = {
               <pre><code>const Colors = () =&gt; (
     &lt;div className=&quot;flex gap-8&quot;&gt;
         &lt;div className=&quot;flex flex-col items-center gap-2 text-icon-default-base-primary&quot;&gt;
-            &lt;BellIcon className={iconStyles({ className: &#39;size-5&#39; })} /&gt;
+            &lt;BellIcon className=&quot;size-5&quot; /&gt;
             &lt;span className=&quot;text-xs&quot;&gt;primary&lt;/span&gt;
         &lt;/div&gt;
         &lt;div className=&quot;flex flex-col items-center gap-2 text-icon-default-base-secondary&quot;&gt;
-            &lt;BellIcon className={iconStyles({ className: &#39;size-5&#39; })} /&gt;
+            &lt;BellIcon className=&quot;size-5&quot; /&gt;
             &lt;span className=&quot;text-xs&quot;&gt;secondary&lt;/span&gt;
         &lt;/div&gt;
         &lt;div className=&quot;flex flex-col items-center gap-2 text-icon-default-base-tertiary&quot;&gt;
-            &lt;BellIcon className={iconStyles({ className: &#39;size-5&#39; })} /&gt;
+            &lt;BellIcon className=&quot;size-5&quot; /&gt;
             &lt;span className=&quot;text-xs&quot;&gt;tertiary&lt;/span&gt;
         &lt;/div&gt;
         &lt;div className=&quot;flex flex-col items-center gap-2 text-bg-default-danger-primary&quot;&gt;
-            &lt;TriangleAlertIcon className={iconStyles({ className: &#39;size-5&#39; })} /&gt;
+            &lt;TriangleAlertIcon className=&quot;size-5&quot; /&gt;
             &lt;span className=&quot;text-xs&quot;&gt;danger&lt;/span&gt;
         &lt;/div&gt;
         &lt;div className=&quot;flex flex-col items-center gap-2 text-bg-default-positive-primary&quot;&gt;
-            &lt;CheckIcon className={iconStyles({ className: &#39;size-5&#39; })} /&gt;
+            &lt;CheckIcon className=&quot;size-5&quot; /&gt;
             &lt;span className=&quot;text-xs&quot;&gt;positive&lt;/span&gt;
         &lt;/div&gt;
     &lt;/div&gt;
@@ -4907,7 +4901,7 @@ export const InComposition: Story = {
     return (
         &lt;div className=&quot;flex flex-wrap items-center gap-4 text-icon-default-base-primary&quot;&gt;
             {icons.map(({ name, Icon }) =&gt; (
-                &lt;Icon key={name} className={iconStyles({ className: &#39;size-6&#39; })} /&gt;
+                &lt;Icon key={name} className=&quot;size-6&quot; /&gt;
             ))}
         &lt;/div&gt;
     );
@@ -4919,10 +4913,10 @@ export const InComposition: Story = {
                 <span class="badge ok">story ok</span>
               </div>
               <div>Icon within a button-like composition</div>
-              <div class="hint">Icons composed inside another element: size with `size-*`, let color inherit from the parent&#39;s text token. `iconStyles` keeps the icon from shrinking.</div>
+              <div class="hint">Icons composed next to text: size with `size-*`, add `shrink-0` so the icon doesn&#39;t collapse in the flex row, and let color inherit from the parent&#39;s text token.</div>
               <pre><code>const InComposition = () =&gt; (
     &lt;div className=&quot;flex items-center gap-2 rounded-full bg-bg-button-primary-enable px-4 py-2 text-icon-button-primary-enable&quot;&gt;
-        &lt;PlusIcon className={iconStyles({ className: &#39;size-4&#39; })} /&gt;
+        &lt;PlusIcon className=&quot;size-4 shrink-0&quot; /&gt;
         &lt;span className=&quot;text-sm&quot;&gt;Create agent&lt;/span&gt;
     &lt;/div&gt;
 );</code></pre>
