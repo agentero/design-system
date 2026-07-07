@@ -9,7 +9,7 @@ import { tv } from 'tailwind-variants';
 // fades and slides in from the edge nearest its trigger.
 export const tooltipRecipe = tv({
 	base: [
-		'z-[var(--z-index-tooltip)] max-w-[32ch] px-3 py-2',
+		'z-(--z-index-tooltip) max-w-[32ch] px-3 py-2',
 		'rounded-sm border border-border-default-base-primary bg-bg-default-base-primary shadow-sm',
 		'text-xs text-pretty text-text-default-base-secondary select-none',
 		'will-change-[transform,opacity]',
