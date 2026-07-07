@@ -576,13 +576,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">13 components ok</span><span class="filter-pill ok" aria-disabled="true">132 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">14 components ok</span><span class="filter-pill ok" aria-disabled="true">138 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>2.8s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>3.0s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -3227,6 +3227,171 @@ totalCount: number</code></pre>
   no-story-error
   no-doc-error"
   role="listitem"
+  aria-label="Switch">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Switch</h2>
+      <div class="badges">
+        <label for="c-9-components-switch-props" class="badge ok as-toggle">2 prop types</label>
+        
+        <label for="c-9-components-switch-stories" class="badge ok as-toggle">6 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/switch/switch.stories.tsx">components-switch · ./src/switch/switch.stories.tsx</div>
+    
+    <div class="hint">Two-state toggle for a setting that takes effect immediately. Prefer it over a Checkbox for a single boolean that applies instantly, and pair it with a `&lt;label htmlFor&gt;` to give it an accessible name.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-9-components-switch-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  <input id="c-9-components-switch-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
+              <span class="badge ok">2 prop types</span>
+            </div>
+            <pre><code>Component: src/switch/switch.tsx::Switch</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>asChild?: boolean
+
+size?: &quot;sm&quot; | &quot;md&quot;</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Switch } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              
+              <pre><code>const Default = () =&gt; &lt;Switch size=&quot;md&quot; disabled={false} defaultChecked aria-label=&quot;Toggle setting&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Sizes</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">The `sm` and `md` sizes compared.</div>
+              <pre><code>const Sizes = () =&gt; (
+    &lt;div className=&quot;flex items-center gap-6&quot;&gt;
+        &lt;div className=&quot;flex items-center gap-2&quot;&gt;
+            &lt;Switch id=&quot;size-sm&quot; size=&quot;sm&quot; defaultChecked /&gt;
+            &lt;label htmlFor=&quot;size-sm&quot; className=&quot;text-sm text-text-default-base-primary&quot;&gt;
+                Small
+            &lt;/label&gt;
+        &lt;/div&gt;
+        &lt;div className=&quot;flex items-center gap-2&quot;&gt;
+            &lt;Switch id=&quot;size-md&quot; size=&quot;md&quot; defaultChecked /&gt;
+            &lt;label htmlFor=&quot;size-md&quot; className=&quot;text-sm text-text-default-base-primary&quot;&gt;
+                Medium
+            &lt;/label&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">States</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Unchecked and checked tracks.</div>
+              <pre><code>const States = () =&gt; &lt;div className=&quot;flex items-center gap-6&quot;&gt;
+    &lt;Switch size=&quot;md&quot; disabled={false} defaultChecked={false} aria-label=&quot;Off&quot; /&gt;
+    &lt;Switch size=&quot;md&quot; disabled={false} defaultChecked aria-label=&quot;On&quot; /&gt;
+&lt;/div&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Disabled</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Disabled switches are dimmed and reject pointer and keyboard interaction.</div>
+              <pre><code>const Disabled = () =&gt; (
+    &lt;div className=&quot;flex items-center gap-6&quot;&gt;
+        &lt;Switch disabled aria-label=&quot;Disabled off&quot; /&gt;
+        &lt;Switch disabled defaultChecked aria-label=&quot;Disabled on&quot; /&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Controlled</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Controlled switch wired to component state via `checked` + `onCheckedChange`.</div>
+              <pre><code>const Controlled = () =&gt; {
+    const [enabled, setEnabled] = useState(false);
+
+    return (
+        &lt;div className=&quot;flex items-center gap-2&quot;&gt;
+            &lt;Switch id=&quot;controlled&quot; checked={enabled} onCheckedChange={setEnabled} /&gt;
+            &lt;label htmlFor=&quot;controlled&quot; className=&quot;text-sm text-text-default-base-primary&quot;&gt;
+                Notifications {enabled ? &#39;on&#39; : &#39;off&#39;}
+            &lt;/label&gt;
+        &lt;/div&gt;
+    );
+};</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Setting Row</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Switch aligned in a labelled settings row.</div>
+              <pre><code>const SettingRow = () =&gt; (
+    &lt;div className=&quot;flex w-80 items-center justify-between gap-4 rounded-lg border border-border-default-base-primary bg-bg-default-base-primary p-4&quot;&gt;
+        &lt;div className=&quot;flex flex-col gap-0.5&quot;&gt;
+            &lt;label htmlFor=&quot;marketing&quot; className=&quot;text-sm font-medium text-text-default-base-primary&quot;&gt;
+                Marketing emails
+            &lt;/label&gt;
+            &lt;p className=&quot;text-xs text-text-default-base-secondary&quot;&gt;
+                Receive product updates and offers.
+            &lt;/p&gt;
+        &lt;/div&gt;
+        &lt;Switch id=&quot;marketing&quot; defaultChecked /&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
   aria-label="Table.Root">
   <div class="head">
     <div class="title">
@@ -3234,7 +3399,7 @@ totalCount: number</code></pre>
       <div class="badges">
         
         
-        <label for="c-9-components-table-stories" class="badge ok as-toggle">9 stories</label>
+        <label for="c-10-components-table-stories" class="badge ok as-toggle">9 stories</label>
         
       </div>
     </div>
@@ -3247,7 +3412,7 @@ totalCount: number</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-9-components-table-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-10-components-table-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
@@ -3421,9 +3586,9 @@ import { Fragment } from "react";</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tag</h2>
       <div class="badges">
-        <label for="c-10-components-tag-props" class="badge ok as-toggle">6 prop types</label>
+        <label for="c-11-components-tag-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-10-components-tag-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-11-components-tag-stories" class="badge ok as-toggle">10 stories</label>
         
       </div>
     </div>
@@ -3436,9 +3601,9 @@ import { Fragment } from "react";</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-10-components-tag-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-11-components-tag-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-10-components-tag-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-11-components-tag-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -3795,9 +3960,9 @@ variant?: &quot;ghost&quot; | &quot;secondary&quot; | &quot;tertiary&quot; | &qu
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Toast</h2>
       <div class="badges">
-        <label for="c-11-components-toast-props" class="badge ok as-toggle">11 prop types</label>
+        <label for="c-12-components-toast-props" class="badge ok as-toggle">11 prop types</label>
         
-        <label for="c-11-components-toast-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-12-components-toast-stories" class="badge ok as-toggle">11 stories</label>
         
       </div>
     </div>
@@ -3810,9 +3975,9 @@ variant?: &quot;ghost&quot; | &quot;secondary&quot; | &quot;tertiary&quot; | &qu
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-11-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-12-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-11-components-toast-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-12-components-toast-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -4221,24 +4386,24 @@ visibleToasts?: number</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tooltip</h2>
       <div class="badges">
-        <label for="c-12-components-tooltip-props" class="badge ok as-toggle">9 prop types</label>
+        <label for="c-13-components-tooltip-props" class="badge ok as-toggle">9 prop types</label>
         
-        <label for="c-12-components-tooltip-stories" class="badge ok as-toggle">5 stories</label>
+        <label for="c-13-components-tooltip-stories" class="badge ok as-toggle">5 stories</label>
         
       </div>
     </div>
     <div class="meta" title="./src/tooltip/tooltip.stories.tsx">components-tooltip · ./src/tooltip/tooltip.stories.tsx</div>
     
-    <div class="hint">Tooltip reveals a short, non-essential hint anchored to a trigger element when the user hovers or focuses it. Pass the trigger as `children` and the hint as `content`. Use `asChild` when the trigger is already an interactive element to avoid nesting buttons.</div>
+    <div class="hint">Tooltip reveals a short, non-essential hint anchored to a trigger element on hover or focus.</div>
     
   </div>
 
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-12-components-tooltip-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-13-components-tooltip-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-12-components-tooltip-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-13-components-tooltip-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -4316,8 +4481,8 @@ sideOffset?: number = 4</code></pre>
                 <span class="ex-name">Default</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Default hint revealed on hover/focus</div>
-              <div class="hint">The default tooltip: a hint that fades in above a button trigger on hover or focus. Hover or tab to the trigger to reveal it.</div>
+              
+              <div class="hint">Default hint revealed on hover; hides again on unhover.</div>
               <pre><code>const Default = () =&gt; &lt;Tooltip content=&quot;Archive this carrier&quot; side=&quot;top&quot; asChild&gt;
     &lt;Button variant=&quot;secondary&quot;&gt;Hover me&lt;/Button&gt;
 &lt;/Tooltip&gt;;</code></pre>
@@ -4327,8 +4492,8 @@ sideOffset?: number = 4</code></pre>
                 <span class="ex-name">Opens On Focus</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Opens on keyboard focus, not just hover</div>
-              <div class="hint">The tooltip also opens on keyboard focus, so it stays accessible without a pointer. Tabbing to the trigger reveals the hint and wires up `aria-describedby`; blurring hides it.</div>
+              
+              <div class="hint">Opens on keyboard focus too, wiring `aria-describedby` on the trigger.</div>
               <pre><code>const OpensOnFocus = () =&gt; &lt;Tooltip content=&quot;Archive this carrier&quot; side=&quot;top&quot; asChild&gt;
     &lt;Button variant=&quot;secondary&quot;&gt;Focus me&lt;/Button&gt;
 &lt;/Tooltip&gt;;</code></pre>
@@ -4338,8 +4503,8 @@ sideOffset?: number = 4</code></pre>
                 <span class="ex-name">Sides</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Placement on any of the four sides</div>
-              <div class="hint">`side` sets the preferred placement relative to the trigger. Radix flips it automatically when it would collide with the viewport edge.</div>
+              
+              <div class="hint">`side` sets the preferred placement; it flips on viewport collision.</div>
               <pre><code>const Sides = () =&gt; (
     &lt;div className=&quot;grid grid-cols-2 gap-6&quot;&gt;
         &lt;Tooltip content=&quot;Tooltip on top&quot; side=&quot;top&quot; asChild&gt;
@@ -4362,8 +4527,8 @@ sideOffset?: number = 4</code></pre>
                 <span class="ex-name">As Child</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Decorate an already-interactive trigger</div>
-              <div class="hint">With `asChild`, the trigger decorates its child element instead of wrapping it in a `&lt;button&gt;`. Use it when the trigger is already interactive — a link or icon button — to avoid nesting interactive elements.</div>
+              
+              <div class="hint">`asChild` decorates an already-interactive trigger instead of wrapping it in a `&lt;button&gt;`.</div>
               <pre><code>const AsChild = () =&gt; &lt;Tooltip content=&quot;Opens in a new tab&quot; side=&quot;bottom&quot; asChild&gt;
     &lt;a
         href=&quot;https://agentero.com&quot;
@@ -4378,8 +4543,8 @@ sideOffset?: number = 4</code></pre>
                 <span class="ex-name">Long Content</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Long text wraps at the max width</div>
-              <div class="hint">Content wider than `32ch` wraps onto multiple lines instead of stretching across the viewport. Keep tooltips short — long explanations belong inline.</div>
+              
+              <div class="hint">Content wraps at the `32ch` max width.</div>
               <pre><code>const LongContent = () =&gt; &lt;Tooltip
     content=&quot;This carrier requires a completed appointment before you can request quotes for this line of business.&quot;
     side=&quot;top&quot;
