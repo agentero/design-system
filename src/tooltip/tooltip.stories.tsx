@@ -6,9 +6,7 @@ import { Tooltip } from './tooltip';
 
 /**
  * Tooltip reveals a short, non-essential hint anchored to a trigger element
- * when the user hovers or focuses it. Pass the trigger as `children` and the
- * hint as `content`. Use `asChild` when the trigger is already an interactive
- * element to avoid nesting buttons.
+ * on hover or focus.
  */
 const meta = {
 	title: 'Components/Tooltip',
@@ -57,12 +55,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/**
- * The default tooltip: a hint that fades in above a button trigger on hover or
- * focus. Hover or tab to the trigger to reveal it.
- *
- * @summary Default hint revealed on hover/focus
- */
+/** Default hint revealed on hover; hides again on unhover. */
 export const Default: Story = {
 	render: args => (
 		<Tooltip {...args}>
@@ -87,13 +80,7 @@ export const Default: Story = {
 	}
 };
 
-/**
- * The tooltip also opens on keyboard focus, so it stays accessible without a
- * pointer. Tabbing to the trigger reveals the hint and wires up
- * `aria-describedby`; blurring hides it.
- *
- * @summary Opens on keyboard focus, not just hover
- */
+/** Opens on keyboard focus too, wiring `aria-describedby` on the trigger. */
 export const OpensOnFocus: Story = {
 	render: args => (
 		<Tooltip {...args}>
@@ -114,14 +101,7 @@ export const OpensOnFocus: Story = {
 	}
 };
 
-/* --------------- Sides --------------- */
-
-/**
- * `side` sets the preferred placement relative to the trigger. Radix flips it
- * automatically when it would collide with the viewport edge.
- *
- * @summary Placement on any of the four sides
- */
+/** `side` sets the preferred placement; it flips on viewport collision. */
 export const Sides: Story = {
 	render: () => (
 		<div className="grid grid-cols-2 gap-6">
@@ -141,15 +121,7 @@ export const Sides: Story = {
 	)
 };
 
-/* --------------- asChild --------------- */
-
-/**
- * With `asChild`, the trigger decorates its child element instead of wrapping
- * it in a `<button>`. Use it when the trigger is already interactive — a link
- * or icon button — to avoid nesting interactive elements.
- *
- * @summary Decorate an already-interactive trigger
- */
+/** `asChild` decorates an already-interactive trigger instead of wrapping it in a `<button>`. */
 export const AsChild: Story = {
 	render: args => (
 		<Tooltip {...args} content="Opens in a new tab" side="bottom" asChild>
@@ -173,14 +145,7 @@ export const AsChild: Story = {
 	}
 };
 
-/* --------------- Long content --------------- */
-
-/**
- * Content wider than `32ch` wraps onto multiple lines instead of stretching
- * across the viewport. Keep tooltips short — long explanations belong inline.
- *
- * @summary Long text wraps at the max width
- */
+/** Content wraps at the `32ch` max width. */
 export const LongContent: Story = {
 	args: {
 		content:
