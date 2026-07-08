@@ -31,6 +31,7 @@
     "./lib": "./lib/index.ts",
     "./loading": "./src/loading/index.ts",
     "./pagination": "./src/pagination/index.ts",
+    "./skeleton": "./src/skeleton/index.ts",
     "./switch": "./src/switch/index.ts",
     "./tag": "./src/tag/index.ts",
     "./toast": "./src/toast/index.ts",
