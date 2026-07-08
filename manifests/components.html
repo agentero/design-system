@@ -576,13 +576,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">14 components ok</span><span class="filter-pill ok" aria-disabled="true">138 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">15 components ok</span><span class="filter-pill ok" aria-disabled="true">142 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>2.8s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>3.0s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -3227,14 +3227,123 @@ totalCount: number</code></pre>
   no-story-error
   no-doc-error"
   role="listitem"
+  aria-label="Skeleton">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Skeleton</h2>
+      <div class="badges">
+        
+        
+        <label for="c-9-components-skeleton-stories" class="badge ok as-toggle">4 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/skeleton/skeleton.stories.tsx">components-skeleton · ./src/skeleton/skeleton.stories.tsx</div>
+    
+    <div class="hint">Skeleton renders a pulsing placeholder box while content loads. Size and shape it with Tailwind classes to mirror the content it stands in for.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-9-components-skeleton-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+
+  <div class="panels">
+    
+    
+    
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Skeleton } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Default placeholder box, sized via `className`; hidden from assistive technologies.</div>
+              <pre><code>const Default = () =&gt; &lt;Skeleton className=&quot;h-4 w-40&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Text Block</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Compose plain skeletons to sketch the loading shape of real content.</div>
+              <pre><code>const TextBlock = () =&gt; (
+    &lt;div className=&quot;flex w-80 flex-col gap-2&quot;&gt;
+        &lt;Skeleton className=&quot;h-4 w-full&quot; /&gt;
+        &lt;Skeleton className=&quot;h-4 w-full&quot; /&gt;
+        &lt;Skeleton className=&quot;h-4 w-2/3&quot; /&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">List Item</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">`rounded-full` for avatars; pair with text lines for a list-item placeholder.</div>
+              <pre><code>const ListItem = () =&gt; (
+    &lt;div className=&quot;flex w-80 items-center gap-3&quot;&gt;
+        &lt;Skeleton className=&quot;size-10 shrink-0 rounded-full&quot; /&gt;
+        &lt;div className=&quot;flex w-full flex-col gap-2&quot;&gt;
+            &lt;Skeleton className=&quot;h-4 w-1/2&quot; /&gt;
+            &lt;Skeleton className=&quot;h-3 w-3/4&quot; /&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Card</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">A card-shaped placeholder: media area, title, and body lines.</div>
+              <pre><code>const Card = () =&gt; (
+    &lt;div className=&quot;flex w-80 flex-col gap-3 rounded-lg border border-border-default-base-primary p-4&quot;&gt;
+        &lt;Skeleton className=&quot;h-32 w-full rounded-md&quot; /&gt;
+        &lt;Skeleton className=&quot;h-5 w-1/2&quot; /&gt;
+        &lt;Skeleton className=&quot;h-4 w-full&quot; /&gt;
+        &lt;Skeleton className=&quot;h-4 w-2/3&quot; /&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
   aria-label="Switch">
   <div class="head">
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Switch</h2>
       <div class="badges">
-        <label for="c-9-components-switch-props" class="badge ok as-toggle">2 prop types</label>
+        <label for="c-10-components-switch-props" class="badge ok as-toggle">2 prop types</label>
         
-        <label for="c-9-components-switch-stories" class="badge ok as-toggle">6 stories</label>
+        <label for="c-10-components-switch-stories" class="badge ok as-toggle">6 stories</label>
         
       </div>
     </div>
@@ -3247,9 +3356,9 @@ totalCount: number</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-9-components-switch-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-10-components-switch-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-9-components-switch-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-10-components-switch-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -3399,7 +3508,7 @@ size?: &quot;sm&quot; | &quot;md&quot;</code></pre>
       <div class="badges">
         
         
-        <label for="c-10-components-table-stories" class="badge ok as-toggle">9 stories</label>
+        <label for="c-11-components-table-stories" class="badge ok as-toggle">9 stories</label>
         
       </div>
     </div>
@@ -3412,7 +3521,7 @@ size?: &quot;sm&quot; | &quot;md&quot;</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-10-components-table-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-11-components-table-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
@@ -3586,9 +3695,9 @@ import { Fragment } from "react";</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tag</h2>
       <div class="badges">
-        <label for="c-11-components-tag-props" class="badge ok as-toggle">6 prop types</label>
+        <label for="c-12-components-tag-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-11-components-tag-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-12-components-tag-stories" class="badge ok as-toggle">10 stories</label>
         
       </div>
     </div>
@@ -3601,9 +3710,9 @@ import { Fragment } from "react";</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-11-components-tag-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-12-components-tag-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-11-components-tag-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-12-components-tag-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -3960,9 +4069,9 @@ variant?: &quot;ghost&quot; | &quot;secondary&quot; | &quot;tertiary&quot; | &qu
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Toast</h2>
       <div class="badges">
-        <label for="c-12-components-toast-props" class="badge ok as-toggle">11 prop types</label>
+        <label for="c-13-components-toast-props" class="badge ok as-toggle">11 prop types</label>
         
-        <label for="c-12-components-toast-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-13-components-toast-stories" class="badge ok as-toggle">11 stories</label>
         
       </div>
     </div>
@@ -3975,9 +4084,9 @@ variant?: &quot;ghost&quot; | &quot;secondary&quot; | &quot;tertiary&quot; | &qu
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-12-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-13-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-12-components-toast-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-13-components-toast-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -4386,9 +4495,9 @@ visibleToasts?: number</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tooltip</h2>
       <div class="badges">
-        <label for="c-13-components-tooltip-props" class="badge ok as-toggle">9 prop types</label>
+        <label for="c-14-components-tooltip-props" class="badge ok as-toggle">9 prop types</label>
         
-        <label for="c-13-components-tooltip-stories" class="badge ok as-toggle">5 stories</label>
+        <label for="c-14-components-tooltip-stories" class="badge ok as-toggle">5 stories</label>
         
       </div>
     </div>
@@ -4401,9 +4510,9 @@ visibleToasts?: number</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-13-components-tooltip-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-14-components-tooltip-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-13-components-tooltip-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-14-components-tooltip-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
