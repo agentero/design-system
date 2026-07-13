@@ -576,13 +576,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">16 components ok</span><span class="filter-pill ok" aria-disabled="true">146 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">16 components ok</span><span class="filter-pill ok" aria-disabled="true">147 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>2.9s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>3.4s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -3474,9 +3474,9 @@ percentage: number</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Switch</h2>
       <div class="badges">
-        <label for="c-11-components-switch-props" class="badge ok as-toggle">2 prop types</label>
+        <label for="c-11-components-switch-props" class="badge ok as-toggle">4 prop types</label>
         
-        <label for="c-11-components-switch-stories" class="badge ok as-toggle">6 stories</label>
+        <label for="c-11-components-switch-stories" class="badge ok as-toggle">7 stories</label>
         
       </div>
     </div>
@@ -3501,11 +3501,20 @@ percentage: number</code></pre>
           <div class="note ok">
             <div class="row">
               <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
-              <span class="badge ok">2 prop types</span>
+              <span class="badge ok">4 prop types</span>
             </div>
             <pre><code>Component: src/switch/switch.tsx::Switch</code></pre>
             <pre><code>Props:</code></pre>
             <pre><code>asChild?: boolean
+
+/**
+ * Optional text rendered beside the toggle and associated with it via
+ * `htmlFor`. Provide an `id` so the association resolves. Omit it to keep
+ * the toggle headless and supply your own `&lt;label htmlFor&gt;`.
+ */
+label?: string
+
+reverse?: boolean
 
 size?: &quot;sm&quot; | &quot;md&quot;</code></pre>
           </div>
@@ -3601,6 +3610,20 @@ size?: &quot;sm&quot; | &quot;md&quot;</code></pre>
         &lt;/div&gt;
     );
 };</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Label</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">The built-in `label` prop renders an associated text label beside the toggle (wired via `htmlFor`/`id`); `reverse` places the label before the toggle.</div>
+              <pre><code>const WithLabel = () =&gt; (
+    &lt;div className=&quot;flex items-center gap-6&quot;&gt;
+        &lt;Switch id=&quot;with-label&quot; label=&quot;Email&quot; defaultChecked /&gt;
+        &lt;Switch id=&quot;with-label-reverse&quot; label=&quot;SMS&quot; reverse /&gt;
+    &lt;/div&gt;
+);</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
