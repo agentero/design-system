@@ -576,13 +576,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">17 components ok</span><span class="filter-pill ok" aria-disabled="true">149 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">18 components ok</span><span class="filter-pill ok" aria-disabled="true">155 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>3.1s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>3.2s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -3936,14 +3936,162 @@ import { Fragment } from "react";</code></pre>
   no-story-error
   no-doc-error"
   role="listitem"
+  aria-label="Tabs.Root">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Tabs.Root</h2>
+      <div class="badges">
+        
+        
+        <label for="c-14-components-tabs-stories" class="badge ok as-toggle">6 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/tabs/tabs.stories.tsx">components-tabs · ./src/tabs/tabs.stories.tsx</div>
+    
+    <div class="hint">Tabs built on Radix UI&#39;s Tabs (keyboard nav, roving focus and ARIA come for free). Compose `Root` with a `List` of `Trigger`s and matching `Content`s, pairing each `Trigger`/`Content` by `value`.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-14-components-tabs-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+
+  <div class="panels">
+    
+    
+    
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Tabs } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">`line` (default): the active tab is marked with an animated underline.</div>
+              <pre><code>const Default = () =&gt; &lt;Tabs.Root variant=&quot;line&quot; defaultValue=&quot;overview&quot;&gt;
+    &lt;Tabs.List&gt;
+        &lt;TabItems /&gt;
+    &lt;/Tabs.List&gt;
+    &lt;TabPanels /&gt;
+&lt;/Tabs.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Enclosed</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">`enclosed` renders segmented pills; the active tab sits on a raised surface.</div>
+              <pre><code>const Enclosed = () =&gt; (
+    &lt;Tabs.Root variant=&quot;enclosed&quot; defaultValue=&quot;overview&quot;&gt;
+        &lt;Tabs.List&gt;
+            &lt;TabItems /&gt;
+        &lt;/Tabs.List&gt;
+        &lt;TabPanels /&gt;
+    &lt;/Tabs.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Buttons</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">`button` renders button-like tabs, with room for a leading icon per trigger.</div>
+              <pre><code>const Buttons = () =&gt; (
+    &lt;Tabs.Root variant=&quot;button&quot; defaultValue=&quot;overview&quot;&gt;
+        &lt;Tabs.List&gt;
+            &lt;TabItems /&gt;
+        &lt;/Tabs.List&gt;
+        &lt;TabPanels /&gt;
+    &lt;/Tabs.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Positions</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">`position` aligns the tab list within the row (`start` is the default).</div>
+              <pre><code>const Positions = () =&gt; (
+    &lt;div className=&quot;flex flex-col gap-8&quot;&gt;
+        {([&#39;start&#39;, &#39;center&#39;, &#39;end&#39;] as const).map(position =&gt; (
+            &lt;Tabs.Root key={position} variant=&quot;enclosed&quot; position={position} defaultValue=&quot;overview&quot;&gt;
+                &lt;Tabs.List&gt;
+                    &lt;TabItems /&gt;
+                &lt;/Tabs.List&gt;
+                &lt;TabPanels /&gt;
+            &lt;/Tabs.Root&gt;
+        ))}
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Full Width</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">`position=&quot;full&quot;` stretches the tab list to fill the available width.</div>
+              <pre><code>const FullWidth = () =&gt; (
+    &lt;Tabs.Root variant=&quot;enclosed&quot; position=&quot;full&quot; defaultValue=&quot;overview&quot;&gt;
+        &lt;Tabs.List&gt;
+            &lt;TabItems /&gt;
+        &lt;/Tabs.List&gt;
+        &lt;TabPanels /&gt;
+    &lt;/Tabs.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Switch Tabs</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Selecting a tab reveals its panel and hides the others.</div>
+              <pre><code>const SwitchTabs = () =&gt; &lt;Tabs.Root variant=&quot;line&quot; defaultValue=&quot;overview&quot;&gt;
+    &lt;Tabs.List&gt;
+        &lt;TabItems /&gt;
+    &lt;/Tabs.List&gt;
+    &lt;TabPanels /&gt;
+&lt;/Tabs.Root&gt;;</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
   aria-label="Tag">
   <div class="head">
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tag</h2>
       <div class="badges">
-        <label for="c-14-components-tag-props" class="badge ok as-toggle">6 prop types</label>
+        <label for="c-15-components-tag-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-14-components-tag-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-15-components-tag-stories" class="badge ok as-toggle">10 stories</label>
         
       </div>
     </div>
@@ -3956,9 +4104,9 @@ import { Fragment } from "react";</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-14-components-tag-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-15-components-tag-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-14-components-tag-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-15-components-tag-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -4315,9 +4463,9 @@ variant?: &quot;ghost&quot; | &quot;secondary&quot; | &quot;tertiary&quot; | &qu
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Toast</h2>
       <div class="badges">
-        <label for="c-15-components-toast-props" class="badge ok as-toggle">11 prop types</label>
+        <label for="c-16-components-toast-props" class="badge ok as-toggle">11 prop types</label>
         
-        <label for="c-15-components-toast-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-16-components-toast-stories" class="badge ok as-toggle">11 stories</label>
         
       </div>
     </div>
@@ -4330,9 +4478,9 @@ variant?: &quot;ghost&quot; | &quot;secondary&quot; | &quot;tertiary&quot; | &qu
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-15-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-16-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-15-components-toast-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-16-components-toast-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -4741,9 +4889,9 @@ visibleToasts?: number</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tooltip</h2>
       <div class="badges">
-        <label for="c-16-components-tooltip-props" class="badge ok as-toggle">9 prop types</label>
+        <label for="c-17-components-tooltip-props" class="badge ok as-toggle">9 prop types</label>
         
-        <label for="c-16-components-tooltip-stories" class="badge ok as-toggle">5 stories</label>
+        <label for="c-17-components-tooltip-stories" class="badge ok as-toggle">5 stories</label>
         
       </div>
     </div>
@@ -4756,9 +4904,9 @@ visibleToasts?: number</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-16-components-tooltip-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-17-components-tooltip-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-16-components-tooltip-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-17-components-tooltip-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
