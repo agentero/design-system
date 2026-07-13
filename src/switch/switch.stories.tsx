@@ -87,6 +87,19 @@ export const Controlled: Story = {
 	}
 };
 
+/**
+ * The built-in `label` prop renders an associated text label beside the toggle
+ * (wired via `htmlFor`/`id`); `reverse` places the label before the toggle.
+ */
+export const WithLabel: Story = {
+	render: () => (
+		<div className="flex items-center gap-6">
+			<Switch id="with-label" label="Email" defaultChecked />
+			<Switch id="with-label-reverse" label="SMS" reverse />
+		</div>
+	)
+};
+
 /** Switch aligned in a labelled settings row. */
 export const SettingRow: Story = {
 	render: () => (
