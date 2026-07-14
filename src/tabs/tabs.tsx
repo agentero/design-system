@@ -25,7 +25,7 @@ export const tabsRecipe = tv({
 			line: {
 				list: 'w-full gap-6 border-b border-border-default-base-primary bg-bg-default-base-primary px-4',
 				trigger: [
-					'grid h-10 content-center',
+					'grid h-10 content-center text-text-default-base-tertiary',
 					"before:absolute before:inset-x-0 before:bottom-0 before:h-0.5 before:origin-bottom before:scale-y-0 before:bg-text-button-secondary-enable before:transition-transform before:duration-200 before:will-change-transform before:content-['']",
 					'data-[state=active]:before:scale-y-100'
 				]
