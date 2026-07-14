@@ -576,13 +576,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">19 components ok</span><span class="filter-pill ok" aria-disabled="true">159 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">19 components ok</span><span class="filter-pill ok" aria-disabled="true">160 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>3.1s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>2.5s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -4083,7 +4083,7 @@ import { Fragment } from "react";</code></pre>
       <div class="badges">
         
         
-        <label for="c-15-components-tabs-stories" class="badge ok as-toggle">6 stories</label>
+        <label for="c-15-components-tabs-stories" class="badge ok as-toggle">7 stories</label>
         
       </div>
     </div>
@@ -4194,6 +4194,26 @@ import { Fragment } from "react";</code></pre>
     &lt;Tabs.Root variant=&quot;enclosed&quot; position=&quot;full&quot; defaultValue=&quot;overview&quot;&gt;
         &lt;Tabs.List&gt;
             &lt;TabItems /&gt;
+        &lt;/Tabs.List&gt;
+        &lt;TabPanels /&gt;
+    &lt;/Tabs.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">As Child Links</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Triggers accept `asChild` to render as another element — e.g. a router link. The trigger resets the anchor&#39;s default underline, so link-based tabs match the button-based ones.</div>
+              <pre><code>const AsChildLinks = () =&gt; (
+    &lt;Tabs.Root variant=&quot;line&quot; defaultValue=&quot;overview&quot;&gt;
+        &lt;Tabs.List&gt;
+            {TABS.map(({ value, label }) =&gt; (
+                &lt;Tabs.Trigger key={value} value={value} asChild&gt;
+                    &lt;a href={`#${value}`}&gt;{label}&lt;/a&gt;
+                &lt;/Tabs.Trigger&gt;
+            ))}
         &lt;/Tabs.List&gt;
         &lt;TabPanels /&gt;
     &lt;/Tabs.Root&gt;
