@@ -108,6 +108,33 @@ export const FullWidth: Story = {
 	)
 };
 
+/**
+ * Triggers accept `asChild` to render as another element — e.g. a router link.
+ * The trigger resets the anchor's default underline, so link-based tabs match
+ * the button-based ones.
+ */
+export const AsChildLinks: Story = {
+	render: () => (
+		<Tabs.Root variant="line" defaultValue="overview">
+			<Tabs.List>
+				{TABS.map(({ value, label }) => (
+					<Tabs.Trigger key={value} value={value} asChild>
+						<a href={`#${value}`}>{label}</a>
+					</Tabs.Trigger>
+				))}
+			</Tabs.List>
+			<TabPanels />
+		</Tabs.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const overview = canvas.getByRole('tab', { name: /overview/i });
+
+		await expect(overview.tagName).toBe('A');
+		await expect(getComputedStyle(overview).textDecorationLine).toBe('none');
+	}
+};
+
 /** Selecting a tab reveals its panel and hides the others. */
 export const SwitchTabs: Story = {
 	args: {

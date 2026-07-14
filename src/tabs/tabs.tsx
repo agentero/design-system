@@ -12,7 +12,7 @@ export const tabsRecipe = tv({
 		root: 'flex flex-col',
 		list: 'z-1 flex shrink-0 overflow-x-auto overflow-y-hidden',
 		trigger: [
-			'relative cursor-pointer text-sm font-semibold text-text-default-base-secondary transition-colors duration-150',
+			'relative cursor-pointer text-sm font-semibold text-text-default-base-secondary no-underline transition-colors duration-150',
 			'hover:text-text-default-base-primary',
 			'focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring-button-primary',
 			'data-disabled:cursor-not-allowed data-disabled:opacity-50',
