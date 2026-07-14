@@ -804,6 +804,10 @@
 	--animate-dropdown-slide-in-from-bottom: dropdownSlideInFromBottom 200ms ease-out;
 	--animate-dropdown-slide-in-from-left: dropdownSlideInFromLeft 200ms ease-out;
 	--animate-dropdown-slide-in-from-right: dropdownSlideInFromRight 200ms ease-out;
+	--animate-modal-overlay-in: modalOverlayIn 200ms ease-out;
+	--animate-modal-overlay-out: modalOverlayOut 150ms ease-in forwards;
+	--animate-modal-content-in: modalContentIn 200ms ease-out;
+	--animate-modal-content-out: modalContentOut 150ms ease-in forwards;
 	--animate-tooltip-slide-in-from-top: tooltipSlideInFromTop 200ms ease-out;
 	--animate-tooltip-slide-in-from-bottom: tooltipSlideInFromBottom 200ms ease-out;
 	--animate-tooltip-slide-in-from-left: tooltipSlideInFromLeft 200ms ease-out;
@@ -997,6 +1001,49 @@
 		100% {
 			opacity: 1;
 			transform: translateX(0) scale(1);
+		}
+	}
+
+	@keyframes modalOverlayIn {
+		0% {
+			opacity: 0;
+		}
+		100% {
+			opacity: 1;
+		}
+	}
+
+	@keyframes modalOverlayOut {
+		0% {
+			opacity: 1;
+		}
+		100% {
+			opacity: 0;
+		}
+	}
+
+	/* Content is centered via the `translate` CSS property (Tailwind's
+	   -translate-x/y-1/2), so keyframes must only animate `transform` scale —
+	   putting translate() here would double the offset during the animation. */
+	@keyframes modalContentIn {
+		0% {
+			opacity: 0;
+			transform: scale(0.95);
+		}
+		100% {
+			opacity: 1;
+			transform: scale(1);
+		}
+	}
+
+	@keyframes modalContentOut {
+		0% {
+			opacity: 1;
+			transform: scale(1);
+		}
+		100% {
+			opacity: 0;
+			transform: scale(0.95);
 		}
 	}
 
