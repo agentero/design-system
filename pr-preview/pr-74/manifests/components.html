@@ -576,7 +576,7 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">20 components ok</span><span class="filter-pill ok" aria-disabled="true">164 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">21 components ok</span><span class="filter-pill ok" aria-disabled="true">170 stories ok</span></div>
   </div>
 </header>
 <main>
@@ -2999,14 +2999,234 @@ label?: ReactNode</code></pre>
   no-story-error
   no-doc-error"
   role="listitem"
+  aria-label="HoverCard.Root">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> HoverCard.Root</h2>
+      <div class="badges">
+        
+        
+        <label for="c-8-components-hovercard-stories" class="badge ok as-toggle">6 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/hover-card/hover-card.stories.tsx">components-hovercard · ./src/hover-card/hover-card.stories.tsx</div>
+    
+    <div class="hint">HoverCard reveals rich, sighted-user preview content anchored to a trigger on pointer hover or keyboard focus. Compose it from `Root` / `Trigger` / `Portal` / `Content`.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-8-components-hovercard-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+
+  <div class="panels">
+    
+    
+    
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Avatar, HoverCard } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Default preview revealed on hover; hides again on unhover.</div>
+              <pre><code>const Default = () =&gt; &lt;HoverCard.Root openDelay={0} closeDelay={0}&gt;
+    &lt;HoverCard.Trigger asChild&gt;
+        &lt;a
+            href=&quot;https://agentero.com&quot;
+            className=&quot;text-text-default-base-primary underline&quot;&gt;@agentero
+                            &lt;/a&gt;
+    &lt;/HoverCard.Trigger&gt;
+    &lt;HoverCard.Portal&gt;
+        &lt;HoverCard.Content&gt;
+            &lt;PreviewCard /&gt;
+        &lt;/HoverCard.Content&gt;
+    &lt;/HoverCard.Portal&gt;
+&lt;/HoverCard.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Opens On Focus</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Opens on focus as a supplementary affordance. Note this is not the same as being keyboard-accessible: focus does not move into the card and it closes on blur, so any interactive content inside stays unreachable by keyboard — never put essential actions there.</div>
+              <pre><code>const OpensOnFocus = () =&gt; &lt;HoverCard.Root openDelay={0} closeDelay={0}&gt;
+    &lt;HoverCard.Trigger asChild&gt;
+        &lt;a
+            href=&quot;https://agentero.com&quot;
+            className=&quot;text-text-default-base-primary underline&quot;&gt;@agentero
+                            &lt;/a&gt;
+    &lt;/HoverCard.Trigger&gt;
+    &lt;HoverCard.Portal&gt;
+        &lt;HoverCard.Content&gt;
+            &lt;PreviewCard /&gt;
+        &lt;/HoverCard.Content&gt;
+    &lt;/HoverCard.Portal&gt;
+&lt;/HoverCard.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Sides</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">`side` sets the preferred placement; it flips on viewport collision.</div>
+              <pre><code>const Sides = args =&gt; (
+    &lt;div className=&quot;grid grid-cols-2 gap-10&quot;&gt;
+        {([&#39;top&#39;, &#39;right&#39;, &#39;bottom&#39;, &#39;left&#39;] as const).map(side =&gt; (
+            &lt;HoverCard.Root key={side} {...args}&gt;
+                &lt;HoverCard.Trigger asChild&gt;
+                    &lt;a href=&quot;https://agentero.com&quot; className=&quot;text-text-default-base-primary underline&quot;&gt;
+                        {side}
+                    &lt;/a&gt;
+                &lt;/HoverCard.Trigger&gt;
+                &lt;HoverCard.Portal&gt;
+                    &lt;HoverCard.Content side={side}&gt;
+                        &lt;PreviewCard /&gt;
+                    &lt;/HoverCard.Content&gt;
+                &lt;/HoverCard.Portal&gt;
+            &lt;/HoverCard.Root&gt;
+        ))}
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Rich Content</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">The whole point of a HoverCard over a Tooltip: freely laid-out content that may include its own links and actions. Still supplementary — never the only path to an action.</div>
+              <pre><code>const RichContent = () =&gt; &lt;HoverCard.Root openDelay={0} closeDelay={0}&gt;
+    &lt;HoverCard.Trigger asChild&gt;
+        &lt;a
+            href=&quot;https://agentero.com&quot;
+            className=&quot;text-text-default-base-primary underline&quot;&gt;@agentero
+                            &lt;/a&gt;
+    &lt;/HoverCard.Trigger&gt;
+    &lt;HoverCard.Portal&gt;
+        &lt;HoverCard.Content className=&quot;w-80&quot;&gt;
+            &lt;div className=&quot;flex flex-col gap-3&quot;&gt;
+                &lt;div className=&quot;flex gap-3&quot;&gt;
+                    &lt;Avatar fallback=&quot;AG&quot; colorize=&quot;Agentero&quot; type=&quot;initials&quot; size=&quot;lg&quot; /&gt;
+                    &lt;div className=&quot;flex flex-col gap-1&quot;&gt;
+                        &lt;p className=&quot;font-medium text-text-default-base-primary&quot;&gt;Agentero&lt;/p&gt;
+                        &lt;p className=&quot;text-text-default-base-tertiary&quot;&gt;Insurance marketplace for independent agents.
+                                                            &lt;/p&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+                &lt;div className=&quot;flex gap-4 text-text-default-base-secondary&quot;&gt;
+                    &lt;span&gt;
+                        &lt;span className=&quot;font-medium text-text-default-base-primary&quot;&gt;128&lt;/span&gt;carriers
+                                                    &lt;/span&gt;
+                    &lt;span&gt;
+                        &lt;span className=&quot;font-medium text-text-default-base-primary&quot;&gt;50&lt;/span&gt;states
+                                                    &lt;/span&gt;
+                &lt;/div&gt;
+                &lt;a
+                    href=&quot;https://agentero.com&quot;
+                    className=&quot;text-text-default-base-primary underline&quot;&gt;View profile
+                                            &lt;/a&gt;
+            &lt;/div&gt;
+        &lt;/HoverCard.Content&gt;
+    &lt;/HoverCard.Portal&gt;
+&lt;/HoverCard.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Arrow</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">An optional `Arrow` points back at the trigger; render it inside `Content`. The arrow is filled with the card background (white), so it only reads against a surface that contrasts with the card — shown here on a muted backdrop.</div>
+              <pre><code>const WithArrow = () =&gt; &lt;HoverCard.Root openDelay={0} closeDelay={0}&gt;
+    &lt;HoverCard.Trigger asChild&gt;
+        &lt;a
+            href=&quot;https://agentero.com&quot;
+            className=&quot;text-text-default-base-primary underline&quot;&gt;@agentero
+                            &lt;/a&gt;
+    &lt;/HoverCard.Trigger&gt;
+    &lt;HoverCard.Portal&gt;
+        &lt;HoverCard.Content&gt;
+            &lt;PreviewCard /&gt;
+            &lt;HoverCard.Arrow /&gt;
+        &lt;/HoverCard.Content&gt;
+    &lt;/HoverCard.Portal&gt;
+&lt;/HoverCard.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Delays</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">`openDelay` / `closeDelay` tune the hover latency. Default is a deliberate `700ms` open so cards don&#39;t flash on incidental passes; drop it to `0` for trigger-dense UIs where an instant preview reads as more responsive.</div>
+              <pre><code>const Delays = () =&gt; (
+    &lt;div className=&quot;flex gap-10&quot;&gt;
+        &lt;HoverCard.Root openDelay={700} closeDelay={300}&gt;
+            &lt;HoverCard.Trigger asChild&gt;
+                &lt;a href=&quot;https://agentero.com&quot; className=&quot;text-text-default-base-primary underline&quot;&gt;
+                    Default (700ms)
+                &lt;/a&gt;
+            &lt;/HoverCard.Trigger&gt;
+            &lt;HoverCard.Portal&gt;
+                &lt;HoverCard.Content&gt;
+                    &lt;PreviewCard /&gt;
+                &lt;/HoverCard.Content&gt;
+            &lt;/HoverCard.Portal&gt;
+        &lt;/HoverCard.Root&gt;
+        &lt;HoverCard.Root openDelay={0} closeDelay={0}&gt;
+            &lt;HoverCard.Trigger asChild&gt;
+                &lt;a href=&quot;https://agentero.com&quot; className=&quot;text-text-default-base-primary underline&quot;&gt;
+                    Instant (0ms)
+                &lt;/a&gt;
+            &lt;/HoverCard.Trigger&gt;
+            &lt;HoverCard.Portal&gt;
+                &lt;HoverCard.Content&gt;
+                    &lt;PreviewCard /&gt;
+                &lt;/HoverCard.Content&gt;
+            &lt;/HoverCard.Portal&gt;
+        &lt;/HoverCard.Root&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
   aria-label="Loading">
   <div class="head">
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Loading</h2>
       <div class="badges">
-        <label for="c-8-components-loading-props" class="badge ok as-toggle">1 prop type</label>
+        <label for="c-9-components-loading-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-8-components-loading-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-9-components-loading-stories" class="badge ok as-toggle">7 stories</label>
         
       </div>
     </div>
@@ -3019,9 +3239,9 @@ label?: ReactNode</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-8-components-loading-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-9-components-loading-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-8-components-loading-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-9-components-loading-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -3163,7 +3383,7 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
       <div class="badges">
         
         
-        <label for="c-9-components-modal-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-10-components-modal-stories" class="badge ok as-toggle">4 stories</label>
         
       </div>
     </div>
@@ -3176,7 +3396,7 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-9-components-modal-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-10-components-modal-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
@@ -3301,9 +3521,9 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Pagination</h2>
       <div class="badges">
-        <label for="c-10-components-pagination-props" class="badge ok as-toggle">5 prop types</label>
+        <label for="c-11-components-pagination-props" class="badge ok as-toggle">5 prop types</label>
         
-        <label for="c-10-components-pagination-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-11-components-pagination-stories" class="badge ok as-toggle">7 stories</label>
         
       </div>
     </div>
@@ -3316,9 +3536,9 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-10-components-pagination-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-11-components-pagination-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-10-components-pagination-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-11-components-pagination-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -3464,7 +3684,7 @@ totalCount: number</code></pre>
       <div class="badges">
         
         
-        <label for="c-11-components-popover-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-12-components-popover-stories" class="badge ok as-toggle">4 stories</label>
         
       </div>
     </div>
@@ -3477,7 +3697,7 @@ totalCount: number</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-11-components-popover-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-12-components-popover-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
@@ -3611,9 +3831,9 @@ totalCount: number</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Progress</h2>
       <div class="badges">
-        <label for="c-12-components-progress-props" class="badge ok as-toggle">4 prop types</label>
+        <label for="c-13-components-progress-props" class="badge ok as-toggle">4 prop types</label>
         
-        <label for="c-12-components-progress-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-13-components-progress-stories" class="badge ok as-toggle">4 stories</label>
         
       </div>
     </div>
@@ -3626,9 +3846,9 @@ totalCount: number</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-12-components-progress-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-13-components-progress-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-12-components-progress-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-13-components-progress-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -3746,7 +3966,7 @@ percentage: number</code></pre>
       <div class="badges">
         
         
-        <label for="c-13-components-skeleton-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-14-components-skeleton-stories" class="badge ok as-toggle">4 stories</label>
         
       </div>
     </div>
@@ -3759,7 +3979,7 @@ percentage: number</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-13-components-skeleton-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-14-components-skeleton-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
@@ -3853,9 +4073,9 @@ percentage: number</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Switch</h2>
       <div class="badges">
-        <label for="c-14-components-switch-props" class="badge ok as-toggle">4 prop types</label>
+        <label for="c-15-components-switch-props" class="badge ok as-toggle">4 prop types</label>
         
-        <label for="c-14-components-switch-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-15-components-switch-stories" class="badge ok as-toggle">7 stories</label>
         
       </div>
     </div>
@@ -3868,9 +4088,9 @@ percentage: number</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-14-components-switch-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-15-components-switch-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-14-components-switch-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-15-components-switch-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -4043,7 +4263,7 @@ size?: &quot;sm&quot; | &quot;md&quot;</code></pre>
       <div class="badges">
         
         
-        <label for="c-15-components-table-stories" class="badge ok as-toggle">9 stories</label>
+        <label for="c-16-components-table-stories" class="badge ok as-toggle">9 stories</label>
         
       </div>
     </div>
@@ -4056,7 +4276,7 @@ size?: &quot;sm&quot; | &quot;md&quot;</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-15-components-table-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-16-components-table-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
@@ -4232,7 +4452,7 @@ import { Fragment } from "react";</code></pre>
       <div class="badges">
         
         
-        <label for="c-16-components-tabs-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-17-components-tabs-stories" class="badge ok as-toggle">7 stories</label>
         
       </div>
     </div>
@@ -4245,7 +4465,7 @@ import { Fragment } from "react";</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-16-components-tabs-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-17-components-tabs-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
@@ -4398,9 +4618,9 @@ import { Fragment } from "react";</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tag</h2>
       <div class="badges">
-        <label for="c-17-components-tag-props" class="badge ok as-toggle">6 prop types</label>
+        <label for="c-18-components-tag-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-17-components-tag-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-18-components-tag-stories" class="badge ok as-toggle">10 stories</label>
         
       </div>
     </div>
@@ -4413,9 +4633,9 @@ import { Fragment } from "react";</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-17-components-tag-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-18-components-tag-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-17-components-tag-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-18-components-tag-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -4772,9 +4992,9 @@ variant?: &quot;ghost&quot; | &quot;secondary&quot; | &quot;tertiary&quot; | &qu
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Toast</h2>
       <div class="badges">
-        <label for="c-18-components-toast-props" class="badge ok as-toggle">11 prop types</label>
+        <label for="c-19-components-toast-props" class="badge ok as-toggle">11 prop types</label>
         
-        <label for="c-18-components-toast-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-19-components-toast-stories" class="badge ok as-toggle">11 stories</label>
         
       </div>
     </div>
@@ -4787,9 +5007,9 @@ variant?: &quot;ghost&quot; | &quot;secondary&quot; | &quot;tertiary&quot; | &qu
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-18-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-19-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-18-components-toast-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-19-components-toast-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -5198,9 +5418,9 @@ visibleToasts?: number</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tooltip</h2>
       <div class="badges">
-        <label for="c-19-components-tooltip-props" class="badge ok as-toggle">9 prop types</label>
+        <label for="c-20-components-tooltip-props" class="badge ok as-toggle">9 prop types</label>
         
-        <label for="c-19-components-tooltip-stories" class="badge ok as-toggle">5 stories</label>
+        <label for="c-20-components-tooltip-stories" class="badge ok as-toggle">5 stories</label>
         
       </div>
     </div>
@@ -5213,9 +5433,9 @@ visibleToasts?: number</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-19-components-tooltip-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-20-components-tooltip-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-19-components-tooltip-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-20-components-tooltip-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
