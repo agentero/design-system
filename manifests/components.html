@@ -576,13 +576,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">20 components ok</span><span class="filter-pill ok" aria-disabled="true">166 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">21 components ok</span><span class="filter-pill ok" aria-disabled="true">170 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>3.1s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>3.4s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -3677,14 +3677,163 @@ totalCount: number</code></pre>
   no-story-error
   no-doc-error"
   role="listitem"
+  aria-label="Popover.Root">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Popover.Root</h2>
+      <div class="badges">
+        
+        
+        <label for="c-12-components-popover-stories" class="badge ok as-toggle">4 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/popover/popover.stories.tsx">components-popover · ./src/popover/popover.stories.tsx</div>
+    
+    <div class="hint">Popover is a non-modal floating surface anchored to a trigger, used for rich interactive overlays such as forms, filters, and pickers. Compose it from `Root` / `Trigger` / `Content`, plus optional `Anchor` and `Close`. Built on Radix UI&#39;s Popover primitive, so focus management, dismissal, and collision detection come for free.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-12-components-popover-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+
+  <div class="panels">
+    
+    
+    
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Button, Popover } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Basic click-to-open popover surface</div>
+              <div class="hint">A minimal Popover: a trigger button that reveals a short text surface on click and dismisses on outside click or Escape.</div>
+              <pre><code>const Default = () =&gt; (
+    &lt;Popover.Root&gt;
+        &lt;Popover.Trigger asChild&gt;
+            &lt;Button variant=&quot;secondary&quot;&gt;Open popover&lt;/Button&gt;
+        &lt;/Popover.Trigger&gt;
+        &lt;Popover.Content&gt;
+            &lt;p className=&quot;text-sm text-text-default-base-primary&quot;&gt;
+                This carrier is appointed for 3 lines of business.
+            &lt;/p&gt;
+        &lt;/Popover.Content&gt;
+    &lt;/Popover.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Sides</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Popover placement on each of the four sides</div>
+              <div class="hint">`side` sets the preferred placement; Radix flips it on viewport collision.</div>
+              <pre><code>const Sides = () =&gt; (
+    &lt;div className=&quot;grid grid-cols-2 gap-6&quot;&gt;
+        {([&#39;top&#39;, &#39;right&#39;, &#39;bottom&#39;, &#39;left&#39;] as const).map(side =&gt; (
+            &lt;Popover.Root key={side}&gt;
+                &lt;Popover.Trigger asChild&gt;
+                    &lt;Button variant=&quot;secondary&quot;&gt;{side}&lt;/Button&gt;
+                &lt;/Popover.Trigger&gt;
+                &lt;Popover.Content side={side}&gt;
+                    &lt;p className=&quot;text-sm text-text-default-base-primary&quot;&gt;Opens on {side}&lt;/p&gt;
+                &lt;/Popover.Content&gt;
+            &lt;/Popover.Root&gt;
+        ))}
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Form</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Popover holding an interactive form with a `Close` action</div>
+              <div class="hint">Rich interactive content — the primary reason to reach for a Popover over a Tooltip. A `Close` inside the surface dismisses it after submitting.</div>
+              <pre><code>const WithForm = () =&gt; (
+    &lt;Popover.Root&gt;
+        &lt;Popover.Trigger asChild&gt;
+            &lt;Button variant=&quot;secondary&quot;&gt;Rename&lt;/Button&gt;
+        &lt;/Popover.Trigger&gt;
+        &lt;Popover.Content align=&quot;start&quot;&gt;
+            &lt;div className=&quot;flex flex-col gap-3&quot;&gt;
+                &lt;label className=&quot;flex flex-col gap-1 text-sm text-text-default-base-primary&quot;&gt;
+                    New name
+                    &lt;input
+                        type=&quot;text&quot;
+                        defaultValue=&quot;Untitled&quot;
+                        className=&quot;rounded-md border border-border-default-base-primary px-2 py-1 text-sm&quot;
+                    /&gt;
+                &lt;/label&gt;
+                &lt;Popover.Close asChild&gt;
+                    &lt;Button variant=&quot;primary&quot; size=&quot;sm&quot;&gt;
+                        Save
+                    &lt;/Button&gt;
+                &lt;/Popover.Close&gt;
+            &lt;/div&gt;
+        &lt;/Popover.Content&gt;
+    &lt;/Popover.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Anchor</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Popover positioned against a separate `Anchor` element</div>
+              <div class="hint">`Anchor` positions the Content against an element other than the Trigger — useful when the visual anchor differs from the toggle button.</div>
+              <pre><code>const WithAnchor = () =&gt; (
+    &lt;Popover.Root&gt;
+        &lt;div className=&quot;flex flex-col items-center gap-4&quot;&gt;
+            &lt;Popover.Anchor className=&quot;rounded-md border border-border-default-base-primary px-4 py-2 text-sm text-text-default-base-secondary&quot;&gt;
+                Anchored here
+            &lt;/Popover.Anchor&gt;
+            &lt;Popover.Trigger asChild&gt;
+                &lt;Button variant=&quot;secondary&quot;&gt;Toggle from below&lt;/Button&gt;
+            &lt;/Popover.Trigger&gt;
+        &lt;/div&gt;
+        &lt;Popover.Content side=&quot;top&quot;&gt;
+            &lt;p className=&quot;text-sm text-text-default-base-primary&quot;&gt;Positioned against the anchor&lt;/p&gt;
+        &lt;/Popover.Content&gt;
+    &lt;/Popover.Root&gt;
+);</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
   aria-label="Progress">
   <div class="head">
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Progress</h2>
       <div class="badges">
-        <label for="c-12-components-progress-props" class="badge ok as-toggle">4 prop types</label>
+        <label for="c-13-components-progress-props" class="badge ok as-toggle">4 prop types</label>
         
-        <label for="c-12-components-progress-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-13-components-progress-stories" class="badge ok as-toggle">4 stories</label>
         
       </div>
     </div>
@@ -3697,9 +3846,9 @@ totalCount: number</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-12-components-progress-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-13-components-progress-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-12-components-progress-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-13-components-progress-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -3817,7 +3966,7 @@ percentage: number</code></pre>
       <div class="badges">
         
         
-        <label for="c-13-components-skeleton-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-14-components-skeleton-stories" class="badge ok as-toggle">4 stories</label>
         
       </div>
     </div>
@@ -3830,7 +3979,7 @@ percentage: number</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-13-components-skeleton-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-14-components-skeleton-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
@@ -3924,9 +4073,9 @@ percentage: number</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Switch</h2>
       <div class="badges">
-        <label for="c-14-components-switch-props" class="badge ok as-toggle">4 prop types</label>
+        <label for="c-15-components-switch-props" class="badge ok as-toggle">4 prop types</label>
         
-        <label for="c-14-components-switch-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-15-components-switch-stories" class="badge ok as-toggle">7 stories</label>
         
       </div>
     </div>
@@ -3939,9 +4088,9 @@ percentage: number</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-14-components-switch-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-15-components-switch-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-14-components-switch-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-15-components-switch-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -4114,7 +4263,7 @@ size?: &quot;sm&quot; | &quot;md&quot;</code></pre>
       <div class="badges">
         
         
-        <label for="c-15-components-table-stories" class="badge ok as-toggle">9 stories</label>
+        <label for="c-16-components-table-stories" class="badge ok as-toggle">9 stories</label>
         
       </div>
     </div>
@@ -4127,7 +4276,7 @@ size?: &quot;sm&quot; | &quot;md&quot;</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-15-components-table-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-16-components-table-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
@@ -4303,7 +4452,7 @@ import { Fragment } from "react";</code></pre>
       <div class="badges">
         
         
-        <label for="c-16-components-tabs-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-17-components-tabs-stories" class="badge ok as-toggle">7 stories</label>
         
       </div>
     </div>
@@ -4316,7 +4465,7 @@ import { Fragment } from "react";</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-16-components-tabs-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-17-components-tabs-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
@@ -4469,9 +4618,9 @@ import { Fragment } from "react";</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tag</h2>
       <div class="badges">
-        <label for="c-17-components-tag-props" class="badge ok as-toggle">6 prop types</label>
+        <label for="c-18-components-tag-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-17-components-tag-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-18-components-tag-stories" class="badge ok as-toggle">10 stories</label>
         
       </div>
     </div>
@@ -4484,9 +4633,9 @@ import { Fragment } from "react";</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-17-components-tag-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-18-components-tag-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-17-components-tag-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-18-components-tag-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -4843,9 +4992,9 @@ variant?: &quot;ghost&quot; | &quot;secondary&quot; | &quot;tertiary&quot; | &qu
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Toast</h2>
       <div class="badges">
-        <label for="c-18-components-toast-props" class="badge ok as-toggle">11 prop types</label>
+        <label for="c-19-components-toast-props" class="badge ok as-toggle">11 prop types</label>
         
-        <label for="c-18-components-toast-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-19-components-toast-stories" class="badge ok as-toggle">11 stories</label>
         
       </div>
     </div>
@@ -4858,9 +5007,9 @@ variant?: &quot;ghost&quot; | &quot;secondary&quot; | &quot;tertiary&quot; | &qu
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-18-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-19-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-18-components-toast-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-19-components-toast-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -5269,9 +5418,9 @@ visibleToasts?: number</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tooltip</h2>
       <div class="badges">
-        <label for="c-19-components-tooltip-props" class="badge ok as-toggle">9 prop types</label>
+        <label for="c-20-components-tooltip-props" class="badge ok as-toggle">9 prop types</label>
         
-        <label for="c-19-components-tooltip-stories" class="badge ok as-toggle">5 stories</label>
+        <label for="c-20-components-tooltip-stories" class="badge ok as-toggle">5 stories</label>
         
       </div>
     </div>
@@ -5284,9 +5433,9 @@ visibleToasts?: number</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-19-components-tooltip-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-20-components-tooltip-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-19-components-tooltip-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-20-components-tooltip-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
