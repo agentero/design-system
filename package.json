@@ -29,6 +29,7 @@
     "./data-table": "./src/data-table/index.ts",
     "./divider": "./src/divider/index.ts",
     "./dropdown-menu": "./src/dropdown-menu/index.ts",
+    "./file-drop": "./src/file-drop/index.ts",
     "./hover-card": "./src/hover-card/index.ts",
     "./lib": "./lib/index.ts",
     "./loading": "./src/loading/index.ts",
