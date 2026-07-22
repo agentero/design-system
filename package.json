@@ -42,6 +42,7 @@
     "./tag": "./src/tag/index.ts",
     "./toast": "./src/toast/index.ts",
     "./tooltip": "./src/tooltip/index.ts",
+    "./validation-list": "./src/validation-list/index.ts",
     "./theme": "./themes/base.css"
   },
   "scripts": {
