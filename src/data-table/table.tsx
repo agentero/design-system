@@ -151,7 +151,7 @@ const TableBody = ({
 TableBody.displayName = 'Table.Body';
 
 const rowStyles = tv({
-	base: 'transition-colors duration-150',
+	base: '',
 	variants: {
 		body: {
 			true: [
@@ -288,10 +288,10 @@ const rowActionsStyles = tv({
 	base: [
 		'relative flex w-fit gap-1',
 		// Gradient mask behind the actions, revealed on row hover.
-		'after:absolute after:inset-y-0 after:right-0 after:left-[calc(var(--table-cell-padding-inline)*-1)] after:opacity-0 after:transition-opacity after:duration-150 after:content-[""]',
+		'after:absolute after:inset-y-0 after:right-0 after:left-[calc(var(--table-cell-padding-inline)*-1)] after:opacity-0 after:content-[""]',
 		'after:[background:linear-gradient(to_right,transparent_0,var(--color-bg-default-base-secondary)_var(--table-cell-padding-inline))]',
-		// Controls fade in on hover; always visible on coarse-pointer devices.
-		'[&>*]:relative [&>*]:z-[1] [&>*]:opacity-0 [&>*]:transition-opacity [&>*]:duration-150',
+		// Controls appear on hover; always visible on coarse-pointer devices.
+		'[&>*]:relative [&>*]:z-[1] [&>*]:opacity-0',
 		'[@media(hover:none)_and_(pointer:coarse)]:[&>*]:opacity-100'
 	]
 });
