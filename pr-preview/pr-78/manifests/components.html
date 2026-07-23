@@ -576,13 +576,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">22 components ok</span><span class="filter-pill ok" aria-disabled="true">174 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">23 components ok</span><span class="filter-pill ok" aria-disabled="true">178 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>2.8s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>3.5s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -1719,14 +1719,142 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
   no-story-error
   no-doc-error"
   role="listitem"
+  aria-label="AvatarGroup">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> AvatarGroup</h2>
+      <div class="badges">
+        <label for="c-3-components-avatargroup-props" class="badge ok as-toggle">3 prop types</label>
+        
+        <label for="c-3-components-avatargroup-stories" class="badge ok as-toggle">4 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/avatar-group/avatar-group.stories.tsx">components-avatargroup · ./src/avatar-group/avatar-group.stories.tsx</div>
+    
+    <div class="hint">AvatarGroup stacks `&lt;Avatar&gt;` children into an overlapping row and collapses everything past `max` into a trailing `+N` bubble. The group owns the layout: it forces a uniform `size` (and `variant`, when set) and rings each avatar in the surface color so they read as separate.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-3-components-avatargroup-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  <input id="c-3-components-avatargroup-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
+              <span class="badge ok">3 prop types</span>
+            </div>
+            <pre><code>Component: src/avatar-group/avatar-group.tsx::AvatarGroup</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>max?: number = 3
+
+size?: &quot;sm&quot; | &quot;md&quot; | &quot;xs&quot; | &quot;lg&quot; | &quot;xl&quot; | &quot;2xl&quot; | &quot;3xl&quot; | &quot;4xl&quot; = md
+
+/**
+ * Shape applied uniformly to every avatar and the `+N` bubble. Defaults to `circle`.
+ */
+variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;pentagon&quot;</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Avatar, AvatarGroup } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Five people, `max={3}`: three avatars overlap and the rest collapse into `+2`.</div>
+              <pre><code>const Default = () =&gt; &lt;AvatarGroup max={3} size=&quot;md&quot;&gt;
+    {PEOPLE.map(person =&gt; (
+        &lt;Avatar key={person.colorize} fallback={person.fallback} colorize={person.colorize} /&gt;
+    ))}
+&lt;/AvatarGroup&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Within Max</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">When the count is within `max`, every avatar shows and no `+N` bubble renders.</div>
+              <pre><code>const WithinMax = () =&gt; &lt;AvatarGroup max={5} size=&quot;md&quot;&gt;
+    {PEOPLE.map(person =&gt; (
+        &lt;Avatar key={person.colorize} fallback={person.fallback} colorize={person.colorize} /&gt;
+    ))}
+&lt;/AvatarGroup&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Sizes</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">The group forces its `size` onto every child, so the stack stays uniform.</div>
+              <pre><code>const Sizes = () =&gt; (
+    &lt;div className=&quot;flex flex-col gap-4&quot;&gt;
+        {([&#39;xs&#39;, &#39;sm&#39;, &#39;md&#39;, &#39;lg&#39;, &#39;xl&#39;] as const).map(size =&gt; (
+            &lt;AvatarGroup key={size} size={size} max={3}&gt;
+                {PEOPLE.map(person =&gt; (
+                    &lt;Avatar key={person.colorize} fallback={person.fallback} colorize={person.colorize} /&gt;
+                ))}
+            &lt;/AvatarGroup&gt;
+        ))}
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Square</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">`variant` reshapes every avatar and the overflow bubble together.</div>
+              <pre><code>const Square = () =&gt; &lt;AvatarGroup max={3} size=&quot;md&quot; variant=&quot;square&quot;&gt;
+    {PEOPLE.map(person =&gt; (
+        &lt;Avatar key={person.colorize} fallback={person.fallback} colorize={person.colorize} /&gt;
+    ))}
+&lt;/AvatarGroup&gt;;</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
   aria-label="Button">
   <div class="head">
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Button</h2>
       <div class="badges">
-        <label for="c-3-components-button-props" class="badge ok as-toggle">12 prop types</label>
+        <label for="c-4-components-button-props" class="badge ok as-toggle">12 prop types</label>
         
-        <label for="c-3-components-button-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-4-components-button-stories" class="badge ok as-toggle">10 stories</label>
         
       </div>
     </div>
@@ -1739,9 +1867,9 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-3-components-button-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-4-components-button-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-3-components-button-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-4-components-button-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -2092,7 +2220,7 @@ variant?: ButtonVariantType</code></pre>
       <div class="badges">
         
         
-        <label for="c-4-components-checklist-stories" class="badge ok as-toggle">2 stories</label>
+        <label for="c-5-components-checklist-stories" class="badge ok as-toggle">2 stories</label>
         
       </div>
     </div>
@@ -2105,7 +2233,7 @@ variant?: ButtonVariantType</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-4-components-checklist-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-5-components-checklist-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
@@ -2182,7 +2310,7 @@ variant?: ButtonVariantType</code></pre>
       <div class="badges">
         
         
-        <label for="c-5-components-datatable-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-6-components-datatable-stories" class="badge ok as-toggle">4 stories</label>
         
       </div>
     </div>
@@ -2195,7 +2323,7 @@ variant?: ButtonVariantType</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-5-components-datatable-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-6-components-datatable-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
@@ -2325,9 +2453,9 @@ variant?: ButtonVariantType</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Divider</h2>
       <div class="badges">
-        <label for="c-6-components-divider-props" class="badge ok as-toggle">2 prop types</label>
+        <label for="c-7-components-divider-props" class="badge ok as-toggle">2 prop types</label>
         
-        <label for="c-6-components-divider-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-7-components-divider-stories" class="badge ok as-toggle">10 stories</label>
         
       </div>
     </div>
@@ -2340,9 +2468,9 @@ variant?: ButtonVariantType</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-6-components-divider-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-7-components-divider-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-6-components-divider-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-7-components-divider-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -2622,7 +2750,7 @@ label?: ReactNode</code></pre>
       <div class="badges">
         
         
-        <label for="c-7-components-dropdownmenu-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-8-components-dropdownmenu-stories" class="badge ok as-toggle">7 stories</label>
         
       </div>
     </div>
@@ -2635,7 +2763,7 @@ label?: ReactNode</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-7-components-dropdownmenu-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-8-components-dropdownmenu-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
@@ -3006,7 +3134,7 @@ label?: ReactNode</code></pre>
       <div class="badges">
         
         
-        <label for="c-8-components-hovercard-stories" class="badge ok as-toggle">6 stories</label>
+        <label for="c-9-components-hovercard-stories" class="badge ok as-toggle">6 stories</label>
         
       </div>
     </div>
@@ -3019,7 +3147,7 @@ label?: ReactNode</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-8-components-hovercard-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-9-components-hovercard-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
@@ -3224,9 +3352,9 @@ label?: ReactNode</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Loading</h2>
       <div class="badges">
-        <label for="c-9-components-loading-props" class="badge ok as-toggle">1 prop type</label>
+        <label for="c-10-components-loading-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-9-components-loading-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-10-components-loading-stories" class="badge ok as-toggle">7 stories</label>
         
       </div>
     </div>
@@ -3239,9 +3367,9 @@ label?: ReactNode</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-9-components-loading-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-10-components-loading-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-9-components-loading-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-10-components-loading-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -3383,7 +3511,7 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
       <div class="badges">
         
         
-        <label for="c-10-components-modal-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-11-components-modal-stories" class="badge ok as-toggle">4 stories</label>
         
       </div>
     </div>
@@ -3396,7 +3524,7 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-10-components-modal-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-11-components-modal-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
@@ -3521,9 +3649,9 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Pagination</h2>
       <div class="badges">
-        <label for="c-11-components-pagination-props" class="badge ok as-toggle">5 prop types</label>
+        <label for="c-12-components-pagination-props" class="badge ok as-toggle">5 prop types</label>
         
-        <label for="c-11-components-pagination-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-12-components-pagination-stories" class="badge ok as-toggle">7 stories</label>
         
       </div>
     </div>
@@ -3536,9 +3664,9 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-11-components-pagination-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-12-components-pagination-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-11-components-pagination-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-12-components-pagination-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -3684,7 +3812,7 @@ totalCount: number</code></pre>
       <div class="badges">
         
         
-        <label for="c-12-components-popover-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-13-components-popover-stories" class="badge ok as-toggle">4 stories</label>
         
       </div>
     </div>
@@ -3697,7 +3825,7 @@ totalCount: number</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-12-components-popover-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-13-components-popover-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
@@ -3831,9 +3959,9 @@ totalCount: number</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Progress</h2>
       <div class="badges">
-        <label for="c-13-components-progress-props" class="badge ok as-toggle">4 prop types</label>
+        <label for="c-14-components-progress-props" class="badge ok as-toggle">4 prop types</label>
         
-        <label for="c-13-components-progress-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-14-components-progress-stories" class="badge ok as-toggle">4 stories</label>
         
       </div>
     </div>
@@ -3846,9 +3974,9 @@ totalCount: number</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-13-components-progress-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-14-components-progress-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-13-components-progress-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-14-components-progress-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -3966,7 +4094,7 @@ percentage: number</code></pre>
       <div class="badges">
         
         
-        <label for="c-14-components-skeleton-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-15-components-skeleton-stories" class="badge ok as-toggle">4 stories</label>
         
       </div>
     </div>
@@ -3979,7 +4107,7 @@ percentage: number</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-14-components-skeleton-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-15-components-skeleton-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
@@ -4073,9 +4201,9 @@ percentage: number</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Switch</h2>
       <div class="badges">
-        <label for="c-15-components-switch-props" class="badge ok as-toggle">4 prop types</label>
+        <label for="c-16-components-switch-props" class="badge ok as-toggle">4 prop types</label>
         
-        <label for="c-15-components-switch-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-16-components-switch-stories" class="badge ok as-toggle">7 stories</label>
         
       </div>
     </div>
@@ -4088,9 +4216,9 @@ percentage: number</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-15-components-switch-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-16-components-switch-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-15-components-switch-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-16-components-switch-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -4263,7 +4391,7 @@ size?: &quot;sm&quot; | &quot;md&quot;</code></pre>
       <div class="badges">
         
         
-        <label for="c-16-components-table-stories" class="badge ok as-toggle">9 stories</label>
+        <label for="c-17-components-table-stories" class="badge ok as-toggle">9 stories</label>
         
       </div>
     </div>
@@ -4276,7 +4404,7 @@ size?: &quot;sm&quot; | &quot;md&quot;</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-16-components-table-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-17-components-table-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
@@ -4452,7 +4580,7 @@ import { Fragment } from "react";</code></pre>
       <div class="badges">
         
         
-        <label for="c-17-components-tabs-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-18-components-tabs-stories" class="badge ok as-toggle">7 stories</label>
         
       </div>
     </div>
@@ -4465,7 +4593,7 @@ import { Fragment } from "react";</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-17-components-tabs-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-18-components-tabs-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
@@ -4618,9 +4746,9 @@ import { Fragment } from "react";</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tag</h2>
       <div class="badges">
-        <label for="c-18-components-tag-props" class="badge ok as-toggle">6 prop types</label>
+        <label for="c-19-components-tag-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-18-components-tag-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-19-components-tag-stories" class="badge ok as-toggle">10 stories</label>
         
       </div>
     </div>
@@ -4633,9 +4761,9 @@ import { Fragment } from "react";</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-18-components-tag-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-19-components-tag-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-18-components-tag-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-19-components-tag-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -4992,9 +5120,9 @@ variant?: &quot;ghost&quot; | &quot;secondary&quot; | &quot;tertiary&quot; | &qu
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Toast</h2>
       <div class="badges">
-        <label for="c-19-components-toast-props" class="badge ok as-toggle">11 prop types</label>
+        <label for="c-20-components-toast-props" class="badge ok as-toggle">11 prop types</label>
         
-        <label for="c-19-components-toast-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-20-components-toast-stories" class="badge ok as-toggle">11 stories</label>
         
       </div>
     </div>
@@ -5007,9 +5135,9 @@ variant?: &quot;ghost&quot; | &quot;secondary&quot; | &quot;tertiary&quot; | &qu
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-19-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-20-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-19-components-toast-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-20-components-toast-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -5418,9 +5546,9 @@ visibleToasts?: number</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tooltip</h2>
       <div class="badges">
-        <label for="c-20-components-tooltip-props" class="badge ok as-toggle">9 prop types</label>
+        <label for="c-21-components-tooltip-props" class="badge ok as-toggle">9 prop types</label>
         
-        <label for="c-20-components-tooltip-stories" class="badge ok as-toggle">5 stories</label>
+        <label for="c-21-components-tooltip-stories" class="badge ok as-toggle">5 stories</label>
         
       </div>
     </div>
@@ -5433,9 +5561,9 @@ visibleToasts?: number</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-20-components-tooltip-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-21-components-tooltip-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-20-components-tooltip-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-21-components-tooltip-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -5600,9 +5728,9 @@ sideOffset?: number = 4</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> ValidationList</h2>
       <div class="badges">
-        <label for="c-21-components-validationlist-props" class="badge ok as-toggle">2 prop types</label>
+        <label for="c-22-components-validationlist-props" class="badge ok as-toggle">2 prop types</label>
         
-        <label for="c-21-components-validationlist-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-22-components-validationlist-stories" class="badge ok as-toggle">4 stories</label>
         
       </div>
     </div>
@@ -5615,9 +5743,9 @@ sideOffset?: number = 4</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-21-components-validationlist-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-22-components-validationlist-stories" class="tg tg-stories" type="checkbox" hidden />
   
-  <input id="c-21-components-validationlist-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-22-components-validationlist-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
