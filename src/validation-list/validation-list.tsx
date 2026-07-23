@@ -49,8 +49,8 @@ const isMet = (pattern: ValidationRule['pattern'], value: string) =>
  * 	rules={[{ text: 'At least 10 characters', pattern: value => value.length >= 10 }]}
  * />
  */
-export const ValidationList = ({ value, rules, className, ref, ...props }: ValidationListProps) => (
-	<ul ref={ref} data-slot="validation-list" className={slots.root({ className })} {...props}>
+export const ValidationList = ({ value, rules, className, ...props }: ValidationListProps) => (
+	<ul data-slot="validation-list" className={slots.root({ className })} {...props}>
 		{rules.map(({ text, pattern }) => {
 			const active = isMet(pattern, value);
 
