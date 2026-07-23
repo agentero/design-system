@@ -25,6 +25,7 @@
     "./alert": "./src/alert/index.ts",
     "./avatar": "./src/avatar/index.ts",
     "./button": "./src/button/index.ts",
+    "./card": "./src/card/index.ts",
     "./check-list": "./src/check-list/index.ts",
     "./data-table": "./src/data-table/index.ts",
     "./divider": "./src/divider/index.ts",
