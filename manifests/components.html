@@ -576,13 +576,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">22 components ok</span><span class="filter-pill ok" aria-disabled="true">174 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">23 components ok</span><span class="filter-pill ok" aria-disabled="true">178 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>3.4s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>3.2s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -5711,6 +5711,121 @@ sideOffset?: number = 4</code></pre>
     asChild&gt;
     &lt;Button variant=&quot;secondary&quot;&gt;Why is this disabled?&lt;/Button&gt;
 &lt;/Tooltip&gt;;</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
+  aria-label="ValidationList">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> ValidationList</h2>
+      <div class="badges">
+        <label for="c-22-components-validationlist-props" class="badge ok as-toggle">2 prop types</label>
+        
+        <label for="c-22-components-validationlist-stories" class="badge ok as-toggle">4 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/validation-list/validation-list.stories.tsx">components-validationlist · ./src/validation-list/validation-list.stories.tsx</div>
+    
+    <div class="hint">ValidationList renders a bulleted checklist of rules that light up as a value satisfies them. Each rule&#39;s `pattern` is a `RegExp` or a predicate `(value) =&gt; boolean`, so character-class checks and arbitrary logic (length, membership, …) live in the same list. It is presentational — pair it with your form validation; it does not own the input or block submission.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-22-components-validationlist-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  <input id="c-22-components-validationlist-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
+              <span class="badge ok">2 prop types</span>
+            </div>
+            <pre><code>Component: src/validation-list/validation-list.tsx::ValidationList</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>rules: ValidationRule[]
+
+value: string</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { ValidationList } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">A partially-satisfied value: some rules are active, some are still unmet.</div>
+              <pre><code>const Default = () =&gt; &lt;ValidationList value=&quot;Password1234.&quot; rules={rules} /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">None Met</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Empty value: every rule is unmet, so all items render in the tertiary color.</div>
+              <pre><code>const NoneMet = () =&gt; &lt;ValidationList value=&quot;&quot; rules={rules} /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Partially Met</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">A value that satisfies the regex rules but not the length predicate.</div>
+              <pre><code>const PartiallyMet = () =&gt; &lt;ValidationList value=&quot;Aa1.&quot; rules={rules} /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Playground</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Wire the value to an input to watch the list update on every keystroke.</div>
+              <pre><code>const Playground = () =&gt; {
+    const [value, setValue] = useState(&#39;&#39;);
+
+    return (
+        &lt;div className=&quot;flex w-100 flex-col gap-4&quot;&gt;
+            &lt;input
+                type=&quot;text&quot;
+                value={value}
+                placeholder=&quot;Type a password…&quot;
+                onChange={event =&gt; setValue(event.target.value)}
+                className=&quot;rounded-md border border-border-default-base-primary px-3 py-2 text-sm&quot; /&gt;
+            &lt;ValidationList rules={rules} value={value} /&gt;
+        &lt;/div&gt;
+    );
+};</code></pre>
             </div>
         </div>
     
