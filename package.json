@@ -24,6 +24,7 @@
     "./accordion": "./src/accordion/index.ts",
     "./alert": "./src/alert/index.ts",
     "./avatar": "./src/avatar/index.ts",
+    "./avatar-group": "./src/avatar-group/index.ts",
     "./button": "./src/button/index.ts",
     "./check-list": "./src/check-list/index.ts",
     "./data-table": "./src/data-table/index.ts",

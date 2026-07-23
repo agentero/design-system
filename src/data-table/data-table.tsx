@@ -305,7 +305,11 @@ const DataTableTable = ({
 										onClick={
 											isClickable
 												? e => {
-														if (isInteractiveElement(e.target as HTMLElement)) return;
+														if (
+															isInteractiveElement(e.target as HTMLElement) ||
+															!(e.currentTarget as HTMLElement).contains(e.target as HTMLElement)
+														)
+															return;
 														if (onRowClick) {
 															onRowClick(row.original);
 														} else if (href) {
