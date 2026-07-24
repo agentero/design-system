@@ -1,1 +1,0 @@
-import{i as e,s as t}from"./preload-helper-xPQekRTU.js";import{C as n}from"./iframe-2-mPl1Vb.js";import{i as r,r as i}from"./dist-DED-sas6.js";function a(e){let[t,n]=o.useState(s());return r(()=>{e||n(e=>e??String(c++))},[e]),e||(t?`radix-${t}`:``)}var o,s,c,l=e((()=>{o=t(n(),1),i(),s=o.useId||(()=>void 0),c=0}));export{a as n,l as t};
