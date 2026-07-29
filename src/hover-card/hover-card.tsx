@@ -69,12 +69,34 @@ Content.displayName = 'HoverCard.Content';
 
 type ArrowProps = ComponentProps<typeof HoverCardPrimitive.Arrow>;
 
-const Arrow = ({ className, ...props }: ArrowProps) => (
+const Arrow = ({ className, width = 12, height = 6, ...props }: ArrowProps) => (
+	// Radix's default arrow is a bare filled polygon, so it punches a hole in the
+	// card's border instead of carrying it around the point. Swap in an SVG that
+	// strokes the two slopes: an open path (no `Z`) leaves the base unstroked, so
+	// the arrow stays continuous with the card interior. viewBox matches the 2:1
+	// default so the shape isn't distorted; keep that ratio when resizing.
 	<HoverCardPrimitive.Arrow
 		data-slot="hover-card-arrow"
-		className={cn('fill-bg-default-base-primary', className)}
-		{...props}
-	/>
+		width={width}
+		height={height}
+		asChild
+		{...props}>
+		<svg
+			viewBox="0 0 12 6"
+			className={cn(
+				'fill-bg-default-base-primary stroke-border-default-base-primary',
+				className
+			)}>
+			{/* Opaque fill covers the border segment the arrow sits on. */}
+			<polygon points="0,0 6,6 12,0" />
+			<path
+				d="M0 0 L6 6 L12 0"
+				fill="none"
+				strokeLinejoin="round"
+				vectorEffect="non-scaling-stroke"
+			/>
+		</svg>
+	</HoverCardPrimitive.Arrow>
 );
 Arrow.displayName = 'HoverCard.Arrow';
 

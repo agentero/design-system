@@ -291,8 +291,8 @@ export const RichContent: Story = {
 
 /**
  * An optional `Arrow` points back at the trigger; render it inside `Content`.
- * It is filled with the card background and carries no border, so it reads as
- * a notch out of the card's edge rather than a distinct shape.
+ * It carries the card's border down both slopes and leaves its base open, so
+ * the card and the point read as one shape on any background.
  */
 export const WithArrow: Story = {
 	render: args => (
@@ -314,9 +314,18 @@ export const WithArrow: Story = {
 
 		await userEvent.hover(trigger);
 
-		await waitFor(() =>
-			expect(document.querySelector('[data-slot="hover-card-arrow"]')).toBeInTheDocument()
-		);
+		const arrow = await waitFor(() => {
+			const node = document.querySelector('[data-slot="hover-card-arrow"]');
+			if (!node) throw new Error('arrow never rendered');
+			return node;
+		});
+
+		// The stroked slopes are what make the arrow read against the card border.
+		const slopes = arrow.querySelector('path');
+		await expect(slopes).toBeInTheDocument();
+		await expect(getComputedStyle(slopes!).stroke).not.toBe('none');
+		// Open path, no `Z`: stroking the base would draw a line across the card.
+		await expect(slopes).toHaveAttribute('d', expect.not.stringContaining('Z'));
 	}
 };
 
