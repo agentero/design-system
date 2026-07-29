@@ -7,11 +7,11 @@ import { HoverCard } from './hover-card';
 
 const PreviewCard = () => (
 	<div className="flex w-72 gap-3">
-		<Avatar fallback="AG" colorize="Agentero" type="initials" size="md" />
+		<Avatar fallback="AL" colorize="Ada Lovelace" type="initials" size="md" />
 		<div className="flex flex-col gap-1">
-			<p className="font-medium text-text-default-base-primary">Agentero</p>
+			<p className="font-medium text-text-default-base-primary">Ada Lovelace</p>
 			<p className="text-text-default-base-tertiary">
-				Insurance marketplace for independent agents.
+				Product designer on the design systems team.
 			</p>
 		</div>
 	</div>
@@ -74,18 +74,18 @@ export const Default: Story = {
 		const trigger = canvas.getByRole('button', { name: /hover me/i });
 		await expect(trigger).toHaveAttribute('data-slot', 'hover-card-trigger');
 
-		await expect(body.queryByText(/insurance marketplace/i)).not.toBeInTheDocument();
+		await expect(body.queryByText(/product designer/i)).not.toBeInTheDocument();
 
 		await userEvent.hover(trigger);
 
-		const previews = await body.findAllByText(/insurance marketplace/i);
+		const previews = await body.findAllByText(/product designer/i);
 		await expect(previews.length).toBeGreaterThan(0);
 		await expect(document.querySelector('[data-slot="hover-card-content"]')).toBeInTheDocument();
 		// Open state lands on the Button itself, so it can style its own open look.
 		await expect(trigger).toHaveAttribute('data-state', 'open');
 
 		await userEvent.unhover(trigger);
-		await waitFor(() => expect(body.queryByText(/insurance marketplace/i)).not.toBeInTheDocument());
+		await waitFor(() => expect(body.queryByText(/product designer/i)).not.toBeInTheDocument());
 		await expect(trigger).toHaveAttribute('data-state', 'closed');
 	}
 };
@@ -181,7 +181,7 @@ export const OpensOnFocus: Story = {
 		await userEvent.tab();
 		await expect(trigger).toHaveFocus();
 
-		const previews = await body.findAllByText(/insurance marketplace/i);
+		const previews = await body.findAllByText(/product designer/i);
 		await expect(previews.length).toBeGreaterThan(0);
 	}
 };
@@ -246,24 +246,24 @@ export const RichContent: Story = {
 				<HoverCard.Content className="w-80">
 					<div className="flex flex-col gap-3">
 						<div className="flex gap-3">
-							<Avatar fallback="AG" colorize="Agentero" type="initials" size="lg" />
+							<Avatar fallback="AL" colorize="Ada Lovelace" type="initials" size="lg" />
 							<div className="flex flex-col gap-1">
-								<p className="font-medium text-text-default-base-primary">Agentero</p>
+								<p className="font-medium text-text-default-base-primary">Ada Lovelace</p>
 								<p className="text-text-default-base-tertiary">
-									Insurance marketplace for independent agents.
+									Product designer on the design systems team.
 								</p>
 							</div>
 						</div>
 						<div className="flex gap-4 text-text-default-base-secondary">
 							<span>
-								<span className="font-medium text-text-default-base-primary">128</span> carriers
+								<span className="font-medium text-text-default-base-primary">128</span> followers
 							</span>
 							<span>
-								<span className="font-medium text-text-default-base-primary">50</span> states
+								<span className="font-medium text-text-default-base-primary">24</span> projects
 							</span>
 						</div>
 						<Button variant="secondary" size="sm" asChild>
-							<a href="https://agentero.com">View profile</a>
+							<a href="https://example.com/ada-lovelace">View profile</a>
 						</Button>
 					</div>
 				</HoverCard.Content>
@@ -281,7 +281,7 @@ export const RichContent: Story = {
 		// `asChild` keeps the anchor semantics while picking up Button's styling.
 		const profileLink = await body.findByRole('link', { name: /view profile/i });
 		await expect(profileLink).toHaveAttribute('data-slot', 'button');
-		await expect(profileLink).toHaveAttribute('href', 'https://agentero.com');
+		await expect(profileLink).toHaveAttribute('href', 'https://example.com/ada-lovelace');
 	}
 };
 
