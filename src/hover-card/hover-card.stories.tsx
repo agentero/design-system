@@ -6,10 +6,10 @@ import { Button } from '../button';
 import { HoverCard } from './hover-card';
 
 const PreviewCard = () => (
-	<div className="flex w-72 gap-3">
+	<div className="flex gap-3">
 		<Avatar fallback="AL" colorize="Ada Lovelace" type="initials" size="md" />
-		<div className="flex flex-col gap-1">
-			<p className="font-medium text-text-default-base-primary">Ada Lovelace</p>
+		<div className="flex flex-col gap-0.5">
+			<p className="text-base font-semibold text-text-default-base-primary">Ada Lovelace</p>
 			<p className="text-text-default-base-tertiary">
 				Product designer on the design systems team.
 			</p>
@@ -243,18 +243,22 @@ export const RichContent: Story = {
 				<Button variant="secondary">Hover me</Button>
 			</HoverCard.Trigger>
 			<HoverCard.Portal>
-				<HoverCard.Content className="w-80">
-					<div className="flex flex-col gap-3">
+				<HoverCard.Content>
+					{/* Identity and stats are one unit at gap-2; the action is a
+					    separate concern, so it gets mt-2 on top of that for 16px. */}
+					<div className="flex flex-col gap-2">
 						<div className="flex gap-3">
 							<Avatar fallback="AL" colorize="Ada Lovelace" type="initials" size="lg" />
-							<div className="flex flex-col gap-1">
-								<p className="font-medium text-text-default-base-primary">Ada Lovelace</p>
+							<div className="flex flex-col gap-0.5">
+								<p className="text-base font-semibold text-text-default-base-primary">
+									Ada Lovelace
+								</p>
 								<p className="text-text-default-base-tertiary">
 									Product designer on the design systems team.
 								</p>
 							</div>
 						</div>
-						<div className="flex gap-4 text-text-default-base-secondary">
+						<div className="flex gap-5 text-text-default-base-secondary">
 							<span>
 								<span className="font-medium text-text-default-base-primary">128</span> followers
 							</span>
@@ -262,7 +266,7 @@ export const RichContent: Story = {
 								<span className="font-medium text-text-default-base-primary">24</span> projects
 							</span>
 						</div>
-						<Button variant="secondary" size="sm" asChild>
+						<Button variant="secondary" size="sm" className="mt-2" asChild>
 							<a href="https://example.com/ada-lovelace">View profile</a>
 						</Button>
 					</div>
