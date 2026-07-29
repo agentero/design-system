@@ -83,10 +83,7 @@ const Arrow = ({ className, width = 12, height = 6, ...props }: ArrowProps) => (
 		{...props}>
 		<svg
 			viewBox="0 0 12 6"
-			className={cn(
-				'fill-bg-default-base-primary stroke-border-default-base-primary',
-				className
-			)}>
+			className={cn('fill-bg-default-base-primary stroke-border-default-base-primary', className)}>
 			{/* Opaque fill covers the border segment the arrow sits on. `stroke="none"`
 			    is load-bearing: the polygon is a closed shape, so inheriting the root
 			    stroke would outline its base and draw a line across the arrow. */}
