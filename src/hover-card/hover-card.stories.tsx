@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { Avatar } from '../avatar';
+import { Button } from '../button';
 import { HoverCard } from './hover-card';
 
 const PreviewCard = () => (
@@ -85,6 +86,72 @@ export const Default: Story = {
 };
 
 /**
+ * Brushing the trigger and leaving without ever reaching the card is the most
+ * common way a hover card gets dismissed, so the exit reverses the entrance
+ * from wherever it got to. Driving it with keyframes instead would restart the
+ * exit at full opacity and scale, popping the half-faded card to fully visible
+ * on its way out.
+ */
+export const AbandonedHover: Story = {
+	render: args => (
+		<HoverCard.Root {...args}>
+			<HoverCard.Trigger asChild>
+				<a href="https://agentero.com" className="text-text-default-base-primary underline">
+					@agentero
+				</a>
+			</HoverCard.Trigger>
+			<HoverCard.Portal>
+				<HoverCard.Content>
+					<PreviewCard />
+				</HoverCard.Content>
+			</HoverCard.Portal>
+		</HoverCard.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const trigger = canvas.getByRole('link', { name: /@agentero/i });
+
+		await userEvent.hover(trigger);
+
+		const content = await waitFor(() => {
+			const node = document.querySelector('[data-slot="hover-card-content"]');
+			if (!node) throw new Error('hover card never opened');
+			return node;
+		});
+
+		// Sample every frame across the interruption. The entrance runs 200ms, so
+		// leaving now lands well inside it.
+		const frames: { state: string | null; opacity: number }[] = [];
+		let sampling = true;
+		const sample = () => {
+			if (!sampling) return;
+			if (content.isConnected) {
+				frames.push({
+					state: content.getAttribute('data-state'),
+					opacity: Number(getComputedStyle(content).opacity)
+				});
+			}
+			requestAnimationFrame(sample);
+		};
+		sample();
+
+		await userEvent.unhover(trigger);
+		await waitFor(() => expect(content.isConnected).toBe(false));
+		sampling = false;
+
+		const closing = frames.findIndex(frame => frame.state === 'closed');
+		await expect(closing).toBeGreaterThan(0);
+
+		const lastOpen = frames[closing - 1]?.opacity ?? 1;
+		const firstClosed = frames[closing]?.opacity ?? 1;
+		// The card was still fading in when the pointer left, and opacity keeps
+		// falling from there instead of snapping back up to 1.
+		await expect(lastOpen).toBeLessThan(1);
+		await expect(firstClosed).toBeLessThanOrEqual(lastOpen);
+	}
+};
+
+/**
  * Opens on focus as a supplementary affordance. Note this is not the same as
  * being keyboard-accessible: focus does not move into the card and it closes
  * on blur, so any interactive content inside stays unreachable by keyboard —
@@ -142,8 +209,9 @@ export const Sides: Story = {
 
 /**
  * The whole point of a HoverCard over a Tooltip: freely laid-out content that
- * may include its own links and actions. Still supplementary — never the only
- * path to an action.
+ * may include its own links and actions. Keep those actions at `secondary` or
+ * below — a primary CTA inside a card the keyboard can't reach reads as the
+ * main path to something it isn't. The trigger still has to stand on its own.
  */
 export const RichContent: Story = {
 	render: args => (
@@ -173,9 +241,9 @@ export const RichContent: Story = {
 								<span className="font-medium text-text-default-base-primary">50</span> states
 							</span>
 						</div>
-						<a href="https://agentero.com" className="text-text-default-base-primary underline">
-							View profile
-						</a>
+						<Button variant="secondary" size="sm" asChild>
+							<a href="https://agentero.com">View profile</a>
+						</Button>
 					</div>
 				</HoverCard.Content>
 			</HoverCard.Portal>
@@ -189,8 +257,46 @@ export const RichContent: Story = {
 		await userEvent.hover(trigger);
 
 		await expect(await body.findByText(/128/)).toBeInTheDocument();
+		// `asChild` keeps the anchor semantics while picking up Button's styling.
 		const profileLink = await body.findByRole('link', { name: /view profile/i });
-		await expect(profileLink).toBeInTheDocument();
+		await expect(profileLink).toHaveAttribute('data-slot', 'button');
+		await expect(profileLink).toHaveAttribute('href', 'https://agentero.com');
+	}
+};
+
+/**
+ * The trigger is not limited to inline text — `asChild` takes any focusable
+ * control. A `secondary` Button is the usual fit: the button keeps its own job
+ * on click and the card is a preview of where it leads, so nothing is lost when
+ * the card never opens.
+ */
+export const ButtonTrigger: Story = {
+	render: args => (
+		<HoverCard.Root {...args}>
+			<HoverCard.Trigger asChild>
+				<Button variant="secondary">Agentero</Button>
+			</HoverCard.Trigger>
+			<HoverCard.Portal>
+				<HoverCard.Content>
+					<PreviewCard />
+				</HoverCard.Content>
+			</HoverCard.Portal>
+		</HoverCard.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const body = within(document.body);
+		const trigger = canvas.getByRole('button', { name: /agentero/i });
+
+		await userEvent.hover(trigger);
+
+		const previews = await body.findAllByText(/insurance marketplace/i);
+		await expect(previews.length).toBeGreaterThan(0);
+		// Radix mirrors open state onto the trigger, so the Button can style it.
+		await expect(trigger).toHaveAttribute('data-state', 'open');
+
+		await userEvent.unhover(trigger);
+		await waitFor(() => expect(trigger).toHaveAttribute('data-state', 'closed'));
 	}
 };
 

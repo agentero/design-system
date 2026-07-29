@@ -32,13 +32,22 @@ export const hoverCardRecipe = tv({
 		'will-change-[transform,opacity]',
 		'data-[side=bottom]:origin-top data-[side=left]:origin-right',
 		'data-[side=right]:origin-left data-[side=top]:origin-bottom',
-		// Gate the open animation on data-state=open so it can't beat slide-out on close.
-		'data-[state=open]:data-[side=bottom]:animate-dropdown-slide-in-from-top',
-		'data-[state=open]:data-[side=left]:animate-dropdown-slide-in-from-right',
-		'data-[state=open]:data-[side=right]:animate-dropdown-slide-in-from-left',
-		'data-[state=open]:data-[side=top]:animate-dropdown-slide-in-from-bottom',
-		'data-[state=closed]:animate-dropdown-slide-out',
-		'motion-reduce:animate-none!'
+		// Motion is transition-driven rather than keyframe-driven. A hover card is
+		// routinely abandoned mid-entrance — the pointer brushes the trigger and
+		// leaves without ever reaching the card — and keyframes restart the exit at
+		// full opacity/scale, so the half-faded card pops to fully visible before
+		// shrinking away. A transition reverses from wherever the entrance got to.
+		'transition-[opacity,transform] duration-200 ease-out',
+		// Direction comes from the side-aware origin above, not a translate:
+		// @starting-style is captured before Floating UI resolves a collision flip,
+		// so a translate keyed on data-side runs backwards whenever the card flips.
+		'starting:opacity-0 starting:[transform:scale(0.9)]',
+		'data-[state=closed]:opacity-0 data-[state=closed]:[transform:scale(0.9)]',
+		'data-[state=closed]:duration-150 data-[state=closed]:ease-in',
+		// Presence unmounts on animationend, so the exit needs an animation to wait
+		// on; presence-hold is a no-op whose duration matches the exit transition.
+		'data-[state=closed]:animate-presence-hold',
+		'motion-reduce:transition-none motion-reduce:animate-none!'
 	]
 });
 
