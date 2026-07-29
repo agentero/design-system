@@ -576,7 +576,7 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">23 components ok</span><span class="filter-pill ok" aria-disabled="true">180 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">23 components ok</span><span class="filter-pill ok" aria-disabled="true">179 stories ok</span></div>
   </div>
 </header>
 <main>
@@ -3134,13 +3134,13 @@ label?: ReactNode</code></pre>
       <div class="badges">
         
         
-        <label for="c-9-components-hovercard-stories" class="badge ok as-toggle">8 stories</label>
+        <label for="c-9-components-hovercard-stories" class="badge ok as-toggle">7 stories</label>
         
       </div>
     </div>
     <div class="meta" title="./src/hover-card/hover-card.stories.tsx">components-hovercard · ./src/hover-card/hover-card.stories.tsx</div>
     
-    <div class="hint">HoverCard reveals rich, sighted-user preview content anchored to a trigger on pointer hover or keyboard focus. Compose it from `Root` / `Trigger` / `Portal` / `Content`.</div>
+    <div class="hint">HoverCard reveals rich, sighted-user preview content anchored to a trigger on pointer hover or keyboard focus. Compose it from `Root` / `Trigger` / `Portal` / `Content`. `Trigger` takes any focusable control through `asChild`; these stories use a `secondary` Button throughout. Radix mirrors open state onto whatever you pass, so the trigger can style itself off `data-state`.</div>
     
   </div>
 
@@ -3177,10 +3177,7 @@ label?: ReactNode</code></pre>
               <div class="hint">Default preview revealed on hover; hides again on unhover.</div>
               <pre><code>const Default = () =&gt; &lt;HoverCard.Root openDelay={0} closeDelay={0}&gt;
     &lt;HoverCard.Trigger asChild&gt;
-        &lt;a
-            href=&quot;https://agentero.com&quot;
-            className=&quot;text-text-default-base-primary underline&quot;&gt;@agentero
-                            &lt;/a&gt;
+        &lt;Button variant=&quot;secondary&quot;&gt;Agentero&lt;/Button&gt;
     &lt;/HoverCard.Trigger&gt;
     &lt;HoverCard.Portal&gt;
         &lt;HoverCard.Content&gt;
@@ -3198,10 +3195,7 @@ label?: ReactNode</code></pre>
               <div class="hint">Brushing the trigger and leaving without ever reaching the card is the most common way a hover card gets dismissed, so the exit reverses the entrance from wherever it got to. Driving it with keyframes instead would restart the exit at full opacity and scale, popping the half-faded card to fully visible on its way out.</div>
               <pre><code>const AbandonedHover = () =&gt; &lt;HoverCard.Root openDelay={0} closeDelay={0}&gt;
     &lt;HoverCard.Trigger asChild&gt;
-        &lt;a
-            href=&quot;https://agentero.com&quot;
-            className=&quot;text-text-default-base-primary underline&quot;&gt;@agentero
-                            &lt;/a&gt;
+        &lt;Button variant=&quot;secondary&quot;&gt;Agentero&lt;/Button&gt;
     &lt;/HoverCard.Trigger&gt;
     &lt;HoverCard.Portal&gt;
         &lt;HoverCard.Content&gt;
@@ -3219,10 +3213,7 @@ label?: ReactNode</code></pre>
               <div class="hint">Opens on focus as a supplementary affordance. Note this is not the same as being keyboard-accessible: focus does not move into the card and it closes on blur, so any interactive content inside stays unreachable by keyboard — never put essential actions there.</div>
               <pre><code>const OpensOnFocus = () =&gt; &lt;HoverCard.Root openDelay={0} closeDelay={0}&gt;
     &lt;HoverCard.Trigger asChild&gt;
-        &lt;a
-            href=&quot;https://agentero.com&quot;
-            className=&quot;text-text-default-base-primary underline&quot;&gt;@agentero
-                            &lt;/a&gt;
+        &lt;Button variant=&quot;secondary&quot;&gt;Agentero&lt;/Button&gt;
     &lt;/HoverCard.Trigger&gt;
     &lt;HoverCard.Portal&gt;
         &lt;HoverCard.Content&gt;
@@ -3243,9 +3234,7 @@ label?: ReactNode</code></pre>
         {([&#39;top&#39;, &#39;right&#39;, &#39;bottom&#39;, &#39;left&#39;] as const).map(side =&gt; (
             &lt;HoverCard.Root key={side} {...args}&gt;
                 &lt;HoverCard.Trigger asChild&gt;
-                    &lt;a href=&quot;https://agentero.com&quot; className=&quot;text-text-default-base-primary underline&quot;&gt;
-                        {side}
-                    &lt;/a&gt;
+                    &lt;Button variant=&quot;secondary&quot;&gt;{side}&lt;/Button&gt;
                 &lt;/HoverCard.Trigger&gt;
                 &lt;HoverCard.Portal&gt;
                     &lt;HoverCard.Content side={side}&gt;
@@ -3266,10 +3255,7 @@ label?: ReactNode</code></pre>
               <div class="hint">The whole point of a HoverCard over a Tooltip: freely laid-out content that may include its own links and actions. Keep those actions at `secondary` or below — a primary CTA inside a card the keyboard can&#39;t reach reads as the main path to something it isn&#39;t. The trigger still has to stand on its own.</div>
               <pre><code>const RichContent = () =&gt; &lt;HoverCard.Root openDelay={0} closeDelay={0}&gt;
     &lt;HoverCard.Trigger asChild&gt;
-        &lt;a
-            href=&quot;https://agentero.com&quot;
-            className=&quot;text-text-default-base-primary underline&quot;&gt;@agentero
-                            &lt;/a&gt;
+        &lt;Button variant=&quot;secondary&quot;&gt;Agentero&lt;/Button&gt;
     &lt;/HoverCard.Trigger&gt;
     &lt;HoverCard.Portal&gt;
         &lt;HoverCard.Content className=&quot;w-80&quot;&gt;
@@ -3300,24 +3286,6 @@ label?: ReactNode</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">Button Trigger</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              
-              <div class="hint">The trigger is not limited to inline text — `asChild` takes any focusable control. A `secondary` Button is the usual fit: the button keeps its own job on click and the card is a preview of where it leads, so nothing is lost when the card never opens.</div>
-              <pre><code>const ButtonTrigger = () =&gt; &lt;HoverCard.Root openDelay={0} closeDelay={0}&gt;
-    &lt;HoverCard.Trigger asChild&gt;
-        &lt;Button variant=&quot;secondary&quot;&gt;Agentero&lt;/Button&gt;
-    &lt;/HoverCard.Trigger&gt;
-    &lt;HoverCard.Portal&gt;
-        &lt;HoverCard.Content&gt;
-            &lt;PreviewCard /&gt;
-        &lt;/HoverCard.Content&gt;
-    &lt;/HoverCard.Portal&gt;
-&lt;/HoverCard.Root&gt;;</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
                 <span class="ex-name">With Arrow</span>
                 <span class="badge ok">story ok</span>
               </div>
@@ -3325,10 +3293,7 @@ label?: ReactNode</code></pre>
               <div class="hint">An optional `Arrow` points back at the trigger; render it inside `Content`. The arrow is filled with the card background (white), so it only reads against a surface that contrasts with the card — shown here on a muted backdrop.</div>
               <pre><code>const WithArrow = () =&gt; &lt;HoverCard.Root openDelay={0} closeDelay={0}&gt;
     &lt;HoverCard.Trigger asChild&gt;
-        &lt;a
-            href=&quot;https://agentero.com&quot;
-            className=&quot;text-text-default-base-primary underline&quot;&gt;@agentero
-                            &lt;/a&gt;
+        &lt;Button variant=&quot;secondary&quot;&gt;Agentero&lt;/Button&gt;
     &lt;/HoverCard.Trigger&gt;
     &lt;HoverCard.Portal&gt;
         &lt;HoverCard.Content&gt;
@@ -3349,9 +3314,7 @@ label?: ReactNode</code></pre>
     &lt;div className=&quot;flex gap-10&quot;&gt;
         &lt;HoverCard.Root openDelay={700} closeDelay={300}&gt;
             &lt;HoverCard.Trigger asChild&gt;
-                &lt;a href=&quot;https://agentero.com&quot; className=&quot;text-text-default-base-primary underline&quot;&gt;
-                    Default (700ms)
-                &lt;/a&gt;
+                &lt;Button variant=&quot;secondary&quot;&gt;Default (700ms)&lt;/Button&gt;
             &lt;/HoverCard.Trigger&gt;
             &lt;HoverCard.Portal&gt;
                 &lt;HoverCard.Content&gt;
@@ -3361,9 +3324,7 @@ label?: ReactNode</code></pre>
         &lt;/HoverCard.Root&gt;
         &lt;HoverCard.Root openDelay={0} closeDelay={0}&gt;
             &lt;HoverCard.Trigger asChild&gt;
-                &lt;a href=&quot;https://agentero.com&quot; className=&quot;text-text-default-base-primary underline&quot;&gt;
-                    Instant (0ms)
-                &lt;/a&gt;
+                &lt;Button variant=&quot;secondary&quot;&gt;Instant (0ms)&lt;/Button&gt;
             &lt;/HoverCard.Trigger&gt;
             &lt;HoverCard.Portal&gt;
                 &lt;HoverCard.Content&gt;
