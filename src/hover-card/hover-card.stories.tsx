@@ -59,7 +59,7 @@ export const Default: Story = {
 	render: args => (
 		<HoverCard.Root {...args}>
 			<HoverCard.Trigger asChild>
-				<Button variant="secondary">Agentero</Button>
+				<Button variant="secondary">Hover me</Button>
 			</HoverCard.Trigger>
 			<HoverCard.Portal>
 				<HoverCard.Content>
@@ -71,7 +71,7 @@ export const Default: Story = {
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 		const body = within(document.body);
-		const trigger = canvas.getByRole('button', { name: /agentero/i });
+		const trigger = canvas.getByRole('button', { name: /hover me/i });
 		await expect(trigger).toHaveAttribute('data-slot', 'hover-card-trigger');
 
 		await expect(body.queryByText(/insurance marketplace/i)).not.toBeInTheDocument();
@@ -101,7 +101,7 @@ export const AbandonedHover: Story = {
 	render: args => (
 		<HoverCard.Root {...args}>
 			<HoverCard.Trigger asChild>
-				<Button variant="secondary">Agentero</Button>
+				<Button variant="secondary">Hover me</Button>
 			</HoverCard.Trigger>
 			<HoverCard.Portal>
 				<HoverCard.Content>
@@ -112,7 +112,7 @@ export const AbandonedHover: Story = {
 	),
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
-		const trigger = canvas.getByRole('button', { name: /agentero/i });
+		const trigger = canvas.getByRole('button', { name: /hover me/i });
 
 		await userEvent.hover(trigger);
 
@@ -164,7 +164,7 @@ export const OpensOnFocus: Story = {
 	render: args => (
 		<HoverCard.Root {...args}>
 			<HoverCard.Trigger asChild>
-				<Button variant="secondary">Agentero</Button>
+				<Button variant="secondary">Focus me</Button>
 			</HoverCard.Trigger>
 			<HoverCard.Portal>
 				<HoverCard.Content>
@@ -176,7 +176,7 @@ export const OpensOnFocus: Story = {
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 		const body = within(document.body);
-		const trigger = canvas.getByRole('button', { name: /agentero/i });
+		const trigger = canvas.getByRole('button', { name: /focus me/i });
 
 		await userEvent.tab();
 		await expect(trigger).toHaveFocus();
@@ -186,14 +186,38 @@ export const OpensOnFocus: Story = {
 	}
 };
 
-/** `side` sets the preferred placement; it flips on viewport collision. */
+/**
+ * `side` sets the preferred placement; it flips on viewport collision. The
+ * triggers are laid out on a compass so each card opens away from the centre,
+ * which makes a flip obvious the moment one runs out of room.
+ */
+const SIDE_CELL = {
+	top: 'col-start-2 row-start-1',
+	right: 'col-start-3 row-start-2',
+	bottom: 'col-start-2 row-start-3',
+	left: 'col-start-1 row-start-2'
+} as const;
+
 export const Sides: Story = {
+	// Headroom so `top` clears the viewport and actually opens upward rather
+	// than flipping — the point here is the four placements, not the collision.
+	decorators: [
+		Story => (
+			<div className="py-32">
+				<Story />
+			</div>
+		)
+	],
 	render: args => (
-		<div className="grid grid-cols-2 gap-10">
+		<div className="grid grid-cols-3 grid-rows-3 gap-4">
 			{(['top', 'right', 'bottom', 'left'] as const).map(side => (
 				<HoverCard.Root key={side} {...args}>
 					<HoverCard.Trigger asChild>
-						<Button variant="secondary">{side}</Button>
+						{/* `capitalize` sits on the Button because Preflight resets
+						    text-transform on <button>, so it can't be inherited. */}
+						<Button variant="secondary" className={`capitalize ${SIDE_CELL[side]}`}>
+							{side}
+						</Button>
 					</HoverCard.Trigger>
 					<HoverCard.Portal>
 						<HoverCard.Content side={side}>
@@ -216,7 +240,7 @@ export const RichContent: Story = {
 	render: args => (
 		<HoverCard.Root {...args}>
 			<HoverCard.Trigger asChild>
-				<Button variant="secondary">Agentero</Button>
+				<Button variant="secondary">Hover me</Button>
 			</HoverCard.Trigger>
 			<HoverCard.Portal>
 				<HoverCard.Content className="w-80">
@@ -249,7 +273,7 @@ export const RichContent: Story = {
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 		const body = within(document.body);
-		const trigger = canvas.getByRole('button', { name: /agentero/i });
+		const trigger = canvas.getByRole('button', { name: /hover me/i });
 
 		await userEvent.hover(trigger);
 
@@ -263,22 +287,14 @@ export const RichContent: Story = {
 
 /**
  * An optional `Arrow` points back at the trigger; render it inside `Content`.
- * The arrow is filled with the card background (white), so it only reads
- * against a surface that contrasts with the card — shown here on a muted
- * backdrop.
+ * It is filled with the card background and carries no border, so it reads as
+ * a notch out of the card's edge rather than a distinct shape.
  */
 export const WithArrow: Story = {
-	decorators: [
-		Story => (
-			<div className="rounded-lg bg-slate-300 p-16">
-				<Story />
-			</div>
-		)
-	],
 	render: args => (
 		<HoverCard.Root {...args}>
 			<HoverCard.Trigger asChild>
-				<Button variant="secondary">Agentero</Button>
+				<Button variant="secondary">Hover me</Button>
 			</HoverCard.Trigger>
 			<HoverCard.Portal>
 				<HoverCard.Content>
@@ -290,7 +306,7 @@ export const WithArrow: Story = {
 	),
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
-		const trigger = canvas.getByRole('button', { name: /agentero/i });
+		const trigger = canvas.getByRole('button', { name: /hover me/i });
 
 		await userEvent.hover(trigger);
 
@@ -307,7 +323,9 @@ export const WithArrow: Story = {
  */
 export const Delays: Story = {
 	render: () => (
-		<div className="flex gap-10">
+		// Grid rather than flex so both triggers take the wider label's width —
+		// a size difference would read as part of what the delay changes.
+		<div className="grid grid-cols-2 gap-10">
 			<HoverCard.Root openDelay={700} closeDelay={300}>
 				<HoverCard.Trigger asChild>
 					<Button variant="secondary">Default (700ms)</Button>
