@@ -3297,7 +3297,7 @@ label?: ReactNode</code></pre>
                 <span class="badge ok">story ok</span>
               </div>
               
-              <div class="hint">An optional `Arrow` points back at the trigger; render it inside `Content`. It is filled with the card background and carries no border, so it reads as a notch out of the card&#39;s edge rather than a distinct shape.</div>
+              <div class="hint">An optional `Arrow` points back at the trigger; render it inside `Content`. It carries the card&#39;s border down both slopes and leaves its base open, so the card and the point read as one shape on any background.</div>
               <pre><code>const WithArrow = () =&gt; &lt;HoverCard.Root openDelay={0} closeDelay={0}&gt;
     &lt;HoverCard.Trigger asChild&gt;
         &lt;Button variant=&quot;secondary&quot;&gt;Hover me&lt;/Button&gt;
