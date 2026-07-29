@@ -21,6 +21,10 @@ const PreviewCard = () => (
  * HoverCard reveals rich, sighted-user preview content anchored to a trigger
  * on pointer hover or keyboard focus. Compose it from `Root` / `Trigger` /
  * `Portal` / `Content`.
+ *
+ * `Trigger` takes any focusable control through `asChild`; these stories use a
+ * `secondary` Button throughout. Radix mirrors open state onto whatever you
+ * pass, so the trigger can style itself off `data-state`.
  */
 const meta = {
 	title: 'Components/HoverCard',
@@ -55,9 +59,7 @@ export const Default: Story = {
 	render: args => (
 		<HoverCard.Root {...args}>
 			<HoverCard.Trigger asChild>
-				<a href="https://agentero.com" className="text-text-default-base-primary underline">
-					@agentero
-				</a>
+				<Button variant="secondary">Agentero</Button>
 			</HoverCard.Trigger>
 			<HoverCard.Portal>
 				<HoverCard.Content>
@@ -69,7 +71,7 @@ export const Default: Story = {
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 		const body = within(document.body);
-		const trigger = canvas.getByRole('link', { name: /@agentero/i });
+		const trigger = canvas.getByRole('button', { name: /agentero/i });
 		await expect(trigger).toHaveAttribute('data-slot', 'hover-card-trigger');
 
 		await expect(body.queryByText(/insurance marketplace/i)).not.toBeInTheDocument();
@@ -79,9 +81,12 @@ export const Default: Story = {
 		const previews = await body.findAllByText(/insurance marketplace/i);
 		await expect(previews.length).toBeGreaterThan(0);
 		await expect(document.querySelector('[data-slot="hover-card-content"]')).toBeInTheDocument();
+		// Open state lands on the Button itself, so it can style its own open look.
+		await expect(trigger).toHaveAttribute('data-state', 'open');
 
 		await userEvent.unhover(trigger);
 		await waitFor(() => expect(body.queryByText(/insurance marketplace/i)).not.toBeInTheDocument());
+		await expect(trigger).toHaveAttribute('data-state', 'closed');
 	}
 };
 
@@ -96,9 +101,7 @@ export const AbandonedHover: Story = {
 	render: args => (
 		<HoverCard.Root {...args}>
 			<HoverCard.Trigger asChild>
-				<a href="https://agentero.com" className="text-text-default-base-primary underline">
-					@agentero
-				</a>
+				<Button variant="secondary">Agentero</Button>
 			</HoverCard.Trigger>
 			<HoverCard.Portal>
 				<HoverCard.Content>
@@ -109,7 +112,7 @@ export const AbandonedHover: Story = {
 	),
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
-		const trigger = canvas.getByRole('link', { name: /@agentero/i });
+		const trigger = canvas.getByRole('button', { name: /agentero/i });
 
 		await userEvent.hover(trigger);
 
@@ -161,9 +164,7 @@ export const OpensOnFocus: Story = {
 	render: args => (
 		<HoverCard.Root {...args}>
 			<HoverCard.Trigger asChild>
-				<a href="https://agentero.com" className="text-text-default-base-primary underline">
-					@agentero
-				</a>
+				<Button variant="secondary">Agentero</Button>
 			</HoverCard.Trigger>
 			<HoverCard.Portal>
 				<HoverCard.Content>
@@ -175,7 +176,7 @@ export const OpensOnFocus: Story = {
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 		const body = within(document.body);
-		const trigger = canvas.getByRole('link', { name: /@agentero/i });
+		const trigger = canvas.getByRole('button', { name: /agentero/i });
 
 		await userEvent.tab();
 		await expect(trigger).toHaveFocus();
@@ -192,9 +193,7 @@ export const Sides: Story = {
 			{(['top', 'right', 'bottom', 'left'] as const).map(side => (
 				<HoverCard.Root key={side} {...args}>
 					<HoverCard.Trigger asChild>
-						<a href="https://agentero.com" className="text-text-default-base-primary underline">
-							{side}
-						</a>
+						<Button variant="secondary">{side}</Button>
 					</HoverCard.Trigger>
 					<HoverCard.Portal>
 						<HoverCard.Content side={side}>
@@ -217,9 +216,7 @@ export const RichContent: Story = {
 	render: args => (
 		<HoverCard.Root {...args}>
 			<HoverCard.Trigger asChild>
-				<a href="https://agentero.com" className="text-text-default-base-primary underline">
-					@agentero
-				</a>
+				<Button variant="secondary">Agentero</Button>
 			</HoverCard.Trigger>
 			<HoverCard.Portal>
 				<HoverCard.Content className="w-80">
@@ -252,7 +249,7 @@ export const RichContent: Story = {
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 		const body = within(document.body);
-		const trigger = canvas.getByRole('link', { name: /@agentero/i });
+		const trigger = canvas.getByRole('button', { name: /agentero/i });
 
 		await userEvent.hover(trigger);
 
@@ -261,42 +258,6 @@ export const RichContent: Story = {
 		const profileLink = await body.findByRole('link', { name: /view profile/i });
 		await expect(profileLink).toHaveAttribute('data-slot', 'button');
 		await expect(profileLink).toHaveAttribute('href', 'https://agentero.com');
-	}
-};
-
-/**
- * The trigger is not limited to inline text — `asChild` takes any focusable
- * control. A `secondary` Button is the usual fit: the button keeps its own job
- * on click and the card is a preview of where it leads, so nothing is lost when
- * the card never opens.
- */
-export const ButtonTrigger: Story = {
-	render: args => (
-		<HoverCard.Root {...args}>
-			<HoverCard.Trigger asChild>
-				<Button variant="secondary">Agentero</Button>
-			</HoverCard.Trigger>
-			<HoverCard.Portal>
-				<HoverCard.Content>
-					<PreviewCard />
-				</HoverCard.Content>
-			</HoverCard.Portal>
-		</HoverCard.Root>
-	),
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-		const body = within(document.body);
-		const trigger = canvas.getByRole('button', { name: /agentero/i });
-
-		await userEvent.hover(trigger);
-
-		const previews = await body.findAllByText(/insurance marketplace/i);
-		await expect(previews.length).toBeGreaterThan(0);
-		// Radix mirrors open state onto the trigger, so the Button can style it.
-		await expect(trigger).toHaveAttribute('data-state', 'open');
-
-		await userEvent.unhover(trigger);
-		await waitFor(() => expect(trigger).toHaveAttribute('data-state', 'closed'));
 	}
 };
 
@@ -317,9 +278,7 @@ export const WithArrow: Story = {
 	render: args => (
 		<HoverCard.Root {...args}>
 			<HoverCard.Trigger asChild>
-				<a href="https://agentero.com" className="text-text-default-base-primary underline">
-					@agentero
-				</a>
+				<Button variant="secondary">Agentero</Button>
 			</HoverCard.Trigger>
 			<HoverCard.Portal>
 				<HoverCard.Content>
@@ -331,7 +290,7 @@ export const WithArrow: Story = {
 	),
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
-		const trigger = canvas.getByRole('link', { name: /@agentero/i });
+		const trigger = canvas.getByRole('button', { name: /agentero/i });
 
 		await userEvent.hover(trigger);
 
@@ -351,9 +310,7 @@ export const Delays: Story = {
 		<div className="flex gap-10">
 			<HoverCard.Root openDelay={700} closeDelay={300}>
 				<HoverCard.Trigger asChild>
-					<a href="https://agentero.com" className="text-text-default-base-primary underline">
-						Default (700ms)
-					</a>
+					<Button variant="secondary">Default (700ms)</Button>
 				</HoverCard.Trigger>
 				<HoverCard.Portal>
 					<HoverCard.Content>
@@ -363,9 +320,7 @@ export const Delays: Story = {
 			</HoverCard.Root>
 			<HoverCard.Root openDelay={0} closeDelay={0}>
 				<HoverCard.Trigger asChild>
-					<a href="https://agentero.com" className="text-text-default-base-primary underline">
-						Instant (0ms)
-					</a>
+					<Button variant="secondary">Instant (0ms)</Button>
 				</HoverCard.Trigger>
 				<HoverCard.Portal>
 					<HoverCard.Content>
