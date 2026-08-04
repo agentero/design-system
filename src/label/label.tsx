@@ -13,7 +13,7 @@ export const labelRecipe = tv({
 	slots: {
 		root: 'flex flex-wrap gap-1 py-0.25 text-sm font-semibold text-text-input-normal',
 		text: 'align-middle',
-		required: 'ms-1 align-middle text-text-input-destructive'
+		required: 'align-middle text-text-input-destructive'
 	},
 	variants: {
 		optional: {
