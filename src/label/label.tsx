@@ -6,6 +6,7 @@ import * as LabelPrimitive from '@radix-ui/react-label';
 import { tv, VariantProps } from 'tailwind-variants';
 
 import { cn } from '../../lib';
+import { useFieldContext } from '../field/context';
 
 /** Style recipe for Label. Slots: `root`, `text`, `required`. */
 export const labelRecipe = tv({
@@ -41,7 +42,8 @@ export type LabelProps = ComponentPropsWithRef<typeof LabelPrimitive.Root> &
 /**
  * Accessible caption for a form control, built on Radix's Label primitive so it
  * associates with the control via `htmlFor` and does not select text on
- * double-click.
+ * double-click. Inside a `Field.Root` it takes the control's `id` from context,
+ * so `htmlFor` is only needed standalone.
  *
  * Keep it text-only. Nesting an interactive element (a help tooltip trigger, a
  * button) inside a `<label>` gives that element the label's accessible name and
@@ -58,14 +60,21 @@ export const Label = ({
 	children,
 	optional = false,
 	required = false,
+	htmlFor,
 	...props
 }: LabelProps) => {
+	const field = useFieldContext();
+
 	// `required` wins over `optional` rather than throwing: a published component
 	// should not crash the page over contradictory props.
 	const styles = labelRecipe({ optional: optional && !required });
 
 	return (
-		<LabelPrimitive.Root data-slot="label" className={cn(styles.root(), className)} {...props}>
+		<LabelPrimitive.Root
+			data-slot="label"
+			htmlFor={htmlFor ?? field?.id}
+			className={cn(styles.root(), className)}
+			{...props}>
 			<span className={styles.text()}>{children}</span>
 
 			{required && (
