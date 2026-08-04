@@ -124,6 +124,46 @@ export const WithLabelTooltip: Story = {
 };
 
 /**
+ * The fullest composition the design allows: caption, required asterisk, then the
+ * tooltip trigger. The asterisk belongs to the `<label>`; the trigger sits after
+ * it, outside. `optional` and `required` are mutually exclusive, so a label never
+ * carries both suffixes at once.
+ *
+ * @summary Required label with a tooltip beside it
+ */
+export const RequiredWithLabelTooltip: Story = {
+	args: {
+		children: (
+			<>
+				<Field.Label>
+					<Label required>Agency name</Label>
+					<Field.LabelTooltip>
+						The legal name on the agency registration, not the trading name.
+					</Field.LabelTooltip>
+				</Field.Label>
+				<DemoInput placeholder="Acme Insurance" />
+			</>
+		)
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		const row = canvas.getByText('Agency name').closest('[data-slot=field-label]') as HTMLElement;
+		const asterisk = canvas.getByText('*');
+		const trigger = canvas.getByRole('button', { name: 'More information' });
+
+		await expect(asterisk.closest('label')).not.toBeNull();
+		await expect(trigger.closest('label')).toBeNull();
+
+		// Figma order: caption, asterisk, icon. The icon contributes no text.
+		await expect(row.textContent).toBe('Agency name*');
+		await expect(
+			asterisk.compareDocumentPosition(trigger) & Node.DOCUMENT_POSITION_FOLLOWING
+		).toBeTruthy();
+	}
+};
+
+/**
  * A failing field. `invalid` styles the field, marks the control `aria-invalid`
  * and the message is announced as an alert.
  *
