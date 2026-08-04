@@ -576,13 +576,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">25 components ok</span><span class="filter-pill ok" aria-disabled="true">192 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">25 components ok</span><span class="filter-pill ok" aria-disabled="true">193 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>3.0s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>3.5s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -3134,7 +3134,7 @@ label?: ReactNode</code></pre>
       <div class="badges">
         
         
-        <label for="c-9-components-field-stories" class="badge ok as-toggle">9 stories</label>
+        <label for="c-9-components-field-stories" class="badge ok as-toggle">10 stories</label>
         
       </div>
     </div>
@@ -3196,6 +3196,23 @@ label?: ReactNode</code></pre>
             &lt;/Field.LabelTooltip&gt;
         &lt;/Field.Label&gt;
         &lt;DemoInput placeholder=&quot;https://calendly.com/you&quot; /&gt;
+    &lt;/&gt;)&lt;/Field.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Required With Label Tooltip</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Required label with a tooltip beside it</div>
+              <div class="hint">The fullest composition the design allows: caption, required asterisk, then the tooltip trigger. The asterisk belongs to the `&lt;label&gt;`; the trigger sits after it, outside. `optional` and `required` are mutually exclusive, so a label never carries both suffixes at once.</div>
+              <pre><code>const RequiredWithLabelTooltip = () =&gt; &lt;Field.Root&gt;(&lt;&gt;
+        &lt;Field.Label&gt;
+            &lt;Label required&gt;Agency name&lt;/Label&gt;
+            &lt;Field.LabelTooltip&gt;
+                The legal name on the agency registration, not the trading name.
+            &lt;/Field.LabelTooltip&gt;
+        &lt;/Field.Label&gt;
+        &lt;DemoInput placeholder=&quot;Acme Insurance&quot; /&gt;
     &lt;/&gt;)&lt;/Field.Root&gt;;</code></pre>
             </div>
             <div class="note ok">
