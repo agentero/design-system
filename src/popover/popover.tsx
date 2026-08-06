@@ -53,8 +53,9 @@ export const popoverRecipe = tv({
 
 type ContentProps = ComponentProps<typeof PopoverPrimitive.Content>;
 
-// Self-portals to the body and animates on open/close following `side`. Defaults `sideOffset` to 1.
-const Content = ({ className, sideOffset = 1, ...props }: ContentProps) => (
+// Self-portals to the body and animates on open/close following `side`. Defaults `sideOffset` to 8,
+// matching `DropdownMenu` and `HoverCard` so every trigger-anchored surface sits at the same distance.
+const Content = ({ className, sideOffset = 8, ...props }: ContentProps) => (
 	<PopoverPrimitive.Portal>
 		<PopoverPrimitive.Content
 			data-slot="popover-content"
