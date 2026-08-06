@@ -576,13 +576,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">24 components ok</span><span class="filter-pill ok" aria-disabled="true">183 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">24 components ok</span><span class="filter-pill ok" aria-disabled="true">184 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>3.4s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>3.9s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -1854,7 +1854,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
       <div class="badges">
         <label for="c-4-components-button-props" class="badge ok as-toggle">12 prop types</label>
         
-        <label for="c-4-components-button-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-4-components-button-stories" class="badge ok as-toggle">11 stories</label>
         
       </div>
     </div>
@@ -2200,6 +2200,34 @@ variant?: ButtonVariantType</code></pre>
             &lt;/a&gt;
         &lt;/Button&gt;
     &lt;/Row&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Pressed</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Press feedback dips the button, excluding `link` and disabled</div>
+              <div class="hint">Buttons dip to 97% while held so the control answers the pointer rather than only changing color. Press and hold one below to feel it — the effect is deliberately small, and if a quick click draws the eye it is too strong. `variant=&quot;link&quot;` is excluded: it has no padding or background, so scaling bare text reads as a wobble rather than a button being pushed. Disabled buttons are excluded too, including the `asChild` anchor form, which stays keyboard-focusable and would otherwise dip on Enter. The whole effect is gated behind `motion-safe`, so it disappears under `prefers-reduced-motion`.</div>
+              <pre><code>const Pressed = () =&gt; (
+    &lt;Stack&gt;
+        &lt;Row&gt;
+            {NON_LINK_VARIANTS.map(variant =&gt; (
+                &lt;Button key={variant} variant={variant}&gt;
+                    Press {variant}
+                &lt;/Button&gt;
+            ))}
+        &lt;/Row&gt;
+        &lt;Row&gt;
+            &lt;Button variant=&quot;link&quot;&gt;Link stays still&lt;/Button&gt;
+            &lt;Button variant=&quot;primary&quot; disabled&gt;
+                Disabled stays still
+            &lt;/Button&gt;
+            &lt;Button asChild variant=&quot;secondary&quot; disabled&gt;
+                &lt;a href=&quot;/dashboard&quot;&gt;Disabled anchor stays still&lt;/a&gt;
+            &lt;/Button&gt;
+        &lt;/Row&gt;
+    &lt;/Stack&gt;
 );</code></pre>
             </div>
         </div>
