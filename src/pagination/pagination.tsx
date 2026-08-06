@@ -30,7 +30,11 @@ export const paginationRecipe = tv({
 			'min-w-8 h-8 px-1',
 			'border border-solid border-transparent',
 			'bg-bg-button-ghost-enable text-text-button-ghost-enable',
-			'transition-[background-color,border-color,color] duration-200',
+			'transition-[background-color,border-color,color,transform] duration-150',
+			// Press feedback, matching Button. These are native `<button>` elements,
+			// so `disabled:pointer-events-none` above is enough to suppress the dip.
+			'motion-safe:active:[transform:scale(0.97)]',
+			'motion-safe:active:ease-out-expo',
 			'disabled:pointer-events-none disabled:opacity-30',
 			'focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-[0.0625rem] focus-visible:outline-focus-ring-button-primary',
 			'hover:not-aria-[current=page]:border-border-button-secondary-enable hover:not-aria-[current=page]:shadow-1',

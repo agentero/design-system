@@ -25,7 +25,14 @@ export const buttonRecipe = tv({
 		'font-semibold rounded-md cursor-pointer',
 		'bg-transparent no-underline',
 		'border border-solid border-transparent',
-		'transition-[background-color,border-color,color] duration-200',
+		'transition-[background-color,border-color,color,transform] duration-150',
+		// Press feedback. Written as an arbitrary `transform` rather than `scale-97`
+		// because Tailwind's scale utilities set the standalone `scale` property,
+		// which the transition allowlist above would not cover. ease-out-expo
+		// front-loads the dip so the button answers the pointer immediately, then
+		// releases back out on the base curve.
+		'motion-safe:active:[transform:scale(0.97)]',
+		'motion-safe:active:ease-out-expo',
 		'[-webkit-tap-highlight-color:transparent]',
 		'[&_svg]:[flex:0_0_fit-content]',
 		'[&_svg_path[fill]]:fill-current',
@@ -66,7 +73,10 @@ export const buttonRecipe = tv({
 				'px-0 underline',
 				'[text-underline-offset:var(--text-underline-offset)]',
 				'text-text-button-link-enable',
-				'[&_svg]:fill-icon-button-link-enable'
+				'[&_svg]:fill-icon-button-link-enable',
+				// No press dip: the variant has no padding or background, so scaling
+				// bare text reads as a wobble rather than a button being pushed.
+				'motion-safe:active:[transform:none]'
 			]
 		},
 		size: {
@@ -82,7 +92,10 @@ export const buttonRecipe = tv({
 			true: 'aspect-square px-0 min-w-[unset]'
 		},
 		disabled: {
-			true: 'cursor-not-allowed pointer-events-none'
+			// `pointer-events-none` already blocks a pointer-driven `:active`, but an
+			// `asChild` anchor gets `aria-disabled` instead of the native attribute
+			// and stays keyboard-focusable, where Enter still triggers `:active`.
+			true: 'cursor-not-allowed pointer-events-none motion-safe:active:[transform:none]'
 		},
 		rounded: {
 			true: 'rounded-full'

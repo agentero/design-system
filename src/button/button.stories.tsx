@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, within } from 'storybook/test';
 
 import { Button } from './button';
 
@@ -317,4 +318,53 @@ export const AsChild: Story = {
 			</Button>
 		</Row>
 	)
+};
+
+/* --------------- Press feedback --------------- */
+
+/**
+ * Buttons dip to 97% while held so the control answers the pointer rather than
+ * only changing color. Press and hold one below to feel it — the effect is
+ * deliberately small, and if a quick click draws the eye it is too strong.
+ *
+ * `variant="link"` is excluded: it has no padding or background, so scaling
+ * bare text reads as a wobble rather than a button being pushed. Disabled
+ * buttons are excluded too, including the `asChild` anchor form, which stays
+ * keyboard-focusable and would otherwise dip on Enter. The whole effect is
+ * gated behind `motion-safe`, so it disappears under `prefers-reduced-motion`.
+ *
+ * @summary Press feedback dips the button, excluding `link` and disabled
+ */
+export const Pressed: Story = {
+	render: () => (
+		<Stack>
+			<Row>
+				{NON_LINK_VARIANTS.map(variant => (
+					<Button key={variant} variant={variant}>
+						Press {variant}
+					</Button>
+				))}
+			</Row>
+			<Row>
+				<Button variant="link">Link stays still</Button>
+				<Button variant="primary" disabled>
+					Disabled stays still
+				</Button>
+				<Button asChild variant="secondary" disabled>
+					<a href="/dashboard">Disabled anchor stays still</a>
+				</Button>
+			</Row>
+		</Stack>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const button = canvas.getByRole('button', { name: 'Press primary' });
+
+		// `:active` only responds to real input, so a play function cannot hold the
+		// button down — untrusted events never trigger the pseudo-class. What is
+		// worth guarding is that the dip animates instead of snapping: Tailwind's
+		// `scale-*` utilities set the standalone `scale` property, so writing the
+		// press as `scale-97` would leave it outside this allowlist and un-eased.
+		await expect(getComputedStyle(button).transitionProperty).toContain('transform');
+	}
 };
