@@ -576,13 +576,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">25 components ok</span><span class="filter-pill ok" aria-disabled="true">193 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">25 components ok</span><span class="filter-pill ok" aria-disabled="true">194 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>3.6s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>3.9s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -1854,7 +1854,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
       <div class="badges">
         <label for="c-4-components-button-props" class="badge ok as-toggle">12 prop types</label>
         
-        <label for="c-4-components-button-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-4-components-button-stories" class="badge ok as-toggle">11 stories</label>
         
       </div>
     </div>
@@ -2200,6 +2200,34 @@ variant?: ButtonVariantType</code></pre>
             &lt;/a&gt;
         &lt;/Button&gt;
     &lt;/Row&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Pressed</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Press feedback dips the button, excluding `link` and disabled</div>
+              <div class="hint">Buttons dip to 97% while held so the control answers the pointer rather than only changing color. Press and hold one below to feel it — the effect is deliberately small, and if a quick click draws the eye it is too strong. `variant=&quot;link&quot;` is excluded: it has no padding or background, so scaling bare text reads as a wobble rather than a button being pushed. Disabled buttons are excluded too, including the `asChild` anchor form, which stays keyboard-focusable and would otherwise dip on Enter. The whole effect is gated behind `motion-safe`, so it disappears under `prefers-reduced-motion`.</div>
+              <pre><code>const Pressed = () =&gt; (
+    &lt;Stack&gt;
+        &lt;Row&gt;
+            {NON_LINK_VARIANTS.map(variant =&gt; (
+                &lt;Button key={variant} variant={variant}&gt;
+                    Press {variant}
+                &lt;/Button&gt;
+            ))}
+        &lt;/Row&gt;
+        &lt;Row&gt;
+            &lt;Button variant=&quot;link&quot;&gt;Link stays still&lt;/Button&gt;
+            &lt;Button variant=&quot;primary&quot; disabled&gt;
+                Disabled stays still
+            &lt;/Button&gt;
+            &lt;Button asChild variant=&quot;secondary&quot; disabled&gt;
+                &lt;a href=&quot;/dashboard&quot;&gt;Disabled anchor stays still&lt;/a&gt;
+            &lt;/Button&gt;
+        &lt;/Row&gt;
+    &lt;/Stack&gt;
 );</code></pre>
             </div>
         </div>
@@ -3164,7 +3192,7 @@ label?: ReactNode</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Field, Label } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Field } from "@agentero/design-system";</code></pre>
               </div>
           
           
@@ -3176,7 +3204,7 @@ label?: ReactNode</code></pre>
               <div>Default vertical field with label, control and description</div>
               <div class="hint">A vertical field with a label, a control and helper text. The label is associated with the input and the description is referenced by it — neither needed an explicit `id`.</div>
               <pre><code>const Default = () =&gt; &lt;Field.Root&gt;(&lt;&gt;
-        &lt;Label&gt;Email&lt;/Label&gt;
+        &lt;Field.Label&gt;Email&lt;/Field.Label&gt;
         &lt;DemoInput placeholder=&quot;you@example.com&quot; /&gt;
         &lt;Field.Description&gt;We only use this to send policy documents.&lt;/Field.Description&gt;
     &lt;/&gt;)&lt;/Field.Root&gt;;</code></pre>
@@ -3187,13 +3215,16 @@ label?: ReactNode</code></pre>
                 <span class="badge ok">story ok</span>
               </div>
               <div>Label with an info tooltip beside it</div>
-              <div class="hint">A label with a hint beside it. `Field.Label` puts the two on one row and keeps the trigger a *sibling* of the `&lt;label&gt;`: the field&#39;s accessible name stays &quot;Scheduling link&quot; and the icon carries its own, so neither absorbs the other.</div>
+              <div class="hint">A caption with a hint beside it. The `tooltip` prop puts the two on one row and keeps the trigger a *sibling* of the `&lt;label&gt;`: the field&#39;s accessible name stays &quot;Scheduling link&quot; and the icon carries its own, so neither absorbs the other.</div>
               <pre><code>const WithLabelTooltip = () =&gt; &lt;Field.Root&gt;(&lt;&gt;
-        &lt;Field.Label&gt;
-            &lt;Label optional&gt;Scheduling link&lt;/Label&gt;
-            &lt;Field.LabelTooltip&gt;
-                Anyone with this link can book time on your calendar.
-            &lt;/Field.LabelTooltip&gt;
+        &lt;Field.Label
+            optional
+            tooltip={
+                &lt;Field.LabelTooltip&gt;
+                    Anyone with this link can book time on your calendar.
+                &lt;/Field.LabelTooltip&gt;
+            }&gt;
+            Scheduling link
         &lt;/Field.Label&gt;
         &lt;DemoInput placeholder=&quot;https://calendly.com/you&quot; /&gt;
     &lt;/&gt;)&lt;/Field.Root&gt;;</code></pre>
@@ -3206,11 +3237,14 @@ label?: ReactNode</code></pre>
               <div>Required label with a tooltip beside it</div>
               <div class="hint">The fullest composition the design allows: caption, required asterisk, then the tooltip trigger. The asterisk belongs to the `&lt;label&gt;`; the trigger sits after it, outside. `optional` and `required` are mutually exclusive, so a label never carries both suffixes at once.</div>
               <pre><code>const RequiredWithLabelTooltip = () =&gt; &lt;Field.Root&gt;(&lt;&gt;
-        &lt;Field.Label&gt;
-            &lt;Label required&gt;Agency name&lt;/Label&gt;
-            &lt;Field.LabelTooltip&gt;
-                The legal name on the agency registration, not the trading name.
-            &lt;/Field.LabelTooltip&gt;
+        &lt;Field.Label
+            required
+            tooltip={
+                &lt;Field.LabelTooltip&gt;
+                    The legal name on the agency registration, not the trading name.
+                &lt;/Field.LabelTooltip&gt;
+            }&gt;
+            Agency name
         &lt;/Field.Label&gt;
         &lt;DemoInput placeholder=&quot;Acme Insurance&quot; /&gt;
     &lt;/&gt;)&lt;/Field.Root&gt;;</code></pre>
@@ -3223,7 +3257,7 @@ label?: ReactNode</code></pre>
               <div>Failing field with an announced error message</div>
               <div class="hint">A failing field. `invalid` styles the field, marks the control `aria-invalid` and the message is announced as an alert.</div>
               <pre><code>const Invalid = () =&gt; &lt;Field.Root invalid&gt;(&lt;&gt;
-        &lt;Label&gt;Email&lt;/Label&gt;
+        &lt;Field.Label&gt;Email&lt;/Field.Label&gt;
         &lt;DemoInput placeholder=&quot;you@example.com&quot; /&gt;
         &lt;Field.Error errors={[{ message: &#39;Invalid email address&#39; }]} /&gt;
     &lt;/&gt;)&lt;/Field.Root&gt;;</code></pre>
@@ -3236,7 +3270,7 @@ label?: ReactNode</code></pre>
               <div>Multiple errors render as a de-duplicated list</div>
               <div class="hint">Several errors on one field are de-duplicated by message and rendered as a bulleted list. Feed it a form library&#39;s error array directly.</div>
               <pre><code>const MultipleErrors = () =&gt; &lt;Field.Root invalid&gt;(&lt;&gt;
-        &lt;Label&gt;Password&lt;/Label&gt;
+        &lt;Field.Label&gt;Password&lt;/Field.Label&gt;
         &lt;DemoInput /&gt;
         &lt;Field.Error
             errors={[
@@ -3255,7 +3289,7 @@ label?: ReactNode</code></pre>
               <div>Field.Error renders nothing when there is no message</div>
               <div class="hint">With no message, `Field.Error` renders nothing — so it can stay mounted unconditionally instead of being wrapped in a conditional.</div>
               <pre><code>const NoError = () =&gt; &lt;Field.Root&gt;(&lt;&gt;
-        &lt;Label&gt;Email&lt;/Label&gt;
+        &lt;Field.Label&gt;Email&lt;/Field.Label&gt;
         &lt;DemoInput placeholder=&quot;you@example.com&quot; /&gt;
         &lt;Field.Error errors={[undefined]} /&gt;
     &lt;/&gt;)&lt;/Field.Root&gt;;</code></pre>
@@ -3268,7 +3302,7 @@ label?: ReactNode</code></pre>
               <div>Horizontal field with the label beside the control</div>
               <div class="hint">The label sits beside the control — the layout for switches and checkboxes. Wrap the control and its messages in `Field.Content` so they stack next to the label.</div>
               <pre><code>const Horizontal = () =&gt; &lt;Field.Root orientation=&quot;horizontal&quot;&gt;(&lt;&gt;
-        &lt;Label&gt;Notify me&lt;/Label&gt;
+        &lt;Field.Label&gt;Notify me&lt;/Field.Label&gt;
         &lt;Field.Content&gt;
             &lt;DemoInput /&gt;
             &lt;Field.Description&gt;Sent once a day at most.&lt;/Field.Description&gt;
@@ -3281,11 +3315,15 @@ label?: ReactNode</code></pre>
                 <span class="badge ok">story ok</span>
               </div>
               <div>Horizontal field whose label carries a tooltip</div>
-              <div class="hint">The label row keeps the `flex-auto` share the bare `Label` had, so pairing it with a tooltip does not shift the horizontal layout.</div>
+              <div class="hint">The label row keeps the `flex-auto` share a tooltip-less caption has, so adding a hint does not shift the horizontal layout.</div>
               <pre><code>const HorizontalWithLabelTooltip = () =&gt; &lt;Field.Root orientation=&quot;horizontal&quot;&gt;(&lt;&gt;
-        &lt;Field.Label&gt;
-            &lt;Label&gt;Sandbox agency&lt;/Label&gt;
-            &lt;Field.LabelTooltip&gt;Excluded from analytics and commission reporting.&lt;/Field.LabelTooltip&gt;
+        &lt;Field.Label
+            tooltip={
+                &lt;Field.LabelTooltip&gt;
+                    Excluded from analytics and commission reporting.
+                &lt;/Field.LabelTooltip&gt;
+            }&gt;
+            Sandbox agency
         &lt;/Field.Label&gt;
         &lt;Field.Content&gt;
             &lt;DemoInput /&gt;
@@ -3301,7 +3339,7 @@ label?: ReactNode</code></pre>
               <div>Responsive field driven by its container&#39;s width</div>
               <div class="hint">Vertical on narrow containers and horizontal from `48rem` up. It measures the `Field.Group` container, not the viewport, so a field inside a modal collapses correctly regardless of window width.</div>
               <pre><code>const Responsive = () =&gt; &lt;Field.Root orientation=&quot;responsive&quot;&gt;(&lt;&gt;
-        &lt;Label&gt;Agency name&lt;/Label&gt;
+        &lt;Field.Label&gt;Agency name&lt;/Field.Label&gt;
         &lt;Field.Content&gt;
             &lt;DemoInput placeholder=&quot;Acme Insurance&quot; /&gt;
         &lt;/Field.Content&gt;
@@ -3317,15 +3355,15 @@ label?: ReactNode</code></pre>
               <pre><code>const Group = () =&gt; (
     &lt;Field.Group&gt;
         &lt;Field.Root&gt;
-            &lt;Label&gt;First name&lt;/Label&gt;
+            &lt;Field.Label&gt;First name&lt;/Field.Label&gt;
             &lt;DemoInput placeholder=&quot;Jane&quot; /&gt;
         &lt;/Field.Root&gt;
         &lt;Field.Root&gt;
-            &lt;Label&gt;Last name&lt;/Label&gt;
+            &lt;Field.Label&gt;Last name&lt;/Field.Label&gt;
             &lt;DemoInput placeholder=&quot;Doe&quot; /&gt;
         &lt;/Field.Root&gt;
         &lt;Field.Root invalid&gt;
-            &lt;Label&gt;Email&lt;/Label&gt;
+            &lt;Field.Label&gt;Email&lt;/Field.Label&gt;
             &lt;DemoInput placeholder=&quot;you@example.com&quot; /&gt;
             &lt;Field.Error errors={[{ message: &#39;This field is mandatory&#39; }]} /&gt;
         &lt;/Field.Root&gt;
