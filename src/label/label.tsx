@@ -12,7 +12,7 @@ export const labelRecipe = tv({
 	slots: {
 		root: 'flex flex-wrap gap-1 py-0.25 text-sm font-semibold text-text-input-normal',
 		text: 'align-middle',
-		required: 'ms-1 align-middle text-text-input-destructive'
+		required: 'align-middle text-text-input-destructive'
 	},
 	variants: {
 		optional: {
@@ -41,7 +41,8 @@ export type LabelProps = ComponentPropsWithRef<typeof LabelPrimitive.Root> &
 /**
  * Accessible caption for a form control, built on Radix's Label primitive so it
  * associates with the control via `htmlFor` and does not select text on
- * double-click.
+ * double-click. It knows nothing about its surroundings: inside a field it is
+ * `Field.Label` that renders it and fills in the `htmlFor`.
  *
  * Keep it text-only. Nesting an interactive element (a help tooltip trigger, a
  * button) inside a `<label>` gives that element the label's accessible name and
