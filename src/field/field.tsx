@@ -4,6 +4,7 @@ import { ComponentPropsWithRef, ReactNode, useId } from 'react';
 
 import { tv, VariantProps } from 'tailwind-variants';
 
+import { Label, type LabelProps } from '../label';
 import { Tooltip, type TooltipProps } from '../tooltip';
 import { FieldContext, useFieldContext } from './context';
 import { IconInfoOutline } from './icons';
@@ -162,22 +163,42 @@ const FieldContent = ({ className, ...props }: FieldContentProps) => (
 
 FieldContent.displayName = 'Field.Content';
 
-export type FieldLabelProps = ComponentPropsWithRef<'div'>;
+export type FieldLabelProps = Omit<LabelProps, 'htmlFor'> & {
+	/** A {@link FieldLabelTooltip} to place beside the caption. */
+	tooltip?: ReactNode;
+};
 
 /**
- * Puts a {@link https://agentero.github.io/design-system/?path=/docs/label--docs Label}
- * and a {@link FieldLabelTooltip} on one row. Only needed when the label carries
- * a tooltip — without one, render the `Label` straight into `Field.Root`.
+ * The field's caption. Renders a
+ * {@link https://agentero.github.io/design-system/?path=/docs/label--docs Label}
+ * associated with the control through the field's ids, so no `htmlFor` is passed by
+ * hand, and puts an optional `tooltip` on the same row.
  *
- * The wrapper exists so the trigger can be a sibling of the `<label>`: a
- * `<label>`'s accessible name is its text content, so an interactive child would
- * be read as part of the field's name and would activate the control when clicked.
+ * The hint is a prop rather than a child so the trigger stays a *sibling* of the
+ * `<label>`: a `<label>`'s accessible name is its text content, so a nested
+ * interactive element would be read as part of the field's name and would activate
+ * the control when clicked.
  *
- * @summary Puts a Label and its tooltip trigger on one row
+ * @summary The field's caption, with an optional tooltip beside it
  */
-const FieldLabel = ({ className, ...props }: FieldLabelProps) => (
-	<div data-slot="field-label" className={slots.label({ className })} {...props} />
-);
+const FieldLabel = ({ tooltip, ...props }: FieldLabelProps) => {
+	const field = useFieldContext();
+
+	const label = <Label htmlFor={field?.id} {...props} />;
+
+	// With no tooltip there is no row to lay out, so the `<label>` goes in bare and
+	// the orientation rules reach it through `[data-slot=label]`.
+	if (!tooltip) {
+		return label;
+	}
+
+	return (
+		<div data-slot="field-label" className={slots.label()}>
+			{label}
+			{tooltip}
+		</div>
+	);
+};
 
 FieldLabel.displayName = 'Field.Label';
 
@@ -191,8 +212,8 @@ export type FieldLabelTooltipProps = Omit<ComponentPropsWithRef<'button'>, 'chil
 
 /**
  * Info icon beside the label that reveals a hint on hover or focus. Pass the hint
- * as children; the icon is the design system's. Render it inside a
- * {@link FieldLabel}, next to the `Label`.
+ * as children; the icon is the design system's. Hand it to {@link FieldLabel}'s
+ * `tooltip` prop, which places it beside the caption.
  *
  * @summary Info icon beside the label revealing a hint on hover or focus
  */
@@ -303,25 +324,27 @@ FieldError.displayName = 'Field.Error';
  *
  * Presentational and form-library agnostic: pass `invalid` and `errors` from
  * whatever validates your form. Spacing between fields belongs to `Field.Group`,
- * never to a margin on the field itself. For the label element use
- * [Label](?path=/docs/label--docs); wrap it in `Field.Label` only when it needs a
- * `Field.LabelTooltip` beside it.
+ * never to a margin on the field itself. The caption is `Field.Label`, which renders
+ * a [Label](?path=/docs/label--docs) and takes its `optional` and `required` props.
  *
  * @summary Lays out and wires up a single form field
  *
  * @example
  * <Field.Group>
  * 	<Field.Root invalid={!!error}>
- * 		<Label>Email</Label>
+ * 		<Field.Label>Email</Field.Label>
  * 		<Input type="email" />
  * 		<Field.Description>We only use this for policy documents</Field.Description>
  * 		<Field.Error errors={[error]} />
  * 	</Field.Root>
  *
  * 	<Field.Root>
- * 		<Field.Label>
- * 			<Label optional>Scheduling link</Label>
- * 			<Field.LabelTooltip>Anyone with this link can book time on your calendar.</Field.LabelTooltip>
+ * 		<Field.Label
+ * 			optional
+ * 			tooltip={
+ * 				<Field.LabelTooltip>Anyone with this link can book time on your calendar.</Field.LabelTooltip>
+ * 			}>
+ * 			Scheduling link
  * 		</Field.Label>
  * 		<Input type="url" />
  * 	</Field.Root>

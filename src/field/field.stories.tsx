@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, within } from 'storybook/test';
 
-import { Label } from '../label';
 import { Field, useFieldContext } from './field';
 
 /**
@@ -62,7 +61,7 @@ export const Default: Story = {
 	args: {
 		children: (
 			<>
-				<Label>Email</Label>
+				<Field.Label>Email</Field.Label>
 				<DemoInput placeholder="you@example.com" />
 				<Field.Description>We only use this to send policy documents.</Field.Description>
 			</>
@@ -83,8 +82,8 @@ export const Default: Story = {
 };
 
 /**
- * A label with a hint beside it. `Field.Label` puts the two on one row and keeps
- * the trigger a *sibling* of the `<label>`: the field's accessible name stays
+ * A caption with a hint beside it. The `tooltip` prop puts the two on one row and
+ * keeps the trigger a *sibling* of the `<label>`: the field's accessible name stays
  * "Scheduling link" and the icon carries its own, so neither absorbs the other.
  *
  * @summary Label with an info tooltip beside it
@@ -93,11 +92,14 @@ export const WithLabelTooltip: Story = {
 	args: {
 		children: (
 			<>
-				<Field.Label>
-					<Label optional>Scheduling link</Label>
-					<Field.LabelTooltip>
-						Anyone with this link can book time on your calendar.
-					</Field.LabelTooltip>
+				<Field.Label
+					optional
+					tooltip={
+						<Field.LabelTooltip>
+							Anyone with this link can book time on your calendar.
+						</Field.LabelTooltip>
+					}>
+					Scheduling link
 				</Field.Label>
 				<DemoInput placeholder="https://calendly.com/you" />
 			</>
@@ -135,11 +137,14 @@ export const RequiredWithLabelTooltip: Story = {
 	args: {
 		children: (
 			<>
-				<Field.Label>
-					<Label required>Agency name</Label>
-					<Field.LabelTooltip>
-						The legal name on the agency registration, not the trading name.
-					</Field.LabelTooltip>
+				<Field.Label
+					required
+					tooltip={
+						<Field.LabelTooltip>
+							The legal name on the agency registration, not the trading name.
+						</Field.LabelTooltip>
+					}>
+					Agency name
 				</Field.Label>
 				<DemoInput placeholder="Acme Insurance" />
 			</>
@@ -174,7 +179,7 @@ export const Invalid: Story = {
 		invalid: true,
 		children: (
 			<>
-				<Label>Email</Label>
+				<Field.Label>Email</Field.Label>
 				<DemoInput placeholder="you@example.com" />
 				<Field.Error errors={[{ message: 'Invalid email address' }]} />
 			</>
@@ -204,7 +209,7 @@ export const MultipleErrors: Story = {
 		invalid: true,
 		children: (
 			<>
-				<Label>Password</Label>
+				<Field.Label>Password</Field.Label>
 				<DemoInput />
 				<Field.Error
 					errors={[
@@ -233,7 +238,7 @@ export const NoError: Story = {
 	args: {
 		children: (
 			<>
-				<Label>Email</Label>
+				<Field.Label>Email</Field.Label>
 				<DemoInput placeholder="you@example.com" />
 				<Field.Error errors={[undefined]} />
 			</>
@@ -258,7 +263,7 @@ export const Horizontal: Story = {
 		orientation: 'horizontal',
 		children: (
 			<>
-				<Label>Notify me</Label>
+				<Field.Label>Notify me</Field.Label>
 				<Field.Content>
 					<DemoInput />
 					<Field.Description>Sent once a day at most.</Field.Description>
@@ -269,8 +274,8 @@ export const Horizontal: Story = {
 };
 
 /**
- * The label row keeps the `flex-auto` share the bare `Label` had, so pairing it
- * with a tooltip does not shift the horizontal layout.
+ * The label row keeps the `flex-auto` share a tooltip-less caption has, so adding
+ * a hint does not shift the horizontal layout.
  *
  * @summary Horizontal field whose label carries a tooltip
  */
@@ -279,9 +284,13 @@ export const HorizontalWithLabelTooltip: Story = {
 		orientation: 'horizontal',
 		children: (
 			<>
-				<Field.Label>
-					<Label>Sandbox agency</Label>
-					<Field.LabelTooltip>Excluded from analytics and commission reporting.</Field.LabelTooltip>
+				<Field.Label
+					tooltip={
+						<Field.LabelTooltip>
+							Excluded from analytics and commission reporting.
+						</Field.LabelTooltip>
+					}>
+					Sandbox agency
 				</Field.Label>
 				<Field.Content>
 					<DemoInput />
@@ -312,7 +321,7 @@ export const Responsive: Story = {
 		orientation: 'responsive',
 		children: (
 			<>
-				<Label>Agency name</Label>
+				<Field.Label>Agency name</Field.Label>
 				<Field.Content>
 					<DemoInput placeholder="Acme Insurance" />
 				</Field.Content>
@@ -338,15 +347,15 @@ export const Group: Story = {
 	render: () => (
 		<Field.Group>
 			<Field.Root>
-				<Label>First name</Label>
+				<Field.Label>First name</Field.Label>
 				<DemoInput placeholder="Jane" />
 			</Field.Root>
 			<Field.Root>
-				<Label>Last name</Label>
+				<Field.Label>Last name</Field.Label>
 				<DemoInput placeholder="Doe" />
 			</Field.Root>
 			<Field.Root invalid>
-				<Label>Email</Label>
+				<Field.Label>Email</Field.Label>
 				<DemoInput placeholder="you@example.com" />
 				<Field.Error errors={[{ message: 'This field is mandatory' }]} />
 			</Field.Root>

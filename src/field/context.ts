@@ -19,8 +19,8 @@ export const FieldContext = createContext<FieldContextValue | null>(null);
  * `Field.Root`, so a control can consume it and still work standalone — always
  * fall back to its own props when it is `null`.
  *
- * Kept in its own module so `Label` can read it without importing `field.tsx`,
- * which would drag Tooltip into the `label` subpath.
+ * Kept in its own module so a control can read it without importing `field.tsx`,
+ * which would drag Tooltip into that control's subpath.
  *
  * @summary Reads the surrounding Field.Root id and invalid state
  */
