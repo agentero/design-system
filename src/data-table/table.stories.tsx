@@ -174,7 +174,19 @@ export const StickyHeader: Story = {
 				<Story />
 			</div>
 		)
-	]
+	],
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const header = canvas.getByRole('columnheader', { name: 'Name' });
+		const scroll = canvasElement.querySelector('[data-slot=table-scroll]');
+
+		scroll?.scrollTo({ top: 120 });
+
+		// The separator must survive scrolling — a `border-b` would not, since
+		// `border-collapse: collapse` leaves it behind when the cell pins.
+		await expect(header).toHaveStyle({ borderBottomWidth: '0px' });
+		await expect(getComputedStyle(header).boxShadow).not.toBe('none');
+	}
 };
 
 /**
