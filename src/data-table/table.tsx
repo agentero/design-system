@@ -189,7 +189,7 @@ const headerStyles = tv({
 	base: `h-12 border-b border-border-default-base-primary text-left align-middle text-sm font-light whitespace-nowrap text-text-default-base-tertiary ${CELL_INLINE_PADDING}`,
 	variants: {
 		sticky: {
-			true: 'sticky top-0 z-[1] bg-bg-default-base-primary',
+			true: 'sticky top-0 z-[1] border-b-0 bg-bg-default-base-primary shadow-[inset_0_-1px_0_var(--color-border-default-base-primary)]',
 			false: ''
 		}
 	}
