@@ -115,6 +115,9 @@ function generatePackageJson(): Plugin {
 				exports,
 				bin: { 'design-system-mcp': './mcp/server.mjs' },
 				peerDependencies: pkg.peerDependencies,
+				// Without this, optional peers (react-hook-form, @tanstack/react-table)
+				// become hard requirements in the published package.
+				peerDependenciesMeta: pkg.peerDependenciesMeta,
 				dependencies: pkg.dependencies
 			};
 

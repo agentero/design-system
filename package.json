@@ -112,6 +112,11 @@
     "react-dom": "^19.2.4",
     "tailwindcss": "^4.0.0"
   },
+  "peerDependenciesMeta": {
+    "@tanstack/react-table": {
+      "optional": true
+    }
+  },
   "resolutions": {
     "lodash": "^4.18.1",
     "esbuild": "^0.28.1"
