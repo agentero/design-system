@@ -582,7 +582,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>3.3s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>3.9s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -4911,10 +4911,14 @@ import { Fragment } from "react";</code></pre>
                 <span class="badge ok">story ok</span>
               </div>
               
-              <div class="hint">A standalone `Label` gives a panel with a single, non-interactive title the tab item&#39;s inactive look without announcing a lone selectable tab: outside a `Trigger` no hover/active group state exists, so the heading stays inactive. The list-row styling comes straight from the exported recipe.</div>
+              <div class="hint">A standalone `Label` gives a panel with a single, non-interactive title the tab item&#39;s inactive look without announcing a lone selectable tab: outside a `Trigger` no hover/active group state exists, so the heading stays inactive. The label owns the item&#39;s geometry, so alone it looks exactly like an inactive trigger of its variant.</div>
               <pre><code>const SingleTitle = () =&gt; (
-    &lt;div className={tabsRecipe().list()}&gt;
-        &lt;Tabs.Label&gt;Shared coverages&lt;/Tabs.Label&gt;
+    &lt;div className=&quot;flex flex-col items-start gap-6&quot;&gt;
+        {([&#39;line&#39;, &#39;enclosed&#39;, &#39;button&#39;] as const).map(variant =&gt; (
+            &lt;Tabs.Label key={variant} variant={variant}&gt;
+                Shared coverages ({variant})
+            &lt;/Tabs.Label&gt;
+        ))}
     &lt;/div&gt;
 );</code></pre>
             </div>
