@@ -576,13 +576,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">24 components ok</span><span class="filter-pill ok" aria-disabled="true">184 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">24 components ok</span><span class="filter-pill ok" aria-disabled="true">185 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>3.5s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>3.7s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -3659,13 +3659,13 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
       <div class="badges">
         
         
-        <label for="c-12-components-modal-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-12-components-modal-stories" class="badge ok as-toggle">5 stories</label>
         
       </div>
     </div>
     <div class="meta" title="./src/modal/modal.stories.tsx">components-modal · ./src/modal/modal.stories.tsx</div>
     
-    <div class="hint">Modal is a compound dialog built on Radix UI: `Root` owns the open state, `Content` is the centered surface (`size` md/lg), and `Title`/`Body`/`Footer` structure it. Close it with `Escape`, the overlay, the X button, or a `Modal.Close asChild` around your own button.</div>
+    <div class="hint">Modal is a compound dialog built on Radix UI: `Root` owns the open state, `Content` is the centered surface (`size` md/lg), and `Title`/`Body`/`Footer` structure it. Close it with `Escape`, the overlay, the X button, or a `Modal.Close asChild` around your own button. `Content` also takes `variant=&quot;alert&quot;` for the modal the user has to answer: it drops all three implicit ways out and is announced as an `alertdialog`.</div>
     
   </div>
 
@@ -3776,6 +3776,33 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
                 &lt;Modal.Close asChild&gt;
                     &lt;Button variant=&quot;primary&quot;&gt;Accept&lt;/Button&gt;
                 &lt;/Modal.Close&gt;
+            &lt;/Modal.Footer&gt;
+        &lt;/Modal.Content&gt;
+    &lt;/Modal.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Alert</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">`variant=&quot;alert&quot;` for a decision the user cannot skip: `Escape` and overlay clicks are ignored, `Modal.Title` renders no X button, and the surface is announced as an `alertdialog`. Only the footer actions close it.</div>
+              <pre><code>const Alert = () =&gt; (
+    &lt;Modal.Root&gt;
+        &lt;Modal.Trigger asChild&gt;
+            &lt;Button variant=&quot;secondary&quot;&gt;Open alert&lt;/Button&gt;
+        &lt;/Modal.Trigger&gt;
+        &lt;Modal.Content variant=&quot;alert&quot;&gt;
+            &lt;Modal.Title&gt;Complete your Docusign integration&lt;/Modal.Title&gt;
+            &lt;Modal.Body&gt;
+                &lt;p&gt;To enable your integration, please authorize access to your Docusign account.&lt;/p&gt;
+            &lt;/Modal.Body&gt;
+            &lt;Modal.Footer&gt;
+                &lt;Modal.Close asChild&gt;
+                    &lt;Button variant=&quot;ghost&quot;&gt;Not now&lt;/Button&gt;
+                &lt;/Modal.Close&gt;
+                &lt;Button variant=&quot;primary&quot;&gt;Authorize&lt;/Button&gt;
             &lt;/Modal.Footer&gt;
         &lt;/Modal.Content&gt;
     &lt;/Modal.Root&gt;
