@@ -121,6 +121,100 @@ export const Grouped: Story = {
  * fires `onSelect` on it. `keywords` make a row matchable by terms it does not
  * display, which is how the value/label split is handled.
  */
+// Enough rows to overflow the list's max-height and force scrolling.
+const US_STATES = [
+	'Alabama',
+	'Alaska',
+	'Arizona',
+	'Arkansas',
+	'California',
+	'Colorado',
+	'Connecticut',
+	'Delaware',
+	'Florida',
+	'Georgia',
+	'Hawaii',
+	'Idaho',
+	'Illinois',
+	'Indiana',
+	'Iowa',
+	'Kansas',
+	'Kentucky',
+	'Louisiana',
+	'Maine',
+	'Maryland',
+	'Massachusetts',
+	'Michigan',
+	'Minnesota',
+	'Mississippi',
+	'Missouri',
+	'Montana',
+	'Nebraska',
+	'Nevada',
+	'New Hampshire',
+	'New Jersey',
+	'New Mexico',
+	'New York',
+	'North Carolina',
+	'North Dakota',
+	'Ohio',
+	'Oklahoma',
+	'Oregon',
+	'Pennsylvania',
+	'Rhode Island',
+	'South Carolina',
+	'South Dakota',
+	'Tennessee',
+	'Texas',
+	'Utah',
+	'Vermont',
+	'Virginia',
+	'Washington',
+	'West Virginia',
+	'Wisconsin',
+	'Wyoming'
+];
+
+/**
+ * With more rows than the list cap fits, the list scrolls — by wheel, or by
+ * keyboard: cmdk scrolls the active row into view as the arrow keys move it,
+ * and `scroll-py-2` keeps that row off the container edges.
+ */
+export const ScrollingList: Story = {
+	render: () => (
+		<Command.Root label="Search states">
+			<Command.Input placeholder="Search states..." />
+			<Command.List>
+				{US_STATES.map(state => (
+					<Command.Item key={state}>{state}</Command.Item>
+				))}
+			</Command.List>
+			<Command.Empty>No states found.</Command.Empty>
+		</Command.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const list = canvas.getByRole('listbox');
+
+		await expect(canvas.getAllByRole('option')).toHaveLength(50);
+		await expect(list.scrollHeight).toBeGreaterThan(list.clientHeight);
+		await expect(list.scrollTop).toBe(0);
+
+		await userEvent.click(canvas.getByRole('combobox', { name: /search states/i }));
+		await userEvent.keyboard('{End}');
+
+		const last = canvas.getByRole('option', { name: 'Wyoming' });
+		await waitFor(() => expect(last).toHaveAttribute('data-selected', 'true'));
+		await waitFor(() => expect(list.scrollTop).toBeGreaterThan(0));
+
+		// The active row must sit fully inside the list viewport after the scroll.
+		const listRect = list.getBoundingClientRect();
+		const lastRect = last.getBoundingClientRect();
+		await expect(lastRect.top).toBeGreaterThanOrEqual(listRect.top);
+		await expect(lastRect.bottom).toBeLessThanOrEqual(listRect.bottom);
+	}
+};
+
 const handleSelect = fn();
 
 export const KeyboardNavigation: Story = {
