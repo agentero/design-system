@@ -4,6 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { createColumnHelper, getSortedRowModel, type SortingState } from '@tanstack/react-table';
 import { expect, userEvent, within } from 'storybook/test';
 
+import { withContainer } from '../../.storybook/decorators';
 import { Button } from '../button';
 import { DropdownMenu } from '../dropdown-menu';
 import { Pagination } from '../pagination';
@@ -228,13 +229,7 @@ const meta = {
 	component: DataTable.Root,
 	tags: ['autodocs'],
 	parameters: { layout: 'fullscreen' },
-	decorators: [
-		Story => (
-			<div className="flex h-112 flex-col">
-				<Story />
-			</div>
-		)
-	]
+	decorators: [withContainer('flex h-112 flex-col')]
 } satisfies Meta;
 
 export default meta;

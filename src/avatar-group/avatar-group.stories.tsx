@@ -22,6 +22,7 @@ const meta = {
 	title: 'Components/AvatarGroup',
 	component: AvatarGroup,
 	tags: ['autodocs'],
+	parameters: { layout: 'centered' },
 	argTypes: {
 		max: { control: { type: 'number', min: 1 } },
 		size: { control: 'radio', options: ['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl'] },

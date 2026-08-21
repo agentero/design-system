@@ -31,10 +31,6 @@ const COLORS = [
 
 const SIZES = ['sm', 'md'] as const;
 
-const Stack = ({ children }: { children: React.ReactNode }) => (
-	<div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>{children}</div>
-);
-
 /**
  * Alert surfaces feedback about outcomes or state changes — success, danger,
  * warning, or info. Compose it from `Alert.Content`, `Alert.Title`,
@@ -371,7 +367,7 @@ export const WithActionsBelow: Story = {
  */
 export const AllColors: Story = {
 	render: () => (
-		<Stack>
+		<div className="flex flex-col gap-4">
 			{COLORS.map(color => (
 				<Alert key={color} color={color}>
 					<Alert.Content>
@@ -382,7 +378,7 @@ export const AllColors: Story = {
 					</Alert.Content>
 				</Alert>
 			))}
-		</Stack>
+		</div>
 	)
 };
 
@@ -394,7 +390,7 @@ export const AllColors: Story = {
  */
 export const AllGhostColors: Story = {
 	render: () => (
-		<Stack>
+		<div className="flex flex-col gap-4">
 			{COLORS.map(color => (
 				<Alert key={color} color={color} ghost>
 					<Alert.Content>
@@ -405,6 +401,6 @@ export const AllGhostColors: Story = {
 					</Alert.Content>
 				</Alert>
 			))}
-		</Stack>
+		</div>
 	)
 };

@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
+import { withFloatingCenter } from '../../.storybook/decorators';
 import { Button } from '../button';
 import { Popover } from './popover';
 
@@ -15,13 +16,8 @@ const meta = {
 	title: 'Components/Popover',
 	component: Popover.Root,
 	tags: ['autodocs'],
-	decorators: [
-		Story => (
-			<div className="flex min-h-60 items-center justify-center p-10">
-				<Story />
-			</div>
-		)
-	]
+	parameters: { layout: 'centered' },
+	decorators: [withFloatingCenter]
 } satisfies Meta<typeof Popover.Root>;
 
 export default meta;

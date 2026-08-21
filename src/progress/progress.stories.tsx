@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, within } from 'storybook/test';
 
+import { withContainer } from '../../.storybook/decorators';
 import { Progress } from './progress';
 
 /**
@@ -13,6 +14,7 @@ const meta = {
 	title: 'Components/Progress',
 	component: Progress,
 	tags: ['autodocs'],
+	parameters: { layout: 'centered' },
 	argTypes: {
 		percentage: {
 			control: { type: 'range', min: 0, max: 100 }
@@ -27,13 +29,7 @@ const meta = {
 	args: {
 		percentage: 62
 	},
-	decorators: [
-		Story => (
-			<div className="w-80">
-				<Story />
-			</div>
-		)
-	]
+	decorators: [withContainer('w-80')]
 } satisfies Meta<typeof Progress>;
 
 export default meta;

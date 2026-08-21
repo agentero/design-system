@@ -13,6 +13,7 @@ const meta = {
 	title: 'Components/Avatar',
 	component: Avatar,
 	tags: ['autodocs'],
+	parameters: { layout: 'centered' },
 	argTypes: {
 		size: {
 			control: 'select',
@@ -184,7 +185,7 @@ export const TypeIsotype: Story = {
  */
 export const AllTypes: Story = {
 	render: () => (
-		<div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+		<div className="flex items-center gap-4">
 			<Avatar
 				size="lg"
 				type="photo"
@@ -214,7 +215,7 @@ export const AllTypes: Story = {
  */
 export const AllSizesIsotype: Story = {
 	render: () => (
-		<div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+		<div className="flex items-center gap-4">
 			{(['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl'] as const).map(size => (
 				<Avatar
 					key={size}
@@ -292,7 +293,7 @@ export const Colorized: Story = {
  */
 export const AllColorized: Story = {
 	render: () => (
-		<div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+		<div className="flex items-center gap-4">
 			{['alice', 'bob', 'carol', 'dave', 'eve', 'frank', 'grace', 'henry', 'iris'].map(name => (
 				<Avatar key={name} size="lg" colorize={name} fallback={name.slice(0, 2).toUpperCase()} />
 			))}
@@ -310,7 +311,7 @@ export const AllColorized: Story = {
  */
 export const AllSizes: Story = {
 	render: () => (
-		<div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+		<div className="flex items-center gap-4">
 			{(['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl'] as const).map(size => (
 				<Avatar key={size} size={size} fallback={size.toUpperCase()} />
 			))}
@@ -326,7 +327,7 @@ export const AllSizes: Story = {
  */
 export const AllSizesWithImage: Story = {
 	render: () => (
-		<div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+		<div className="flex items-center gap-4">
 			{(['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl'] as const).map(size => (
 				<Avatar
 					key={size}
@@ -349,7 +350,7 @@ export const AllSizesWithImage: Story = {
  */
 export const AllVariants: Story = {
 	render: () => (
-		<div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+		<div className="flex items-center gap-4">
 			{(['circle', 'square', 'pillow', 'pentagon'] as const).map(variant => (
 				<Avatar
 					key={variant}
@@ -371,7 +372,7 @@ export const AllVariants: Story = {
  */
 export const AllVariantsWithImage: Story = {
 	render: () => (
-		<div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+		<div className="flex items-center gap-4">
 			{(['circle', 'square', 'pillow', 'pentagon'] as const).map(variant => (
 				<Avatar
 					key={variant}

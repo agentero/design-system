@@ -173,7 +173,7 @@ export const SwitchTabs: Story = {
  */
 export const SingleTitle: Story = {
 	render: () => (
-		<div className="flex flex-col items-start gap-6">
+		<div className="flex flex-col items-start gap-4">
 			{(['line', 'enclosed', 'button'] as const).map(variant => (
 				<h2 key={variant}>
 					<Tabs.Label variant={variant}>Shared coverages ({variant})</Tabs.Label>

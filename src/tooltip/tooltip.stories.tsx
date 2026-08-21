@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
+import { withFloatingCenter } from '../../.storybook/decorators';
 import { Button } from '../button';
 import { Tooltip } from './tooltip';
 
@@ -12,6 +13,7 @@ const meta = {
 	title: 'Components/Tooltip',
 	component: Tooltip,
 	tags: ['autodocs'],
+	parameters: { layout: 'centered' },
 	argTypes: {
 		content: {
 			control: 'text'
@@ -43,13 +45,7 @@ const meta = {
 		asChild: true,
 		children: <Button variant="secondary">Hover me</Button>
 	},
-	decorators: [
-		Story => (
-			<div className="flex min-h-40 items-center justify-center p-10">
-				<Story />
-			</div>
-		)
-	]
+	decorators: [withFloatingCenter]
 } satisfies Meta<typeof Tooltip>;
 
 export default meta;

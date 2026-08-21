@@ -20,7 +20,8 @@ const meta = {
 	},
 	args: {
 		size: 'sm'
-	}
+	},
+	parameters: { layout: 'centered' }
 } satisfies Meta<typeof Loading>;
 
 export default meta;
@@ -75,7 +76,7 @@ export const SizeLg: Story = {
  */
 export const Sizes: Story = {
 	render: () => (
-		<div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
+		<div className="flex items-center gap-8">
 			{(['sm', 'md', 'lg'] as const).map(size => (
 				<Loading key={size} size={size} />
 			))}
@@ -94,7 +95,7 @@ export const Sizes: Story = {
  */
 export const InheritsColor: Story = {
 	render: () => (
-		<div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
+		<div className="flex items-center gap-8">
 			<div className="text-text-default-base-primary">
 				<Loading size="md" />
 			</div>

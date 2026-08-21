@@ -15,6 +15,7 @@ const meta = {
 	title: 'Components/Label',
 	component: Label,
 	tags: ['autodocs'],
+	parameters: { layout: 'centered' },
 	argTypes: {
 		optional: { control: 'boolean' },
 		required: { control: 'boolean' }
