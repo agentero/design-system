@@ -576,13 +576,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">25 components ok</span><span class="filter-pill ok" aria-disabled="true">191 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><a class="filter-pill err" data-k="errors" href="#filter-errors">1/25 prop type error</a><a class="filter-pill info" data-k="infos" href="#filter-infos">1/25 info</a><span class="filter-pill ok" aria-disabled="true">191 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>3.9s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>4.1s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -4894,38 +4894,253 @@ import { Fragment } from "react";</code></pre>
 </article>
 <article
   class="card 
-  no-error 
-  no-info 
+  has-error 
+  has-info 
   no-story-error
   no-doc-error"
   role="listitem"
   aria-label="Tabs.Root">
   <div class="head">
     <div class="title">
-      <h2><span class="status-dot dot-ok"></span> Tabs.Root</h2>
+      <h2><span class="status-dot dot-err"></span> Tabs.Root</h2>
       <div class="badges">
-        
-        
+        <label for="c-20-components-tabs-err" class="badge err as-toggle">prop type error</label>
+        <label for="c-20-components-tabs-info" class="badge info as-toggle">1 info</label>
         <label for="c-20-components-tabs-stories" class="badge ok as-toggle">8 stories</label>
         
       </div>
     </div>
     <div class="meta" title="./src/tabs/tabs.stories.tsx">components-tabs · ./src/tabs/tabs.stories.tsx</div>
     
-    <div class="hint">Tabs built on Radix UI&#39;s Tabs (keyboard nav, roving focus and ARIA come for free). Compose `Root` with a `List` of `Trigger`s and matching `Content`s, pairing each `Trigger`/`Content` by `value`.</div>
+    
     
   </div>
 
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
-  
-  
+  <input id="c-20-components-tabs-err" class="tg tg-err" type="checkbox" hidden />
+  <input id="c-20-components-tabs-info" class="tg tg-info" type="checkbox" hidden />
   <input id="c-20-components-tabs-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
 
   <div class="panels">
     
+        <div class="panel panel-err">
+          
+    <div class="note err">
+      <div class="note-title">Prop type error</div>
+      <div class="note-body"><pre><code>No component file found for the &quot;Tabs.Root&quot; component.
+  4 | import * as Tabs from &#39;.&#39;;
+  5 |
+&gt; 6 | const meta = {
+    | ^
+  7 | 	title: &#39;Components/Tabs&#39;,
+  8 | 	component: Tabs.Root,
+  9 | 	tags: [&#39;autodocs&#39;]
+
+./src/tabs/tabs.stories.tsx:
+import type { Meta, StoryObj } from &#39;@storybook/react-vite&#39;;
+import { expect, userEvent, within } from &#39;storybook/test&#39;;
+
+import * as Tabs from &#39;.&#39;;
+
+const meta = {
+	title: &#39;Components/Tabs&#39;,
+	component: Tabs.Root,
+	tags: [&#39;autodocs&#39;]
+} satisfies Meta&lt;typeof Tabs.Root&gt;;
+
+export default meta;
+
+type Story = StoryObj&lt;typeof meta&gt;;
+
+const TABS = [
+	{ value: &#39;overview&#39;, label: &#39;Overview&#39;, body: &#39;A summary of the policy and its coverage.&#39; },
+	{ value: &#39;documents&#39;, label: &#39;Documents&#39;, body: &#39;Declarations, endorsements and forms.&#39; },
+	{ value: &#39;activity&#39;, label: &#39;Activity&#39;, body: &#39;A timeline of recent changes and events.&#39; }
+] as const;
+
+const TabItems = () =&gt;
+	TABS.map(({ value, label }) =&gt; (
+		&lt;Tabs.Trigger key={value} value={value}&gt;
+			{label}
+		&lt;/Tabs.Trigger&gt;
+	));
+
+const TabPanels = () =&gt;
+	TABS.map(({ value, body }) =&gt; (
+		&lt;Tabs.Content key={value} value={value} className=&quot;p-4 text-sm text-text-default-base-primary&quot;&gt;
+			{body}
+		&lt;/Tabs.Content&gt;
+	));
+
+/** `line` (default): the active tab is marked with an animated underline. */
+export const Default: Story = {
+	args: {
+		variant: &#39;line&#39;,
+		defaultValue: &#39;overview&#39;
+	},
+	argTypes: {
+		variant: {
+			control: &#39;radio&#39;,
+			options: [&#39;line&#39;, &#39;enclosed&#39;, &#39;button&#39;],
+			description: &#39;line = underline; enclosed = segmented pills; button = button-like tabs&#39;
+		}
+	},
+	render: args =&gt; (
+		&lt;Tabs.Root {...args}&gt;
+			&lt;Tabs.List&gt;
+				&lt;TabItems /&gt;
+			&lt;/Tabs.List&gt;
+			&lt;TabPanels /&gt;
+		&lt;/Tabs.Root&gt;
+	)
+};
+
+/** `enclosed` renders segmented pills; the active tab sits on a raised surface. */
+export const Enclosed: Story = {
+	render: () =&gt; (
+		&lt;Tabs.Root variant=&quot;enclosed&quot; defaultValue=&quot;overview&quot;&gt;
+			&lt;Tabs.List&gt;
+				&lt;TabItems /&gt;
+			&lt;/Tabs.List&gt;
+			&lt;TabPanels /&gt;
+		&lt;/Tabs.Root&gt;
+	)
+};
+
+/** `button` renders button-like tabs, with room for a leading icon per trigger. */
+export const Buttons: Story = {
+	render: () =&gt; (
+		&lt;Tabs.Root variant=&quot;button&quot; defaultValue=&quot;overview&quot;&gt;
+			&lt;Tabs.List&gt;
+				&lt;TabItems /&gt;
+			&lt;/Tabs.List&gt;
+			&lt;TabPanels /&gt;
+		&lt;/Tabs.Root&gt;
+	)
+};
+
+/** `position` aligns the tab list within the row (`start` is the default). */
+export const Positions: Story = {
+	render: () =&gt; (
+		&lt;div className=&quot;flex flex-col gap-8&quot;&gt;
+			{([&#39;start&#39;, &#39;center&#39;, &#39;end&#39;] as const).map(position =&gt; (
+				&lt;Tabs.Root key={position} variant=&quot;enclosed&quot; position={position} defaultValue=&quot;overview&quot;&gt;
+					&lt;Tabs.List&gt;
+						&lt;TabItems /&gt;
+					&lt;/Tabs.List&gt;
+					&lt;TabPanels /&gt;
+				&lt;/Tabs.Root&gt;
+			))}
+		&lt;/div&gt;
+	)
+};
+
+/** `position=&quot;full&quot;` stretches the tab list to fill the available width. */
+export const FullWidth: Story = {
+	render: () =&gt; (
+		&lt;Tabs.Root variant=&quot;enclosed&quot; position=&quot;full&quot; defaultValue=&quot;overview&quot;&gt;
+			&lt;Tabs.List&gt;
+				&lt;TabItems /&gt;
+			&lt;/Tabs.List&gt;
+			&lt;TabPanels /&gt;
+		&lt;/Tabs.Root&gt;
+	)
+};
+
+/**
+ * Triggers accept `asChild` to render as another element — e.g. a router link.
+ * The trigger resets the anchor&#39;s default underline, so link-based tabs match
+ * the button-based ones.
+ */
+export const AsChildLinks: Story = {
+	render: () =&gt; (
+		&lt;Tabs.Root variant=&quot;line&quot; defaultValue=&quot;overview&quot;&gt;
+			&lt;Tabs.List&gt;
+				{TABS.map(({ value, label }) =&gt; (
+					&lt;Tabs.Trigger key={value} value={value} asChild&gt;
+						&lt;a href={`#${value}`}&gt;{label}&lt;/a&gt;
+					&lt;/Tabs.Trigger&gt;
+				))}
+			&lt;/Tabs.List&gt;
+			&lt;TabPanels /&gt;
+		&lt;/Tabs.Root&gt;
+	),
+	play: async ({ canvasElement }) =&gt; {
+		const canvas = within(canvasElement);
+		const overview = canvas.getByRole(&#39;tab&#39;, { name: /overview/i });
+
+		await expect(overview.tagName).toBe(&#39;A&#39;);
+		await expect(getComputedStyle(overview).textDecorationLine).toBe(&#39;none&#39;);
+	}
+};
+
+/** Selecting a tab reveals its panel and hides the others. */
+export const SwitchTabs: Story = {
+	args: {
+		variant: &#39;line&#39;,
+		defaultValue: &#39;overview&#39;
+	},
+	render: args =&gt; (
+		&lt;Tabs.Root {...args}&gt;
+			&lt;Tabs.List&gt;
+				&lt;TabItems /&gt;
+			&lt;/Tabs.List&gt;
+			&lt;TabPanels /&gt;
+		&lt;/Tabs.Root&gt;
+	),
+	play: async ({ canvasElement }) =&gt; {
+		const canvas = within(canvasElement);
+		const overview = canvas.getByRole(&#39;tab&#39;, { name: /overview/i });
+		const documents = canvas.getByRole(&#39;tab&#39;, { name: /documents/i });
+
+		await expect(overview).toHaveAttribute(&#39;data-state&#39;, &#39;active&#39;);
+		await expect(await canvas.findByText(/summary of the policy/i)).toBeVisible();
+
+		await userEvent.click(documents);
+		await expect(documents).toHaveAttribute(&#39;data-state&#39;, &#39;active&#39;);
+		await expect(overview).toHaveAttribute(&#39;data-state&#39;, &#39;inactive&#39;);
+		await expect(await canvas.findByText(/declarations, endorsements/i)).toBeVisible();
+	}
+};
+
+/**
+ * A standalone `Label` gives a panel with a single, non-interactive title the
+ * inactive trigger&#39;s exact look: outside a `Root` it never gets the active
+ * data-state, and `pointer-events-none` keeps hover styles off. It is a plain
+ * `span`, so wrap it in a heading element for heading semantics. No tab or
+ * tablist role is announced.
+ */
+export const SingleTitle: Story = {
+	render: () =&gt; (
+		&lt;div className=&quot;flex flex-col items-start gap-6&quot;&gt;
+			{([&#39;line&#39;, &#39;enclosed&#39;, &#39;button&#39;] as const).map(variant =&gt; (
+				&lt;h2 key={variant}&gt;
+					&lt;Tabs.Label variant={variant}&gt;Shared coverages ({variant})&lt;/Tabs.Label&gt;
+				&lt;/h2&gt;
+			))}
+		&lt;/div&gt;
+	),
+	play: async ({ canvasElement }) =&gt; {
+		const canvas = within(canvasElement);
+
+		await expect(canvas.getAllByRole(&#39;heading&#39;)).toHaveLength(3);
+		await expect(canvas.queryByRole(&#39;tablist&#39;)).not.toBeInTheDocument();
+		await expect(canvas.queryByRole(&#39;tab&#39;)).not.toBeInTheDocument();
+	}
+};
+</code></pre></div>
+    </div>
+        </div>
     
+        <div class="panel panel-info">
+          
+    <div class="note info">
+      <div class="note-title">Info</div>
+      <div class="note-body">No description found. Write a jsdoc comment such as /** Component description */.</div>
+    </div>
+        </div>
     
     
         <div class="panel panel-stories">
@@ -4936,7 +5151,7 @@ import { Fragment } from "react";</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Tabs } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Content, Label, List, Root, Trigger } from "@agentero/design-system";</code></pre>
               </div>
           
           
@@ -6175,7 +6390,417 @@ value: string</code></pre>
   </div>
 </article>
     </div>
+    <div class="error-groups" role="region" aria-label="Prop type error groups">
+        <section class="group">
+          <input id="no-component-import-found-toggle" class="group-tg" type="checkbox" hidden />
+          <label for="no-component-import-found-toggle" class="group-header">
+            <span class="caret">▸</span>
+            <span class="group-title">No component import found</span>
+            <span class="group-count">1</span>
+          </label>
+          <div class="group-cards">
+<article
+  class="card 
+  has-error 
+  has-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
+  aria-label="Tabs.Root">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-err"></span> Tabs.Root</h2>
+      <div class="badges">
+        <label for="c-error-0-components-tabs-err" class="badge err as-toggle">prop type error</label>
+        <label for="c-error-0-components-tabs-info" class="badge info as-toggle">1 info</label>
+        <label for="c-error-0-components-tabs-stories" class="badge ok as-toggle">8 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/tabs/tabs.stories.tsx">components-tabs · ./src/tabs/tabs.stories.tsx</div>
     
+    
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  <input id="c-error-0-components-tabs-err" class="tg tg-err" type="checkbox" hidden />
+  <input id="c-error-0-components-tabs-info" class="tg tg-info" type="checkbox" hidden />
+  <input id="c-error-0-components-tabs-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+
+  <div class="panels">
+    
+        <div class="panel panel-err">
+          
+    <div class="note err">
+      <div class="note-title">Prop type error</div>
+      <div class="note-body"><pre><code>No component file found for the &quot;Tabs.Root&quot; component.
+  4 | import * as Tabs from &#39;.&#39;;
+  5 |
+&gt; 6 | const meta = {
+    | ^
+  7 | 	title: &#39;Components/Tabs&#39;,
+  8 | 	component: Tabs.Root,
+  9 | 	tags: [&#39;autodocs&#39;]
+
+./src/tabs/tabs.stories.tsx:
+import type { Meta, StoryObj } from &#39;@storybook/react-vite&#39;;
+import { expect, userEvent, within } from &#39;storybook/test&#39;;
+
+import * as Tabs from &#39;.&#39;;
+
+const meta = {
+	title: &#39;Components/Tabs&#39;,
+	component: Tabs.Root,
+	tags: [&#39;autodocs&#39;]
+} satisfies Meta&lt;typeof Tabs.Root&gt;;
+
+export default meta;
+
+type Story = StoryObj&lt;typeof meta&gt;;
+
+const TABS = [
+	{ value: &#39;overview&#39;, label: &#39;Overview&#39;, body: &#39;A summary of the policy and its coverage.&#39; },
+	{ value: &#39;documents&#39;, label: &#39;Documents&#39;, body: &#39;Declarations, endorsements and forms.&#39; },
+	{ value: &#39;activity&#39;, label: &#39;Activity&#39;, body: &#39;A timeline of recent changes and events.&#39; }
+] as const;
+
+const TabItems = () =&gt;
+	TABS.map(({ value, label }) =&gt; (
+		&lt;Tabs.Trigger key={value} value={value}&gt;
+			{label}
+		&lt;/Tabs.Trigger&gt;
+	));
+
+const TabPanels = () =&gt;
+	TABS.map(({ value, body }) =&gt; (
+		&lt;Tabs.Content key={value} value={value} className=&quot;p-4 text-sm text-text-default-base-primary&quot;&gt;
+			{body}
+		&lt;/Tabs.Content&gt;
+	));
+
+/** `line` (default): the active tab is marked with an animated underline. */
+export const Default: Story = {
+	args: {
+		variant: &#39;line&#39;,
+		defaultValue: &#39;overview&#39;
+	},
+	argTypes: {
+		variant: {
+			control: &#39;radio&#39;,
+			options: [&#39;line&#39;, &#39;enclosed&#39;, &#39;button&#39;],
+			description: &#39;line = underline; enclosed = segmented pills; button = button-like tabs&#39;
+		}
+	},
+	render: args =&gt; (
+		&lt;Tabs.Root {...args}&gt;
+			&lt;Tabs.List&gt;
+				&lt;TabItems /&gt;
+			&lt;/Tabs.List&gt;
+			&lt;TabPanels /&gt;
+		&lt;/Tabs.Root&gt;
+	)
+};
+
+/** `enclosed` renders segmented pills; the active tab sits on a raised surface. */
+export const Enclosed: Story = {
+	render: () =&gt; (
+		&lt;Tabs.Root variant=&quot;enclosed&quot; defaultValue=&quot;overview&quot;&gt;
+			&lt;Tabs.List&gt;
+				&lt;TabItems /&gt;
+			&lt;/Tabs.List&gt;
+			&lt;TabPanels /&gt;
+		&lt;/Tabs.Root&gt;
+	)
+};
+
+/** `button` renders button-like tabs, with room for a leading icon per trigger. */
+export const Buttons: Story = {
+	render: () =&gt; (
+		&lt;Tabs.Root variant=&quot;button&quot; defaultValue=&quot;overview&quot;&gt;
+			&lt;Tabs.List&gt;
+				&lt;TabItems /&gt;
+			&lt;/Tabs.List&gt;
+			&lt;TabPanels /&gt;
+		&lt;/Tabs.Root&gt;
+	)
+};
+
+/** `position` aligns the tab list within the row (`start` is the default). */
+export const Positions: Story = {
+	render: () =&gt; (
+		&lt;div className=&quot;flex flex-col gap-8&quot;&gt;
+			{([&#39;start&#39;, &#39;center&#39;, &#39;end&#39;] as const).map(position =&gt; (
+				&lt;Tabs.Root key={position} variant=&quot;enclosed&quot; position={position} defaultValue=&quot;overview&quot;&gt;
+					&lt;Tabs.List&gt;
+						&lt;TabItems /&gt;
+					&lt;/Tabs.List&gt;
+					&lt;TabPanels /&gt;
+				&lt;/Tabs.Root&gt;
+			))}
+		&lt;/div&gt;
+	)
+};
+
+/** `position=&quot;full&quot;` stretches the tab list to fill the available width. */
+export const FullWidth: Story = {
+	render: () =&gt; (
+		&lt;Tabs.Root variant=&quot;enclosed&quot; position=&quot;full&quot; defaultValue=&quot;overview&quot;&gt;
+			&lt;Tabs.List&gt;
+				&lt;TabItems /&gt;
+			&lt;/Tabs.List&gt;
+			&lt;TabPanels /&gt;
+		&lt;/Tabs.Root&gt;
+	)
+};
+
+/**
+ * Triggers accept `asChild` to render as another element — e.g. a router link.
+ * The trigger resets the anchor&#39;s default underline, so link-based tabs match
+ * the button-based ones.
+ */
+export const AsChildLinks: Story = {
+	render: () =&gt; (
+		&lt;Tabs.Root variant=&quot;line&quot; defaultValue=&quot;overview&quot;&gt;
+			&lt;Tabs.List&gt;
+				{TABS.map(({ value, label }) =&gt; (
+					&lt;Tabs.Trigger key={value} value={value} asChild&gt;
+						&lt;a href={`#${value}`}&gt;{label}&lt;/a&gt;
+					&lt;/Tabs.Trigger&gt;
+				))}
+			&lt;/Tabs.List&gt;
+			&lt;TabPanels /&gt;
+		&lt;/Tabs.Root&gt;
+	),
+	play: async ({ canvasElement }) =&gt; {
+		const canvas = within(canvasElement);
+		const overview = canvas.getByRole(&#39;tab&#39;, { name: /overview/i });
+
+		await expect(overview.tagName).toBe(&#39;A&#39;);
+		await expect(getComputedStyle(overview).textDecorationLine).toBe(&#39;none&#39;);
+	}
+};
+
+/** Selecting a tab reveals its panel and hides the others. */
+export const SwitchTabs: Story = {
+	args: {
+		variant: &#39;line&#39;,
+		defaultValue: &#39;overview&#39;
+	},
+	render: args =&gt; (
+		&lt;Tabs.Root {...args}&gt;
+			&lt;Tabs.List&gt;
+				&lt;TabItems /&gt;
+			&lt;/Tabs.List&gt;
+			&lt;TabPanels /&gt;
+		&lt;/Tabs.Root&gt;
+	),
+	play: async ({ canvasElement }) =&gt; {
+		const canvas = within(canvasElement);
+		const overview = canvas.getByRole(&#39;tab&#39;, { name: /overview/i });
+		const documents = canvas.getByRole(&#39;tab&#39;, { name: /documents/i });
+
+		await expect(overview).toHaveAttribute(&#39;data-state&#39;, &#39;active&#39;);
+		await expect(await canvas.findByText(/summary of the policy/i)).toBeVisible();
+
+		await userEvent.click(documents);
+		await expect(documents).toHaveAttribute(&#39;data-state&#39;, &#39;active&#39;);
+		await expect(overview).toHaveAttribute(&#39;data-state&#39;, &#39;inactive&#39;);
+		await expect(await canvas.findByText(/declarations, endorsements/i)).toBeVisible();
+	}
+};
+
+/**
+ * A standalone `Label` gives a panel with a single, non-interactive title the
+ * inactive trigger&#39;s exact look: outside a `Root` it never gets the active
+ * data-state, and `pointer-events-none` keeps hover styles off. It is a plain
+ * `span`, so wrap it in a heading element for heading semantics. No tab or
+ * tablist role is announced.
+ */
+export const SingleTitle: Story = {
+	render: () =&gt; (
+		&lt;div className=&quot;flex flex-col items-start gap-6&quot;&gt;
+			{([&#39;line&#39;, &#39;enclosed&#39;, &#39;button&#39;] as const).map(variant =&gt; (
+				&lt;h2 key={variant}&gt;
+					&lt;Tabs.Label variant={variant}&gt;Shared coverages ({variant})&lt;/Tabs.Label&gt;
+				&lt;/h2&gt;
+			))}
+		&lt;/div&gt;
+	),
+	play: async ({ canvasElement }) =&gt; {
+		const canvas = within(canvasElement);
+
+		await expect(canvas.getAllByRole(&#39;heading&#39;)).toHaveLength(3);
+		await expect(canvas.queryByRole(&#39;tablist&#39;)).not.toBeInTheDocument();
+		await expect(canvas.queryByRole(&#39;tab&#39;)).not.toBeInTheDocument();
+	}
+};
+</code></pre></div>
+    </div>
+        </div>
+    
+        <div class="panel panel-info">
+          
+    <div class="note info">
+      <div class="note-title">Info</div>
+      <div class="note-body">No description found. Write a jsdoc comment such as /** Component description */.</div>
+    </div>
+        </div>
+    
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Content, Label, List, Root, Trigger } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">`line` (default): the active tab is marked with an animated underline.</div>
+              <pre><code>const Default = () =&gt; &lt;Tabs.Root variant=&quot;line&quot; defaultValue=&quot;overview&quot;&gt;
+    &lt;Tabs.List&gt;
+        &lt;TabItems /&gt;
+    &lt;/Tabs.List&gt;
+    &lt;TabPanels /&gt;
+&lt;/Tabs.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Enclosed</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">`enclosed` renders segmented pills; the active tab sits on a raised surface.</div>
+              <pre><code>const Enclosed = () =&gt; (
+    &lt;Tabs.Root variant=&quot;enclosed&quot; defaultValue=&quot;overview&quot;&gt;
+        &lt;Tabs.List&gt;
+            &lt;TabItems /&gt;
+        &lt;/Tabs.List&gt;
+        &lt;TabPanels /&gt;
+    &lt;/Tabs.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Buttons</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">`button` renders button-like tabs, with room for a leading icon per trigger.</div>
+              <pre><code>const Buttons = () =&gt; (
+    &lt;Tabs.Root variant=&quot;button&quot; defaultValue=&quot;overview&quot;&gt;
+        &lt;Tabs.List&gt;
+            &lt;TabItems /&gt;
+        &lt;/Tabs.List&gt;
+        &lt;TabPanels /&gt;
+    &lt;/Tabs.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Positions</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">`position` aligns the tab list within the row (`start` is the default).</div>
+              <pre><code>const Positions = () =&gt; (
+    &lt;div className=&quot;flex flex-col gap-8&quot;&gt;
+        {([&#39;start&#39;, &#39;center&#39;, &#39;end&#39;] as const).map(position =&gt; (
+            &lt;Tabs.Root key={position} variant=&quot;enclosed&quot; position={position} defaultValue=&quot;overview&quot;&gt;
+                &lt;Tabs.List&gt;
+                    &lt;TabItems /&gt;
+                &lt;/Tabs.List&gt;
+                &lt;TabPanels /&gt;
+            &lt;/Tabs.Root&gt;
+        ))}
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Full Width</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">`position=&quot;full&quot;` stretches the tab list to fill the available width.</div>
+              <pre><code>const FullWidth = () =&gt; (
+    &lt;Tabs.Root variant=&quot;enclosed&quot; position=&quot;full&quot; defaultValue=&quot;overview&quot;&gt;
+        &lt;Tabs.List&gt;
+            &lt;TabItems /&gt;
+        &lt;/Tabs.List&gt;
+        &lt;TabPanels /&gt;
+    &lt;/Tabs.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">As Child Links</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Triggers accept `asChild` to render as another element — e.g. a router link. The trigger resets the anchor&#39;s default underline, so link-based tabs match the button-based ones.</div>
+              <pre><code>const AsChildLinks = () =&gt; (
+    &lt;Tabs.Root variant=&quot;line&quot; defaultValue=&quot;overview&quot;&gt;
+        &lt;Tabs.List&gt;
+            {TABS.map(({ value, label }) =&gt; (
+                &lt;Tabs.Trigger key={value} value={value} asChild&gt;
+                    &lt;a href={`#${value}`}&gt;{label}&lt;/a&gt;
+                &lt;/Tabs.Trigger&gt;
+            ))}
+        &lt;/Tabs.List&gt;
+        &lt;TabPanels /&gt;
+    &lt;/Tabs.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Switch Tabs</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Selecting a tab reveals its panel and hides the others.</div>
+              <pre><code>const SwitchTabs = () =&gt; &lt;Tabs.Root variant=&quot;line&quot; defaultValue=&quot;overview&quot;&gt;
+    &lt;Tabs.List&gt;
+        &lt;TabItems /&gt;
+    &lt;/Tabs.List&gt;
+    &lt;TabPanels /&gt;
+&lt;/Tabs.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Single Title</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">A standalone `Label` gives a panel with a single, non-interactive title the inactive trigger&#39;s exact look: outside a `Root` it never gets the active data-state, and `pointer-events-none` keeps hover styles off. It is a plain `span`, so wrap it in a heading element for heading semantics. No tab or tablist role is announced.</div>
+              <pre><code>const SingleTitle = () =&gt; (
+    &lt;div className=&quot;flex flex-col items-start gap-6&quot;&gt;
+        {([&#39;line&#39;, &#39;enclosed&#39;, &#39;button&#39;] as const).map(variant =&gt; (
+            &lt;h2 key={variant}&gt;
+                &lt;Tabs.Label variant={variant}&gt;Shared coverages ({variant})&lt;/Tabs.Label&gt;
+            &lt;/h2&gt;
+        ))}
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article></div>
+        </section>
+      </div>
     
     
   </div>
