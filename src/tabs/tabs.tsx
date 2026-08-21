@@ -155,6 +155,43 @@ const Content = ({ className, ...props }: TabsContentProps) => {
 };
 Content.displayName = 'Tabs.Content';
 
+export type TabsLabelProps = ComponentProps<'span'> & {
+	variant?: TabsVariants['variant'];
+};
+
+/**
+ * Non-interactive heading with the exact look of an inactive `Trigger`: it
+ * renders the trigger styles without the active data-state, and
+ * `pointer-events-none` keeps the hover styles from firing. Use it when a
+ * panel keeps the tab row's visual language but has a single, non-selectable
+ * title — a lone tab would announce a selectable control that isn't one.
+ * Inside a `Root` it picks up the group's variant; standalone, pass `variant`.
+ * It renders a plain `span` — wrap it in a heading element when the title
+ * needs heading semantics.
+ *
+ * @summary Text styled as an inactive tab trigger
+ *
+ * @example
+ * ```tsx
+ * <h2>
+ *   <Tabs.Label>Shared coverages</Tabs.Label>
+ * </h2>
+ * ```
+ */
+const Label = ({ className, variant, ...props }: TabsLabelProps) => {
+	const context = use(TabsContext);
+	const styles = context ?? tabsRecipe({ variant });
+
+	return (
+		<span
+			data-slot="tabs-label"
+			className={cn(styles.trigger(), 'pointer-events-none', className)}
+			{...props}
+		/>
+	);
+};
+Label.displayName = 'Tabs.Label';
+
 /**
  * Tabs built on Radix UI's Tabs (keyboard nav, roving focus and ARIA come for
  * free). Compose `Root` with a `List` of `Trigger`s and matching `Content`s,
@@ -164,5 +201,6 @@ export const Tabs = {
 	Root,
 	List,
 	Trigger,
-	Content
+	Content,
+	Label
 };
