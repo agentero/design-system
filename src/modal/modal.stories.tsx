@@ -60,6 +60,37 @@ export const Default: Story = {
 	}
 };
 
+/** `Modal.Description` sits 0.5rem below `Modal.Title` and doubles as the accessible description. */
+export const WithDescription: Story = {
+	render: () => (
+		<Modal.Root>
+			<Modal.Trigger asChild>
+				<Button variant="secondary">Delete carrier</Button>
+			</Modal.Trigger>
+			<Modal.Content>
+				<Modal.Title>Delete carrier</Modal.Title>
+				<Modal.Description>This action cannot be undone.</Modal.Description>
+				<Modal.Footer>
+					<Modal.Close asChild>
+						<Button variant="ghost">Cancel</Button>
+					</Modal.Close>
+					<Button variant="primary">Delete</Button>
+				</Modal.Footer>
+			</Modal.Content>
+		</Modal.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const body = within(document.body);
+
+		await userEvent.click(canvas.getByRole('button', { name: /delete carrier/i }));
+
+		const dialog = await body.findByRole('dialog', { name: /delete carrier/i });
+		await waitFor(() => expect(dialog).toBeVisible());
+		await expect(dialog).toHaveAccessibleDescription(/cannot be undone/i);
+	}
+};
+
 const ControlledExample = () => {
 	const [isOpen, setIsOpen] = useState(false);
 
