@@ -582,7 +582,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>4.0s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>3.6s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -4856,7 +4856,9 @@ import { Fragment } from "react";</code></pre>
         &lt;Tabs.List&gt;
             {TABS.map(({ value, label }) =&gt; (
                 &lt;Tabs.Trigger key={value} value={value} asChild&gt;
-                    &lt;a href={`#${value}`}&gt;{label}&lt;/a&gt;
+                    &lt;a href={`#${value}`}&gt;
+                        &lt;Tabs.Label as=&quot;span&quot;&gt;{label}&lt;/Tabs.Label&gt;
+                    &lt;/a&gt;
                 &lt;/Tabs.Trigger&gt;
             ))}
         &lt;/Tabs.List&gt;
@@ -4884,11 +4886,11 @@ import { Fragment } from "react";</code></pre>
                 <span class="badge ok">story ok</span>
               </div>
               
-              <div class="hint">`LabelList` + `Label` give a panel with a single, non-interactive title the tab-list look without announcing a lone selectable tab: the heading keeps the trigger&#39;s inactive styles and plain heading semantics.</div>
+              <div class="hint">A standalone `Label` gives a panel with a single, non-interactive title the tab item&#39;s inactive look without announcing a lone selectable tab: outside a `Trigger` no hover/active group state exists, so the heading stays inactive. The list-row styling comes straight from the exported recipe.</div>
               <pre><code>const SingleTitle = () =&gt; (
-    &lt;Tabs.LabelList&gt;
+    &lt;div className={tabsRecipe().list()}&gt;
         &lt;Tabs.Label&gt;Shared coverages&lt;/Tabs.Label&gt;
-    &lt;/Tabs.LabelList&gt;
+    &lt;/div&gt;
 );</code></pre>
             </div>
         </div>
