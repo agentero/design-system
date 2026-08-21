@@ -576,7 +576,7 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">25 components ok</span><span class="filter-pill ok" aria-disabled="true">189 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">25 components ok</span><span class="filter-pill ok" aria-disabled="true">190 stories ok</span></div>
   </div>
 </header>
 <main>
@@ -2338,7 +2338,7 @@ variant?: ButtonVariantType</code></pre>
       <div class="badges">
         
         
-        <label for="c-6-components-command-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-6-components-command-stories" class="badge ok as-toggle">5 stories</label>
         
       </div>
     </div>
@@ -2431,6 +2431,25 @@ variant?: ButtonVariantType</code></pre>
             &lt;/Command.Group&gt;
         &lt;/Command.List&gt;
         &lt;Command.Empty&gt;No results found.&lt;/Command.Empty&gt;
+    &lt;/Command.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Scrolling List</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">With more rows than the list cap fits, the list scrolls — by wheel, or by keyboard: cmdk scrolls the active row into view as the arrow keys move it, and `scroll-py-2` keeps that row off the container edges.</div>
+              <pre><code>const ScrollingList = () =&gt; (
+    &lt;Command.Root label=&quot;Search states&quot;&gt;
+        &lt;Command.Input placeholder=&quot;Search states...&quot; /&gt;
+        &lt;Command.List&gt;
+            {US_STATES.map(state =&gt; (
+                &lt;Command.Item key={state}&gt;{state}&lt;/Command.Item&gt;
+            ))}
+        &lt;/Command.List&gt;
+        &lt;Command.Empty&gt;No states found.&lt;/Command.Empty&gt;
     &lt;/Command.Root&gt;
 );</code></pre>
             </div>
