@@ -11,6 +11,9 @@ import { Modal } from './modal';
  * `Content` is the centered surface (`size` md/lg), and `Title`/`Body`/`Footer`
  * structure it. Close it with `Escape`, the overlay, the X button, or a
  * `Modal.Close asChild` around your own button.
+ *
+ * `Content` also takes `variant="alert"` for the modal the user has to answer:
+ * it drops all three implicit ways out and is announced as an `alertdialog`.
  */
 const meta = {
 	title: 'Components/Modal',
@@ -140,4 +143,53 @@ export const ScrollableBody: Story = {
 			</Modal.Content>
 		</Modal.Root>
 	)
+};
+
+/**
+ * `variant="alert"` for a decision the user cannot skip: `Escape` and overlay
+ * clicks are ignored, `Modal.Title` renders no X button, and the surface is
+ * announced as an `alertdialog`. Only the footer actions close it.
+ */
+export const Alert: Story = {
+	render: () => (
+		<Modal.Root>
+			<Modal.Trigger asChild>
+				<Button variant="secondary">Open alert</Button>
+			</Modal.Trigger>
+			<Modal.Content variant="alert">
+				<Modal.Title>Complete your Docusign integration</Modal.Title>
+				<Modal.Body>
+					<p>To enable your integration, please authorize access to your Docusign account.</p>
+				</Modal.Body>
+				<Modal.Footer>
+					<Modal.Close asChild>
+						<Button variant="ghost">Not now</Button>
+					</Modal.Close>
+					<Button variant="primary">Authorize</Button>
+				</Modal.Footer>
+			</Modal.Content>
+		</Modal.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const body = within(document.body);
+
+		await userEvent.click(canvas.getByRole('button', { name: 'Open alert' }));
+
+		const dialog = await body.findByRole('alertdialog', {
+			name: 'Complete your Docusign integration'
+		});
+		await waitFor(() => expect(dialog).toBeVisible());
+
+		await expect(body.queryByRole('button', { name: 'Close' })).not.toBeInTheDocument();
+
+		await userEvent.keyboard('{Escape}');
+		await expect(dialog).toBeVisible();
+
+		await userEvent.click(document.querySelector('[data-slot="modal-overlay"]')!);
+		await expect(dialog).toBeVisible();
+
+		await userEvent.click(body.getByRole('button', { name: 'Not now' }));
+		await waitFor(() => expect(body.queryByRole('alertdialog')).not.toBeInTheDocument());
+	}
 };
