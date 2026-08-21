@@ -53,9 +53,9 @@ export const modalRecipe = tv({
 			'motion-reduce:animate-none!'
 		],
 		title:
-			'flex items-start justify-between gap-2 px-10 text-[1.375rem] leading-7 font-semibold text-text-default-base-primary',
+			'flex items-center justify-between gap-2 px-10 text-[1.375rem] leading-7 font-semibold text-text-default-base-primary',
 		body: '-my-1 max-h-[60vh] overflow-y-auto px-10 py-1',
-		footer: 'flex shrink-0 items-center justify-end gap-2 px-10'
+		footer: 'flex shrink-0 items-center justify-end gap-4 px-10'
 	},
 	variants: {
 		size: {
@@ -155,7 +155,7 @@ const Title = ({ className, children, ...props }: TitleProps) => {
 			<DialogPrimitive.Title {...props}>{children}</DialogPrimitive.Title>
 			{variant === 'dialog' && (
 				<DialogPrimitive.Close asChild>
-					<Button variant="ghost" size="sm" aria-label="Close" className="-my-2 -mr-6 shrink-0">
+					<Button variant="ghost" size="sm" aria-label="Close" className="shrink-0">
 						<IconClose />
 					</Button>
 				</DialogPrimitive.Close>
