@@ -1,6 +1,6 @@
 'use client';
 
-import { ComponentProps } from 'react';
+import { ComponentProps, createContext, useContext } from 'react';
 
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { type VariantProps, tv } from 'tailwind-variants';
@@ -33,6 +33,10 @@ const Trigger = (props: TriggerProps) => (
 );
 Trigger.displayName = 'Modal.Trigger';
 
+type ModalVariant = 'dialog' | 'alert';
+
+const ModalVariantContext = createContext<ModalVariant>('dialog');
+
 // `motion-reduce:animate-none!` — the `!` outranks the higher-specificity data-[state=…] rules
 export const modalRecipe = tv({
 	slots: {
@@ -49,9 +53,9 @@ export const modalRecipe = tv({
 			'motion-reduce:animate-none!'
 		],
 		title:
-			'flex items-start justify-between gap-2 px-10 text-[1.375rem] leading-7 font-semibold text-text-default-base-primary',
+			'flex items-center justify-between gap-2 px-10 text-[1.375rem] leading-7 font-semibold text-text-default-base-primary',
 		body: '-my-1 max-h-[60vh] overflow-y-auto px-10 py-1',
-		footer: 'flex shrink-0 items-center justify-end gap-2 px-10'
+		footer: 'flex shrink-0 items-center justify-end gap-4 px-10'
 	},
 	variants: {
 		size: {
@@ -75,6 +79,14 @@ type ContentProps = ComponentProps<typeof DialogPrimitive.Content> & {
 	 * Both shrink to the viewport on small screens.
 	 */
 	size?: ModalVariants['size'];
+	/**
+	 * `'dialog'` (default) is dismissable: `Escape`, an overlay click, and the
+	 * X button in `Modal.Title` all close it. `'alert'` removes all three, so
+	 * the only way out is one of the buttons in `Modal.Footer`, and exposes
+	 * `role="alertdialog"` to assistive technology. Use it when dismissing
+	 * without choosing would leave the user stuck or lose their work.
+	 */
+	variant?: ModalVariant;
 };
 
 /**
@@ -83,22 +95,45 @@ type ContentProps = ComponentProps<typeof DialogPrimitive.Content> & {
  * and body scroll is locked while open. Labelled by `Modal.Title`
  * automatically; pass `aria-label` for the rare titleless modal.
  *
+ * `variant="alert"` turns off every implicit way out — `Escape`, the overlay
+ * click, and the X button in `Modal.Title` — leaving only the footer actions.
+ *
  * @summary Centered modal surface over a dimmed overlay
  */
-const Content = ({ className, size, children, ...props }: ContentProps) => {
+const Content = ({
+	className,
+	size,
+	variant = 'dialog',
+	children,
+	onEscapeKeyDown,
+	onPointerDownOutside,
+	...props
+}: ContentProps) => {
 	const styles = modalRecipe({ size });
+	const isAlert = variant === 'alert';
 
 	return (
-		<DialogPrimitive.Portal>
-			<DialogPrimitive.Overlay data-slot="modal-overlay" className={styles.overlay()} />
-			<DialogPrimitive.Content
-				data-slot="modal-content"
-				aria-describedby={undefined}
-				className={cn(styles.content(), className)}
-				{...props}>
-				{children}
-			</DialogPrimitive.Content>
-		</DialogPrimitive.Portal>
+		<ModalVariantContext.Provider value={variant}>
+			<DialogPrimitive.Portal>
+				<DialogPrimitive.Overlay data-slot="modal-overlay" className={styles.overlay()} />
+				<DialogPrimitive.Content
+					data-slot="modal-content"
+					role={isAlert ? 'alertdialog' : 'dialog'}
+					aria-describedby={undefined}
+					className={cn(styles.content(), className)}
+					onEscapeKeyDown={event => {
+						onEscapeKeyDown?.(event);
+						if (isAlert) event.preventDefault();
+					}}
+					onPointerDownOutside={event => {
+						onPointerDownOutside?.(event);
+						if (isAlert) event.preventDefault();
+					}}
+					{...props}>
+					{children}
+				</DialogPrimitive.Content>
+			</DialogPrimitive.Portal>
+		</ModalVariantContext.Provider>
 	);
 };
 Content.displayName = 'Modal.Content';
@@ -107,20 +142,27 @@ type TitleProps = ComponentProps<typeof DialogPrimitive.Title>;
 
 /**
  * Heading row of the modal with a built-in close (X) button. Radix wires it
- * as the modal's accessible name via `aria-labelledby`.
+ * as the modal's accessible name via `aria-labelledby`. The X button is
+ * omitted inside a `Modal.Content` with `variant="alert"`.
  *
  * @summary Modal heading with built-in close button
  */
-const Title = ({ className, children, ...props }: TitleProps) => (
-	<div data-slot="modal-title" className={slots.title({ className })}>
-		<DialogPrimitive.Title {...props}>{children}</DialogPrimitive.Title>
-		<DialogPrimitive.Close asChild>
-			<Button variant="ghost" size="sm" aria-label="Close" className="-my-2 -mr-6 shrink-0">
-				<IconClose />
-			</Button>
-		</DialogPrimitive.Close>
-	</div>
-);
+const Title = ({ className, children, ...props }: TitleProps) => {
+	const variant = useContext(ModalVariantContext);
+
+	return (
+		<div data-slot="modal-title" className={slots.title({ className })}>
+			<DialogPrimitive.Title {...props}>{children}</DialogPrimitive.Title>
+			{variant === 'dialog' && (
+				<DialogPrimitive.Close asChild>
+					<Button variant="ghost" size="sm" aria-label="Close" className="shrink-0">
+						<IconClose />
+					</Button>
+				</DialogPrimitive.Close>
+			)}
+		</div>
+	);
+};
 Title.displayName = 'Modal.Title';
 
 type BodyProps = ComponentProps<'div'>;
@@ -170,6 +212,10 @@ Close.displayName = 'Modal.Close';
  * (right-aligned actions). Open it controlled (`open`/`onOpenChange`) or via
  * `Trigger`; close from inside with `Close asChild` around your cancel button.
  *
+ * For a modal the user has to answer, pass `variant="alert"` to `Content`:
+ * `Escape`, the overlay click and the X button all stop closing it, and it is
+ * announced as an `alertdialog`.
+ *
  * @summary Compound modal dialog over a dimmed overlay
  *
  * @example
@@ -183,6 +229,20 @@ Close.displayName = 'Modal.Close';
  *         <Button variant="ghost">Cancel</Button>
  *       </Modal.Close>
  *       <Button onClick={handleDelete}>Delete</Button>
+ *     </Modal.Footer>
+ *   </Modal.Content>
+ * </Modal.Root>
+ * ```
+ *
+ * @example
+ * ```tsx
+ * // Alert: no Escape, no overlay click, no X — the user must answer.
+ * <Modal.Root open={isOpen}>
+ *   <Modal.Content variant="alert">
+ *     <Modal.Title>Complete your Docusign integration</Modal.Title>
+ *     <Modal.Body>Authorize access to finish connecting your account.</Modal.Body>
+ *     <Modal.Footer>
+ *       <Button onClick={handleAuthorize}>Authorize</Button>
  *     </Modal.Footer>
  *   </Modal.Content>
  * </Modal.Root>
