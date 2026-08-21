@@ -4,6 +4,13 @@ import './index.css';
 
 const preview: Preview = {
 	parameters: {
+		docs: {
+			source: {
+				// Decorators are viewing harness, not part of the example — keep
+				// them out of "Show code" snippets and the MCP manifest.
+				excludeDecorators: true
+			}
+		},
 		controls: {
 			matchers: {
 				color: /(background|color)$/i,

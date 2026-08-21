@@ -3,6 +3,7 @@ import { Fragment, SVGProps, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, within } from 'storybook/test';
 
+import { withContainer } from '../../.storybook/decorators';
 import { Button } from '../button';
 import { Table, type TableRootProps } from './table';
 
@@ -54,7 +55,7 @@ const renderTable = (
 					<Table.Header>Name</Table.Header>
 					<Table.Header>Email</Table.Header>
 					<Table.Header>Role</Table.Header>
-					<Table.Header style={{ textAlign: 'right' }}>Amount</Table.Header>
+					<Table.Header className="text-right">Amount</Table.Header>
 					{extras.actions && (
 						<Table.Header>
 							<span className="sr-only">Actions</span>
@@ -73,9 +74,9 @@ const renderTable = (
 						<Table.Cell className="font-bold">{row.name}</Table.Cell>
 						<Table.Cell className="text-text-default-base-secondary">{row.email}</Table.Cell>
 						<Table.Cell>{row.role}</Table.Cell>
-						<Table.Cell style={{ textAlign: 'right' }}>{row.amount}</Table.Cell>
+						<Table.Cell className="text-right">{row.amount}</Table.Cell>
 						{extras.actions && (
-							<Table.Cell style={{ width: '0.0625rem', position: 'sticky', right: 0 }}>
+							<Table.Cell className="sticky right-0 w-px">
 								<Table.RowActions>
 									<Button variant="ghost" size="sm" iconOnly aria-label={`Edit ${row.name}`}>
 										<IconEdit />
@@ -93,9 +94,7 @@ const renderTable = (
 						<Table.Cell className="font-bold">Total</Table.Cell>
 						<Table.Cell />
 						<Table.Cell />
-						<Table.Cell className="font-bold" style={{ textAlign: 'right' }}>
-							$8,375
-						</Table.Cell>
+						<Table.Cell className="font-bold text-right">$8,375</Table.Cell>
 					</Table.Row>
 				)}
 			</Table.Body>
@@ -150,7 +149,7 @@ export const Default: Story = {
  */
 export const Sizes: Story = {
 	render: () => (
-		<div className="flex flex-col gap-6">
+		<div className="flex flex-col gap-4">
 			{(['sm', 'md', 'lg'] as const).map(size => (
 				<div key={size} className="flex flex-col gap-1">
 					<span className="text-xs text-text-default-base-tertiary">size=&quot;{size}&quot;</span>
@@ -168,13 +167,7 @@ export const Sizes: Story = {
  */
 export const StickyHeader: Story = {
 	args: { sticky: 'header' },
-	decorators: [
-		Story => (
-			<div className="flex h-55 flex-col">
-				<Story />
-			</div>
-		)
-	],
+	decorators: [withContainer('flex h-55 flex-col')],
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 		const header = canvas.getByRole('columnheader', { name: 'Name' });
@@ -197,13 +190,7 @@ export const StickyHeader: Story = {
 export const StickyHeaderAndFooter: Story = {
 	args: { sticky: 'headerAndFooter' },
 	render: args => renderTable(args, { totals: true }),
-	decorators: [
-		Story => (
-			<div className="flex h-55 flex-col">
-				<Story />
-			</div>
-		)
-	]
+	decorators: [withContainer('flex h-55 flex-col')]
 };
 
 /**

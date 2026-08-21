@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
+import { withContainer, withFloatingCenter } from '../../.storybook/decorators';
 import { Avatar } from '../avatar';
 import { Button } from '../button';
 import { HoverCard } from './hover-card';
@@ -30,6 +31,7 @@ const meta = {
 	title: 'Components/HoverCard',
 	component: HoverCard.Root,
 	tags: ['autodocs'],
+	parameters: { layout: 'centered' },
 	argTypes: {
 		openDelay: {
 			control: 'number'
@@ -42,13 +44,7 @@ const meta = {
 		openDelay: 0,
 		closeDelay: 0
 	},
-	decorators: [
-		Story => (
-			<div className="flex min-h-64 items-center justify-center p-10">
-				<Story />
-			</div>
-		)
-	]
+	decorators: [withFloatingCenter]
 } satisfies Meta<typeof HoverCard.Root>;
 
 export default meta;
@@ -201,13 +197,7 @@ const SIDE_CELL = {
 export const Sides: Story = {
 	// Headroom so `top` clears the viewport and actually opens upward rather
 	// than flipping — the point here is the four placements, not the collision.
-	decorators: [
-		Story => (
-			<div className="py-32">
-				<Story />
-			</div>
-		)
-	],
+	decorators: [withContainer('py-32')],
 	render: args => (
 		<div className="grid grid-cols-3 grid-rows-3 gap-4">
 			{(['top', 'right', 'bottom', 'left'] as const).map(side => (

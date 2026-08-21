@@ -44,7 +44,10 @@ const meta = {
 	},
 	parameters: {
 		docs: {
-			story: { inline: false, iframeHeight: 240 }
+			story: { inline: false, iframeHeight: 240 },
+			// The decorator mounts the <Toast /> provider — consumers must see it,
+			// so opt back out of the global excludeDecorators here.
+			source: { excludeDecorators: false }
 		}
 	},
 	decorators: [
@@ -72,7 +75,7 @@ export const Default: Story = {
 		docs: { story: { inline: true } }
 	},
 	render: () => (
-		<div style={{ minHeight: '240px' }}>
+		<div className="min-h-60">
 			<Button variant="secondary" onClick={() => toast('Hello from Toast')}>
 				Show toast
 			</Button>
@@ -91,7 +94,7 @@ export const Default: Story = {
  */
 export const Inline: Story = {
 	render: () => (
-		<div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+		<div className="flex flex-wrap items-center gap-2">
 			<Button
 				variant="secondary"
 				onClick={() => toast('Something happened', { description: 'Additional context.' })}>
@@ -136,7 +139,7 @@ export const Inline: Story = {
  */
 export const Expanded: Story = {
 	render: () => (
-		<div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+		<div className="flex flex-wrap items-center gap-2">
 			<Button
 				variant="secondary"
 				onClick={() =>
@@ -320,7 +323,7 @@ export const ProgrammaticDismiss: Story = {
 	render: () => {
 		let toastId: string | number | undefined;
 		return (
-			<div style={{ display: 'flex', gap: '0.5rem' }}>
+			<div className="flex items-center gap-2">
 				<Button
 					variant="secondary"
 					onClick={() => {

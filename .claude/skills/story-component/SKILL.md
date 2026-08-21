@@ -135,7 +135,7 @@ Skip this if sub-components are internal and not exported from the barrel file.
  */
 export const AllSizes: Story = {
   render: () => (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+    <div className="flex items-center gap-4">
       {(['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl'] as const).map((size) => (
         <Avatar key={size} size={size} fallback={size.toUpperCase()} />
       ))}
@@ -143,6 +143,40 @@ export const AllSizes: Story = {
   ),
 };
 ```
+
+### Wrapper Conventions
+
+Two kinds of wrappers, handled differently:
+
+**Demonstration wrappers** — layout that is part of what the story teaches (arranging variants in a row, stacking examples). These stay **inline in `render`** as plain Tailwind divs, because they appear in "Show code" and the MCP manifest snippets and must be copy-pasteable by consumers. Use this vocabulary; deviate only when the story genuinely needs it:
+
+| Purpose | Classes |
+|---|---|
+| Row of variants/sizes | `flex items-center gap-4` |
+| Wrapping row (many small items) | `flex flex-wrap items-center gap-2` |
+| Vertical stack | `flex flex-col gap-4` |
+| Side-by-side grid (e.g. placement showcases) | `grid grid-cols-2 gap-6` |
+| Fixed-width demo container | `w-80` |
+
+**Harness wrappers** — layout the component needs to render sensibly but that is NOT part of the example (width constraints, centering with headroom). These go in **meta-level `decorators`** using the shared helpers from `.storybook/decorators.tsx` (`withContainer(className)`, `withFloatingCenter`). They are excluded from code snippets via `docs.source.excludeDecorators` in `.storybook/preview.ts`, so they never pollute the manifest:
+
+```tsx
+import { withContainer, withFloatingCenter } from '../../.storybook/decorators';
+
+const meta = {
+  // ...
+  decorators: [withFloatingCenter], // tooltip/popover/hover-card style centering
+  // or: decorators: [withContainer('w-80')] for a width harness
+  parameters: { layout: 'centered' },
+} satisfies Meta<typeof Component>;
+```
+
+Use `parameters: { layout: 'centered' }` for small widgets and `'fullscreen'` for full-viewport components — it costs nothing in snippets.
+
+Hard rules:
+- **Never use inline `style={{}}` for layout** — Tailwind classes only.
+- **Never define file-local helper components** (`Row`, `Stack`, etc.) — their names leak into manifest snippets as symbols consumers cannot import. Use plain divs with the vocabulary above.
+- **Never import shared React components into `render` for layout** — same manifest reason. Shared code is decorators-only.
 
 ### Excluding Stories from Manifest
 
@@ -174,7 +208,9 @@ After writing the stories file, **re-read it** and verify against this checklist
 | 12 | Args use realistic values | Scan all `args` — no "foo", "test", "lorem ipsum", or placeholder values |
 | 13 | Imports from local barrel, not deep paths | Check import path matches `./component-name` pattern |
 | 14 | Stories are grouped logically | Order is: Default > Variants > Features > Edge cases > Showcases |
-| 15 | TypeScript compiles without errors | Run `npx tsc --noEmit` and confirm clean output |
+| 15 | TypeScript compiles without errors | Run `yarn tsc` and confirm clean output |
+| 16 | No inline `style={{}}` layout wrappers | Search the file for `style={{` — layout must use Tailwind classes |
+| 17 | Wrappers follow the conventions | Harness wrappers use shared decorators from `.storybook/decorators.tsx` or `parameters.layout`; demo wrappers use the standard Tailwind vocabulary; no file-local helper components |
 
 If any check fails, fix the issue and re-verify before reporting completion.
 
@@ -186,7 +222,7 @@ If any check fails, fix the issue and re-verify before reporting completion.
 - **Set `argTypes` controls** for union/enum props — use `'radio'` for <=5 options, `'select'` for more.
 - **Use descriptive story names** — `WithProfileImage` not `Story2`. Names appear in the manifest.
 - **Keep render functions minimal** — only use `render` when you need JSX composition. Prefer `args` when possible since the manifest extracts args more cleanly.
-- **Do NOT use decorator-heavy stories** — keep stories simple so the manifest code snippets are useful to AI agents.
+- **Do NOT use decorator-heavy stories** — decorators are for viewing-harness layout only (see Wrapper Conventions); everything the consumer needs to reproduce the example belongs in `render`/`args`.
 - **Do NOT create stories that test internal implementation** — stories should demonstrate consumer-facing API.
 - **Use `action()` for callback props** in argTypes so interactions are visible.
 - **Group related stories** — the file order determines the docs page order. Put Default first, then variants, then features, then edge cases.

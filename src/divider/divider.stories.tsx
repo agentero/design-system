@@ -108,7 +108,7 @@ export const Vertical: Story = {
 export const WithLabel: Story = {
 	args: { label: 'or' },
 	render: args => (
-		<div className="flex w-80 flex-col gap-2">
+		<div className="flex w-80 flex-col gap-4">
 			<Button variant="primary">Continue with email</Button>
 			<Divider {...args} />
 			<Button variant="secondary">Continue with SSO</Button>
@@ -246,7 +246,7 @@ export const InToolbar: Story = {
  */
 export const HorizontalInContent: Story = {
 	render: () => (
-		<div className="flex w-96 flex-col gap-4 p-6">
+		<div className="flex w-80 flex-col gap-4 p-6">
 			<div className="flex flex-col gap-1">
 				<h3 className="text-base font-semibold text-text-default-base-primary">Section title</h3>
 				<p className="text-sm text-text-default-base-secondary">
@@ -279,7 +279,7 @@ export const HorizontalInContent: Story = {
  */
 export const VerticalBetweenElements: Story = {
 	render: () => (
-		<div className="flex items-stretch gap-3">
+		<div className="flex items-stretch gap-4">
 			<Button variant="primary" size="sm">
 				Button 1
 			</Button>

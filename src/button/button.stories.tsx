@@ -21,21 +21,6 @@ const IconClose = () => (
 	</svg>
 );
 
-const Row = ({ children }: { children: React.ReactNode }) => (
-	<div
-		style={{
-			display: 'flex',
-			alignItems: 'center',
-			gap: '1rem'
-		}}>
-		{children}
-	</div>
-);
-
-const Stack = ({ children }: { children: React.ReactNode }) => (
-	<div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>{children}</div>
-);
-
 /**
  * Button is the design system's primary actionable control. Pick `variant` to
  * express hierarchy, `size` for prominence, and `status="danger"` for
@@ -47,6 +32,7 @@ const meta = {
 	title: 'Components/Button',
 	component: Button,
 	tags: ['autodocs'],
+	parameters: { layout: 'centered' },
 	argTypes: {
 		children: {
 			control: 'text',
@@ -99,13 +85,13 @@ export const Default: Story = {};
  */
 export const Variants: Story = {
 	render: () => (
-		<Row>
+		<div className="flex items-center gap-4">
 			{VARIANTS.map(variant => (
 				<Button key={variant} variant={variant}>
 					{TEXT}
 				</Button>
 			))}
-		</Row>
+		</div>
 	)
 };
 
@@ -119,13 +105,13 @@ export const Variants: Story = {
  */
 export const Sizes: Story = {
 	render: () => (
-		<Row>
+		<div className="flex items-center gap-4">
 			{SIZES.map(size => (
 				<Button key={size} size={size}>
 					{TEXT}
 				</Button>
 			))}
-		</Row>
+		</div>
 	)
 };
 
@@ -141,13 +127,13 @@ export const Sizes: Story = {
  */
 export const Disabled: Story = {
 	render: () => (
-		<Row>
+		<div className="flex items-center gap-4">
 			{VARIANTS.map(variant => (
 				<Button asChild key={variant} variant={variant} disabled>
 					<a>{TEXT}</a>
 				</Button>
 			))}
-		</Row>
+		</div>
 	)
 };
 
@@ -160,9 +146,9 @@ export const Disabled: Story = {
  */
 export const WithIcons: Story = {
 	render: () => (
-		<Stack>
+		<div className="flex flex-col gap-4">
 			{VARIANTS.map(variant => (
-				<Row key={variant}>
+				<div key={variant} className="flex items-center gap-4">
 					{SIZES.map(size => (
 						<Button key={size} variant={variant} size={size}>
 							<IconAdd />
@@ -170,9 +156,9 @@ export const WithIcons: Story = {
 							<IconAdd />
 						</Button>
 					))}
-				</Row>
+				</div>
 			))}
-		</Stack>
+		</div>
 	)
 };
 
@@ -185,17 +171,17 @@ export const WithIcons: Story = {
  */
 export const OnlyIcon: Story = {
 	render: () => (
-		<Stack>
+		<div className="flex flex-col gap-4">
 			{NON_LINK_VARIANTS.map(variant => (
-				<Row key={variant}>
+				<div key={variant} className="flex items-center gap-4">
 					{SIZES.map(size => (
 						<Button key={size} variant={variant} size={size} aria-label="Close">
 							<IconClose />
 						</Button>
 					))}
-				</Row>
+				</div>
 			))}
-		</Stack>
+		</div>
 	)
 };
 
@@ -211,11 +197,11 @@ export const OnlyIcon: Story = {
  */
 export const Loading: Story = {
 	render: () => (
-		<Stack>
+		<div className="flex flex-col gap-4">
 			{NON_LINK_VARIANTS.map(variant => (
-				<Row key={variant}>
+				<div key={variant} className="flex items-center gap-4">
 					{SIZES.map(size => (
-						<div key={size} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+						<div key={size} className="flex items-center gap-2">
 							<Button variant={variant} size={size} loading aria-label="Loading">
 								<IconAdd />
 							</Button>
@@ -224,9 +210,9 @@ export const Loading: Story = {
 							</Button>
 						</div>
 					))}
-				</Row>
+				</div>
 			))}
-		</Stack>
+		</div>
 	)
 };
 
@@ -242,8 +228,8 @@ export const Loading: Story = {
  */
 export const Status: Story = {
 	render: () => (
-		<Stack>
-			<Row>
+		<div className="flex flex-col gap-4">
+			<div className="flex items-center gap-4">
 				{VARIANTS.map(variant => (
 					<Button key={variant} variant={variant} status="danger">
 						<IconAdd />
@@ -251,8 +237,8 @@ export const Status: Story = {
 						<IconAdd />
 					</Button>
 				))}
-			</Row>
-			<Row>
+			</div>
+			<div className="flex items-center gap-4">
 				{VARIANTS.map(variant => (
 					<Button asChild key={variant} variant={variant} status="danger" disabled>
 						<a>
@@ -262,8 +248,8 @@ export const Status: Story = {
 						</a>
 					</Button>
 				))}
-			</Row>
-		</Stack>
+			</div>
+		</div>
 	)
 };
 
@@ -277,9 +263,9 @@ export const Status: Story = {
  */
 export const Rounded: Story = {
 	render: () => (
-		<Stack>
+		<div className="flex flex-col gap-4">
 			{NON_LINK_VARIANTS.map(variant => (
-				<Row key={variant}>
+				<div key={variant} className="flex items-center gap-4">
 					{SIZES.map(size => (
 						<Button key={size} variant={variant} size={size} rounded>
 							<IconAdd />
@@ -287,9 +273,9 @@ export const Rounded: Story = {
 							<IconAdd />
 						</Button>
 					))}
-				</Row>
+				</div>
 			))}
-		</Stack>
+		</div>
 	)
 };
 
@@ -307,7 +293,7 @@ export const Rounded: Story = {
  */
 export const AsChild: Story = {
 	render: () => (
-		<Row>
+		<div className="flex items-center gap-4">
 			<Button asChild variant="primary">
 				<a href="/dashboard">Go to dashboard</a>
 			</Button>
@@ -316,7 +302,7 @@ export const AsChild: Story = {
 					Visit Agentero
 				</a>
 			</Button>
-		</Row>
+		</div>
 	)
 };
 
@@ -337,15 +323,15 @@ export const AsChild: Story = {
  */
 export const Pressed: Story = {
 	render: () => (
-		<Stack>
-			<Row>
+		<div className="flex flex-col gap-4">
+			<div className="flex items-center gap-4">
 				{NON_LINK_VARIANTS.map(variant => (
 					<Button key={variant} variant={variant}>
 						Press {variant}
 					</Button>
 				))}
-			</Row>
-			<Row>
+			</div>
+			<div className="flex items-center gap-4">
 				<Button variant="link">Link stays still</Button>
 				<Button variant="primary" disabled>
 					Disabled stays still
@@ -353,8 +339,8 @@ export const Pressed: Story = {
 				<Button asChild variant="secondary" disabled>
 					<a href="/dashboard">Disabled anchor stays still</a>
 				</Button>
-			</Row>
-		</Stack>
+			</div>
+		</div>
 	),
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);

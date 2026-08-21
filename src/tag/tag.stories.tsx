@@ -27,16 +27,6 @@ const IconAdd = () => (
 	</svg>
 );
 
-const Row = ({ children }: { children: React.ReactNode }) => (
-	<div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-		{children}
-	</div>
-);
-
-const Stack = ({ gap = '1rem', children }: { gap?: string; children: React.ReactNode }) => (
-	<div style={{ display: 'flex', flexDirection: 'column', gap }}>{children}</div>
-);
-
 /**
  * Tag is a compact semantic label for statuses, categories, counts, and
  * attributes. Pick `color` for meaning, `variant` for fill emphasis, and
@@ -47,6 +37,7 @@ const meta = {
 	title: 'Components/Tag',
 	component: Tag,
 	tags: ['autodocs'],
+	parameters: { layout: 'centered' },
 	argTypes: {
 		children: {
 			control: 'text',
@@ -86,11 +77,11 @@ export const Default: Story = {};
  */
 export const Sizes: Story = {
 	render: () => (
-		<Stack>
+		<div className="flex flex-col gap-4">
 			{(['xs', 'sm', 'md'] as const).map(size => (
-				<Stack gap="0.5rem" key={size}>
+				<div key={size} className="flex flex-col gap-2">
 					<strong>{size}:</strong>
-					<Row>
+					<div className="flex flex-wrap items-center gap-2">
 						<Tag
 							size={size}
 							color="informative"
@@ -106,10 +97,10 @@ export const Sizes: Story = {
 						<Tag size={size} color="informative" variant="secondary">
 							{size}
 						</Tag>
-					</Row>
-				</Stack>
+					</div>
+				</div>
 			))}
-		</Stack>
+		</div>
 	)
 };
 
@@ -121,22 +112,22 @@ export const Sizes: Story = {
  */
 export const Styles: Story = {
 	render: () => (
-		<Stack gap="0.5rem">
-			<Row>
+		<div className="flex flex-col gap-2">
+			<div className="flex flex-wrap items-center gap-2">
 				{VARIANTS.map(variant => (
 					<Tag key={variant} color="informative" variant={variant}>
 						{variant}
 					</Tag>
 				))}
-			</Row>
-			<Row>
+			</div>
+			<div className="flex flex-wrap items-center gap-2">
 				{VARIANTS.map(variant => (
 					<Tag key={variant} color="informative" variant={variant} pill>
 						{variant}
 					</Tag>
 				))}
-			</Row>
-		</Stack>
+			</div>
+		</div>
 	)
 };
 
@@ -150,7 +141,7 @@ export const Styles: Story = {
  */
 export const Interactive: Story = {
 	render: () => (
-		<Row>
+		<div className="flex flex-wrap items-center gap-2">
 			<Tag color="informative" variant="secondary">
 				badge
 			</Tag>
@@ -162,7 +153,7 @@ export const Interactive: Story = {
 					<IconAdd />
 				</button>
 			</Tag>
-		</Row>
+		</div>
 	),
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -184,13 +175,13 @@ export const Interactive: Story = {
  */
 export const Secondary: Story = {
 	render: () => (
-		<Row>
+		<div className="flex flex-wrap items-center gap-2">
 			{COLORS.map(color => (
 				<Tag key={color} variant="secondary" color={color}>
 					{color}
 				</Tag>
 			))}
-		</Row>
+		</div>
 	),
 	play: ({ canvasElement }) => {
 		const positive = within(canvasElement).getByText('positive');
@@ -206,13 +197,13 @@ export const Secondary: Story = {
  */
 export const Tertiary: Story = {
 	render: () => (
-		<Row>
+		<div className="flex flex-wrap items-center gap-2">
 			{COLORS.map(color => (
 				<Tag key={color} variant="tertiary" color={color}>
 					{color}
 				</Tag>
 			))}
-		</Row>
+		</div>
 	)
 };
 
@@ -224,13 +215,13 @@ export const Tertiary: Story = {
  */
 export const Ghost: Story = {
 	render: () => (
-		<Row>
+		<div className="flex flex-wrap items-center gap-2">
 			{COLORS.map(color => (
 				<Tag key={color} variant="ghost" color={color}>
 					{color}
 				</Tag>
 			))}
-		</Row>
+		</div>
 	)
 };
 
@@ -243,22 +234,22 @@ export const Ghost: Story = {
  */
 export const Invisible: Story = {
 	render: () => (
-		<Stack gap="0.5rem">
-			<Row>
+		<div className="flex flex-col gap-2">
+			<div className="flex flex-wrap items-center gap-2">
 				{COLORS.map(color => (
 					<Tag key={color} variant="invisible" color={color}>
 						{color}
 					</Tag>
 				))}
-			</Row>
-			<Row>
+			</div>
+			<div className="flex flex-wrap items-center gap-2">
 				{COLORS.map(color => (
 					<Tag key={color} variant="invisible" color={color} asChild>
 						<button type="button">{color}</button>
 					</Tag>
 				))}
-			</Row>
-		</Stack>
+			</div>
+		</div>
 	),
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -277,9 +268,9 @@ export const Invisible: Story = {
  */
 export const WithIcon: Story = {
 	render: () => (
-		<Stack>
+		<div className="flex flex-col gap-4">
 			{COLORS.map(color => (
-				<Row key={color}>
+				<div key={color} className="flex flex-wrap items-center gap-2">
 					{VARIANTS.map(variant => (
 						<Tag key={variant} color={color} variant={variant}>
 							<IconAdd />
@@ -287,9 +278,9 @@ export const WithIcon: Story = {
 							<IconAdd />
 						</Tag>
 					))}
-				</Row>
+				</div>
 			))}
-		</Stack>
+		</div>
 	)
 };
 
@@ -302,69 +293,69 @@ export const WithIcon: Story = {
  */
 export const Colors: Story = {
 	render: () => (
-		<div style={{ display: 'flex', gap: '4rem', flexWrap: 'wrap' }}>
-			<Stack>
+		<div className="flex flex-wrap gap-16">
+			<div className="flex flex-col gap-4">
 				{COLORS.map(color => (
-					<Stack gap="0.5rem" key={color}>
+					<div key={color} className="flex flex-col gap-2">
 						<strong>{color}:</strong>
-						<Row>
+						<div className="flex flex-wrap items-center gap-2">
 							{VARIANTS.map(variant => (
 								<Tag key={variant} color={color} variant={variant}>
 									{variant}
 								</Tag>
 							))}
-						</Row>
-					</Stack>
+						</div>
+					</div>
 				))}
-			</Stack>
-			<Stack>
+			</div>
+			<div className="flex flex-col gap-4">
 				{COLORS.map(color => (
-					<Stack gap="0.5rem" key={color}>
+					<div key={color} className="flex flex-col gap-2">
 						<strong>{color} with pill:</strong>
-						<Row>
+						<div className="flex flex-wrap items-center gap-2">
 							{VARIANTS.map(variant => (
 								<Tag key={variant} color={color} variant={variant} pill>
 									{variant}
 								</Tag>
 							))}
-						</Row>
-					</Stack>
+						</div>
+					</div>
 				))}
-			</Stack>
-			<Stack>
+			</div>
+			<div className="flex flex-col gap-4">
 				{COLORS.map(color => (
-					<Stack gap="0.5rem" key={color}>
+					<div key={color} className="flex flex-col gap-2">
 						<strong>{color} as button:</strong>
-						<Row>
+						<div className="flex flex-wrap items-center gap-2">
 							{VARIANTS.map(variant => (
 								<Tag key={variant} color={color} variant={variant} asChild>
 									<button type="button">{variant}</button>
 								</Tag>
 							))}
-						</Row>
-					</Stack>
+						</div>
+					</div>
 				))}
-			</Stack>
-			<Stack>
+			</div>
+			<div className="flex flex-col gap-4">
 				{COLORS.map(color => (
-					<Stack gap="0.5rem" key={color}>
+					<div key={color} className="flex flex-col gap-2">
 						<strong>{color} with icon:</strong>
-						<Row>
+						<div className="flex flex-wrap items-center gap-2">
 							{VARIANTS.map(variant => (
 								<Tag key={variant} color={color} variant={variant}>
 									<IconAdd />
 									{variant}
 								</Tag>
 							))}
-						</Row>
-					</Stack>
+						</div>
+					</div>
 				))}
-			</Stack>
-			<Stack>
+			</div>
+			<div className="flex flex-col gap-4">
 				{COLORS.map(color => (
-					<Stack gap="0.5rem" key={color}>
+					<div key={color} className="flex flex-col gap-2">
 						<strong>{color} with icons:</strong>
-						<Row>
+						<div className="flex flex-wrap items-center gap-2">
 							{VARIANTS.map(variant => (
 								<Tag key={variant} color={color} variant={variant}>
 									<IconAdd />
@@ -372,15 +363,15 @@ export const Colors: Story = {
 									<IconAdd />
 								</Tag>
 							))}
-						</Row>
-					</Stack>
+						</div>
+					</div>
 				))}
-			</Stack>
-			<Stack>
+			</div>
+			<div className="flex flex-col gap-4">
 				{COLORS.map(color => (
-					<Stack gap="0.5rem" key={color}>
+					<div key={color} className="flex flex-col gap-2">
 						<strong>{color} icon only:</strong>
-						<Row>
+						<div className="flex flex-wrap items-center gap-2">
 							{VARIANTS.map(variant => (
 								<Tag
 									key={variant}
@@ -391,10 +382,10 @@ export const Colors: Story = {
 									<IconAdd />
 								</Tag>
 							))}
-						</Row>
-					</Stack>
+						</div>
+					</div>
 				))}
-			</Stack>
+			</div>
 		</div>
 	)
 };

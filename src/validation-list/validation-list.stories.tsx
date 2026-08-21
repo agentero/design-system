@@ -94,7 +94,7 @@ export const Playground: Story = {
 		const [value, setValue] = useState('');
 
 		return (
-			<div className="flex w-100 flex-col gap-4">
+			<div className="flex w-80 flex-col gap-4">
 				<input
 					type="text"
 					value={value}

@@ -11,6 +11,7 @@ const meta = {
 	title: 'Components/Skeleton',
 	component: Skeleton,
 	tags: ['autodocs'],
+	parameters: { layout: 'centered' },
 	argTypes: {
 		className: {
 			control: 'text'

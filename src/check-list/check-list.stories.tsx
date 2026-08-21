@@ -10,7 +10,8 @@ import { CheckList } from './check-list';
 const meta = {
 	title: 'Components/CheckList',
 	component: CheckList.Root,
-	tags: ['autodocs']
+	tags: ['autodocs'],
+	parameters: { layout: 'centered' }
 } satisfies Meta<typeof CheckList.Root>;
 
 export default meta;
@@ -38,7 +39,7 @@ export const Default: Story = {
 /** Items accept rich content — links, wrapped text, custom markup. */
 export const RichContent: Story = {
 	render: () => (
-		<div className="w-72">
+		<div className="w-80">
 			<CheckList.Root>
 				<CheckList.Item>
 					<a href="#quoting" className="underline">

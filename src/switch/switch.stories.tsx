@@ -13,6 +13,7 @@ const meta = {
 	title: 'Components/Switch',
 	component: Switch,
 	tags: ['autodocs'],
+	parameters: { layout: 'centered' },
 	argTypes: {
 		size: { control: 'radio', options: ['sm', 'md'] },
 		checked: { control: 'boolean' },
@@ -34,7 +35,7 @@ export const Default: Story = {
 /** The `sm` and `md` sizes compared. */
 export const Sizes: Story = {
 	render: () => (
-		<div className="flex items-center gap-6">
+		<div className="flex items-center gap-4">
 			<div className="flex items-center gap-2">
 				<Switch id="size-sm" size="sm" defaultChecked />
 				<label htmlFor="size-sm" className="text-sm text-text-default-base-primary">
@@ -54,7 +55,7 @@ export const Sizes: Story = {
 /** Unchecked and checked tracks. */
 export const States: Story = {
 	render: args => (
-		<div className="flex items-center gap-6">
+		<div className="flex items-center gap-4">
 			<Switch {...args} defaultChecked={false} aria-label="Off" />
 			<Switch {...args} defaultChecked aria-label="On" />
 		</div>
@@ -64,7 +65,7 @@ export const States: Story = {
 /** Disabled switches are dimmed and reject pointer and keyboard interaction. */
 export const Disabled: Story = {
 	render: () => (
-		<div className="flex items-center gap-6">
+		<div className="flex items-center gap-4">
 			<Switch disabled aria-label="Disabled off" />
 			<Switch disabled defaultChecked aria-label="Disabled on" />
 		</div>
@@ -93,7 +94,7 @@ export const Controlled: Story = {
  */
 export const WithLabel: Story = {
 	render: () => (
-		<div className="flex items-center gap-6">
+		<div className="flex items-center gap-4">
 			<Switch id="with-label" label="Email" defaultChecked />
 			<Switch id="with-label-reverse" label="SMS" reverse />
 		</div>
