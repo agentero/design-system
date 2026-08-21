@@ -582,7 +582,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>3.9s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>2.6s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -4911,7 +4911,7 @@ import { Fragment } from "react";</code></pre>
                 <span class="badge ok">story ok</span>
               </div>
               
-              <div class="hint">A standalone `Label` gives a panel with a single, non-interactive title the tab item&#39;s inactive look without announcing a lone selectable tab: outside a `Trigger` no hover/active group state exists, so the heading stays inactive. The label owns the item&#39;s geometry, so alone it looks exactly like an inactive trigger of its variant.</div>
+              <div class="hint">A standalone `Label` gives a panel with a single, non-interactive title the inactive trigger&#39;s exact look: outside a `Root` it never gets the active data-state, and `pointer-events-none` keeps hover styles off. No tab or tablist role is announced.</div>
               <pre><code>const SingleTitle = () =&gt; (
     &lt;div className=&quot;flex flex-col items-start gap-6&quot;&gt;
         {([&#39;line&#39;, &#39;enclosed&#39;, &#39;button&#39;] as const).map(variant =&gt; (
