@@ -90,7 +90,7 @@ export type TabsRootProps = ComponentProps<typeof TabsPrimitive.Root> & TabsVari
  *
  * @example
  * ```tsx
- * import * as Tabs from '@agentero/design-system/tabs';
+ * import { Tabs } from '@agentero/design-system/tabs';
  *
  * <Tabs.Root defaultValue="overview">
  *   <Tabs.List>
@@ -102,7 +102,7 @@ export type TabsRootProps = ComponentProps<typeof TabsPrimitive.Root> & TabsVari
  * </Tabs.Root>
  * ```
  */
-export const TabsRoot = ({ className, variant, position, ...props }: TabsRootProps) => {
+export const Root = ({ className, variant, position, ...props }: TabsRootProps) => {
 	const styles = tabsRecipe({ variant, position });
 
 	return (
@@ -115,22 +115,22 @@ export const TabsRoot = ({ className, variant, position, ...props }: TabsRootPro
 		</TabsContext>
 	);
 };
-TabsRoot.displayName = 'Tabs.Root';
+Root.displayName = 'Tabs.Root';
 
 export type TabsListProps = ComponentProps<typeof TabsPrimitive.List>;
 
-export const TabsList = ({ className, ...props }: TabsListProps) => {
+export const List = ({ className, ...props }: TabsListProps) => {
 	const styles = useTabs();
 
 	return (
 		<TabsPrimitive.List data-slot="tabs-list" className={cn(styles.list(), className)} {...props} />
 	);
 };
-TabsList.displayName = 'Tabs.List';
+List.displayName = 'Tabs.List';
 
 export type TabsTriggerProps = ComponentProps<typeof TabsPrimitive.Trigger>;
 
-export const TabsTrigger = ({ className, ...props }: TabsTriggerProps) => {
+export const Trigger = ({ className, ...props }: TabsTriggerProps) => {
 	const styles = useTabs();
 
 	return (
@@ -141,11 +141,11 @@ export const TabsTrigger = ({ className, ...props }: TabsTriggerProps) => {
 		/>
 	);
 };
-TabsTrigger.displayName = 'Tabs.Trigger';
+Trigger.displayName = 'Tabs.Trigger';
 
 export type TabsContentProps = ComponentProps<typeof TabsPrimitive.Content>;
 
-export const TabsContent = ({ className, ...props }: TabsContentProps) => {
+export const Content = ({ className, ...props }: TabsContentProps) => {
 	const styles = useTabs();
 
 	return (
@@ -156,7 +156,7 @@ export const TabsContent = ({ className, ...props }: TabsContentProps) => {
 		/>
 	);
 };
-TabsContent.displayName = 'Tabs.Content';
+Content.displayName = 'Tabs.Content';
 
 export type TabsLabelProps = ComponentProps<'span'> & {
 	variant?: TabsVariants['variant'];
@@ -181,7 +181,7 @@ export type TabsLabelProps = ComponentProps<'span'> & {
  * </h2>
  * ```
  */
-export const TabsLabel = ({ className, variant, ...props }: TabsLabelProps) => {
+export const Label = ({ className, variant, ...props }: TabsLabelProps) => {
 	const context = use(TabsContext);
 	const styles = context ?? tabsRecipe({ variant });
 
@@ -193,4 +193,4 @@ export const TabsLabel = ({ className, variant, ...props }: TabsLabelProps) => {
 		/>
 	);
 };
-TabsLabel.displayName = 'Tabs.Label';
+Label.displayName = 'Tabs.Label';
