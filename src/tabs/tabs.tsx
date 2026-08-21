@@ -80,7 +80,8 @@ const useTabs = () => {
 export type TabsRootProps = ComponentProps<typeof TabsPrimitive.Root> & TabsVariants;
 
 /**
- * Root of a set of tabs. Owns the selected tab (controlled via `value`/
+ * Root of a set of tabs, built on Radix UI's Tabs so keyboard nav, roving focus
+ * and ARIA come for free. Owns the selected tab (controlled via `value`/
  * `onValueChange` or uncontrolled via `defaultValue`) and wraps `List` and
  * `Content`s. `variant` picks the look — `line` (default) underlines the active
  * tab, `enclosed` renders segmented pills, `button` renders button-like tabs.
@@ -89,6 +90,8 @@ export type TabsRootProps = ComponentProps<typeof TabsPrimitive.Root> & TabsVari
  *
  * @example
  * ```tsx
+ * import * as Tabs from '@agentero/design-system/tabs';
+ *
  * <Tabs.Root defaultValue="overview">
  *   <Tabs.List>
  *     <Tabs.Trigger value="overview">Overview</Tabs.Trigger>
@@ -99,7 +102,7 @@ export type TabsRootProps = ComponentProps<typeof TabsPrimitive.Root> & TabsVari
  * </Tabs.Root>
  * ```
  */
-const Root = ({ className, variant, position, ...props }: TabsRootProps) => {
+export const TabsRoot = ({ className, variant, position, ...props }: TabsRootProps) => {
 	const styles = tabsRecipe({ variant, position });
 
 	return (
@@ -112,22 +115,22 @@ const Root = ({ className, variant, position, ...props }: TabsRootProps) => {
 		</TabsContext>
 	);
 };
-Root.displayName = 'Tabs.Root';
+TabsRoot.displayName = 'Tabs.Root';
 
 export type TabsListProps = ComponentProps<typeof TabsPrimitive.List>;
 
-const List = ({ className, ...props }: TabsListProps) => {
+export const TabsList = ({ className, ...props }: TabsListProps) => {
 	const styles = useTabs();
 
 	return (
 		<TabsPrimitive.List data-slot="tabs-list" className={cn(styles.list(), className)} {...props} />
 	);
 };
-List.displayName = 'Tabs.List';
+TabsList.displayName = 'Tabs.List';
 
 export type TabsTriggerProps = ComponentProps<typeof TabsPrimitive.Trigger>;
 
-const Trigger = ({ className, ...props }: TabsTriggerProps) => {
+export const TabsTrigger = ({ className, ...props }: TabsTriggerProps) => {
 	const styles = useTabs();
 
 	return (
@@ -138,11 +141,11 @@ const Trigger = ({ className, ...props }: TabsTriggerProps) => {
 		/>
 	);
 };
-Trigger.displayName = 'Tabs.Trigger';
+TabsTrigger.displayName = 'Tabs.Trigger';
 
 export type TabsContentProps = ComponentProps<typeof TabsPrimitive.Content>;
 
-const Content = ({ className, ...props }: TabsContentProps) => {
+export const TabsContent = ({ className, ...props }: TabsContentProps) => {
 	const styles = useTabs();
 
 	return (
@@ -153,7 +156,7 @@ const Content = ({ className, ...props }: TabsContentProps) => {
 		/>
 	);
 };
-Content.displayName = 'Tabs.Content';
+TabsContent.displayName = 'Tabs.Content';
 
 export type TabsLabelProps = ComponentProps<'span'> & {
 	variant?: TabsVariants['variant'];
@@ -178,7 +181,7 @@ export type TabsLabelProps = ComponentProps<'span'> & {
  * </h2>
  * ```
  */
-const Label = ({ className, variant, ...props }: TabsLabelProps) => {
+export const TabsLabel = ({ className, variant, ...props }: TabsLabelProps) => {
 	const context = use(TabsContext);
 	const styles = context ?? tabsRecipe({ variant });
 
@@ -190,17 +193,4 @@ const Label = ({ className, variant, ...props }: TabsLabelProps) => {
 		/>
 	);
 };
-Label.displayName = 'Tabs.Label';
-
-/**
- * Tabs built on Radix UI's Tabs (keyboard nav, roving focus and ARIA come for
- * free). Compose `Root` with a `List` of `Trigger`s and matching `Content`s,
- * pairing each `Trigger`/`Content` by `value`.
- */
-export const Tabs = {
-	Root,
-	List,
-	Trigger,
-	Content,
-	Label
-};
+TabsLabel.displayName = 'Tabs.Label';
