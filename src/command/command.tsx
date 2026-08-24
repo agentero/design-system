@@ -1,5 +1,10 @@
 'use client';
 
+// Se queda: cmdk expone sus partes como propiedades de un único export
+// (`Command.Input`, `Command.Item`…). Sin esta directiva el fichero lo ejecuta
+// el servidor, `Command` llega como una sola referencia de cliente y sus partes
+// son `undefined` — el mismo fallo que arregla el patrón de AGENTS.md, pero
+// dentro de una dependencia que no controlamos.
 import { ComponentProps } from 'react';
 
 import { Command as CommandPrimitive } from 'cmdk';

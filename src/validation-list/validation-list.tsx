@@ -1,5 +1,3 @@
-'use client';
-
 import { ComponentPropsWithRef } from 'react';
 
 import { tv, VariantProps } from 'tailwind-variants';

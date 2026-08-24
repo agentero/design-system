@@ -1,5 +1,3 @@
-'use client';
-
 import { Children, ComponentPropsWithRef, isValidElement, ReactNode, Ref } from 'react';
 
 import { Slot, Slottable } from '@radix-ui/react-slot';
