@@ -3,8 +3,8 @@ import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
+import { Modal } from '.';
 import { Button } from '../button';
-import { Modal } from './modal';
 
 /**
  * Modal is a compound dialog built on Radix UI: `Root` owns the open state,

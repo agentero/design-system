@@ -19,7 +19,28 @@ const rootStyles = tv({
 export type AccordionRootProps = ComponentProps<typeof AccordionPrimitive.Root> &
 	VariantProps<typeof rootStyles>;
 
-const Root = ({ className, enclosed, ...props }: AccordionRootProps) => (
+/**
+ * Stacked, collapsible sections built on Radix UI's Accordion, so keyboard nav
+ * and ARIA come for free. Compose `Root` with `Item`s, each holding a `Trigger`
+ * and `Content`. `type="single"` (optionally `collapsible`) opens one at a time;
+ * `type="multiple"` opens sections independently. `enclosed` renders the group
+ * as a bordered card.
+ *
+ * @summary Root of a group of collapsible sections
+ *
+ * @example
+ * ```tsx
+ * import { Accordion } from '@agentero/design-system/accordion';
+ *
+ * <Accordion.Root type="single" collapsible>
+ *   <Accordion.Item value="coverages">
+ *     <Accordion.Trigger>Coverages</Accordion.Trigger>
+ *     <Accordion.Content>…</Accordion.Content>
+ *   </Accordion.Item>
+ * </Accordion.Root>
+ * ```
+ */
+export const Root = ({ className, enclosed, ...props }: AccordionRootProps) => (
 	<AccordionPrimitive.Root
 		data-slot="accordion-root"
 		className={cn(rootStyles({ enclosed }), className)}
@@ -30,7 +51,7 @@ Root.displayName = 'Accordion.Root';
 
 export type AccordionItemProps = ComponentProps<typeof AccordionPrimitive.Item>;
 
-const Item = ({ className, ...props }: AccordionItemProps) => (
+export const Item = ({ className, ...props }: AccordionItemProps) => (
 	<AccordionPrimitive.Item
 		data-slot="accordion-item"
 		className={cn('border-b border-border-default-base-primary last:border-b-0', className)}
@@ -52,7 +73,7 @@ Header.displayName = 'Accordion.Header';
 export type AccordionTriggerProps = ComponentProps<typeof AccordionPrimitive.Trigger>;
 
 // Typography (size/weight) is intentionally the consumer's job via children; the Trigger only owns layout + interaction.
-const Trigger = ({ className, children, asChild, ...props }: AccordionTriggerProps) => (
+export const Trigger = ({ className, children, asChild, ...props }: AccordionTriggerProps) => (
 	<Header>
 		<AccordionPrimitive.Trigger
 			data-slot="accordion-trigger"
@@ -83,7 +104,7 @@ Trigger.displayName = 'Accordion.Trigger';
 
 export type AccordionContentProps = ComponentProps<typeof AccordionPrimitive.Content>;
 
-const Content = ({ className, children, ...props }: AccordionContentProps) => (
+export const Content = ({ className, children, ...props }: AccordionContentProps) => (
 	<AccordionPrimitive.Content
 		data-slot="accordion-content"
 		className={cn(
@@ -98,17 +119,3 @@ const Content = ({ className, children, ...props }: AccordionContentProps) => (
 	</AccordionPrimitive.Content>
 );
 Content.displayName = 'Accordion.Content';
-
-/**
- * Stacked, collapsible sections built on Radix UI's Accordion (keyboard nav and
- * ARIA come for free). Compose `Root` with `Item`s, each holding a `Trigger` and
- * `Content`. `type="single"` (optionally `collapsible`) opens one at a time;
- * `type="multiple"` opens sections independently. `enclosed` renders the group
- * as a bordered card.
- */
-export const Accordion = {
-	Root,
-	Item,
-	Trigger,
-	Content
-};

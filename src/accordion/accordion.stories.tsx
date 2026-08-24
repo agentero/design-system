@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, within } from 'storybook/test';
 
-import { Accordion } from './accordion';
+import { Accordion } from '.';
 import { IconKeyboardArrowDown } from './icons';
 
 const meta = {

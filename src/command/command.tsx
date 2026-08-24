@@ -52,23 +52,45 @@ const slots = commandRecipe();
 type RootProps = ComponentProps<typeof CommandPrimitive>;
 
 /**
- * Surface that owns the search state, filtering and keyboard navigation.
- * Carries the panel chrome (border, radius, shadow), so it can be dropped
- * straight into a `Popover.Content` without extra wrapping.
+ * Surface of a filterable list built on `cmdk`: type to narrow the options,
+ * navigate with the arrow keys, select with Enter. Compose `Root` with `Input` /
+ * `List` / `Empty` / `Item`, plus `Group` when the options need sections.
+ *
+ * `Root` owns the search state, the filtering and the keyboard navigation, and
+ * carries the panel chrome (border, radius, shadow), so it can be dropped
+ * straight into a `Popover.Content` without extra wrapping to yield a combobox.
+ * Reach for `DropdownMenu` instead when the options are actions and there is
+ * nothing to search.
  *
  * `label` names the search input — it is the only prop that can, see `Input`.
  *
  * @summary Filterable command palette container
+ * @see {@link https://github.com/pacocoursey/cmdk|cmdk}
  *
  * @example
  * ```tsx
+ * import { Command } from '@agentero/design-system/command';
+ *
+ * <Command.Root label="Search lines of business">
+ *   <Command.Input placeholder="Search lines of business..." />
+ *   <Command.List>
+ *     <Command.Item onSelect={() => select('home')}>Homeowners</Command.Item>
+ *     <Command.Item onSelect={() => select('auto')}>Auto</Command.Item>
+ *   </Command.List>
+ *   <Command.Empty>No options found</Command.Empty>
+ * </Command.Root>
+ * ```
+ *
+ * @example
+ * ```tsx
+ * // Filtering handled upstream (async search): let every item through.
  * <Command.Root label="Search options" shouldFilter={false}>
  *   <Command.Input placeholder="Search..." />
  *   <Command.List>...</Command.List>
  * </Command.Root>
  * ```
  */
-const Root = ({ className, ...props }: RootProps) => (
+export const Root = ({ className, ...props }: RootProps) => (
 	<CommandPrimitive data-slot="command-root" className={slots.root({ className })} {...props} />
 );
 Root.displayName = 'Command.Root';
@@ -101,7 +123,7 @@ type InputProps = ComponentProps<typeof CommandPrimitive.Input>;
  * </Command.Root>
  * ```
  */
-const Input = ({ className, ...props }: InputProps) => (
+export const Input = ({ className, ...props }: InputProps) => (
 	<div data-slot="command-search" className={slots.search({ className })}>
 		<IconSearch data-slot="command-search-icon" className={slots.searchIcon()} aria-hidden />
 		<CommandPrimitive.Input data-slot="command-input" className={slots.input()} {...props} />
@@ -123,7 +145,7 @@ type ListProps = ComponentProps<typeof CommandPrimitive.List>;
  *
  * @summary Scroll container for command items
  */
-const List = ({ className, ...props }: ListProps) => (
+export const List = ({ className, ...props }: ListProps) => (
 	<CommandPrimitive.List
 		data-slot="command-list"
 		className={slots.list({ className })}
@@ -155,7 +177,7 @@ type EmptyProps = ComponentProps<typeof CommandPrimitive.Empty>;
  * <Command.Empty>No options found</Command.Empty>
  * ```
  */
-const Empty = ({ className, ...props }: EmptyProps) => (
+export const Empty = ({ className, ...props }: EmptyProps) => (
 	<CommandPrimitive.Empty
 		data-slot="command-empty"
 		className={slots.empty({ className })}
@@ -181,7 +203,7 @@ type GroupProps = ComponentProps<typeof CommandPrimitive.Group>;
  *
  * @summary Unstyled grouping wrapper for related items
  */
-const Group = (props: GroupProps) => (
+export const Group = (props: GroupProps) => (
 	<CommandPrimitive.Group data-slot="command-group" {...props} />
 );
 Group.displayName = 'Command.Group';
@@ -214,7 +236,7 @@ type ItemProps = ComponentProps<typeof CommandPrimitive.Item>;
  * </Command.Item>
  * ```
  */
-const Item = ({ className, ...props }: ItemProps) => (
+export const Item = ({ className, ...props }: ItemProps) => (
 	<CommandPrimitive.Item
 		data-slot="command-item"
 		className={slots.item({ className })}
@@ -222,37 +244,3 @@ const Item = ({ className, ...props }: ItemProps) => (
 	/>
 );
 Item.displayName = 'Command.Item';
-
-/**
- * Command is a filterable list built on `cmdk`: type to narrow the options,
- * navigate with the arrow keys, select with Enter. Compose from `Root` /
- * `Input` / `List` / `Empty` / `Item`, with `Group` when the options need
- * sections.
- *
- * `Root` carries its own panel chrome, so nesting it in a `Popover.Content`
- * yields a combobox. Reach for `DropdownMenu` instead when the options are
- * actions and there is nothing to search.
- *
- * @summary Filterable, keyboard-navigable list of options
- * @see {@link https://github.com/pacocoursey/cmdk|cmdk}
- *
- * @example
- * ```tsx
- * <Command.Root label="Search lines of business">
- *   <Command.Input placeholder="Search lines of business..." />
- *   <Command.List>
- *     <Command.Item onSelect={() => select('home')}>Homeowners</Command.Item>
- *     <Command.Item onSelect={() => select('auto')}>Auto</Command.Item>
- *   </Command.List>
- *   <Command.Empty>No options found</Command.Empty>
- * </Command.Root>
- * ```
- */
-export const Command = {
-	Root,
-	Input,
-	List,
-	Empty,
-	Group,
-	Item
-};

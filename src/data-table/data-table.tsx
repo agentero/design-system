@@ -25,7 +25,15 @@ import { tv } from 'tailwind-variants';
 import { cn } from '../../lib';
 import { Pagination, type PaginationProps } from '../pagination';
 import { IconArrowUpward, IconSwapVert } from './icons';
-import { Table, type TableRootProps } from './table';
+import {
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRoot,
+	TableRow,
+	type TableRootProps
+} from './table';
 
 /* ------------ Column meta ------------ */
 
@@ -82,21 +90,46 @@ type DataTableRootProps<TData extends RowData> = DataTableProps<TData> & {
 };
 
 /**
- * Root of the DataTable. Builds the TanStack table instance from `data`/`columns`
- * (plus any TanStack options) and shares it with the subcomponents.
+ * Root of the DataTable, the data-driven table compound built on TanStack Table
+ * and the `Table` primitive. It builds the TanStack table instance from
+ * `data`/`columns` (plus any TanStack options) and shares it with the
+ * subcomponents.
+ *
+ * Compose `Root` with `ToolBar`, `Table` (headers/rows, sorting, navigation,
+ * empty state), and `Footer` + `Pagination`. For hand-rendered rows without
+ * TanStack, drop to the `Table` primitive.
  *
  * @summary DataTable root that builds the table instance and shares context
+ * @see {@link https://tanstack.com/table/latest|TanStack Table}
  *
  * @example
  * ```tsx
+ * import { DataTable } from '@agentero/design-system/data-table';
+ * import { createColumnHelper } from '@tanstack/react-table';
+ *
+ * const columnHelper = createColumnHelper<User>();
+ * const columns = [
+ *   columnHelper.accessor('name', { header: 'Name', enableSorting: true }),
+ *   columnHelper.accessor('email', { header: 'Email' })
+ * ];
+ *
  * <DataTable.Root data={users} columns={columns}>
- *   <DataTable.ToolBar>…</DataTable.ToolBar>
+ *   <DataTable.ToolBar>
+ *     <SearchInput />
+ *   </DataTable.ToolBar>
  *   <DataTable.Table />
- *   <DataTable.Footer>…</DataTable.Footer>
+ *   <DataTable.Footer>
+ *     <DataTable.Pagination
+ *       currentPage={page}
+ *       pageSize={10}
+ *       totalCount={total}
+ *       onPageChange={setPage}
+ *     />
+ *   </DataTable.Footer>
  * </DataTable.Root>
  * ```
  */
-const Root = <TData extends RowData>({
+export const Root = <TData extends RowData>({
 	children,
 	isLoading = false,
 	onRowClick,
@@ -136,7 +169,7 @@ Root.displayName = 'DataTable.Root';
  *
  * @summary Toolbar row above the table for filters and actions
  */
-const ToolBar = ({ children }: PropsWithChildren) => (
+export const ToolBar = ({ children }: PropsWithChildren) => (
 	<div
 		data-slot="data-table-toolbar"
 		role="toolbar"
@@ -203,7 +236,7 @@ type DataTableTableProps = PropsWithChildren<{
  * </DataTable.Table>
  * ```
  */
-const DataTableTable = ({
+export const DataTableTable = ({
 	children = <DataTableEmptyState />,
 	size = 'md',
 	sticky = 'header',
@@ -227,10 +260,10 @@ const DataTableTable = ({
 				'flex min-h-0 flex-1 flex-col transition-opacity duration-150',
 				isLoading && 'opacity-50'
 			)}>
-			<Table.Root size={size} sticky={sticky} embed={embed} enclosed={enclosed} ref={scrollRef}>
-				<Table.Head>
+			<TableRoot size={size} sticky={sticky} embed={embed} enclosed={enclosed} ref={scrollRef}>
+				<TableHead>
 					{table.getHeaderGroups().map(headerGroup => (
-						<Table.Row key={headerGroup.id}>
+						<TableRow key={headerGroup.id}>
 							{headerGroup.headers.map(header => {
 								const meta = header.column.columnDef.meta as DataTableColumnMeta | undefined;
 								const canSort = header.column.getCanSort();
@@ -254,7 +287,7 @@ const DataTableTable = ({
 									</>
 								);
 								return (
-									<Table.Header
+									<TableHeader
 										key={header.id}
 										{...meta}
 										aria-sort={
@@ -283,21 +316,21 @@ const DataTableTable = ({
 										) : (
 											<div className={headerCell({ canSort: false, align })}>{content}</div>
 										)}
-									</Table.Header>
+									</TableHeader>
 								);
 							})}
-						</Table.Row>
+						</TableRow>
 					))}
-				</Table.Head>
+				</TableHead>
 
-				<Table.Body>
+				<TableBody>
 					{table.getRowModel().rows.length ? (
 						table.getRowModel().rows.map(row => {
 							const href = rowHref?.(row.original);
 							const isClickable = !!onRowClick || !!href;
 							return (
 								<Fragment key={row.id}>
-									<Table.Row
+									<TableRow
 										className={cn(
 											'has-aria-expanded:bg-bg-default-base-secondary',
 											isClickable && 'cursor-pointer'
@@ -324,7 +357,7 @@ const DataTableTable = ({
 										{row.getVisibleCells().map((cell, cellIndex) => {
 											const meta = cell.column.columnDef.meta as DataTableColumnMeta | undefined;
 											return (
-												<Table.Cell key={cell.id} {...meta}>
+												<TableCell key={cell.id} {...meta}>
 													{cellIndex === 0 && href && (
 														<LinkComponent
 															href={href}
@@ -335,24 +368,24 @@ const DataTableTable = ({
 														/>
 													)}
 													{flexRender(cell.column.columnDef.cell, cell.getContext())}
-												</Table.Cell>
+												</TableCell>
 											);
 										})}
-									</Table.Row>
+									</TableRow>
 								</Fragment>
 							);
 						})
 					) : isLoading ? null : (
-						<Table.Row>
-							<Table.Cell colSpan={colSpan}>
+						<TableRow>
+							<TableCell colSpan={colSpan}>
 								<div data-slot="table-empty-state" className="whitespace-normal">
 									{children}
 								</div>
-							</Table.Cell>
-						</Table.Row>
+							</TableCell>
+						</TableRow>
 					)}
-				</Table.Body>
-			</Table.Root>
+				</TableBody>
+			</TableRoot>
 		</div>
 	);
 };
@@ -387,7 +420,7 @@ export type PaginationState = {
  *
  * @summary Footer row below the table for pagination
  */
-const Footer = ({ children }: PropsWithChildren) => (
+export const Footer = ({ children }: PropsWithChildren) => (
 	<div
 		data-slot="data-table-pagination"
 		className="flex justify-end border-t border-border-default-base-primary px-6 py-3">
@@ -403,7 +436,7 @@ Footer.displayName = 'DataTable.Footer';
  *
  * @summary Table-aware pagination that scrolls to top on page change
  */
-const DataTablePagination = (props: PaginationProps) => {
+export const DataTablePagination = (props: PaginationProps) => {
 	const { scrollRef } = useDataTable();
 	return (
 		<Pagination
@@ -416,48 +449,3 @@ const DataTablePagination = (props: PaginationProps) => {
 	);
 };
 DataTablePagination.displayName = 'DataTable.Pagination';
-
-/**
- * Data-driven table compound built on TanStack Table and the `Table` primitive.
- * Compose `Root` (owns the table instance) with `ToolBar`, `Table` (headers/rows,
- * sorting, navigation, empty state), and `Footer` + `Pagination`. For hand-rendered
- * rows without TanStack, drop to the `Table` primitive.
- *
- * @summary Data-driven table compound (sorting, toolbar, pagination) over TanStack
- * @see {@link https://tanstack.com/table/latest|TanStack Table}
- * @namespace DataTable
- *
- * @example
- * ```tsx
- * import { DataTable } from '@agentero/design-system/data-table';
- * import { createColumnHelper } from '@tanstack/react-table';
- *
- * const columnHelper = createColumnHelper<User>();
- * const columns = [
- *   columnHelper.accessor('name', { header: 'Name', enableSorting: true }),
- *   columnHelper.accessor('email', { header: 'Email' })
- * ];
- *
- * <DataTable.Root data={users} columns={columns}>
- *   <DataTable.ToolBar>
- *     <SearchInput />
- *   </DataTable.ToolBar>
- *   <DataTable.Table />
- *   <DataTable.Footer>
- *     <DataTable.Pagination
- *       currentPage={page}
- *       pageSize={10}
- *       totalCount={total}
- *       onPageChange={setPage}
- *     />
- *   </DataTable.Footer>
- * </DataTable.Root>
- * ```
- */
-export const DataTable = {
-	Root,
-	ToolBar,
-	Table: DataTableTable,
-	Footer,
-	Pagination: DataTablePagination
-};
