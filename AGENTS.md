@@ -13,7 +13,7 @@ This file provides guidance to AI agents when working with code in this reposito
 - `yarn lint:format` — just the `oxfmt` check. There is no `format:write` script; run `yarn oxfmt src/ lib/` directly to apply formatting.
 - `yarn test` — runs both Vitest projects declared in `vite.config.ts`: `storybook` (story files as tests, via `@storybook/addon-vitest` + Playwright/Chromium) and `unit` (plain node tests, `src/**/*.test.ts`). `yarn test:storybook` runs only the story suite; `yarn vitest run <file>` runs a single one.
 
-CI (`.github/workflows/ci.yml`) runs `yarn lint` and `yarn tsc` on PRs — nothing else gates merges.
+CI (`.github/workflows/ci.yml`) runs `yarn lint`, `yarn tsc` and `yarn test` on PRs to `master` — nothing else gates merges.
 
 ## Architecture
 
