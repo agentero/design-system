@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, within } from 'storybook/test';
 
-import { Tabs } from './tabs';
+import { Tabs } from '.';
 
 const meta = {
 	title: 'Components/Tabs',
@@ -161,5 +161,31 @@ export const SwitchTabs: Story = {
 		await expect(documents).toHaveAttribute('data-state', 'active');
 		await expect(overview).toHaveAttribute('data-state', 'inactive');
 		await expect(await canvas.findByText(/declarations, endorsements/i)).toBeVisible();
+	}
+};
+
+/**
+ * A standalone `Label` gives a panel with a single, non-interactive title the
+ * inactive trigger's exact look: outside a `Root` it never gets the active
+ * data-state, and `pointer-events-none` keeps hover styles off. It is a plain
+ * `span`, so wrap it in a heading element for heading semantics. No tab or
+ * tablist role is announced.
+ */
+export const SingleTitle: Story = {
+	render: () => (
+		<div className="flex flex-col items-start gap-6">
+			{(['line', 'enclosed', 'button'] as const).map(variant => (
+				<h2 key={variant}>
+					<Tabs.Label variant={variant}>Shared coverages ({variant})</Tabs.Label>
+				</h2>
+			))}
+		</div>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		await expect(canvas.getAllByRole('heading')).toHaveLength(3);
+		await expect(canvas.queryByRole('tablist')).not.toBeInTheDocument();
+		await expect(canvas.queryByRole('tab')).not.toBeInTheDocument();
 	}
 };

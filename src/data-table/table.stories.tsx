@@ -113,6 +113,13 @@ const meta = {
 	component: Table.Root,
 	tags: ['autodocs'],
 	parameters: { layout: 'fullscreen' },
+	decorators: [
+		Story => (
+			<div className="p-4">
+				<Story />
+			</div>
+		)
+	],
 	argTypes: {
 		size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
 		embed: { control: 'boolean' },
