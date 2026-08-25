@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
-import { Command } from './command';
+import { Command } from '.';
 
 /**
  * Command is a filterable list built on `cmdk`. Type to narrow the options,

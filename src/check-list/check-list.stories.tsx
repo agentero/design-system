@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, within } from 'storybook/test';
 
-import { CheckList } from './check-list';
+import { CheckList } from '.';
 
 /**
  * CheckList renders a vertical list where every row is marked with a check

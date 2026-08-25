@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
+import { Popover } from '.';
 import { Button } from '../button';
-import { Popover } from './popover';
 
 /**
  * Popover is a non-modal floating surface anchored to a trigger, used for

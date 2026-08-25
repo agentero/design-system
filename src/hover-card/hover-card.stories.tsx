@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
+import { HoverCard } from '.';
 import { Avatar } from '../avatar';
 import { Button } from '../button';
-import { HoverCard } from './hover-card';
 
 const PreviewCard = () => (
 	<div className="flex gap-3">

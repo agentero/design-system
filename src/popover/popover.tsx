@@ -7,32 +7,57 @@ import { tv } from 'tailwind-variants';
 
 type RootProps = ComponentProps<typeof PopoverPrimitive.Root>;
 
-const Root = (props: RootProps) => <PopoverPrimitive.Root data-slot="popover-root" {...props} />;
+/**
+ * Root of a non-modal floating surface anchored to a trigger, built on Radix
+ * Popover. Compose `Root` with `Trigger` / `Content`, plus optional `Anchor`,
+ * `Close`, and `Portal`. Use for rich interactive overlays (forms, filters,
+ * pickers); prefer `Tooltip` for text hints and `DropdownMenu` for menus.
+ *
+ * @summary Root provider for a floating interactive overlay
+ * @see {@link https://www.radix-ui.com/primitives/docs/components/popover|Radix UI Popover}
+ *
+ * @example
+ * ```tsx
+ * import { Popover } from '@agentero/design-system/popover';
+ *
+ * <Popover.Root>
+ *   <Popover.Trigger asChild>
+ *     <Button>Filters</Button>
+ *   </Popover.Trigger>
+ *   <Popover.Content align="start">
+ *     <FiltersForm />
+ *   </Popover.Content>
+ * </Popover.Root>
+ * ```
+ */
+export const Root = (props: RootProps) => (
+	<PopoverPrimitive.Root data-slot="popover-root" {...props} />
+);
 Root.displayName = 'Popover.Root';
 
 type TriggerProps = ComponentProps<typeof PopoverPrimitive.Trigger>;
 
-const Trigger = (props: TriggerProps) => (
+export const Trigger = (props: TriggerProps) => (
 	<PopoverPrimitive.Trigger data-slot="popover-trigger" {...props} />
 );
 Trigger.displayName = 'Popover.Trigger';
 
 type AnchorProps = ComponentProps<typeof PopoverPrimitive.Anchor>;
 
-const Anchor = (props: AnchorProps) => (
+export const Anchor = (props: AnchorProps) => (
 	<PopoverPrimitive.Anchor data-slot="popover-anchor" {...props} />
 );
 Anchor.displayName = 'Popover.Anchor';
 
 type CloseProps = ComponentProps<typeof PopoverPrimitive.Close>;
 
-const Close = (props: CloseProps) => (
+export const Close = (props: CloseProps) => (
 	<PopoverPrimitive.Close data-slot="popover-close" {...props} />
 );
 Close.displayName = 'Popover.Close';
 
 // `Content` already self-portals; use `Portal` only to portal into a custom container.
-const Portal = PopoverPrimitive.Portal;
+export const Portal = PopoverPrimitive.Portal;
 
 export const popoverRecipe = tv({
 	base: [
@@ -55,7 +80,7 @@ type ContentProps = ComponentProps<typeof PopoverPrimitive.Content>;
 
 // Self-portals to the body and animates on open/close following `side`. Defaults `sideOffset` to 8,
 // matching `DropdownMenu` and `HoverCard` so every trigger-anchored surface sits at the same distance.
-const Content = ({ className, sideOffset = 8, ...props }: ContentProps) => (
+export const Content = ({ className, sideOffset = 8, ...props }: ContentProps) => (
 	<PopoverPrimitive.Portal>
 		<PopoverPrimitive.Content
 			data-slot="popover-content"
@@ -66,33 +91,3 @@ const Content = ({ className, sideOffset = 8, ...props }: ContentProps) => (
 	</PopoverPrimitive.Portal>
 );
 Content.displayName = 'Popover.Content';
-
-/**
- * Non-modal floating surface anchored to a trigger, built on Radix Popover.
- * Compose from `Root` / `Trigger` / `Content`, plus optional `Anchor`,
- * `Close`, and `Portal`. Use for rich interactive overlays (forms, filters,
- * pickers); prefer `Tooltip` for text hints and `DropdownMenu` for menus.
- *
- * @summary Compound floating surface for interactive overlays
- * @see {@link https://www.radix-ui.com/primitives/docs/components/popover|Radix UI Popover}
- *
- * @example
- * ```tsx
- * <Popover.Root>
- *   <Popover.Trigger asChild>
- *     <Button>Filters</Button>
- *   </Popover.Trigger>
- *   <Popover.Content align="start">
- *     <FiltersForm />
- *   </Popover.Content>
- * </Popover.Root>
- * ```
- */
-export const Popover = {
-	Root,
-	Trigger,
-	Anchor,
-	Close,
-	Portal,
-	Content
-};

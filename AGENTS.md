@@ -11,9 +11,9 @@ This file provides guidance to AI agents when working with code in this reposito
 - `yarn tsc` — typecheck via `tsgo` (`@typescript/native-preview`), not stock `tsc`.
 - `yarn lint` — runs `oxlint src/ lib/` then `oxfmt --check src/ lib/`. Both must pass.
 - `yarn lint:format` — just the `oxfmt` check. There is no `format:write` script; run `yarn oxfmt src/ lib/` directly to apply formatting.
-- Tests run via Storybook's Vitest integration (`@storybook/addon-vitest` + Playwright/Chromium). There is **no `test` script**; story files are the tests. Invoke `yarn vitest` directly (or `yarn vitest run <story-file>` for a single file) — it picks up the `storybook` project in `vite.config.ts`.
+- `yarn test` — runs both Vitest projects declared in `vite.config.ts`: `storybook` (story files as tests, via `@storybook/addon-vitest` + Playwright/Chromium) and `unit` (plain node tests, `src/**/*.test.ts`). `yarn test:storybook` runs only the story suite; `yarn vitest run <file>` runs a single one.
 
-CI (`.github/workflows/ci.yml`) runs `yarn lint` and `yarn tsc` on PRs — nothing else gates merges.
+CI (`.github/workflows/ci.yml`) runs `yarn lint`, `yarn tsc` and `yarn test` on PRs to `master` — nothing else gates merges.
 
 ## Architecture
 
@@ -43,7 +43,7 @@ Study `src/avatar/avatar.tsx` before adding new components — it's the canonica
 - **`'use client'`** directive at the top of every component file that uses React hooks/context, so Next.js RSC consumers work.
 - **`tailwind-variants` (`tv`) recipes** exported from the file (e.g. `avatarRecipe`). Use `slots` + `variants` + `defaultVariants`. Consumers can re-use the recipe.
 - **Compound internal components** (e.g. `AvatarRoot`, `AvatarImage`, `AvatarFallback`) sharing a `React.createContext` that carries the computed slot styles. The public export is a **single wrapper** (`Avatar`) that composes them — the internal primitives are not exported.
-- **Multi-part components** (`Tabs.Root`, `Modal.Content`, ...): export each part as its own named export from the `'use client'` file. Assemble the `Tabs` object in the directive-free `index.ts` from those named imports. Do not export the object from the client file, and do not use `export * as Tabs` in the barrel. React turns each named export of a client module into one client reference, so an object built in `index.ts` holds one reference per part and `Tabs.Content` renders in a Server Component. An object exported from the client file crosses the boundary as one opaque reference and `Tabs.Content` is `undefined` (React error #130). rolldown lowers `export * as` to that same broken shape. See `src/tabs/` for the pattern.
+- **Multi-part components** (`Tabs.Root`, `Modal.Content`, ...): export each part as its own named export from the `'use client'` file. Assemble the `Tabs` object in the directive-free `index.ts` from those named imports. Do not export the object from the client file, and do not use `export * as Tabs` in the barrel. React turns each named export of a client module into one client reference, so an object built in `index.ts` holds one reference per part and `Tabs.Content` renders in a Server Component. An object exported from the client file crosses the boundary as one opaque reference and `Tabs.Content` is `undefined` (React error #130). rolldown lowers `export * as` to that same broken shape. See `src/tabs/` for the pattern; `src/client-boundary.test.ts` fails if a client module exports a namespace object.
 - **`cn(...)` from `lib`** — always merge incoming `props.className` last: `cn(styles.root(), props.className)`. Never concatenate with template strings.
 - **Radix primitives** for behavior; Tailwind for styling. Prefer `ComponentPropsWithRef<typeof Primitive>` over hand-rolled prop types.
 

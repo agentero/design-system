@@ -2,8 +2,8 @@ import type { SVGProps } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+import { DropdownMenu } from '.';
 import { Button } from '../button';
-import { DropdownMenu } from './dropdown-menu';
 
 const IconContentCopy = (props: SVGProps<SVGSVGElement>) => (
 	<svg

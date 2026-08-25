@@ -80,14 +80,38 @@ export type TableRootProps = TableVariants & {
 };
 
 /**
- * The outermost Table part: renders the scroll viewport and `<table>`, shares
- * variants with the other parts via context, and forwards `ref` to the scroll
- * container. The viewport fills its (bounded) parent — cap height by
- * constraining that parent.
+ * The outermost part of the low-level presentational table primitive — a thin
+ * themed wrapper over native `<table>` markup (scrolling, sticky rows, row
+ * sizing, dividers, hover, expandable rows). It renders the scroll viewport and
+ * `<table>`, shares variants with the other parts via context, and forwards
+ * `ref` to the scroll container. The viewport fills its (bounded) parent — cap
+ * height by constraining that parent.
+ *
+ * Compose `Root` with `Head` / `Body` / `Row` / `Header` / `Cell`, plus
+ * `ExpandButton` / `ExpandedRow` and `RowActions`. For sorting, toolbar and
+ * pagination, prefer `DataTable`, which is built on top of this.
  *
  * @summary Table root that owns the scroll viewport and `<table>` element
+ *
+ * @example
+ * ```tsx
+ * import { Table } from '@agentero/design-system/data-table';
+ *
+ * <Table.Root size="md" sticky="head">
+ *   <Table.Head>
+ *     <Table.Row>
+ *       <Table.Header>Name</Table.Header>
+ *     </Table.Row>
+ *   </Table.Head>
+ *   <Table.Body>
+ *     <Table.Row>
+ *       <Table.Cell>Jane Doe</Table.Cell>
+ *     </Table.Row>
+ *   </Table.Body>
+ * </Table.Root>
+ * ```
  */
-const TableRoot = ({ children, ref, ...variants }: PropsWithChildren<TableRootProps>) => {
+export const TableRoot = ({ children, ref, ...variants }: PropsWithChildren<TableRootProps>) => {
 	const { size, sticky, embed } = variants;
 	const styles = tableRecipe(variants);
 	const slots: TableSlotClasses = {
@@ -121,7 +145,7 @@ TableRoot.displayName = 'Table.Root';
  *
  * @summary `<thead>` wrapper for header rows
  */
-const TableHead = ({
+export const TableHead = ({
 	children,
 	...props
 }: PropsWithChildren<HTMLAttributes<HTMLTableSectionElement>>) => (
@@ -138,7 +162,7 @@ TableHead.displayName = 'Table.Head';
  *
  * @summary `<tbody>` wrapper
  */
-const TableBody = ({
+export const TableBody = ({
 	children,
 	...props
 }: PropsWithChildren<HTMLAttributes<HTMLTableSectionElement>>) => (
@@ -176,7 +200,7 @@ const rowStyles = tv({
  *
  * @summary Table row element
  */
-const TableRow = ({ className, ...props }: ComponentProps<'tr'>) => {
+export const TableRow = ({ className, ...props }: ComponentProps<'tr'>) => {
 	const { headRow, bodyRow } = useTableSlots();
 	const body = use(TableSectionContext) === 'body';
 	return (
@@ -200,7 +224,7 @@ const headerStyles = tv({
  *
  * @summary Header cell element
  */
-const TableHeader = ({
+export const TableHeader = ({
 	className,
 	...props
 }: PropsWithChildren<HTMLAttributes<HTMLTableCellElement>>) => {
@@ -225,7 +249,7 @@ const cellStyles = tv({
  *
  * @summary Data cell element
  */
-const TableCell = ({
+export const TableCell = ({
 	className,
 	...props
 }: PropsWithChildren<TdHTMLAttributes<HTMLTableCellElement>>) => {
@@ -248,7 +272,7 @@ type TableExpandButtonProps = {
  *
  * @summary Expand/collapse toggle button for an expandable row
  */
-const TableExpandButton = ({
+export const TableExpandButton = ({
 	toggleExpanded,
 	isExpanded,
 	className,
@@ -272,7 +296,7 @@ TableExpandButton.displayName = 'Table.ExpandButton';
  *
  * @summary Detail row shown under an expanded parent row
  */
-const TableExpandedRow = ({
+export const TableExpandedRow = ({
 	className,
 	...props
 }: PropsWithChildren<HTMLAttributes<HTMLTableRowElement>>) => (
@@ -302,31 +326,9 @@ const rowActionsStyles = tv({
  *
  * @summary Hover-revealed row action cluster
  */
-const TableRowActions = ({ children }: PropsWithChildren) => (
+export const TableRowActions = ({ children }: PropsWithChildren) => (
 	<div data-slot="table-row-actions" className={rowActionsStyles()}>
 		{children}
 	</div>
 );
 TableRowActions.displayName = 'Table.RowActions';
-
-/**
- * Low-level presentational table primitive — a thin themed wrapper over native
- * `<table>` markup (scrolling, sticky rows, row sizing, dividers, hover,
- * expandable rows). Compose from `Root` / `Head` / `Body` / `Row` / `Header` /
- * `Cell`, plus `ExpandButton` / `ExpandedRow` and `RowActions`. For
- * sorting/toolbar/pagination, prefer `DataTable`, built on top of this.
- *
- * @summary Low-level themed table primitive (scrolling, sticky, sizing, rows)
- * @namespace Table
- */
-export const Table = {
-	Root: TableRoot,
-	Head: TableHead,
-	Body: TableBody,
-	Row: TableRow,
-	Header: TableHeader,
-	Cell: TableCell,
-	ExpandButton: TableExpandButton,
-	ExpandedRow: TableExpandedRow,
-	RowActions: TableRowActions
-};

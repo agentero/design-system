@@ -9,19 +9,47 @@ import { cn } from '../../lib';
 
 type RootProps = ComponentProps<typeof HoverCardPrimitive.Root>;
 
-const Root = (props: RootProps) => (
+/**
+ * Root of a rich, sighted-user hover preview anchored to a trigger (profile
+ * cards, entity previews) shown on hover/focus, built on Radix HoverCard.
+ * Compose `Root` with `Trigger` / `Portal` / `Content`, plus an optional
+ * `Arrow`.
+ *
+ * Pointer-first and NOT keyboard-accessible: focus opens it but focus never
+ * enters the card — never put essential info or the only path to an action
+ * inside. Use `Popover`/`DropdownMenu` for that, or `Tooltip` for text hints.
+ *
+ * @summary Root provider for a rich hover preview of an entity
+ * @see {@link https://www.radix-ui.com/primitives/docs/components/hover-card|Radix UI HoverCard}
+ *
+ * @example
+ * ```tsx
+ * import { HoverCard } from '@agentero/design-system/hover-card';
+ *
+ * <HoverCard.Root>
+ *   <HoverCard.Trigger>@rafa</HoverCard.Trigger>
+ *   <HoverCard.Portal>
+ *     <HoverCard.Content>
+ *       <ProfileCard />
+ *       <HoverCard.Arrow />
+ *     </HoverCard.Content>
+ *   </HoverCard.Portal>
+ * </HoverCard.Root>
+ * ```
+ */
+export const Root = (props: RootProps) => (
 	<HoverCardPrimitive.Root data-slot="hover-card-root" {...props} />
 );
 Root.displayName = 'HoverCard.Root';
 
 type TriggerProps = ComponentProps<typeof HoverCardPrimitive.Trigger>;
 
-const Trigger = (props: TriggerProps) => (
+export const Trigger = (props: TriggerProps) => (
 	<HoverCardPrimitive.Trigger data-slot="hover-card-trigger" {...props} />
 );
 Trigger.displayName = 'HoverCard.Trigger';
 
-const Portal = HoverCardPrimitive.Portal;
+export const Portal = HoverCardPrimitive.Portal;
 
 export const hoverCardRecipe = tv({
 	base: [
@@ -56,7 +84,12 @@ export const hoverCardRecipe = tv({
 
 type ContentProps = ComponentProps<typeof HoverCardPrimitive.Content>;
 
-const Content = ({ className, sideOffset = 8, collisionPadding = 8, ...props }: ContentProps) => (
+export const Content = ({
+	className,
+	sideOffset = 8,
+	collisionPadding = 8,
+	...props
+}: ContentProps) => (
 	<HoverCardPrimitive.Content
 		data-slot="hover-card-content"
 		sideOffset={sideOffset}
@@ -69,7 +102,7 @@ Content.displayName = 'HoverCard.Content';
 
 type ArrowProps = ComponentProps<typeof HoverCardPrimitive.Arrow>;
 
-const Arrow = ({ className, width = 12, height = 6, ...props }: ArrowProps) => (
+export const Arrow = ({ className, width = 12, height = 6, ...props }: ArrowProps) => (
 	// Radix's default arrow is a bare filled polygon, so it punches a hole in the
 	// card's border instead of carrying it around the point. Swap in an SVG that
 	// strokes the two slopes: an open path (no `Z`) leaves the base unstroked, so
@@ -98,23 +131,3 @@ const Arrow = ({ className, width = 12, height = 6, ...props }: ArrowProps) => (
 	</HoverCardPrimitive.Arrow>
 );
 Arrow.displayName = 'HoverCard.Arrow';
-
-/**
- * Rich, sighted-user hover preview anchored to a trigger (profile cards, entity
- * previews) shown on hover/focus, built on Radix HoverCard. Compose from
- * `Root` / `Trigger` / `Portal` / `Content`, plus an optional `Arrow`.
- *
- * Pointer-first and NOT keyboard-accessible: focus opens it but focus never
- * enters the card — never put essential info or the only path to an action
- * inside. Use `Popover`/`DropdownMenu` for that, or `Tooltip` for text hints.
- *
- * @summary Compound overlay card for rich hover previews of an entity
- * @see {@link https://www.radix-ui.com/primitives/docs/components/hover-card|Radix UI HoverCard}
- */
-export const HoverCard = {
-	Root,
-	Trigger,
-	Portal,
-	Content,
-	Arrow
-};

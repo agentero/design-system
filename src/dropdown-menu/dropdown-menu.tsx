@@ -20,25 +20,70 @@ import { IconArrowRight } from './icons';
 type RootProps = ComponentProps<typeof DropdownMenuPrimitive.Root>;
 
 /**
- * Root container that holds every part of a DropdownMenu. Owns the open
- * state (controlled via `open`/`onOpenChange` or uncontrolled via
- * `defaultOpen`) and must wrap Trigger, Portal, and Content.
+ * Root container that holds every part of a DropdownMenu — the menu of
+ * secondary actions attached to a button or icon trigger: edit/duplicate/delete
+ * rows, account menus, overflow affordances, and nested submenus. It owns the
+ * open state (controlled via `open`/`onOpenChange` or uncontrolled via
+ * `defaultOpen`) and must wrap Trigger, Portal, and Content. Built on Radix
+ * UI's DropdownMenu primitive, so keyboard navigation, focus trapping,
+ * typeahead, and viewport-collision detection come for free.
+ *
+ * Fill the menu with `Item`, `Separator`, `Label`, and — for nested flows —
+ * `Sub` / `SubTrigger` / `SubContent`. Wrap content in `Portal` so the menu
+ * escapes ancestor `overflow:hidden` and z-index stacking contexts.
+ *
+ * Do **not** use DropdownMenu for primary navigation (use a real nav menu),
+ * for single-choice form input (use a `Select`), or for command palettes
+ * (use `Command`). For radio/checkbox-style toggles, use Radix's
+ * `CheckboxItem` / `RadioItem` primitives directly — those parts are not
+ * exposed here yet.
  *
  * @summary Root provider for a DropdownMenu's open state
+ * @see {@link https://www.radix-ui.com/primitives/docs/components/dropdown-menu|Radix UI DropdownMenu}
  *
  * @example
  * ```tsx
+ * import { DropdownMenu } from '@agentero/design-system/dropdown-menu';
+ *
  * <DropdownMenu.Root>
- *   <DropdownMenu.Trigger>Open</DropdownMenu.Trigger>
+ *   <DropdownMenu.Trigger>
+ *     <IconMoreVert />
+ *   </DropdownMenu.Trigger>
+ *
  *   <DropdownMenu.Portal>
- *     <DropdownMenu.Content>
- *       <DropdownMenu.Item>Item 1</DropdownMenu.Item>
+ *     <DropdownMenu.Content side="bottom" align="end">
+ *       <DropdownMenu.Label>Actions</DropdownMenu.Label>
+ *
+ *       <DropdownMenu.Item onSelect={() => handleEdit()}>
+ *         <IconEdit />
+ *         Edit
+ *       </DropdownMenu.Item>
+ *
+ *       <DropdownMenu.Sub>
+ *         <DropdownMenu.SubTrigger>Share</DropdownMenu.SubTrigger>
+ *         <DropdownMenu.Portal>
+ *           <DropdownMenu.SubContent>
+ *             <DropdownMenu.Item>Email</DropdownMenu.Item>
+ *             <DropdownMenu.Item>Slack</DropdownMenu.Item>
+ *           </DropdownMenu.SubContent>
+ *         </DropdownMenu.Portal>
+ *       </DropdownMenu.Sub>
+ *
+ *       <DropdownMenu.Separator />
+ *
+ *       <DropdownMenu.Item
+ *         onSelect={() => handleDelete()}
+ *         disabled={!canDelete}
+ *       >
+ *         <IconDelete />
+ *         Delete
+ *       </DropdownMenu.Item>
  *     </DropdownMenu.Content>
  *   </DropdownMenu.Portal>
  * </DropdownMenu.Root>
  * ```
  */
-const Root = (props: RootProps) => (
+export const Root = (props: RootProps) => (
 	<DropdownMenuPrimitive.Root data-slot="dropdown-menu-root" {...props} />
 );
 Root.displayName = 'DropdownMenu.Root';
@@ -68,7 +113,7 @@ type TriggerProps = ComponentProps<typeof DropdownMenuPrimitive.Trigger>;
  * </DropdownMenu.Trigger>
  * ```
  */
-const Trigger = ({ className, ...props }: TriggerProps) => (
+export const Trigger = ({ className, ...props }: TriggerProps) => (
 	<DropdownMenuPrimitive.Trigger
 		data-slot="dropdown-menu-trigger"
 		className={cn('cursor-pointer outline-none focus:outline-none', className)}
@@ -94,7 +139,7 @@ Trigger.displayName = 'DropdownMenu.Trigger';
  * </DropdownMenu.Portal>
  * ```
  */
-const Portal = DropdownMenuPrimitive.Portal;
+export const Portal = DropdownMenuPrimitive.Portal;
 
 /**
  * Tailwind variant styles for the dropdown menu content.
@@ -167,7 +212,7 @@ type ContentProps = ComponentProps<typeof DropdownMenuPrimitive.Content> &
  * </DropdownMenu.Content>
  * ```
  */
-const Content = ({
+export const Content = ({
 	className,
 	hasTriggerWidth = false,
 	sideOffset = 8,
@@ -215,7 +260,7 @@ type ItemProps = ComponentProps<typeof DropdownMenuPrimitive.Item>;
  * </DropdownMenu.Item>
  * ```
  */
-const Item = ({ className, ...props }: ItemProps) => (
+export const Item = ({ className, ...props }: ItemProps) => (
 	<DropdownMenuPrimitive.Item
 		data-slot="dropdown-menu-item"
 		className={cn(
@@ -256,7 +301,7 @@ type SeparatorProps = ComponentProps<typeof DropdownMenuPrimitive.Separator>;
  * <DropdownMenu.Item>Delete</DropdownMenu.Item>
  * ```
  */
-const Separator = ({ className, ...props }: SeparatorProps) => (
+export const Separator = ({ className, ...props }: SeparatorProps) => (
 	<DropdownMenuPrimitive.Separator
 		data-slot="dropdown-menu-divider"
 		className={cn(
@@ -292,7 +337,7 @@ type LabelProps = ComponentProps<typeof DropdownMenuPrimitive.Label>;
  * <DropdownMenu.Item>Delete Account</DropdownMenu.Item>
  * ```
  */
-const Label = ({ className, ...props }: LabelProps) => (
+export const Label = ({ className, ...props }: LabelProps) => (
 	<DropdownMenuPrimitive.Label
 		data-slot="dropdown-menu-label"
 		className={cn('px-3 py-1 text-xs text-text-default-base-tertiary', className)}
@@ -330,7 +375,7 @@ type SubProps = ComponentProps<typeof DropdownMenuPrimitive.Sub>;
  * </DropdownMenu.Sub>
  * ```
  */
-const Sub = (props: SubProps) => (
+export const Sub = (props: SubProps) => (
 	<DropdownMenuPrimitive.Sub data-slot="dropdown-menu-sub" {...props} />
 );
 Sub.displayName = 'DropdownMenu.Sub';
@@ -371,7 +416,7 @@ type SubTriggerProps = ComponentProps<typeof DropdownMenuPrimitive.SubTrigger>;
  * </DropdownMenu.Sub>
  * ```
  */
-const SubTrigger = ({ className, children, ...props }: SubTriggerProps) => (
+export const SubTrigger = ({ className, children, ...props }: SubTriggerProps) => (
 	<DropdownMenuPrimitive.SubTrigger
 		data-slot="dropdown-menu-sub-trigger"
 		className={cn(
@@ -457,7 +502,12 @@ type SubContentProps = ComponentProps<typeof DropdownMenuPrimitive.SubContent>;
  * </DropdownMenu.Sub>
  * ```
  */
-const SubContent = ({ className, sideOffset = 2, alignOffset = -5, ...props }: SubContentProps) => (
+export const SubContent = ({
+	className,
+	sideOffset = 2,
+	alignOffset = -5,
+	...props
+}: SubContentProps) => (
 	<DropdownMenuPrimitive.SubContent
 		data-slot="dropdown-menu-sub-content"
 		sideOffset={sideOffset}
@@ -467,123 +517,3 @@ const SubContent = ({ className, sideOffset = 2, alignOffset = -5, ...props }: S
 	/>
 );
 SubContent.displayName = 'DropdownMenu.SubContent';
-
-/**
- * DropdownMenu is the compound component for attaching a menu of secondary
- * actions to a button or icon trigger — edit/duplicate/delete rows, account
- * menus, overflow affordances, and nested submenus. Built on Radix UI's
- * DropdownMenu primitive, so keyboard navigation, focus trapping, typeahead,
- * and viewport-collision detection come for free.
- *
- * Compose it from `Root` / `Trigger` / `Portal` / `Content` and fill the
- * menu with `Item`, `Separator`, `Label`, and — for nested flows — `Sub` /
- * `SubTrigger` / `SubContent`. Wrap content in `Portal` so the menu escapes
- * ancestor `overflow:hidden` and z-index stacking contexts.
- *
- * Do **not** use DropdownMenu for primary navigation (use a real nav menu),
- * for single-choice form input (use a `Select`), or for command palettes
- * (use a dedicated command component). For radio/checkbox-style toggles,
- * use Radix's `CheckboxItem` / `RadioItem` primitives directly — those
- * parts are not exposed here yet.
- *
- * @summary Compound overlay menu for secondary actions, grouped items, and submenus
- *
- * @see {@link https://www.radix-ui.com/primitives/docs/components/dropdown-menu|Radix UI DropdownMenu}
- *
- * @example
- * ```tsx
- * import { DropdownMenu } from '@agentero/design-system/dropdown-menu';
- *
- * <DropdownMenu.Root>
- *   <DropdownMenu.Trigger>
- *     <IconMoreVert />
- *   </DropdownMenu.Trigger>
- *
- *   <DropdownMenu.Portal>
- *     <DropdownMenu.Content side="bottom" align="end">
- *       <DropdownMenu.Label>Actions</DropdownMenu.Label>
- *
- *       <DropdownMenu.Item onSelect={() => handleEdit()}>
- *         <IconEdit />
- *         Edit
- *       </DropdownMenu.Item>
- *
- *       <DropdownMenu.Sub>
- *         <DropdownMenu.SubTrigger>Share</DropdownMenu.SubTrigger>
- *         <DropdownMenu.Portal>
- *           <DropdownMenu.SubContent>
- *             <DropdownMenu.Item>Email</DropdownMenu.Item>
- *             <DropdownMenu.Item>Slack</DropdownMenu.Item>
- *           </DropdownMenu.SubContent>
- *         </DropdownMenu.Portal>
- *       </DropdownMenu.Sub>
- *
- *       <DropdownMenu.Separator />
- *
- *       <DropdownMenu.Item
- *         onSelect={() => handleDelete()}
- *         disabled={!canDelete}
- *       >
- *         <IconDelete />
- *         Delete
- *       </DropdownMenu.Item>
- *     </DropdownMenu.Content>
- *   </DropdownMenu.Portal>
- * </DropdownMenu.Root>
- * ```
- *
- * @component
- * @namespace DropdownMenu
- */
-export const DropdownMenu = {
-	/**
-	 * The root container component for the dropdown menu.
-	 * @see {@link Root}
-	 */
-	Root,
-	/**
-	 * The button that toggles the dropdown menu.
-	 * @see {@link Trigger}
-	 */
-	Trigger,
-	/**
-	 * Portals the content to the body element.
-	 * @see {@link Portal}
-	 */
-	Portal,
-	/**
-	 * The popup component containing menu items.
-	 * @see {@link Content}
-	 */
-	Content,
-	/**
-	 * An individual menu item.
-	 * @see {@link Item}
-	 */
-	Item,
-	/**
-	 * A visual divider between menu items.
-	 * @see {@link Separator}
-	 */
-	Separator,
-	/**
-	 * A non-interactive label for menu sections.
-	 * @see {@link Label}
-	 */
-	Label,
-	/**
-	 * Container for submenu parts.
-	 * @see {@link Sub}
-	 */
-	Sub,
-	/**
-	 * An item that opens a submenu.
-	 * @see {@link SubTrigger}
-	 */
-	SubTrigger,
-	/**
-	 * The popup component for submenu items.
-	 * @see {@link SubContent}
-	 */
-	SubContent
-};

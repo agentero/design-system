@@ -185,6 +185,14 @@ export default defineConfig({
 	test: {
 		projects: [
 			{
+				// Node-side checks that don't need a browser (e.g. export-shape guards).
+				test: {
+					name: 'unit',
+					environment: 'node',
+					include: ['src/**/*.test.ts']
+				}
+			},
+			{
 				extends: true,
 				plugins: [
 					storybookTest({

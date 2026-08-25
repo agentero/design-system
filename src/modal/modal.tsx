@@ -12,12 +12,58 @@ import { IconClose } from './icons';
 type RootProps = ComponentProps<typeof DialogPrimitive.Root>;
 
 /**
- * Root container that owns the modal's open state — controlled via
- * `open`/`onOpenChange` or uncontrolled via `defaultOpen`/`Trigger`.
+ * Root container of a dialog that interrupts the flow — confirmations, forms,
+ * and detail views. It owns the modal's open state, controlled via
+ * `open`/`onOpenChange` or uncontrolled via `defaultOpen`/`Trigger`. Built on
+ * Radix UI Dialog, so focus trapping, scroll locking, `Escape`/overlay
+ * dismissal, and ARIA wiring come for free.
+ *
+ * Compose `Root` with `Content` (surface, `size` md/lg), and fill it with
+ * `Title` (built-in X button), an optional `Description` right below it, `Body`
+ * (scrollable), and `Footer` (right-aligned actions). Close from inside with
+ * `Close asChild` around your cancel button.
+ *
+ * For a modal the user has to answer, pass `variant="alert"` to `Content`:
+ * `Escape`, the overlay click and the X button all stop closing it, and it is
+ * announced as an `alertdialog`.
  *
  * @summary Root provider for a Modal's open state
+ *
+ * @example
+ * ```tsx
+ * import { Modal } from '@agentero/design-system/modal';
+ *
+ * <Modal.Root open={isOpen} onOpenChange={setIsOpen}>
+ *   <Modal.Content size="md">
+ *     <Modal.Title>Delete carrier</Modal.Title>
+ *     <Modal.Description>This action cannot be undone.</Modal.Description>
+ *     <Modal.Footer>
+ *       <Modal.Close asChild>
+ *         <Button variant="ghost">Cancel</Button>
+ *       </Modal.Close>
+ *       <Button onClick={handleDelete}>Delete</Button>
+ *     </Modal.Footer>
+ *   </Modal.Content>
+ * </Modal.Root>
+ * ```
+ *
+ * @example
+ * ```tsx
+ * // Alert: no Escape, no overlay click, no X — the user must answer.
+ * <Modal.Root open={isOpen}>
+ *   <Modal.Content variant="alert">
+ *     <Modal.Title>Complete your Docusign integration</Modal.Title>
+ *     <Modal.Body>Authorize access to finish connecting your account.</Modal.Body>
+ *     <Modal.Footer>
+ *       <Button onClick={handleAuthorize}>Authorize</Button>
+ *     </Modal.Footer>
+ *   </Modal.Content>
+ * </Modal.Root>
+ * ```
  */
-const Root = (props: RootProps) => <DialogPrimitive.Root data-slot="modal-root" {...props} />;
+export const Root = (props: RootProps) => (
+	<DialogPrimitive.Root data-slot="modal-root" {...props} />
+);
 Root.displayName = 'Modal.Root';
 
 type TriggerProps = ComponentProps<typeof DialogPrimitive.Trigger>;
@@ -28,7 +74,7 @@ type TriggerProps = ComponentProps<typeof DialogPrimitive.Trigger>;
  *
  * @summary Toggle button that opens the Modal
  */
-const Trigger = (props: TriggerProps) => (
+export const Trigger = (props: TriggerProps) => (
 	<DialogPrimitive.Trigger data-slot="modal-trigger" {...props} />
 );
 Trigger.displayName = 'Modal.Trigger';
@@ -101,7 +147,7 @@ type ContentProps = ComponentProps<typeof DialogPrimitive.Content> & {
  *
  * @summary Centered modal surface over a dimmed overlay
  */
-const Content = ({
+export const Content = ({
 	className,
 	size,
 	variant = 'dialog',
@@ -147,7 +193,7 @@ type TitleProps = ComponentProps<typeof DialogPrimitive.Title>;
  *
  * @summary Modal heading with built-in close button
  */
-const Title = ({ className, children, ...props }: TitleProps) => {
+export const Title = ({ className, children, ...props }: TitleProps) => {
 	const variant = useContext(ModalVariantContext);
 
 	return (
@@ -173,7 +219,7 @@ type DescriptionProps = ComponentProps<typeof DialogPrimitive.Description>;
  *
  * @summary Supporting text below the Modal title
  */
-const Description = ({ className, ...props }: DescriptionProps) => (
+export const Description = ({ className, ...props }: DescriptionProps) => (
 	<DialogPrimitive.Description
 		data-slot="modal-description"
 		className={slots.description({ className })}
@@ -190,7 +236,7 @@ type BodyProps = ComponentProps<'div'>;
  *
  * @summary Scrollable modal content area
  */
-const Body = ({ className, ...props }: BodyProps) => (
+export const Body = ({ className, ...props }: BodyProps) => (
 	<div data-slot="modal-body" tabIndex={0} className={slots.body({ className })} {...props} />
 );
 Body.displayName = 'Modal.Body';
@@ -202,7 +248,7 @@ type FooterProps = ComponentProps<'div'>;
  *
  * @summary Right-aligned modal action row
  */
-const Footer = ({ className, ...props }: FooterProps) => (
+export const Footer = ({ className, ...props }: FooterProps) => (
 	<div data-slot="modal-footer" className={slots.footer({ className })} {...props} />
 );
 Footer.displayName = 'Modal.Footer';
@@ -215,67 +261,7 @@ type CloseProps = ComponentProps<typeof DialogPrimitive.Close>;
  *
  * @summary Closes the Modal when activated
  */
-const Close = (props: CloseProps) => <DialogPrimitive.Close data-slot="modal-close" {...props} />;
+export const Close = (props: CloseProps) => (
+	<DialogPrimitive.Close data-slot="modal-close" {...props} />
+);
 Close.displayName = 'Modal.Close';
-
-/**
- * Modal is the compound component for dialogs that interrupt the flow —
- * confirmations, forms, and detail views. Built on Radix UI Dialog, so focus
- * trapping, scroll locking, `Escape`/overlay dismissal, and ARIA wiring come
- * for free.
- *
- * Compose `Root` (open state) with `Content` (surface, `size` md/lg), and
- * fill it with `Title` (built-in X button), an optional `Description` right
- * below it, `Body` (scrollable), and `Footer` (right-aligned actions). Open
- * it controlled (`open`/`onOpenChange`) or via `Trigger`; close from inside
- * with `Close asChild` around your cancel button.
- *
- * For a modal the user has to answer, pass `variant="alert"` to `Content`:
- * `Escape`, the overlay click and the X button all stop closing it, and it is
- * announced as an `alertdialog`.
- *
- * @summary Compound modal dialog over a dimmed overlay
- *
- * @example
- * ```tsx
- * <Modal.Root open={isOpen} onOpenChange={setIsOpen}>
- *   <Modal.Content size="md">
- *     <Modal.Title>Delete carrier</Modal.Title>
- *     <Modal.Description>This action cannot be undone.</Modal.Description>
- *     <Modal.Footer>
- *       <Modal.Close asChild>
- *         <Button variant="ghost">Cancel</Button>
- *       </Modal.Close>
- *       <Button onClick={handleDelete}>Delete</Button>
- *     </Modal.Footer>
- *   </Modal.Content>
- * </Modal.Root>
- * ```
- *
- * @example
- * ```tsx
- * // Alert: no Escape, no overlay click, no X — the user must answer.
- * <Modal.Root open={isOpen}>
- *   <Modal.Content variant="alert">
- *     <Modal.Title>Complete your Docusign integration</Modal.Title>
- *     <Modal.Body>Authorize access to finish connecting your account.</Modal.Body>
- *     <Modal.Footer>
- *       <Button onClick={handleAuthorize}>Authorize</Button>
- *     </Modal.Footer>
- *   </Modal.Content>
- * </Modal.Root>
- * ```
- *
- * @component
- * @namespace Modal
- */
-export const Modal = {
-	Root,
-	Trigger,
-	Content,
-	Title,
-	Description,
-	Body,
-	Footer,
-	Close
-};

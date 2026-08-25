@@ -56,7 +56,8 @@
     "lint:format": "oxfmt --check src/ lib/",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "test": "vitest run --project=storybook"
+    "test": "vitest run",
+    "test:storybook": "vitest run --project=storybook"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.14",
