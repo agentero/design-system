@@ -54,6 +54,7 @@ export const modalRecipe = tv({
 		],
 		title:
 			'flex items-center justify-between gap-2 px-10 text-[1.375rem] leading-7 font-semibold text-text-default-base-primary',
+		description: '-mt-4 px-10 text-base text-text-default-base-primary',
 		body: '-my-1 max-h-[60vh] overflow-y-auto px-10 py-1',
 		footer: 'flex shrink-0 items-center justify-end gap-4 px-10'
 	},
@@ -119,7 +120,6 @@ const Content = ({
 				<DialogPrimitive.Content
 					data-slot="modal-content"
 					role={isAlert ? 'alertdialog' : 'dialog'}
-					aria-describedby={undefined}
 					className={cn(styles.content(), className)}
 					onEscapeKeyDown={event => {
 						onEscapeKeyDown?.(event);
@@ -165,6 +165,23 @@ const Title = ({ className, children, ...props }: TitleProps) => {
 };
 Title.displayName = 'Modal.Title';
 
+type DescriptionProps = ComponentProps<typeof DialogPrimitive.Description>;
+
+/**
+ * Supporting text placed directly below `Modal.Title`, spaced 0.5rem beneath
+ * it. Wired as the modal's accessible description via `aria-describedby`.
+ *
+ * @summary Supporting text below the Modal title
+ */
+const Description = ({ className, ...props }: DescriptionProps) => (
+	<DialogPrimitive.Description
+		data-slot="modal-description"
+		className={slots.description({ className })}
+		{...props}
+	/>
+);
+Description.displayName = 'Modal.Description';
+
 type BodyProps = ComponentProps<'div'>;
 
 /**
@@ -208,9 +225,10 @@ Close.displayName = 'Modal.Close';
  * for free.
  *
  * Compose `Root` (open state) with `Content` (surface, `size` md/lg), and
- * fill it with `Title` (built-in X button), `Body` (scrollable), and `Footer`
- * (right-aligned actions). Open it controlled (`open`/`onOpenChange`) or via
- * `Trigger`; close from inside with `Close asChild` around your cancel button.
+ * fill it with `Title` (built-in X button), an optional `Description` right
+ * below it, `Body` (scrollable), and `Footer` (right-aligned actions). Open
+ * it controlled (`open`/`onOpenChange`) or via `Trigger`; close from inside
+ * with `Close asChild` around your cancel button.
  *
  * For a modal the user has to answer, pass `variant="alert"` to `Content`:
  * `Escape`, the overlay click and the X button all stop closing it, and it is
@@ -223,7 +241,7 @@ Close.displayName = 'Modal.Close';
  * <Modal.Root open={isOpen} onOpenChange={setIsOpen}>
  *   <Modal.Content size="md">
  *     <Modal.Title>Delete carrier</Modal.Title>
- *     <Modal.Body>This action cannot be undone.</Modal.Body>
+ *     <Modal.Description>This action cannot be undone.</Modal.Description>
  *     <Modal.Footer>
  *       <Modal.Close asChild>
  *         <Button variant="ghost">Cancel</Button>
@@ -256,6 +274,7 @@ export const Modal = {
 	Trigger,
 	Content,
 	Title,
+	Description,
 	Body,
 	Footer,
 	Close
