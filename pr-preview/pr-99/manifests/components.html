@@ -576,13 +576,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><a class="filter-pill err" data-k="errors" href="#filter-errors">10/25 prop type errors</a><a class="filter-pill info" data-k="infos" href="#filter-infos">10/25 infos</a><span class="filter-pill ok" aria-disabled="true">191 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><a class="filter-pill err" data-k="errors" href="#filter-errors">10/25 prop type errors</a><a class="filter-pill info" data-k="infos" href="#filter-infos">10/25 infos</a><span class="filter-pill ok" aria-disabled="true">192 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-docgen-typescript</code>. Generation took <strong>3.5s</strong>.
+              Using <code>react-docgen-typescript</code>. Generation took <strong>3.6s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -5634,7 +5634,7 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
       <div class="badges">
         <label for="c-13-components-modal-err" class="badge err as-toggle">prop type error</label>
         <label for="c-13-components-modal-info" class="badge info as-toggle">1 info</label>
-        <label for="c-13-components-modal-stories" class="badge ok as-toggle">5 stories</label>
+        <label for="c-13-components-modal-stories" class="badge ok as-toggle">6 stories</label>
         
       </div>
     </div>
@@ -5726,6 +5726,37 @@ export const Default: Story = {
 
 		await userEvent.click(body.getByRole(&#39;button&#39;, { name: /cancel/i }));
 		await waitFor(() =&gt; expect(body.queryByRole(&#39;dialog&#39;)).not.toBeInTheDocument());
+	}
+};
+
+/** `Modal.Description` sits 0.5rem below `Modal.Title` and doubles as the accessible description. */
+export const WithDescription: Story = {
+	render: () =&gt; (
+		&lt;Modal.Root&gt;
+			&lt;Modal.Trigger asChild&gt;
+				&lt;Button variant=&quot;secondary&quot;&gt;Delete carrier&lt;/Button&gt;
+			&lt;/Modal.Trigger&gt;
+			&lt;Modal.Content&gt;
+				&lt;Modal.Title&gt;Delete carrier&lt;/Modal.Title&gt;
+				&lt;Modal.Description&gt;This action cannot be undone.&lt;/Modal.Description&gt;
+				&lt;Modal.Footer&gt;
+					&lt;Modal.Close asChild&gt;
+						&lt;Button variant=&quot;ghost&quot;&gt;Cancel&lt;/Button&gt;
+					&lt;/Modal.Close&gt;
+					&lt;Button variant=&quot;primary&quot;&gt;Delete&lt;/Button&gt;
+				&lt;/Modal.Footer&gt;
+			&lt;/Modal.Content&gt;
+		&lt;/Modal.Root&gt;
+	),
+	play: async ({ canvasElement }) =&gt; {
+		const canvas = within(canvasElement);
+		const body = within(document.body);
+
+		await userEvent.click(canvas.getByRole(&#39;button&#39;, { name: /delete carrier/i }));
+
+		const dialog = await body.findByRole(&#39;dialog&#39;, { name: /delete carrier/i });
+		await waitFor(() =&gt; expect(dialog).toBeVisible());
+		await expect(dialog).toHaveAccessibleDescription(/cannot be undone/i);
 	}
 };
 
@@ -5904,6 +5935,31 @@ export const Alert: Story = {
             &lt;Modal.Body&gt;
                 &lt;p&gt;This will remove the carrier from your agency. This action cannot be undone.&lt;/p&gt;
             &lt;/Modal.Body&gt;
+            &lt;Modal.Footer&gt;
+                &lt;Modal.Close asChild&gt;
+                    &lt;Button variant=&quot;ghost&quot;&gt;Cancel&lt;/Button&gt;
+                &lt;/Modal.Close&gt;
+                &lt;Button variant=&quot;primary&quot;&gt;Delete&lt;/Button&gt;
+            &lt;/Modal.Footer&gt;
+        &lt;/Modal.Content&gt;
+    &lt;/Modal.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Description</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">`Modal.Description` sits 0.5rem below `Modal.Title` and doubles as the accessible description.</div>
+              <pre><code>const WithDescription = () =&gt; (
+    &lt;Modal.Root&gt;
+        &lt;Modal.Trigger asChild&gt;
+            &lt;Button variant=&quot;secondary&quot;&gt;Delete carrier&lt;/Button&gt;
+        &lt;/Modal.Trigger&gt;
+        &lt;Modal.Content&gt;
+            &lt;Modal.Title&gt;Delete carrier&lt;/Modal.Title&gt;
+            &lt;Modal.Description&gt;This action cannot be undone.&lt;/Modal.Description&gt;
             &lt;Modal.Footer&gt;
                 &lt;Modal.Close asChild&gt;
                     &lt;Button variant=&quot;ghost&quot;&gt;Cancel&lt;/Button&gt;
@@ -11952,7 +12008,7 @@ export const Delays: Story = {
       <div class="badges">
         <label for="c-error-6-components-modal-err" class="badge err as-toggle">prop type error</label>
         <label for="c-error-6-components-modal-info" class="badge info as-toggle">1 info</label>
-        <label for="c-error-6-components-modal-stories" class="badge ok as-toggle">5 stories</label>
+        <label for="c-error-6-components-modal-stories" class="badge ok as-toggle">6 stories</label>
         
       </div>
     </div>
@@ -12044,6 +12100,37 @@ export const Default: Story = {
 
 		await userEvent.click(body.getByRole(&#39;button&#39;, { name: /cancel/i }));
 		await waitFor(() =&gt; expect(body.queryByRole(&#39;dialog&#39;)).not.toBeInTheDocument());
+	}
+};
+
+/** `Modal.Description` sits 0.5rem below `Modal.Title` and doubles as the accessible description. */
+export const WithDescription: Story = {
+	render: () =&gt; (
+		&lt;Modal.Root&gt;
+			&lt;Modal.Trigger asChild&gt;
+				&lt;Button variant=&quot;secondary&quot;&gt;Delete carrier&lt;/Button&gt;
+			&lt;/Modal.Trigger&gt;
+			&lt;Modal.Content&gt;
+				&lt;Modal.Title&gt;Delete carrier&lt;/Modal.Title&gt;
+				&lt;Modal.Description&gt;This action cannot be undone.&lt;/Modal.Description&gt;
+				&lt;Modal.Footer&gt;
+					&lt;Modal.Close asChild&gt;
+						&lt;Button variant=&quot;ghost&quot;&gt;Cancel&lt;/Button&gt;
+					&lt;/Modal.Close&gt;
+					&lt;Button variant=&quot;primary&quot;&gt;Delete&lt;/Button&gt;
+				&lt;/Modal.Footer&gt;
+			&lt;/Modal.Content&gt;
+		&lt;/Modal.Root&gt;
+	),
+	play: async ({ canvasElement }) =&gt; {
+		const canvas = within(canvasElement);
+		const body = within(document.body);
+
+		await userEvent.click(canvas.getByRole(&#39;button&#39;, { name: /delete carrier/i }));
+
+		const dialog = await body.findByRole(&#39;dialog&#39;, { name: /delete carrier/i });
+		await waitFor(() =&gt; expect(dialog).toBeVisible());
+		await expect(dialog).toHaveAccessibleDescription(/cannot be undone/i);
 	}
 };
 
@@ -12222,6 +12309,31 @@ export const Alert: Story = {
             &lt;Modal.Body&gt;
                 &lt;p&gt;This will remove the carrier from your agency. This action cannot be undone.&lt;/p&gt;
             &lt;/Modal.Body&gt;
+            &lt;Modal.Footer&gt;
+                &lt;Modal.Close asChild&gt;
+                    &lt;Button variant=&quot;ghost&quot;&gt;Cancel&lt;/Button&gt;
+                &lt;/Modal.Close&gt;
+                &lt;Button variant=&quot;primary&quot;&gt;Delete&lt;/Button&gt;
+            &lt;/Modal.Footer&gt;
+        &lt;/Modal.Content&gt;
+    &lt;/Modal.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Description</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">`Modal.Description` sits 0.5rem below `Modal.Title` and doubles as the accessible description.</div>
+              <pre><code>const WithDescription = () =&gt; (
+    &lt;Modal.Root&gt;
+        &lt;Modal.Trigger asChild&gt;
+            &lt;Button variant=&quot;secondary&quot;&gt;Delete carrier&lt;/Button&gt;
+        &lt;/Modal.Trigger&gt;
+        &lt;Modal.Content&gt;
+            &lt;Modal.Title&gt;Delete carrier&lt;/Modal.Title&gt;
+            &lt;Modal.Description&gt;This action cannot be undone.&lt;/Modal.Description&gt;
             &lt;Modal.Footer&gt;
                 &lt;Modal.Close asChild&gt;
                     &lt;Button variant=&quot;ghost&quot;&gt;Cancel&lt;/Button&gt;
