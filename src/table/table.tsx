@@ -111,7 +111,7 @@ export type TableRootProps = TableVariants & {
  * </Table.Root>
  * ```
  */
-export const TableRoot = ({ children, ref, ...variants }: PropsWithChildren<TableRootProps>) => {
+export const Root = ({ children, ref, ...variants }: PropsWithChildren<TableRootProps>) => {
 	const { size, sticky, embed } = variants;
 	const styles = tableRecipe(variants);
 	const slots: TableSlotClasses = {
@@ -138,14 +138,14 @@ export const TableRoot = ({ children, ref, ...variants }: PropsWithChildren<Tabl
 		</TableContext>
 	);
 };
-TableRoot.displayName = 'Table.Root';
+Root.displayName = 'Table.Root';
 
 /**
  * `<thead>` wrapper; group your header `Table.Row` here.
  *
  * @summary `<thead>` wrapper for header rows
  */
-export const TableHead = ({
+export const Head = ({
 	children,
 	...props
 }: PropsWithChildren<HTMLAttributes<HTMLTableSectionElement>>) => (
@@ -155,14 +155,14 @@ export const TableHead = ({
 		</thead>
 	</TableSectionContext>
 );
-TableHead.displayName = 'Table.Head';
+Head.displayName = 'Table.Head';
 
 /**
  * `<tbody>` wrapper; the per-row treatment lives on `Table.Row`.
  *
  * @summary `<tbody>` wrapper
  */
-export const TableBody = ({
+export const Body = ({
 	children,
 	...props
 }: PropsWithChildren<HTMLAttributes<HTMLTableSectionElement>>) => (
@@ -172,7 +172,7 @@ export const TableBody = ({
 		</tbody>
 	</TableSectionContext>
 );
-TableBody.displayName = 'Table.Body';
+Body.displayName = 'Table.Body';
 
 const rowStyles = tv({
 	base: '',
@@ -200,14 +200,14 @@ const rowStyles = tv({
  *
  * @summary Table row element
  */
-export const TableRow = ({ className, ...props }: ComponentProps<'tr'>) => {
+export const Row = ({ className, ...props }: ComponentProps<'tr'>) => {
 	const { headRow, bodyRow } = useTableSlots();
 	const body = use(TableSectionContext) === 'body';
 	return (
 		<tr data-slot="table-row" className={cn(body ? bodyRow : headRow, className)} {...props} />
 	);
 };
-TableRow.displayName = 'Table.Row';
+Row.displayName = 'Table.Row';
 
 const headerStyles = tv({
 	base: `h-12 border-b border-border-default-base-primary text-left align-middle text-sm font-light whitespace-nowrap text-text-default-base-tertiary ${CELL_INLINE_PADDING}`,
@@ -224,14 +224,14 @@ const headerStyles = tv({
  *
  * @summary Header cell element
  */
-export const TableHeader = ({
+export const Header = ({
 	className,
 	...props
 }: PropsWithChildren<HTMLAttributes<HTMLTableCellElement>>) => {
 	const { header } = useTableSlots();
 	return <th data-slot="table-header" className={cn(header, className)} {...props} />;
 };
-TableHeader.displayName = 'Table.Header';
+Header.displayName = 'Table.Header';
 
 const cellStyles = tv({
 	// `size` sets the row min-height; for table cells `height` acts as a floor
@@ -249,20 +249,20 @@ const cellStyles = tv({
  *
  * @summary Data cell element
  */
-export const TableCell = ({
+export const Cell = ({
 	className,
 	...props
 }: PropsWithChildren<TdHTMLAttributes<HTMLTableCellElement>>) => {
 	const { cell } = useTableSlots();
 	return <td data-slot="table-cell" className={cn(cell, className)} {...props} />;
 };
-TableCell.displayName = 'Table.Cell';
+Cell.displayName = 'Table.Cell';
 
 const expandButtonStyles = tv({
 	base: 'relative z-[1] [&>svg]:shrink-0 [&>svg]:transition-transform [&>svg]:duration-200 data-[state=open]:[&>svg]:rotate-180'
 });
 
-type TableExpandButtonProps = {
+type ExpandButtonProps = {
 	toggleExpanded: () => void;
 	isExpanded: boolean;
 } & ButtonProps;
@@ -272,12 +272,12 @@ type TableExpandButtonProps = {
  *
  * @summary Expand/collapse toggle button for an expandable row
  */
-export const TableExpandButton = ({
+export const ExpandButton = ({
 	toggleExpanded,
 	isExpanded,
 	className,
 	...props
-}: TableExpandButtonProps) => (
+}: ExpandButtonProps) => (
 	<Button
 		variant="ghost"
 		onClick={toggleExpanded}
@@ -288,7 +288,7 @@ export const TableExpandButton = ({
 		<IconKeyboardArrowDown />
 	</Button>
 );
-TableExpandButton.displayName = 'Table.ExpandButton';
+ExpandButton.displayName = 'Table.ExpandButton';
 
 /**
  * Full-width detail row revealed under its parent when expanded. Put content in
@@ -296,7 +296,7 @@ TableExpandButton.displayName = 'Table.ExpandButton';
  *
  * @summary Detail row shown under an expanded parent row
  */
-export const TableExpandedRow = ({
+export const ExpandedRow = ({
 	className,
 	...props
 }: PropsWithChildren<HTMLAttributes<HTMLTableRowElement>>) => (
@@ -306,7 +306,7 @@ export const TableExpandedRow = ({
 		{...props}
 	/>
 );
-TableExpandedRow.displayName = 'Table.ExpandedRow';
+ExpandedRow.displayName = 'Table.ExpandedRow';
 
 const rowActionsStyles = tv({
 	base: [
@@ -326,9 +326,9 @@ const rowActionsStyles = tv({
  *
  * @summary Hover-revealed row action cluster
  */
-export const TableRowActions = ({ children }: PropsWithChildren) => (
+export const RowActions = ({ children }: PropsWithChildren) => (
 	<div data-slot="table-row-actions" className={rowActionsStyles()}>
 		{children}
 	</div>
 );
-TableRowActions.displayName = 'Table.RowActions';
+RowActions.displayName = 'Table.RowActions';
