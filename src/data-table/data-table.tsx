@@ -24,7 +24,6 @@ import { tv } from 'tailwind-variants';
 
 import { cn } from '../../lib';
 import { Pagination, type PaginationProps } from '../pagination';
-import { IconArrowUpward, IconSwapVert } from './icons';
 import {
 	TableBody,
 	TableCell,
@@ -33,7 +32,8 @@ import {
 	TableRoot,
 	TableRow,
 	type TableRootProps
-} from './table';
+} from '../table/table';
+import { IconArrowUpward, IconSwapVert } from './icons';
 
 /* ------------ Column meta ------------ */
 

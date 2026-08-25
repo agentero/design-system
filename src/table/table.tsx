@@ -95,7 +95,7 @@ export type TableRootProps = TableVariants & {
  *
  * @example
  * ```tsx
- * import { Table } from '@agentero/design-system/data-table';
+ * import { Table } from '@agentero/design-system/table';
  *
  * <Table.Root size="md" sticky="head">
  *   <Table.Head>
