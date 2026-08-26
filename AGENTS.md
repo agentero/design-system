@@ -11,9 +11,10 @@ This file provides guidance to AI agents when working with code in this reposito
 - `yarn tsc` — typecheck via `tsgo` (`@typescript/native-preview`), not stock `tsc`.
 - `yarn lint` — runs `oxlint src/ lib/` then `oxfmt --check src/ lib/`. Both must pass.
 - `yarn lint:format` — just the `oxfmt` check. There is no `format:write` script; run `yarn oxfmt src/ lib/` directly to apply formatting.
+- `yarn check:manifest` — validates `storybook-static/manifests/components.json` (description, `@summary`, props and import line per entry). Needs `yarn build-storybook` first; CI runs both in the `manifest` job.
 - `yarn test` — runs both Vitest projects declared in `vite.config.ts`: `storybook` (story files as tests, via `@storybook/addon-vitest` + Playwright/Chromium) and `unit` (plain node tests, `src/**/*.test.ts`). `yarn test:storybook` runs only the story suite; `yarn vitest run <file>` runs a single one.
 
-CI (`.github/workflows/ci.yml`) runs `yarn lint`, `yarn tsc` and `yarn test` on PRs to `master` — nothing else gates merges.
+CI (`.github/workflows/ci.yml`) runs `yarn lint`, `yarn tsc`, `yarn test` and the `manifest` job (`yarn build-storybook` + `yarn check:manifest`) on PRs to `master` — nothing else gates merges.
 
 ## Architecture
 

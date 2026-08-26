@@ -3,6 +3,15 @@ import { expect, userEvent, within } from 'storybook/test';
 
 import { Tabs } from '.';
 
+/**
+ * Tabs is a compound built on Radix UI: `Root` owns the selected tab, `List`
+ * holds the `Trigger`s, and one `Content` renders per tab. `variant` picks the
+ * look — `line` (default) underlines the active tab, `enclosed` renders
+ * segmented pills, `button` renders button-like tabs.
+ *
+ * `Label` is text styled as an inactive trigger, for a single title sitting in
+ * the same row as the tabs.
+ */
 const meta = {
 	title: 'Components/Tabs',
 	component: Tabs.Root,
