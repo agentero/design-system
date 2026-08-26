@@ -3670,198 +3670,6 @@
       ],
       "import": "import { Button, DataTable, DropdownMenu, Pagination, Table } from \"@agentero/design-system\";"
     },
-    "components-table": {
-      "id": "components-table",
-      "name": "Table.Root",
-      "path": "./src/data-table/table.stories.tsx",
-      "jsDocTags": {
-        "summary": [
-          "Table root that owns the scroll viewport and `<table>` element"
-        ],
-        "example": [
-          "```tsx\nimport { Table } from '@agentero/design-system/data-table';\n\n<Table.Root size=\"md\" sticky=\"head\">\n  <Table.Head>\n    <Table.Row>\n      <Table.Header>Name</Table.Header>\n    </Table.Row>\n  </Table.Head>\n  <Table.Body>\n    <Table.Row>\n      <Table.Cell>Jane Doe</Table.Cell>\n    </Table.Row>\n  </Table.Body>\n</Table.Root>\n```"
-        ]
-      },
-      "description": "Low-level presentational table primitive: native `<table>` markup themed for\nscrolling, sticky rows, cell padding, dividers, hover, and expandable rows.\nFor sorting/toolbar/pagination, prefer `DataTable`.",
-      "summary": "Table root that owns the scroll viewport and `<table>` element",
-      "reactComponentMeta": {
-        "displayName": "Table.Root",
-        "exportName": "Table",
-        "filePath": "/home/runner/work/design-system/design-system/src/data-table/index.ts",
-        "description": "The outermost part of the low-level presentational table primitive — a thin\nthemed wrapper over native `<table>` markup (scrolling, sticky rows, row\nsizing, dividers, hover, expandable rows). It renders the scroll viewport and\n`<table>`, shares variants with the other parts via context, and forwards\n`ref` to the scroll container. The viewport fills its (bounded) parent — cap\nheight by constraining that parent.\n\nCompose `Root` with `Head` / `Body` / `Row` / `Header` / `Cell`, plus\n`ExpandButton` / `ExpandedRow` and `RowActions`. For sorting, toolbar and\npagination, prefer `DataTable`, which is built on top of this.",
-        "jsDocTags": {
-          "summary": [
-            "Table root that owns the scroll viewport and `<table>` element"
-          ],
-          "example": [
-            "```tsx\nimport { Table } from '@agentero/design-system/data-table';\n\n<Table.Root size=\"md\" sticky=\"head\">\n  <Table.Head>\n    <Table.Row>\n      <Table.Header>Name</Table.Header>\n    </Table.Row>\n  </Table.Head>\n  <Table.Body>\n    <Table.Row>\n      <Table.Cell>Jane Doe</Table.Cell>\n    </Table.Row>\n  </Table.Body>\n</Table.Root>\n```"
-          ]
-        },
-        "props": {
-          "enclosed": {
-            "name": "enclosed",
-            "required": false,
-            "type": {
-              "name": "boolean"
-            },
-            "description": "",
-            "defaultValue": null
-          },
-          "embed": {
-            "name": "embed",
-            "required": false,
-            "type": {
-              "name": "boolean"
-            },
-            "description": "",
-            "defaultValue": null
-          },
-          "size": {
-            "name": "size",
-            "required": false,
-            "type": {
-              "name": "enum",
-              "raw": "\"sm\" | \"md\" | \"lg\"",
-              "value": [
-                {
-                  "value": "\"sm\""
-                },
-                {
-                  "value": "\"md\""
-                },
-                {
-                  "value": "\"lg\""
-                }
-              ]
-            },
-            "description": "",
-            "defaultValue": null
-          },
-          "sticky": {
-            "name": "sticky",
-            "required": false,
-            "type": {
-              "name": "enum",
-              "raw": "\"header\" | \"headerAndFooter\"",
-              "value": [
-                {
-                  "value": "\"header\""
-                },
-                {
-                  "value": "\"headerAndFooter\""
-                }
-              ]
-            },
-            "description": "",
-            "defaultValue": null
-          },
-          "ref": {
-            "name": "ref",
-            "required": false,
-            "type": {
-              "name": "Ref<HTMLDivElement> | undefined"
-            },
-            "description": "",
-            "defaultValue": null,
-            "parent": {
-              "name": "TableRootProps",
-              "fileName": "src/data-table/table.tsx"
-            },
-            "declarations": [
-              {
-                "name": "TypeLiteral",
-                "fileName": "src/data-table/table.tsx"
-              }
-            ]
-          },
-          "children": {
-            "name": "children",
-            "required": false,
-            "type": {
-              "name": "ReactNode"
-            },
-            "description": "",
-            "defaultValue": null,
-            "parent": {
-              "name": "PropsWithChildren",
-              "fileName": "node_modules/@types/react/index.d.ts"
-            },
-            "declarations": [
-              {
-                "name": "TypeLiteral",
-                "fileName": "node_modules/@types/react/index.d.ts"
-              }
-            ]
-          }
-        }
-      },
-      "stories": [
-        {
-          "id": "components-table--default",
-          "name": "Default",
-          "snippet": "const Default = args => renderTable(args);",
-          "description": "Default args playground.",
-          "summary": "Default table"
-        },
-        {
-          "id": "components-table--sizes",
-          "name": "Sizes",
-          "snippet": "const Sizes = () => (\n    <div className=\"flex flex-col gap-6\">\n        {(['sm', 'md', 'lg'] as const).map(size => (\n            <div key={size} className=\"flex flex-col gap-1\">\n                <span className=\"text-xs text-text-default-base-tertiary\">size=&quot;{size}&quot;</span>\n                {renderTable({ size })}\n            </div>\n        ))}\n    </div>\n);",
-          "description": "The three row densities. `size` sets row min-height: sm 48 / md 64 / lg 88px.",
-          "summary": "size — sm / md / lg"
-        },
-        {
-          "id": "components-table--sticky-header",
-          "name": "Sticky Header",
-          "snippet": "const StickyHeader = args => renderTable(args);",
-          "description": "`sticky=\"header\"` pins the header while the body scrolls. Needs a bounded-height parent.",
-          "summary": "sticky=\"header\" with a scrolling body"
-        },
-        {
-          "id": "components-table--sticky-header-and-footer",
-          "name": "Sticky Header And Footer",
-          "snippet": "const StickyHeaderAndFooter = args => renderTable(args, { totals: true });",
-          "description": "`sticky=\"headerAndFooter\"` pins the header and the last body row (totals here).",
-          "summary": "sticky=\"headerAndFooter\" with a pinned totals row"
-        },
-        {
-          "id": "components-table--embed",
-          "name": "Embed",
-          "snippet": "const Embed = args => renderTable(args);",
-          "description": "`embed` drops the per-row dividers and tightens the edge gutter to 1rem.",
-          "summary": "embed — no row dividers, 1rem edge gutter"
-        },
-        {
-          "id": "components-table--enclosed",
-          "name": "Enclosed",
-          "snippet": "const Enclosed = args => renderTable(args);",
-          "description": "`enclosed` wraps the table in a bordered, rounded container — the standalone\n\"card\" look, as opposed to a full-bleed page table.",
-          "summary": "enclosed — bordered, rounded card container"
-        },
-        {
-          "id": "components-table--with-checkbox",
-          "name": "With Checkbox",
-          "snippet": "const WithCheckbox = args => renderTable(args, { checkbox: true });",
-          "description": "A leading checkbox column; checkbox cells collapse to zero width.",
-          "summary": "Selectable rows with a collapsing checkbox column"
-        },
-        {
-          "id": "components-table--with-row-actions",
-          "name": "With Row Actions",
-          "snippet": "const WithRowActions = args => renderTable(args, { actions: true });",
-          "description": "Hover-revealed row actions pinned to the trailing edge.",
-          "summary": "Hover-revealed row actions"
-        },
-        {
-          "id": "components-table--expandable-rows",
-          "name": "Expandable Rows",
-          "snippet": "const ExpandableRows = args => {\n    const Demo = () => {\n        const [openId, setOpenId] = useState<string | null>(ROWS[0]!.id);\n        return (\n            <Table.Root {...args}>\n                <Table.Head>\n                    <Table.Row>\n                        <Table.Header>\n                            <span className=\"sr-only\">Expand</span>\n                        </Table.Header>\n                        <Table.Header>Name</Table.Header>\n                        <Table.Header>Email</Table.Header>\n                        <Table.Header>Role</Table.Header>\n                    </Table.Row>\n                </Table.Head>\n                <Table.Body>\n                    {ROWS.slice(0, 4).map(row => (\n                        <Fragment key={row.id}>\n                            <Table.Row>\n                                <Table.Cell>\n                                    <Table.ExpandButton\n                                        isExpanded={openId === row.id}\n                                        toggleExpanded={() => setOpenId(openId === row.id ? null : row.id)}\n                                        aria-label={`Toggle ${row.name}`}\n                                    />\n                                </Table.Cell>\n                                <Table.Cell className=\"font-bold\">{row.name}</Table.Cell>\n                                <Table.Cell className=\"text-text-default-base-secondary\">{row.email}</Table.Cell>\n                                <Table.Cell>{row.role}</Table.Cell>\n                            </Table.Row>\n                            {openId === row.id && (\n                                <Table.ExpandedRow>\n                                    <Table.Cell colSpan={4}>\n                                        <div className=\"py-2 text-text-default-base-secondary\">\n                                            Extended details for {row.name} — {row.amount} lifetime value.\n                                        </div>\n                                    </Table.Cell>\n                                </Table.ExpandedRow>\n                            )}\n                        </Fragment>\n                    ))}\n                </Table.Body>\n            </Table.Root>\n        );\n    };\n    return <Demo />;\n};",
-          "description": "`Table.ExpandButton` toggles a `Table.ExpandedRow` detail panel under its row.",
-          "summary": "Expandable rows with a detail panel"
-        }
-      ],
-      "import": "import { Button, Table } from \"@agentero/design-system\";\nimport { Fragment } from \"react\";"
-    },
     "components-divider": {
       "id": "components-divider",
       "name": "Divider",
@@ -5634,6 +5442,198 @@
       ],
       "import": "import { Switch } from \"@agentero/design-system\";"
     },
+    "components-table": {
+      "id": "components-table",
+      "name": "Table.Root",
+      "path": "./src/table/table.stories.tsx",
+      "jsDocTags": {
+        "summary": [
+          "Table root that owns the scroll viewport and `<table>` element"
+        ],
+        "example": [
+          "```tsx\nimport { Table } from '@agentero/design-system/table';\n\n<Table.Root size=\"md\" sticky=\"head\">\n  <Table.Head>\n    <Table.Row>\n      <Table.Header>Name</Table.Header>\n    </Table.Row>\n  </Table.Head>\n  <Table.Body>\n    <Table.Row>\n      <Table.Cell>Jane Doe</Table.Cell>\n    </Table.Row>\n  </Table.Body>\n</Table.Root>\n```"
+        ]
+      },
+      "description": "Low-level presentational table primitive: native `<table>` markup themed for\nscrolling, sticky rows, cell padding, dividers, hover, and expandable rows.\nFor sorting/toolbar/pagination, prefer `DataTable`.",
+      "summary": "Table root that owns the scroll viewport and `<table>` element",
+      "reactComponentMeta": {
+        "displayName": "Table.Root",
+        "exportName": "Table",
+        "filePath": "/home/runner/work/design-system/design-system/src/table/index.ts",
+        "description": "The outermost part of the low-level presentational table primitive — a thin\nthemed wrapper over native `<table>` markup (scrolling, sticky rows, row\nsizing, dividers, hover, expandable rows). It renders the scroll viewport and\n`<table>`, shares variants with the other parts via context, and forwards\n`ref` to the scroll container. The viewport fills its (bounded) parent — cap\nheight by constraining that parent.\n\nCompose `Root` with `Head` / `Body` / `Row` / `Header` / `Cell`, plus\n`ExpandButton` / `ExpandedRow` and `RowActions`. For sorting, toolbar and\npagination, prefer `DataTable`, which is built on top of this.",
+        "jsDocTags": {
+          "summary": [
+            "Table root that owns the scroll viewport and `<table>` element"
+          ],
+          "example": [
+            "```tsx\nimport { Table } from '@agentero/design-system/table';\n\n<Table.Root size=\"md\" sticky=\"head\">\n  <Table.Head>\n    <Table.Row>\n      <Table.Header>Name</Table.Header>\n    </Table.Row>\n  </Table.Head>\n  <Table.Body>\n    <Table.Row>\n      <Table.Cell>Jane Doe</Table.Cell>\n    </Table.Row>\n  </Table.Body>\n</Table.Root>\n```"
+          ]
+        },
+        "props": {
+          "enclosed": {
+            "name": "enclosed",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "",
+            "defaultValue": null
+          },
+          "embed": {
+            "name": "embed",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "",
+            "defaultValue": null
+          },
+          "size": {
+            "name": "size",
+            "required": false,
+            "type": {
+              "name": "enum",
+              "raw": "\"sm\" | \"md\" | \"lg\"",
+              "value": [
+                {
+                  "value": "\"sm\""
+                },
+                {
+                  "value": "\"md\""
+                },
+                {
+                  "value": "\"lg\""
+                }
+              ]
+            },
+            "description": "",
+            "defaultValue": null
+          },
+          "sticky": {
+            "name": "sticky",
+            "required": false,
+            "type": {
+              "name": "enum",
+              "raw": "\"header\" | \"headerAndFooter\"",
+              "value": [
+                {
+                  "value": "\"header\""
+                },
+                {
+                  "value": "\"headerAndFooter\""
+                }
+              ]
+            },
+            "description": "",
+            "defaultValue": null
+          },
+          "ref": {
+            "name": "ref",
+            "required": false,
+            "type": {
+              "name": "Ref<HTMLDivElement> | undefined"
+            },
+            "description": "",
+            "defaultValue": null,
+            "parent": {
+              "name": "TableRootProps",
+              "fileName": "src/table/table.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/table/table.tsx"
+              }
+            ]
+          },
+          "children": {
+            "name": "children",
+            "required": false,
+            "type": {
+              "name": "ReactNode"
+            },
+            "description": "",
+            "defaultValue": null,
+            "parent": {
+              "name": "PropsWithChildren",
+              "fileName": "node_modules/@types/react/index.d.ts"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "node_modules/@types/react/index.d.ts"
+              }
+            ]
+          }
+        }
+      },
+      "stories": [
+        {
+          "id": "components-table--default",
+          "name": "Default",
+          "snippet": "const Default = args => renderTable(args);",
+          "description": "Default args playground.",
+          "summary": "Default table"
+        },
+        {
+          "id": "components-table--sizes",
+          "name": "Sizes",
+          "snippet": "const Sizes = () => (\n    <div className=\"flex flex-col gap-6\">\n        {(['sm', 'md', 'lg'] as const).map(size => (\n            <div key={size} className=\"flex flex-col gap-1\">\n                <span className=\"text-xs text-text-default-base-tertiary\">size=&quot;{size}&quot;</span>\n                {renderTable({ size })}\n            </div>\n        ))}\n    </div>\n);",
+          "description": "The three row densities. `size` sets row min-height: sm 48 / md 64 / lg 88px.",
+          "summary": "size — sm / md / lg"
+        },
+        {
+          "id": "components-table--sticky-header",
+          "name": "Sticky Header",
+          "snippet": "const StickyHeader = args => renderTable(args);",
+          "description": "`sticky=\"header\"` pins the header while the body scrolls. Needs a bounded-height parent.",
+          "summary": "sticky=\"header\" with a scrolling body"
+        },
+        {
+          "id": "components-table--sticky-header-and-footer",
+          "name": "Sticky Header And Footer",
+          "snippet": "const StickyHeaderAndFooter = args => renderTable(args, { totals: true });",
+          "description": "`sticky=\"headerAndFooter\"` pins the header and the last body row (totals here).",
+          "summary": "sticky=\"headerAndFooter\" with a pinned totals row"
+        },
+        {
+          "id": "components-table--embed",
+          "name": "Embed",
+          "snippet": "const Embed = args => renderTable(args);",
+          "description": "`embed` drops the per-row dividers and tightens the edge gutter to 1rem.",
+          "summary": "embed — no row dividers, 1rem edge gutter"
+        },
+        {
+          "id": "components-table--enclosed",
+          "name": "Enclosed",
+          "snippet": "const Enclosed = args => renderTable(args);",
+          "description": "`enclosed` wraps the table in a bordered, rounded container — the standalone\n\"card\" look, as opposed to a full-bleed page table.",
+          "summary": "enclosed — bordered, rounded card container"
+        },
+        {
+          "id": "components-table--with-checkbox",
+          "name": "With Checkbox",
+          "snippet": "const WithCheckbox = args => renderTable(args, { checkbox: true });",
+          "description": "A leading checkbox column; checkbox cells collapse to zero width.",
+          "summary": "Selectable rows with a collapsing checkbox column"
+        },
+        {
+          "id": "components-table--with-row-actions",
+          "name": "With Row Actions",
+          "snippet": "const WithRowActions = args => renderTable(args, { actions: true });",
+          "description": "Hover-revealed row actions pinned to the trailing edge.",
+          "summary": "Hover-revealed row actions"
+        },
+        {
+          "id": "components-table--expandable-rows",
+          "name": "Expandable Rows",
+          "snippet": "const ExpandableRows = args => {\n    const Demo = () => {\n        const [openId, setOpenId] = useState<string | null>(ROWS[0]!.id);\n        return (\n            <Table.Root {...args}>\n                <Table.Head>\n                    <Table.Row>\n                        <Table.Header>\n                            <span className=\"sr-only\">Expand</span>\n                        </Table.Header>\n                        <Table.Header>Name</Table.Header>\n                        <Table.Header>Email</Table.Header>\n                        <Table.Header>Role</Table.Header>\n                    </Table.Row>\n                </Table.Head>\n                <Table.Body>\n                    {ROWS.slice(0, 4).map(row => (\n                        <Fragment key={row.id}>\n                            <Table.Row>\n                                <Table.Cell>\n                                    <Table.ExpandButton\n                                        isExpanded={openId === row.id}\n                                        toggleExpanded={() => setOpenId(openId === row.id ? null : row.id)}\n                                        aria-label={`Toggle ${row.name}`}\n                                    />\n                                </Table.Cell>\n                                <Table.Cell className=\"font-bold\">{row.name}</Table.Cell>\n                                <Table.Cell className=\"text-text-default-base-secondary\">{row.email}</Table.Cell>\n                                <Table.Cell>{row.role}</Table.Cell>\n                            </Table.Row>\n                            {openId === row.id && (\n                                <Table.ExpandedRow>\n                                    <Table.Cell colSpan={4}>\n                                        <div className=\"py-2 text-text-default-base-secondary\">\n                                            Extended details for {row.name} — {row.amount} lifetime value.\n                                        </div>\n                                    </Table.Cell>\n                                </Table.ExpandedRow>\n                            )}\n                        </Fragment>\n                    ))}\n                </Table.Body>\n            </Table.Root>\n        );\n    };\n    return <Demo />;\n};",
+          "description": "`Table.ExpandButton` toggles a `Table.ExpandedRow` detail panel under its row.",
+          "summary": "Expandable rows with a detail panel"
+        }
+      ],
+      "import": "import { Button, Table } from \"@agentero/design-system\";\nimport { Fragment } from \"react\";"
+    },
     "components-tabs": {
       "id": "components-tabs",
       "name": "Tabs.Root",
@@ -6980,6 +6980,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 3625
+    "durationMs": 3891
   }
 }
