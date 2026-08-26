@@ -10,6 +10,7 @@ const config: StorybookConfig = {
 		'@chromatic-com/storybook'
 	],
 	framework: '@storybook/react-vite',
+	features: { experimentalReactComponentMeta: true },
 	typescript: {
 		reactDocgen: 'react-docgen-typescript'
 	}

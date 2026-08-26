@@ -54,6 +54,8 @@ export type AvatarGroupProps = Omit<ComponentPropsWithRef<'div'>, 'children'> & 
  * directly — the group clones each to force a uniform `size`/`variant` and the
  * overlap, so wrapped children won't pick those up.
  *
+ * @summary Overlapping row of avatars, collapsing the rest into `+N`
+ *
  * @example
  * <AvatarGroup size="sm" max={3}>
  * 	<Avatar fallback="AL" colorize="Ada Lovelace" />

@@ -41,6 +41,8 @@ const isMet = (pattern: ValidationRule['pattern'], value: string) =>
  * per rule, each matched via a `RegExp` or a `(value) => boolean` predicate.
  * Presentational only; pair it with your form validation.
  *
+ * @summary Checklist of rules that turn active as the value satisfies them
+ *
  * @example
  * <ValidationList
  * 	value={password}
