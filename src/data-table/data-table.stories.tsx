@@ -4,10 +4,11 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { createColumnHelper, getSortedRowModel, type SortingState } from '@tanstack/react-table';
 import { expect, userEvent, within } from 'storybook/test';
 
-import { DataTable, Table } from '.';
+import { DataTable } from '.';
 import { Button } from '../button';
 import { DropdownMenu } from '../dropdown-menu';
 import { Pagination } from '../pagination';
+import { Table } from '../table';
 
 /* -------------------------------------------------------------------------- */
 /* Inline icons / badges that stand in for application-provided components in   */
