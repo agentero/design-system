@@ -56,6 +56,7 @@
     "lint:format": "oxfmt --check src/ lib/",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
+    "check:manifest": "node scripts/check-manifest.mjs",
     "test": "vitest run",
     "test:storybook": "vitest run --project=storybook"
   },
