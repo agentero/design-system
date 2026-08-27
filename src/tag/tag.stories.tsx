@@ -294,6 +294,43 @@ export const WithIcon: Story = {
 };
 
 /**
+ * `truncate` caps the Tag at its container's width and ellipsizes the label.
+ * The ellipsis sits on a wrapper around each text run, so a Tag that mixes an
+ * icon with a long label keeps the icon at full size next to the clipped text.
+ *
+ * @summary Long labels capped at the container width with an ellipsis
+ */
+export const Truncate: Story = {
+	render: () => (
+		<Stack>
+			<div style={{ width: '9rem' }}>
+				<Tag truncate title="Travel insurance limited lines producer">
+					Travel insurance limited lines producer
+				</Tag>
+			</div>
+			<div style={{ width: '9rem' }}>
+				<Tag truncate color="informative">
+					<IconAdd />
+					Travel insurance limited lines producer
+				</Tag>
+			</div>
+		</Stack>
+	),
+	play: ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const label = canvas.getByTitle('Travel insurance limited lines producer');
+		const textWrapper = label.firstElementChild as HTMLElement;
+
+		expect(label.className).toContain('overflow-hidden');
+		expect(textWrapper.scrollWidth).toBeGreaterThan(textWrapper.clientWidth);
+		// `text-overflow` only ellipsizes a block container — the Tag itself is
+		// a flex one, so the resolved value has to land on the text wrapper.
+		expect(getComputedStyle(textWrapper).textOverflow).toBe('ellipsis');
+		expect(getComputedStyle(textWrapper).display).toBe('block');
+	}
+};
+
+/**
  * Full matrix: every variant for every color, repeated as default, as `pill`,
  * as an interactive `asChild` `<button>`, with a single leading icon, with
  * leading + trailing icons, and icon-only.

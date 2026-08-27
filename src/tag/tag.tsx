@@ -53,8 +53,11 @@ export const tagRecipe = tv({
 		pill: {
 			true: 'rounded-full'
 		},
+		// The ellipsis lives on the text wrapper, not here: the Tag is a flex
+		// container, and `text-overflow` never applies to one — it would clip
+		// mid-glyph with no ellipsis.
 		truncate: {
-			true: 'max-w-full min-w-0 overflow-hidden text-ellipsis whitespace-nowrap'
+			true: 'max-w-full min-w-0 overflow-hidden whitespace-nowrap'
 		},
 		interactive: {
 			true: 'cursor-pointer'
@@ -124,6 +127,22 @@ export type TagProps = Omit<ComponentPropsWithRef<'span'>, 'color'> &
 	};
 
 /**
+ * Gives every text run its own block box so `text-overflow` has something to
+ * act on: React cannot style a bare text node and CSS cannot select the
+ * anonymous flex item one becomes, so the ellipsis has nowhere else to live.
+ * Element children pass through untouched — an icon keeps its own flex item,
+ * and so keeps the gap between it and the label.
+ */
+const ellipsizeTextRuns = (children: ReactNode) =>
+	Children.map(children, child =>
+		typeof child === 'string' || typeof child === 'number' ? (
+			<span className="min-w-0 truncate">{child}</span>
+		) : (
+			child
+		)
+	);
+
+/**
  * Tag is a compact label for statuses, categories, counts, and attributes. As a
  * plain `<span>` it reads as a static badge with no hover. Pass `asChild` to
  * render an interactive link or button instead — that adds the pointer cursor
@@ -153,12 +172,12 @@ export const Tag = ({
 }: TagProps) => {
 	const Comp = asChild ? Slot : 'span';
 
-	// asChild the content lives inside the wrapper child, so inspect its children.
-	const content =
+	// With asChild the content lives inside the wrapper child, so inspect its children.
+	const contentChildren = Children.toArray(
 		asChild && isValidElement<{ children?: ReactNode }>(children)
 			? children.props.children
-			: children;
-	const contentChildren = Children.toArray(content);
+			: children
+	);
 	const hasOnlyIcon = contentChildren.length > 0 && contentChildren.every(isValidElement);
 
 	const mergedClassName = cn(
@@ -166,9 +185,11 @@ export const Tag = ({
 		className
 	);
 
+	const content = truncate && !asChild ? ellipsizeTextRuns(children) : children;
+
 	return (
 		<Comp data-slot="tag" {...props} className={mergedClassName} ref={ref}>
-			{asChild ? <Slottable>{children}</Slottable> : children}
+			{asChild ? <Slottable>{children}</Slottable> : content}
 		</Comp>
 	);
 };
