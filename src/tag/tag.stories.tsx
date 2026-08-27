@@ -296,7 +296,7 @@ export const WithIcon: Story = {
 /**
  * `truncate` caps the Tag at its container's width and ellipsizes the label.
  * The ellipsis sits on a wrapper around each text run, so a Tag that mixes an
- * icon with a long label keeps the icon at full size next to the clipped text.
+ * icon with a long label clips the label and leaves the icon at full size.
  *
  * @summary Long labels capped at the container width with an ellipsis
  */
@@ -327,6 +327,11 @@ export const Truncate: Story = {
 		// a flex one, so the resolved value has to land on the text wrapper.
 		expect(getComputedStyle(textWrapper).textOverflow).toBe('ellipsis');
 		expect(getComputedStyle(textWrapper).display).toBe('block');
+
+		// The label gives way, never the icon: as a flex item it would otherwise
+		// shrink along its width and leave a sliver.
+		const icon = canvasElement.querySelector('svg')!.getBoundingClientRect();
+		expect(Math.round(icon.width)).toBe(Math.round(icon.height));
 	}
 };
 
