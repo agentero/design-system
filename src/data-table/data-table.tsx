@@ -24,16 +24,8 @@ import { tv } from 'tailwind-variants';
 
 import { cn } from '../../lib';
 import { Pagination, type PaginationProps } from '../pagination';
+import { Table, type TableRootProps } from '../table';
 import { IconArrowUpward, IconSwapVert } from './icons';
-import {
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRoot,
-	TableRow,
-	type TableRootProps
-} from './table';
 
 /* ------------ Column meta ------------ */
 
@@ -260,10 +252,10 @@ export const DataTableTable = ({
 				'flex min-h-0 flex-1 flex-col transition-opacity duration-150',
 				isLoading && 'opacity-50'
 			)}>
-			<TableRoot size={size} sticky={sticky} embed={embed} enclosed={enclosed} ref={scrollRef}>
-				<TableHead>
+			<Table.Root size={size} sticky={sticky} embed={embed} enclosed={enclosed} ref={scrollRef}>
+				<Table.Head>
 					{table.getHeaderGroups().map(headerGroup => (
-						<TableRow key={headerGroup.id}>
+						<Table.Row key={headerGroup.id}>
 							{headerGroup.headers.map(header => {
 								const meta = header.column.columnDef.meta as DataTableColumnMeta | undefined;
 								const canSort = header.column.getCanSort();
@@ -287,7 +279,7 @@ export const DataTableTable = ({
 									</>
 								);
 								return (
-									<TableHeader
+									<Table.Header
 										key={header.id}
 										{...meta}
 										aria-sort={
@@ -316,21 +308,21 @@ export const DataTableTable = ({
 										) : (
 											<div className={headerCell({ canSort: false, align })}>{content}</div>
 										)}
-									</TableHeader>
+									</Table.Header>
 								);
 							})}
-						</TableRow>
+						</Table.Row>
 					))}
-				</TableHead>
+				</Table.Head>
 
-				<TableBody>
+				<Table.Body>
 					{table.getRowModel().rows.length ? (
 						table.getRowModel().rows.map(row => {
 							const href = rowHref?.(row.original);
 							const isClickable = !!onRowClick || !!href;
 							return (
 								<Fragment key={row.id}>
-									<TableRow
+									<Table.Row
 										className={cn(
 											'has-aria-expanded:bg-bg-default-base-secondary',
 											isClickable && 'cursor-pointer'
@@ -357,7 +349,7 @@ export const DataTableTable = ({
 										{row.getVisibleCells().map((cell, cellIndex) => {
 											const meta = cell.column.columnDef.meta as DataTableColumnMeta | undefined;
 											return (
-												<TableCell key={cell.id} {...meta}>
+												<Table.Cell key={cell.id} {...meta}>
 													{cellIndex === 0 && href && (
 														<LinkComponent
 															href={href}
@@ -368,24 +360,24 @@ export const DataTableTable = ({
 														/>
 													)}
 													{flexRender(cell.column.columnDef.cell, cell.getContext())}
-												</TableCell>
+												</Table.Cell>
 											);
 										})}
-									</TableRow>
+									</Table.Row>
 								</Fragment>
 							);
 						})
 					) : isLoading ? null : (
-						<TableRow>
-							<TableCell colSpan={colSpan}>
+						<Table.Row>
+							<Table.Cell colSpan={colSpan}>
 								<div data-slot="table-empty-state" className="whitespace-normal">
 									{children}
 								</div>
-							</TableCell>
-						</TableRow>
+							</Table.Cell>
+						</Table.Row>
 					)}
-				</TableBody>
-			</TableRoot>
+				</Table.Body>
+			</Table.Root>
 		</div>
 	);
 };

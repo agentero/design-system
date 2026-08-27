@@ -4,6 +4,12 @@ import { expect, userEvent, within } from 'storybook/test';
 import { Accordion } from '.';
 import { IconKeyboardArrowDown } from './icons';
 
+/**
+ * Accordion is a compound built on Radix UI: `Root` holds the `Item`s, each
+ * with a `Trigger` and a `Content`. `type="single"` (with optional
+ * `collapsible`) opens one section at a time; `type="multiple"` opens them
+ * independently. `enclosed` renders the group as a bordered card.
+ */
 const meta = {
 	title: 'Components/Accordion',
 	component: Accordion.Root,
