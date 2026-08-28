@@ -16,7 +16,7 @@ export const tagRecipe = tv({
 	base: [
 		'inline-flex w-fit min-w-fit items-center gap-1',
 		'rounded-md border border-solid border-transparent px-2',
-		'font-normal leading-normal no-underline',
+		'font-normal leading-normal whitespace-nowrap no-underline',
 		'transition-[background-color,opacity] duration-200',
 		// shrink-0: an icon is a flex item, so without it a narrow Tag squashes it
 		// horizontally instead of clipping the label.
@@ -57,9 +57,10 @@ export const tagRecipe = tv({
 		},
 		// The ellipsis lives on the text wrapper, not here: the Tag is a flex
 		// container, and `text-overflow` never applies to one — it would clip
-		// mid-glyph with no ellipsis.
+		// mid-glyph with no ellipsis. `whitespace-nowrap` already lives on the
+		// base, so this only needs to let the box shrink and hide the overflow.
 		truncate: {
-			true: 'max-w-full min-w-0 overflow-hidden whitespace-nowrap'
+			true: 'max-w-full min-w-0 overflow-hidden'
 		},
 		interactive: {
 			true: 'cursor-pointer'
