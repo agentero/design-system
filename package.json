@@ -32,6 +32,7 @@
     "./divider": "./src/divider/index.ts",
     "./dropdown-menu": "./src/dropdown-menu/index.ts",
     "./hover-card": "./src/hover-card/index.ts",
+    "./input": "./src/input/index.ts",
     "./label": "./src/label/index.ts",
     "./lib": "./lib/index.ts",
     "./loading": "./src/loading/index.ts",
