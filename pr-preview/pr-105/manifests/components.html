@@ -588,13 +588,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">25 components ok</span><span class="filter-pill ok" aria-disabled="true">192 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">25 components ok</span><span class="filter-pill ok" aria-disabled="true">194 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.4s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>4.1s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -6371,7 +6371,7 @@ tablist role is announced.</div>
       <div class="badges">
         <label for="c-21-components-tag-props" class="badge ok as-toggle">8 prop types</label>
         
-        <label for="c-21-components-tag-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-21-components-tag-stories" class="badge ok as-toggle">12 stories</label>
         
         
       </div>
@@ -6650,6 +6650,49 @@ Icons are tinted with each color&#39;s `icon-tag-*` token.</div>
             &lt;/Row&gt;
         ))}
     &lt;/Stack&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Truncate</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Long labels capped at the container width with an ellipsis</div>
+              <div class="hint">`truncate` caps the Tag at its container&#39;s width and ellipsizes the label.
+The ellipsis sits on a wrapper around each text run, so a Tag that mixes an
+icon with a long label clips the label and leaves the icon at full size.</div>
+              <pre><code>const Truncate = () =&gt; (
+    &lt;Stack&gt;
+        &lt;div style={{ width: &#39;9rem&#39; }}&gt;
+            &lt;Tag truncate title=&quot;Travel insurance limited lines producer&quot;&gt;
+                Travel insurance limited lines producer
+            &lt;/Tag&gt;
+        &lt;/div&gt;
+        &lt;div style={{ width: &#39;9rem&#39; }}&gt;
+            &lt;Tag truncate color=&quot;informative&quot;&gt;
+                &lt;IconAdd /&gt;
+                Travel insurance limited lines producer
+            &lt;/Tag&gt;
+        &lt;/div&gt;
+    &lt;/Stack&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Overflows Without Wrapping</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>A too-narrow container overflows a single-line Tag; the label never wraps</div>
+              <div class="hint">Without `truncate`, a Tag never wraps its label onto multiple lines — a
+container narrower than the label just gets overflowed by a single-line
+Tag that keeps its intrinsic width, instead of breaking the label across
+lines and spilling out of the fixed-height box.</div>
+              <pre><code>const OverflowsWithoutWrapping = () =&gt; (
+    &lt;div style={{ width: &#39;9rem&#39;, border: &#39;1px dashed gray&#39; }}&gt;
+        &lt;Tag title=&quot;Travel insurance limited lines producer&quot;&gt;
+            Travel insurance limited lines producer
+        &lt;/Tag&gt;
+    &lt;/div&gt;
 );</code></pre>
             </div>
             <div class="note ok">
