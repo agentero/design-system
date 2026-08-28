@@ -336,6 +336,38 @@ export const Truncate: Story = {
 };
 
 /**
+ * Without `truncate`, a Tag never wraps its label onto multiple lines — a
+ * container narrower than the label just gets overflowed by a single-line
+ * Tag that keeps its intrinsic width, instead of breaking the label across
+ * lines and spilling out of the fixed-height box.
+ *
+ * @summary A too-narrow container overflows a single-line Tag; the label never wraps
+ */
+export const OverflowsWithoutWrapping: Story = {
+	render: () => (
+		<div style={{ width: '9rem', border: '1px dashed gray' }}>
+			<Tag title="Travel insurance limited lines producer">
+				Travel insurance limited lines producer
+			</Tag>
+		</div>
+	),
+	play: ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const label = canvas.getByTitle('Travel insurance limited lines producer');
+
+		expect(getComputedStyle(label).whiteSpace).toBe('nowrap');
+
+		// A single line at `sm` is 24px (`h-6`) tall — if the label had wrapped,
+		// the box would be a multiple of that.
+		const box = label.getBoundingClientRect();
+		expect(Math.round(box.height)).toBe(24);
+
+		// The label keeps its full intrinsic width and overflows the 9rem (144px) container.
+		expect(box.width).toBeGreaterThan(144);
+	}
+};
+
+/**
  * Full matrix: every variant for every color, repeated as default, as `pill`,
  * as an interactive `asChild` `<button>`, with a single leading icon, with
  * leading + trailing icons, and icon-only.
