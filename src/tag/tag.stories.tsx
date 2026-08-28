@@ -294,6 +294,80 @@ export const WithIcon: Story = {
 };
 
 /**
+ * `truncate` caps the Tag at its container's width and ellipsizes the label.
+ * The ellipsis sits on a wrapper around each text run, so a Tag that mixes an
+ * icon with a long label clips the label and leaves the icon at full size.
+ *
+ * @summary Long labels capped at the container width with an ellipsis
+ */
+export const Truncate: Story = {
+	render: () => (
+		<Stack>
+			<div style={{ width: '9rem' }}>
+				<Tag truncate title="Travel insurance limited lines producer">
+					Travel insurance limited lines producer
+				</Tag>
+			</div>
+			<div style={{ width: '9rem' }}>
+				<Tag truncate color="informative">
+					<IconAdd />
+					Travel insurance limited lines producer
+				</Tag>
+			</div>
+		</Stack>
+	),
+	play: ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const label = canvas.getByTitle('Travel insurance limited lines producer');
+		const textWrapper = label.firstElementChild as HTMLElement;
+
+		expect(label.className).toContain('overflow-hidden');
+		expect(textWrapper.scrollWidth).toBeGreaterThan(textWrapper.clientWidth);
+		// `text-overflow` only ellipsizes a block container — the Tag itself is
+		// a flex one, so the resolved value has to land on the text wrapper.
+		expect(getComputedStyle(textWrapper).textOverflow).toBe('ellipsis');
+		expect(getComputedStyle(textWrapper).display).toBe('block');
+
+		// The label gives way, never the icon: as a flex item it would otherwise
+		// shrink along its width and leave a sliver.
+		const icon = canvasElement.querySelector('svg')!.getBoundingClientRect();
+		expect(Math.round(icon.width)).toBe(Math.round(icon.height));
+	}
+};
+
+/**
+ * Without `truncate`, a Tag never wraps its label onto multiple lines — a
+ * container narrower than the label just gets overflowed by a single-line
+ * Tag that keeps its intrinsic width, instead of breaking the label across
+ * lines and spilling out of the fixed-height box.
+ *
+ * @summary A too-narrow container overflows a single-line Tag; the label never wraps
+ */
+export const OverflowsWithoutWrapping: Story = {
+	render: () => (
+		<div style={{ width: '9rem', border: '1px dashed gray' }}>
+			<Tag title="Travel insurance limited lines producer">
+				Travel insurance limited lines producer
+			</Tag>
+		</div>
+	),
+	play: ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const label = canvas.getByTitle('Travel insurance limited lines producer');
+
+		expect(getComputedStyle(label).whiteSpace).toBe('nowrap');
+
+		// A single line at `sm` is 24px (`h-6`) tall — if the label had wrapped,
+		// the box would be a multiple of that.
+		const box = label.getBoundingClientRect();
+		expect(Math.round(box.height)).toBe(24);
+
+		// The label keeps its full intrinsic width and overflows the 9rem (144px) container.
+		expect(box.width).toBeGreaterThan(144);
+	}
+};
+
+/**
  * Full matrix: every variant for every color, repeated as default, as `pill`,
  * as an interactive `asChild` `<button>`, with a single leading icon, with
  * leading + trailing icons, and icon-only.

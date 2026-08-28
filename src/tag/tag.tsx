@@ -16,9 +16,11 @@ export const tagRecipe = tv({
 	base: [
 		'inline-flex w-fit min-w-fit items-center gap-1',
 		'rounded-md border border-solid border-transparent px-2',
-		'font-normal leading-normal no-underline',
+		'font-normal leading-normal whitespace-nowrap no-underline',
 		'transition-[background-color,opacity] duration-200',
-		'[&_svg]:size-3.5'
+		// shrink-0: an icon is a flex item, so without it a narrow Tag squashes it
+		// horizontally instead of clipping the label.
+		'[&_svg]:size-3.5 [&_svg]:shrink-0'
 	],
 	variants: {
 		color: {
@@ -53,8 +55,12 @@ export const tagRecipe = tv({
 		pill: {
 			true: 'rounded-full'
 		},
+		// The ellipsis lives on the text wrapper, not here: the Tag is a flex
+		// container, and `text-overflow` never applies to one — it would clip
+		// mid-glyph with no ellipsis. `whitespace-nowrap` already lives on the
+		// base, so this only needs to let the box shrink and hide the overflow.
 		truncate: {
-			true: 'max-w-full min-w-0 overflow-hidden text-ellipsis whitespace-nowrap'
+			true: 'max-w-full min-w-0 overflow-hidden'
 		},
 		interactive: {
 			true: 'cursor-pointer'
@@ -124,6 +130,22 @@ export type TagProps = Omit<ComponentPropsWithRef<'span'>, 'color'> &
 	};
 
 /**
+ * Gives every text run its own block box so `text-overflow` has something to
+ * act on: React cannot style a bare text node and CSS cannot select the
+ * anonymous flex item one becomes, so the ellipsis has nowhere else to live.
+ * Element children pass through untouched — an icon keeps its own flex item,
+ * and so keeps the gap between it and the label.
+ */
+const ellipsizeTextRuns = (children: ReactNode) =>
+	Children.map(children, child =>
+		typeof child === 'string' || typeof child === 'number' ? (
+			<span className="min-w-0 truncate">{child}</span>
+		) : (
+			child
+		)
+	);
+
+/**
  * Tag is a compact label for statuses, categories, counts, and attributes. As a
  * plain `<span>` it reads as a static badge with no hover. Pass `asChild` to
  * render an interactive link or button instead — that adds the pointer cursor
@@ -153,12 +175,12 @@ export const Tag = ({
 }: TagProps) => {
 	const Comp = asChild ? Slot : 'span';
 
-	// asChild the content lives inside the wrapper child, so inspect its children.
-	const content =
+	// With asChild the content lives inside the wrapper child, so inspect its children.
+	const contentChildren = Children.toArray(
 		asChild && isValidElement<{ children?: ReactNode }>(children)
 			? children.props.children
-			: children;
-	const contentChildren = Children.toArray(content);
+			: children
+	);
 	const hasOnlyIcon = contentChildren.length > 0 && contentChildren.every(isValidElement);
 
 	const mergedClassName = cn(
@@ -166,9 +188,11 @@ export const Tag = ({
 		className
 	);
 
+	const content = truncate && !asChild ? ellipsizeTextRuns(children) : children;
+
 	return (
 		<Comp data-slot="tag" {...props} className={mergedClassName} ref={ref}>
-			{asChild ? <Slottable>{children}</Slottable> : children}
+			{asChild ? <Slottable>{children}</Slottable> : content}
 		</Comp>
 	);
 };
