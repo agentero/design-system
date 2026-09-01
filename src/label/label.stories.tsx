@@ -76,8 +76,17 @@ export const Required: Story = {
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 
-		await expect(canvas.getByText('Full name')).toBeInTheDocument();
-		await expect(canvas.getByText('*')).toHaveAttribute('aria-hidden', 'true');
+		const text = canvas.getByText('Full name');
+		const asterisk = canvas.getByText('*');
+
+		await expect(asterisk).toHaveAttribute('aria-hidden', 'true');
+
+		// Spacing comes from the row's `gap-1` alone. A margin on the asterisk on
+		// top of it would put it 8px from the caption, where Figma spaces every
+		// part by 4.
+		await expect(asterisk.getBoundingClientRect().left - text.getBoundingClientRect().right).toBe(
+			4
+		);
 	}
 };
 
