@@ -33,8 +33,11 @@ const meta = {
 			options: ['vertical', 'horizontal']
 		},
 		controlId: { control: 'text' },
-		errors: { table: { disable: true } },
-		children: { table: { disable: true } }
+		// `control: false` rather than `table: { disable: true }`: these two have
+		// no useful widget, but `children` is the field's only required prop and
+		// `errors` is one of its seven — both have to keep their row in the docs.
+		errors: { control: false },
+		children: { control: false }
 	},
 	args: {
 		label: 'Agency name',
@@ -151,6 +154,10 @@ export const WithTooltipAndOptional: Story = {
 		// The trigger lives outside the <label>: the control's name is only the
 		// caption…
 		await expect(canvas.getByRole('textbox', { name: 'Scheduling link' })).toBeInTheDocument();
+		// …the muted "(optional)" suffix is a pseudo-element, so it is read off the
+		// computed style rather than the DOM, and it stays out of that name.
+		const caption = canvasElement.querySelector('[data-slot="label"] span') as HTMLElement;
+		await expect(getComputedStyle(caption, '::after').content).toContain('optional');
 		// …and the trigger is an independently focusable, named button.
 		const trigger = canvas.getByRole('button', { name: 'More information' });
 		await expect(trigger).toBeInTheDocument();

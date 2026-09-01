@@ -36,7 +36,8 @@ const meta = {
 		optional: { control: 'boolean' },
 		required: { control: 'boolean' },
 		disabled: { control: 'boolean' },
-		errors: { table: { disable: true } }
+		// Keeps the documented row; only the useless widget goes.
+		errors: { control: false }
 	},
 	args: {
 		label: 'Agency name',
@@ -92,6 +93,9 @@ export const WithDescriptionAndTooltip: Story = {
 
 		await expect(input).toHaveAccessibleDescription('Shown on your public profile.');
 		await expect(canvas.getByRole('button', { name: 'More information' })).toBeInTheDocument();
+		// The suffix is a pseudo-element, so it is read off the computed style.
+		const caption = canvasElement.querySelector('[data-slot="label"] span') as HTMLElement;
+		await expect(getComputedStyle(caption, '::after').content).toContain('optional');
 	}
 };
 
@@ -136,7 +140,13 @@ export const Required: Story = {
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 
+		// Both halves, since the JSDoc promises both: the native attribute…
 		await expect(canvas.getByLabelText(/Full name/)).toBeRequired();
+		// …and the decorative asterisk, which is aria-hidden and so stays out of
+		// the control's accessible name.
+		const asterisk = canvas.getByText('*');
+		await expect(asterisk).toHaveAttribute('aria-hidden');
+		await expect(canvas.getByRole('textbox', { name: 'Full name' })).toBeInTheDocument();
 	}
 };
 
