@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, spyOn, userEvent, within } from 'storybook/test';
 
 import { Input } from '../input';
+import { InputGroup } from '../input-group';
 import { useFieldContext } from './context';
 import { Field } from './field';
 
@@ -420,13 +421,14 @@ export const Interaction: Story = {
 	}
 };
 
-// An input with a trailing addon: the group is a wrapper, so the wiring has to
-// reach the <input> inside it rather than the <div> around it.
-const EmailWithDomain = () => {
+// An input with a trailing text addon, built on the real InputGroup: the group
+// is a wrapper, so the wiring has to reach the <input> inside it rather than the
+// <div> around it.
+const HandleWithDomain = () => {
 	const field = useFieldContext();
 
 	return (
-		<div data-slot="input-group" style={{ display: 'flex', alignItems: 'center', gap: '.5rem' }}>
+		<InputGroup.Root>
 			<Input
 				type="text"
 				placeholder="jane"
@@ -435,46 +437,60 @@ const EmailWithDomain = () => {
 				aria-invalid={field?.invalid || undefined}
 				required={field?.required || undefined}
 			/>
-			<span aria-hidden>@acme-insurance.com</span>
-		</div>
+			<InputGroup.Text>@example.com</InputGroup.Text>
+		</InputGroup.Root>
 	);
 };
 
 /**
- * A control made of several elements — an input with a trailing addon — where
- * there is no single child for the field to inject into. The component reads
- * `useFieldContext()` and puts the wiring on the element that really is the
- * control, so the caption still points at the `<input>` and not at the wrapper.
+ * A control made of several elements — an
+ * [InputGroup](?path=/docs/components-inputgroup--docs) holding an input and a
+ * text suffix — where there is no single child for the field to inject into. The
+ * component reads `useFieldContext()` and puts the wiring on the element that
+ * really is the control, so the caption still points at the `<input>` and not at
+ * the group's `div`.
  *
- * @summary Composite control wiring itself through useFieldContext
+ * This is the escape hatch, shown on the real component. For a text field with
+ * an addon you do not need it: `FieldText` takes
+ * `leadingAddon`/`trailingAddon` and does exactly this internally.
+ *
+ * @summary Input group wiring itself to the field through useFieldContext
  */
 export const CompositeControl: Story = {
 	tags: ['!manifest'],
 	render: () => (
 		<Field
 			label="Work email"
-			description="We only use it to send the magic link."
+			description="We only use it to send the sign-in link."
 			data-testid="composite-field">
-			<EmailWithDomain />
+			<HandleWithDomain />
 		</Field>
 	),
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 		const control = canvas.getByRole('textbox', { name: 'Work email' });
+		const group = canvasElement.querySelector('[data-slot="input-group"]') as HTMLElement;
 
 		// Wired through, despite sitting one level deeper than the field's parts.
 		await expect(control).toHaveAttribute('id');
-		await expect(control).toHaveAccessibleDescription('We only use it to send the magic link.');
-		// And it really is nested inside the group, not hoisted out of it.
-		await expect(control.closest('[data-slot="input-group"]')).not.toBeNull();
+		await expect(control).toHaveAccessibleDescription('We only use it to send the sign-in link.');
+		// And it really is nested inside the group, not hoisted out of it — the
+		// group keeps the div, the input keeps the wiring.
+		await expect(control.closest('[data-slot="input-group"]')).toBe(group);
+		await expect(group).not.toHaveAttribute('id');
+		// The suffix is decoration: it stays out of the control's name and out of
+		// its description.
+		await expect(control).toHaveAccessibleName('Work email');
 	}
 };
 
 /**
- * The guard's test: a group passed as the field's child instead of the control
- * itself. The id lands on the `<div>`, the caption points at an element a
- * `<label>` cannot label, and the control is left with no accessible name — all
- * without throwing. That silence is why the warning exists.
+ * The guard's test: an input group passed as the field's child instead of the
+ * control inside it. The id lands on the group's `<div>`, the caption points at
+ * an element a `<label>` cannot label, and the control is left with no
+ * accessible name — all without throwing. That silence is why the warning
+ * exists, and why `FieldText`'s addon props are the way to reach for a group in
+ * a field.
  *
  * Hidden from the library (`!dev`): it renders the mistake on purpose, and a
  * broken field is not an example to leave on display. It still runs in
@@ -492,10 +508,10 @@ export const CompositeControlGuard: Story = {
 	},
 	render: () => (
 		<Field label="Wired onto the wrapper" data-testid="broken-field">
-			<div data-slot="input-group" style={{ display: 'flex', gap: '.5rem' }}>
+			<InputGroup.Root>
 				<Input type="text" placeholder="jane" />
-				<span aria-hidden>@acme-insurance.com</span>
-			</div>
+				<InputGroup.Text>@example.com</InputGroup.Text>
+			</InputGroup.Root>
 		</Field>
 	),
 	play: async ({ canvasElement }) => {

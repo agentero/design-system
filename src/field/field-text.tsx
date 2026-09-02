@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 
 import { Input, InputProps, InputSize } from '../input';
 import { Field, FieldErrorLike } from './field';
+import { InputWithAddons } from './input-with-addons';
 
 /**
  * Everything the Input accepts, minus `id`. The caption points at the id the
@@ -54,6 +55,27 @@ export type FieldTextProps = Omit<InputProps, 'id'> & {
 	 * selectors, an external `aria-labelledby`).
 	 */
 	controlId?: string;
+	/**
+	 * Content shown inside the control's frame, before the value — a leading
+	 * icon, a currency symbol, a URL scheme. Setting it (or `trailingAddon`) puts
+	 * the `<input>` inside an
+	 * [InputGroup](?path=/docs/components-inputgroup--docs), which draws one
+	 * bordered frame around the pair.
+	 *
+	 * Wrap what you pass in the group part that matches it: `InputGroup.Addon`
+	 * for an icon, a tag or a button, `InputGroup.Text` for a text prefix. The
+	 * field keeps its wiring on the `<input>` inside the frame, so the caption
+	 * still points at the control.
+	 *
+	 * Addons are decoration and nothing announces them: anything the user has to
+	 * read to fill the field in belongs in `label` or `description`.
+	 */
+	leadingAddon?: ReactNode;
+	/**
+	 * Content shown inside the control's frame, after the value — a unit, a
+	 * domain suffix, an action button. Same rules as `leadingAddon`.
+	 */
+	trailingAddon?: ReactNode;
 	/** Extra classes for the field's root element, merged last. The control is styled by `size`. */
 	className?: string;
 };
@@ -70,10 +92,18 @@ export type FieldTextProps = Omit<InputProps, 'id'> & {
  * This is what a form should reach for by default. Drop to the generic `Field`
  * only for a control that has no ready-made field yet.
  *
+ * A value with a leading icon, a currency prefix or a trailing unit is still a
+ * text field: pass `leadingAddon`/`trailingAddon` and the control is rendered
+ * inside an [InputGroup](?path=/docs/components-inputgroup--docs), with the
+ * field's wiring staying on the `<input>` inside the frame. That is the reason
+ * to reach for the props rather than assembling the group under the generic
+ * `Field` — there, the wiring would land on the group's `div` and the caption
+ * would end up pointing at an element a `<label>` cannot label.
+ *
  * It is form-library agnostic: drive `errors` yourself, or pair it with the
  * react-hook-form-bound `FormText`. Do not use it for multi-line text (that is
- * a TextArea field) or for a value with a leading or trailing addon (that is an
- * input group).
+ * a TextArea field), and do not reach for an addon to hold something the user
+ * has to read — nothing announces an addon.
  *
  * @summary Ready-made text field: Field layout plus Input, no form library
  *
@@ -84,6 +114,18 @@ export type FieldTextProps = Omit<InputProps, 'id'> & {
  *   placeholder="ACME Insurance"
  *   errors={[nameError]}
  *   required
+ * />
+ *
+ * @example
+ * <FieldText
+ *   label="Email"
+ *   type="email"
+ *   size="lg"
+ *   leadingAddon={
+ *     <InputGroup.Addon>
+ *       <IconMail />
+ *     </InputGroup.Addon>
+ *   }
  * />
  */
 export const FieldText = ({
@@ -96,6 +138,8 @@ export const FieldText = ({
 	orientation,
 	controlId,
 	className,
+	leadingAddon,
+	trailingAddon,
 	...inputProps
 }: FieldTextProps) => (
 	<Field
@@ -108,7 +152,16 @@ export const FieldText = ({
 		orientation={orientation}
 		controlId={controlId}
 		className={className}>
-		<Input type="text" {...inputProps} />
+		{leadingAddon === undefined && trailingAddon === undefined ? (
+			<Input type="text" {...inputProps} />
+		) : (
+			<InputWithAddons
+				type="text"
+				leadingAddon={leadingAddon}
+				trailingAddon={trailingAddon}
+				{...inputProps}
+			/>
+		)}
 	</Field>
 );
 

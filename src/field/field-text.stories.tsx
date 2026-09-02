@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, within } from 'storybook/test';
+import { expect, userEvent, within } from 'storybook/test';
 
+import { InputGroup } from '../input-group';
+// A story fixture, not a published icon: the design system ships no icon set.
+import { IconMail } from '../input-group/icons';
 import { FieldText } from './field-text';
 
 /**
@@ -37,7 +40,9 @@ const meta = {
 		required: { control: 'boolean' },
 		disabled: { control: 'boolean' },
 		// Keeps the documented row; only the useless widget goes.
-		errors: { control: false }
+		errors: { control: false },
+		leadingAddon: { control: false },
+		trailingAddon: { control: false }
 	},
 	args: {
 		label: 'Agency name',
@@ -176,5 +181,107 @@ export const Sizes: Story = {
 		const large = canvas.getByLabelText('Large');
 		await expect(large).toHaveAttribute('data-size', 'lg');
 		await expect(large.getBoundingClientRect().height).toBe(48);
+	}
+};
+
+/**
+ * A leading icon inside the control's frame. `leadingAddon` puts the `<input>`
+ * inside an [InputGroup](?path=/docs/components-inputgroup--docs) and keeps the
+ * field's wiring on the input, so the caption still points at the control and
+ * the frame around it is only a frame.
+ *
+ * This is the shape of a sign-in email field: one caption, a 48px control, an
+ * envelope in the frame. Assembling it by hand is where it goes wrong — put the
+ * group under the generic `Field` and the caption ends up pointing at the
+ * group's `div`, which is a control with no accessible name and nothing on
+ * screen to show it.
+ *
+ * @summary Leading icon addon with the field's wiring still on the input
+ */
+export const WithLeadingAddon: Story = {
+	args: {
+		label: 'Email',
+		type: 'email',
+		size: 'lg',
+		required: true,
+		placeholder: 'name@example.com',
+		leadingAddon: (
+			<InputGroup.Addon>
+				<IconMail />
+			</InputGroup.Addon>
+		)
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const control = canvas.getByRole('textbox', { name: /Email/ });
+		const group = canvasElement.querySelector('[data-slot="input-group"]') as HTMLElement;
+		const caption = canvasElement.querySelector('[data-slot="label"]') as HTMLLabelElement;
+
+		// The wiring is on the input, one level below the frame — the caption
+		// points at the control and not at the group's div.
+		await expect(caption.getAttribute('for')).toBe(control.getAttribute('id'));
+		await expect(control.closest('[data-slot="input-group"]')).toBe(group);
+		await expect(group).not.toHaveAttribute('id');
+		await expect(control).toHaveAttribute('aria-describedby');
+		await expect(control).toBeRequired();
+
+		// Clicking the caption reaches the control through the frame, and so does
+		// clicking the icon.
+		await userEvent.click(caption);
+		await expect(control).toHaveFocus();
+
+		// The icon is checked from a blurred start, otherwise the assertion would
+		// pass on the focus the caption already handed over: the addon deliberately
+		// skips refocusing a control that is already focused.
+		control.blur();
+		await expect(control).not.toHaveFocus();
+		await userEvent.click(
+			canvasElement.querySelector('[data-slot="input-group-addon"]') as HTMLElement
+		);
+		await expect(control).toHaveFocus();
+	}
+};
+
+/**
+ * A currency prefix and a unit suffix, both inside the frame. `InputGroup.Text`
+ * is the part for plain text; the control's `size` still drives the frame's
+ * height and both text addons' type size. This one is `lg`, so the frame is 48px
+ * tall and `$` and `USD` are set at the control's larger type size rather than
+ * at the group's default.
+ *
+ * Addons are decoration and nothing announces them, so the unit the field
+ * expects is repeated in the description rather than left to the suffix alone.
+ *
+ * @summary Text prefix and suffix around the value, sized by the control
+ */
+export const WithTextAddons: Story = {
+	args: {
+		label: 'Coverage limit',
+		description: 'Enter the amount in US dollars.',
+		inputMode: 'decimal',
+		size: 'lg',
+		placeholder: '0.00',
+		leadingAddon: <InputGroup.Text>$</InputGroup.Text>,
+		trailingAddon: <InputGroup.Text>USD</InputGroup.Text>
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const control = canvas.getByRole('textbox', { name: 'Coverage limit' });
+		const group = canvasElement.querySelector('[data-slot="input-group"]') as HTMLElement;
+		const prefix = canvas.getByText('$');
+		const suffix = canvas.getByText('USD');
+
+		// The addons stay out of the accessible name and out of the description.
+		await expect(control).toHaveAccessibleName('Coverage limit');
+		await expect(control).toHaveAccessibleDescription('Enter the amount in US dollars.');
+
+		// The `size` set on the field reaches the control, and the frame and the
+		// text addons follow it: 48px of frame, and 16px type on both addons rather
+		// than the 14px they would take at any other height.
+		await expect(control).toHaveAttribute('data-size', 'lg');
+		await expect(group.getBoundingClientRect().height).toBe(48);
+		await expect(getComputedStyle(control).fontSize).toBe('16px');
+		await expect(getComputedStyle(prefix).fontSize).toBe('16px');
+		await expect(getComputedStyle(suffix).fontSize).toBe('16px');
 	}
 };

@@ -55,6 +55,51 @@ to.
 | `disabled`                                 | forwarded to the control | Declared on the legacy `Field` but never used there; on `Field<X>` it reaches the control like any other control prop.                                                                                                                                                                                                                                                                                                                                                                                        |
 | `aria-labelledby`                          | —                        | Declared on the legacy `Field` and never used. Drop it.                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 
+## A field whose control has addons
+
+The legacy screens that need one assemble it by hand: a `Label`, then an
+`InputGroup.Root` holding an `InputGroup.Addon` and an `Input`, with the `id`
+written on the input and the `htmlFor` written on the label. That is two ends to
+keep in agreement, and in `producerpass-ui`'s
+`modules/auth/ui/email-link-callback.tsx` they disagree today — the label points
+at `error-email` and the input carries no `id` at all, so the field has no
+accessible name and nothing on screen shows it.
+
+Here it is one prop:
+
+```tsx
+// Legacy — the caption and the control are wired by hand
+<Label htmlFor="error-email" required>Email</Label>
+<InputGroup.Root>
+	<InputGroup.Addon><IconMail /></InputGroup.Addon>
+	<Input size="lg" id="error-email" {...register('email')} />
+</InputGroup.Root>
+
+// New — the field wires the input inside the frame
+<FieldText
+	label="Email"
+	size="lg"
+	required
+	leadingAddon={<InputGroup.Addon><IconMail /></InputGroup.Addon>}
+/>
+```
+
+| Legacy shape                                    | New prop                       | Notes                                                                                                                                                    |
+| ----------------------------------------------- | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `InputGroup.Addon` before the `Input`           | `leadingAddon`                 | Pass the `InputGroup.Addon` (icons, tags, buttons) or `InputGroup.Text` (prefixes, units) as-is; the field puts it inside the frame.                     |
+| `InputGroup.Addon` / `InputGroup.Text` after it | `trailingAddon`                | Same.                                                                                                                                                    |
+| `InputGroup.Root` wrapping both                 | —                              | The field renders it. Do not wrap the group yourself under the generic `Field`: the wiring lands on the group's `div` and the caption points at nothing. |
+| `id` on the inner `Input`                       | `controlId`, or nothing at all | The field generates one and points the caption at it. Only an end-to-end selector needs a predictable id.                                                |
+
+The group itself is published as `@agentero/design-system/input-group` for the
+uses that are not fields at all — a search box in a toolbar, a read-only value
+with a copy button. It is a straight port: same heights, radii, border colours,
+focus ring and addon treatment as the legacy one, verified against it in a
+browser. Two differences, both invisible on screen: the inner control's
+background is `transparent` rather than the frame's own colour (the legacy asked
+for this and misspelled the class), and it no longer carries a dead
+`padding-bottom` of half a pixel that the legacy's Tailwind never generated.
+
 ## Not ported yet
 
 These legacy capabilities have no equivalent here. Each one is its own ticket;
