@@ -55,7 +55,7 @@ export const FieldContext = createContext<FieldContextValue | null>(null);
  * can express what you need: a control made of several elements, where there is
  * no single child to inject the wiring into.
  *
- * Two rules if you do:
+ * Three rules if you do:
  *
  * 1. **Never from a base control.** An `Input` that reads this behaves
  *    differently depending on where it is rendered, and every future control
@@ -64,6 +64,14 @@ export const FieldContext = createContext<FieldContextValue | null>(null);
  * 2. **You take over the placement.** `Field` places its parts through the
  *    recipe; wiring by hand means arranging by hand, and a field that arranges
  *    itself differently is a field that looks different from every other one.
+ * 3. **The accessible name is yours too, and nothing checks it.** `Field`
+ *    merges the wiring — the `aria-label`/`aria-labelledby` it was given
+ *    included — onto its single child. A plain function component has no props
+ *    to merge onto, so it discards every one of them without a word: no error,
+ *    no warning, no failing type. Whatever the field declares is a statement of
+ *    intent; the field's labelling union guarantees **nothing** here. Read the
+ *    `controlId` and place the name on the element that really is the control,
+ *    and check the result in a browser rather than trusting the props.
  *
  * @summary Escape hatch exposing the surrounding Field's ids and validity
  *

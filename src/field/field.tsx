@@ -25,6 +25,23 @@ import { IconInfoOutline } from './icons';
  * would make every field's labels a different width and nothing would line up
  * down the form. Set the variable on a shared ancestor to change it once.
  *
+ * That column never yields, so `horizontal` folds back to the vertical stack
+ * below 24rem: the two-column rules live behind a container query and the
+ * stacked layout is the base.
+ *
+ * The query names the field's own container (`@container/field`, declared on
+ * the same element). An unnamed one would measure the same element today: the
+ * root declares `container-type` itself, so it is already the nearest query
+ * container for its own children — verified in Chromium. The name is therefore
+ * not what makes the fold measure the field; it is what keeps it that way. An
+ * unnamed query jumps to the next container up the moment the root stops being
+ * one, or a part is moved inside some other container, and the legacy container
+ * that stacks fields declares `@container/field-group` — which is exactly what
+ * it would find.
+ *
+ * The threshold is a literal because a container query cannot read a custom
+ * property: changing `--field-label-width` moves the column but not the fold.
+ *
  * @summary tailwind-variants recipe backing the Field layout and its parts
  */
 export const fieldRecipe = tv({
@@ -60,13 +77,25 @@ export const fieldRecipe = tv({
 			// Caption in the first column, everything else stacked in the second:
 			// the control on the caption's row, then description and error under
 			// the control rather than under the caption.
+			//
+			// The fold is expressed entirely on the parts, and it has to be: a
+			// container query restyles the container's *descendants*, never the
+			// container itself, so nothing here can change the root's own grid.
+			// The two columns are therefore declared once, at every width, and
+			// what folds is which cells the parts occupy — below the threshold
+			// every part spans both columns, which makes each one full width and
+			// stacks them in source order. The column widths stop mattering
+			// rather than changing.
 			horizontal: {
 				root: [
-					'grid grid-cols-[var(--field-label-width,12rem)_minmax(0,1fr)] gap-x-3 gap-y-2',
-					'[&>[data-slot=field-caption]]:col-start-1',
-					'[&>[data-slot=field-caption]]:row-start-1',
-					'[&>[data-slot=field-caption]]:self-center',
-					'[&>*:not([data-slot=field-caption])]:col-start-2'
+					'@container/field',
+					'grid grid-cols-[minmax(0,var(--field-label-width,12rem))_minmax(0,1fr)] gap-x-3 gap-y-2',
+					'[&>*]:col-span-2',
+					'@min-[24rem]/field:[&>*]:col-span-1',
+					'@min-[24rem]/field:[&>[data-slot=field-caption]]:col-start-1',
+					'@min-[24rem]/field:[&>[data-slot=field-caption]]:row-start-1',
+					'@min-[24rem]/field:[&>[data-slot=field-caption]]:self-center',
+					'@min-[24rem]/field:[&>*:not([data-slot=field-caption])]:col-start-2'
 				]
 			}
 		}
@@ -124,10 +153,11 @@ export type FieldRootProps = ComponentPropsWithRef<'div'> &
 		 * column — see `--field-label-width` on the recipe — with the control,
 		 * description and error stacked in the second.
 		 *
-		 * The caption column does not yield: below roughly 250px of available
-		 * width the control is squeezed to nothing and the field overflows its
-		 * container. Reach for `'horizontal'` only where the field has room, and
-		 * use `'vertical'` in narrow slots.
+		 * `'horizontal'` is safe in a narrow slot: the caption column does not
+		 * yield, so below 24rem of the field's own width the field folds back to
+		 * the vertical stack. It measures its own slot rather than the viewport,
+		 * so the same field folds inside a narrow drawer and stays horizontal on
+		 * a wide page.
 		 */
 		orientation?: 'vertical' | 'horizontal';
 	};
@@ -167,7 +197,6 @@ export const FieldRoot = ({
 		<FieldContext value={context}>
 			<div
 				data-slot="field"
-				data-orientation={orientation}
 				data-invalid={invalid || undefined}
 				className={cn(fieldRecipe({ orientation }).root(), className)}
 				{...props}>
@@ -195,6 +224,10 @@ const LABELABLE = new Set(['INPUT', 'SELECT', 'TEXTAREA', 'BUTTON', 'METER', 'OU
  * `aria-describedby` onto its single child via Radix's `Slot`, and the child's
  * own props win over the injected ones. Works with any control — Input today,
  * Select or TextArea tomorrow — with zero coupling.
+ *
+ * Anything else passed to it rides along the same way, which is how a field
+ * named by `aria-label`/`aria-labelledby` gets that name onto the control rather
+ * than onto the field's root.
  *
  * Internal to the field layer: `Field` wraps its child in one of these.
  *
@@ -404,7 +437,92 @@ export const FieldError = ({ className, children, errors, ...props }: FieldError
 
 FieldError.displayName = 'FieldError';
 
-export type FieldProps = Omit<FieldRootProps, 'children' | 'invalid'> & {
+/**
+ * The one-of-three rule as a union: a field declares either a visible `label`,
+ * an `aria-label` or an `aria-labelledby`, and never two of them. Written as
+ * constraints only — every prop it mentions is documented once on the field's
+ * own prop type, which this intersects with.
+ *
+ * The branch with no visible label has no caption either, so `tooltip` and
+ * `optional` are `never` there: there is nothing on screen for a hint to sit
+ * beside or a suffix to append to.
+ *
+ * **What this guarantees is that one of the three is declared — no more than
+ * that.** Three things it does not guarantee, each the caller's own knowledge
+ * to apply:
+ *
+ * 1. **A declared name can still be empty.** `label` rejects `undefined`,
+ *    `null` and booleans, which covers `label={maybeName}` and the
+ *    `label={showLabel && 'Agency name'}` idiom. It cannot reject `''`:
+ *    exclusion works by dropping members from a union, and `''` is not a member
+ *    of `string` to drop — `Exclude<string, ''>` is `string`. So `label={''}`,
+ *    `label={t('agency') ?? ''}` and `label={[]}` compile, and so do
+ *    `aria-label={''}` and `aria-labelledby={''}`. Each leaves the control
+ *    named by the empty string — for `label`, a `<label>` with no text in it
+ *    and, in `horizontal`, a 12rem caption column holding nothing. Resolve a
+ *    value that can come back empty before it gets here.
+ * 2. **An `aria-labelledby` can point at nothing.** No type can check that the
+ *    id is on the page, and a reference to a missing element is a control with
+ *    no name.
+ * 3. **A composite control can drop the name entirely** — see `children` on the
+ *    field's props. For a field built through `useFieldContext()`, the
+ *    guarantee here is zero: the declaration says what the name should be, and
+ *    placing it is the caller's job.
+ *
+ * `field.types.test.ts` pins which forms are rejected and which are not, so
+ * this description and the type cannot drift apart.
+ *
+ * @summary Union requiring exactly one of label / aria-label / aria-labelledby
+ */
+export type FieldLabellingProps =
+	| {
+			/**
+			 * The field's caption, and the usual way to name a field. Leave it out
+			 * only when the field is deliberately without one, and then declare an
+			 * `aria-label` or an `aria-labelledby` instead — the types take exactly
+			 * one of the three, so leaving all three out does not compile.
+			 *
+			 * It accepts neither `undefined` nor a boolean: a caption that may or
+			 * may not be there is a field that may or may not have a name, so
+			 * `label={maybeName}` and `label={showLabel && 'Agency name'}` are
+			 * compile errors rather than a field that silently loses its name. An
+			 * **empty** caption is not caught — `label={''}` type-checks and
+			 * renders a `<label>` with no text — so resolve a value that can come
+			 * back empty before passing it.
+			 */
+			label: Exclude<NonNullable<ReactNode>, boolean>;
+			tooltip?: ReactNode;
+			optional?: boolean;
+			'aria-label'?: never;
+			'aria-labelledby'?: never;
+	  }
+	| {
+			label?: never;
+			tooltip?: never;
+			optional?: never;
+			// Deliberately just `string`, and it has to be a non-empty one: nothing
+			// here checks that. `Exclude<string, ''>` is `string`, and the shapes
+			// that would catch `''` put a type parameter on the component — a
+			// generic at every call site to catch one empty literal. Enforce what is
+			// cheap to enforce and document the rest; the requirement is on the type
+			// above and on the prop's own docs.
+			'aria-label': string;
+			'aria-labelledby'?: never;
+	  }
+	| {
+			label?: never;
+			tooltip?: never;
+			optional?: never;
+			'aria-label'?: never;
+			// Same: a non-empty id, of an element that is actually on the page.
+			// Neither is checkable here.
+			'aria-labelledby': string;
+	  };
+
+type FieldOwnProps = Omit<
+	FieldRootProps,
+	'children' | 'invalid' | 'aria-label' | 'aria-labelledby'
+> & {
 	/**
 	 * The field's control, and the only child it takes. It is wired
 	 * automatically — `id`, `aria-invalid`, `aria-describedby` and the native
@@ -415,21 +533,54 @@ export type FieldProps = Omit<FieldRootProps, 'children' | 'invalid'> & {
 	 * `<textarea>`…). A control made of several elements reads
 	 * `useFieldContext()` instead; wrapping the group here leaves the caption
 	 * pointing at nothing, and the field warns about it in development.
+	 *
+	 * One limitation, stated plainly because nothing catches it and nothing is
+	 * going to: the props are merged onto this child, and a plain function
+	 * component — the usual shape of a composite control — has no props to merge
+	 * them onto, so it discards all of them silently. That includes the
+	 * `aria-label`/`aria-labelledby` the field declared. The field compiles, it
+	 * renders, and the control has no accessible name.
+	 *
+	 * So for a field built through `useFieldContext()` the labelling union
+	 * guarantees nothing at all: what you declare on the field is a statement of
+	 * intent, and placing the name on the element that really is the control is
+	 * entirely yours to do. The `FieldYearMonth` story shows the shape.
 	 */
 	children: ReactNode;
 	/**
-	 * The field's caption. Omit it only when the control carries its own
-	 * accessible name — a composite control with its own `<legend>`, for
-	 * instance — because a control with no name is unusable with a screen
-	 * reader.
+	 * Names the control when the design has no room for a visible caption — a
+	 * search box in a toolbar, a cell that is edited in place. It lands on the
+	 * control, not on the field's root, and the field renders no caption at all,
+	 * so nothing takes up the space one would have used.
+	 *
+	 * Prefer a visible `label`: a name only a screen reader can reach is a name
+	 * most users never get. Use `aria-labelledby` instead when the text is
+	 * already on screen somewhere else.
+	 *
+	 * It has to be a non-empty string, and that part is on you: `aria-label={''}`
+	 * type-checks and leaves the control named by the empty string.
 	 */
-	label?: ReactNode;
+	'aria-label'?: string;
+	/**
+	 * Names the control from text that is already on screen outside the field —
+	 * a section heading the field sits under, a column header above it. Takes the
+	 * id of that element and lands on the control, and the field renders no
+	 * caption of its own.
+	 *
+	 * Two things nothing here can check, both on you: that the id is non-empty,
+	 * and that an element carrying it is on the page. A reference that resolves
+	 * to nothing is a control with no name, and nothing on screen shows it.
+	 */
+	'aria-labelledby'?: string;
 	/**
 	 * Hint about the field, revealed from an info-icon trigger beside the
 	 * caption. You pass the content and nothing else: the field owns where the
 	 * trigger sits and which way the balloon opens, so every field in the
 	 * product reads the same. Keep it to a sentence — for text that should
 	 * always be on screen, use `description`.
+	 *
+	 * Needs a visible `label` to sit beside, so it is not available on a field
+	 * named by `aria-label` or `aria-labelledby`.
 	 */
 	tooltip?: ReactNode;
 	/**
@@ -438,7 +589,11 @@ export type FieldProps = Omit<FieldRootProps, 'children' | 'invalid'> & {
 	 * `tooltip` is for the aside they can go looking for.
 	 */
 	description?: ReactNode;
-	/** Appends the muted " (optional)" suffix to the caption. Ignored when `required` is set. */
+	/**
+	 * Appends the muted " (optional)" suffix to the caption. Ignored when
+	 * `required` is set, and unavailable on a field with no visible caption to
+	 * append it to.
+	 */
 	optional?: boolean;
 	/**
 	 * Marks the field required, declared once: the caption gets its decorative
@@ -453,7 +608,21 @@ export type FieldProps = Omit<FieldRootProps, 'children' | 'invalid'> & {
 	 * never disagree. Duplicate messages collapse; several render as a list.
 	 */
 	errors?: FieldErrorLike[];
+	/**
+	 * Stops the error message being rendered under the control, for screens that
+	 * report validation somewhere else — a toast, a summary at the top of the
+	 * form. Everything else about an invalid field is untouched: the control
+	 * still gets `aria-invalid`, the root still gets `data-invalid`, and the
+	 * `aria-describedby` wiring is unchanged.
+	 *
+	 * Whatever reports the error instead has to be reachable: an unannounced
+	 * `aria-invalid` tells a screen reader user that something is wrong and
+	 * nothing about what.
+	 */
+	suppressErrorMessage?: boolean;
 };
+
+export type FieldProps = FieldOwnProps & FieldLabellingProps;
 
 /**
  * Field lays out one form field — caption, control, helper text and error — and
@@ -470,6 +639,18 @@ export type FieldProps = Omit<FieldRootProps, 'children' | 'invalid'> & {
  * to pass. The layout is deliberately closed: there is no way to reorder the
  * parts or to assemble the caption yourself, which is what keeps every form in
  * the product looking the same.
+ *
+ * Every field has to be named, and the types make you declare it: pass a
+ * visible `label`, or name the control with `aria-label` or `aria-labelledby`
+ * when the design has no room for a caption. Exactly one of the three — none of
+ * them, or two of them, does not compile.
+ *
+ * What that buys you is a declaration, not a working accessible name. A
+ * declared name can be empty (`label={''}` compiles), an `aria-labelledby` can
+ * point at an id that is not on the page, and a composite control passed as
+ * `children` can discard the name along with the rest of the injected wiring.
+ * Whether the name reaches the control is the caller's knowledge to apply — see
+ * `children` and `aria-labelledby` below.
  *
  * Note that `size` is not a Field prop. Control height belongs to the control:
  * set it on the child, or on a ready-made `Field<X>` that forwards it.
@@ -499,21 +680,43 @@ export const Field = ({
 	optional,
 	required,
 	errors,
+	suppressErrorMessage = false,
+	orientation = 'vertical',
+	'aria-label': ariaLabel,
+	'aria-labelledby': ariaLabelledBy,
 	...rootProps
-}: FieldProps) => (
-	<FieldRoot invalid={hasMessage(errors)} required={required} {...rootProps}>
-		{label !== undefined && (
-			<FieldLabel optional={optional} tooltip={tooltip}>
-				{label}
-			</FieldLabel>
-		)}
+}: FieldProps) => {
+	const captioned = label !== undefined;
 
-		<FieldControl>{children}</FieldControl>
+	return (
+		<FieldRoot
+			invalid={hasMessage(errors)}
+			required={required}
+			// `horizontal` exists to put the caption beside the control, and a field
+			// named by `aria-label`/`aria-labelledby` has no caption to put there —
+			// the fixed 12rem column would be 192px of empty gutter with the control
+			// pushed off to the side of nothing. So a field with no caption lays out
+			// in one column whichever orientation it asks for.
+			orientation={captioned ? orientation : 'vertical'}
+			{...rootProps}>
+			{captioned && (
+				<FieldLabel optional={optional} tooltip={tooltip}>
+					{label}
+				</FieldLabel>
+			)}
 
-		{description !== undefined && <FieldDescription>{description}</FieldDescription>}
+			{/* The name reaches the control, never the field's root: a name on the
+			    wrapping <div> labels a group nobody navigates to and leaves the
+			    control itself unnamed. */}
+			<FieldControl aria-label={ariaLabel} aria-labelledby={ariaLabelledBy}>
+				{children}
+			</FieldControl>
 
-		<FieldError errors={errors} />
-	</FieldRoot>
-);
+			{description !== undefined && <FieldDescription>{description}</FieldDescription>}
+
+			{!suppressErrorMessage && <FieldError errors={errors} />}
+		</FieldRoot>
+	);
+};
 
 Field.displayName = 'Field';

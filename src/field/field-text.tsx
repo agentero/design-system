@@ -1,27 +1,49 @@
 import { ReactNode } from 'react';
 
 import { Input, InputProps, InputSize } from '../input';
-import { Field, FieldErrorLike } from './field';
+import { Field, FieldErrorLike, FieldLabellingProps } from './field';
 import { InputWithAddons } from './input-with-addons';
 
 /**
- * Everything the Input accepts, minus `id`. The caption points at the id the
- * field generates, so an `id` set here would land on the control and leave the
- * label attached to nothing — a control with no accessible name, and nothing
- * failing visibly. Removing it from the type turns that into a compile error
- * and sends you to `controlId`, which moves both ends together.
+ * Everything the Input accepts, minus `id` and the two naming attributes, which
+ * the field owns. The caption points at the id the field generates, so an `id`
+ * set here would land on the control and leave the label attached to nothing —
+ * a control with no accessible name, and nothing failing visibly. Removing it
+ * from the type turns that into a compile error and sends you to `controlId`,
+ * which moves both ends together.
+ *
+ * The labelling union comes in on top: exactly one of `label`, `aria-label` or
+ * `aria-labelledby`, so leaving all three out does not compile. It checks that
+ * one is declared and nothing about what it says — `label={''}` and
+ * `aria-label={''}` type-check. See `FieldLabellingProps` for what the union
+ * does and does not promise.
  */
-export type FieldTextProps = Omit<InputProps, 'id'> & {
-	/** The field's caption. */
-	label: ReactNode;
+export type FieldTextProps = Omit<InputProps, 'id' | 'aria-label' | 'aria-labelledby'> & {
+	/**
+	 * Names the `<input>` when there is no visible caption — a search box in a
+	 * toolbar, a cell edited in place. The field renders no caption, so nothing
+	 * takes up the space one would have used. Prefer a visible `label`: a name
+	 * only a screen reader can reach is a name most users never get.
+	 */
+	'aria-label'?: string;
+	/**
+	 * Names the `<input>` from text already on screen outside the field — a
+	 * section heading, a column header. Takes that element's id, and the field
+	 * renders no caption of its own.
+	 */
+	'aria-labelledby'?: string;
 	/**
 	 * Hint about the field, revealed from an info-icon trigger beside the
 	 * caption. For text that should always be on screen, use `description`.
+	 * Needs a visible `label` to sit beside.
 	 */
 	tooltip?: ReactNode;
 	/** Helper text under the control, announced as part of the control's description. */
 	description?: ReactNode;
-	/** Appends the muted " (optional)" suffix to the caption. Ignored when `required` is set. */
+	/**
+	 * Appends the muted " (optional)" suffix to the caption. Ignored when
+	 * `required` is set, and unavailable without a visible caption.
+	 */
 	optional?: boolean;
 	/**
 	 * Marks the field required, declared once: the caption gets its decorative
@@ -36,9 +58,17 @@ export type FieldTextProps = Omit<InputProps, 'id'> & {
 	 */
 	errors?: FieldErrorLike[];
 	/**
+	 * Stops the error message being rendered under the control, for screens that
+	 * report validation somewhere else — a toast, a summary at the top of the
+	 * form. The `<input>` still gets `aria-invalid` and the wiring is unchanged,
+	 * so whatever reports the error instead has to be reachable.
+	 */
+	suppressErrorMessage?: boolean;
+	/**
 	 * Field arrangement. Defaults to `'vertical'` (caption above the control,
 	 * messages below); `'horizontal'` puts the caption in a fixed-width first
-	 * column.
+	 * column and folds back to the stack below 24rem of the field's own width,
+	 * so it is safe in a narrow slot.
 	 */
 	orientation?: 'vertical' | 'horizontal';
 	/**
@@ -78,7 +108,7 @@ export type FieldTextProps = Omit<InputProps, 'id'> & {
 	trailingAddon?: ReactNode;
 	/** Extra classes for the field's root element, merged last. The control is styled by `size`. */
 	className?: string;
-};
+} & FieldLabellingProps;
 
 /**
  * FieldText is the ready-made text field: the
@@ -91,6 +121,14 @@ export type FieldTextProps = Omit<InputProps, 'id'> & {
  *
  * This is what a form should reach for by default. Drop to the generic `Field`
  * only for a control that has no ready-made field yet.
+ *
+ * The accessible name is not optional, and the types make you declare one: pass
+ * a visible `label`, or name the `<input>` with `aria-label` or
+ * `aria-labelledby` where the design has no room for a caption. Exactly one of
+ * the three — none of them, or two of them, does not compile. Declaring one is
+ * all they check: `label={''}` and `aria-label={''}` type-check and leave the
+ * `<input>` named by the empty string, so resolve a value that might come back
+ * empty before passing it.
  *
  * A value with a leading icon, a currency prefix or a trailing unit is still a
  * text field: pass `leadingAddon`/`trailingAddon` and the control is rendered
@@ -131,38 +169,54 @@ export type FieldTextProps = Omit<InputProps, 'id'> & {
 export const FieldText = ({
 	label,
 	tooltip,
-	description,
 	optional,
+	'aria-label': ariaLabel,
+	'aria-labelledby': ariaLabelledBy,
+	description,
 	required,
 	errors,
+	suppressErrorMessage,
 	orientation,
 	controlId,
 	className,
 	leadingAddon,
 	trailingAddon,
 	...inputProps
-}: FieldTextProps) => (
-	<Field
-		label={label}
-		tooltip={tooltip}
-		description={description}
-		optional={optional}
-		required={required}
-		errors={errors}
-		orientation={orientation}
-		controlId={controlId}
-		className={className}>
-		{leadingAddon === undefined && trailingAddon === undefined ? (
-			<Input type="text" {...inputProps} />
-		) : (
-			<InputWithAddons
-				type="text"
-				leadingAddon={leadingAddon}
-				trailingAddon={trailingAddon}
-				{...inputProps}
-			/>
-		)}
-	</Field>
-);
+}: FieldTextProps) => {
+	// The union is enforced on FieldText's own surface, and TypeScript cannot
+	// carry that correlation through the destructuring — five loose variables no
+	// longer say "exactly one of these is set". So the naming props travel to
+	// Field as one object again, with the assertion in a single place.
+	const labelling = {
+		label,
+		tooltip,
+		optional,
+		'aria-label': ariaLabel,
+		'aria-labelledby': ariaLabelledBy
+	} as FieldLabellingProps;
+
+	return (
+		<Field
+			{...labelling}
+			description={description}
+			required={required}
+			errors={errors}
+			suppressErrorMessage={suppressErrorMessage}
+			orientation={orientation}
+			controlId={controlId}
+			className={className}>
+			{leadingAddon === undefined && trailingAddon === undefined ? (
+				<Input type="text" {...inputProps} />
+			) : (
+				<InputWithAddons
+					type="text"
+					leadingAddon={leadingAddon}
+					trailingAddon={trailingAddon}
+					{...inputProps}
+				/>
+			)}
+		</Field>
+	);
+};
 
 FieldText.displayName = 'FieldText';

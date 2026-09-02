@@ -4,7 +4,17 @@ import { expect, userEvent, within } from 'storybook/test';
 import { InputGroup } from '../input-group';
 // A story fixture, not a published icon: the design system ships no icon set.
 import { IconMail } from '../input-group/icons';
-import { FieldText } from './field-text';
+import { FieldText, FieldTextProps } from './field-text';
+
+/**
+ * The captioned branch of `FieldTextProps`. Storybook derives a story's `Args`
+ * from the component's props, and `FieldTextProps` is a union — the rule that a
+ * field carries exactly one of `label`, `aria-label` or `aria-labelledby` —
+ * which its `Args` helpers flatten to `never`. The args below are the branch
+ * every arg-driven story uses; the field named without a caption is rendered
+ * directly, and the union itself is covered in `field.types.test.ts`.
+ */
+type FieldTextArgs = Extract<FieldTextProps, { label: unknown }>;
 
 /**
  * FieldText is the ready-made text field: the Field layout plus an Input
@@ -39,10 +49,15 @@ const meta = {
 		optional: { control: 'boolean' },
 		required: { control: 'boolean' },
 		disabled: { control: 'boolean' },
-		// Keeps the documented row; only the useless widget goes.
+		suppressErrorMessage: { control: 'boolean' },
+		// Keeps the documented row; only the useless widget goes. Typing a name
+		// into either aria attribute while `label` is set would name the field
+		// twice, which the types reject and the panel could not.
 		errors: { control: false },
 		leadingAddon: { control: false },
-		trailingAddon: { control: false }
+		trailingAddon: { control: false },
+		'aria-label': { control: false },
+		'aria-labelledby': { control: false }
 	},
 	args: {
 		label: 'Agency name',
@@ -55,7 +70,7 @@ const meta = {
 			</div>
 		)
 	]
-} satisfies Meta<typeof FieldText>;
+} satisfies Meta<FieldTextArgs>;
 
 export default meta;
 
@@ -152,6 +167,88 @@ export const Required: Story = {
 		const asterisk = canvas.getByText('*');
 		await expect(asterisk).toHaveAttribute('aria-hidden');
 		await expect(canvas.getByRole('textbox', { name: 'Full name' })).toBeInTheDocument();
+	}
+};
+
+/**
+ * A text field is named whether or not it shows a caption: the types take
+ * exactly one of `label`, `aria-label` or `aria-labelledby`, so leaving all
+ * three out does not compile. They check that one is declared, not that it says
+ * anything — `aria-label={''}` type-checks and leaves the `<input>` named by
+ * the empty string. `aria-label` is for the places with no room for a caption —
+ * a search box in a toolbar — and it lands on the `<input>`, so the field
+ * renders nothing above the control and takes up no space for it.
+ *
+ * A placeholder is not a name. It disappears on the first keystroke and it is
+ * not announced as one, which is why this field carries both.
+ *
+ * @summary Search field named by aria-label, with no caption rendered
+ */
+export const WithoutVisibleLabel: Story = {
+	render: () => <FieldText aria-label="Search" type="search" placeholder="Search" />,
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const control = canvas.getByRole('searchbox', { name: 'Search' });
+
+		// Named on the input itself, with no caption rendered above it.
+		await expect(control).toHaveAttribute('aria-label', 'Search');
+		await expect(canvasElement.querySelector('label')).toBeNull();
+		// The rest of the wiring is unchanged — the field still generated an id
+		// and still advertises its description references.
+		await expect(control).toHaveAttribute('id');
+		await expect(control).toHaveAttribute('aria-describedby');
+	}
+};
+
+const RATE_ERROR = 'Enter a number between 0 and 100.';
+const RATE_TOAST_ID = 'commission-rate-toast';
+
+/**
+ * `suppressErrorMessage` keeps the message out of the field for screens that
+ * report validation somewhere else — a toast, a summary at the top of the form.
+ * Only the text goes: the `<input>` still gets `aria-invalid` and the field
+ * still marks itself invalid.
+ *
+ * Which leaves the announcement to you. An `aria-invalid` with nothing
+ * describing it says something is wrong and nothing about what, so point the
+ * control at whatever carries the message — `aria-describedby` reaches the
+ * `<input>` like any other input prop, and with the message suppressed there is
+ * nothing of the field's own left in that list to lose.
+ *
+ * @summary Invalid text field whose message is reported outside the field
+ */
+export const ErrorReportedElsewhere: Story = {
+	args: {
+		label: 'Commission rate',
+		defaultValue: '120',
+		errors: [{ message: RATE_ERROR }],
+		suppressErrorMessage: true,
+		'aria-describedby': RATE_TOAST_ID
+	},
+	render: args => (
+		<div style={{ display: 'grid', gap: '1rem' }}>
+			<FieldText {...args} />
+
+			<p
+				id={RATE_TOAST_ID}
+				role="status"
+				className="m-0 rounded-md border border-solid border-border-input-destructive px-3 py-2 text-sm text-text-input-destructive">
+				{RATE_ERROR}
+			</p>
+		</div>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const control = canvas.getByRole('textbox', { name: 'Commission rate' });
+
+		// Invalid, and nothing rendered under the control to say so.
+		await expect(control).toHaveAttribute('aria-invalid', 'true');
+		await expect(canvasElement.querySelector('[data-slot="field-error"]')).toBeNull();
+		await expect(canvas.queryByRole('alert')).toBeNull();
+
+		// The message is announced from the region outside the field, once.
+		await expect(control).toHaveAccessibleDescription(RATE_ERROR);
+		await expect(canvas.getAllByText(RATE_ERROR)).toHaveLength(1);
 	}
 };
 

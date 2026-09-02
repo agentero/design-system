@@ -8,6 +8,6 @@
 export { FieldContext, useFieldContext } from './context';
 export type { FieldContextValue } from './context';
 export { Field, fieldRecipe } from './field';
-export type { FieldErrorLike, FieldProps, FieldVariants } from './field';
+export type { FieldErrorLike, FieldLabellingProps, FieldProps, FieldVariants } from './field';
 export { FieldText } from './field-text';
 export type { FieldTextProps } from './field-text';
