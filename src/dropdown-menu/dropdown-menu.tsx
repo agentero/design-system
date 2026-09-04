@@ -12,7 +12,7 @@ import { IconArrowRight } from './icons';
  * @property {boolean} [defaultOpen] - The open state of the dropdown menu when it is initially rendered. Use when you do not need to control its open state.
  * @property {boolean} [open] - The controlled open state of the dropdown menu. Must be used in conjunction with onOpenChange.
  * @property {(open: boolean) => void} [onOpenChange] - Event handler called when the open state of the dropdown menu changes.
- * @property {boolean} [modal=true] - The modality of the dropdown menu. When set to true, interaction with outside elements will be disabled and only menu content will be visible to screen readers.
+ * @property {boolean} [modal=false] - The modality of the dropdown menu. When set to true, interaction with outside elements will be disabled and only menu content will be visible to screen readers. Defaults to false so that opening a Modal from a menu item does not leave the page unclickable.
  * @property {'ltr' | 'rtl'} [dir] - The reading direction of the dropdown menu when applicable. If omitted, inherits globally from DirectionProvider or assumes LTR (left-to-right) reading mode.
  */
 type RootProps = ComponentProps<typeof DropdownMenuPrimitive.Root>;
@@ -81,8 +81,12 @@ type RootProps = ComponentProps<typeof DropdownMenuPrimitive.Root>;
  * </DropdownMenu.Root>
  * ```
  */
-export const Root = (props: RootProps) => (
-	<DropdownMenuPrimitive.Root data-slot="dropdown-menu-root" {...props} />
+export // `modal` defaults to false rather than Radix's true. A modal menu sets
+// `pointer-events: none` on the body while open, and a Modal opened from a menu
+// item captures that value and restores it on close, leaving the whole page
+// unclickable. Pass `modal` explicitly to opt back in.
+const Root = ({ modal = false, ...props }: RootProps) => (
+	<DropdownMenuPrimitive.Root data-slot="dropdown-menu-root" modal={modal} {...props} />
 );
 Root.displayName = 'DropdownMenu.Root';
 
