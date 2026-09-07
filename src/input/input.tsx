@@ -1,8 +1,11 @@
+'use client';
+
 import { ComponentPropsWithRef } from 'react';
 
 import { tv, VariantProps } from 'tailwind-variants';
 
 import { cn } from '../../lib';
+import { useInputContext } from './context';
 
 /**
  * Style recipe for Input. Single-element recipe with a `size` variant; the
@@ -102,18 +105,18 @@ export type InputProps = Omit<ComponentPropsWithRef<'input'>, 'size'> & {
  * [Label](?path=/docs/components-label--docs) so the control has an accessible
  * name.
  *
- * It is deliberately self-contained: it renders the props it is given and
- * knows nothing about form fields, form libraries, or surrounding layout.
- * Wiring (`id`, `aria-invalid`, `aria-describedby`) arrives as plain props, so
- * a field wrapper can inject them and standalone usage can set them by hand.
- * There is no `status` prop — mark the control `aria-invalid` and the
+ * When a container provides `InputContext`, the input takes its wiring (`id`,
+ * `aria-describedby`, `aria-invalid`, `required`, `disabled`) from it with
+ * nothing passed by hand; `FieldText` is one such container. Standalone it
+ * renders exactly the props it is given, and its own props always win over the
+ * context. There is no `status` prop — mark the control `aria-invalid` and the
  * destructive border follows.
  *
  * Do not use Input for multi-line text; that is TextArea's job. It also has no
  * slots for leading or trailing addons — an input with a currency prefix or a
  * unit suffix belongs in an input group, not here.
  *
- * @summary Base single-line text control, unaware of fields and form libraries
+ * @summary Base single-line text control that takes its wiring from InputContext
  *
  * @example
  * <Label htmlFor="email">Email</Label>
@@ -123,13 +126,17 @@ export type InputProps = Omit<ComponentPropsWithRef<'input'>, 'size'> & {
  * <Input id="email" aria-invalid aria-describedby="email-error" />
  * <span id="email-error">Enter a valid email address.</span>
  */
-export const Input = ({ className, size, ...props }: InputProps) => (
-	<input
-		data-slot="input"
-		data-size={size}
-		className={cn(inputRecipe({ size }), className)}
-		{...props}
-	/>
-);
+export const Input = (props: InputProps) => {
+	const { className, size, ...rest } = useInputContext(props);
+
+	return (
+		<input
+			data-slot="input"
+			data-size={size}
+			className={cn(inputRecipe({ size }), className)}
+			{...rest}
+		/>
+	);
+};
 
 Input.displayName = 'Input';
