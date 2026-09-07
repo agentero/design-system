@@ -15,7 +15,8 @@ const InputProvider = ({ children }: { children: ReactNode }) => {
 				'aria-describedby': field.describedBy,
 				'aria-invalid': field.invalid || undefined,
 				required: field.required || undefined,
-				disabled: field.disabled || undefined
+				disabled: field.disabled || undefined,
+				readOnly: field.readOnly || undefined
 			},
 		[field]
 	);
@@ -28,7 +29,7 @@ export type FieldTextProps = FieldRootProps;
 /**
  * A `Field.Root` for a single-line text control: it provides `InputContext`,
  * so the `Input` inside associates itself with the label and the messages and
- * takes `invalid`, `required` and `disabled` from the field. Every other part
+ * takes `invalid`, `required`, `disabled` and `readOnly` from the field. Every other part
  * (`Label`, `Field.Description`, `Field.Error`) works as in any field.
  *
  * Form-library agnostic. A form adapter re-provides `InputContext` under it

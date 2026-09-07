@@ -120,6 +120,11 @@ export type FieldRootProps = ComponentPropsWithRef<'div'> & {
 	/** Disables the control through its context and sets `data-disabled` on the root. */
 	disabled?: boolean;
 	/**
+	 * Makes the control read-only through its context (focusable and copyable,
+	 * not editable, still submitted) and sets `data-readonly` on the root.
+	 */
+	readOnly?: boolean;
+	/**
 	 * Single source of truth for a required field: the `Label` shows its
 	 * asterisk and the control receives `required`, both through context.
 	 */
@@ -160,6 +165,7 @@ export const Root = ({
 	orientation = 'vertical',
 	invalid = false,
 	disabled = false,
+	readOnly = false,
 	required = false,
 	controlId: controlIdProp,
 	...props
@@ -196,6 +202,7 @@ export const Root = ({
 		registerMessage,
 		invalid,
 		disabled,
+		readOnly,
 		required
 	};
 
@@ -209,6 +216,7 @@ export const Root = ({
 							data-orientation={orientation}
 							data-invalid={invalid || undefined}
 							data-disabled={disabled || undefined}
+							data-readonly={readOnly || undefined}
 							className={cn(slots.root({ orientation }), className)}
 							{...props}
 						/>

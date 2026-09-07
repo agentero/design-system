@@ -29,12 +29,14 @@ const meta = {
 		},
 		invalid: { control: 'boolean' },
 		disabled: { control: 'boolean' },
+		readOnly: { control: 'boolean' },
 		required: { control: 'boolean' }
 	},
 	args: {
 		orientation: 'vertical',
 		invalid: false,
 		disabled: false,
+		readOnly: false,
 		required: false
 	}
 } satisfies Meta<typeof FieldText>;
@@ -143,6 +145,33 @@ export const Disabled: Story = {
 		const canvas = within(canvasElement);
 
 		await expect(canvas.getByRole('textbox', { name: 'Agency' })).toBeDisabled();
+	}
+};
+
+/**
+ * `readOnly` on the field reaches the input through context. The value stays
+ * focusable, copyable and submitted, and the input looks like any other.
+ *
+ * @summary Read-only field driven from the root
+ */
+export const ReadOnly: Story = {
+	args: {
+		readOnly: true
+	},
+	render: args => (
+		<FieldText {...args}>
+			<Label>Policy number</Label>
+			<Input defaultValue="POL-2049-118" />
+			<Field.Description>Assigned by the carrier; contact support to change it.</Field.Description>
+		</FieldText>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		const input = canvas.getByRole('textbox', { name: 'Policy number' });
+
+		await expect(input).toHaveAttribute('readonly');
+		await expect(input).not.toBeDisabled();
 	}
 };
 

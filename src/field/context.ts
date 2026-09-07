@@ -29,6 +29,7 @@ export type FieldContextValue = {
 	registerMessage: (id: string) => () => void;
 	invalid: boolean;
 	disabled: boolean;
+	readOnly: boolean;
 	required: boolean;
 };
 
