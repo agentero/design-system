@@ -4124,17 +4124,20 @@
             "required": false,
             "type": {
               "name": "enum",
-              "raw": "\"horizontal\" | \"vertical\"",
+              "raw": "\"horizontal\" | \"vertical\" | \"responsive\"",
               "value": [
                 {
                   "value": "\"horizontal\""
                 },
                 {
                   "value": "\"vertical\""
+                },
+                {
+                  "value": "\"responsive\""
                 }
               ]
             },
-            "description": "Layout of the field. `vertical` (default) stacks label, control and\nmessages. `horizontal` puts the label in a left column and the control\nwith its messages in a right column, in DOM order; a description written\nright after the label stays under the label. Below `28rem`, measured on the\nfield itself, it stacks like `vertical`, so it needs no particular wrapper.",
+            "description": "Layout of the field. `vertical` (default) stacks label, control and\nmessages. `horizontal` puts the label beside the control at every width.\n`responsive` stacks below `28rem` and goes horizontal from there, measured\non the field itself, so it needs no particular wrapper. In `horizontal` and\n`responsive`, wrap the control and its messages in `Field.Content` so they\nstack beside the label.",
             "defaultValue": null,
             "parent": {
               "name": "FieldRootProps",
@@ -4330,17 +4333,20 @@
             "required": false,
             "type": {
               "name": "enum",
-              "raw": "\"horizontal\" | \"vertical\"",
+              "raw": "\"horizontal\" | \"vertical\" | \"responsive\"",
               "value": [
                 {
                   "value": "\"horizontal\""
                 },
                 {
                   "value": "\"vertical\""
+                },
+                {
+                  "value": "\"responsive\""
                 }
               ]
             },
-            "description": "Layout of the field. `vertical` (default) stacks label, control and\nmessages. `horizontal` puts the label in a left column and the control\nwith its messages in a right column, in DOM order; a description written\nright after the label stays under the label. Below `28rem`, measured on the\nfield itself, it stacks like `vertical`, so it needs no particular wrapper.",
+            "description": "Layout of the field. `vertical` (default) stacks label, control and\nmessages. `horizontal` puts the label beside the control at every width.\n`responsive` stacks below `28rem` and goes horizontal from there, measured\non the field itself, so it needs no particular wrapper. In `horizontal` and\n`responsive`, wrap the control and its messages in `Field.Content` so they\nstack beside the label.",
             "defaultValue": {
               "value": "'vertical'"
             },
@@ -4527,9 +4533,16 @@
         {
           "id": "components-field--horizontal",
           "name": "Horizontal",
-          "snippet": "const Horizontal = () => (\n    <div className=\"flex flex-col gap-8\">\n        <div className=\"w-[40rem]\" data-testid=\"wide\">\n            <Field.Root orientation=\"horizontal\">\n                <Field.Label>Email</Field.Label>\n                <DemoInput type=\"email\" placeholder=\"you@example.com\" />\n                <Field.Description>We only use this to send policy documents.</Field.Description>\n            </Field.Root>\n        </div>\n\n        <div className=\"w-[40rem]\" data-testid=\"settings\">\n            <Field.Root orientation=\"horizontal\">\n                <Label>Auto-renew</Label>\n                <Field.Description>Renews the policy automatically before it expires.</Field.Description>\n                <DemoInput type=\"checkbox\" className=\"size-5\" />\n            </Field.Root>\n        </div>\n\n        <div className=\"w-[20rem]\" data-testid=\"narrow\">\n            <Field.Root orientation=\"horizontal\">\n                <Field.Label>Email</Field.Label>\n                <DemoInput type=\"email\" placeholder=\"you@example.com\" />\n                <Field.Description>We only use this to send policy documents.</Field.Description>\n            </Field.Root>\n        </div>\n    </div>\n);",
-          "description": "`horizontal` puts the label in a left column and everything else in a right\ncolumn, in DOM order: control, then description, then error. A description\nwritten right after the label stays under the label instead, which gives the\nsettings-row pattern with no wrapper. Below `28rem`, measured on the field\nitself, the parts stack. A bare `Label` gets the same placement as\n`Field.Label`.",
-          "summary": "Horizontal field that stacks when narrow"
+          "snippet": "const Horizontal = () => (\n    <div className=\"flex flex-col gap-8\">\n        <div className=\"w-[40rem]\" data-testid=\"wide\">\n            <Field.Root orientation=\"horizontal\">\n                <Field.Label>Email</Field.Label>\n                <Field.Content>\n                    <DemoInput type=\"email\" placeholder=\"you@example.com\" />\n                    <Field.Description>We only use this to send policy documents.</Field.Description>\n                </Field.Content>\n            </Field.Root>\n        </div>\n\n        <div className=\"w-[40rem]\" data-testid=\"settings\">\n            <Field.Root orientation=\"horizontal\">\n                <Field.Content>\n                    <Label>Auto-renew</Label>\n                    <Field.Description>\n                        Renews the policy automatically before it expires.\n                    </Field.Description>\n                </Field.Content>\n                <DemoInput type=\"checkbox\" className=\"size-5\" />\n            </Field.Root>\n        </div>\n\n        <div className=\"w-[20rem]\" data-testid=\"narrow\">\n            <Field.Root orientation=\"horizontal\">\n                <Field.Label>Email</Field.Label>\n                <Field.Content>\n                    <DemoInput type=\"email\" placeholder=\"you@example.com\" />\n                </Field.Content>\n            </Field.Root>\n        </div>\n    </div>\n);",
+          "description": "`horizontal` puts the label beside the control at every width. Wrap the\ncontrol and its messages in `Field.Content` so they stack on the right; wrap\na label and its description in `Field.Content` too when they share the left\nside, as in a settings row. A bare `Label` gets the same placement as\n`Field.Label`.",
+          "summary": "Horizontal field, one row at every width"
+        },
+        {
+          "id": "components-field--responsive",
+          "name": "Responsive",
+          "snippet": "const Responsive = () => (\n    <div className=\"flex flex-col gap-8\">\n        <div className=\"w-[40rem]\" data-testid=\"wide\">\n            <Field.Root orientation=\"responsive\">\n                <Field.Label>Email</Field.Label>\n                <Field.Content>\n                    <DemoInput type=\"email\" placeholder=\"you@example.com\" />\n                    <Field.Description>We only use this to send policy documents.</Field.Description>\n                </Field.Content>\n            </Field.Root>\n        </div>\n\n        <div className=\"w-[20rem]\" data-testid=\"narrow\">\n            <Field.Root orientation=\"responsive\">\n                <Field.Label>Email</Field.Label>\n                <Field.Content>\n                    <DemoInput type=\"email\" placeholder=\"you@example.com\" />\n                    <Field.Description>We only use this to send policy documents.</Field.Description>\n                </Field.Content>\n            </Field.Root>\n        </div>\n    </div>\n);",
+          "description": "`responsive` stacks the parts below `28rem` and puts the label beside the\ncontrol from there. It measures the field itself, so it needs no particular\nwrapper. Use `Field.Content` as in `horizontal`.",
+          "summary": "Responsive field that stacks when narrow"
         },
         {
           "id": "components-field--group",
@@ -7740,6 +7753,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4158
+    "durationMs": 4386
   }
 }
