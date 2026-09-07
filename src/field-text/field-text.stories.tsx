@@ -25,7 +25,7 @@ const meta = {
 	argTypes: {
 		orientation: {
 			control: 'radio',
-			options: ['vertical', 'horizontal']
+			options: ['vertical', 'horizontal', 'responsive']
 		},
 		invalid: { control: 'boolean' },
 		disabled: { control: 'boolean' },

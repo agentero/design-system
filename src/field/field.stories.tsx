@@ -325,14 +325,13 @@ export const ReadOnly: Story = {
 };
 
 /**
- * `horizontal` puts the label in a left column and everything else in a right
- * column, in DOM order: control, then description, then error. A description
- * written right after the label stays under the label instead, which gives the
- * settings-row pattern with no wrapper. Below `28rem`, measured on the field
- * itself, the parts stack. A bare `Label` gets the same placement as
+ * `horizontal` puts the label beside the control at every width. Wrap the
+ * control and its messages in `Field.Content` so they stack on the right; wrap
+ * a label and its description in `Field.Content` too when they share the left
+ * side, as in a settings row. A bare `Label` gets the same placement as
  * `Field.Label`.
  *
- * @summary Horizontal field that stacks when narrow
+ * @summary Horizontal field, one row at every width
  */
 export const Horizontal: Story = {
 	render: () => (
@@ -340,15 +339,21 @@ export const Horizontal: Story = {
 			<div className="w-[40rem]" data-testid="wide">
 				<Field.Root orientation="horizontal">
 					<Field.Label>Email</Field.Label>
-					<DemoInput type="email" placeholder="you@example.com" />
-					<Field.Description>We only use this to send policy documents.</Field.Description>
+					<Field.Content>
+						<DemoInput type="email" placeholder="you@example.com" />
+						<Field.Description>We only use this to send policy documents.</Field.Description>
+					</Field.Content>
 				</Field.Root>
 			</div>
 
 			<div className="w-[40rem]" data-testid="settings">
 				<Field.Root orientation="horizontal">
-					<Label>Auto-renew</Label>
-					<Field.Description>Renews the policy automatically before it expires.</Field.Description>
+					<Field.Content>
+						<Label>Auto-renew</Label>
+						<Field.Description>
+							Renews the policy automatically before it expires.
+						</Field.Description>
+					</Field.Content>
 					<DemoInput type="checkbox" className="size-5" />
 				</Field.Root>
 			</div>
@@ -356,8 +361,9 @@ export const Horizontal: Story = {
 			<div className="w-[20rem]" data-testid="narrow">
 				<Field.Root orientation="horizontal">
 					<Field.Label>Email</Field.Label>
-					<DemoInput type="email" placeholder="you@example.com" />
-					<Field.Description>We only use this to send policy documents.</Field.Description>
+					<Field.Content>
+						<DemoInput type="email" placeholder="you@example.com" />
+					</Field.Content>
 				</Field.Root>
 			</div>
 		</div>
@@ -383,8 +389,59 @@ export const Horizontal: Story = {
 		const settingsControl = settings.querySelector('input') as HTMLElement;
 
 		await expect(rect(settingsDescription).left).toBe(rect(settingsLabel).left);
-		await expect(rect(settingsDescription).top).toBeGreaterThanOrEqual(rect(settingsLabel).bottom);
-		await expect(rect(settingsControl).left).toBeGreaterThanOrEqual(rect(settingsLabel).right);
+		await expect(rect(settingsControl).left).toBeGreaterThanOrEqual(
+			rect(settingsDescription).right
+		);
+
+		// Horizontal never folds: the row holds even when the field is narrow.
+		const narrow = canvas.getByTestId('narrow');
+		const narrowLabel = narrow.querySelector('[data-slot=field-label]') as HTMLElement;
+		const narrowInput = narrow.querySelector('input') as HTMLElement;
+
+		await expect(rect(narrowLabel).right).toBeLessThanOrEqual(rect(narrowInput).left);
+	}
+};
+
+/**
+ * `responsive` stacks the parts below `28rem` and puts the label beside the
+ * control from there. It measures the field itself, so it needs no particular
+ * wrapper. Use `Field.Content` as in `horizontal`.
+ *
+ * @summary Responsive field that stacks when narrow
+ */
+export const Responsive: Story = {
+	render: () => (
+		<div className="flex flex-col gap-8">
+			<div className="w-[40rem]" data-testid="wide">
+				<Field.Root orientation="responsive">
+					<Field.Label>Email</Field.Label>
+					<Field.Content>
+						<DemoInput type="email" placeholder="you@example.com" />
+						<Field.Description>We only use this to send policy documents.</Field.Description>
+					</Field.Content>
+				</Field.Root>
+			</div>
+
+			<div className="w-[20rem]" data-testid="narrow">
+				<Field.Root orientation="responsive">
+					<Field.Label>Email</Field.Label>
+					<Field.Content>
+						<DemoInput type="email" placeholder="you@example.com" />
+						<Field.Description>We only use this to send policy documents.</Field.Description>
+					</Field.Content>
+				</Field.Root>
+			</div>
+		</div>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const rect = (element: Element) => element.getBoundingClientRect();
+
+		const wide = canvas.getByTestId('wide');
+		const wideLabel = wide.querySelector('[data-slot=field-label]') as HTMLElement;
+		const wideInput = wide.querySelector('input') as HTMLElement;
+
+		await expect(rect(wideLabel).right).toBeLessThanOrEqual(rect(wideInput).left);
 
 		const narrow = canvas.getByTestId('narrow');
 		const narrowLabel = narrow.querySelector('[data-slot=field-label]') as HTMLElement;

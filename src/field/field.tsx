@@ -28,8 +28,9 @@ import {
 import { IconInfoOutline } from './icons';
 
 /**
- * Style recipe for Field. Slots: `group`, `root`, `label`, `labelTooltip`,
- * `description`, `error`. The `orientation` variant applies to `root`.
+ * Style recipe for Field. Slots: `group`, `root`, `content`, `label`,
+ * `labelTooltip`, `description`, `error`. The `orientation` variant applies to
+ * `root`.
  *
  * @summary tailwind-variants recipe backing the Field parts
  */
@@ -39,7 +40,11 @@ export const fieldRecipe = tv({
 		// Matched on the value, not on presence: a consumer forwarding
 		// `data-invalid={false}` renders `data-invalid="false"`, which a
 		// presence-based `data-invalid:` variant would wrongly light up.
-		root: 'group/field w-full data-[invalid=true]:text-text-input-destructive',
+		root: 'group/field flex w-full gap-2 data-[invalid=true]:text-text-input-destructive',
+		content: [
+			'flex flex-1 flex-col gap-2 leading-snug',
+			'[&>:is([data-slot=label],[data-slot=field-label])+[data-slot=field-description]]:-mt-1.5'
+		],
 		label: 'flex flex-wrap items-center gap-1',
 		labelTooltip: [
 			'inline-flex shrink-0 cursor-pointer items-center justify-center rounded-sm',
@@ -48,7 +53,10 @@ export const fieldRecipe = tv({
 		],
 		description: [
 			'text-sm leading-normal font-normal text-text-input-placeholder',
-			'group-data-[orientation=horizontal]/field:text-balance',
+			// Balanced lines when the description sits beside the label: always in
+			// `horizontal`, and from `md` in `responsive` (the `@md/field` query only
+			// matches inside a responsive root, the only one that is a container).
+			'group-data-[orientation=horizontal]/field:text-balance @md/field:text-balance',
 			'[&>a]:underline [&>a]:underline-offset-4'
 		],
 		error: [
@@ -59,23 +67,27 @@ export const fieldRecipe = tv({
 	variants: {
 		orientation: {
 			vertical: {
-				root: 'flex flex-col gap-2 [&>*]:w-full [&>.sr-only]:w-auto'
+				root: 'flex-col [&>*]:w-full [&>.sr-only]:w-auto'
 			},
-			// A two-column grid whose template never changes, so the root needs no
-			// container above it: it is its own container and only the children's
-			// placement reacts to its width. The label takes column 1; every other
-			// child flows into column 2, one row each, in DOM order. A description
-			// written right after the label stays under it, in column 1. Below `md`
-			// (28rem) everything spans both columns and stacks like `vertical`.
+			// One row at every width. Wrap control and messages in `Field.Content`
+			// so they stack beside the label.
 			horizontal: {
 				root: [
-					'@container/field grid grid-flow-dense grid-cols-[auto_1fr] items-start gap-x-4 gap-y-2',
-					'[&>*]:col-start-2 [&>*]:min-w-0',
-					'[&>:is([data-slot=label],[data-slot=field-label])]:col-start-1',
-					'[&>:is([data-slot=label],[data-slot=field-label])]:row-start-1',
-					'[&>:is([data-slot=label],[data-slot=field-label])]:self-center',
-					'[&>:is([data-slot=label],[data-slot=field-label])+[data-slot=field-description]]:col-start-1',
-					'@max-md/field:[&>*]:col-span-2 @max-md/field:[&>*]:col-start-1'
+					'flex-row items-center',
+					'[&>:is([data-slot=label],[data-slot=field-label])]:flex-auto',
+					'has-[>[data-slot=field-content]]:items-start'
+				]
+			},
+			// Stacked below `md` (28rem), one row from there, measured on the field
+			// itself: the root is its own container and always wraps, and only the
+			// children's widths react to it. An element cannot query its own size,
+			// so the direction never changes on the root.
+			responsive: {
+				root: [
+					'@container/field flex-row flex-wrap items-start [&>*]:w-full [&>.sr-only]:w-auto',
+					'@md/field:items-center @md/field:[&>*]:w-auto',
+					'@md/field:[&>:is([data-slot=label],[data-slot=field-label])]:flex-auto',
+					'@md/field:has-[>[data-slot=field-content]]:items-start'
 				]
 			}
 		}
@@ -106,10 +118,11 @@ Group.displayName = 'Field.Group';
 export type FieldRootProps = ComponentPropsWithRef<'div'> & {
 	/**
 	 * Layout of the field. `vertical` (default) stacks label, control and
-	 * messages. `horizontal` puts the label in a left column and the control
-	 * with its messages in a right column, in DOM order; a description written
-	 * right after the label stays under the label. Below `28rem`, measured on the
-	 * field itself, it stacks like `vertical`, so it needs no particular wrapper.
+	 * messages. `horizontal` puts the label beside the control at every width.
+	 * `responsive` stacks below `28rem` and goes horizontal from there, measured
+	 * on the field itself, so it needs no particular wrapper. In `horizontal` and
+	 * `responsive`, wrap the control and its messages in `Field.Content` so they
+	 * stack beside the label.
 	 */
 	orientation?: FieldVariants['orientation'];
 	/**
@@ -227,6 +240,20 @@ export const Root = ({
 	);
 };
 Root.displayName = 'Field.Root';
+
+export type FieldContentProps = ComponentPropsWithRef<'div'>;
+
+/**
+ * Stacks the control, description and error vertically inside a `horizontal`
+ * or `responsive` field, where the label sits beside them. Also wraps a label
+ * and its description when they share the left side.
+ *
+ * @summary Stacks control, description and error beside the label
+ */
+export const Content = ({ className, ...props }: FieldContentProps) => (
+	<div data-slot="field-content" className={cn(slots.content(), className)} {...props} />
+);
+Content.displayName = 'Field.Content';
 
 export type FieldLabelProps = LabelProps & {
 	/**
