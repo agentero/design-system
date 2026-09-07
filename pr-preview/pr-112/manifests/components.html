@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.4s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>3.3s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -4316,7 +4316,7 @@ required?: boolean = false</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { ErrorContext, Field, Label } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Field, FieldContext, Label } from "@agentero/design-system";</code></pre>
               </div>
           
           
@@ -4643,7 +4643,7 @@ part wins over what `Field.Root` provides.</div>
               </div>
               <div>Form-adapter extension point simulated without a form library</div>
               <div class="hint">What a form adapter does with these contexts, simulated with `useState` and
-no form library: it re-provides `ErrorContext` with the field&#39;s errors so a
+no form library: it re-provides `FieldContext` with the field&#39;s errors so a
 bare `&lt;Field.Error /&gt;` renders them. A `FieldText` adapter extends
 `InputContext` the same way with `value`, `onChange`, `onBlur` and `name`.</div>
               <pre><code>const FormAdapterSimulation = () =&gt; &lt;SimulatedFormField /&gt;;</code></pre>
@@ -4681,7 +4681,7 @@ no `id`, `htmlFor`, `aria-describedby` or `aria-invalid` written by hand.
 
 It knows nothing about form libraries. A form adapter re-provides
 `InputContext` with `value`, `onChange`, `onBlur` and `name`, and
-`ErrorContext` with the errors, as the last story simulates.</div>
+`FieldContext` with the errors, as the last story simulates.</div>
     <div class="kv"><span class="chip">summary: Field for a single-line text control, wiring the Input inside it</span><span class="chip">example: &lt;FieldText invalid={!!error} required&gt;
   &lt;Label&gt;Email&lt;/Label&gt;
   &lt;Input type=&quot;email&quot; /&gt;
@@ -4759,7 +4759,7 @@ required?: boolean</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { ErrorContext, Field, FieldText, Input, InputContext, Label } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Field, FieldContext, FieldText, Input, InputContext, Label } from "@agentero/design-system";</code></pre>
               </div>
           
           
@@ -4888,7 +4888,7 @@ through untouched.</div>
               <div>Form-adapter extension point simulated without a form library</div>
               <div class="hint">What a form adapter does with these contexts, simulated with `useState` and
 no form library: it extends `InputContext` with `name`, `value`, `onChange`
-and `onBlur`, so a bare `&lt;Input /&gt;` becomes controlled, and `ErrorContext`
+and `onBlur`, so a bare `&lt;Input /&gt;` becomes controlled, and `FieldContext`
 with the errors, so a bare `&lt;Field.Error /&gt;` renders them. The input&#39;s own
 `onChange` still runs, chained after the adapter&#39;s.</div>
               <pre><code>const FormAdapterSimulation = () =&gt; &lt;SimulatedForm /&gt;;</code></pre>

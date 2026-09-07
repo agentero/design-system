@@ -4103,13 +4103,13 @@
           "<FieldText invalid={!!error} required>\n  <Label>Email</Label>\n  <Input type=\"email\" />\n  <Field.Description>We only use this for policy documents.</Field.Description>\n  <Field.Error errors={[error]} />\n</FieldText>"
         ]
       },
-      "description": "FieldText is a `Field.Root` for a single-line text control. It provides\n`InputContext`, so the `Input` inside associates itself with the label and\nthe messages and takes `invalid`, `required` and `disabled` from the field —\nno `id`, `htmlFor`, `aria-describedby` or `aria-invalid` written by hand.\n\nIt knows nothing about form libraries. A form adapter re-provides\n`InputContext` with `value`, `onChange`, `onBlur` and `name`, and\n`ErrorContext` with the errors, as the last story simulates.",
+      "description": "FieldText is a `Field.Root` for a single-line text control. It provides\n`InputContext`, so the `Input` inside associates itself with the label and\nthe messages and takes `invalid`, `required` and `disabled` from the field —\nno `id`, `htmlFor`, `aria-describedby` or `aria-invalid` written by hand.\n\nIt knows nothing about form libraries. A form adapter re-provides\n`InputContext` with `value`, `onChange`, `onBlur` and `name`, and\n`FieldContext` with the errors, as the last story simulates.",
       "summary": "Field for a single-line text control, wiring the Input inside it",
       "reactComponentMeta": {
         "displayName": "FieldText",
         "exportName": "FieldText",
         "filePath": "/home/runner/work/design-system/design-system/src/field-text/index.ts",
-        "description": "A `Field.Root` for a single-line text control: it provides `InputContext`,\nso the `Input` inside associates itself with the label and the messages and\ntakes `invalid`, `required`, `disabled` and `readOnly` from the field. Every other part\n(`Label`, `Field.Description`, `Field.Error`) works as in any field.\n\nForm-library agnostic. A form adapter re-provides `InputContext` under it\nwith `name`, `value`, `onChange`, `onBlur` and `ref`, and `ErrorContext` with\nthe errors, without `FieldText` knowing about the library.",
+        "description": "A `Field.Root` for a single-line text control: it provides `InputContext`,\nso the `Input` inside associates itself with the label and the messages and\ntakes `invalid`, `required`, `disabled` and `readOnly` from the field. Every other part\n(`Label`, `Field.Description`, `Field.Error`) works as in any field.\n\nForm-library agnostic. A form adapter re-provides `InputContext` under it\nwith `name`, `value`, `onChange`, `onBlur` and `ref`, and `FieldContext` with\nthe errors, without `FieldText` knowing about the library.",
         "jsDocTags": {
           "summary": [
             "Field for a single-line text control, wiring the Input inside it"
@@ -4294,11 +4294,11 @@
           "id": "components-fieldtext--form-adapter-simulation",
           "name": "Form Adapter Simulation",
           "snippet": "const FormAdapterSimulation = () => <SimulatedForm />;",
-          "description": "What a form adapter does with these contexts, simulated with `useState` and\nno form library: it extends `InputContext` with `name`, `value`, `onChange`\nand `onBlur`, so a bare `<Input />` becomes controlled, and `ErrorContext`\nwith the errors, so a bare `<Field.Error />` renders them. The input's own\n`onChange` still runs, chained after the adapter's.",
+          "description": "What a form adapter does with these contexts, simulated with `useState` and\nno form library: it extends `InputContext` with `name`, `value`, `onChange`\nand `onBlur`, so a bare `<Input />` becomes controlled, and `FieldContext`\nwith the errors, so a bare `<Field.Error />` renders them. The input's own\n`onChange` still runs, chained after the adapter's.",
           "summary": "Form-adapter extension point simulated without a form library"
         }
       ],
-      "import": "import { ErrorContext, Field, FieldText, Input, InputContext, Label } from \"@agentero/design-system\";"
+      "import": "import { Field, FieldContext, FieldText, Input, InputContext, Label } from \"@agentero/design-system\";"
     },
     "components-field": {
       "id": "components-field",
@@ -4318,7 +4318,7 @@
         "displayName": "Field.Root",
         "exportName": "Field",
         "filePath": "/home/runner/work/design-system/design-system/src/field/index.ts",
-        "description": "Wraps one label, control, description and error into a single field and\nwires the accessibility relationships between them. It generates the ids\nand shares them through context: `Label` reads `LabelContext`,\n`Field.Description` and `Field.Error` read theirs and register themselves so\nthe control's `aria-describedby` lists exactly the messages on screen, and a\n`Field<X>` such as `FieldText` provides the control's context so the control\nassociates itself too. Nobody passes an `id` by hand.\n\nPresentational and form-library agnostic: pass `invalid` and the error\nmessages from whatever validates the form. Deliberately not a `role=\"group\"`:\none field is not a set of related controls, and an unnamed group only adds\nscreen-reader verbosity. Real groupings belong to a fieldset with a legend.",
+        "description": "Wraps one label, control, description and error into a single field and\nwires the accessibility relationships between them. It generates the ids\nand shares them through context: `Label` reads `LabelContext`,\n`Field.Description` and `Field.Error` read `FieldContext` and register\nthemselves so the control's `aria-describedby` lists exactly the messages on\nscreen, and a `Field<X>` such as `FieldText` provides the control's context so\nthe control associates itself too. Nobody passes an `id` by hand.\n\nPresentational and form-library agnostic: pass `invalid` and the error\nmessages from whatever validates the form. Deliberately not a `role=\"group\"`:\none field is not a set of related controls, and an unnamed group only adds\nscreen-reader verbosity. Real groupings belong to a fieldset with a legend.",
         "jsDocTags": {
           "summary": [
             "Wraps a label, control, description and error into one field"
@@ -4569,11 +4569,11 @@
           "id": "components-field--form-adapter-simulation",
           "name": "Form Adapter Simulation",
           "snippet": "const FormAdapterSimulation = () => <SimulatedFormField />;",
-          "description": "What a form adapter does with these contexts, simulated with `useState` and\nno form library: it re-provides `ErrorContext` with the field's errors so a\nbare `<Field.Error />` renders them. A `FieldText` adapter extends\n`InputContext` the same way with `value`, `onChange`, `onBlur` and `name`.",
+          "description": "What a form adapter does with these contexts, simulated with `useState` and\nno form library: it re-provides `FieldContext` with the field's errors so a\nbare `<Field.Error />` renders them. A `FieldText` adapter extends\n`InputContext` the same way with `value`, `onChange`, `onBlur` and `name`.",
           "summary": "Form-adapter extension point simulated without a form library"
         }
       ],
-      "import": "import { ErrorContext, Field, Label } from \"@agentero/design-system\";"
+      "import": "import { Field, FieldContext, Label } from \"@agentero/design-system\";"
     },
     "components-hovercard": {
       "id": "components-hovercard",
@@ -7753,6 +7753,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4386
+    "durationMs": 3311
   }
 }
