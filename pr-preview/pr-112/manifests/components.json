@@ -4109,7 +4109,7 @@
         "displayName": "FieldText",
         "exportName": "FieldText",
         "filePath": "/home/runner/work/design-system/design-system/src/field-text/index.ts",
-        "description": "A `Field.Root` for a single-line text control: it provides `InputContext`,\nso the `Input` inside associates itself with the label and the messages and\ntakes `invalid`, `required` and `disabled` from the field. Every other part\n(`Label`, `Field.Description`, `Field.Error`) works as in any field.\n\nForm-library agnostic. A form adapter re-provides `InputContext` under it\nwith `name`, `value`, `onChange`, `onBlur` and `ref`, and `ErrorContext` with\nthe errors, without `FieldText` knowing about the library.",
+        "description": "A `Field.Root` for a single-line text control: it provides `InputContext`,\nso the `Input` inside associates itself with the label and the messages and\ntakes `invalid`, `required`, `disabled` and `readOnly` from the field. Every other part\n(`Label`, `Field.Description`, `Field.Error`) works as in any field.\n\nForm-library agnostic. A form adapter re-provides `InputContext` under it\nwith `name`, `value`, `onChange`, `onBlur` and `ref`, and `ErrorContext` with\nthe errors, without `FieldText` knowing about the library.",
         "jsDocTags": {
           "summary": [
             "Field for a single-line text control, wiring the Input inside it"
@@ -4185,6 +4185,25 @@
               }
             ]
           },
+          "readOnly": {
+            "name": "readOnly",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Makes the control read-only through its context (focusable and copyable,\nnot editable, still submitted) and sets `data-readonly` on the root.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
           "required": {
             "name": "required",
             "required": false,
@@ -4229,35 +4248,42 @@
         {
           "id": "components-fieldtext--default",
           "name": "Default",
-          "snippet": "const Default = () => <FieldText orientation=\"vertical\" invalid={false} disabled={false} required={false}>\n    <Label>Email</Label>\n    <Input type=\"email\" placeholder=\"you@example.com\" />\n    <Field.Description>We only use this to send policy documents.</Field.Description>\n</FieldText>;",
+          "snippet": "const Default = () => <FieldText\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Label>Email</Label>\n    <Input type=\"email\" placeholder=\"you@example.com\" />\n    <Field.Description>We only use this to send policy documents.</Field.Description>\n</FieldText>;",
           "description": "The composition consumers write: a label, the design system's `Input` and\nhelper text. The label points at the input and the input is described by the\ntext, all through context.",
           "summary": "Label, Input and description wired with no ids"
         },
         {
           "id": "components-fieldtext--required",
           "name": "Required",
-          "snippet": "const Required = () => <FieldText orientation=\"vertical\" invalid={false} disabled={false} required>\n    <Label>Full name</Label>\n    <Input placeholder=\"Jane Doe\" />\n</FieldText>;",
+          "snippet": "const Required = () => <FieldText\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required>\n    <Label>Full name</Label>\n    <Input placeholder=\"Jane Doe\" />\n</FieldText>;",
           "description": "`required` on the field reaches both the label's asterisk and the input's\n`required` attribute.",
           "summary": "Required field driven from the root alone"
         },
         {
           "id": "components-fieldtext--invalid",
           "name": "Invalid",
-          "snippet": "const Invalid = () => <FieldText orientation=\"vertical\" invalid disabled={false} required={false}>\n    <Label>Email</Label>\n    <Input type=\"email\" defaultValue=\"not-an-email\" />\n    <Field.Error errors={[{ message: 'Enter a valid email address.' }]} />\n</FieldText>;",
+          "snippet": "const Invalid = () => <FieldText\n    orientation=\"vertical\"\n    invalid\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Label>Email</Label>\n    <Input type=\"email\" defaultValue=\"not-an-email\" />\n    <Field.Error errors={[{ message: 'Enter a valid email address.' }]} />\n</FieldText>;",
           "description": "`invalid` on the field sets `aria-invalid` on the input, which drives its\ndestructive border, and the error is announced with the input.",
           "summary": "Invalid field with the Input styled by aria-invalid"
         },
         {
           "id": "components-fieldtext--disabled",
           "name": "Disabled",
-          "snippet": "const Disabled = () => <FieldText orientation=\"vertical\" invalid={false} disabled required={false}>\n    <Label>Agency</Label>\n    <Input defaultValue=\"Acme Insurance\" />\n</FieldText>;",
+          "snippet": "const Disabled = () => <FieldText\n    orientation=\"vertical\"\n    invalid={false}\n    disabled\n    readOnly={false}\n    required={false}>\n    <Label>Agency</Label>\n    <Input defaultValue=\"Acme Insurance\" />\n</FieldText>;",
           "description": "`disabled` on the field disables the input through context.",
           "summary": "Disabled field driven from the root"
         },
         {
+          "id": "components-fieldtext--read-only",
+          "name": "Read Only",
+          "snippet": "const ReadOnly = () => <FieldText\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly\n    required={false}>\n    <Label>Policy number</Label>\n    <Input defaultValue=\"POL-2049-118\" />\n    <Field.Description>Assigned by the carrier; contact support to change it.</Field.Description>\n</FieldText>;",
+          "description": "`readOnly` on the field reaches the input through context, which renders as\nthe underlined read-only field: same height and text, no box, only the\nbottom border.",
+          "summary": "Read-only field with the Input rendered as an underlined field"
+        },
+        {
           "id": "components-fieldtext--own-props-win",
           "name": "Own Props Win",
-          "snippet": "const OwnPropsWin = () => <div className=\"flex flex-col gap-2\">\n    <FieldText orientation=\"vertical\" invalid={false} disabled={false} required={false}>\n        <Label>Website</Label>\n        <Input type=\"url\" size=\"lg\" className=\"max-w-xs\" aria-describedby=\"website-hint\" />\n        <Field.Description>Include the protocol.</Field.Description>\n    </FieldText>\n    <p id=\"website-hint\" className=\"text-sm\">Shown on your public profile.\n                    </p>\n</div>;",
+          "snippet": "const OwnPropsWin = () => <div className=\"flex flex-col gap-2\">\n    <FieldText\n        orientation=\"vertical\"\n        invalid={false}\n        disabled={false}\n        readOnly={false}\n        required={false}>\n        <Label>Website</Label>\n        <Input type=\"url\" size=\"lg\" className=\"max-w-xs\" aria-describedby=\"website-hint\" />\n        <Field.Description>Include the protocol.</Field.Description>\n    </FieldText>\n    <p id=\"website-hint\" className=\"text-sm\">Shown on your public profile.\n                    </p>\n</div>;",
           "description": "The context is a default, never an override: an extra `aria-describedby` is\nconcatenated with the field's ids, `className` is merged and `size` passes\nthrough untouched.",
           "summary": "Input's own props merge with, and win over, the field's context"
         },
@@ -4371,6 +4397,27 @@
               }
             ]
           },
+          "readOnly": {
+            "name": "readOnly",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Makes the control read-only through its context (focusable and copyable,\nnot editable, still submitted) and sets `data-readonly` on the root.",
+            "defaultValue": {
+              "value": "false"
+            },
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
           "required": {
             "name": "required",
             "required": false,
@@ -4417,58 +4464,65 @@
         {
           "id": "components-field--default",
           "name": "Default",
-          "snippet": "const Default = () => <Field.Root orientation=\"vertical\" invalid={false} disabled={false} required={false}>\n    <Field.Label>Email</Field.Label>\n    <DemoInput placeholder=\"you@example.com\" />\n    <Field.Description>We only use this to send policy documents.</Field.Description>\n</Field.Root>;",
+          "snippet": "const Default = () => <Field.Root\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Field.Label>Email</Field.Label>\n    <DemoInput placeholder=\"you@example.com\" />\n    <Field.Description>We only use this to send policy documents.</Field.Description>\n</Field.Root>;",
           "description": "A vertical field with a label, a control and helper text. The label points\nat the control and the description is referenced by it — neither needed an\nexplicit `id`.",
           "summary": "Default vertical field with label, control and description"
         },
         {
           "id": "components-field--required",
           "name": "Required",
-          "snippet": "const Required = () => <Field.Root orientation=\"vertical\" invalid={false} disabled={false} required>\n    <Field.Label>Full name</Field.Label>\n    <DemoInput placeholder=\"Jane Doe\" />\n</Field.Root>;",
+          "snippet": "const Required = () => <Field.Root\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required>\n    <Field.Label>Full name</Field.Label>\n    <DemoInput placeholder=\"Jane Doe\" />\n</Field.Root>;",
           "description": "`required` on the root is the single source of truth: the label shows its\nasterisk and the control receives `required`, both through context.",
           "summary": "Required field driven from the root alone"
         },
         {
           "id": "components-field--optional",
           "name": "Optional",
-          "snippet": "const Optional = () => <Field.Root orientation=\"vertical\" invalid={false} disabled={false} required={false}>\n    <Field.Label optional>Phone number</Field.Label>\n    <DemoInput type=\"tel\" placeholder=\"+1 (555) 000-0000\" />\n</Field.Root>;",
+          "snippet": "const Optional = () => <Field.Root\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Field.Label optional>Phone number</Field.Label>\n    <DemoInput type=\"tel\" placeholder=\"+1 (555) 000-0000\" />\n</Field.Root>;",
           "description": "`optional` on the label appends the muted suffix; the control stays\nnon-required.",
           "summary": "Optional field with the muted label suffix"
         },
         {
           "id": "components-field--with-tooltip",
           "name": "With Tooltip",
-          "snippet": "const WithTooltip = () => <Field.Root orientation=\"vertical\" invalid={false} disabled={false} required>\n    <Field.Label tooltip=\"Issued by the IRS to identify your business.\">Tax ID</Field.Label>\n    <DemoInput placeholder=\"XX-XXXXXXX\" />\n</Field.Root>;",
+          "snippet": "const WithTooltip = () => <Field.Root\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required>\n    <Field.Label tooltip=\"Issued by the IRS to identify your business.\">Tax ID</Field.Label>\n    <DemoInput placeholder=\"XX-XXXXXXX\" />\n</Field.Root>;",
           "description": "`Field.Label` puts an info button beside the caption. It is a sibling of the\n`<label>`, so it keeps its own accessible name, clicking it does not focus\nthe control, and the control's name stays clean. It opens on focus too.",
           "summary": "Label with a tooltip trigger beside it"
         },
         {
           "id": "components-field--invalid",
           "name": "Invalid",
-          "snippet": "const Invalid = () => <Field.Root orientation=\"vertical\" invalid disabled={false} required={false}>\n    <Field.Label>Email</Field.Label>\n    <DemoInput type=\"email\" defaultValue=\"not-an-email\" />\n    <Field.Error errors={[{ message: 'Enter a valid email address.' }]} />\n</Field.Root>;",
+          "snippet": "const Invalid = () => <Field.Root\n    orientation=\"vertical\"\n    invalid\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Field.Label>Email</Field.Label>\n    <DemoInput type=\"email\" defaultValue=\"not-an-email\" />\n    <Field.Error errors={[{ message: 'Enter a valid email address.' }]} />\n</Field.Root>;",
           "description": "`invalid` on the root colors the label, sets `data-invalid` for styling and\n`aria-invalid` on the control. `Field.Error` takes the error objects as they\ncome from a form library.",
           "summary": "Invalid field with a single error message"
         },
         {
           "id": "components-field--multiple-errors",
           "name": "Multiple Errors",
-          "snippet": "const MultipleErrors = () => <Field.Root orientation=\"vertical\" invalid disabled={false} required={false}>\n    <Field.Label>Password</Field.Label>\n    <DemoInput type=\"password\" defaultValue=\"abc\" />\n    <Field.Error\n        errors={[\n            { message: 'Use at least 8 characters.' },\n            { message: 'Include a number.' },\n            { message: 'Use at least 8 characters.' }\n        ]} />\n</Field.Root>;",
+          "snippet": "const MultipleErrors = () => <Field.Root\n    orientation=\"vertical\"\n    invalid\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Field.Label>Password</Field.Label>\n    <DemoInput type=\"password\" defaultValue=\"abc\" />\n    <Field.Error\n        errors={[\n            { message: 'Use at least 8 characters.' },\n            { message: 'Include a number.' },\n            { message: 'Use at least 8 characters.' }\n        ]} />\n</Field.Root>;",
           "description": "Several errors render as a list, de-duplicated by message.",
           "summary": "Several errors rendered as a de-duplicated list"
         },
         {
           "id": "components-field--no-error",
           "name": "No Error",
-          "snippet": "const NoError = () => <Field.Root orientation=\"vertical\" invalid={false} disabled={false} required={false}>\n    <Field.Label>Email</Field.Label>\n    <DemoInput type=\"email\" />\n    <Field.Error errors={[undefined]} />\n</Field.Root>;",
+          "snippet": "const NoError = () => <Field.Root\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Field.Label>Email</Field.Label>\n    <DemoInput type=\"email\" />\n    <Field.Error errors={[undefined]} />\n</Field.Root>;",
           "description": "`Field.Error` renders nothing without a message, so it can stay mounted and\nreceive `undefined` entries while the field is valid. With no description\neither, the control carries no `aria-describedby` at all.",
           "summary": "Error stays mounted and renders nothing while valid"
         },
         {
           "id": "components-field--disabled",
           "name": "Disabled",
-          "snippet": "const Disabled = () => <Field.Root orientation=\"vertical\" invalid={false} disabled required={false}>\n    <Field.Label>Agency</Field.Label>\n    <DemoInput defaultValue=\"Acme Insurance\" />\n    <Field.Description>Managed by your administrator.</Field.Description>\n</Field.Root>;",
+          "snippet": "const Disabled = () => <Field.Root\n    orientation=\"vertical\"\n    invalid={false}\n    disabled\n    readOnly={false}\n    required={false}>\n    <Field.Label>Agency</Field.Label>\n    <DemoInput defaultValue=\"Acme Insurance\" />\n    <Field.Description>Managed by your administrator.</Field.Description>\n</Field.Root>;",
           "description": "`disabled` on the root disables the control through context and sets\n`data-disabled` for styling.",
           "summary": "Disabled field driven from the root"
+        },
+        {
+          "id": "components-field--read-only",
+          "name": "Read Only",
+          "snippet": "const ReadOnly = () => <Field.Root\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly\n    required={false}>\n    <Field.Label>Policy number</Field.Label>\n    <DemoInput defaultValue=\"POL-2049-118\" />\n    <Field.Description>Assigned by the carrier; contact support to change it.</Field.Description>\n</Field.Root>;",
+          "description": "`readOnly` on the root makes the control read-only through context and sets\n`data-readonly` for styling. Unlike `disabled`, the value stays focusable,\ncopyable and submitted.",
+          "summary": "Read-only field driven from the root"
         },
         {
           "id": "components-field--horizontal",
@@ -4831,7 +4885,7 @@
             "type": {
               "name": "boolean"
             },
-            "description": "Keeps the value focusable and copyable but not editable, and still\nsubmits it. Unlike `disabled`, it stays in the tab order.",
+            "description": "Keeps the value focusable and copyable but not editable, and still\nsubmits it. Unlike `disabled`, it stays in the tab order. Renders as an\nunderlined field with no box, per the design.",
             "defaultValue": null,
             "parent": {
               "name": "InputHTMLAttributes",
@@ -4965,8 +5019,8 @@
           "id": "components-input--read-only",
           "name": "Read Only",
           "snippet": "const ReadOnly = () => <Input\n    type=\"text\"\n    placeholder=\"Insert value\"\n    aria-label=\"Value\"\n    readOnly\n    defaultValue=\"Copy me, but do not change me\" />;",
-          "description": "Read-only inputs stay focusable and copyable and still submit their value —\nreach for this over `disabled` when the user needs to read or copy something\nthey cannot change.",
-          "summary": "Read-only value that stays focusable and copyable"
+          "description": "Read-only inputs stay focusable and copyable and still submit their value —\nreach for this over `disabled` when the user needs to read or copy something\nthey cannot change. They render as an underlined field: same height and\ntext, no box, only the bottom border.",
+          "summary": "Read-only value rendered as an underlined field"
         }
       ],
       "import": "import { Input } from \"@agentero/design-system\";"
@@ -7686,6 +7740,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4097
+    "durationMs": 3218
   }
 }

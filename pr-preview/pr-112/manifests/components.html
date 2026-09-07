@@ -588,13 +588,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">28 components ok</span><span class="filter-pill ok" aria-disabled="true">223 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">28 components ok</span><span class="filter-pill ok" aria-disabled="true">225 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.1s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>3.2s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -4216,9 +4216,9 @@ actions outright unless the user needs to see them and understand why.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Field.Root</h2>
       <div class="badges">
-        <label for="c-10-components-field-props" class="badge ok as-toggle">5 prop types</label>
+        <label for="c-10-components-field-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-10-components-field-stories" class="badge ok as-toggle">13 stories</label>
+        <label for="c-10-components-field-stories" class="badge ok as-toggle">14 stories</label>
         
         
       </div>
@@ -4263,7 +4263,7 @@ absent when there is none.</div>
           <div class="note ok">
             <div class="row">
               <span class="ex-name">Prop types <small>(react-component-meta)</small></span>
-              <span class="badge ok">5 prop types</span>
+              <span class="badge ok">6 prop types</span>
             </div>
             <pre><code>Component: src/field/index.ts::Field</code></pre>
             <pre><code>Props:</code></pre>
@@ -4294,6 +4294,12 @@ invalid?: boolean = false
 orientation?: &quot;horizontal&quot; | &quot;vertical&quot; = &#39;vertical&#39;
 
 /**
+ * Makes the control read-only through its context (focusable and copyable,
+ * not editable, still submitted) and sets `data-readonly` on the root.
+ */
+readOnly?: boolean = false
+
+/**
  * Single source of truth for a required field: the `Label` shows its
  * asterisk and the control receives `required`, both through context.
  */
@@ -4322,7 +4328,12 @@ required?: boolean = false</code></pre>
               <div class="hint">A vertical field with a label, a control and helper text. The label points
 at the control and the description is referenced by it — neither needed an
 explicit `id`.</div>
-              <pre><code>const Default = () =&gt; &lt;Field.Root orientation=&quot;vertical&quot; invalid={false} disabled={false} required={false}&gt;
+              <pre><code>const Default = () =&gt; &lt;Field.Root
+    orientation=&quot;vertical&quot;
+    invalid={false}
+    disabled={false}
+    readOnly={false}
+    required={false}&gt;
     &lt;Field.Label&gt;Email&lt;/Field.Label&gt;
     &lt;DemoInput placeholder=&quot;you@example.com&quot; /&gt;
     &lt;Field.Description&gt;We only use this to send policy documents.&lt;/Field.Description&gt;
@@ -4336,7 +4347,12 @@ explicit `id`.</div>
               <div>Required field driven from the root alone</div>
               <div class="hint">`required` on the root is the single source of truth: the label shows its
 asterisk and the control receives `required`, both through context.</div>
-              <pre><code>const Required = () =&gt; &lt;Field.Root orientation=&quot;vertical&quot; invalid={false} disabled={false} required&gt;
+              <pre><code>const Required = () =&gt; &lt;Field.Root
+    orientation=&quot;vertical&quot;
+    invalid={false}
+    disabled={false}
+    readOnly={false}
+    required&gt;
     &lt;Field.Label&gt;Full name&lt;/Field.Label&gt;
     &lt;DemoInput placeholder=&quot;Jane Doe&quot; /&gt;
 &lt;/Field.Root&gt;;</code></pre>
@@ -4349,7 +4365,12 @@ asterisk and the control receives `required`, both through context.</div>
               <div>Optional field with the muted label suffix</div>
               <div class="hint">`optional` on the label appends the muted suffix; the control stays
 non-required.</div>
-              <pre><code>const Optional = () =&gt; &lt;Field.Root orientation=&quot;vertical&quot; invalid={false} disabled={false} required={false}&gt;
+              <pre><code>const Optional = () =&gt; &lt;Field.Root
+    orientation=&quot;vertical&quot;
+    invalid={false}
+    disabled={false}
+    readOnly={false}
+    required={false}&gt;
     &lt;Field.Label optional&gt;Phone number&lt;/Field.Label&gt;
     &lt;DemoInput type=&quot;tel&quot; placeholder=&quot;+1 (555) 000-0000&quot; /&gt;
 &lt;/Field.Root&gt;;</code></pre>
@@ -4363,7 +4384,12 @@ non-required.</div>
               <div class="hint">`Field.Label` puts an info button beside the caption. It is a sibling of the
 `&lt;label&gt;`, so it keeps its own accessible name, clicking it does not focus
 the control, and the control&#39;s name stays clean. It opens on focus too.</div>
-              <pre><code>const WithTooltip = () =&gt; &lt;Field.Root orientation=&quot;vertical&quot; invalid={false} disabled={false} required&gt;
+              <pre><code>const WithTooltip = () =&gt; &lt;Field.Root
+    orientation=&quot;vertical&quot;
+    invalid={false}
+    disabled={false}
+    readOnly={false}
+    required&gt;
     &lt;Field.Label tooltip=&quot;Issued by the IRS to identify your business.&quot;&gt;Tax ID&lt;/Field.Label&gt;
     &lt;DemoInput placeholder=&quot;XX-XXXXXXX&quot; /&gt;
 &lt;/Field.Root&gt;;</code></pre>
@@ -4377,7 +4403,12 @@ the control, and the control&#39;s name stays clean. It opens on focus too.</div
               <div class="hint">`invalid` on the root colors the label, sets `data-invalid` for styling and
 `aria-invalid` on the control. `Field.Error` takes the error objects as they
 come from a form library.</div>
-              <pre><code>const Invalid = () =&gt; &lt;Field.Root orientation=&quot;vertical&quot; invalid disabled={false} required={false}&gt;
+              <pre><code>const Invalid = () =&gt; &lt;Field.Root
+    orientation=&quot;vertical&quot;
+    invalid
+    disabled={false}
+    readOnly={false}
+    required={false}&gt;
     &lt;Field.Label&gt;Email&lt;/Field.Label&gt;
     &lt;DemoInput type=&quot;email&quot; defaultValue=&quot;not-an-email&quot; /&gt;
     &lt;Field.Error errors={[{ message: &#39;Enter a valid email address.&#39; }]} /&gt;
@@ -4390,7 +4421,12 @@ come from a form library.</div>
               </div>
               <div>Several errors rendered as a de-duplicated list</div>
               <div class="hint">Several errors render as a list, de-duplicated by message.</div>
-              <pre><code>const MultipleErrors = () =&gt; &lt;Field.Root orientation=&quot;vertical&quot; invalid disabled={false} required={false}&gt;
+              <pre><code>const MultipleErrors = () =&gt; &lt;Field.Root
+    orientation=&quot;vertical&quot;
+    invalid
+    disabled={false}
+    readOnly={false}
+    required={false}&gt;
     &lt;Field.Label&gt;Password&lt;/Field.Label&gt;
     &lt;DemoInput type=&quot;password&quot; defaultValue=&quot;abc&quot; /&gt;
     &lt;Field.Error
@@ -4410,7 +4446,12 @@ come from a form library.</div>
               <div class="hint">`Field.Error` renders nothing without a message, so it can stay mounted and
 receive `undefined` entries while the field is valid. With no description
 either, the control carries no `aria-describedby` at all.</div>
-              <pre><code>const NoError = () =&gt; &lt;Field.Root orientation=&quot;vertical&quot; invalid={false} disabled={false} required={false}&gt;
+              <pre><code>const NoError = () =&gt; &lt;Field.Root
+    orientation=&quot;vertical&quot;
+    invalid={false}
+    disabled={false}
+    readOnly={false}
+    required={false}&gt;
     &lt;Field.Label&gt;Email&lt;/Field.Label&gt;
     &lt;DemoInput type=&quot;email&quot; /&gt;
     &lt;Field.Error errors={[undefined]} /&gt;
@@ -4424,10 +4465,35 @@ either, the control carries no `aria-describedby` at all.</div>
               <div>Disabled field driven from the root</div>
               <div class="hint">`disabled` on the root disables the control through context and sets
 `data-disabled` for styling.</div>
-              <pre><code>const Disabled = () =&gt; &lt;Field.Root orientation=&quot;vertical&quot; invalid={false} disabled required={false}&gt;
+              <pre><code>const Disabled = () =&gt; &lt;Field.Root
+    orientation=&quot;vertical&quot;
+    invalid={false}
+    disabled
+    readOnly={false}
+    required={false}&gt;
     &lt;Field.Label&gt;Agency&lt;/Field.Label&gt;
     &lt;DemoInput defaultValue=&quot;Acme Insurance&quot; /&gt;
     &lt;Field.Description&gt;Managed by your administrator.&lt;/Field.Description&gt;
+&lt;/Field.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Read Only</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Read-only field driven from the root</div>
+              <div class="hint">`readOnly` on the root makes the control read-only through context and sets
+`data-readonly` for styling. Unlike `disabled`, the value stays focusable,
+copyable and submitted.</div>
+              <pre><code>const ReadOnly = () =&gt; &lt;Field.Root
+    orientation=&quot;vertical&quot;
+    invalid={false}
+    disabled={false}
+    readOnly
+    required={false}&gt;
+    &lt;Field.Label&gt;Policy number&lt;/Field.Label&gt;
+    &lt;DemoInput defaultValue=&quot;POL-2049-118&quot; /&gt;
+    &lt;Field.Description&gt;Assigned by the carrier; contact support to change it.&lt;/Field.Description&gt;
 &lt;/Field.Root&gt;;</code></pre>
             </div>
             <div class="note ok">
@@ -4559,9 +4625,9 @@ bare `&lt;Field.Error /&gt;` renders them. A `FieldText` adapter extends
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> FieldText</h2>
       <div class="badges">
-        <label for="c-11-components-fieldtext-props" class="badge ok as-toggle">5 prop types</label>
+        <label for="c-11-components-fieldtext-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-11-components-fieldtext-stories" class="badge ok as-toggle">6 stories</label>
+        <label for="c-11-components-fieldtext-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -4600,7 +4666,7 @@ It knows nothing about form libraries. A form adapter re-provides
           <div class="note ok">
             <div class="row">
               <span class="ex-name">Prop types <small>(react-component-meta)</small></span>
-              <span class="badge ok">5 prop types</span>
+              <span class="badge ok">6 prop types</span>
             </div>
             <pre><code>Component: src/field-text/index.ts::FieldText</code></pre>
             <pre><code>Props:</code></pre>
@@ -4631,6 +4697,12 @@ invalid?: boolean
 orientation?: &quot;horizontal&quot; | &quot;vertical&quot;
 
 /**
+ * Makes the control read-only through its context (focusable and copyable,
+ * not editable, still submitted) and sets `data-readonly` on the root.
+ */
+readOnly?: boolean
+
+/**
  * Single source of truth for a required field: the `Label` shows its
  * asterisk and the control receives `required`, both through context.
  */
@@ -4659,7 +4731,12 @@ required?: boolean</code></pre>
               <div class="hint">The composition consumers write: a label, the design system&#39;s `Input` and
 helper text. The label points at the input and the input is described by the
 text, all through context.</div>
-              <pre><code>const Default = () =&gt; &lt;FieldText orientation=&quot;vertical&quot; invalid={false} disabled={false} required={false}&gt;
+              <pre><code>const Default = () =&gt; &lt;FieldText
+    orientation=&quot;vertical&quot;
+    invalid={false}
+    disabled={false}
+    readOnly={false}
+    required={false}&gt;
     &lt;Label&gt;Email&lt;/Label&gt;
     &lt;Input type=&quot;email&quot; placeholder=&quot;you@example.com&quot; /&gt;
     &lt;Field.Description&gt;We only use this to send policy documents.&lt;/Field.Description&gt;
@@ -4673,7 +4750,12 @@ text, all through context.</div>
               <div>Required field driven from the root alone</div>
               <div class="hint">`required` on the field reaches both the label&#39;s asterisk and the input&#39;s
 `required` attribute.</div>
-              <pre><code>const Required = () =&gt; &lt;FieldText orientation=&quot;vertical&quot; invalid={false} disabled={false} required&gt;
+              <pre><code>const Required = () =&gt; &lt;FieldText
+    orientation=&quot;vertical&quot;
+    invalid={false}
+    disabled={false}
+    readOnly={false}
+    required&gt;
     &lt;Label&gt;Full name&lt;/Label&gt;
     &lt;Input placeholder=&quot;Jane Doe&quot; /&gt;
 &lt;/FieldText&gt;;</code></pre>
@@ -4686,7 +4768,12 @@ text, all through context.</div>
               <div>Invalid field with the Input styled by aria-invalid</div>
               <div class="hint">`invalid` on the field sets `aria-invalid` on the input, which drives its
 destructive border, and the error is announced with the input.</div>
-              <pre><code>const Invalid = () =&gt; &lt;FieldText orientation=&quot;vertical&quot; invalid disabled={false} required={false}&gt;
+              <pre><code>const Invalid = () =&gt; &lt;FieldText
+    orientation=&quot;vertical&quot;
+    invalid
+    disabled={false}
+    readOnly={false}
+    required={false}&gt;
     &lt;Label&gt;Email&lt;/Label&gt;
     &lt;Input type=&quot;email&quot; defaultValue=&quot;not-an-email&quot; /&gt;
     &lt;Field.Error errors={[{ message: &#39;Enter a valid email address.&#39; }]} /&gt;
@@ -4699,9 +4786,34 @@ destructive border, and the error is announced with the input.</div>
               </div>
               <div>Disabled field driven from the root</div>
               <div class="hint">`disabled` on the field disables the input through context.</div>
-              <pre><code>const Disabled = () =&gt; &lt;FieldText orientation=&quot;vertical&quot; invalid={false} disabled required={false}&gt;
+              <pre><code>const Disabled = () =&gt; &lt;FieldText
+    orientation=&quot;vertical&quot;
+    invalid={false}
+    disabled
+    readOnly={false}
+    required={false}&gt;
     &lt;Label&gt;Agency&lt;/Label&gt;
     &lt;Input defaultValue=&quot;Acme Insurance&quot; /&gt;
+&lt;/FieldText&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Read Only</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Read-only field with the Input rendered as an underlined field</div>
+              <div class="hint">`readOnly` on the field reaches the input through context, which renders as
+the underlined read-only field: same height and text, no box, only the
+bottom border.</div>
+              <pre><code>const ReadOnly = () =&gt; &lt;FieldText
+    orientation=&quot;vertical&quot;
+    invalid={false}
+    disabled={false}
+    readOnly
+    required={false}&gt;
+    &lt;Label&gt;Policy number&lt;/Label&gt;
+    &lt;Input defaultValue=&quot;POL-2049-118&quot; /&gt;
+    &lt;Field.Description&gt;Assigned by the carrier; contact support to change it.&lt;/Field.Description&gt;
 &lt;/FieldText&gt;;</code></pre>
             </div>
             <div class="note ok">
@@ -4714,7 +4826,12 @@ destructive border, and the error is announced with the input.</div>
 concatenated with the field&#39;s ids, `className` is merged and `size` passes
 through untouched.</div>
               <pre><code>const OwnPropsWin = () =&gt; &lt;div className=&quot;flex flex-col gap-2&quot;&gt;
-    &lt;FieldText orientation=&quot;vertical&quot; invalid={false} disabled={false} required={false}&gt;
+    &lt;FieldText
+        orientation=&quot;vertical&quot;
+        invalid={false}
+        disabled={false}
+        readOnly={false}
+        required={false}&gt;
         &lt;Label&gt;Website&lt;/Label&gt;
         &lt;Input type=&quot;url&quot; size=&quot;lg&quot; className=&quot;max-w-xs&quot; aria-describedby=&quot;website-hint&quot; /&gt;
         &lt;Field.Description&gt;Include the protocol.&lt;/Field.Description&gt;
@@ -5102,7 +5219,8 @@ placeholder?: string
 
 /**
  * Keeps the value focusable and copyable but not editable, and still
- * submits it. Unlike `disabled`, it stays in the tab order.
+ * submits it. Unlike `disabled`, it stays in the tab order. Renders as an
+ * underlined field with no box, per the design.
  */
 readOnly?: boolean
 
@@ -5249,10 +5367,11 @@ shadow and leaves the tab order.</div>
                 <span class="ex-name">Read Only</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Read-only value that stays focusable and copyable</div>
+              <div>Read-only value rendered as an underlined field</div>
               <div class="hint">Read-only inputs stay focusable and copyable and still submit their value —
 reach for this over `disabled` when the user needs to read or copy something
-they cannot change.</div>
+they cannot change. They render as an underlined field: same height and
+text, no box, only the bottom border.</div>
               <pre><code>const ReadOnly = () =&gt; &lt;Input
     type=&quot;text&quot;
     placeholder=&quot;Insert value&quot;
