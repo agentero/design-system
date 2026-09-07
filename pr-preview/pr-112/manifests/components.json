@@ -4277,8 +4277,8 @@
           "id": "components-fieldtext--read-only",
           "name": "Read Only",
           "snippet": "const ReadOnly = () => <FieldText\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly\n    required={false}>\n    <Label>Policy number</Label>\n    <Input defaultValue=\"POL-2049-118\" />\n    <Field.Description>Assigned by the carrier; contact support to change it.</Field.Description>\n</FieldText>;",
-          "description": "`readOnly` on the field reaches the input through context, which renders as\nthe underlined read-only field: same height and text, no box, only the\nbottom border.",
-          "summary": "Read-only field with the Input rendered as an underlined field"
+          "description": "`readOnly` on the field reaches the input through context. The value stays\nfocusable, copyable and submitted, and the input looks like any other.",
+          "summary": "Read-only field driven from the root"
         },
         {
           "id": "components-fieldtext--own-props-win",
@@ -4885,7 +4885,7 @@
             "type": {
               "name": "boolean"
             },
-            "description": "Keeps the value focusable and copyable but not editable, and still\nsubmits it. Unlike `disabled`, it stays in the tab order. Renders as an\nunderlined field with no box; the box comes back on keyboard focus.",
+            "description": "Keeps the value focusable and copyable but not editable, and still\nsubmits it. Unlike `disabled`, it stays in the tab order.",
             "defaultValue": null,
             "parent": {
               "name": "InputHTMLAttributes",
@@ -5019,8 +5019,8 @@
           "id": "components-input--read-only",
           "name": "Read Only",
           "snippet": "const ReadOnly = () => <Input\n    type=\"text\"\n    placeholder=\"Insert value\"\n    aria-label=\"Value\"\n    readOnly\n    defaultValue=\"Copy me, but do not change me\" />;",
-          "description": "Read-only inputs stay focusable and copyable and still submit their value —\nreach for this over `disabled` when the user needs to read or copy something\nthey cannot change. They render as an underlined field: same height and\ntext, no box, only the bottom border. On keyboard focus the box comes back\nwith `lg` corners so the focus ring reads as on any other input.",
-          "summary": "Read-only value rendered as an underlined field"
+          "description": "Read-only inputs stay focusable and copyable and still submit their value —\nreach for this over `disabled` when the user needs to read or copy something\nthey cannot change.",
+          "summary": "Read-only value that stays focusable and copyable"
         }
       ],
       "import": "import { Input } from \"@agentero/design-system\";"
@@ -7740,6 +7740,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4211
+    "durationMs": 4158
   }
 }

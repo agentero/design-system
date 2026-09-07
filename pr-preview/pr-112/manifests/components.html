@@ -4801,10 +4801,9 @@ destructive border, and the error is announced with the input.</div>
                 <span class="ex-name">Read Only</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Read-only field with the Input rendered as an underlined field</div>
-              <div class="hint">`readOnly` on the field reaches the input through context, which renders as
-the underlined read-only field: same height and text, no box, only the
-bottom border.</div>
+              <div>Read-only field driven from the root</div>
+              <div class="hint">`readOnly` on the field reaches the input through context. The value stays
+focusable, copyable and submitted, and the input looks like any other.</div>
               <pre><code>const ReadOnly = () =&gt; &lt;FieldText
     orientation=&quot;vertical&quot;
     invalid={false}
@@ -5219,8 +5218,7 @@ placeholder?: string
 
 /**
  * Keeps the value focusable and copyable but not editable, and still
- * submits it. Unlike `disabled`, it stays in the tab order. Renders as an
- * underlined field with no box; the box comes back on keyboard focus.
+ * submits it. Unlike `disabled`, it stays in the tab order.
  */
 readOnly?: boolean
 
@@ -5367,12 +5365,10 @@ shadow and leaves the tab order.</div>
                 <span class="ex-name">Read Only</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Read-only value rendered as an underlined field</div>
+              <div>Read-only value that stays focusable and copyable</div>
               <div class="hint">Read-only inputs stay focusable and copyable and still submit their value —
 reach for this over `disabled` when the user needs to read or copy something
-they cannot change. They render as an underlined field: same height and
-text, no box, only the bottom border. On keyboard focus the box comes back
-with `lg` corners so the focus ring reads as on any other input.</div>
+they cannot change.</div>
               <pre><code>const ReadOnly = () =&gt; &lt;Input
     type=&quot;text&quot;
     placeholder=&quot;Insert value&quot;
