@@ -2,11 +2,13 @@
 
 import { ComponentPropsWithRef, ReactNode, createContext, use } from 'react';
 
-import { useMergeProps } from '../../lib';
+/** A validation error. Structurally matches a react-hook-form `FieldError`. */
+export type FieldErrorLike = { message?: string } | undefined;
 
 /**
- * Raw wiring of the surrounding `Field.Root`, for controls that have no
- * context of their own and connect themselves by hand.
+ * State of the surrounding `Field.Root`, shared with the Field family
+ * (`Field.Description`, `Field.Error`) and with controls that have no context
+ * of their own and connect themselves by hand.
  */
 export type FieldContextValue = {
 	/** `id` the control must carry so the label points at it. */
@@ -31,14 +33,19 @@ export type FieldContextValue = {
 	disabled: boolean;
 	readOnly: boolean;
 	required: boolean;
+	/**
+	 * Errors a bare `<Field.Error />` renders. `Field.Root` leaves it unset; a
+	 * form adapter re-provides the context with the field's validation errors.
+	 */
+	errors?: FieldErrorLike[];
 };
 
 export const FieldContext = createContext<FieldContextValue | null>(null);
 
 /**
- * Reads the surrounding `Field.Root`. Returns `null` outside a field, so a
- * control can read it and still work standalone. Reach for it when a control
- * has no context of its own; the design system's controls read theirs instead.
+ * Reads the surrounding `Field.Root`. Returns `null` outside a field, so a part
+ * or a control can read it and still work standalone. Reach for it in a control
+ * that has no context of its own; the design system's controls read theirs.
  *
  * @example
  * const field = useFieldContext();
@@ -48,31 +55,13 @@ export const useFieldContext = () => use(FieldContext);
 
 export type FieldDescriptionProps = ComponentPropsWithRef<'p'>;
 
-/** Props `Field.Root` hands to the `Field.Description` inside it: its `id`. */
-export const DescriptionContext = createContext<Partial<FieldDescriptionProps> | null>(null);
-
-export const useDescriptionContext = (props: FieldDescriptionProps) =>
-	useMergeProps(use(DescriptionContext), props);
-
-/** A validation error. Structurally matches a react-hook-form `FieldError`. */
-export type FieldErrorLike = { message?: string } | undefined;
-
 export type FieldErrorProps = Omit<ComponentPropsWithRef<'div'>, 'children'> & {
 	/** Message to render. Takes precedence over `errors`. */
 	children?: ReactNode;
 	/**
 	 * Errors to render, de-duplicated by message: one line for a single error, a
 	 * bulleted list for several. Shaped to take a form library's error objects as
-	 * they come.
+	 * they come. Falls back to the `errors` in `FieldContext`.
 	 */
 	errors?: FieldErrorLike[];
 };
-
-/**
- * Props `Field.Root` hands to the `Field.Error` inside it: its `id`. A form
- * adapter can re-provide it with `errors` so a bare `<Field.Error />` renders
- * the field's validation messages.
- */
-export const ErrorContext = createContext<Partial<FieldErrorProps> | null>(null);
-
-export const useErrorContext = (props: FieldErrorProps) => useMergeProps(use(ErrorContext), props);

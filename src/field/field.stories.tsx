@@ -3,7 +3,7 @@ import { ComponentProps, ReactNode, use, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
-import { ErrorContext, Field, FieldErrorLike, useFieldContext } from '.';
+import { Field, FieldContext, FieldErrorLike, useFieldContext } from '.';
 import { inputRecipe } from '../input';
 import { Label } from '../label';
 
@@ -537,8 +537,8 @@ export const OwnPropsWin: Story = {
 };
 
 /**
- * Re-provides `ErrorContext` under the root with the field's errors, the way a
- * form adapter would. Must sit inside `Field.Root` so it inherits the error id.
+ * Re-provides `FieldContext` under the root with the field's errors, the way a
+ * form adapter would. Must sit inside `Field.Root` so it inherits the wiring.
  */
 const ErrorProvider = ({
 	errors,
@@ -547,9 +547,9 @@ const ErrorProvider = ({
 	errors?: FieldErrorLike[];
 	children: ReactNode;
 }) => {
-	const context = use(ErrorContext);
+	const field = use(FieldContext);
 
-	return <ErrorContext value={{ ...context, errors }}>{children}</ErrorContext>;
+	return <FieldContext value={field && { ...field, errors }}>{children}</FieldContext>;
 };
 
 const SimulatedFormField = () => {
@@ -576,7 +576,7 @@ const SimulatedFormField = () => {
 
 /**
  * What a form adapter does with these contexts, simulated with `useState` and
- * no form library: it re-provides `ErrorContext` with the field's errors so a
+ * no form library: it re-provides `FieldContext` with the field's errors so a
  * bare `<Field.Error />` renders them. A `FieldText` adapter extends
  * `InputContext` the same way with `value`, `onChange`, `onBlur` and `name`.
  *

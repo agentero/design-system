@@ -1,14 +1,7 @@
 import { Content, Description, Error, Group, Label, Root } from './field';
 
 export { fieldRecipe } from './field';
-export {
-	DescriptionContext,
-	ErrorContext,
-	FieldContext,
-	useDescriptionContext,
-	useErrorContext,
-	useFieldContext
-} from './context';
+export { FieldContext, useFieldContext } from './context';
 
 export type {
 	FieldContentProps,

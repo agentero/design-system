@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { FieldText } from '.';
-import { ErrorContext, Field, FieldErrorLike } from '../field';
+import { Field, FieldContext, FieldErrorLike } from '../field';
 import { Input, InputContext, InputProps } from '../input';
 import { Label } from '../label';
 
@@ -16,7 +16,7 @@ import { Label } from '../label';
  *
  * It knows nothing about form libraries. A form adapter re-provides
  * `InputContext` with `value`, `onChange`, `onBlur` and `name`, and
- * `ErrorContext` with the errors, as the last story simulates.
+ * `FieldContext` with the errors, as the last story simulates.
  */
 const meta = {
 	title: 'Components/FieldText',
@@ -209,7 +209,7 @@ export const OwnPropsWin: Story = {
 };
 
 /**
- * Re-provides `InputContext` and `ErrorContext` under the field with what a
+ * Re-provides `InputContext` and `FieldContext` under the field with what a
  * form library would supply. Must sit inside `FieldText` so it inherits the
  * field's wiring and only adds to it.
  */
@@ -223,11 +223,11 @@ const FormAdapter = ({
 	children: ReactNode;
 }) => {
 	const input = use(InputContext);
-	const error = use(ErrorContext);
+	const field = use(FieldContext);
 
 	return (
 		<InputContext value={{ ...input, ...inputProps }}>
-			<ErrorContext value={{ ...error, errors }}>{children}</ErrorContext>
+			<FieldContext value={field && { ...field, errors }}>{children}</FieldContext>
 		</InputContext>
 	);
 };
@@ -261,7 +261,7 @@ const SimulatedForm = () => {
 /**
  * What a form adapter does with these contexts, simulated with `useState` and
  * no form library: it extends `InputContext` with `name`, `value`, `onChange`
- * and `onBlur`, so a bare `<Input />` becomes controlled, and `ErrorContext`
+ * and `onBlur`, so a bare `<Input />` becomes controlled, and `FieldContext`
  * with the errors, so a bare `<Field.Error />` renders them. The input's own
  * `onChange` still runs, chained after the adapter's.
  *

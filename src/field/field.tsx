@@ -15,14 +15,10 @@ import { cn } from '../../lib';
 import { Label as BaseLabel, LabelContext, type LabelProps } from '../label';
 import { Tooltip, type TooltipProps } from '../tooltip';
 import {
-	DescriptionContext,
-	ErrorContext,
 	FieldContext,
 	type FieldContextValue,
 	type FieldDescriptionProps,
 	type FieldErrorProps,
-	useDescriptionContext,
-	useErrorContext,
 	useFieldContext
 } from './context';
 import { IconInfoOutline } from './icons';
@@ -153,10 +149,10 @@ export type FieldRootProps = ComponentPropsWithRef<'div'> & {
  * Wraps one label, control, description and error into a single field and
  * wires the accessibility relationships between them. It generates the ids
  * and shares them through context: `Label` reads `LabelContext`,
- * `Field.Description` and `Field.Error` read theirs and register themselves so
- * the control's `aria-describedby` lists exactly the messages on screen, and a
- * `Field<X>` such as `FieldText` provides the control's context so the control
- * associates itself too. Nobody passes an `id` by hand.
+ * `Field.Description` and `Field.Error` read `FieldContext` and register
+ * themselves so the control's `aria-describedby` lists exactly the messages on
+ * screen, and a `Field<X>` such as `FieldText` provides the control's context so
+ * the control associates itself too. Nobody passes an `id` by hand.
  *
  * Presentational and form-library agnostic: pass `invalid` and the error
  * messages from whatever validates the form. Deliberately not a `role="group"`:
@@ -222,19 +218,15 @@ export const Root = ({
 	return (
 		<FieldContext value={field}>
 			<LabelContext value={{ htmlFor: controlId, required: required || undefined }}>
-				<DescriptionContext value={{ id: descriptionId }}>
-					<ErrorContext value={{ id: errorId }}>
-						<div
-							data-slot="field"
-							data-orientation={orientation}
-							data-invalid={invalid || undefined}
-							data-disabled={disabled || undefined}
-							data-readonly={readOnly || undefined}
-							className={cn(slots.root({ orientation }), className)}
-							{...props}
-						/>
-					</ErrorContext>
-				</DescriptionContext>
+				<div
+					data-slot="field"
+					data-orientation={orientation}
+					data-invalid={invalid || undefined}
+					data-disabled={disabled || undefined}
+					data-readonly={readOnly || undefined}
+					className={cn(slots.root({ orientation }), className)}
+					{...props}
+				/>
 			</LabelContext>
 		</FieldContext>
 	);
@@ -302,11 +294,12 @@ Label.displayName = 'Field.Label';
  *
  * @summary Helper text explaining what the field expects
  */
-export const Description = (props: FieldDescriptionProps) => {
-	const { className, id, ...rest } = useDescriptionContext(props);
+export const Description = ({ className, id: idProp, ...props }: FieldDescriptionProps) => {
+	const field = useFieldContext();
+	const id = idProp ?? field?.descriptionId;
 	// The callback is stable across the root's renders; depending on the whole
 	// context object would re-register on every render instead.
-	const registerMessage = useFieldContext()?.registerMessage;
+	const registerMessage = field?.registerMessage;
 
 	useLayoutEffect(() => (id ? registerMessage?.(id) : undefined), [registerMessage, id]);
 
@@ -315,7 +308,7 @@ export const Description = (props: FieldDescriptionProps) => {
 			data-slot="field-description"
 			id={id}
 			className={cn(slots.description(), className)}
-			{...rest}
+			{...props}
 		/>
 	);
 };
@@ -325,14 +318,22 @@ Description.displayName = 'Field.Description';
  * Validation feedback for the field, announced as an alert when it appears.
  * Renders nothing without a message, so it can stay mounted unconditionally;
  * set `invalid` on `Field.Root` alongside it. Takes `children` or an `errors`
- * array, and a form adapter can supply `errors` through `ErrorContext` so a
+ * array, and a form adapter can supply `errors` through `FieldContext` so a
  * bare `<Field.Error />` renders them.
  *
  * @summary Validation feedback for the field, announced as an alert
  */
-const FieldError = (props: FieldErrorProps) => {
-	const { className, children, errors, id, ...rest } = useErrorContext(props);
-	const registerMessage = useFieldContext()?.registerMessage;
+const FieldError = ({
+	className,
+	children,
+	errors: errorsProp,
+	id: idProp,
+	...props
+}: FieldErrorProps) => {
+	const field = useFieldContext();
+	const id = idProp ?? field?.errorId;
+	const errors = errorsProp ?? field?.errors;
+	const registerMessage = field?.registerMessage;
 
 	const messages = [...new Set(errors?.flatMap(error => error?.message || []))];
 
@@ -367,7 +368,7 @@ const FieldError = (props: FieldErrorProps) => {
 			data-slot="field-error"
 			id={id}
 			className={cn(slots.error(), className)}
-			{...rest}>
+			{...props}>
 			{content}
 		</div>
 	);
