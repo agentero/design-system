@@ -4137,7 +4137,7 @@
                 }
               ]
             },
-            "description": "Layout of the field. `vertical` (default) stacks label, control and\nmessages. `horizontal` puts the label beside the control at every width.\n`responsive` stacks below `28rem` and goes horizontal from there, measured\non the field itself, so it needs no particular wrapper. In `horizontal` and\n`responsive`, wrap the control and its messages in `Field.Content` so they\nstack beside the label.",
+            "description": "Layout of the field. `vertical` (default) stacks label, control and\nmessages. `horizontal` is one row at every width: the first child fills it\nand the rest keep their natural width, aligned to the right, so the\ncontrols of stacked fields line up. `responsive` stacks below `28rem` and\nbehaves like `horizontal` from there, measured on the field itself, so it\nneeds no particular wrapper. In both, `Field.Content` groups a control with\nits messages, or a label with its description.",
             "defaultValue": null,
             "parent": {
               "name": "FieldRootProps",
@@ -4346,7 +4346,7 @@
                 }
               ]
             },
-            "description": "Layout of the field. `vertical` (default) stacks label, control and\nmessages. `horizontal` puts the label beside the control at every width.\n`responsive` stacks below `28rem` and goes horizontal from there, measured\non the field itself, so it needs no particular wrapper. In `horizontal` and\n`responsive`, wrap the control and its messages in `Field.Content` so they\nstack beside the label.",
+            "description": "Layout of the field. `vertical` (default) stacks label, control and\nmessages. `horizontal` is one row at every width: the first child fills it\nand the rest keep their natural width, aligned to the right, so the\ncontrols of stacked fields line up. `responsive` stacks below `28rem` and\nbehaves like `horizontal` from there, measured on the field itself, so it\nneeds no particular wrapper. In both, `Field.Content` groups a control with\nits messages, or a label with its description.",
             "defaultValue": {
               "value": "'vertical'"
             },
@@ -4533,15 +4533,15 @@
         {
           "id": "components-field--horizontal",
           "name": "Horizontal",
-          "snippet": "const Horizontal = () => (\n    <div className=\"flex flex-col gap-8\">\n        <div className=\"w-[40rem]\" data-testid=\"wide\">\n            <Field.Root orientation=\"horizontal\">\n                <Field.Label>Email</Field.Label>\n                <Field.Content>\n                    <DemoInput type=\"email\" placeholder=\"you@example.com\" />\n                    <Field.Description>We only use this to send policy documents.</Field.Description>\n                </Field.Content>\n            </Field.Root>\n        </div>\n\n        <div className=\"w-[40rem]\" data-testid=\"settings\">\n            <Field.Root orientation=\"horizontal\">\n                <Field.Content>\n                    <Label>Auto-renew</Label>\n                    <Field.Description>\n                        Renews the policy automatically before it expires.\n                    </Field.Description>\n                </Field.Content>\n                <DemoInput type=\"checkbox\" className=\"size-5\" />\n            </Field.Root>\n        </div>\n\n        <div className=\"w-[20rem]\" data-testid=\"narrow\">\n            <Field.Root orientation=\"horizontal\">\n                <Field.Label>Email</Field.Label>\n                <Field.Content>\n                    <DemoInput type=\"email\" placeholder=\"you@example.com\" />\n                </Field.Content>\n            </Field.Root>\n        </div>\n    </div>\n);",
-          "description": "`horizontal` puts the label beside the control at every width. Wrap the\ncontrol and its messages in `Field.Content` so they stack on the right; wrap\na label and its description in `Field.Content` too when they share the left\nside, as in a settings row. A bare `Label` gets the same placement as\n`Field.Label`.",
-          "summary": "Horizontal field, one row at every width"
+          "snippet": "const Horizontal = () => (\n    <Field.Group className=\"w-[40rem]\">\n        <Field.Root orientation=\"horizontal\" data-testid=\"short\">\n            <Field.Label>Full name</Field.Label>\n            <DemoInput defaultValue=\"Rafa Moro\" className=\"w-72\" />\n        </Field.Root>\n\n        <Field.Root orientation=\"horizontal\" data-testid=\"long\">\n            <Field.Content>\n                <Label>Title</Label>\n                <Field.Description>Your job title or role.</Field.Description>\n            </Field.Content>\n            <Field.Content className=\"w-72\">\n                <DemoInput placeholder=\"Software engineer\" />\n                <Field.Description>Shown on your public profile.</Field.Description>\n            </Field.Content>\n        </Field.Root>\n\n        <Field.Root orientation=\"horizontal\" data-testid=\"switch\">\n            <Field.Content>\n                <Label>Auto-renew</Label>\n                <Field.Description>Renews the policy automatically before it expires.</Field.Description>\n            </Field.Content>\n            <DemoInput type=\"checkbox\" className=\"size-5\" />\n        </Field.Root>\n\n        <div className=\"w-[20rem]\" data-testid=\"narrow\">\n            <Field.Root orientation=\"horizontal\">\n                <Field.Label>Email</Field.Label>\n                <DemoInput type=\"email\" placeholder=\"you@example.com\" className=\"w-40\" />\n            </Field.Root>\n        </div>\n    </Field.Group>\n);",
+          "description": "`horizontal` is one row at every width. The first child fills the row and\neverything after it keeps its natural width, aligned to the right edge, so\nthe controls of stacked fields line up whatever their labels measure. Wrap a\nlabel with its description, or a control with its messages, in\n`Field.Content`. A control sets its own width: `Input` is `w-full`, so it\ngets one here.",
+          "summary": "Horizontal field, one row at every width, controls right-aligned"
         },
         {
           "id": "components-field--responsive",
           "name": "Responsive",
-          "snippet": "const Responsive = () => (\n    <div className=\"flex flex-col gap-8\">\n        <div className=\"w-[40rem]\" data-testid=\"wide\">\n            <Field.Root orientation=\"responsive\">\n                <Field.Label>Email</Field.Label>\n                <Field.Content>\n                    <DemoInput type=\"email\" placeholder=\"you@example.com\" />\n                    <Field.Description>We only use this to send policy documents.</Field.Description>\n                </Field.Content>\n            </Field.Root>\n        </div>\n\n        <div className=\"w-[20rem]\" data-testid=\"narrow\">\n            <Field.Root orientation=\"responsive\">\n                <Field.Label>Email</Field.Label>\n                <Field.Content>\n                    <DemoInput type=\"email\" placeholder=\"you@example.com\" />\n                    <Field.Description>We only use this to send policy documents.</Field.Description>\n                </Field.Content>\n            </Field.Root>\n        </div>\n    </div>\n);",
-          "description": "`responsive` stacks the parts below `28rem` and puts the label beside the\ncontrol from there. It measures the field itself, so it needs no particular\nwrapper. Use `Field.Content` as in `horizontal`.",
+          "snippet": "const Responsive = () => (\n    <div className=\"flex flex-col gap-8\">\n        <div className=\"w-[40rem]\" data-testid=\"wide\">\n            <Field.Root orientation=\"responsive\">\n                <Field.Label>Email</Field.Label>\n                <Field.Content className=\"@md/field:w-72\">\n                    <DemoInput type=\"email\" placeholder=\"you@example.com\" />\n                    <Field.Description>We only use this to send policy documents.</Field.Description>\n                </Field.Content>\n            </Field.Root>\n        </div>\n\n        <div className=\"w-[20rem]\" data-testid=\"narrow\">\n            <Field.Root orientation=\"responsive\">\n                <Field.Label>Email</Field.Label>\n                <Field.Content>\n                    <DemoInput type=\"email\" placeholder=\"you@example.com\" />\n                    <Field.Description>We only use this to send policy documents.</Field.Description>\n                </Field.Content>\n            </Field.Root>\n        </div>\n    </div>\n);",
+          "description": "`responsive` stacks the parts below `28rem` and behaves like `horizontal`\nfrom there: first child fills, the rest keep their width on the right. It\nmeasures the field itself, so it needs no particular wrapper. A width that\nshould only apply once horizontal goes behind `@md/field:`.",
           "summary": "Responsive field that stacks when narrow"
         },
         {
@@ -7753,6 +7753,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 3311
+    "durationMs": 4648
   }
 }

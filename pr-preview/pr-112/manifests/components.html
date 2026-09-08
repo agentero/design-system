@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>3.3s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>4.6s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -4286,11 +4286,12 @@ invalid?: boolean = false
 
 /**
  * Layout of the field. `vertical` (default) stacks label, control and
- * messages. `horizontal` puts the label beside the control at every width.
- * `responsive` stacks below `28rem` and goes horizontal from there, measured
- * on the field itself, so it needs no particular wrapper. In `horizontal` and
- * `responsive`, wrap the control and its messages in `Field.Content` so they
- * stack beside the label.
+ * messages. `horizontal` is one row at every width: the first child fills it
+ * and the rest keep their natural width, aligned to the right, so the
+ * controls of stacked fields line up. `responsive` stacks below `28rem` and
+ * behaves like `horizontal` from there, measured on the field itself, so it
+ * needs no particular wrapper. In both, `Field.Content` groups a control with
+ * its messages, or a label with its description.
  */
 orientation?: &quot;horizontal&quot; | &quot;vertical&quot; | &quot;responsive&quot; = &#39;vertical&#39;
 
@@ -4502,45 +4503,46 @@ copyable and submitted.</div>
                 <span class="ex-name">Horizontal</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Horizontal field, one row at every width</div>
-              <div class="hint">`horizontal` puts the label beside the control at every width. Wrap the
-control and its messages in `Field.Content` so they stack on the right; wrap
-a label and its description in `Field.Content` too when they share the left
-side, as in a settings row. A bare `Label` gets the same placement as
-`Field.Label`.</div>
+              <div>Horizontal field, one row at every width, controls right-aligned</div>
+              <div class="hint">`horizontal` is one row at every width. The first child fills the row and
+everything after it keeps its natural width, aligned to the right edge, so
+the controls of stacked fields line up whatever their labels measure. Wrap a
+label with its description, or a control with its messages, in
+`Field.Content`. A control sets its own width: `Input` is `w-full`, so it
+gets one here.</div>
               <pre><code>const Horizontal = () =&gt; (
-    &lt;div className=&quot;flex flex-col gap-8&quot;&gt;
-        &lt;div className=&quot;w-[40rem]&quot; data-testid=&quot;wide&quot;&gt;
-            &lt;Field.Root orientation=&quot;horizontal&quot;&gt;
-                &lt;Field.Label&gt;Email&lt;/Field.Label&gt;
-                &lt;Field.Content&gt;
-                    &lt;DemoInput type=&quot;email&quot; placeholder=&quot;you@example.com&quot; /&gt;
-                    &lt;Field.Description&gt;We only use this to send policy documents.&lt;/Field.Description&gt;
-                &lt;/Field.Content&gt;
-            &lt;/Field.Root&gt;
-        &lt;/div&gt;
+    &lt;Field.Group className=&quot;w-[40rem]&quot;&gt;
+        &lt;Field.Root orientation=&quot;horizontal&quot; data-testid=&quot;short&quot;&gt;
+            &lt;Field.Label&gt;Full name&lt;/Field.Label&gt;
+            &lt;DemoInput defaultValue=&quot;Rafa Moro&quot; className=&quot;w-72&quot; /&gt;
+        &lt;/Field.Root&gt;
 
-        &lt;div className=&quot;w-[40rem]&quot; data-testid=&quot;settings&quot;&gt;
-            &lt;Field.Root orientation=&quot;horizontal&quot;&gt;
-                &lt;Field.Content&gt;
-                    &lt;Label&gt;Auto-renew&lt;/Label&gt;
-                    &lt;Field.Description&gt;
-                        Renews the policy automatically before it expires.
-                    &lt;/Field.Description&gt;
-                &lt;/Field.Content&gt;
-                &lt;DemoInput type=&quot;checkbox&quot; className=&quot;size-5&quot; /&gt;
-            &lt;/Field.Root&gt;
-        &lt;/div&gt;
+        &lt;Field.Root orientation=&quot;horizontal&quot; data-testid=&quot;long&quot;&gt;
+            &lt;Field.Content&gt;
+                &lt;Label&gt;Title&lt;/Label&gt;
+                &lt;Field.Description&gt;Your job title or role.&lt;/Field.Description&gt;
+            &lt;/Field.Content&gt;
+            &lt;Field.Content className=&quot;w-72&quot;&gt;
+                &lt;DemoInput placeholder=&quot;Software engineer&quot; /&gt;
+                &lt;Field.Description&gt;Shown on your public profile.&lt;/Field.Description&gt;
+            &lt;/Field.Content&gt;
+        &lt;/Field.Root&gt;
+
+        &lt;Field.Root orientation=&quot;horizontal&quot; data-testid=&quot;switch&quot;&gt;
+            &lt;Field.Content&gt;
+                &lt;Label&gt;Auto-renew&lt;/Label&gt;
+                &lt;Field.Description&gt;Renews the policy automatically before it expires.&lt;/Field.Description&gt;
+            &lt;/Field.Content&gt;
+            &lt;DemoInput type=&quot;checkbox&quot; className=&quot;size-5&quot; /&gt;
+        &lt;/Field.Root&gt;
 
         &lt;div className=&quot;w-[20rem]&quot; data-testid=&quot;narrow&quot;&gt;
             &lt;Field.Root orientation=&quot;horizontal&quot;&gt;
                 &lt;Field.Label&gt;Email&lt;/Field.Label&gt;
-                &lt;Field.Content&gt;
-                    &lt;DemoInput type=&quot;email&quot; placeholder=&quot;you@example.com&quot; /&gt;
-                &lt;/Field.Content&gt;
+                &lt;DemoInput type=&quot;email&quot; placeholder=&quot;you@example.com&quot; className=&quot;w-40&quot; /&gt;
             &lt;/Field.Root&gt;
         &lt;/div&gt;
-    &lt;/div&gt;
+    &lt;/Field.Group&gt;
 );</code></pre>
             </div>
             <div class="note ok">
@@ -4549,15 +4551,16 @@ side, as in a settings row. A bare `Label` gets the same placement as
                 <span class="badge ok">story ok</span>
               </div>
               <div>Responsive field that stacks when narrow</div>
-              <div class="hint">`responsive` stacks the parts below `28rem` and puts the label beside the
-control from there. It measures the field itself, so it needs no particular
-wrapper. Use `Field.Content` as in `horizontal`.</div>
+              <div class="hint">`responsive` stacks the parts below `28rem` and behaves like `horizontal`
+from there: first child fills, the rest keep their width on the right. It
+measures the field itself, so it needs no particular wrapper. A width that
+should only apply once horizontal goes behind `@md/field:`.</div>
               <pre><code>const Responsive = () =&gt; (
     &lt;div className=&quot;flex flex-col gap-8&quot;&gt;
         &lt;div className=&quot;w-[40rem]&quot; data-testid=&quot;wide&quot;&gt;
             &lt;Field.Root orientation=&quot;responsive&quot;&gt;
                 &lt;Field.Label&gt;Email&lt;/Field.Label&gt;
-                &lt;Field.Content&gt;
+                &lt;Field.Content className=&quot;@md/field:w-72&quot;&gt;
                     &lt;DemoInput type=&quot;email&quot; placeholder=&quot;you@example.com&quot; /&gt;
                     &lt;Field.Description&gt;We only use this to send policy documents.&lt;/Field.Description&gt;
                 &lt;/Field.Content&gt;
@@ -4729,11 +4732,12 @@ invalid?: boolean
 
 /**
  * Layout of the field. `vertical` (default) stacks label, control and
- * messages. `horizontal` puts the label beside the control at every width.
- * `responsive` stacks below `28rem` and goes horizontal from there, measured
- * on the field itself, so it needs no particular wrapper. In `horizontal` and
- * `responsive`, wrap the control and its messages in `Field.Content` so they
- * stack beside the label.
+ * messages. `horizontal` is one row at every width: the first child fills it
+ * and the rest keep their natural width, aligned to the right, so the
+ * controls of stacked fields line up. `responsive` stacks below `28rem` and
+ * behaves like `horizontal` from there, measured on the field itself, so it
+ * needs no particular wrapper. In both, `Field.Content` groups a control with
+ * its messages, or a label with its description.
  */
 orientation?: &quot;horizontal&quot; | &quot;vertical&quot; | &quot;responsive&quot;
 
