@@ -325,72 +325,75 @@ export const ReadOnly: Story = {
 };
 
 /**
- * `horizontal` puts the label beside the control at every width. Wrap the
- * control and its messages in `Field.Content` so they stack on the right; wrap
- * a label and its description in `Field.Content` too when they share the left
- * side, as in a settings row. A bare `Label` gets the same placement as
- * `Field.Label`.
+ * `horizontal` is one row at every width. The first child fills the row and
+ * everything after it keeps its natural width, aligned to the right edge, so
+ * the controls of stacked fields line up whatever their labels measure. Wrap a
+ * label with its description, or a control with its messages, in
+ * `Field.Content`. A control sets its own width: `Input` is `w-full`, so it
+ * gets one here.
  *
- * @summary Horizontal field, one row at every width
+ * @summary Horizontal field, one row at every width, controls right-aligned
  */
 export const Horizontal: Story = {
 	render: () => (
-		<div className="flex flex-col gap-8">
-			<div className="w-[40rem]" data-testid="wide">
-				<Field.Root orientation="horizontal">
-					<Field.Label>Email</Field.Label>
-					<Field.Content>
-						<DemoInput type="email" placeholder="you@example.com" />
-						<Field.Description>We only use this to send policy documents.</Field.Description>
-					</Field.Content>
-				</Field.Root>
-			</div>
+		<Field.Group className="w-[40rem]">
+			<Field.Root orientation="horizontal" data-testid="short">
+				<Field.Label>Full name</Field.Label>
+				<DemoInput defaultValue="Rafa Moro" className="w-72" />
+			</Field.Root>
 
-			<div className="w-[40rem]" data-testid="settings">
-				<Field.Root orientation="horizontal">
-					<Field.Content>
-						<Label>Auto-renew</Label>
-						<Field.Description>
-							Renews the policy automatically before it expires.
-						</Field.Description>
-					</Field.Content>
-					<DemoInput type="checkbox" className="size-5" />
-				</Field.Root>
-			</div>
+			<Field.Root orientation="horizontal" data-testid="long">
+				<Field.Content>
+					<Label>Title</Label>
+					<Field.Description>Your job title or role.</Field.Description>
+				</Field.Content>
+				<Field.Content className="w-72">
+					<DemoInput placeholder="Software engineer" />
+					<Field.Description>Shown on your public profile.</Field.Description>
+				</Field.Content>
+			</Field.Root>
+
+			<Field.Root orientation="horizontal" data-testid="switch">
+				<Field.Content>
+					<Label>Auto-renew</Label>
+					<Field.Description>Renews the policy automatically before it expires.</Field.Description>
+				</Field.Content>
+				<DemoInput type="checkbox" className="size-5" />
+			</Field.Root>
 
 			<div className="w-[20rem]" data-testid="narrow">
 				<Field.Root orientation="horizontal">
 					<Field.Label>Email</Field.Label>
-					<Field.Content>
-						<DemoInput type="email" placeholder="you@example.com" />
-					</Field.Content>
+					<DemoInput type="email" placeholder="you@example.com" className="w-40" />
 				</Field.Root>
 			</div>
-		</div>
+		</Field.Group>
 	),
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 		const rect = (element: Element) => element.getBoundingClientRect();
 
-		const wide = canvas.getByTestId('wide');
-		const wideLabel = wide.querySelector('[data-slot=field-label]') as HTMLElement;
-		const wideInput = wide.querySelector('input') as HTMLElement;
-		const wideDescription = wide.querySelector('[data-slot=field-description]') as HTMLElement;
+		const short = canvas.getByTestId('short');
+		const long = canvas.getByTestId('long');
+		const shortInput = short.querySelector('input') as HTMLElement;
+		const longInput = long.querySelector('input') as HTMLElement;
 
-		await expect(rect(wideLabel).right).toBeLessThanOrEqual(rect(wideInput).left);
-		await expect(rect(wideDescription).left).toBe(rect(wideInput).left);
-		await expect(rect(wideDescription).top).toBeGreaterThanOrEqual(rect(wideInput).bottom);
+		// Controls line up on the right whatever the label measures.
+		await expect(rect(shortInput).left).toBe(rect(longInput).left);
+		await expect(Math.round(rect(shortInput).right)).toBe(Math.round(rect(short).right));
 
-		const settings = canvas.getByTestId('settings');
-		const settingsLabel = settings.querySelector('label') as HTMLElement;
-		const settingsDescription = settings.querySelector(
-			'[data-slot=field-description]'
-		) as HTMLElement;
-		const settingsControl = settings.querySelector('input') as HTMLElement;
+		// A right-hand Field.Content stacks the control and its message.
+		const longDescriptions = long.querySelectorAll('[data-slot=field-description]');
+		const controlDescription = longDescriptions[1] as HTMLElement;
 
-		await expect(rect(settingsDescription).left).toBe(rect(settingsLabel).left);
-		await expect(rect(settingsControl).left).toBeGreaterThanOrEqual(
-			rect(settingsDescription).right
+		await expect(rect(controlDescription).left).toBe(rect(longInput).left);
+		await expect(rect(controlDescription).top).toBeGreaterThanOrEqual(rect(longInput).bottom);
+
+		// A natural-width control sits at the right edge too.
+		const toggle = canvas.getByTestId('switch').querySelector('input') as HTMLElement;
+
+		await expect(Math.round(rect(toggle).right)).toBe(
+			Math.round(rect(canvas.getByTestId('switch')).right)
 		);
 
 		// Horizontal never folds: the row holds even when the field is narrow.
@@ -403,9 +406,10 @@ export const Horizontal: Story = {
 };
 
 /**
- * `responsive` stacks the parts below `28rem` and puts the label beside the
- * control from there. It measures the field itself, so it needs no particular
- * wrapper. Use `Field.Content` as in `horizontal`.
+ * `responsive` stacks the parts below `28rem` and behaves like `horizontal`
+ * from there: first child fills, the rest keep their width on the right. It
+ * measures the field itself, so it needs no particular wrapper. A width that
+ * should only apply once horizontal goes behind `@md/field:`.
  *
  * @summary Responsive field that stacks when narrow
  */
@@ -415,7 +419,7 @@ export const Responsive: Story = {
 			<div className="w-[40rem]" data-testid="wide">
 				<Field.Root orientation="responsive">
 					<Field.Label>Email</Field.Label>
-					<Field.Content>
+					<Field.Content className="@md/field:w-72">
 						<DemoInput type="email" placeholder="you@example.com" />
 						<Field.Description>We only use this to send policy documents.</Field.Description>
 					</Field.Content>

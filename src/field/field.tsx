@@ -38,7 +38,7 @@ export const fieldRecipe = tv({
 		// presence-based `data-invalid:` variant would wrongly light up.
 		root: 'group/field flex w-full gap-2 data-[invalid=true]:text-text-input-destructive',
 		content: [
-			'flex flex-1 flex-col gap-2 leading-snug',
+			'flex flex-col gap-2 leading-snug',
 			'[&>:is([data-slot=label],[data-slot=field-label])+[data-slot=field-description]]:-mt-1.5'
 		],
 		label: 'flex flex-wrap items-center gap-1',
@@ -65,12 +65,15 @@ export const fieldRecipe = tv({
 			vertical: {
 				root: 'flex-col [&>*]:w-full [&>.sr-only]:w-auto'
 			},
-			// One row at every width. Wrap control and messages in `Field.Content`
-			// so they stack beside the label.
+			// One row at every width. The first child (the label, or a `Field.Content`
+			// holding label and description) fills the row; everything after it keeps
+			// its natural width and ends up aligned to the right edge, so the controls
+			// of stacked fields line up whatever their labels measure. A control sets
+			// its own width (`Input` is `w-full`, so give it one here); a right-hand
+			// `Field.Content` that should grow instead opts in with `flex-1`.
 			horizontal: {
 				root: [
-					'flex-row items-center',
-					'[&>:is([data-slot=label],[data-slot=field-label])]:flex-auto',
+					'flex-row items-center [&>:first-child]:flex-1',
 					'has-[>[data-slot=field-content]]:items-start'
 				]
 			},
@@ -81,8 +84,7 @@ export const fieldRecipe = tv({
 			responsive: {
 				root: [
 					'@container/field flex-row flex-wrap items-start [&>*]:w-full [&>.sr-only]:w-auto',
-					'@md/field:items-center @md/field:[&>*]:w-auto',
-					'@md/field:[&>:is([data-slot=label],[data-slot=field-label])]:flex-auto',
+					'@md/field:items-center @md/field:[&>*]:w-auto @md/field:[&>:first-child]:flex-1',
 					'@md/field:has-[>[data-slot=field-content]]:items-start'
 				]
 			}
@@ -114,11 +116,12 @@ Group.displayName = 'Field.Group';
 export type FieldRootProps = ComponentPropsWithRef<'div'> & {
 	/**
 	 * Layout of the field. `vertical` (default) stacks label, control and
-	 * messages. `horizontal` puts the label beside the control at every width.
-	 * `responsive` stacks below `28rem` and goes horizontal from there, measured
-	 * on the field itself, so it needs no particular wrapper. In `horizontal` and
-	 * `responsive`, wrap the control and its messages in `Field.Content` so they
-	 * stack beside the label.
+	 * messages. `horizontal` is one row at every width: the first child fills it
+	 * and the rest keep their natural width, aligned to the right, so the
+	 * controls of stacked fields line up. `responsive` stacks below `28rem` and
+	 * behaves like `horizontal` from there, measured on the field itself, so it
+	 * needs no particular wrapper. In both, `Field.Content` groups a control with
+	 * its messages, or a label with its description.
 	 */
 	orientation?: FieldVariants['orientation'];
 	/**
@@ -236,9 +239,10 @@ Root.displayName = 'Field.Root';
 export type FieldContentProps = ComponentPropsWithRef<'div'>;
 
 /**
- * Stacks the control, description and error vertically inside a `horizontal`
- * or `responsive` field, where the label sits beside them. Also wraps a label
- * and its description when they share the left side.
+ * Stacks parts vertically inside a `horizontal` or `responsive` field: a label
+ * with its description on the left, or a control with its messages on the
+ * right. Takes its natural width unless it comes first; give it a width, or
+ * `flex-1` to grow.
  *
  * @summary Stacks control, description and error beside the label
  */
