@@ -2,15 +2,15 @@ import { Ref, RefCallback, useMemo } from 'react';
 
 import { cn } from './utils';
 
-type AnyHandler = (...args: never[]) => void;
+type Handler<Args extends unknown[]> = (...args: Args) => void;
 
 /**
  * Calls every callback in order with the same arguments. Skips the ones that
  * are `null` or `undefined`, so optional handlers can be passed straight in.
  */
 export const chain =
-	(...callbacks: Array<AnyHandler | null | undefined>) =>
-	(...args: never[]) => {
+	<Args extends unknown[]>(...callbacks: Array<Handler<Args> | null | undefined>) =>
+	(...args: Args) => {
 		for (const callback of callbacks) {
 			callback?.(...args);
 		}
@@ -89,7 +89,7 @@ export const mergeProps = <P extends object>(
 		const contextValue = merged[key];
 
 		if (isHandlerKey(key) && typeof contextValue === 'function' && typeof ownValue === 'function') {
-			merged[key] = chain(contextValue as AnyHandler, ownValue as AnyHandler);
+			merged[key] = chain(contextValue as Handler<unknown[]>, ownValue as Handler<unknown[]>);
 		} else if (
 			key === 'aria-describedby' &&
 			typeof contextValue === 'string' &&

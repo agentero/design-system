@@ -13,9 +13,9 @@ export type FieldErrorLike = { message?: string } | undefined;
 export type FieldContextValue = {
 	/** `id` the control must carry so the label points at it. */
 	controlId: string;
-	/** `id` the `Field.Description` takes by default. */
+	/** `id` the `Field.Description` takes by default. One description per field. */
 	descriptionId: string;
-	/** `id` the `Field.Error` takes by default. */
+	/** `id` the `Field.Error` takes by default. One error element per field. */
 	errorId: string;
 	/**
 	 * Ids of the messages currently rendered, ready for the control's
@@ -53,6 +53,7 @@ export const FieldContext = createContext<FieldContextValue | null>(null);
  */
 export const useFieldContext = () => use(FieldContext);
 
+/** Props of `Field.Description`: a `<p>`. One per field. */
 export type FieldDescriptionProps = ComponentPropsWithRef<'p'>;
 
 export type FieldErrorProps = Omit<ComponentPropsWithRef<'div'>, 'children'> & {

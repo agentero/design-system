@@ -33,10 +33,7 @@ import { IconInfoOutline } from './icons';
 export const fieldRecipe = tv({
 	slots: {
 		group: 'flex w-full flex-col gap-7 [&>[data-slot=field-group]]:gap-4',
-		// Matched on the value, not on presence: a consumer forwarding
-		// `data-invalid={false}` renders `data-invalid="false"`, which a
-		// presence-based `data-invalid:` variant would wrongly light up.
-		root: 'group/field flex w-full gap-2 data-[invalid=true]:text-text-input-destructive',
+		root: 'group/field flex w-full gap-2',
 		content: [
 			'flex flex-col gap-2 leading-snug',
 			'[&>:is([data-slot=label],[data-slot=field-label])+[data-slot=field-description]]:-mt-1.5'
@@ -125,8 +122,9 @@ export type FieldRootProps = ComponentPropsWithRef<'div'> & {
 	 */
 	orientation?: FieldVariants['orientation'];
 	/**
-	 * Marks the field as failing validation: colors the label, sets `data-invalid`
-	 * on the root and `aria-invalid` on the control through its context.
+	 * Marks the field as failing validation: sets `data-invalid` on the root and
+	 * `aria-invalid` on the control through its context, which drives the
+	 * control's destructive border. The label keeps its color by design.
 	 */
 	invalid?: boolean;
 	/** Disables the control through its context and sets `data-disabled` on the root. */
@@ -294,7 +292,9 @@ Label.displayName = 'Field.Label';
 
 /**
  * Helper text explaining what the field expects, announced through the
- * control's `aria-describedby`. For validation feedback use `Field.Error`.
+ * control's `aria-describedby`. One per field: it takes the field's single
+ * description id, so put several hints in one `Field.Description`. For
+ * validation feedback use `Field.Error`.
  *
  * @summary Helper text explaining what the field expects
  */
@@ -305,6 +305,8 @@ export const Description = ({ className, id: idProp, ...props }: FieldDescriptio
 	// context object would re-register on every render instead.
 	const registerMessage = field?.registerMessage;
 
+	// A layout effect, so the root re-renders with the id before the first paint
+	// and the control never shows a frame without its description.
 	useLayoutEffect(() => (id ? registerMessage?.(id) : undefined), [registerMessage, id]);
 
 	return (
@@ -323,7 +325,8 @@ Description.displayName = 'Field.Description';
  * Renders nothing without a message, so it can stay mounted unconditionally;
  * set `invalid` on `Field.Root` alongside it. Takes `children` or an `errors`
  * array, and a form adapter can supply `errors` through `FieldContext` so a
- * bare `<Field.Error />` renders them.
+ * bare `<Field.Error />` renders them. One per field: it takes the field's
+ * single error id, and several errors render as one list.
  *
  * @summary Validation feedback for the field, announced as an alert
  */

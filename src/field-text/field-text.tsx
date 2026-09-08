@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useMemo } from 'react';
+import { ReactNode } from 'react';
 
 import { Field, type FieldRootProps, useFieldContext } from '../field';
 import { InputContext, type InputProps } from '../input';
@@ -8,18 +8,14 @@ import { InputContext, type InputProps } from '../input';
 const InputProvider = ({ children }: { children: ReactNode }) => {
 	const field = useFieldContext();
 
-	const value = useMemo<Partial<InputProps> | null>(
-		() =>
-			field && {
-				id: field.controlId,
-				'aria-describedby': field.describedBy,
-				'aria-invalid': field.invalid || undefined,
-				required: field.required || undefined,
-				disabled: field.disabled || undefined,
-				readOnly: field.readOnly || undefined
-			},
-		[field]
-	);
+	const value: Partial<InputProps> | null = field && {
+		id: field.controlId,
+		'aria-describedby': field.describedBy,
+		'aria-invalid': field.invalid || undefined,
+		required: field.required || undefined,
+		disabled: field.disabled || undefined,
+		readOnly: field.readOnly || undefined
+	};
 
 	return <InputContext value={value}>{children}</InputContext>;
 };

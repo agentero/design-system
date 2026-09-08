@@ -30,7 +30,7 @@ const meta = {
 	argTypes: {
 		orientation: {
 			control: 'radio',
-			options: ['vertical', 'horizontal']
+			options: ['vertical', 'horizontal', 'responsive']
 		},
 		invalid: { control: 'boolean' },
 		disabled: { control: 'boolean' },
@@ -84,7 +84,7 @@ const DemoInput = (props: ComponentProps<'input'>) => {
 export const Default: Story = {
 	render: args => (
 		<Field.Root {...args}>
-			<Field.Label>Email</Field.Label>
+			<Label>Email</Label>
 			<DemoInput placeholder="you@example.com" />
 			<Field.Description>We only use this to send policy documents.</Field.Description>
 		</Field.Root>
@@ -116,7 +116,7 @@ export const Required: Story = {
 	},
 	render: args => (
 		<Field.Root {...args}>
-			<Field.Label>Full name</Field.Label>
+			<Label>Full name</Label>
 			<DemoInput placeholder="Jane Doe" />
 		</Field.Root>
 	),
@@ -137,7 +137,7 @@ export const Required: Story = {
 export const Optional: Story = {
 	render: args => (
 		<Field.Root {...args}>
-			<Field.Label optional>Phone number</Field.Label>
+			<Label optional>Phone number</Label>
 			<DemoInput type="tel" placeholder="+1 (555) 000-0000" />
 		</Field.Root>
 	),
@@ -183,9 +183,10 @@ export const WithTooltip: Story = {
 };
 
 /**
- * `invalid` on the root colors the label, sets `data-invalid` for styling and
- * `aria-invalid` on the control. `Field.Error` takes the error objects as they
- * come from a form library.
+ * `invalid` on the root sets `data-invalid` for styling and `aria-invalid` on
+ * the control, which drives its destructive border; the label keeps its color
+ * by design. `Field.Error` takes the error objects as they come from a form
+ * library.
  *
  * @summary Invalid field with a single error message
  */
@@ -195,7 +196,7 @@ export const Invalid: Story = {
 	},
 	render: args => (
 		<Field.Root {...args}>
-			<Field.Label>Email</Field.Label>
+			<Label>Email</Label>
 			<DemoInput type="email" defaultValue="not-an-email" />
 			<Field.Error errors={[{ message: 'Enter a valid email address.' }]} />
 		</Field.Root>
@@ -226,7 +227,7 @@ export const MultipleErrors: Story = {
 	},
 	render: args => (
 		<Field.Root {...args}>
-			<Field.Label>Password</Field.Label>
+			<Label>Password</Label>
 			<DemoInput type="password" defaultValue="abc" />
 			<Field.Error
 				errors={[
@@ -255,7 +256,7 @@ export const MultipleErrors: Story = {
 export const NoError: Story = {
 	render: args => (
 		<Field.Root {...args}>
-			<Field.Label>Email</Field.Label>
+			<Label>Email</Label>
 			<DemoInput type="email" />
 			<Field.Error errors={[undefined]} />
 		</Field.Root>
@@ -282,7 +283,7 @@ export const Disabled: Story = {
 	},
 	render: args => (
 		<Field.Root {...args}>
-			<Field.Label>Agency</Field.Label>
+			<Label>Agency</Label>
 			<DemoInput defaultValue="Acme Insurance" />
 			<Field.Description>Managed by your administrator.</Field.Description>
 		</Field.Root>
@@ -308,7 +309,7 @@ export const ReadOnly: Story = {
 	},
 	render: args => (
 		<Field.Root {...args}>
-			<Field.Label>Policy number</Field.Label>
+			<Label>Policy number</Label>
 			<DemoInput defaultValue="POL-2049-118" />
 			<Field.Description>Assigned by the carrier; contact support to change it.</Field.Description>
 		</Field.Root>
@@ -338,15 +339,12 @@ export const Horizontal: Story = {
 	render: () => (
 		<Field.Group className="w-[40rem]">
 			<Field.Root orientation="horizontal" data-testid="short">
-				<Field.Label>Full name</Field.Label>
+				<Label>Full name</Label>
 				<DemoInput defaultValue="Rafa Moro" className="w-72" />
 			</Field.Root>
 
 			<Field.Root orientation="horizontal" data-testid="long">
-				<Field.Content>
-					<Label>Title</Label>
-					<Field.Description>Your job title or role.</Field.Description>
-				</Field.Content>
+				<Label>Title</Label>
 				<Field.Content className="w-72">
 					<DemoInput placeholder="Software engineer" />
 					<Field.Description>Shown on your public profile.</Field.Description>
@@ -363,7 +361,7 @@ export const Horizontal: Story = {
 
 			<div className="w-[20rem]" data-testid="narrow">
 				<Field.Root orientation="horizontal">
-					<Field.Label>Email</Field.Label>
+					<Label>Email</Label>
 					<DemoInput type="email" placeholder="you@example.com" className="w-40" />
 				</Field.Root>
 			</div>
@@ -383,11 +381,11 @@ export const Horizontal: Story = {
 		await expect(Math.round(rect(shortInput).right)).toBe(Math.round(rect(short).right));
 
 		// A right-hand Field.Content stacks the control and its message.
-		const longDescriptions = long.querySelectorAll('[data-slot=field-description]');
-		const controlDescription = longDescriptions[1] as HTMLElement;
+		const controlDescription = long.querySelector('[data-slot=field-description]') as HTMLElement;
 
 		await expect(rect(controlDescription).left).toBe(rect(longInput).left);
 		await expect(rect(controlDescription).top).toBeGreaterThanOrEqual(rect(longInput).bottom);
+		await expect(longInput).toHaveAccessibleDescription('Shown on your public profile.');
 
 		// A natural-width control sits at the right edge too.
 		const toggle = canvas.getByTestId('switch').querySelector('input') as HTMLElement;
@@ -398,7 +396,7 @@ export const Horizontal: Story = {
 
 		// Horizontal never folds: the row holds even when the field is narrow.
 		const narrow = canvas.getByTestId('narrow');
-		const narrowLabel = narrow.querySelector('[data-slot=field-label]') as HTMLElement;
+		const narrowLabel = narrow.querySelector('label') as HTMLElement;
 		const narrowInput = narrow.querySelector('input') as HTMLElement;
 
 		await expect(rect(narrowLabel).right).toBeLessThanOrEqual(rect(narrowInput).left);
@@ -418,7 +416,7 @@ export const Responsive: Story = {
 		<div className="flex flex-col gap-8">
 			<div className="w-[40rem]" data-testid="wide">
 				<Field.Root orientation="responsive">
-					<Field.Label>Email</Field.Label>
+					<Label>Email</Label>
 					<Field.Content className="@md/field:w-72">
 						<DemoInput type="email" placeholder="you@example.com" />
 						<Field.Description>We only use this to send policy documents.</Field.Description>
@@ -428,7 +426,7 @@ export const Responsive: Story = {
 
 			<div className="w-[20rem]" data-testid="narrow">
 				<Field.Root orientation="responsive">
-					<Field.Label>Email</Field.Label>
+					<Label>Email</Label>
 					<Field.Content>
 						<DemoInput type="email" placeholder="you@example.com" />
 						<Field.Description>We only use this to send policy documents.</Field.Description>
@@ -442,13 +440,13 @@ export const Responsive: Story = {
 		const rect = (element: Element) => element.getBoundingClientRect();
 
 		const wide = canvas.getByTestId('wide');
-		const wideLabel = wide.querySelector('[data-slot=field-label]') as HTMLElement;
+		const wideLabel = wide.querySelector('label') as HTMLElement;
 		const wideInput = wide.querySelector('input') as HTMLElement;
 
 		await expect(rect(wideLabel).right).toBeLessThanOrEqual(rect(wideInput).left);
 
 		const narrow = canvas.getByTestId('narrow');
-		const narrowLabel = narrow.querySelector('[data-slot=field-label]') as HTMLElement;
+		const narrowLabel = narrow.querySelector('label') as HTMLElement;
 		const narrowInput = narrow.querySelector('input') as HTMLElement;
 
 		await expect(rect(narrowInput).top).toBeGreaterThanOrEqual(rect(narrowLabel).bottom);
@@ -466,18 +464,18 @@ export const Group: Story = {
 	render: () => (
 		<Field.Group>
 			<Field.Root required>
-				<Field.Label>Full name</Field.Label>
+				<Label>Full name</Label>
 				<DemoInput placeholder="Jane Doe" />
 			</Field.Root>
 
 			<Field.Root required invalid>
-				<Field.Label>Email</Field.Label>
+				<Label>Email</Label>
 				<DemoInput type="email" defaultValue="not-an-email" />
 				<Field.Error>Enter a valid email address.</Field.Error>
 			</Field.Root>
 
 			<Field.Root>
-				<Field.Label optional>Phone number</Field.Label>
+				<Label optional>Phone number</Label>
 				<DemoInput type="tel" placeholder="+1 (555) 000-0000" />
 			</Field.Root>
 		</Field.Group>
@@ -564,7 +562,7 @@ const SimulatedFormField = () => {
 
 	return (
 		<Field.Root invalid={!!errors} required>
-			<Field.Label>Email</Field.Label>
+			<Label>Email</Label>
 			<DemoInput
 				type="email"
 				value={value}
