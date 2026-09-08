@@ -1248,7 +1248,7 @@
         "displayName": "Button",
         "exportName": "Button",
         "filePath": "/home/runner/work/design-system/design-system/src/button/button.tsx",
-        "description": "Button is the design system's primary actionable control. Use it for any\ninteraction that triggers behavior, submits a form, or navigates the user.\nBy default Button renders a `<button>`; pass `asChild` to render its single\nchild element as the underlying tag instead — Button merges its styles,\n`className`, `ref`, and props onto whatever the consumer nests. This keeps\nthe design system framework-agnostic: route a plain `<a>`, a Next.js\n`<Link>`, a React Router `<Link>`, or any custom element through the same\nvisual treatment.\n\nPick `variant` to express hierarchy (`primary` for the main CTA,\n`secondary` / `tertiary` for supporting actions, `ghost` for low-emphasis\ninline actions, `link` for text-only actions). Use `status=\"danger\"` for\ndestructive actions and `loading` to block interaction while async work\nresolves.\n\nDo **not** use Button for toggle states (prefer a Switch or ToggleButton),\nfor passive decorative anchors without action intent (use a plain `<a>`),\nor with `variant=\"link\"` when loading or when the button has no text\nchildren — both combinations log a dev-only warning (silent in production).",
+        "description": "Button is the design system's primary actionable control. Use it for any\ninteraction that triggers behavior, submits a form, or navigates the user.\nBy default Button renders a `<button>`; pass `asChild` to render its single\nchild element as the underlying tag instead — Button merges its styles,\n`className`, `ref`, and props onto whatever the consumer nests. This keeps\nthe design system framework-agnostic: route a plain `<a>`, a Next.js\n`<Link>`, a React Router `<Link>`, or any custom element through the same\nvisual treatment.\n\nPick `variant` to express hierarchy (`primary` for the main CTA,\n`secondary` / `tertiary` for supporting actions, `ghost` for low-emphasis\ninline actions, `link` for text-only actions). Use `status=\"danger\"` for\ndestructive actions and `loading` to block interaction while async work\nresolves. Press feedback is opt-in: set `scaleOnPress` to make the button\ndip while held.\n\nDo **not** use Button for toggle states (prefer a Switch or ToggleButton),\nfor passive decorative anchors without action intent (use a plain `<a>`),\nor with `variant=\"link\"` when loading or when the button has no text\nchildren — both combinations log a dev-only warning (silent in production).",
         "jsDocTags": {
           "summary": [
             "Primary actionable control; renders a `<button>` or, with `asChild`, any nested element"
@@ -1513,6 +1513,25 @@
               }
             ]
           },
+          "scaleOnPress": {
+            "name": "scaleOnPress",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "When `true`, the button dips to 97% while held so the control answers the\npointer instead of only changing color. Defaults to `false`.\n\nHas no effect with `variant=\"link\"` (scaling bare text with no padding or\nbackground reads as a wobble) or while the button is disabled or loading,\nincluding the `asChild` anchor form, which stays keyboard-focusable and\nwould otherwise dip on Enter. The dip is gated behind `motion-safe`, so it\ndisappears under `prefers-reduced-motion`.",
+            "defaultValue": null,
+            "parent": {
+              "name": "ButtonBaseProps",
+              "fileName": "src/button/button.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/button/button.tsx"
+              }
+            ]
+          },
           "ref": {
             "name": "ref",
             "required": false,
@@ -1558,7 +1577,7 @@
           "id": "components-button--default",
           "name": "Default",
           "snippet": "const Default = () => <Button variant=\"primary\" size=\"sm\">{TEXT}</Button>;",
-          "description": "Args-controlled playground. Toggle `variant`, `size`, `status`, `loading`,\n`disabled`, and `rounded` from the Controls panel to explore every visual\ncombination of the Button.",
+          "description": "Args-controlled playground. Toggle `variant`, `size`, `status`, `loading`,\n`disabled`, `rounded`, and `scaleOnPress` from the Controls panel to explore\nevery visual combination of the Button.",
           "summary": "Default args playground for Button"
         },
         {
@@ -1627,9 +1646,9 @@
         {
           "id": "components-button--pressed",
           "name": "Pressed",
-          "snippet": "const Pressed = () => (\n    <Stack>\n        <Row>\n            {NON_LINK_VARIANTS.map(variant => (\n                <Button key={variant} variant={variant}>\n                    Press {variant}\n                </Button>\n            ))}\n        </Row>\n        <Row>\n            <Button variant=\"link\">Link stays still</Button>\n            <Button variant=\"primary\" disabled>\n                Disabled stays still\n            </Button>\n            <Button asChild variant=\"secondary\" disabled>\n                <a href=\"/dashboard\">Disabled anchor stays still</a>\n            </Button>\n        </Row>\n    </Stack>\n);",
-          "description": "Buttons dip to 97% while held so the control answers the pointer rather than\nonly changing color. Press and hold one below to feel it — the effect is\ndeliberately small, and if a quick click draws the eye it is too strong.\n\n`variant=\"link\"` is excluded: it has no padding or background, so scaling\nbare text reads as a wobble rather than a button being pushed. Disabled\nbuttons are excluded too, including the `asChild` anchor form, which stays\nkeyboard-focusable and would otherwise dip on Enter. The whole effect is\ngated behind `motion-safe`, so it disappears under `prefers-reduced-motion`.",
-          "summary": "Press feedback dips the button, excluding `link` and disabled"
+          "snippet": "const Pressed = () => (\n    <Stack>\n        <Row>\n            {NON_LINK_VARIANTS.map(variant => (\n                <Button key={variant} variant={variant} scaleOnPress>\n                    Press {variant}\n                </Button>\n            ))}\n        </Row>\n        <Row>\n            <Button variant=\"primary\">Opted out stays still</Button>\n            <Button variant=\"link\" scaleOnPress>\n                Link stays still\n            </Button>\n            <Button variant=\"primary\" scaleOnPress disabled>\n                Disabled stays still\n            </Button>\n            <Button asChild variant=\"secondary\" scaleOnPress disabled>\n                <a href=\"/dashboard\">Disabled anchor stays still</a>\n            </Button>\n        </Row>\n    </Stack>\n);",
+          "description": "With `scaleOnPress`, a button dips to 97% while held so the control answers\nthe pointer rather than only changing color. Press and hold one below to\nfeel it — the effect is deliberately small, and if a quick click draws the\neye it is too strong. It is off by default: pass the prop where the extra\nfeedback is wanted.\n\n`variant=\"link\"` is excluded even with the prop set: it has no padding or\nbackground, so scaling bare text reads as a wobble rather than a button\nbeing pushed. Disabled buttons are excluded too, including the `asChild`\nanchor form, which stays keyboard-focusable and would otherwise dip on\nEnter. The whole effect is gated behind `motion-safe`, so it disappears\nunder `prefers-reduced-motion`.",
+          "summary": "Opt-in press feedback via `scaleOnPress`, excluding `link` and disabled"
         }
       ],
       "import": "import { Button } from \"@agentero/design-system\";"
@@ -6994,6 +7013,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4715
+    "durationMs": 3919
   }
 }
