@@ -4156,7 +4156,7 @@
             "type": {
               "name": "boolean"
             },
-            "description": "Marks the field as failing validation: colors the label, sets `data-invalid`\non the root and `aria-invalid` on the control through its context.",
+            "description": "Marks the field as failing validation: sets `data-invalid` on the root and\n`aria-invalid` on the control through its context, which drives the\ncontrol's destructive border. The label keeps its color by design.",
             "defaultValue": null,
             "parent": {
               "name": "FieldRootProps",
@@ -4367,7 +4367,7 @@
             "type": {
               "name": "boolean"
             },
-            "description": "Marks the field as failing validation: colors the label, sets `data-invalid`\non the root and `aria-invalid` on the control through its context.",
+            "description": "Marks the field as failing validation: sets `data-invalid` on the root and\n`aria-invalid` on the control through its context, which drives the\ncontrol's destructive border. The label keeps its color by design.",
             "defaultValue": {
               "value": "false"
             },
@@ -4470,21 +4470,21 @@
         {
           "id": "components-field--default",
           "name": "Default",
-          "snippet": "const Default = () => <Field.Root\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Field.Label>Email</Field.Label>\n    <DemoInput placeholder=\"you@example.com\" />\n    <Field.Description>We only use this to send policy documents.</Field.Description>\n</Field.Root>;",
+          "snippet": "const Default = () => <Field.Root\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Label>Email</Label>\n    <DemoInput placeholder=\"you@example.com\" />\n    <Field.Description>We only use this to send policy documents.</Field.Description>\n</Field.Root>;",
           "description": "A vertical field with a label, a control and helper text. The label points\nat the control and the description is referenced by it — neither needed an\nexplicit `id`.",
           "summary": "Default vertical field with label, control and description"
         },
         {
           "id": "components-field--required",
           "name": "Required",
-          "snippet": "const Required = () => <Field.Root\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required>\n    <Field.Label>Full name</Field.Label>\n    <DemoInput placeholder=\"Jane Doe\" />\n</Field.Root>;",
+          "snippet": "const Required = () => <Field.Root\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required>\n    <Label>Full name</Label>\n    <DemoInput placeholder=\"Jane Doe\" />\n</Field.Root>;",
           "description": "`required` on the root is the single source of truth: the label shows its\nasterisk and the control receives `required`, both through context.",
           "summary": "Required field driven from the root alone"
         },
         {
           "id": "components-field--optional",
           "name": "Optional",
-          "snippet": "const Optional = () => <Field.Root\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Field.Label optional>Phone number</Field.Label>\n    <DemoInput type=\"tel\" placeholder=\"+1 (555) 000-0000\" />\n</Field.Root>;",
+          "snippet": "const Optional = () => <Field.Root\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Label optional>Phone number</Label>\n    <DemoInput type=\"tel\" placeholder=\"+1 (555) 000-0000\" />\n</Field.Root>;",
           "description": "`optional` on the label appends the muted suffix; the control stays\nnon-required.",
           "summary": "Optional field with the muted label suffix"
         },
@@ -4498,56 +4498,56 @@
         {
           "id": "components-field--invalid",
           "name": "Invalid",
-          "snippet": "const Invalid = () => <Field.Root\n    orientation=\"vertical\"\n    invalid\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Field.Label>Email</Field.Label>\n    <DemoInput type=\"email\" defaultValue=\"not-an-email\" />\n    <Field.Error errors={[{ message: 'Enter a valid email address.' }]} />\n</Field.Root>;",
-          "description": "`invalid` on the root colors the label, sets `data-invalid` for styling and\n`aria-invalid` on the control. `Field.Error` takes the error objects as they\ncome from a form library.",
+          "snippet": "const Invalid = () => <Field.Root\n    orientation=\"vertical\"\n    invalid\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Label>Email</Label>\n    <DemoInput type=\"email\" defaultValue=\"not-an-email\" />\n    <Field.Error errors={[{ message: 'Enter a valid email address.' }]} />\n</Field.Root>;",
+          "description": "`invalid` on the root sets `data-invalid` for styling and `aria-invalid` on\nthe control, which drives its destructive border; the label keeps its color\nby design. `Field.Error` takes the error objects as they come from a form\nlibrary.",
           "summary": "Invalid field with a single error message"
         },
         {
           "id": "components-field--multiple-errors",
           "name": "Multiple Errors",
-          "snippet": "const MultipleErrors = () => <Field.Root\n    orientation=\"vertical\"\n    invalid\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Field.Label>Password</Field.Label>\n    <DemoInput type=\"password\" defaultValue=\"abc\" />\n    <Field.Error\n        errors={[\n            { message: 'Use at least 8 characters.' },\n            { message: 'Include a number.' },\n            { message: 'Use at least 8 characters.' }\n        ]} />\n</Field.Root>;",
+          "snippet": "const MultipleErrors = () => <Field.Root\n    orientation=\"vertical\"\n    invalid\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Label>Password</Label>\n    <DemoInput type=\"password\" defaultValue=\"abc\" />\n    <Field.Error\n        errors={[\n            { message: 'Use at least 8 characters.' },\n            { message: 'Include a number.' },\n            { message: 'Use at least 8 characters.' }\n        ]} />\n</Field.Root>;",
           "description": "Several errors render as a list, de-duplicated by message.",
           "summary": "Several errors rendered as a de-duplicated list"
         },
         {
           "id": "components-field--no-error",
           "name": "No Error",
-          "snippet": "const NoError = () => <Field.Root\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Field.Label>Email</Field.Label>\n    <DemoInput type=\"email\" />\n    <Field.Error errors={[undefined]} />\n</Field.Root>;",
+          "snippet": "const NoError = () => <Field.Root\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Label>Email</Label>\n    <DemoInput type=\"email\" />\n    <Field.Error errors={[undefined]} />\n</Field.Root>;",
           "description": "`Field.Error` renders nothing without a message, so it can stay mounted and\nreceive `undefined` entries while the field is valid. With no description\neither, the control carries no `aria-describedby` at all.",
           "summary": "Error stays mounted and renders nothing while valid"
         },
         {
           "id": "components-field--disabled",
           "name": "Disabled",
-          "snippet": "const Disabled = () => <Field.Root\n    orientation=\"vertical\"\n    invalid={false}\n    disabled\n    readOnly={false}\n    required={false}>\n    <Field.Label>Agency</Field.Label>\n    <DemoInput defaultValue=\"Acme Insurance\" />\n    <Field.Description>Managed by your administrator.</Field.Description>\n</Field.Root>;",
+          "snippet": "const Disabled = () => <Field.Root\n    orientation=\"vertical\"\n    invalid={false}\n    disabled\n    readOnly={false}\n    required={false}>\n    <Label>Agency</Label>\n    <DemoInput defaultValue=\"Acme Insurance\" />\n    <Field.Description>Managed by your administrator.</Field.Description>\n</Field.Root>;",
           "description": "`disabled` on the root disables the control through context and sets\n`data-disabled` for styling.",
           "summary": "Disabled field driven from the root"
         },
         {
           "id": "components-field--read-only",
           "name": "Read Only",
-          "snippet": "const ReadOnly = () => <Field.Root\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly\n    required={false}>\n    <Field.Label>Policy number</Field.Label>\n    <DemoInput defaultValue=\"POL-2049-118\" />\n    <Field.Description>Assigned by the carrier; contact support to change it.</Field.Description>\n</Field.Root>;",
+          "snippet": "const ReadOnly = () => <Field.Root\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly\n    required={false}>\n    <Label>Policy number</Label>\n    <DemoInput defaultValue=\"POL-2049-118\" />\n    <Field.Description>Assigned by the carrier; contact support to change it.</Field.Description>\n</Field.Root>;",
           "description": "`readOnly` on the root makes the control read-only through context and sets\n`data-readonly` for styling. Unlike `disabled`, the value stays focusable,\ncopyable and submitted.",
           "summary": "Read-only field driven from the root"
         },
         {
           "id": "components-field--horizontal",
           "name": "Horizontal",
-          "snippet": "const Horizontal = () => (\n    <Field.Group className=\"w-[40rem]\">\n        <Field.Root orientation=\"horizontal\" data-testid=\"short\">\n            <Field.Label>Full name</Field.Label>\n            <DemoInput defaultValue=\"Rafa Moro\" className=\"w-72\" />\n        </Field.Root>\n\n        <Field.Root orientation=\"horizontal\" data-testid=\"long\">\n            <Field.Content>\n                <Label>Title</Label>\n                <Field.Description>Your job title or role.</Field.Description>\n            </Field.Content>\n            <Field.Content className=\"w-72\">\n                <DemoInput placeholder=\"Software engineer\" />\n                <Field.Description>Shown on your public profile.</Field.Description>\n            </Field.Content>\n        </Field.Root>\n\n        <Field.Root orientation=\"horizontal\" data-testid=\"switch\">\n            <Field.Content>\n                <Label>Auto-renew</Label>\n                <Field.Description>Renews the policy automatically before it expires.</Field.Description>\n            </Field.Content>\n            <DemoInput type=\"checkbox\" className=\"size-5\" />\n        </Field.Root>\n\n        <div className=\"w-[20rem]\" data-testid=\"narrow\">\n            <Field.Root orientation=\"horizontal\">\n                <Field.Label>Email</Field.Label>\n                <DemoInput type=\"email\" placeholder=\"you@example.com\" className=\"w-40\" />\n            </Field.Root>\n        </div>\n    </Field.Group>\n);",
+          "snippet": "const Horizontal = () => (\n    <Field.Group className=\"w-[40rem]\">\n        <Field.Root orientation=\"horizontal\" data-testid=\"short\">\n            <Label>Full name</Label>\n            <DemoInput defaultValue=\"Rafa Moro\" className=\"w-72\" />\n        </Field.Root>\n\n        <Field.Root orientation=\"horizontal\" data-testid=\"long\">\n            <Label>Title</Label>\n            <Field.Content className=\"w-72\">\n                <DemoInput placeholder=\"Software engineer\" />\n                <Field.Description>Shown on your public profile.</Field.Description>\n            </Field.Content>\n        </Field.Root>\n\n        <Field.Root orientation=\"horizontal\" data-testid=\"switch\">\n            <Field.Content>\n                <Label>Auto-renew</Label>\n                <Field.Description>Renews the policy automatically before it expires.</Field.Description>\n            </Field.Content>\n            <DemoInput type=\"checkbox\" className=\"size-5\" />\n        </Field.Root>\n\n        <div className=\"w-[20rem]\" data-testid=\"narrow\">\n            <Field.Root orientation=\"horizontal\">\n                <Label>Email</Label>\n                <DemoInput type=\"email\" placeholder=\"you@example.com\" className=\"w-40\" />\n            </Field.Root>\n        </div>\n    </Field.Group>\n);",
           "description": "`horizontal` is one row at every width. The first child fills the row and\neverything after it keeps its natural width, aligned to the right edge, so\nthe controls of stacked fields line up whatever their labels measure. Wrap a\nlabel with its description, or a control with its messages, in\n`Field.Content`. A control sets its own width: `Input` is `w-full`, so it\ngets one here.",
           "summary": "Horizontal field, one row at every width, controls right-aligned"
         },
         {
           "id": "components-field--responsive",
           "name": "Responsive",
-          "snippet": "const Responsive = () => (\n    <div className=\"flex flex-col gap-8\">\n        <div className=\"w-[40rem]\" data-testid=\"wide\">\n            <Field.Root orientation=\"responsive\">\n                <Field.Label>Email</Field.Label>\n                <Field.Content className=\"@md/field:w-72\">\n                    <DemoInput type=\"email\" placeholder=\"you@example.com\" />\n                    <Field.Description>We only use this to send policy documents.</Field.Description>\n                </Field.Content>\n            </Field.Root>\n        </div>\n\n        <div className=\"w-[20rem]\" data-testid=\"narrow\">\n            <Field.Root orientation=\"responsive\">\n                <Field.Label>Email</Field.Label>\n                <Field.Content>\n                    <DemoInput type=\"email\" placeholder=\"you@example.com\" />\n                    <Field.Description>We only use this to send policy documents.</Field.Description>\n                </Field.Content>\n            </Field.Root>\n        </div>\n    </div>\n);",
+          "snippet": "const Responsive = () => (\n    <div className=\"flex flex-col gap-8\">\n        <div className=\"w-[40rem]\" data-testid=\"wide\">\n            <Field.Root orientation=\"responsive\">\n                <Label>Email</Label>\n                <Field.Content className=\"@md/field:w-72\">\n                    <DemoInput type=\"email\" placeholder=\"you@example.com\" />\n                    <Field.Description>We only use this to send policy documents.</Field.Description>\n                </Field.Content>\n            </Field.Root>\n        </div>\n\n        <div className=\"w-[20rem]\" data-testid=\"narrow\">\n            <Field.Root orientation=\"responsive\">\n                <Label>Email</Label>\n                <Field.Content>\n                    <DemoInput type=\"email\" placeholder=\"you@example.com\" />\n                    <Field.Description>We only use this to send policy documents.</Field.Description>\n                </Field.Content>\n            </Field.Root>\n        </div>\n    </div>\n);",
           "description": "`responsive` stacks the parts below `28rem` and behaves like `horizontal`\nfrom there: first child fills, the rest keep their width on the right. It\nmeasures the field itself, so it needs no particular wrapper. A width that\nshould only apply once horizontal goes behind `@md/field:`.",
           "summary": "Responsive field that stacks when narrow"
         },
         {
           "id": "components-field--group",
           "name": "Group",
-          "snippet": "const Group = () => (\n    <Field.Group>\n        <Field.Root required>\n            <Field.Label>Full name</Field.Label>\n            <DemoInput placeholder=\"Jane Doe\" />\n        </Field.Root>\n\n        <Field.Root required invalid>\n            <Field.Label>Email</Field.Label>\n            <DemoInput type=\"email\" defaultValue=\"not-an-email\" />\n            <Field.Error>Enter a valid email address.</Field.Error>\n        </Field.Root>\n\n        <Field.Root>\n            <Field.Label optional>Phone number</Field.Label>\n            <DemoInput type=\"tel\" placeholder=\"+1 (555) 000-0000\" />\n        </Field.Root>\n    </Field.Group>\n);",
+          "snippet": "const Group = () => (\n    <Field.Group>\n        <Field.Root required>\n            <Label>Full name</Label>\n            <DemoInput placeholder=\"Jane Doe\" />\n        </Field.Root>\n\n        <Field.Root required invalid>\n            <Label>Email</Label>\n            <DemoInput type=\"email\" defaultValue=\"not-an-email\" />\n            <Field.Error>Enter a valid email address.</Field.Error>\n        </Field.Root>\n\n        <Field.Root>\n            <Label optional>Phone number</Label>\n            <DemoInput type=\"tel\" placeholder=\"+1 (555) 000-0000\" />\n        </Field.Root>\n    </Field.Group>\n);",
           "description": "`Field.Group` stacks fields and owns the space between them. Each field gets\nits own ids, so several on one page never collide.",
           "summary": "Several fields stacked in a group"
         },
@@ -7753,6 +7753,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4648
+    "durationMs": 3363
   }
 }

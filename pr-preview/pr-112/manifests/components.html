@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.6s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>3.4s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -4279,8 +4279,9 @@ controlId?: string
 disabled?: boolean = false
 
 /**
- * Marks the field as failing validation: colors the label, sets `data-invalid`
- * on the root and `aria-invalid` on the control through its context.
+ * Marks the field as failing validation: sets `data-invalid` on the root and
+ * `aria-invalid` on the control through its context, which drives the
+ * control&#39;s destructive border. The label keeps its color by design.
  */
 invalid?: boolean = false
 
@@ -4336,7 +4337,7 @@ explicit `id`.</div>
     disabled={false}
     readOnly={false}
     required={false}&gt;
-    &lt;Field.Label&gt;Email&lt;/Field.Label&gt;
+    &lt;Label&gt;Email&lt;/Label&gt;
     &lt;DemoInput placeholder=&quot;you@example.com&quot; /&gt;
     &lt;Field.Description&gt;We only use this to send policy documents.&lt;/Field.Description&gt;
 &lt;/Field.Root&gt;;</code></pre>
@@ -4355,7 +4356,7 @@ asterisk and the control receives `required`, both through context.</div>
     disabled={false}
     readOnly={false}
     required&gt;
-    &lt;Field.Label&gt;Full name&lt;/Field.Label&gt;
+    &lt;Label&gt;Full name&lt;/Label&gt;
     &lt;DemoInput placeholder=&quot;Jane Doe&quot; /&gt;
 &lt;/Field.Root&gt;;</code></pre>
             </div>
@@ -4373,7 +4374,7 @@ non-required.</div>
     disabled={false}
     readOnly={false}
     required={false}&gt;
-    &lt;Field.Label optional&gt;Phone number&lt;/Field.Label&gt;
+    &lt;Label optional&gt;Phone number&lt;/Label&gt;
     &lt;DemoInput type=&quot;tel&quot; placeholder=&quot;+1 (555) 000-0000&quot; /&gt;
 &lt;/Field.Root&gt;;</code></pre>
             </div>
@@ -4402,16 +4403,17 @@ the control, and the control&#39;s name stays clean. It opens on focus too.</div
                 <span class="badge ok">story ok</span>
               </div>
               <div>Invalid field with a single error message</div>
-              <div class="hint">`invalid` on the root colors the label, sets `data-invalid` for styling and
-`aria-invalid` on the control. `Field.Error` takes the error objects as they
-come from a form library.</div>
+              <div class="hint">`invalid` on the root sets `data-invalid` for styling and `aria-invalid` on
+the control, which drives its destructive border; the label keeps its color
+by design. `Field.Error` takes the error objects as they come from a form
+library.</div>
               <pre><code>const Invalid = () =&gt; &lt;Field.Root
     orientation=&quot;vertical&quot;
     invalid
     disabled={false}
     readOnly={false}
     required={false}&gt;
-    &lt;Field.Label&gt;Email&lt;/Field.Label&gt;
+    &lt;Label&gt;Email&lt;/Label&gt;
     &lt;DemoInput type=&quot;email&quot; defaultValue=&quot;not-an-email&quot; /&gt;
     &lt;Field.Error errors={[{ message: &#39;Enter a valid email address.&#39; }]} /&gt;
 &lt;/Field.Root&gt;;</code></pre>
@@ -4429,7 +4431,7 @@ come from a form library.</div>
     disabled={false}
     readOnly={false}
     required={false}&gt;
-    &lt;Field.Label&gt;Password&lt;/Field.Label&gt;
+    &lt;Label&gt;Password&lt;/Label&gt;
     &lt;DemoInput type=&quot;password&quot; defaultValue=&quot;abc&quot; /&gt;
     &lt;Field.Error
         errors={[
@@ -4454,7 +4456,7 @@ either, the control carries no `aria-describedby` at all.</div>
     disabled={false}
     readOnly={false}
     required={false}&gt;
-    &lt;Field.Label&gt;Email&lt;/Field.Label&gt;
+    &lt;Label&gt;Email&lt;/Label&gt;
     &lt;DemoInput type=&quot;email&quot; /&gt;
     &lt;Field.Error errors={[undefined]} /&gt;
 &lt;/Field.Root&gt;;</code></pre>
@@ -4473,7 +4475,7 @@ either, the control carries no `aria-describedby` at all.</div>
     disabled
     readOnly={false}
     required={false}&gt;
-    &lt;Field.Label&gt;Agency&lt;/Field.Label&gt;
+    &lt;Label&gt;Agency&lt;/Label&gt;
     &lt;DemoInput defaultValue=&quot;Acme Insurance&quot; /&gt;
     &lt;Field.Description&gt;Managed by your administrator.&lt;/Field.Description&gt;
 &lt;/Field.Root&gt;;</code></pre>
@@ -4493,7 +4495,7 @@ copyable and submitted.</div>
     disabled={false}
     readOnly
     required={false}&gt;
-    &lt;Field.Label&gt;Policy number&lt;/Field.Label&gt;
+    &lt;Label&gt;Policy number&lt;/Label&gt;
     &lt;DemoInput defaultValue=&quot;POL-2049-118&quot; /&gt;
     &lt;Field.Description&gt;Assigned by the carrier; contact support to change it.&lt;/Field.Description&gt;
 &lt;/Field.Root&gt;;</code></pre>
@@ -4513,15 +4515,12 @@ gets one here.</div>
               <pre><code>const Horizontal = () =&gt; (
     &lt;Field.Group className=&quot;w-[40rem]&quot;&gt;
         &lt;Field.Root orientation=&quot;horizontal&quot; data-testid=&quot;short&quot;&gt;
-            &lt;Field.Label&gt;Full name&lt;/Field.Label&gt;
+            &lt;Label&gt;Full name&lt;/Label&gt;
             &lt;DemoInput defaultValue=&quot;Rafa Moro&quot; className=&quot;w-72&quot; /&gt;
         &lt;/Field.Root&gt;
 
         &lt;Field.Root orientation=&quot;horizontal&quot; data-testid=&quot;long&quot;&gt;
-            &lt;Field.Content&gt;
-                &lt;Label&gt;Title&lt;/Label&gt;
-                &lt;Field.Description&gt;Your job title or role.&lt;/Field.Description&gt;
-            &lt;/Field.Content&gt;
+            &lt;Label&gt;Title&lt;/Label&gt;
             &lt;Field.Content className=&quot;w-72&quot;&gt;
                 &lt;DemoInput placeholder=&quot;Software engineer&quot; /&gt;
                 &lt;Field.Description&gt;Shown on your public profile.&lt;/Field.Description&gt;
@@ -4538,7 +4537,7 @@ gets one here.</div>
 
         &lt;div className=&quot;w-[20rem]&quot; data-testid=&quot;narrow&quot;&gt;
             &lt;Field.Root orientation=&quot;horizontal&quot;&gt;
-                &lt;Field.Label&gt;Email&lt;/Field.Label&gt;
+                &lt;Label&gt;Email&lt;/Label&gt;
                 &lt;DemoInput type=&quot;email&quot; placeholder=&quot;you@example.com&quot; className=&quot;w-40&quot; /&gt;
             &lt;/Field.Root&gt;
         &lt;/div&gt;
@@ -4559,7 +4558,7 @@ should only apply once horizontal goes behind `@md/field:`.</div>
     &lt;div className=&quot;flex flex-col gap-8&quot;&gt;
         &lt;div className=&quot;w-[40rem]&quot; data-testid=&quot;wide&quot;&gt;
             &lt;Field.Root orientation=&quot;responsive&quot;&gt;
-                &lt;Field.Label&gt;Email&lt;/Field.Label&gt;
+                &lt;Label&gt;Email&lt;/Label&gt;
                 &lt;Field.Content className=&quot;@md/field:w-72&quot;&gt;
                     &lt;DemoInput type=&quot;email&quot; placeholder=&quot;you@example.com&quot; /&gt;
                     &lt;Field.Description&gt;We only use this to send policy documents.&lt;/Field.Description&gt;
@@ -4569,7 +4568,7 @@ should only apply once horizontal goes behind `@md/field:`.</div>
 
         &lt;div className=&quot;w-[20rem]&quot; data-testid=&quot;narrow&quot;&gt;
             &lt;Field.Root orientation=&quot;responsive&quot;&gt;
-                &lt;Field.Label&gt;Email&lt;/Field.Label&gt;
+                &lt;Label&gt;Email&lt;/Label&gt;
                 &lt;Field.Content&gt;
                     &lt;DemoInput type=&quot;email&quot; placeholder=&quot;you@example.com&quot; /&gt;
                     &lt;Field.Description&gt;We only use this to send policy documents.&lt;/Field.Description&gt;
@@ -4590,18 +4589,18 @@ its own ids, so several on one page never collide.</div>
               <pre><code>const Group = () =&gt; (
     &lt;Field.Group&gt;
         &lt;Field.Root required&gt;
-            &lt;Field.Label&gt;Full name&lt;/Field.Label&gt;
+            &lt;Label&gt;Full name&lt;/Label&gt;
             &lt;DemoInput placeholder=&quot;Jane Doe&quot; /&gt;
         &lt;/Field.Root&gt;
 
         &lt;Field.Root required invalid&gt;
-            &lt;Field.Label&gt;Email&lt;/Field.Label&gt;
+            &lt;Label&gt;Email&lt;/Label&gt;
             &lt;DemoInput type=&quot;email&quot; defaultValue=&quot;not-an-email&quot; /&gt;
             &lt;Field.Error&gt;Enter a valid email address.&lt;/Field.Error&gt;
         &lt;/Field.Root&gt;
 
         &lt;Field.Root&gt;
-            &lt;Field.Label optional&gt;Phone number&lt;/Field.Label&gt;
+            &lt;Label optional&gt;Phone number&lt;/Label&gt;
             &lt;DemoInput type=&quot;tel&quot; placeholder=&quot;+1 (555) 000-0000&quot; /&gt;
         &lt;/Field.Root&gt;
     &lt;/Field.Group&gt;
@@ -4725,8 +4724,9 @@ controlId?: string
 disabled?: boolean
 
 /**
- * Marks the field as failing validation: colors the label, sets `data-invalid`
- * on the root and `aria-invalid` on the control through its context.
+ * Marks the field as failing validation: sets `data-invalid` on the root and
+ * `aria-invalid` on the control through its context, which drives the
+ * control&#39;s destructive border. The label keeps its color by design.
  */
 invalid?: boolean
 
