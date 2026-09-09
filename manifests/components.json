@@ -4305,6 +4305,274 @@
       ],
       "import": "import { Avatar, Button, HoverCard } from \"@agentero/design-system\";"
     },
+    "components-input": {
+      "id": "components-input",
+      "name": "Input",
+      "path": "./src/input/input.stories.tsx",
+      "jsDocTags": {
+        "summary": [
+          "Base single-line text control, unaware of fields and form libraries"
+        ],
+        "example": [
+          "<Label htmlFor=\"email\">Email</Label>\n<Input id=\"email\" type=\"email\" placeholder=\"you@example.com\" />",
+          "<Input id=\"email\" aria-invalid aria-describedby=\"email-error\" />\n<span id=\"email-error\">Enter a valid email address.</span>"
+        ]
+      },
+      "description": "Input is the base single-line text control. It is intentionally unaware of\nform fields and form libraries: `id`, `aria-invalid` and `aria-describedby`\nare plain props, set by a field wrapper or by hand.\n\nThere is no `status` prop. Mark the control `aria-invalid` and the\ndestructive border follows, so the styling can never disagree with what\nassistive technology announces.",
+      "summary": "Base single-line text control, unaware of fields and form libraries",
+      "reactComponentMeta": {
+        "displayName": "Input",
+        "exportName": "Input",
+        "filePath": "/home/runner/work/design-system/design-system/src/input/input.tsx",
+        "description": "Input is the design system's base single-line text control. Reach for it\nwhenever a form collects free text, and pair it with\n[Label](?path=/docs/components-label--docs) so the control has an accessible\nname.\n\nIt is deliberately self-contained: it renders the props it is given and\nknows nothing about form fields, form libraries, or surrounding layout.\nWiring (`id`, `aria-invalid`, `aria-describedby`) arrives as plain props, so\na field wrapper can inject them and standalone usage can set them by hand.\nThere is no `status` prop — mark the control `aria-invalid` and the\ndestructive border follows.\n\nDo not use Input for multi-line text; that is TextArea's job. It also has no\nslots for leading or trailing addons — an input with a currency prefix or a\nunit suffix belongs in an input group, not here.",
+        "jsDocTags": {
+          "summary": [
+            "Base single-line text control, unaware of fields and form libraries"
+          ],
+          "example": [
+            "<Label htmlFor=\"email\">Email</Label>\n<Input id=\"email\" type=\"email\" placeholder=\"you@example.com\" />",
+            "<Input id=\"email\" aria-invalid aria-describedby=\"email-error\" />\n<span id=\"email-error\">Enter a valid email address.</span>"
+          ]
+        },
+        "props": {
+          "aria-invalid": {
+            "name": "aria-invalid",
+            "required": false,
+            "type": {
+              "name": "boolean | \"true\" | \"false\" | \"grammar\" | \"spelling\" | undefined"
+            },
+            "description": "Indicates the entered value does not conform to the format expected by the application.\nSet this when the value fails validation: it drives the destructive border\nand is what assistive technology announces. Point `aria-describedby` at\nthe error message so the two are read together.",
+            "defaultValue": null,
+            "parent": {
+              "name": "AriaAttributes",
+              "fileName": "node_modules/@types/react/index.d.ts"
+            },
+            "declarations": [
+              {
+                "name": "AriaAttributes",
+                "fileName": "node_modules/@types/react/index.d.ts"
+              },
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input/input.tsx"
+              }
+            ]
+          },
+          "type": {
+            "name": "type",
+            "required": false,
+            "type": {
+              "name": "HTMLInputTypeAttribute | undefined"
+            },
+            "description": "Native input type. Picks the on-screen keyboard on touch devices and the\nbrowser's own parsing, so set it even when you validate yourself.\nDefaults to `'text'`. Multi-line text is not one of the options — that is\na TextArea.",
+            "defaultValue": null,
+            "parent": {
+              "name": "InputHTMLAttributes",
+              "fileName": "node_modules/@types/react/index.d.ts"
+            },
+            "declarations": [
+              {
+                "name": "InputHTMLAttributes",
+                "fileName": "node_modules/@types/react/index.d.ts"
+              },
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input/input.tsx"
+              }
+            ]
+          },
+          "disabled": {
+            "name": "disabled",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Blocks interaction, greys the control out and drops its shadow. The value\nis not submitted. When the user still needs to read or copy the value,\nuse `readOnly` instead.",
+            "defaultValue": null,
+            "parent": {
+              "name": "InputHTMLAttributes",
+              "fileName": "node_modules/@types/react/index.d.ts"
+            },
+            "declarations": [
+              {
+                "name": "InputHTMLAttributes",
+                "fileName": "node_modules/@types/react/index.d.ts"
+              },
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input/input.tsx"
+              }
+            ]
+          },
+          "placeholder": {
+            "name": "placeholder",
+            "required": false,
+            "type": {
+              "name": "string"
+            },
+            "description": "Short hint shown while the field is empty. It disappears on the first\nkeystroke, so it is never a substitute for a label.",
+            "defaultValue": null,
+            "parent": {
+              "name": "InputHTMLAttributes",
+              "fileName": "node_modules/@types/react/index.d.ts"
+            },
+            "declarations": [
+              {
+                "name": "InputHTMLAttributes",
+                "fileName": "node_modules/@types/react/index.d.ts"
+              },
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input/input.tsx"
+              }
+            ]
+          },
+          "readOnly": {
+            "name": "readOnly",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Keeps the value focusable and copyable but not editable, and still\nsubmits it. Unlike `disabled`, it stays in the tab order.",
+            "defaultValue": null,
+            "parent": {
+              "name": "InputHTMLAttributes",
+              "fileName": "node_modules/@types/react/index.d.ts"
+            },
+            "declarations": [
+              {
+                "name": "InputHTMLAttributes",
+                "fileName": "node_modules/@types/react/index.d.ts"
+              },
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input/input.tsx"
+              }
+            ]
+          },
+          "required": {
+            "name": "required",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Marks the control required for both the browser and assistive technology.",
+            "defaultValue": null,
+            "parent": {
+              "name": "InputHTMLAttributes",
+              "fileName": "node_modules/@types/react/index.d.ts"
+            },
+            "declarations": [
+              {
+                "name": "InputHTMLAttributes",
+                "fileName": "node_modules/@types/react/index.d.ts"
+              },
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input/input.tsx"
+              }
+            ]
+          },
+          "size": {
+            "name": "size",
+            "required": false,
+            "type": {
+              "name": "enum",
+              "raw": "\"sm\" | \"md\" | \"lg\"",
+              "value": [
+                {
+                  "value": "\"sm\""
+                },
+                {
+                  "value": "\"md\""
+                },
+                {
+                  "value": "\"lg\""
+                }
+              ]
+            },
+            "description": "Control height. Defaults to `'md'`.\n- `sm` (32px) — dense layouts where vertical space is tight.\n- `md` (40px) — standard form density.\n- `lg` (48px) — low-density forms and larger touch targets. Also raises\n  the text to `base` and the corner radius to `lg`.",
+            "defaultValue": null,
+            "parent": {
+              "name": "InputProps",
+              "fileName": "src/input/input.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input/input.tsx"
+              }
+            ]
+          }
+        }
+      },
+      "stories": [
+        {
+          "id": "components-input--default",
+          "name": "Default",
+          "snippet": "const Default = () => <Input type=\"text\" placeholder=\"Insert value\" aria-label=\"Value\" />;",
+          "description": "The default control at `md`, usable anywhere without a surrounding field.",
+          "summary": "Default standalone input"
+        },
+        {
+          "id": "components-input--small",
+          "name": "Small",
+          "snippet": "const Small = () => <Input type=\"text\" placeholder=\"Insert value\" aria-label=\"Value\" size=\"sm\" />;",
+          "description": "`sm` (32px) keeps dense layouts compact where vertical space is tight.",
+          "summary": "Small 32px control for dense layouts"
+        },
+        {
+          "id": "components-input--medium",
+          "name": "Medium",
+          "snippet": "const Medium = () => <Input type=\"text\" placeholder=\"Insert value\" aria-label=\"Value\" size=\"md\" />;",
+          "description": "`md` (40px) is the default and covers standard form density.",
+          "summary": "Medium 40px control, the default"
+        },
+        {
+          "id": "components-input--large",
+          "name": "Large",
+          "snippet": "const Large = () => <Input type=\"text\" placeholder=\"Insert value\" aria-label=\"Value\" size=\"lg\" />;",
+          "description": "`lg` (48px) suits low-density forms and larger touch targets. It also raises\nthe text to `base` and the corner radius to `lg`.",
+          "summary": "Large 48px control for low-density forms"
+        },
+        {
+          "id": "components-input--all-sizes",
+          "name": "All Sizes",
+          "snippet": "const AllSizes = () => <div style={{ display: 'grid', gap: '1rem', maxWidth: '20rem' }}>\n    <Input type=\"text\" size=\"sm\" aria-label=\"Small input\" placeholder=\"sm — 32px\" />\n    <Input type=\"text\" size=\"md\" aria-label=\"Medium input\" placeholder=\"md — 40px\" />\n    <Input type=\"text\" size=\"lg\" aria-label=\"Large input\" placeholder=\"lg — 48px\" />\n</div>;",
+          "description": "All three heights together for visual comparison.",
+          "summary": "Visual comparison of the three input sizes"
+        },
+        {
+          "id": "components-input--types",
+          "name": "Types",
+          "snippet": "const Types = () => <div style={{ display: 'grid', gap: '1rem', maxWidth: '20rem' }}>\n    <Input type=\"text\" aria-label=\"Text\" placeholder=\"Text\" />\n    <Input type=\"email\" aria-label=\"Email address\" placeholder=\"you@example.com\" />\n    <Input type=\"password\" aria-label=\"Password\" placeholder=\"Password\" />\n    <Input type=\"number\" aria-label=\"Amount\" placeholder=\"0\" />\n    <Input type=\"date\" aria-label=\"Date\" placeholder=\"\" />\n</div>;",
+          "description": "A range of input types. The type picks the on-screen keyboard on touch\ndevices and the browser's own parsing, so set it even when you validate\nyourself.",
+          "summary": "Common input types side by side"
+        },
+        {
+          "id": "components-input--invalid",
+          "name": "Invalid",
+          "snippet": "const Invalid = () => <div style={{ display: 'grid', gap: '0.25rem', maxWidth: '20rem' }}>\n    <Input\n        type=\"email\"\n        placeholder=\"Insert value\"\n        aria-label=\"Email\"\n        aria-invalid\n        aria-describedby=\"email-error\"\n        defaultValue=\"not-an-email\" />\n    <span id=\"email-error\">Enter a valid email address.</span>\n</div>;",
+          "description": "The invalid treatment comes purely from `aria-invalid`, so the border can\nnever disagree with what assistive technology announces. Point\n`aria-describedby` at the message so it is read out with the control.",
+          "summary": "Invalid state driven by aria-invalid"
+        },
+        {
+          "id": "components-input--disabled",
+          "name": "Disabled",
+          "snippet": "const Disabled = () => <Input\n    type=\"text\"\n    placeholder=\"Insert value\"\n    aria-label=\"Value\"\n    disabled\n    defaultValue=\"Cannot be edited\" />;",
+          "description": "A disabled input keeps its value readable but blocks interaction, drops its\nshadow and leaves the tab order.",
+          "summary": "Disabled state"
+        },
+        {
+          "id": "components-input--read-only",
+          "name": "Read Only",
+          "snippet": "const ReadOnly = () => <Input\n    type=\"text\"\n    placeholder=\"Insert value\"\n    aria-label=\"Value\"\n    readOnly\n    defaultValue=\"Copy me, but do not change me\" />;",
+          "description": "Read-only inputs stay focusable and copyable and still submit their value —\nreach for this over `disabled` when the user needs to read or copy something\nthey cannot change.",
+          "summary": "Read-only value that stays focusable and copyable"
+        }
+      ],
+      "import": "import { Input } from \"@agentero/design-system\";"
+    },
     "components-label": {
       "id": "components-label",
       "name": "Label",
@@ -7013,6 +7281,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 3919
+    "durationMs": 4525
   }
 }
