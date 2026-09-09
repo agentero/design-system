@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>3.4s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>4.3s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -2019,7 +2019,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Button</h2>
       <div class="badges">
-        <label for="c-4-components-button-props" class="badge ok as-toggle">12 prop types</label>
+        <label for="c-4-components-button-props" class="badge ok as-toggle">13 prop types</label>
         
         <label for="c-4-components-button-stories" class="badge ok as-toggle">11 stories</label>
         
@@ -2061,7 +2061,7 @@ without Button binding to any particular framework.</div>
           <div class="note ok">
             <div class="row">
               <span class="ex-name">Prop types <small>(react-component-meta)</small></span>
-              <span class="badge ok">12 prop types</span>
+              <span class="badge ok">13 prop types</span>
             </div>
             <pre><code>Component: src/button/button.tsx::Button</code></pre>
             <pre><code>Props:</code></pre>
@@ -2140,6 +2140,18 @@ ref?: Ref&lt;HTMLButtonElement | HTMLAnchorElement&gt; | undefined
 rounded?: boolean
 
 /**
+ * When `true`, the button dips to 97% while held so the control answers the
+ * pointer instead of only changing color. Defaults to `false`.
+ * 
+ * Has no effect with `variant=&quot;link&quot;` (scaling bare text with no padding or
+ * background reads as a wobble) or while the button is disabled or loading,
+ * including the `asChild` anchor form, which stays keyboard-focusable and
+ * would otherwise dip on Enter. The dip is gated behind `motion-safe`, so it
+ * disappears under `prefers-reduced-motion`.
+ */
+scaleOnPress?: boolean
+
+/**
  * Control size. Defaults to `&#39;sm&#39;`.
  * - `xs` (24px) — dense toolbars, compact inline actions.
  * - `sm` (32px) — standard usage in forms and cards.
@@ -2186,8 +2198,8 @@ variant?: &quot;link&quot; | &quot;ghost&quot; | &quot;primary&quot; | &quot;sec
               </div>
               <div>Default args playground for Button</div>
               <div class="hint">Args-controlled playground. Toggle `variant`, `size`, `status`, `loading`,
-`disabled`, and `rounded` from the Controls panel to explore every visual
-combination of the Button.</div>
+`disabled`, `rounded`, and `scaleOnPress` from the Controls panel to explore
+every visual combination of the Button.</div>
               <pre><code>const Default = () =&gt; &lt;Button variant=&quot;primary&quot; size=&quot;sm&quot;&gt;{TEXT}&lt;/Button&gt;;</code></pre>
             </div>
             <div class="note ok">
@@ -2412,31 +2424,37 @@ router. In app code, swap the plain `&lt;a&gt;` below for your framework&#39;s L
                 <span class="ex-name">Pressed</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Press feedback dips the button, excluding `link` and disabled</div>
-              <div class="hint">Buttons dip to 97% while held so the control answers the pointer rather than
-only changing color. Press and hold one below to feel it — the effect is
-deliberately small, and if a quick click draws the eye it is too strong.
+              <div>Opt-in press feedback via `scaleOnPress`, excluding `link` and disabled</div>
+              <div class="hint">With `scaleOnPress`, a button dips to 97% while held so the control answers
+the pointer rather than only changing color. Press and hold one below to
+feel it — the effect is deliberately small, and if a quick click draws the
+eye it is too strong. It is off by default: pass the prop where the extra
+feedback is wanted.
 
-`variant=&quot;link&quot;` is excluded: it has no padding or background, so scaling
-bare text reads as a wobble rather than a button being pushed. Disabled
-buttons are excluded too, including the `asChild` anchor form, which stays
-keyboard-focusable and would otherwise dip on Enter. The whole effect is
-gated behind `motion-safe`, so it disappears under `prefers-reduced-motion`.</div>
+`variant=&quot;link&quot;` is excluded even with the prop set: it has no padding or
+background, so scaling bare text reads as a wobble rather than a button
+being pushed. Disabled buttons are excluded too, including the `asChild`
+anchor form, which stays keyboard-focusable and would otherwise dip on
+Enter. The whole effect is gated behind `motion-safe`, so it disappears
+under `prefers-reduced-motion`.</div>
               <pre><code>const Pressed = () =&gt; (
     &lt;Stack&gt;
         &lt;Row&gt;
             {NON_LINK_VARIANTS.map(variant =&gt; (
-                &lt;Button key={variant} variant={variant}&gt;
+                &lt;Button key={variant} variant={variant} scaleOnPress&gt;
                     Press {variant}
                 &lt;/Button&gt;
             ))}
         &lt;/Row&gt;
         &lt;Row&gt;
-            &lt;Button variant=&quot;link&quot;&gt;Link stays still&lt;/Button&gt;
-            &lt;Button variant=&quot;primary&quot; disabled&gt;
+            &lt;Button variant=&quot;primary&quot;&gt;Opted out stays still&lt;/Button&gt;
+            &lt;Button variant=&quot;link&quot; scaleOnPress&gt;
+                Link stays still
+            &lt;/Button&gt;
+            &lt;Button variant=&quot;primary&quot; scaleOnPress disabled&gt;
                 Disabled stays still
             &lt;/Button&gt;
-            &lt;Button asChild variant=&quot;secondary&quot; disabled&gt;
+            &lt;Button asChild variant=&quot;secondary&quot; scaleOnPress disabled&gt;
                 &lt;a href=&quot;/dashboard&quot;&gt;Disabled anchor stays still&lt;/a&gt;
             &lt;/Button&gt;
         &lt;/Row&gt;
