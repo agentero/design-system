@@ -32,11 +32,14 @@ export const commandRecipe = tv({
 			'not-has-[[cmdk-item]]:py-0'
 		],
 		empty: 'p-3 text-center text-sm text-text-default-base-tertiary',
-		// cmdk emits data-selected on every row ("false" when inactive), so the variant needs the value.
+		// cmdk emits data-selected and data-disabled on every row ("false" when inactive), so both
+		// variants need the value.
 		item: [
 			'flex items-center rounded-md px-3 py-2 text-sm text-text-default-base-primary',
 			'cursor-pointer hover:bg-bg-default-base-tertiary',
-			'data-[selected=true]:bg-bg-default-base-tertiary'
+			'data-[selected=true]:bg-bg-default-base-tertiary',
+			'data-[disabled=true]:cursor-default data-[disabled=true]:text-text-default-disable-primary',
+			'data-[disabled=true]:hover:bg-transparent data-[disabled=true]:data-[selected=true]:bg-transparent'
 		]
 	}
 });
@@ -223,7 +226,8 @@ Group.displayName = 'Command.Group';
  * @property {string} [className] - Additional CSS classes to apply.
  *
  * @dataAttribute {string} data-selected - "true" on the active row, "false" otherwise
- * @dataAttribute {string} data-disabled - "true" when disabled, "false" otherwise
+ * @dataAttribute {string} data-disabled - "true" when disabled, "false" otherwise. A disabled row
+ *   drops the hover and active backgrounds and renders in the disabled text color.
  */
 type ItemProps = ComponentProps<typeof CommandPrimitive.Item>;
 
