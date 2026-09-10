@@ -4128,13 +4128,13 @@
           "<FieldText invalid={!!error} required>\n  <Label>Email</Label>\n  <Input type=\"email\" />\n  <Field.Description>We only use this for policy documents.</Field.Description>\n  <Field.Error errors={[error]} />\n</FieldText>"
         ]
       },
-      "description": "FieldText is a `Field.Root` for a single-line text control. It provides\n`InputContext`, so the `Input` inside associates itself with the label and\nthe messages and takes `invalid`, `required` and `disabled` from the field —\nno `id`, `htmlFor`, `aria-describedby` or `aria-invalid` written by hand.\n\nIt knows nothing about form libraries. A form adapter re-provides\n`InputContext` with `value`, `onChange`, `onBlur` and `name`, and\n`FieldContext` with the errors, as the last story simulates.",
+      "description": "FieldText is a `Field.Root` for a single-line text control. It provides\n`InputContext`, so the `Input` inside associates itself with the label and\nthe messages and takes `invalid`, `required`, `disabled` and `readOnly` from\nthe field — no `id`, `htmlFor`, `aria-describedby` or `aria-invalid` written\nby hand.\n\nIt knows nothing about form libraries, and its contexts compose: a provider\nnested inside it can extend `InputContext` with `value`, `onChange`, `onBlur`\nand `name`, and `FieldContext` with the errors, as the last story shows.",
       "summary": "Field for a single-line text control, wiring the Input inside it",
       "reactComponentMeta": {
         "displayName": "FieldText",
         "exportName": "FieldText",
         "filePath": "/home/runner/work/design-system/design-system/src/field-text/index.ts",
-        "description": "A `Field.Root` for a single-line text control: it provides `InputContext`,\nso the `Input` inside associates itself with the label and the messages and\ntakes `invalid`, `required`, `disabled` and `readOnly` from the field. Every\nother part (`Label`, `Field.Description`, `Field.Error`) works as in any\nfield.\n\nForm-library agnostic. A form adapter re-provides `InputContext` under it\nwith `name`, `value`, `onChange`, `onBlur` and `ref`, and `FieldContext` with\nthe errors, without `FieldText` knowing about the library.",
+        "description": "A `Field.Root` for a single-line text control: it provides `InputContext`,\nso the `Input` inside associates itself with the label and the messages and\ntakes `invalid`, `required`, `disabled` and `readOnly` from the field. Every\nother part (`Label`, `Field.Description`, `Field.Error`) works as in any\nfield.\n\nForm-library agnostic, and its contexts compose: a provider nested inside it\ncan extend `InputContext` with `name`, `value`, `onChange`, `onBlur` and\n`ref` to control the `Input`, and `FieldContext` with the errors, on top of\nthe wiring `FieldText` already set.",
         "jsDocTags": {
           "summary": [
             "Field for a single-line text control, wiring the Input inside it"
@@ -4316,11 +4316,11 @@
           "summary": "Input's own props merge with, and win over, the field's context"
         },
         {
-          "id": "components-fieldtext--form-adapter-simulation",
-          "name": "Form Adapter Simulation",
-          "snippet": "const FormAdapterSimulation = () => <SimulatedForm />;",
-          "description": "What a form adapter does with these contexts, simulated with `useState` and\nno form library: it extends `InputContext` with `name`, `value`, `onChange`\nand `onBlur`, so a bare `<Input />` becomes controlled, and `FieldContext`\nwith the errors, so a bare `<Field.Error />` renders them. The input's own\n`onChange` still runs, chained after the adapter's.",
-          "summary": "Form-adapter extension point simulated without a form library"
+          "id": "components-fieldtext--controlled-from-context",
+          "name": "Controlled From Context",
+          "snippet": "const ControlledFromContext = () => <ControlledField />;",
+          "description": "The contexts are an extension point: a provider nested in the field adds\n`name`, `value`, `onChange` and `onBlur` to `InputContext`, so a bare\n`<Input />` becomes controlled, and the errors to `FieldContext`, so a bare\n`<Field.Error />` renders them — here with `useState` and no form library.\nThe input's own `onChange` still runs, chained after the provider's.",
+          "summary": "Input controlled and errors supplied from outside the field"
         }
       ],
       "import": "import { Field, FieldContext, FieldText, Input, InputContext, Label } from \"@agentero/design-system\";"
@@ -4337,7 +4337,7 @@
           "<Field.Root invalid={!!error} required>\n  <Field.Label>Email</Field.Label>\n  <Input type=\"email\" />\n  <Field.Description>We only use this for policy documents.</Field.Description>\n  <Field.Error errors={[error]} />\n</Field.Root>"
         ]
       },
-      "description": "Field lays out a single form field — label, control, helper text and error —\nand wires the accessibility relationships between them. `Field.Root`\ngenerates the ids and shares them through context: `Label` reads\n`LabelContext`, `Field.Description` and `Field.Error` read theirs, and a\n`Field<X>` such as `FieldText` provides the control's context. Nobody passes\nan `id` by hand.\n\nPresentational and form-library agnostic: pass `invalid` and the error\nmessages from whatever validates the form. Spacing between fields belongs to\n`Field.Group`, never to a margin on the field itself.\n\n`Field.Description` and `Field.Error` register themselves with the root, so\nthe control's `aria-describedby` lists exactly the messages on screen and is\nabsent when there is none.",
+      "description": "Field lays out a single form field — label, control, helper text and error —\nand wires the accessibility relationships between them. `Field.Root`\ngenerates the ids and shares them through context: `Label` reads\n`LabelContext`, `Field.Description` and `Field.Error` read `FieldContext`,\nand a `Field<X>` such as `FieldText` provides the control's context. Nobody\npasses an `id` by hand.\n\nPresentational and form-library agnostic: pass `invalid` and the error\nmessages from whatever validates the form. Spacing between fields belongs to\n`Field.Group`, never to a margin on the field itself.\n\n`Field.Description` and `Field.Error` register themselves with the root, so\nthe control's `aria-describedby` lists exactly the messages on screen and is\nabsent when there is none.",
       "summary": "Wraps a label, control, description and error into one field",
       "reactComponentMeta": {
         "displayName": "Field.Root",
@@ -4591,11 +4591,11 @@
           "summary": "Explicit props on a part win over the field's context"
         },
         {
-          "id": "components-field--form-adapter-simulation",
-          "name": "Form Adapter Simulation",
-          "snippet": "const FormAdapterSimulation = () => <SimulatedFormField />;",
-          "description": "What a form adapter does with these contexts, simulated with `useState` and\nno form library: it re-provides `FieldContext` with the field's errors so a\nbare `<Field.Error />` renders them. A `FieldText` adapter extends\n`InputContext` the same way with `value`, `onChange`, `onBlur` and `name`.",
-          "summary": "Form-adapter extension point simulated without a form library"
+          "id": "components-field--errors-from-context",
+          "name": "Errors From Context",
+          "snippet": "const ErrorsFromContext = () => <FieldWithSuppliedErrors />;",
+          "description": "`FieldContext` is an extension point: re-provided under the root with the\nerrors, a bare `<Field.Error />` renders them — here with `useState` and no\nform library. `InputContext` extends the same way with `value`, `onChange`,\n`onBlur` and `name`; see `FieldText`.",
+          "summary": "Errors supplied to a bare Field.Error through context"
         }
       ],
       "import": "import { Field, FieldContext, Label } from \"@agentero/design-system\";"
@@ -7778,6 +7778,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 3859
+    "durationMs": 4414
   }
 }

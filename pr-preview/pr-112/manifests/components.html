@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>3.9s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>4.4s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -4266,9 +4266,9 @@ actions outright unless the user needs to see them and understand why.</div>
     <div class="hint">Field lays out a single form field — label, control, helper text and error —
 and wires the accessibility relationships between them. `Field.Root`
 generates the ids and shares them through context: `Label` reads
-`LabelContext`, `Field.Description` and `Field.Error` read theirs, and a
-`Field&lt;X&gt;` such as `FieldText` provides the control&#39;s context. Nobody passes
-an `id` by hand.
+`LabelContext`, `Field.Description` and `Field.Error` read `FieldContext`,
+and a `Field&lt;X&gt;` such as `FieldText` provides the control&#39;s context. Nobody
+passes an `id` by hand.
 
 Presentational and form-library agnostic: pass `invalid` and the error
 messages from whatever validates the form. Spacing between fields belongs to
@@ -4681,15 +4681,15 @@ part wins over what `Field.Root` provides.</div>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">Form Adapter Simulation</span>
+                <span class="ex-name">Errors From Context</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Form-adapter extension point simulated without a form library</div>
-              <div class="hint">What a form adapter does with these contexts, simulated with `useState` and
-no form library: it re-provides `FieldContext` with the field&#39;s errors so a
-bare `&lt;Field.Error /&gt;` renders them. A `FieldText` adapter extends
-`InputContext` the same way with `value`, `onChange`, `onBlur` and `name`.</div>
-              <pre><code>const FormAdapterSimulation = () =&gt; &lt;SimulatedFormField /&gt;;</code></pre>
+              <div>Errors supplied to a bare Field.Error through context</div>
+              <div class="hint">`FieldContext` is an extension point: re-provided under the root with the
+errors, a bare `&lt;Field.Error /&gt;` renders them — here with `useState` and no
+form library. `InputContext` extends the same way with `value`, `onChange`,
+`onBlur` and `name`; see `FieldText`.</div>
+              <pre><code>const ErrorsFromContext = () =&gt; &lt;FieldWithSuppliedErrors /&gt;;</code></pre>
             </div>
         </div>
     
@@ -4719,12 +4719,13 @@ bare `&lt;Field.Error /&gt;` renders them. A `FieldText` adapter extends
     <div>Field for a single-line text control, wiring the Input inside it</div>
     <div class="hint">FieldText is a `Field.Root` for a single-line text control. It provides
 `InputContext`, so the `Input` inside associates itself with the label and
-the messages and takes `invalid`, `required` and `disabled` from the field —
-no `id`, `htmlFor`, `aria-describedby` or `aria-invalid` written by hand.
+the messages and takes `invalid`, `required`, `disabled` and `readOnly` from
+the field — no `id`, `htmlFor`, `aria-describedby` or `aria-invalid` written
+by hand.
 
-It knows nothing about form libraries. A form adapter re-provides
-`InputContext` with `value`, `onChange`, `onBlur` and `name`, and
-`FieldContext` with the errors, as the last story simulates.</div>
+It knows nothing about form libraries, and its contexts compose: a provider
+nested inside it can extend `InputContext` with `value`, `onChange`, `onBlur`
+and `name`, and `FieldContext` with the errors, as the last story shows.</div>
     <div class="kv"><span class="chip">summary: Field for a single-line text control, wiring the Input inside it</span><span class="chip">example: &lt;FieldText invalid={!!error} required&gt;
   &lt;Label&gt;Email&lt;/Label&gt;
   &lt;Input type=&quot;email&quot; /&gt;
@@ -4927,16 +4928,16 @@ through untouched.</div>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">Form Adapter Simulation</span>
+                <span class="ex-name">Controlled From Context</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Form-adapter extension point simulated without a form library</div>
-              <div class="hint">What a form adapter does with these contexts, simulated with `useState` and
-no form library: it extends `InputContext` with `name`, `value`, `onChange`
-and `onBlur`, so a bare `&lt;Input /&gt;` becomes controlled, and `FieldContext`
-with the errors, so a bare `&lt;Field.Error /&gt;` renders them. The input&#39;s own
-`onChange` still runs, chained after the adapter&#39;s.</div>
-              <pre><code>const FormAdapterSimulation = () =&gt; &lt;SimulatedForm /&gt;;</code></pre>
+              <div>Input controlled and errors supplied from outside the field</div>
+              <div class="hint">The contexts are an extension point: a provider nested in the field adds
+`name`, `value`, `onChange` and `onBlur` to `InputContext`, so a bare
+`&lt;Input /&gt;` becomes controlled, and the errors to `FieldContext`, so a bare
+`&lt;Field.Error /&gt;` renders them — here with `useState` and no form library.
+The input&#39;s own `onChange` still runs, chained after the provider&#39;s.</div>
+              <pre><code>const ControlledFromContext = () =&gt; &lt;ControlledField /&gt;;</code></pre>
             </div>
         </div>
     
