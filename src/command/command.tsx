@@ -16,9 +16,9 @@ export const commandRecipe = tv({
 	slots: {
 		root: [
 			'overflow-hidden rounded-md bg-bg-default-base-primary shadow-xl',
-			'border border-border-default-base-secondary'
+			'border border-border-default-base-primary'
 		],
-		search: ['flex items-center gap-2 px-4 py-3', 'border-b border-border-default-base-secondary'],
+		search: ['flex items-center gap-2 px-4 py-3', 'border-b border-border-default-base-primary'],
 		// Without shrink-0 the w-full input squeezes the icon below 24px.
 		searchIcon: 'shrink-0 pointer-events-none [&>path]:fill-icon-default-base-tertiary',
 		input: [
