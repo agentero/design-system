@@ -9,6 +9,8 @@ const VARIANTS = ['primary', 'secondary', 'tertiary', 'ghost', 'link'] as const;
 const SIZES = ['xs', 'sm', 'md', 'lg'] as const;
 const NON_LINK_VARIANTS = ['primary', 'secondary', 'tertiary', 'ghost'] as const;
 
+const SCALE_ON_PRESS_CLASS = 'motion-safe:active:[transform:scale(0.97)]';
+
 const IconAdd = () => (
 	<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 		<path d="M11.25 12.75H6.25C6.0375 12.75 5.85938 12.6781 5.71563 12.5343C5.57187 12.3905 5.5 12.2123 5.5 11.9997C5.5 11.7871 5.57187 11.609 5.71563 11.4654C5.85938 11.3218 6.0375 11.25 6.25 11.25H11.25V6.25003C11.25 6.03753 11.3219 5.85941 11.4657 5.71566C11.6095 5.57191 11.7877 5.50003 12.0003 5.50003C12.2129 5.50003 12.391 5.57191 12.5346 5.71566C12.6782 5.85941 12.7499 6.03753 12.7499 6.25003V11.25H17.75C17.9625 11.25 18.1406 11.3219 18.2843 11.4657C18.4281 11.6095 18.5 11.7877 18.5 12.0003C18.5 12.2129 18.4281 12.391 18.2843 12.5346C18.1406 12.6782 17.9625 12.75 17.75 12.75H12.7499V17.75C12.7499 17.9625 12.6781 18.1406 12.5342 18.2844C12.3904 18.4281 12.2122 18.5 11.9997 18.5C11.787 18.5 11.609 18.4281 11.4654 18.2844C11.3218 18.1406 11.25 17.9625 11.25 17.75V12.75Z" />
@@ -66,7 +68,8 @@ const meta = {
 		},
 		loading: { control: 'boolean' },
 		disabled: { control: 'boolean' },
-		rounded: { control: 'boolean' }
+		rounded: { control: 'boolean' },
+		scaleOnPress: { control: 'boolean' }
 	},
 	args: {
 		children: TEXT,
@@ -80,8 +83,8 @@ type Story = StoryObj<typeof meta>;
 
 /**
  * Args-controlled playground. Toggle `variant`, `size`, `status`, `loading`,
- * `disabled`, and `rounded` from the Controls panel to explore every visual
- * combination of the Button.
+ * `disabled`, `rounded`, and `scaleOnPress` from the Controls panel to explore
+ * every visual combination of the Button.
  *
  * @summary Default args playground for Button
  */
@@ -323,34 +326,40 @@ export const AsChild: Story = {
 /* --------------- Press feedback --------------- */
 
 /**
- * Buttons dip to 97% while held so the control answers the pointer rather than
- * only changing color. Press and hold one below to feel it — the effect is
- * deliberately small, and if a quick click draws the eye it is too strong.
+ * With `scaleOnPress`, a button dips to 97% while held so the control answers
+ * the pointer rather than only changing color. Press and hold one below to
+ * feel it — the effect is deliberately small, and if a quick click draws the
+ * eye it is too strong. It is off by default: pass the prop where the extra
+ * feedback is wanted.
  *
- * `variant="link"` is excluded: it has no padding or background, so scaling
- * bare text reads as a wobble rather than a button being pushed. Disabled
- * buttons are excluded too, including the `asChild` anchor form, which stays
- * keyboard-focusable and would otherwise dip on Enter. The whole effect is
- * gated behind `motion-safe`, so it disappears under `prefers-reduced-motion`.
+ * `variant="link"` is excluded even with the prop set: it has no padding or
+ * background, so scaling bare text reads as a wobble rather than a button
+ * being pushed. Disabled buttons are excluded too, including the `asChild`
+ * anchor form, which stays keyboard-focusable and would otherwise dip on
+ * Enter. The whole effect is gated behind `motion-safe`, so it disappears
+ * under `prefers-reduced-motion`.
  *
- * @summary Press feedback dips the button, excluding `link` and disabled
+ * @summary Opt-in press feedback via `scaleOnPress`, excluding `link` and disabled
  */
 export const Pressed: Story = {
 	render: () => (
 		<Stack>
 			<Row>
 				{NON_LINK_VARIANTS.map(variant => (
-					<Button key={variant} variant={variant}>
+					<Button key={variant} variant={variant} scaleOnPress>
 						Press {variant}
 					</Button>
 				))}
 			</Row>
 			<Row>
-				<Button variant="link">Link stays still</Button>
-				<Button variant="primary" disabled>
+				<Button variant="primary">Opted out stays still</Button>
+				<Button variant="link" scaleOnPress>
+					Link stays still
+				</Button>
+				<Button variant="primary" scaleOnPress disabled>
 					Disabled stays still
 				</Button>
-				<Button asChild variant="secondary" disabled>
+				<Button asChild variant="secondary" scaleOnPress disabled>
 					<a href="/dashboard">Disabled anchor stays still</a>
 				</Button>
 			</Row>
@@ -359,6 +368,7 @@ export const Pressed: Story = {
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 		const button = canvas.getByRole('button', { name: 'Press primary' });
+		const optedOut = canvas.getByRole('button', { name: 'Opted out stays still' });
 
 		// `:active` only responds to real input, so a play function cannot hold the
 		// button down — untrusted events never trigger the pseudo-class. What is
@@ -366,5 +376,8 @@ export const Pressed: Story = {
 		// `scale-*` utilities set the standalone `scale` property, so writing the
 		// press as `scale-97` would leave it outside this allowlist and un-eased.
 		await expect(getComputedStyle(button).transitionProperty).toContain('transform');
+		await expect(button.className).toContain(SCALE_ON_PRESS_CLASS);
+		// Off by default: no `scaleOnPress`, no dip.
+		await expect(optedOut.className).not.toContain(SCALE_ON_PRESS_CLASS);
 	}
 };
