@@ -11,9 +11,9 @@ import { Label } from '../label';
  * Field lays out a single form field — label, control, helper text and error —
  * and wires the accessibility relationships between them. `Field.Root`
  * generates the ids and shares them through context: `Label` reads
- * `LabelContext`, `Field.Description` and `Field.Error` read theirs, and a
- * `Field<X>` such as `FieldText` provides the control's context. Nobody passes
- * an `id` by hand.
+ * `LabelContext`, `Field.Description` and `Field.Error` read `FieldContext`,
+ * and a `Field<X>` such as `FieldText` provides the control's context. Nobody
+ * passes an `id` by hand.
  *
  * Presentational and form-library agnostic: pass `invalid` and the error
  * messages from whatever validates the form. Spacing between fields belongs to
@@ -548,8 +548,8 @@ export const OwnPropsWin: Story = {
 };
 
 /**
- * Re-provides `FieldContext` under the root with the field's errors, the way a
- * form adapter would. Must sit inside `Field.Root` so it inherits the wiring.
+ * Re-provides `FieldContext` under the root with errors that come from outside.
+ * Must sit inside `Field.Root` so it inherits the wiring.
  */
 const ErrorProvider = ({
 	errors,
@@ -563,7 +563,7 @@ const ErrorProvider = ({
 	return <FieldContext value={field && { ...field, errors }}>{children}</FieldContext>;
 };
 
-const SimulatedFormField = () => {
+const FieldWithSuppliedErrors = () => {
 	const [value, setValue] = useState('');
 	const [touched, setTouched] = useState(false);
 
@@ -586,15 +586,15 @@ const SimulatedFormField = () => {
 };
 
 /**
- * What a form adapter does with these contexts, simulated with `useState` and
- * no form library: it re-provides `FieldContext` with the field's errors so a
- * bare `<Field.Error />` renders them. A `FieldText` adapter extends
- * `InputContext` the same way with `value`, `onChange`, `onBlur` and `name`.
+ * `FieldContext` is an extension point: re-provided under the root with the
+ * errors, a bare `<Field.Error />` renders them — here with `useState` and no
+ * form library. `InputContext` extends the same way with `value`, `onChange`,
+ * `onBlur` and `name`; see `FieldText`.
  *
- * @summary Form-adapter extension point simulated without a form library
+ * @summary Errors supplied to a bare Field.Error through context
  */
-export const FormAdapterSimulation: Story = {
-	render: () => <SimulatedFormField />,
+export const ErrorsFromContext: Story = {
+	render: () => <FieldWithSuppliedErrors />,
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 

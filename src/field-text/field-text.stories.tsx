@@ -11,12 +11,13 @@ import { Label } from '../label';
 /**
  * FieldText is a `Field.Root` for a single-line text control. It provides
  * `InputContext`, so the `Input` inside associates itself with the label and
- * the messages and takes `invalid`, `required` and `disabled` from the field —
- * no `id`, `htmlFor`, `aria-describedby` or `aria-invalid` written by hand.
+ * the messages and takes `invalid`, `required`, `disabled` and `readOnly` from
+ * the field — no `id`, `htmlFor`, `aria-describedby` or `aria-invalid` written
+ * by hand.
  *
- * It knows nothing about form libraries. A form adapter re-provides
- * `InputContext` with `value`, `onChange`, `onBlur` and `name`, and
- * `FieldContext` with the errors, as the last story simulates.
+ * It knows nothing about form libraries, and its contexts compose: a provider
+ * nested inside it can extend `InputContext` with `value`, `onChange`, `onBlur`
+ * and `name`, and `FieldContext` with the errors, as the last story shows.
  */
 const meta = {
 	title: 'Components/FieldText',
@@ -209,11 +210,11 @@ export const OwnPropsWin: Story = {
 };
 
 /**
- * Re-provides `InputContext` and `FieldContext` under the field with what a
- * form library would supply. Must sit inside `FieldText` so it inherits the
- * field's wiring and only adds to it.
+ * Extends `InputContext` and `FieldContext` under the field, so the value, the
+ * handlers and the errors come from outside. Must sit inside `FieldText` so it
+ * inherits the field's wiring and only adds to it.
  */
-const FormAdapter = ({
+const ContextExtension = ({
 	inputProps,
 	errors,
 	children
@@ -234,7 +235,7 @@ const FormAdapter = ({
 
 const onOwnChange = fn();
 
-const SimulatedForm = () => {
+const ControlledField = () => {
 	const [value, setValue] = useState('');
 	const [touched, setTouched] = useState(false);
 
@@ -242,7 +243,7 @@ const SimulatedForm = () => {
 
 	return (
 		<FieldText invalid={!!errors} required>
-			<FormAdapter
+			<ContextExtension
 				inputProps={{
 					name: 'email',
 					value,
@@ -253,22 +254,22 @@ const SimulatedForm = () => {
 				<Label>Email</Label>
 				<Input type="email" onChange={onOwnChange} />
 				<Field.Error />
-			</FormAdapter>
+			</ContextExtension>
 		</FieldText>
 	);
 };
 
 /**
- * What a form adapter does with these contexts, simulated with `useState` and
- * no form library: it extends `InputContext` with `name`, `value`, `onChange`
- * and `onBlur`, so a bare `<Input />` becomes controlled, and `FieldContext`
- * with the errors, so a bare `<Field.Error />` renders them. The input's own
- * `onChange` still runs, chained after the adapter's.
+ * The contexts are an extension point: a provider nested in the field adds
+ * `name`, `value`, `onChange` and `onBlur` to `InputContext`, so a bare
+ * `<Input />` becomes controlled, and the errors to `FieldContext`, so a bare
+ * `<Field.Error />` renders them — here with `useState` and no form library.
+ * The input's own `onChange` still runs, chained after the provider's.
  *
- * @summary Form-adapter extension point simulated without a form library
+ * @summary Input controlled and errors supplied from outside the field
  */
-export const FormAdapterSimulation: Story = {
-	render: () => <SimulatedForm />,
+export const ControlledFromContext: Story = {
+	render: () => <ControlledField />,
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 

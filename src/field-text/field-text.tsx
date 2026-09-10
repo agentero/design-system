@@ -29,9 +29,10 @@ export type FieldTextProps = FieldRootProps;
  * other part (`Label`, `Field.Description`, `Field.Error`) works as in any
  * field.
  *
- * Form-library agnostic. A form adapter re-provides `InputContext` under it
- * with `name`, `value`, `onChange`, `onBlur` and `ref`, and `FieldContext` with
- * the errors, without `FieldText` knowing about the library.
+ * Form-library agnostic, and its contexts compose: a provider nested inside it
+ * can extend `InputContext` with `name`, `value`, `onChange`, `onBlur` and
+ * `ref` to control the `Input`, and `FieldContext` with the errors, on top of
+ * the wiring `FieldText` already set.
  *
  * @summary Field for a single-line text control, wiring the Input inside it
  *
