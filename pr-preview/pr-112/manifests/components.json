@@ -1923,6 +1923,12 @@
           "id": "components-command--keyboard-navigation",
           "name": "Keyboard Navigation",
           "snippet": "const KeyboardNavigation = () => <Command.Root label=\"Search commands\">\n    <Command.Input placeholder=\"Search...\" />\n    <Command.List>\n        <Command.Item value=\"home\" keywords={['Homeowners']} onSelect={handleSelect}>Homeowners\n                            </Command.Item>\n        <Command.Item value=\"auto\" keywords={['Auto']} onSelect={handleSelect}>Auto\n                            </Command.Item>\n    </Command.List>\n    <Command.Empty>No results found.</Command.Empty>\n</Command.Root>;"
+        },
+        {
+          "id": "components-command--disabled-item",
+          "name": "Disabled Item",
+          "snippet": "const DisabledItem = () => <Command.Root label=\"Search agencies\">\n    <Command.Input placeholder=\"Search...\" />\n    <Command.List>\n        <Command.Item value=\"pinnacle\" onSelect={handleDisabledSelect}>Pinnacle Shield Insurance\n                            </Command.Item>\n        <Command.Item value=\"horizon\" disabled onSelect={handleDisabledSelect}>Horizon Risk Solutions\n                            </Command.Item>\n    </Command.List>\n    <Command.Empty>No results found.</Command.Empty>\n</Command.Root>;",
+          "description": "A `disabled` row stays visible and searchable but cannot be chosen. cmdk skips it with the\narrow keys and swallows the click, and the row drops its hover and active styling so the\nlist does not invite the pointer."
         }
       ],
       "import": "import { Command } from \"@agentero/design-system\";"
@@ -4128,7 +4134,7 @@
         "displayName": "FieldText",
         "exportName": "FieldText",
         "filePath": "/home/runner/work/design-system/design-system/src/field-text/index.ts",
-        "description": "A `Field.Root` for a single-line text control: it provides `InputContext`,\nso the `Input` inside associates itself with the label and the messages and\ntakes `invalid`, `required`, `disabled` and `readOnly` from the field. Every other part\n(`Label`, `Field.Description`, `Field.Error`) works as in any field.\n\nForm-library agnostic. A form adapter re-provides `InputContext` under it\nwith `name`, `value`, `onChange`, `onBlur` and `ref`, and `FieldContext` with\nthe errors, without `FieldText` knowing about the library.",
+        "description": "A `Field.Root` for a single-line text control: it provides `InputContext`,\nso the `Input` inside associates itself with the label and the messages and\ntakes `invalid`, `required`, `disabled` and `readOnly` from the field. Every\nother part (`Label`, `Field.Description`, `Field.Error`) works as in any\nfield.\n\nForm-library agnostic. A form adapter re-provides `InputContext` under it\nwith `name`, `value`, `onChange`, `onBlur` and `ref`, and `FieldContext` with\nthe errors, without `FieldText` knowing about the library.",
         "jsDocTags": {
           "summary": [
             "Field for a single-line text control, wiring the Input inside it"
@@ -4559,7 +4565,7 @@
         {
           "id": "components-field--responsive",
           "name": "Responsive",
-          "snippet": "const Responsive = () => (\n    <div className=\"flex flex-col gap-8\">\n        <div className=\"w-[40rem]\" data-testid=\"wide\">\n            <Field.Root orientation=\"responsive\">\n                <Label>Email</Label>\n                <Field.Content className=\"@md/field:w-72\">\n                    <DemoInput type=\"email\" placeholder=\"you@example.com\" />\n                    <Field.Description>We only use this to send policy documents.</Field.Description>\n                </Field.Content>\n            </Field.Root>\n        </div>\n\n        <div className=\"w-[20rem]\" data-testid=\"narrow\">\n            <Field.Root orientation=\"responsive\">\n                <Label>Email</Label>\n                <Field.Content>\n                    <DemoInput type=\"email\" placeholder=\"you@example.com\" />\n                    <Field.Description>We only use this to send policy documents.</Field.Description>\n                </Field.Content>\n            </Field.Root>\n        </div>\n    </div>\n);",
+          "snippet": "const Responsive = () => (\n    <div className=\"flex flex-col gap-8\">\n        <div className=\"w-full max-w-[40rem]\" data-testid=\"wide\">\n            <Field.Root orientation=\"responsive\">\n                <Label>Email</Label>\n                <Field.Content className=\"@md/field:w-72\">\n                    <DemoInput type=\"email\" placeholder=\"you@example.com\" />\n                    <Field.Description>\n                        We only use this to send policy documents, and never to contact you about anything\n                        else.\n                    </Field.Description>\n                </Field.Content>\n            </Field.Root>\n        </div>\n\n        <div className=\"w-full max-w-[20rem]\" data-testid=\"narrow\">\n            <Field.Root orientation=\"responsive\">\n                <Label>Email</Label>\n                <Field.Content>\n                    <DemoInput type=\"email\" placeholder=\"you@example.com\" />\n                    <Field.Description>We only use this to send policy documents.</Field.Description>\n                </Field.Content>\n            </Field.Root>\n        </div>\n    </div>\n);",
           "description": "`responsive` stacks the parts below `28rem` and behaves like `horizontal`\nfrom there: first child fills, the rest keep their width on the right. It\nmeasures the field itself, so it needs no particular wrapper. A width that\nshould only apply once horizontal goes behind `@md/field:`.",
           "summary": "Responsive field that stacks when narrow"
         },
@@ -4808,7 +4814,7 @@
         "displayName": "Input",
         "exportName": "Input",
         "filePath": "/home/runner/work/design-system/design-system/src/input/input.tsx",
-        "description": "Input is the design system's base single-line text control. Reach for it\nwhenever a form collects free text, and pair it with\n[Label](?path=/docs/components-label--docs) so the control has an accessible\nname.\n\nWhen a container provides `InputContext`, the input takes its wiring (`id`,\n`aria-describedby`, `aria-invalid`, `required`, `disabled`) from it with\nnothing passed by hand; `FieldText` is one such container. Standalone it\nrenders exactly the props it is given, and its own props always win over the\ncontext. There is no `status` prop — mark the control `aria-invalid` and the\ndestructive border follows.\n\nDo not use Input for multi-line text; that is TextArea's job. It also has no\nslots for leading or trailing addons — an input with a currency prefix or a\nunit suffix belongs in an input group, not here.",
+        "description": "Input is the design system's base single-line text control. Reach for it\nwhenever a form collects free text, and pair it with\n[Label](?path=/docs/components-label--docs) so the control has an accessible\nname.\n\nWhen a container provides `InputContext`, the input takes its wiring (`id`,\n`aria-describedby`, `aria-invalid`, `required`, `disabled`, `readOnly`) from\nit with nothing passed by hand; `FieldText` is one such container. Standalone it\nrenders exactly the props it is given, and its own props always win over the\ncontext. There is no `status` prop — mark the control `aria-invalid` and the\ndestructive border follows.\n\nDo not use Input for multi-line text; that is TextArea's job. It also has no\nslots for leading or trailing addons — an input with a currency prefix or a\nunit suffix belongs in an input group, not here.",
         "jsDocTags": {
           "summary": [
             "Base single-line text control that takes its wiring from InputContext"
@@ -7772,6 +7778,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4260
+    "durationMs": 3859
   }
 }

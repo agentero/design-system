@@ -588,13 +588,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">28 components ok</span><span class="filter-pill ok" aria-disabled="true">226 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">28 components ok</span><span class="filter-pill ok" aria-disabled="true">227 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.3s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>3.9s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -2580,7 +2580,7 @@ import { CheckList } from &#39;@agentero/design-system/check-list&#39;;
       <div class="badges">
         <label for="c-6-components-command-props" class="badge ok as-toggle">10 prop types</label>
         
-        <label for="c-6-components-command-stories" class="badge ok as-toggle">5 stories</label>
+        <label for="c-6-components-command-stories" class="badge ok as-toggle">6 stories</label>
         
         
       </div>
@@ -2788,6 +2788,26 @@ and `scroll-py-2` keeps that row off the container edges.</div>
         &lt;Command.Item value=&quot;home&quot; keywords={[&#39;Homeowners&#39;]} onSelect={handleSelect}&gt;Homeowners
                             &lt;/Command.Item&gt;
         &lt;Command.Item value=&quot;auto&quot; keywords={[&#39;Auto&#39;]} onSelect={handleSelect}&gt;Auto
+                            &lt;/Command.Item&gt;
+    &lt;/Command.List&gt;
+    &lt;Command.Empty&gt;No results found.&lt;/Command.Empty&gt;
+&lt;/Command.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Disabled Item</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">A `disabled` row stays visible and searchable but cannot be chosen. cmdk skips it with the
+arrow keys and swallows the click, and the row drops its hover and active styling so the
+list does not invite the pointer.</div>
+              <pre><code>const DisabledItem = () =&gt; &lt;Command.Root label=&quot;Search agencies&quot;&gt;
+    &lt;Command.Input placeholder=&quot;Search...&quot; /&gt;
+    &lt;Command.List&gt;
+        &lt;Command.Item value=&quot;pinnacle&quot; onSelect={handleDisabledSelect}&gt;Pinnacle Shield Insurance
+                            &lt;/Command.Item&gt;
+        &lt;Command.Item value=&quot;horizon&quot; disabled onSelect={handleDisabledSelect}&gt;Horizon Risk Solutions
                             &lt;/Command.Item&gt;
     &lt;/Command.List&gt;
     &lt;Command.Empty&gt;No results found.&lt;/Command.Empty&gt;
@@ -4574,17 +4594,20 @@ measures the field itself, so it needs no particular wrapper. A width that
 should only apply once horizontal goes behind `@md/field:`.</div>
               <pre><code>const Responsive = () =&gt; (
     &lt;div className=&quot;flex flex-col gap-8&quot;&gt;
-        &lt;div className=&quot;w-[40rem]&quot; data-testid=&quot;wide&quot;&gt;
+        &lt;div className=&quot;w-full max-w-[40rem]&quot; data-testid=&quot;wide&quot;&gt;
             &lt;Field.Root orientation=&quot;responsive&quot;&gt;
                 &lt;Label&gt;Email&lt;/Label&gt;
                 &lt;Field.Content className=&quot;@md/field:w-72&quot;&gt;
                     &lt;DemoInput type=&quot;email&quot; placeholder=&quot;you@example.com&quot; /&gt;
-                    &lt;Field.Description&gt;We only use this to send policy documents.&lt;/Field.Description&gt;
+                    &lt;Field.Description&gt;
+                        We only use this to send policy documents, and never to contact you about anything
+                        else.
+                    &lt;/Field.Description&gt;
                 &lt;/Field.Content&gt;
             &lt;/Field.Root&gt;
         &lt;/div&gt;
 
-        &lt;div className=&quot;w-[20rem]&quot; data-testid=&quot;narrow&quot;&gt;
+        &lt;div className=&quot;w-full max-w-[20rem]&quot; data-testid=&quot;narrow&quot;&gt;
             &lt;Field.Root orientation=&quot;responsive&quot;&gt;
                 &lt;Label&gt;Email&lt;/Label&gt;
                 &lt;Field.Content&gt;
