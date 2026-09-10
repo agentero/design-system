@@ -253,3 +253,40 @@ export const KeyboardNavigation: Story = {
 		await expect(handleSelect).toHaveBeenCalledWith('auto');
 	}
 };
+
+const handleDisabledSelect = fn();
+
+/**
+ * A `disabled` row stays visible and searchable but cannot be chosen. cmdk skips it with the
+ * arrow keys and swallows the click, and the row drops its hover and active styling so the
+ * list does not invite the pointer.
+ */
+export const DisabledItem: Story = {
+	args: { label: 'Search agencies' },
+	render: args => (
+		<Command.Root {...args}>
+			<Command.Input placeholder="Search..." />
+			<Command.List>
+				<Command.Item value="pinnacle" onSelect={handleDisabledSelect}>
+					Pinnacle Shield Insurance
+				</Command.Item>
+				<Command.Item value="horizon" disabled onSelect={handleDisabledSelect}>
+					Horizon Risk Solutions
+				</Command.Item>
+			</Command.List>
+			<Command.Empty>No results found.</Command.Empty>
+		</Command.Root>
+	),
+	play: async ({ canvasElement }) => {
+		handleDisabledSelect.mockClear();
+		const canvas = within(canvasElement);
+		const disabledOption = canvas.getByRole('option', { name: 'Horizon Risk Solutions' });
+
+		await expect(disabledOption).toHaveAttribute('data-disabled', 'true');
+		await expect(disabledOption).toHaveAttribute('aria-disabled', 'true');
+
+		await userEvent.click(disabledOption);
+
+		await expect(handleDisabledSelect).not.toHaveBeenCalled();
+	}
+};
