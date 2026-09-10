@@ -1923,6 +1923,12 @@
           "id": "components-command--keyboard-navigation",
           "name": "Keyboard Navigation",
           "snippet": "const KeyboardNavigation = () => <Command.Root label=\"Search commands\">\n    <Command.Input placeholder=\"Search...\" />\n    <Command.List>\n        <Command.Item value=\"home\" keywords={['Homeowners']} onSelect={handleSelect}>Homeowners\n                            </Command.Item>\n        <Command.Item value=\"auto\" keywords={['Auto']} onSelect={handleSelect}>Auto\n                            </Command.Item>\n    </Command.List>\n    <Command.Empty>No results found.</Command.Empty>\n</Command.Root>;"
+        },
+        {
+          "id": "components-command--disabled-item",
+          "name": "Disabled Item",
+          "snippet": "const DisabledItem = () => <Command.Root label=\"Search agencies\">\n    <Command.Input placeholder=\"Search...\" />\n    <Command.List>\n        <Command.Item value=\"pinnacle\" onSelect={handleDisabledSelect}>Pinnacle Shield Insurance\n                            </Command.Item>\n        <Command.Item value=\"horizon\" disabled onSelect={handleDisabledSelect}>Horizon Risk Solutions\n                            </Command.Item>\n    </Command.List>\n    <Command.Empty>No results found.</Command.Empty>\n</Command.Root>;",
+          "description": "A `disabled` row stays visible and searchable but cannot be chosen. cmdk skips it with the\narrow keys and swallows the click, and the row drops its hover and active styling so the\nlist does not invite the pointer."
         }
       ],
       "import": "import { Command } from \"@agentero/design-system\";"
@@ -7281,6 +7287,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4525
+    "durationMs": 2931
   }
 }
