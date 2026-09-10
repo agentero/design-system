@@ -25,8 +25,9 @@ export type FieldTextProps = FieldRootProps;
 /**
  * A `Field.Root` for a single-line text control: it provides `InputContext`,
  * so the `Input` inside associates itself with the label and the messages and
- * takes `invalid`, `required`, `disabled` and `readOnly` from the field. Every other part
- * (`Label`, `Field.Description`, `Field.Error`) works as in any field.
+ * takes `invalid`, `required`, `disabled` and `readOnly` from the field. Every
+ * other part (`Label`, `Field.Description`, `Field.Error`) works as in any
+ * field.
  *
  * Form-library agnostic. A form adapter re-provides `InputContext` under it
  * with `name`, `value`, `onChange`, `onBlur` and `ref`, and `FieldContext` with

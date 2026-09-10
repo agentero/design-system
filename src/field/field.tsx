@@ -75,14 +75,18 @@ export const fieldRecipe = tv({
 				]
 			},
 			// Stacked below `md` (28rem), one row from there, measured on the field
-			// itself: the root is its own container and always wraps, and only the
-			// children's widths react to it. An element cannot query its own size,
-			// so the direction never changes on the root.
+			// itself: the root always wraps, so the row folds on its own and the
+			// direction never changes. Every queried utility has a child as its
+			// subject, because an element cannot query the container it is — a
+			// `@md/field:` class on the root itself would never match. Above `md`
+			// nothing here touches the children's widths, so a control or a
+			// `Field.Content` keeps the width it was given.
 			responsive: {
 				root: [
-					'@container/field flex-row flex-wrap items-start [&>*]:w-full [&>.sr-only]:w-auto',
-					'@md/field:items-center @md/field:[&>*]:w-auto @md/field:[&>:first-child]:flex-1',
-					'@md/field:has-[>[data-slot=field-content]]:items-start'
+					'@container/field flex-row flex-wrap items-start',
+					'@max-md/field:[&>*]:w-full @max-md/field:[&>.sr-only]:w-auto',
+					'@md/field:[&>*]:self-center @md/field:[&>:first-child]:flex-1',
+					'@md/field:has-[>[data-slot=field-content]]:[&>*]:self-start'
 				]
 			}
 		}

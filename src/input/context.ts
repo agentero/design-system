@@ -7,9 +7,10 @@ import type { InputProps } from './input';
 
 /**
  * Props a container hands to every `Input` rendered inside it: the wiring
- * (`id`, `aria-describedby`, `aria-invalid`, `required`, `disabled`) and,
- * from a form adapter, `name`, `value`, `onChange`, `onBlur` and `ref`. An
- * `Input` with no provider above it reads `null` and uses only its own props.
+ * (`id`, `aria-describedby`, `aria-invalid`, `required`, `disabled`,
+ * `readOnly`) and, from a form adapter, `name`, `value`, `onChange`, `onBlur`
+ * and `ref`. An `Input` with no provider above it reads `null` and uses only
+ * its own props.
  */
 export const InputContext = createContext<Partial<InputProps> | null>(null);
 

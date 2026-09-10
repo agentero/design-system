@@ -414,17 +414,20 @@ export const Horizontal: Story = {
 export const Responsive: Story = {
 	render: () => (
 		<div className="flex flex-col gap-8">
-			<div className="w-[40rem]" data-testid="wide">
+			<div className="w-full max-w-[40rem]" data-testid="wide">
 				<Field.Root orientation="responsive">
 					<Label>Email</Label>
 					<Field.Content className="@md/field:w-72">
 						<DemoInput type="email" placeholder="you@example.com" />
-						<Field.Description>We only use this to send policy documents.</Field.Description>
+						<Field.Description>
+							We only use this to send policy documents, and never to contact you about anything
+							else.
+						</Field.Description>
 					</Field.Content>
 				</Field.Root>
 			</div>
 
-			<div className="w-[20rem]" data-testid="narrow">
+			<div className="w-full max-w-[20rem]" data-testid="narrow">
 				<Field.Root orientation="responsive">
 					<Label>Email</Label>
 					<Field.Content>
@@ -442,8 +445,14 @@ export const Responsive: Story = {
 		const wide = canvas.getByTestId('wide');
 		const wideLabel = wide.querySelector('label') as HTMLElement;
 		const wideInput = wide.querySelector('input') as HTMLElement;
+		const wideContent = wide.querySelector('[data-slot=field-content]') as HTMLElement;
 
 		await expect(rect(wideLabel).right).toBeLessThanOrEqual(rect(wideInput).left);
+
+		// The width the content was given holds: the root sets no child width from
+		// `md` up, so a two-line description does not push it to its max-content
+		// width and fold the row.
+		await expect(rect(wideContent).width).toBe(288);
 
 		const narrow = canvas.getByTestId('narrow');
 		const narrowLabel = narrow.querySelector('label') as HTMLElement;

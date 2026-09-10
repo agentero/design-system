@@ -1,4 +1,6 @@
-import { Ref, RefCallback, useMemo } from 'react';
+import { Ref, useMemo } from 'react';
+
+import { composeRefs } from '@radix-ui/react-compose-refs';
 
 import { cn } from './utils';
 
@@ -17,40 +19,17 @@ export const chain =
 	};
 
 /**
- * Merges several refs into one callback ref that assigns all of them. Honors
- * React 19 cleanup functions: a callback ref that returns a cleanup gets it
- * called on detach; the others are reset to `null` the classic way.
+ * Merges several refs into one callback ref that assigns all of them. Radix's
+ * `composeRefs` under the design system's own name, so the whole `lib` surface
+ * reads the same: it honors React 19 cleanup functions — a callback ref that
+ * returns a cleanup gets it called on detach, the others are reset to `null`
+ * the classic way.
  *
  * Memoize the result (see `useMergeProps`): React re-runs a callback ref whose
  * identity changed, so rebuilding it every render detaches and re-attaches
  * every underlying ref each time.
  */
-export const mergeRefs =
-	<T>(...refs: Array<Ref<T> | undefined>): RefCallback<T> =>
-	node => {
-		const cleanups = refs.map(ref => {
-			if (typeof ref === 'function') {
-				return ref(node);
-			}
-			if (ref) {
-				ref.current = node;
-			}
-			return undefined;
-		});
-
-		return () => {
-			refs.forEach((ref, index) => {
-				const cleanup = cleanups[index];
-				if (typeof cleanup === 'function') {
-					cleanup();
-				} else if (typeof ref === 'function') {
-					ref(null);
-				} else if (ref) {
-					ref.current = null;
-				}
-			});
-		};
-	};
+export const mergeRefs = composeRefs;
 
 const mergeIds = (a: string, b: string) =>
 	[...new Set(`${a} ${b}`.split(/\s+/).filter(Boolean))].join(' ');

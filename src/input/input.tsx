@@ -106,8 +106,8 @@ export type InputProps = Omit<ComponentPropsWithRef<'input'>, 'size'> & {
  * name.
  *
  * When a container provides `InputContext`, the input takes its wiring (`id`,
- * `aria-describedby`, `aria-invalid`, `required`, `disabled`) from it with
- * nothing passed by hand; `FieldText` is one such container. Standalone it
+ * `aria-describedby`, `aria-invalid`, `required`, `disabled`, `readOnly`) from
+ * it with nothing passed by hand; `FieldText` is one such container. Standalone it
  * renders exactly the props it is given, and its own props always win over the
  * context. There is no `status` prop — mark the control `aria-invalid` and the
  * destructive border follows.
