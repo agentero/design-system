@@ -27,6 +27,7 @@
     "./avatar-group": "./src/avatar-group/index.ts",
     "./button": "./src/button/index.ts",
     "./check-list": "./src/check-list/index.ts",
+    "./combobox": "./src/combobox/index.ts",
     "./command": "./src/command/index.ts",
     "./data-table": "./src/data-table/index.ts",
     "./divider": "./src/divider/index.ts",
