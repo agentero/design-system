@@ -17,6 +17,7 @@ const meta = {
 	tags: ['autodocs'],
 	argTypes: {
 		checked: { control: 'radio', options: [true, false, 'indeterminate'] },
+		defaultChecked: { control: 'radio', options: [true, false, 'indeterminate'] },
 		disabled: { control: 'boolean' },
 		required: { control: 'boolean' },
 		'aria-invalid': { control: 'boolean' },
@@ -62,6 +63,25 @@ export const Indeterminate: Story = {
 		const checkbox = canvas.getByRole('checkbox', { name: 'Select row' });
 
 		await expect(checkbox).toHaveAttribute('aria-checked', 'mixed');
+	}
+};
+
+/**
+ * Starts mixed without a controlled value, then toggles through checked and unchecked.
+ *
+ * @summary Uncontrolled checkbox starting in the mixed state
+ */
+export const UncontrolledIndeterminate: Story = {
+	args: { defaultChecked: 'indeterminate' },
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const checkbox = canvas.getByRole('checkbox', { name: 'Select row' });
+
+		await expect(checkbox).toHaveAttribute('aria-checked', 'mixed');
+		await userEvent.click(checkbox);
+		await expect(checkbox).toBeChecked();
+		await userEvent.keyboard(' ');
+		await expect(checkbox).toHaveAttribute('aria-checked', 'false');
 	}
 };
 
@@ -168,5 +188,100 @@ export const SelectAll: Story = {
 		await expect(selectAll).toHaveAttribute('aria-checked', 'mixed');
 		await userEvent.click(selectAll);
 		await expect(canvas.getByRole('checkbox', { name: 'Bamboo' })).toBeChecked();
+	}
+};
+
+/**
+ * A surrounding selection container must not change the checkbox's own glyph.
+ *
+ * @summary Mixed checkbox inside another selected group
+ */
+export const InsideSelectedGroup: Story = {
+	render: () => (
+		<div className="group" data-state="checked">
+			<Checkbox aria-label="Select carriers" defaultChecked="indeterminate" />
+		</div>
+	),
+	play: async ({ canvasElement }) => {
+		const checkbox = within(canvasElement).getByRole('checkbox', { name: 'Select carriers' });
+		const [check, minus] = checkbox.querySelectorAll('[data-slot=checkbox-indicator] svg');
+		await expect(check).not.toBeVisible();
+		await expect(minus).toBeVisible();
+		await userEvent.click(checkbox);
+		await expect(check).toBeVisible();
+		await expect(minus).not.toBeVisible();
+	}
+};
+
+/**
+ * Preserves the legacy palette and 16px footprint for every value and validation state.
+ *
+ * @summary Legacy checkbox colours across all interaction states
+ */
+export const LegacyStates: Story = {
+	render: () => (
+		<div className="flex flex-col gap-6">
+			{[false, true].map(invalid => (
+				<div key={String(invalid)} className="flex flex-col gap-4">
+					{[false, true].map(disabled => (
+						<div key={String(disabled)} className="flex items-center gap-6">
+							{([false, true, 'indeterminate'] as const).map(checked => (
+								<Checkbox
+									key={String(checked)}
+									aria-label={`${invalid ? 'Invalid' : 'Valid'} ${disabled ? 'disabled' : 'enabled'} ${checked}`}
+									checked={checked}
+									disabled={disabled}
+									aria-invalid={invalid}
+								/>
+							))}
+						</div>
+					))}
+				</div>
+			))}
+		</div>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const states = [
+			{
+				name: 'Valid enabled',
+				border: 'rgb(207, 210, 219)',
+				fill: 'rgb(36, 36, 36)',
+				cursor: 'pointer'
+			},
+			{
+				name: 'Valid disabled',
+				border: 'rgb(227, 227, 227)',
+				fill: 'rgb(205, 205, 205)',
+				cursor: 'not-allowed'
+			},
+			{
+				name: 'Invalid enabled',
+				border: 'rgb(217, 38, 38)',
+				fill: 'rgb(217, 38, 38)',
+				cursor: 'pointer'
+			},
+			{
+				name: 'Invalid disabled',
+				border: 'rgb(240, 168, 168)',
+				fill: 'rgb(240, 168, 168)',
+				cursor: 'not-allowed'
+			}
+		];
+		for (const state of states) {
+			for (const value of ['false', 'true', 'indeterminate']) {
+				const checkbox = canvas.getByRole('checkbox', { name: `${state.name} ${value}` });
+				const styles = getComputedStyle(checkbox);
+				await expect(checkbox.getBoundingClientRect().width).toBe(16);
+				await expect(checkbox.getBoundingClientRect().height).toBe(16);
+				await expect(styles.borderRadius).toBe('4px');
+				await expect(styles.borderWidth).toBe('1px');
+				await expect(styles.backgroundColor).toBe(
+					value === 'false' ? 'rgb(255, 255, 255)' : state.fill
+				);
+				await expect(styles.borderColor).toBe(value === 'false' ? state.border : state.fill);
+				await expect(styles.cursor).toBe(state.cursor);
+			}
+		}
 	}
 };

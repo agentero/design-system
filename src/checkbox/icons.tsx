@@ -1,31 +1,34 @@
 import { SVGProps } from 'react';
 
+/** @summary Material Sharp check used by the legacy checkbox */
 export const IconCheck = (props: SVGProps<SVGSVGElement>) => (
 	<svg
 		width="24"
 		height="24"
 		viewBox="0 0 24 24"
-		fill="none"
+		fill="currentColor"
+		stroke="currentColor"
+		aria-hidden="true"
 		xmlns="http://www.w3.org/2000/svg"
 		{...props}>
-		<path
-			fill="currentColor"
-			d="M9.54988 15.5154L18.1884 6.87695C18.3371 6.72824 18.5137 6.65227 18.7182 6.64905C18.9226 6.64585 19.1024 6.72182 19.2576 6.87695C19.4127 7.03207 19.4903 7.21027 19.4903 7.41155C19.4903 7.61282 19.4127 7.79102 19.2576 7.94615L10.1826 17.0211C10.0018 17.2019 9.7909 17.2923 9.54988 17.2923C9.30887 17.2923 9.09798 17.2019 8.91721 17.0211L4.74221 12.8462C4.59349 12.6974 4.52009 12.5208 4.52201 12.3164C4.52394 12.1119 4.60247 11.9321 4.75758 11.777C4.91272 11.6218 5.09092 11.5443 5.29218 11.5443C5.49347 11.5443 5.67167 11.6218 5.82678 11.777L9.54988 15.5154Z"
-		/>
+		<path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
 	</svg>
 );
 
+/** @summary Rounded minus used by the legacy checkbox's mixed state */
 export const IconMinus = (props: SVGProps<SVGSVGElement>) => (
 	<svg
 		width="24"
 		height="24"
 		viewBox="0 0 24 24"
 		fill="none"
+		stroke="currentColor"
+		strokeWidth="2"
+		strokeLinecap="round"
+		strokeLinejoin="round"
+		aria-hidden="true"
 		xmlns="http://www.w3.org/2000/svg"
 		{...props}>
-		<path
-			fill="currentColor"
-			d="M5.75 12.75C5.5375 12.75 5.35938 12.6781 5.21563 12.5344C5.07188 12.3906 5 12.2125 5 12C5 11.7875 5.07188 11.6094 5.21563 11.4656C5.35938 11.3219 5.5375 11.25 5.75 11.25H18.25C18.4625 11.25 18.6406 11.3219 18.7844 11.4656C18.9281 11.6094 19 11.7875 19 12C19 12.2125 18.9281 12.3906 18.7844 12.5344C18.6406 12.6781 18.4625 12.75 18.25 12.75H5.75Z"
-		/>
+		<path d="M5 12h14" />
 	</svg>
 );
