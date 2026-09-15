@@ -588,13 +588,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">27 components ok</span><span class="filter-pill ok" aria-disabled="true">212 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">27 components ok</span><span class="filter-pill ok" aria-disabled="true">215 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>3.9s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>4.6s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -2480,7 +2480,7 @@ under `prefers-reduced-motion`.</div>
       <div class="badges">
         <label for="c-5-components-checkbox-props" class="badge ok as-toggle">9 prop types</label>
         
-        <label for="c-5-components-checkbox-stories" class="badge ok as-toggle">8 stories</label>
+        <label for="c-5-components-checkbox-stories" class="badge ok as-toggle">11 stories</label>
         
         
       </div>
@@ -2530,7 +2530,7 @@ checked?: CheckedState | undefined
 /**
  * Initial state for an uncontrolled checkbox.
  */
-defaultChecked?: boolean
+defaultChecked?: CheckedState | undefined
 
 /**
  * Blocks interaction and greys the box out; the value is not submitted.
@@ -2598,6 +2598,15 @@ value?: string | (readonly string[] &amp; string) | undefined</code></pre>
               <div class="hint">A state you set, never one the user clicks into: use it for a parent that
 governs a partially selected group.</div>
               <pre><code>const Indeterminate = () =&gt; &lt;Checkbox disabled={false} aria-label=&quot;Select row&quot; checked=&quot;indeterminate&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Uncontrolled Indeterminate</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Uncontrolled checkbox starting in the mixed state</div>
+              <div class="hint">Starts mixed without a controlled value, then toggles through checked and unchecked.</div>
+              <pre><code>const UncontrolledIndeterminate = () =&gt; &lt;Checkbox disabled={false} aria-label=&quot;Select row&quot; defaultChecked=&quot;indeterminate&quot; /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -2710,6 +2719,48 @@ governs a partially selected group.</div>
         &lt;/div&gt;
     );
 };</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Inside Selected Group</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Mixed checkbox inside another selected group</div>
+              <div class="hint">A surrounding selection container must not change the checkbox&#39;s own glyph.</div>
+              <pre><code>const InsideSelectedGroup = () =&gt; (
+    &lt;div className=&quot;group&quot; data-state=&quot;checked&quot;&gt;
+        &lt;Checkbox aria-label=&quot;Select carriers&quot; defaultChecked=&quot;indeterminate&quot; /&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Legacy States</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Legacy checkbox colours across all interaction states</div>
+              <div class="hint">Preserves the legacy palette and 16px footprint for every value and validation state.</div>
+              <pre><code>const LegacyStates = () =&gt; (
+    &lt;div className=&quot;flex flex-col gap-6&quot;&gt;
+        {[false, true].map(invalid =&gt; (
+            &lt;div key={String(invalid)} className=&quot;flex flex-col gap-4&quot;&gt;
+                {[false, true].map(disabled =&gt; (
+                    &lt;div key={String(disabled)} className=&quot;flex items-center gap-6&quot;&gt;
+                        {([false, true, &#39;indeterminate&#39;] as const).map(checked =&gt; (
+                            &lt;Checkbox
+                                key={String(checked)}
+                                aria-label={`${invalid ? &#39;Invalid&#39; : &#39;Valid&#39;} ${disabled ? &#39;disabled&#39; : &#39;enabled&#39;} ${checked}`}
+                                checked={checked}
+                                disabled={disabled}
+                                aria-invalid={invalid}
+                            /&gt;
+                        ))}
+                    &lt;/div&gt;
+                ))}
+            &lt;/div&gt;
+        ))}
+    &lt;/div&gt;
+);</code></pre>
             </div>
         </div>
     

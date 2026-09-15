@@ -1716,7 +1716,7 @@
         "displayName": "Checkbox",
         "exportName": "Checkbox",
         "filePath": "/home/runner/work/design-system/design-system/src/checkbox/checkbox.tsx",
-        "description": "Base control for a boolean the user confirms later: one item of a\nmulti-select, a terms tick, a row picked for a bulk action. Supports the\nmixed state for a parent that summarises a partially selected group.\n\nHeadless like [Input](?path=/docs/components-input--docs): pair it with\n[Label](?path=/docs/components-label--docs) and `htmlFor`, or give it an\n`aria-label`. There is no `status` prop — set `aria-invalid`.\n\nUse [Switch](?path=/docs/components-switch--docs) when the change applies\nimmediately, and [CheckList](?path=/docs/components-check-list--docs) for a\nread-only list of ticked items.",
+        "description": "Base control for a boolean the user confirms later: one item of a\nmulti-select, a terms tick, a row picked for a bulk action. Supports the\nmixed state for a parent that summarises a partially selected group.\nKeeps the legacy 16px surface, glyphs and state colours during adoption.\n\nHeadless like [Input](?path=/docs/components-input--docs): pair it with\n[Label](?path=/docs/components-label--docs) and `htmlFor`, or give it an\n`aria-label`. There is no `status` prop — set `aria-invalid`.\n\nUse [Switch](?path=/docs/components-switch--docs) when the change applies\nimmediately, and [CheckList](?path=/docs/components-check-list--docs) for a\nread-only list of ticked items.",
         "jsDocTags": {
           "summary": [
             "Base checkbox control, with mixed state, unaware of form libraries"
@@ -1753,7 +1753,7 @@
             "name": "defaultChecked",
             "required": false,
             "type": {
-              "name": "boolean"
+              "name": "CheckedState | undefined"
             },
             "description": "Initial state for an uncontrolled checkbox.",
             "defaultValue": null,
@@ -1954,6 +1954,13 @@
           "summary": "Mixed state for a partially selected group"
         },
         {
+          "id": "components-checkbox--uncontrolled-indeterminate",
+          "name": "Uncontrolled Indeterminate",
+          "snippet": "const UncontrolledIndeterminate = () => <Checkbox disabled={false} aria-label=\"Select row\" defaultChecked=\"indeterminate\" />;",
+          "description": "Starts mixed without a controlled value, then toggles through checked and unchecked.",
+          "summary": "Uncontrolled checkbox starting in the mixed state"
+        },
+        {
           "id": "components-checkbox--disabled",
           "name": "Disabled",
           "snippet": "const Disabled = () => (\n    <div className=\"flex items-center gap-6\">\n        <Checkbox disabled aria-label=\"Disabled unchecked\" />\n        <Checkbox disabled defaultChecked aria-label=\"Disabled checked\" />\n        <Checkbox disabled checked=\"indeterminate\" aria-label=\"Disabled mixed\" />\n    </div>\n);",
@@ -1987,6 +1994,20 @@
           "snippet": "const SelectAll = () => {\n    const carriers = ['Openly', 'Lemonade', 'Bamboo'];\n    const [selected, setSelected] = useState<string[]>(['Openly']);\n    const allSelected = selected.length === carriers.length;\n\n    return (\n        <div className=\"flex flex-col gap-3\">\n            <div className=\"flex items-center gap-2\">\n                <Checkbox\n                    id=\"select-all\"\n                    checked={allSelected ? true : selected.length > 0 ? 'indeterminate' : false}\n                    onCheckedChange={value => setSelected(value === true ? carriers : [])}\n                />\n                <Label htmlFor=\"select-all\">Select all carriers</Label>\n            </div>\n            <div className=\"ms-6 flex flex-col gap-2\">\n                {carriers.map(carrier => (\n                    <div key={carrier} className=\"flex items-center gap-2\">\n                        <Checkbox\n                            id={carrier}\n                            checked={selected.includes(carrier)}\n                            onCheckedChange={value =>\n                                setSelected(prev =>\n                                    value === true ? [...prev, carrier] : prev.filter(name => name !== carrier)\n                                )\n                            }\n                        />\n                        <Label htmlFor={carrier}>{carrier}</Label>\n                    </div>\n                ))}\n            </div>\n        </div>\n    );\n};",
           "description": "",
           "summary": "Parent select-all checkbox governing a group"
+        },
+        {
+          "id": "components-checkbox--inside-selected-group",
+          "name": "Inside Selected Group",
+          "snippet": "const InsideSelectedGroup = () => (\n    <div className=\"group\" data-state=\"checked\">\n        <Checkbox aria-label=\"Select carriers\" defaultChecked=\"indeterminate\" />\n    </div>\n);",
+          "description": "A surrounding selection container must not change the checkbox's own glyph.",
+          "summary": "Mixed checkbox inside another selected group"
+        },
+        {
+          "id": "components-checkbox--legacy-states",
+          "name": "Legacy States",
+          "snippet": "const LegacyStates = () => (\n    <div className=\"flex flex-col gap-6\">\n        {[false, true].map(invalid => (\n            <div key={String(invalid)} className=\"flex flex-col gap-4\">\n                {[false, true].map(disabled => (\n                    <div key={String(disabled)} className=\"flex items-center gap-6\">\n                        {([false, true, 'indeterminate'] as const).map(checked => (\n                            <Checkbox\n                                key={String(checked)}\n                                aria-label={`${invalid ? 'Invalid' : 'Valid'} ${disabled ? 'disabled' : 'enabled'} ${checked}`}\n                                checked={checked}\n                                disabled={disabled}\n                                aria-invalid={invalid}\n                            />\n                        ))}\n                    </div>\n                ))}\n            </div>\n        ))}\n    </div>\n);",
+          "description": "Preserves the legacy palette and 16px footprint for every value and validation state.",
+          "summary": "Legacy checkbox colours across all interaction states"
         }
       ],
       "import": "import { Checkbox, Label } from \"@agentero/design-system\";"
@@ -7580,6 +7601,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 3855
+    "durationMs": 4572
   }
 }
