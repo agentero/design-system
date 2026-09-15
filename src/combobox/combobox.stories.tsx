@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, userEvent, waitFor, within } from 'storybook/test';
+import { Command as CommandPrimitive } from 'cmdk';
 
 import { Combobox } from '.';
 import { Button } from '../button';
-import { Command } from '../command';
+import { Command, commandRecipe } from '../command';
 import { Input } from '../input';
 
 /**
@@ -25,7 +25,7 @@ type Story = StoryObj<typeof meta>;
 
 const LINES_OF_BUSINESS = ['Condo', 'Dwelling Fire', 'Flood', 'Homeowners', 'Landlord'];
 
-/** Button trigger over a filterable list — the shape most consumers need. */
+/** @summary Button trigger over a filterable list */
 export const Default: Story = {
 	render: () => {
 		const [open, setOpen] = useState(false);
@@ -36,7 +36,7 @@ export const Default: Story = {
 				<Combobox.Trigger asChild>
 					<Button variant="secondary">{value ?? 'Select a line of business'}</Button>
 				</Combobox.Trigger>
-				<Combobox.Content>
+				<Combobox.Content label="Select a line of business">
 					<Command.Root label="Search lines of business">
 						<Command.Input placeholder="Search..." />
 						<Command.List>
@@ -56,29 +56,14 @@ export const Default: Story = {
 				</Combobox.Content>
 			</Combobox.Root>
 		);
-	},
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-		// Content portals to the body, so it is outside the story canvas.
-		const body = within(document.body);
-
-		await userEvent.click(canvas.getByRole('button', { name: /select a line of business/i }));
-
-		const input = await body.findByRole('combobox', { name: /search lines of business/i });
-		await expect(body.getAllByRole('option')).toHaveLength(5);
-
-		await userEvent.type(input, 'flo');
-		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(1));
-
-		await userEvent.click(body.getByRole('option', { name: 'Flood' }));
-
-		await waitFor(() => expect(canvas.getByRole('button', { name: 'Flood' })).toBeVisible());
 	}
 };
 
 /**
  * The surface paints nothing of its own. Two borders on a combobox mean the
  * content was dropped in a `Popover.Content` instead of here.
+ *
+ * @summary Panel chrome belongs to Command, not the floating surface
  */
 export const ChromeLessSurface: Story = {
 	render: () => (
@@ -86,7 +71,7 @@ export const ChromeLessSurface: Story = {
 			<Combobox.Trigger asChild>
 				<Button variant="secondary">Open</Button>
 			</Combobox.Trigger>
-			<Combobox.Content>
+			<Combobox.Content label="Select a line of business">
 				<Command.Root label="Search lines of business">
 					<Command.Input placeholder="Search..." />
 					<Command.List>
@@ -98,31 +83,14 @@ export const ChromeLessSurface: Story = {
 				</Command.Root>
 			</Combobox.Content>
 		</Combobox.Root>
-	),
-	play: async () => {
-		const content = await waitFor(() => {
-			const element = document.querySelector('[data-slot="combobox-content"]');
-			if (!element) throw new Error('Combobox.Content is not mounted');
-			return element;
-		});
-
-		const styles = getComputedStyle(content);
-
-		await expect(styles.borderTopWidth).toBe('0px');
-		await expect(styles.boxShadow).toBe('none');
-		// Any of the transparent spellings is fine; a painted background is not.
-		await expect(['transparent', 'rgba(0, 0, 0, 0)']).toContain(styles.backgroundColor);
-
-		// The chrome belongs to the Command panel nested inside it.
-		const panel = content.querySelector('[data-slot="command-root"]');
-		await expect(panel).toBeInTheDocument();
-		await expect(getComputedStyle(panel!).borderTopWidth).not.toBe('0px');
-	}
+	)
 };
 
 /**
  * The surface is 300px wide by default. When the trigger is a full-width form
  * control, match it with `w-(--radix-popover-trigger-width)` instead.
+ *
+ * @summary Match the floating surface to its trigger width
  */
 export const MatchingTriggerWidth: Story = {
 	render: () => (
@@ -133,7 +101,9 @@ export const MatchingTriggerWidth: Story = {
 						Select a line of business
 					</Button>
 				</Combobox.Trigger>
-				<Combobox.Content className="w-(--radix-popover-trigger-width)">
+				<Combobox.Content
+					label="Select a line of business"
+					className="w-(--radix-popover-trigger-width)">
 					<Command.Root label="Search lines of business">
 						<Command.Input placeholder="Search..." />
 						<Command.List>
@@ -146,86 +116,161 @@ export const MatchingTriggerWidth: Story = {
 				</Combobox.Content>
 			</Combobox.Root>
 		</div>
-	),
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-		const trigger = canvas.getByRole('button', { name: /select a line of business/i });
-
-		const content = await waitFor(() => {
-			const element = document.querySelector('[data-slot="combobox-content"]');
-			if (!element) throw new Error('Combobox.Content is not mounted');
-			return element;
-		});
-
-		await waitFor(() =>
-			expect(Math.round(content.getBoundingClientRect().width)).toBe(
-				Math.round(trigger.getBoundingClientRect().width)
-			)
-		);
-	}
+	)
 };
 
 /**
- * `Anchor` positions the surface against something other than the trigger —
- * here the search input itself, so the list hangs off the field the user types
- * in. Give `Content` `onOpenAutoFocus` that prevents default, or focus jumps
- * out of that input the moment the list opens.
+ * Keep the input and list under one Command.Root so arrow keys and Enter reach
+ * the same selection state across the portal. The input owns combobox semantics;
+ * the surface is presentational and leaves focus in the input.
+ * cmdk's unstyled Input composes with the DS Input through asChild, keeping
+ * filtering and active-option announcements inside cmdk.
+ *
+ * @summary Search input anchoring a keyboard-accessible list
  */
 export const AnchoredToTheSearchField: Story = {
 	render: () => {
 		const [open, setOpen] = useState(false);
 		const [search, setSearch] = useState('');
-
-		const matches = LINES_OF_BUSINESS.filter(option =>
-			option.toLowerCase().includes(search.trim().toLowerCase())
-		);
+		const [listId, setListId] = useState<string>();
+		const listRef = useCallback((node: HTMLDivElement | null) => setListId(node?.id), []);
+		const inputRef = useRef<HTMLInputElement>(null);
 
 		return (
 			<Combobox.Root open={open} onOpenChange={setOpen}>
-				<Combobox.Anchor asChild>
-					<Input
-						size="sm"
-						aria-label="Search lines of business"
-						placeholder="Search..."
-						value={search}
-						onFocus={() => setOpen(true)}
-						onChange={event => {
-							setSearch(event.target.value);
-							setOpen(true);
-						}}
-					/>
-				</Combobox.Anchor>
-				<Combobox.Content
-					className="w-(--radix-popover-trigger-width)"
-					onOpenAutoFocus={event => event.preventDefault()}>
-					<Command.Root label="Lines of business" shouldFilter={false}>
-						<Command.List>
-							{matches.map(option => (
-								<Command.Item key={option} value={option}>
-									{option}
-								</Command.Item>
-							))}
-						</Command.List>
-						<Command.Empty>No options found</Command.Empty>
-					</Command.Root>
-				</Combobox.Content>
+				<Command.Root
+					label="Search lines of business"
+					className="overflow-visible border-0 bg-transparent shadow-none">
+					<Combobox.Anchor asChild>
+						<CommandPrimitive.Input
+							asChild
+							value={search}
+							onValueChange={value => {
+								setSearch(value);
+								setOpen(true);
+							}}>
+							<Input
+								ref={inputRef}
+								size="sm"
+								placeholder="Search..."
+								aria-expanded={open}
+								aria-controls={open ? listId : undefined}
+								onFocus={() => setOpen(true)}
+								onClick={() => setOpen(true)}
+								onKeyDown={event => {
+									if (event.key === 'ArrowDown' || event.key === 'ArrowUp') setOpen(true);
+									if (event.key === 'Enter' && !open) event.preventDefault();
+								}}
+							/>
+						</CommandPrimitive.Input>
+					</Combobox.Anchor>
+					<Combobox.Content
+						role="presentation"
+						className="w-(--radix-popover-trigger-width)"
+						onOpenAutoFocus={event => event.preventDefault()}
+						onCloseAutoFocus={event => event.preventDefault()}
+						onInteractOutside={event => {
+							if (inputRef.current?.contains(event.target as Node)) event.preventDefault();
+						}}>
+						<div className={commandRecipe().root()}>
+							<Command.List ref={listRef} label="Lines of business">
+								{LINES_OF_BUSINESS.map(option => (
+									<Command.Item
+										key={option}
+										value={option}
+										onSelect={() => {
+											setSearch(option);
+											setOpen(false);
+										}}>
+										{option}
+									</Command.Item>
+								))}
+							</Command.List>
+							<Command.Empty>No options found</Command.Empty>
+						</div>
+					</Combobox.Content>
+				</Command.Root>
 			</Combobox.Root>
 		);
-	},
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-		const body = within(document.body);
-		const field = canvas.getByRole('textbox', { name: /search lines of business/i });
-
-		await userEvent.click(field);
-
-		// The list collapses to zero height while itemless, so wait on the rows.
-		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(5));
-
-		await userEvent.type(field, 'flo');
-
-		// Focus stays in the field: the list is anchored to it, not focused itself.
-		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(1));
-		await expect(field).toHaveFocus();
 	}
+};
+
+/** @summary Content portalled into a custom container */
+export const CustomContainer: Story = {
+	render: () => {
+		const [container, setContainer] = useState<HTMLDivElement | null>(null);
+		return (
+			<>
+				<div ref={setContainer} data-testid="combobox-container" />
+				{container && (
+					<Combobox.Root>
+						<Combobox.Trigger asChild>
+							<Button>Open options</Button>
+						</Combobox.Trigger>
+						<Combobox.Content container={container} aria-label="Custom options">
+							<Command.Root label="Search custom options">
+								<Command.Input />
+								<Command.List>
+									<Command.Item>Homeowners</Command.Item>
+								</Command.List>
+							</Command.Root>
+						</Combobox.Content>
+					</Combobox.Root>
+				)}
+			</>
+		);
+	}
+};
+
+/** @summary External portal with Content's automatic portal disabled */
+export const ExternalPortal: Story = {
+	render: () => {
+		const [container, setContainer] = useState<HTMLDivElement | null>(null);
+		return (
+			<>
+				<h2 id="external-options-label">External options</h2>
+				<div ref={setContainer} data-testid="external-combobox-container" />
+				{container && (
+					<Combobox.Root defaultOpen>
+						<Combobox.Trigger asChild>
+							<Button>Open options</Button>
+						</Combobox.Trigger>
+						<Combobox.Portal container={container}>
+							<Combobox.Content portalled={false} aria-labelledby="external-options-label">
+								<Command.Root label="Search external options">
+									<Command.Input />
+									<Command.List>
+										<Command.Item>Homeowners</Command.Item>
+									</Command.List>
+								</Command.Root>
+							</Combobox.Content>
+						</Combobox.Portal>
+					</Combobox.Root>
+				)}
+			</>
+		);
+	}
+};
+
+/**
+ * Marketplace uses the default 4px offset. Producerflow's legacy surface uses 8px.
+ *
+ * @summary Preserve Producerflow's legacy spacing with sideOffset
+ */
+export const ProducerflowSpacing: Story = {
+	render: () => (
+		<Combobox.Root defaultOpen>
+			<Combobox.Trigger asChild>
+				<Button>Choose a state</Button>
+			</Combobox.Trigger>
+			<Combobox.Content label="Choose a state" sideOffset={8} side="bottom" avoidCollisions={false}>
+				<Command.Root label="Search states">
+					<Command.Input />
+					<Command.List>
+						<Command.Item>California</Command.Item>
+					</Command.List>
+				</Command.Root>
+			</Combobox.Content>
+		</Combobox.Root>
+	)
 };

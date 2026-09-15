@@ -1,4 +1,4 @@
-import { ComponentProps } from 'react';
+import { ComponentProps, ComponentPropsWithRef } from 'react';
 
 import * as PopoverPrimitive from '@radix-ui/react-popover';
 import { tv } from 'tailwind-variants';
@@ -28,7 +28,7 @@ type RootProps = ComponentProps<typeof PopoverPrimitive.Root>;
  *   <Combobox.Trigger asChild>
  *     <Button variant="secondary">{selected ?? 'Select a state'}</Button>
  *   </Combobox.Trigger>
- *   <Combobox.Content>
+ *   <Combobox.Content label="Select a state">
  *     <Command.Root label="Search states">
  *       <Command.Input placeholder="Search..." />
  *       <Command.List>
@@ -49,86 +49,139 @@ export const Root = (props: RootProps) => (
 );
 Root.displayName = 'Combobox.Root';
 
-type TriggerProps = ComponentProps<typeof PopoverPrimitive.Trigger>;
+type TriggerProps = ComponentPropsWithRef<typeof PopoverPrimitive.Trigger>;
 
+/** @summary Button that opens the combobox dialog */
 export const Trigger = (props: TriggerProps) => (
 	<PopoverPrimitive.Trigger data-slot="combobox-trigger" {...props} />
 );
 Trigger.displayName = 'Combobox.Trigger';
 
-type AnchorProps = ComponentProps<typeof PopoverPrimitive.Anchor>;
+type AnchorProps = ComponentPropsWithRef<typeof PopoverPrimitive.Anchor>;
 
 /**
  * Positions `Content` against something other than the trigger — wrap the
  * search input with it when the trigger is a button elsewhere in the row.
+ *
+ * @summary Positioning anchor for the combobox surface
  */
 export const Anchor = (props: AnchorProps) => (
 	<PopoverPrimitive.Anchor data-slot="combobox-anchor" {...props} />
 );
 Anchor.displayName = 'Combobox.Anchor';
 
-// `Content` already self-portals; use `Portal` only to portal into a custom container.
+/**
+ * Optional external portal. Pair it with `Content portalled={false}` so the
+ * content stays inside this portal's container. Otherwise use `Content container`.
+ *
+ * @summary External portal for a combobox surface
+ */
 export const Portal = PopoverPrimitive.Portal;
 
+/** Positioning and legacy fade/scale animation for the unpainted surface. */
 export const comboboxRecipe = tv({
 	base: [
-		// No border, background or shadow on purpose: `Command.Root` brings the panel chrome.
 		'z-(--z-index-flyover) w-75 will-change-[transform,opacity]',
-		// Radix computes the exact origin (accounts for side + align) so the scale grows from the trigger edge.
-		'origin-(--radix-popover-content-transform-origin)',
-		// Gate the open animation on data-[state=open] so it can't beat slide-out on close.
-		'data-[state=open]:data-[side=bottom]:animate-dropdown-slide-in-from-top',
-		'data-[state=open]:data-[side=left]:animate-dropdown-slide-in-from-right',
-		'data-[state=open]:data-[side=right]:animate-dropdown-slide-in-from-left',
-		'data-[state=open]:data-[side=top]:animate-dropdown-slide-in-from-bottom',
-		'data-[state=closed]:animate-dropdown-slide-out',
+		'data-[side=bottom]:origin-top data-[side=top]:origin-bottom',
+		'data-[state=open]:animate-combobox-in',
+		'data-[state=closed]:animate-combobox-out',
 		'motion-reduce:animate-none!'
 	]
 });
 
-type ContentProps = ComponentProps<typeof PopoverPrimitive.Content>;
+type DialogName =
+	| {
+			/** Accessible name of the dialog. */
+			label: string;
+	  }
+	| {
+			/** Accessible name supplied through standard ARIA. */
+			'aria-label': string;
+			label?: never;
+	  }
+	| {
+			/** ID of the element naming the dialog. */
+			'aria-labelledby': string;
+			label?: never;
+	  };
+
+type ContentSemantics =
+	| ({
+			/** Named dialog for a button trigger. This is the default. */
+			role?: 'dialog';
+	  } & DialogName)
+	| {
+			/** Unnamed surface when an external input owns the combobox semantics. */
+			role: 'presentation';
+			label?: never;
+	  };
+
+export type ComboboxContentProps = Omit<
+	ComponentPropsWithRef<typeof PopoverPrimitive.Content>,
+	'role'
+> &
+	ContentSemantics & {
+		/** Portal destination. Defaults to document.body. */
+		container?: ComponentProps<typeof PopoverPrimitive.Portal>['container'];
+		/** Set false when using an external Portal or rendering inline. Defaults to true. */
+		portalled?: boolean;
+	};
 
 /**
- * The floating surface. Self-portals to the body and animates on open/close
- * following `side`.
+ * Floating surface with the legacy 100ms fade and scale (0.95 to 1).
+ * Self-portals to the body; use `container` to change the destination, or
+ * `portalled={false}` when already wrapped in `Combobox.Portal`.
  *
- * Defaults to a fixed 300px, the width a combobox list reads well at
- * regardless of its trigger. Pass `className="w-(--radix-popover-trigger-width)"`
- * to match the trigger instead — the right call when the trigger is a
- * full-width form control.
+ * Defaults to 300px wide. Pass `className="w-(--radix-popover-trigger-width)"`
+ * to match the trigger. `sideOffset` defaults to Marketplace's 4px; pass 8
+ * when adopting Producerflow's legacy spacing.
  *
- * `sideOffset` defaults to 4 rather than the 8 the other trigger-anchored
- * surfaces use: a list the trigger filters reads as attached to it, not as a
- * separate overlay.
+ * A button trigger opens a named dialog: provide `label`, `aria-label` or
+ * `aria-labelledby`. For an external input that owns the combobox semantics,
+ * explicitly set `role="presentation"` and keep focus and keyboard handling
+ * in the input's composition, as shown in the anchored search story.
  *
- * `role` defaults to `presentation`, overriding the `dialog` Radix puts on
- * every popover. The surface holds no semantics of its own — the `listbox` and
- * its accessible name belong to the `Command` inside — and a `dialog` wrapped
- * around a listbox both misreports the pattern and demands a name of its own
- * (axe `aria-dialog-name`), one every consumer would have to remember. Pass
- * `role="dialog"` plus `aria-label` for the rare surface that really is one.
+ * The inner `combobox-content-inner` slot is retained for legacy selectors.
  *
- * @summary Chrome-less floating surface holding the filterable list
+ * @summary Unpainted floating surface holding a filterable list
  * @dataAttribute {string} data-slot - Always set to "combobox-content"
  */
 export const Content = ({
 	className,
+	children,
 	align = 'start',
 	sideOffset = 4,
 	collisionPadding = 8,
-	role = 'presentation',
+	role = 'dialog',
+	label,
+	container,
+	portalled = true,
+	forceMount,
 	...props
-}: ContentProps) => (
-	<PopoverPrimitive.Portal>
+}: ComboboxContentProps) => {
+	const content = (
 		<PopoverPrimitive.Content
 			data-slot="combobox-content"
 			align={align}
 			sideOffset={sideOffset}
 			collisionPadding={collisionPadding}
 			role={role}
+			aria-label={label}
+			forceMount={forceMount}
 			className={comboboxRecipe({ className })}
-			{...props}
-		/>
-	</PopoverPrimitive.Portal>
-);
+			{...props}>
+			<div data-slot="combobox-content-inner" className="[transform-origin:inherit]">
+				{children}
+			</div>
+		</PopoverPrimitive.Content>
+	);
+
+	return portalled ? (
+		<PopoverPrimitive.Portal container={container} forceMount={forceMount}>
+			{content}
+		</PopoverPrimitive.Portal>
+	) : (
+		content
+	);
+};
 Content.displayName = 'Combobox.Content';
