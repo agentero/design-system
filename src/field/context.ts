@@ -3,7 +3,19 @@
 import { ComponentPropsWithRef, ReactNode, createContext, use } from 'react';
 
 /** A validation error. Structurally matches a react-hook-form `FieldError`. */
-export type FieldErrorLike = { message?: string } | undefined;
+export type FieldErrorLike =
+	| {
+			message?: string;
+			/**
+			 * Every rule that failed, keyed by rule name. A form library fills it
+			 * when it is set to collect all of them rather than stop at the first
+			 * (react-hook-form's `criteriaMode: 'all'`), leaving only the first
+			 * message in `message`. `Field.Error` renders all of them when it is
+			 * there.
+			 */
+			types?: Record<string, string | string[] | boolean | undefined>;
+	  }
+	| undefined;
 
 /**
  * State of the surrounding `Field.Root`, shared with the Field family
