@@ -18,6 +18,7 @@ import {
 	FieldContext,
 	type FieldContextValue,
 	type FieldDescriptionProps,
+	type FieldErrorLike,
 	type FieldErrorProps,
 	useFieldContext
 } from './context';
@@ -325,12 +326,32 @@ export const Description = ({ className, id: idProp, ...props }: FieldDescriptio
 Description.displayName = 'Field.Description';
 
 /**
+ * Pulls every message out of one error. `types` holds all the rules that
+ * failed when the form collects them all, and `message` only the first, so
+ * `types` wins whenever it is there. A rule that failed without a message of
+ * its own contributes nothing.
+ */
+const toMessages = (error: FieldErrorLike): string[] => {
+	const all = Object.values(error?.types ?? {})
+		.flat()
+		.filter((message): message is string => typeof message === 'string' && message.length > 0);
+
+	if (all.length) {
+		return all;
+	}
+
+	return error?.message ? [error.message] : [];
+};
+
+/**
  * Validation feedback for the field, announced as an alert when it appears.
  * Renders nothing without a message, so it can stay mounted unconditionally;
  * set `invalid` on `Field.Root` alongside it. Takes `children` or an `errors`
  * array, and a form adapter can supply `errors` through `FieldContext` so a
  * bare `<Field.Error />` renders them. One per field: it takes the field's
- * single error id, and several errors render as one list.
+ * single error id, and several errors render as one list — several, here,
+ * meaning either several entries or one entry whose `types` lists every rule
+ * that failed.
  *
  * @summary Validation feedback for the field, announced as an alert
  */
@@ -346,7 +367,7 @@ const FieldError = ({
 	const errors = errorsProp ?? field?.errors;
 	const registerMessage = field?.registerMessage;
 
-	const messages = [...new Set(errors?.flatMap(error => error?.message || []))];
+	const messages = [...new Set(errors?.flatMap(toMessages))];
 
 	const content =
 		children ??
