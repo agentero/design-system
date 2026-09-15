@@ -17,8 +17,6 @@ export type {
 	FieldErrorProps
 } from './context';
 
-// Kept free of the 'use client' directive on purpose. `field.tsx` is the client
-// module and each of its named exports becomes its own client reference; the
-// object is assembled here so `Field.Root` resolves in a Server Component. See
-// AGENTS.md and src/tabs/index.ts.
+// Assembled here on purpose: this file must stay free of the 'use client'
+// directive. See AGENTS.md, component authoring conventions.
 export const Field = { Root, Group, Content, Label, Description, Error };
