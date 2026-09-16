@@ -33,7 +33,10 @@ export const checkboxRecipe = tv({
 });
 
 /** Radix Checkbox root props; the ones redeclared here are the ones docgen would otherwise omit. */
-export type CheckboxProps = ComponentPropsWithRef<typeof CheckboxPrimitive.Root> & {
+export type CheckboxProps = Omit<
+	ComponentPropsWithRef<typeof CheckboxPrimitive.Root>,
+	'children'
+> & {
 	/** Controlled state. `'indeterminate'` renders a dash and announces `aria-checked="mixed"`. */
 	checked?: CheckboxPrimitive.CheckboxProps['checked'];
 	/** Initial state for an uncontrolled checkbox. */
