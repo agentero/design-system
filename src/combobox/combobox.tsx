@@ -82,7 +82,8 @@ export const Portal = PopoverPrimitive.Portal;
 export const comboboxRecipe = tv({
 	base: [
 		'z-(--z-index-flyover) w-75 will-change-[transform,opacity]',
-		'data-[side=bottom]:origin-top data-[side=top]:origin-bottom',
+		// Radix computes the exact origin (accounts for side + align) so the scale grows from the trigger edge.
+		'origin-(--radix-popover-content-transform-origin)',
 		'data-[state=open]:animate-combobox-in',
 		'data-[state=closed]:animate-combobox-out',
 		'motion-reduce:animate-none!'
@@ -116,16 +117,26 @@ type ContentSemantics =
 			label?: never;
 	  };
 
+type PortalTarget =
+	| {
+			/** Portal destination. Defaults to document.body. */
+			container?: ComponentProps<typeof PopoverPrimitive.Portal>['container'];
+			portalled?: true;
+	  }
+	| {
+			/** Set false inside an explicit `Combobox.Portal`, which then owns the destination. */
+			portalled: false;
+			container?: never;
+	  };
+
 export type ComboboxContentProps = Omit<
 	ComponentPropsWithRef<typeof PopoverPrimitive.Content>,
 	'role'
 > &
-	ContentSemantics & {
-		/** Portal destination. Defaults to document.body. */
-		container?: ComponentProps<typeof PopoverPrimitive.Portal>['container'];
-		/** Set false when using an external Portal or rendering inline. Defaults to true. */
-		portalled?: boolean;
-	};
+	ContentSemantics &
+	PortalTarget;
+
+const keepFocusWhereItIs = (event: Event) => event.preventDefault();
 
 /**
  * Floating surface with the legacy 100ms fade and scale (0.95 to 1).
@@ -133,13 +144,15 @@ export type ComboboxContentProps = Omit<
  * `portalled={false}` when already wrapped in `Combobox.Portal`.
  *
  * Defaults to 300px wide. Pass `className="w-(--radix-popover-trigger-width)"`
- * to match the trigger. `sideOffset` defaults to Marketplace's 4px; pass 8
- * when adopting Producerflow's legacy spacing.
+ * to match the trigger. `sideOffset` defaults to 8 like every other
+ * trigger-anchored DS surface; Marketplace wrappers pass 4 for legacy spacing.
  *
  * A button trigger opens a named dialog: provide `label`, `aria-label` or
- * `aria-labelledby`. For an external input that owns the combobox semantics,
- * explicitly set `role="presentation"` and keep focus and keyboard handling
- * in the input's composition, as shown in the anchored search story.
+ * `aria-labelledby`. When an external input owns the combobox semantics set
+ * `role="presentation"` and anchor with `Anchor`, not `Trigger` — a trigger
+ * would still announce `aria-haspopup="dialog"` for a presentational surface.
+ * That mode also keeps focus in the input on open and close, as shown in the
+ * anchored search story.
  *
  * The inner `combobox-content-inner` slot is retained for legacy selectors.
  *
@@ -150,15 +163,19 @@ export const Content = ({
 	className,
 	children,
 	align = 'start',
-	sideOffset = 4,
+	sideOffset = 8,
 	collisionPadding = 8,
 	role = 'dialog',
 	label,
 	container,
 	portalled = true,
 	forceMount,
+	onOpenAutoFocus,
+	onCloseAutoFocus,
 	...props
 }: ComboboxContentProps) => {
+	const presentationalFocus = role === 'presentation' ? keepFocusWhereItIs : undefined;
+
 	const content = (
 		<PopoverPrimitive.Content
 			data-slot="combobox-content"
@@ -168,6 +185,8 @@ export const Content = ({
 			role={role}
 			aria-label={label}
 			forceMount={forceMount}
+			onOpenAutoFocus={onOpenAutoFocus ?? presentationalFocus}
+			onCloseAutoFocus={onCloseAutoFocus ?? presentationalFocus}
 			className={comboboxRecipe({ className })}
 			{...props}>
 			<div data-slot="combobox-content-inner" className="[transform-origin:inherit]">

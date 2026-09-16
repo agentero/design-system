@@ -121,8 +121,9 @@ export const MatchingTriggerWidth: Story = {
 
 /**
  * Keep the input and list under one Command.Root so arrow keys and Enter reach
- * the same selection state across the portal. The input owns combobox semantics;
- * the surface is presentational and leaves focus in the input.
+ * the same selection state across the portal. The input owns combobox semantics,
+ * so the surface is presentational and leaves focus in the input by default —
+ * only outside interactions on the input itself still need handling.
  * cmdk's unstyled Input composes with the DS Input through asChild, keeping
  * filtering and active-option announcements inside cmdk.
  *
@@ -167,8 +168,6 @@ export const AnchoredToTheSearchField: Story = {
 					<Combobox.Content
 						role="presentation"
 						className="w-(--radix-popover-trigger-width)"
-						onOpenAutoFocus={event => event.preventDefault()}
-						onCloseAutoFocus={event => event.preventDefault()}
 						onInteractOutside={event => {
 							if (inputRef.current?.contains(event.target as Node)) event.preventDefault();
 						}}>
@@ -253,17 +252,18 @@ export const ExternalPortal: Story = {
 };
 
 /**
- * Marketplace uses the default 4px offset. Producerflow's legacy surface uses 8px.
+ * The surface sits 8px from its trigger like every other DS overlay. Marketplace's
+ * legacy spacing is 4px — pass `sideOffset` in the wrapper, not in every call site.
  *
- * @summary Preserve Producerflow's legacy spacing with sideOffset
+ * @summary Preserve Marketplace's legacy spacing with sideOffset
  */
-export const ProducerflowSpacing: Story = {
+export const MarketplaceSpacing: Story = {
 	render: () => (
 		<Combobox.Root defaultOpen>
 			<Combobox.Trigger asChild>
 				<Button>Choose a state</Button>
 			</Combobox.Trigger>
-			<Combobox.Content label="Choose a state" sideOffset={8} side="bottom" avoidCollisions={false}>
+			<Combobox.Content label="Choose a state" sideOffset={4} side="bottom" avoidCollisions={false}>
 				<Command.Root label="Search states">
 					<Command.Input />
 					<Command.List>

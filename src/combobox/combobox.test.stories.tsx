@@ -2,6 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { Combobox } from '.';
+import { Button } from '../button';
+import { Command } from '../command';
 import * as Examples from './combobox.stories';
 
 /** Interaction checks reuse the public examples without changing their preview state. */
@@ -107,6 +109,7 @@ export const AnchoredToTheSearchField: Story = {
 		await expect(field).not.toHaveAttribute('aria-controls');
 		await userEvent.click(field);
 		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(5));
+		await expect(body.queryByRole('dialog')).not.toBeInTheDocument();
 		await expect(field).toHaveAttribute('aria-controls', body.getByRole('listbox').id);
 		await userEvent.click(field);
 		await expect(field).toHaveAttribute('aria-expanded', 'true');
@@ -162,9 +165,23 @@ export const ExternalPortal: Story = {
 	}
 };
 
-/** @summary Verify ProducerflowSpacing behavior */
-export const ProducerflowSpacing: Story = {
-	...Examples.ProducerflowSpacing,
+/** @summary Verify the default 8px offset shared with Popover, DropdownMenu and HoverCard */
+export const DefaultSpacing: Story = {
+	render: () => (
+		<Combobox.Root defaultOpen>
+			<Combobox.Trigger asChild>
+				<Button>Choose a state</Button>
+			</Combobox.Trigger>
+			<Combobox.Content label="Choose a state" side="bottom" avoidCollisions={false}>
+				<Command.Root label="Search states">
+					<Command.Input />
+					<Command.List>
+						<Command.Item>California</Command.Item>
+					</Command.List>
+				</Command.Root>
+			</Combobox.Content>
+		</Combobox.Root>
+	),
 	play: async ({ canvasElement }) => {
 		const trigger = within(canvasElement).getByRole('button', { name: 'Choose a state' });
 		const dialog = await within(document.body).findByRole('dialog', { name: 'Choose a state' });
@@ -172,6 +189,20 @@ export const ProducerflowSpacing: Story = {
 			expect(
 				dialog.getBoundingClientRect().top - trigger.getBoundingClientRect().bottom
 			).toBeCloseTo(8, 0)
+		);
+	}
+};
+
+/** @summary Verify MarketplaceSpacing behavior */
+export const MarketplaceSpacing: Story = {
+	...Examples.MarketplaceSpacing,
+	play: async ({ canvasElement }) => {
+		const trigger = within(canvasElement).getByRole('button', { name: 'Choose a state' });
+		const dialog = await within(document.body).findByRole('dialog', { name: 'Choose a state' });
+		await waitFor(() =>
+			expect(
+				dialog.getBoundingClientRect().top - trigger.getBoundingClientRect().bottom
+			).toBeCloseTo(4, 0)
 		);
 	}
 };
