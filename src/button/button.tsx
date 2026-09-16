@@ -8,7 +8,7 @@ import { cn } from '../../lib';
 /**
  * Style recipe for Button using tailwind-variants. Single-slot recipe whose
  * variants (`variant`, `size`, `status`, `hasOnlyIcon`, `disabled`, `rounded`,
- * `align`, `fitContent`, `scaleOnPress`) plus compound variants drive
+ * `align`, `fitContent`) plus compound variants drive
  * destructive and disabled treatments. All colors route through design-system tokens defined in
  * `themes/base.css`.
  *
@@ -23,9 +23,7 @@ export const buttonRecipe = tv({
 		'font-semibold rounded-md cursor-pointer',
 		'bg-transparent no-underline',
 		'border border-solid border-transparent',
-		// `transform` stays in the allowlist for the opt-in press dip below; with
-		// `scaleOnPress` off there is no transform to transition.
-		'transition-[background-color,border-color,color,transform] duration-150',
+		'transition-[background-color,border-color,color] duration-150',
 		'[-webkit-tap-highlight-color:transparent]',
 		'[&_svg]:[flex:0_0_fit-content]',
 		'[&_svg_path[fill]]:fill-current',
@@ -35,17 +33,6 @@ export const buttonRecipe = tv({
 		'focus-visible:outline-focus-ring-button-primary'
 	],
 	variants: {
-		// Declared first on purpose: the `link` and `disabled` overrides below
-		// reset the transform, and tv emits variant classes in declaration order,
-		// so they have to land after this one for tailwind-merge to keep them.
-		scaleOnPress: {
-			// Written as an arbitrary `transform` rather than `scale-97` because
-			// Tailwind's scale utilities set the standalone `scale` property, which
-			// the transition allowlist in `base` would not cover. ease-out-expo
-			// front-loads the dip so the button answers the pointer immediately,
-			// then releases back out on the base curve.
-			true: ['motion-safe:active:[transform:scale(0.97)]', 'motion-safe:active:ease-out-expo']
-		},
 		variant: {
 			primary: [
 				'bg-bg-button-primary-enable border-bg-button-primary-enable',
@@ -77,10 +64,7 @@ export const buttonRecipe = tv({
 				'px-0 underline',
 				'[text-underline-offset:var(--text-underline-offset)]',
 				'text-text-button-link-enable',
-				'[&_svg]:fill-icon-button-link-enable',
-				// No press dip: the variant has no padding or background, so scaling
-				// bare text reads as a wobble rather than a button being pushed.
-				'motion-safe:active:[transform:none]'
+				'[&_svg]:fill-icon-button-link-enable'
 			]
 		},
 		size: {
@@ -96,10 +80,7 @@ export const buttonRecipe = tv({
 			true: 'aspect-square px-0 min-w-[unset]'
 		},
 		disabled: {
-			// `pointer-events-none` already blocks a pointer-driven `:active`, but an
-			// `asChild` anchor gets `aria-disabled` instead of the native attribute
-			// and stays keyboard-focusable, where Enter still triggers `:active`.
-			true: 'cursor-not-allowed pointer-events-none motion-safe:active:[transform:none]'
+			true: 'cursor-not-allowed pointer-events-none'
 		},
 		rounded: {
 			true: 'rounded-full'
@@ -283,7 +264,6 @@ export const buttonRecipe = tv({
 		}
 	],
 	defaultVariants: {
-		scaleOnPress: false,
 		variant: 'primary',
 		size: 'sm',
 		align: 'center'
@@ -377,17 +357,6 @@ type ButtonBaseProps = {
 	 */
 	fitContent?: boolean;
 	/**
-	 * When `true`, the button dips to 97% while held so the control answers the
-	 * pointer instead of only changing color. Defaults to `false`.
-	 *
-	 * Has no effect with `variant="link"` (scaling bare text with no padding or
-	 * background reads as a wobble) or while the button is disabled or loading,
-	 * including the `asChild` anchor form, which stays keyboard-focusable and
-	 * would otherwise dip on Enter. The dip is gated behind `motion-safe`, so it
-	 * disappears under `prefers-reduced-motion`.
-	 */
-	scaleOnPress?: boolean;
-	/**
 	 * Ref forwarded to the underlying element. Typed as a union covering both
 	 * `<button>` and `<a>` because `asChild` lets consumers render either tag
 	 * (or any forwardRef component) through Radix's `Slot`.
@@ -449,8 +418,7 @@ const ButtonLoading = () => (
  * `secondary` / `tertiary` for supporting actions, `ghost` for low-emphasis
  * inline actions, `link` for text-only actions). Use `status="danger"` for
  * destructive actions and `loading` to block interaction while async work
- * resolves. Press feedback is opt-in: set `scaleOnPress` to make the button
- * dip while held.
+ * resolves.
  *
  * Do **not** use Button for toggle states (prefer a Switch or ToggleButton),
  * for passive decorative anchors without action intent (use a plain `<a>`),
@@ -490,7 +458,6 @@ export const Button = ({
 	rounded,
 	align,
 	fitContent,
-	scaleOnPress,
 	disabled,
 	iconOnly,
 	ref,
@@ -534,8 +501,7 @@ export const Button = ({
 			status,
 			rounded,
 			align,
-			fitContent,
-			scaleOnPress
+			fitContent
 		}),
 		className
 	);
