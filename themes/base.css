@@ -325,6 +325,11 @@
 	--color-bg-button-brand-enable: var(--color-brand-600);
 	--color-bg-button-brand-hover: var(--color-brand-700);
 
+	--color-bg-checkbox-selected: var(--color-neutrals-900);
+	--color-bg-checkbox-disabled: var(--color-neutrals-200);
+	--color-bg-checkbox-invalid-disabled: var(--color-danger-200);
+	--color-border-checkbox-disabled: var(--color-neutrals-100);
+
 	/* Border Tokens */
 	--color-border-input-default: var(--color-slate-200);
 	--color-border-input-hover: var(--color-slate-400);
