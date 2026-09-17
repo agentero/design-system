@@ -145,7 +145,7 @@ export const Portal = DropdownMenuPrimitive.Portal;
  */
 const contentStyles = tv({
 	base: [
-		'z-[1000] flex flex-col rounded-lg bg-bg-default-base-primary p-1 shadow-xl',
+		'z-(--z-index-top-layer) flex flex-col rounded-lg bg-bg-default-base-primary p-1 shadow-xl',
 		'border border-border-default-base-primary',
 		'will-change-[transform,opacity]',
 		'data-[state=open]:animate-[dropdownSlideIn_200ms_ease-out]',
@@ -442,7 +442,7 @@ SubTrigger.displayName = 'DropdownMenu.SubTrigger';
  */
 const subContentStyles = tv({
 	base: [
-		'z-[1000] flex flex-col rounded-lg bg-bg-default-base-primary p-1 shadow-xl',
+		'z-(--z-index-top-layer) flex flex-col rounded-lg bg-bg-default-base-primary p-1 shadow-xl',
 		'border border-border-default-base-primary',
 		'will-change-[transform,opacity]',
 		'data-[state=open]:animate-[dropdownSlideIn_200ms_ease-out]',
