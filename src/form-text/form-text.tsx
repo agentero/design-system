@@ -36,7 +36,8 @@ export type FormTextPath<TFieldValues extends FieldValues> = FieldPathByValue<
 
 export type FormTextProps<
 	TFieldValues extends FieldValues = FieldValues,
-	TName extends FormTextPath<TFieldValues> = FormTextPath<TFieldValues>
+	TName extends FormTextPath<TFieldValues> = FormTextPath<TFieldValues>,
+	TTransformedValues = TFieldValues
 > = Omit<FieldTextProps, 'invalid' | 'children'> & {
 	/**
 	 * Path of the value in the form, nested paths included (`'agency.npn'`).
@@ -49,9 +50,10 @@ export type FormTextProps<
 	 * The form's `control`, from `useForm()`. Defaults to the one the
 	 * surrounding `Form.Root` provides; pass it explicitly to get `name`
 	 * inference without writing the generic, or when the field renders outside
-	 * a `Form.Root`.
+	 * a `Form.Root`. A `control` whose resolver transforms the values is
+	 * accepted as is.
 	 */
-	control?: Control<TFieldValues>;
+	control?: Control<TFieldValues, any, TTransformedValues>;
 	/**
 	 * react-hook-form validation rules for this field (`required`, `pattern`,
 	 * `validate`…), same as `register`'s. They only validate: `rules.required`
@@ -145,7 +147,8 @@ export type FormTextProps<
  */
 export const FormText = <
 	TFieldValues extends FieldValues = FieldValues,
-	TName extends FormTextPath<TFieldValues> = FormTextPath<TFieldValues>
+	TName extends FormTextPath<TFieldValues> = FormTextPath<TFieldValues>,
+	TTransformedValues = TFieldValues
 >({
 	name,
 	control,
@@ -159,7 +162,7 @@ export const FormText = <
 	optional,
 	inputProps,
 	...root
-}: FormTextProps<TFieldValues, TName>) => {
+}: FormTextProps<TFieldValues, TName, TTransformedValues>) => {
 	// `disabled` stays out of `useController` on purpose: react-hook-form drops
 	// a disabled field's value from the submitted data, and a disabled input
 	// here keeps submitting its value.

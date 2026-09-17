@@ -9,25 +9,27 @@ import {
 	type UseFormReturn
 } from 'react-hook-form';
 
-export type FormRootProps<TFieldValues extends FieldValues = FieldValues> = Omit<
-	ComponentPropsWithRef<'form'>,
-	'onSubmit' | 'noValidate'
-> & {
+export type FormRootProps<
+	TFieldValues extends FieldValues = FieldValues,
+	TTransformedValues = TFieldValues
+> = Omit<ComponentPropsWithRef<'form'>, 'onSubmit' | 'noValidate'> & {
 	/**
 	 * The object `useForm()` returns. `Form.Root` hands it to every form field
 	 * inside through react-hook-form's `FormProvider`, so a `FormText` needs only
 	 * its `name`. Create it in the component that owns the form and pass
 	 * `defaultValues`: a field whose value is `undefined` on the first render
-	 * starts uncontrolled.
+	 * starts uncontrolled. A form whose resolver transforms the values
+	 * (`useForm<Input, Context, Output>`) is accepted as is.
 	 */
-	methods: UseFormReturn<TFieldValues>;
+	methods: UseFormReturn<TFieldValues, any, TTransformedValues>;
 	/**
-	 * Called with the typed values once validation passes. Wrapped in
+	 * Called with the validated values once validation passes: the resolver's
+	 * output when it transforms them, the form's values otherwise. Wrapped in
 	 * `methods.handleSubmit`, which prevents the native submit and focuses the
 	 * first invalid field; when it is omitted the form validates and does nothing
 	 * else.
 	 */
-	onSubmit?: SubmitHandler<TFieldValues>;
+	onSubmit?: SubmitHandler<TTransformedValues>;
 	/**
 	 * Accessible name of the form. A `<form>` only becomes a landmark when it is
 	 * named, and screen readers list landmarks by name, so it is required.
@@ -67,11 +69,14 @@ const noop = () => {};
  *   <Button type="submit">Save</Button>
  * </Form.Root>
  */
-export const Root = <TFieldValues extends FieldValues = FieldValues>({
+export const Root = <
+	TFieldValues extends FieldValues = FieldValues,
+	TTransformedValues = TFieldValues
+>({
 	methods,
 	onSubmit,
 	...props
-}: FormRootProps<TFieldValues>) => (
+}: FormRootProps<TFieldValues, TTransformedValues>) => (
 	<FormProvider {...methods}>
 		{/* `noValidate` goes after the spread on purpose: the native `required` a
 		    field sets must never raise the browser's validation bubble. */}
