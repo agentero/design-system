@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.8s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>5.4s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -5280,7 +5280,14 @@ tooltipSide?: &quot;right&quot; | &quot;top&quot; | &quot;bottom&quot; | &quot;l
               <div class="hint">The field consumers write: a `name`, a `label` and the validation rule.
 Submitting empty renders the error and marks the input invalid; typing
 clears both and the value reaches `onSubmit`.</div>
-              <pre><code>const Default = () =&gt; &lt;AgencyNameForm /&gt;;</code></pre>
+              <pre><code>const Default = () =&gt; &lt;AgencyNameForm
+    name=&quot;agencyName&quot;
+    label=&quot;Agency name&quot;
+    orientation=&quot;vertical&quot;
+    required
+    optional={false}
+    disabled={false}
+    readOnly={false} /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">

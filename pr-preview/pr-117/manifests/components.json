@@ -4955,7 +4955,7 @@
         {
           "id": "components-formtext--default",
           "name": "Default",
-          "snippet": "const Default = () => <AgencyNameForm />;",
+          "snippet": "const Default = () => <AgencyNameForm\n    name=\"agencyName\"\n    label=\"Agency name\"\n    orientation=\"vertical\"\n    required\n    optional={false}\n    disabled={false}\n    readOnly={false} />;",
           "description": "The field consumers write: a `name`, a `label` and the validation rule.\nSubmitting empty renders the error and marks the input invalid; typing\nclears both and the value reaches `onSubmit`.",
           "summary": "Required text field validating on submit"
         },
@@ -8305,6 +8305,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4816
+    "durationMs": 5428
   }
 }
