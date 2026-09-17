@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useForm } from 'react-hook-form';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
-import { FormText } from '.';
+import { FormText, type FormTextProps } from '.';
 import { Button } from '../button';
 import { Field } from '../field';
 import { Form } from '../form';
@@ -23,6 +23,8 @@ const meta = {
 	component: FormText,
 	tags: ['autodocs'],
 	argTypes: {
+		// The form the story renders owns the path: changing it would unbind the field.
+		name: { control: false },
 		orientation: {
 			control: 'radio',
 			options: ['vertical', 'horizontal', 'responsive']
@@ -34,12 +36,21 @@ const meta = {
 		optional: { control: 'boolean' },
 		disabled: { control: 'boolean' },
 		readOnly: { control: 'boolean' }
+	},
+	args: {
+		name: 'agencyName',
+		label: 'Agency name',
+		orientation: 'vertical',
+		required: true,
+		optional: false,
+		disabled: false,
+		readOnly: false
 	}
-} satisfies Meta;
+} satisfies Meta<typeof FormText>;
 
 export default meta;
 
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 const onSubmit = fn();
 
@@ -47,7 +58,9 @@ type AgencyValues = {
 	agencyName: string;
 };
 
-const AgencyNameForm = () => {
+// Takes the story args so the controls panel drives the field; the form owns
+// the path, the control and the rule.
+const AgencyNameForm = (args: Omit<FormTextProps, 'name' | 'control'>) => {
 	const methods = useForm<AgencyValues>({ defaultValues: { agencyName: '' } });
 
 	return (
@@ -57,11 +70,10 @@ const AgencyNameForm = () => {
 			aria-label="Agency"
 			className="flex flex-col items-start gap-7">
 			<FormText
-				name="agencyName"
-				label="Agency name"
-				required
 				rules={{ required: 'Enter the agency name.' }}
 				inputProps={{ placeholder: 'Acme Insurance' }}
+				{...args}
+				name="agencyName"
 			/>
 			<Button type="submit">Save</Button>
 		</Form.Root>
@@ -98,7 +110,7 @@ export const Default: Story = {
 			}
 		}
 	},
-	render: () => <AgencyNameForm />,
+	render: args => <AgencyNameForm {...args} />,
 	play: async ({ canvasElement }) => {
 		onSubmit.mockClear();
 		const canvas = within(canvasElement);
