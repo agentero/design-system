@@ -1672,6 +1672,320 @@
       ],
       "import": "import { CheckList } from \"@agentero/design-system\";"
     },
+    "components-checkbox": {
+      "id": "components-checkbox",
+      "name": "Checkbox",
+      "path": "./src/checkbox/checkbox.stories.tsx",
+      "jsDocTags": {
+        "summary": [
+          "Base checkbox control, with mixed state, unaware of form libraries"
+        ],
+        "example": [
+          "<Label htmlFor=\"terms\">I accept the terms</Label>\n<Checkbox id=\"terms\" name=\"terms\" required />"
+        ]
+      },
+      "description": "Base control for a boolean the user confirms later. Headless: pair it with\na `Label` and `htmlFor`, or give it an `aria-label`. There is no `status`\nprop — set `aria-invalid` and the destructive treatment follows.",
+      "summary": "Base checkbox control, with mixed state, unaware of form libraries",
+      "reactComponentMeta": {
+        "displayName": "Checkbox",
+        "exportName": "Checkbox",
+        "filePath": "/home/runner/work/design-system/design-system/src/checkbox/checkbox.tsx",
+        "description": "Base control for a boolean the user confirms later: one item of a\nmulti-select, a terms tick, a row picked for a bulk action. Supports the\nmixed state for a parent that summarises a partially selected group.\nKeeps the legacy 16px surface, glyphs and state colours during adoption.\n\nHeadless like [Input](?path=/docs/components-input--docs): pair it with\n[Label](?path=/docs/components-label--docs) and `htmlFor`, or give it an\n`aria-label`. There is no `status` prop — set `aria-invalid`.\n\nUse [Switch](?path=/docs/components-switch--docs) when the change applies\nimmediately, and [CheckList](?path=/docs/components-check-list--docs) for a\nread-only list of ticked items.",
+        "jsDocTags": {
+          "summary": [
+            "Base checkbox control, with mixed state, unaware of form libraries"
+          ],
+          "example": [
+            "<Label htmlFor=\"terms\">I accept the terms</Label>\n<Checkbox id=\"terms\" name=\"terms\" required />"
+          ]
+        },
+        "props": {
+          "defaultChecked": {
+            "name": "defaultChecked",
+            "required": false,
+            "type": {
+              "name": "CheckedState | undefined"
+            },
+            "description": "Initial state for an uncontrolled checkbox.",
+            "defaultValue": null,
+            "parent": {
+              "name": "CheckboxProps",
+              "fileName": "node_modules/@radix-ui/react-checkbox/dist/index.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "CheckboxProps",
+                "fileName": "node_modules/@radix-ui/react-checkbox/dist/index.d.mts"
+              },
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/checkbox/checkbox.tsx"
+              }
+            ]
+          },
+          "aria-invalid": {
+            "name": "aria-invalid",
+            "required": false,
+            "type": {
+              "name": "boolean | \"true\" | \"false\" | \"grammar\" | \"spelling\" | undefined"
+            },
+            "description": "Indicates the entered value does not conform to the format expected by the application.\nDrives the destructive border and fill. Point `aria-describedby` at the error message.",
+            "defaultValue": null,
+            "parent": {
+              "name": "AriaAttributes",
+              "fileName": "node_modules/@types/react/index.d.ts"
+            },
+            "declarations": [
+              {
+                "name": "AriaAttributes",
+                "fileName": "node_modules/@types/react/index.d.ts"
+              },
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/checkbox/checkbox.tsx"
+              }
+            ]
+          },
+          "asChild": {
+            "name": "asChild",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "",
+            "defaultValue": null,
+            "parent": {
+              "name": "PrimitivePropsWithRef",
+              "fileName": "node_modules/@radix-ui/react-label/node_modules/@radix-ui/react-primitive/dist/index.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "node_modules/@radix-ui/react-label/node_modules/@radix-ui/react-primitive/dist/index.d.mts"
+              }
+            ]
+          },
+          "value": {
+            "name": "value",
+            "required": false,
+            "type": {
+              "name": "string | (readonly string[] & string) | undefined"
+            },
+            "description": "Value submitted when checked. Defaults to `'on'`.",
+            "defaultValue": null,
+            "parent": {
+              "name": "ButtonHTMLAttributes",
+              "fileName": "node_modules/@types/react/index.d.ts"
+            },
+            "declarations": [
+              {
+                "name": "ButtonHTMLAttributes",
+                "fileName": "node_modules/@types/react/index.d.ts"
+              },
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/checkbox/checkbox.tsx"
+              }
+            ]
+          },
+          "disabled": {
+            "name": "disabled",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Blocks interaction and greys the box out; the value is not submitted.",
+            "defaultValue": null,
+            "parent": {
+              "name": "ButtonHTMLAttributes",
+              "fileName": "node_modules/@types/react/index.d.ts"
+            },
+            "declarations": [
+              {
+                "name": "ButtonHTMLAttributes",
+                "fileName": "node_modules/@types/react/index.d.ts"
+              },
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/checkbox/checkbox.tsx"
+              }
+            ]
+          },
+          "name": {
+            "name": "name",
+            "required": false,
+            "type": {
+              "name": "string"
+            },
+            "description": "Form field name. Needed for uncontrolled form usage.",
+            "defaultValue": null,
+            "parent": {
+              "name": "ButtonHTMLAttributes",
+              "fileName": "node_modules/@types/react/index.d.ts"
+            },
+            "declarations": [
+              {
+                "name": "ButtonHTMLAttributes",
+                "fileName": "node_modules/@types/react/index.d.ts"
+              },
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/checkbox/checkbox.tsx"
+              }
+            ]
+          },
+          "checked": {
+            "name": "checked",
+            "required": false,
+            "type": {
+              "name": "CheckedState | undefined"
+            },
+            "description": "Controlled state. `'indeterminate'` renders a dash and announces `aria-checked=\"mixed\"`.",
+            "defaultValue": null,
+            "parent": {
+              "name": "CheckboxProps",
+              "fileName": "node_modules/@radix-ui/react-checkbox/dist/index.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "CheckboxProps",
+                "fileName": "node_modules/@radix-ui/react-checkbox/dist/index.d.mts"
+              },
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/checkbox/checkbox.tsx"
+              }
+            ]
+          },
+          "required": {
+            "name": "required",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Marks the control required for the browser and assistive technology.",
+            "defaultValue": null,
+            "parent": {
+              "name": "CheckboxProps",
+              "fileName": "node_modules/@radix-ui/react-checkbox/dist/index.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "CheckboxProps",
+                "fileName": "node_modules/@radix-ui/react-checkbox/dist/index.d.mts"
+              },
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/checkbox/checkbox.tsx"
+              }
+            ]
+          },
+          "onCheckedChange": {
+            "name": "onCheckedChange",
+            "required": false,
+            "type": {
+              "name": "(checked: CheckedState) => void"
+            },
+            "description": "Fires with the next state (`true`, `false` or `'indeterminate'`) on click and on Space.",
+            "defaultValue": null,
+            "parent": {
+              "name": "CheckboxProps",
+              "fileName": "node_modules/@radix-ui/react-checkbox/dist/index.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "CheckboxProps",
+                "fileName": "node_modules/@radix-ui/react-checkbox/dist/index.d.mts"
+              },
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/checkbox/checkbox.tsx"
+              }
+            ]
+          }
+        }
+      },
+      "stories": [
+        {
+          "id": "components-checkbox--default",
+          "name": "Default",
+          "snippet": "const Default = () => <Checkbox disabled={false} aria-label=\"Select row\" />;",
+          "description": "",
+          "summary": "Default standalone checkbox"
+        },
+        {
+          "id": "components-checkbox--checked",
+          "name": "Checked",
+          "snippet": "const Checked = () => <Checkbox disabled={false} aria-label=\"Select row\" defaultChecked />;",
+          "description": "",
+          "summary": "Checked state"
+        },
+        {
+          "id": "components-checkbox--indeterminate",
+          "name": "Indeterminate",
+          "snippet": "const Indeterminate = () => <Checkbox disabled={false} aria-label=\"Select row\" checked=\"indeterminate\" />;",
+          "description": "A state you set, never one the user clicks into: use it for a parent that\ngoverns a partially selected group.",
+          "summary": "Mixed state for a partially selected group"
+        },
+        {
+          "id": "components-checkbox--uncontrolled-indeterminate",
+          "name": "Uncontrolled Indeterminate",
+          "snippet": "const UncontrolledIndeterminate = () => <Checkbox disabled={false} aria-label=\"Select row\" defaultChecked=\"indeterminate\" />;",
+          "description": "Starts mixed without a controlled value, then toggles through checked and unchecked.",
+          "summary": "Uncontrolled checkbox starting in the mixed state"
+        },
+        {
+          "id": "components-checkbox--disabled",
+          "name": "Disabled",
+          "snippet": "const Disabled = () => (\n    <div className=\"flex items-center gap-6\">\n        <Checkbox disabled aria-label=\"Disabled unchecked\" />\n        <Checkbox disabled defaultChecked aria-label=\"Disabled checked\" />\n        <Checkbox disabled checked=\"indeterminate\" aria-label=\"Disabled mixed\" />\n    </div>\n);",
+          "description": "",
+          "summary": "Disabled in every state"
+        },
+        {
+          "id": "components-checkbox--invalid",
+          "name": "Invalid",
+          "snippet": "const Invalid = () => (\n    <div className=\"flex flex-col gap-2\">\n        <div className=\"flex items-center gap-2\">\n            <Checkbox id=\"terms\" aria-invalid aria-describedby=\"terms-error\" required />\n            <Label htmlFor=\"terms\">I accept the terms of service</Label>\n        </div>\n        <p id=\"terms-error\" className=\"text-sm text-text-input-destructive\">\n            You must accept the terms to continue.\n        </p>\n    </div>\n);",
+          "description": "",
+          "summary": "Failed validation, driven by aria-invalid"
+        },
+        {
+          "id": "components-checkbox--with-label",
+          "name": "With Label",
+          "snippet": "const WithLabel = () => (\n    <div className=\"flex items-center gap-2\">\n        <Checkbox id=\"newsletter\" name=\"newsletter\" />\n        <Label htmlFor=\"newsletter\">Email me product updates</Label>\n    </div>\n);",
+          "description": "",
+          "summary": "Labelled checkbox with the text in the hit target"
+        },
+        {
+          "id": "components-checkbox--controlled",
+          "name": "Controlled",
+          "snippet": "const Controlled = () => {\n    const [accepted, setAccepted] = useState(false);\n\n    return (\n        <div className=\"flex items-center gap-2\">\n            <Checkbox\n                id=\"controlled\"\n                checked={accepted}\n                onCheckedChange={value => setAccepted(value === true)}\n            />\n            <Label htmlFor=\"controlled\">Auto-renew policy {accepted ? '(on)' : '(off)'}</Label>\n        </div>\n    );\n};",
+          "description": "",
+          "summary": "Controlled checkbox driven by component state"
+        },
+        {
+          "id": "components-checkbox--select-all",
+          "name": "Select All",
+          "snippet": "const SelectAll = () => {\n    const carriers = ['Openly', 'Lemonade', 'Bamboo'];\n    const [selected, setSelected] = useState<string[]>(['Openly']);\n    const allSelected = selected.length === carriers.length;\n\n    return (\n        <div className=\"flex flex-col gap-3\">\n            <div className=\"flex items-center gap-2\">\n                <Checkbox\n                    id=\"select-all\"\n                    checked={allSelected ? true : selected.length > 0 ? 'indeterminate' : false}\n                    onCheckedChange={value => setSelected(value === true ? carriers : [])}\n                />\n                <Label htmlFor=\"select-all\">Select all carriers</Label>\n            </div>\n            <div className=\"ms-6 flex flex-col gap-2\">\n                {carriers.map(carrier => (\n                    <div key={carrier} className=\"flex items-center gap-2\">\n                        <Checkbox\n                            id={carrier}\n                            checked={selected.includes(carrier)}\n                            onCheckedChange={value =>\n                                setSelected(prev =>\n                                    value === true ? [...prev, carrier] : prev.filter(name => name !== carrier)\n                                )\n                            }\n                        />\n                        <Label htmlFor={carrier}>{carrier}</Label>\n                    </div>\n                ))}\n            </div>\n        </div>\n    );\n};",
+          "description": "",
+          "summary": "Parent select-all checkbox governing a group"
+        },
+        {
+          "id": "components-checkbox--inside-selected-group",
+          "name": "Inside Selected Group",
+          "snippet": "const InsideSelectedGroup = () => (\n    <div className=\"group\" data-state=\"checked\">\n        <Checkbox aria-label=\"Select carriers\" defaultChecked=\"indeterminate\" />\n    </div>\n);",
+          "description": "A surrounding selection container must not change the checkbox's own glyph.",
+          "summary": "Mixed checkbox inside another selected group"
+        },
+        {
+          "id": "components-checkbox--legacy-states",
+          "name": "Legacy States",
+          "snippet": "const LegacyStates = () => (\n    <div className=\"flex flex-col gap-6\">\n        {[false, true].map(invalid => (\n            <div key={String(invalid)} className=\"flex flex-col gap-4\">\n                {[false, true].map(disabled => (\n                    <div key={String(disabled)} className=\"flex items-center gap-6\">\n                        {([false, true, 'indeterminate'] as const).map(checked => (\n                            <Checkbox\n                                key={String(checked)}\n                                aria-label={`${invalid ? 'Invalid' : 'Valid'} ${disabled ? 'disabled' : 'enabled'} ${checked}`}\n                                checked={checked}\n                                disabled={disabled}\n                                aria-invalid={invalid}\n                            />\n                        ))}\n                    </div>\n                ))}\n            </div>\n        ))}\n    </div>\n);",
+          "description": "Preserves the legacy palette and 16px footprint for every value and validation state.",
+          "summary": "Legacy checkbox colours across all interaction states"
+        }
+      ],
+      "import": "import { Checkbox, Label } from \"@agentero/design-system\";"
+    },
     "components-command": {
       "id": "components-command",
       "name": "Command.Root",
@@ -4384,6 +4698,29 @@
               }
             ]
           },
+          "required": {
+            "name": "required",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Marks the control required for both the browser and assistive technology.",
+            "defaultValue": null,
+            "parent": {
+              "name": "InputHTMLAttributes",
+              "fileName": "node_modules/@types/react/index.d.ts"
+            },
+            "declarations": [
+              {
+                "name": "InputHTMLAttributes",
+                "fileName": "node_modules/@types/react/index.d.ts"
+              },
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input/input.tsx"
+              }
+            ]
+          },
           "placeholder": {
             "name": "placeholder",
             "required": false,
@@ -4414,29 +4751,6 @@
               "name": "boolean"
             },
             "description": "Keeps the value focusable and copyable but not editable, and still\nsubmits it. Unlike `disabled`, it stays in the tab order.",
-            "defaultValue": null,
-            "parent": {
-              "name": "InputHTMLAttributes",
-              "fileName": "node_modules/@types/react/index.d.ts"
-            },
-            "declarations": [
-              {
-                "name": "InputHTMLAttributes",
-                "fileName": "node_modules/@types/react/index.d.ts"
-              },
-              {
-                "name": "TypeLiteral",
-                "fileName": "src/input/input.tsx"
-              }
-            ]
-          },
-          "required": {
-            "name": "required",
-            "required": false,
-            "type": {
-              "name": "boolean"
-            },
-            "description": "Marks the control required for both the browser and assistive technology.",
             "defaultValue": null,
             "parent": {
               "name": "InputHTMLAttributes",
@@ -4591,12 +4905,12 @@
             "defaultValue": null,
             "parent": {
               "name": "PrimitivePropsWithRef",
-              "fileName": "node_modules/cmdk/node_modules/@radix-ui/react-primitive/dist/index.d.mts"
+              "fileName": "node_modules/@radix-ui/react-label/node_modules/@radix-ui/react-primitive/dist/index.d.mts"
             },
             "declarations": [
               {
                 "name": "TypeLiteral",
-                "fileName": "node_modules/cmdk/node_modules/@radix-ui/react-primitive/dist/index.d.mts"
+                "fileName": "node_modules/@radix-ui/react-label/node_modules/@radix-ui/react-primitive/dist/index.d.mts"
               }
             ]
           },
@@ -7261,6 +7575,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4043
+    "durationMs": 4136
   }
 }
