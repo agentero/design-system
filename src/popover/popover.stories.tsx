@@ -3,6 +3,7 @@ import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { Popover } from '.';
 import { Button } from '../button';
+import { Modal } from '../modal';
 
 /**
  * Popover is a non-modal floating surface anchored to a trigger, used for
@@ -156,4 +157,72 @@ export const WithAnchor: Story = {
 			</Popover.Content>
 		</Popover.Root>
 	)
+};
+
+// Each surface portals to the body, so the body child containing it is what stacks.
+const layerOf = (element: Element) =>
+	[...document.body.children].findIndex(child => child.contains(element));
+
+const zIndexOf = (element: Element) =>
+	getComputedStyle(document.body.children[layerOf(element)]!).zIndex;
+
+/**
+ * A Modal opened from a button inside the Popover. Both share
+ * `--z-index-top-layer`, so the modal opens last and paints over the popover
+ * while the overlay dims it. The popover stays mounted underneath, which keeps
+ * focus returning to its trigger once the modal closes.
+ *
+ * @summary Modal opened from inside a Popover paints above it
+ */
+export const ModalFromInsidePopover: Story = {
+	render: () => (
+		<Popover.Root>
+			<Popover.Trigger asChild>
+				<Button variant="secondary">Renewal 2026</Button>
+			</Popover.Trigger>
+			<Popover.Content align="start">
+				<div className="flex flex-col gap-3">
+					<p className="text-sm text-text-default-base-primary">
+						Applied to 12 contracts across 3 carriers.
+					</p>
+					<Modal.Root>
+						<Modal.Trigger asChild>
+							<Button variant="secondary" size="sm">
+								Delete tag
+							</Button>
+						</Modal.Trigger>
+						<Modal.Content>
+							<Modal.Title>Delete this tag?</Modal.Title>
+							<Modal.Description>
+								It will be removed from the 12 contracts that carry it.
+							</Modal.Description>
+							<Modal.Footer>
+								<Modal.Close asChild>
+									<Button variant="ghost">Cancel</Button>
+								</Modal.Close>
+								<Button variant="primary">Delete</Button>
+							</Modal.Footer>
+						</Modal.Content>
+					</Modal.Root>
+				</div>
+			</Popover.Content>
+		</Popover.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const body = within(document.body);
+
+		await userEvent.click(canvas.getByRole('button', { name: 'Renewal 2026' }));
+		const popover = await body.findByText(/12 contracts across 3 carriers/i);
+
+		await userEvent.click(body.getByRole('button', { name: 'Delete tag' }));
+		const dialog = await body.findByRole('dialog', { name: 'Delete this tag?' });
+		await waitFor(() => expect(dialog).toBeVisible());
+
+		// The popover is still there — the modal covers it rather than replacing it.
+		await expect(popover).toBeInTheDocument();
+
+		await expect(zIndexOf(dialog)).toBe(zIndexOf(popover));
+		await expect(layerOf(dialog)).toBeGreaterThan(layerOf(popover));
+	}
 };
