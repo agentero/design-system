@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>3.4s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>4.8s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -5029,12 +5029,14 @@ aria-label: string
  * inside through react-hook-form&#39;s `FormProvider`, so a `FormText` needs only
  * its `name`. Create it in the component that owns the form and pass
  * `defaultValues`: a field whose value is `undefined` on the first render
- * starts uncontrolled.
+ * starts uncontrolled. A form whose resolver transforms the values
+ * (`useForm&lt;Input, Context, Output&gt;`) is accepted as is.
  */
-methods: UseFormReturn&lt;AgencyValues&gt;
+methods: UseFormReturn&lt;AgencyValues, any, AgencyValues&gt;
 
 /**
- * Called with the typed values once validation passes. Wrapped in
+ * Called with the validated values once validation passes: the resolver&#39;s
+ * output when it transforms them, the form&#39;s values otherwise. Wrapped in
  * `methods.handleSubmit`, which prevents the native submit and focuses the
  * first invalid field; when it is omitted the form validates and does nothing
  * else.
@@ -5149,9 +5151,10 @@ with the `FieldText`, `Label`, `Input` and `Field.*` primitives directly.</div>
  * The form&#39;s `control`, from `useForm()`. Defaults to the one the
  * surrounding `Form.Root` provides; pass it explicitly to get `name`
  * inference without writing the generic, or when the field renders outside
- * a `Form.Root`.
+ * a `Form.Root`. A `control` whose resolver transforms the values is
+ * accepted as is.
  */
-control?: Control&lt;FieldValues&gt;
+control?: Control&lt;FieldValues, any, FieldValues&gt;
 
 /**
  * `id` for the control. Generated when omitted. Set it here, not on the

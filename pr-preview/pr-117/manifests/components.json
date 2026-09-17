@@ -4767,9 +4767,9 @@
             "name": "control",
             "required": false,
             "type": {
-              "name": "Control<FieldValues>"
+              "name": "Control<FieldValues, any, FieldValues>"
             },
-            "description": "The form's `control`, from `useForm()`. Defaults to the one the\nsurrounding `Form.Root` provides; pass it explicitly to get `name`\ninference without writing the generic, or when the field renders outside\na `Form.Root`.",
+            "description": "The form's `control`, from `useForm()`. Defaults to the one the\nsurrounding `Form.Root` provides; pass it explicitly to get `name`\ninference without writing the generic, or when the field renders outside\na `Form.Root`. A `control` whose resolver transforms the values is\naccepted as is.",
             "defaultValue": null,
             "parent": {
               "name": "FormTextProps",
@@ -5073,9 +5073,9 @@
             "name": "methods",
             "required": true,
             "type": {
-              "name": "UseFormReturn<AgencyValues>"
+              "name": "UseFormReturn<AgencyValues, any, AgencyValues>"
             },
-            "description": "The object `useForm()` returns. `Form.Root` hands it to every form field\ninside through react-hook-form's `FormProvider`, so a `FormText` needs only\nits `name`. Create it in the component that owns the form and pass\n`defaultValues`: a field whose value is `undefined` on the first render\nstarts uncontrolled.",
+            "description": "The object `useForm()` returns. `Form.Root` hands it to every form field\ninside through react-hook-form's `FormProvider`, so a `FormText` needs only\nits `name`. Create it in the component that owns the form and pass\n`defaultValues`: a field whose value is `undefined` on the first render\nstarts uncontrolled. A form whose resolver transforms the values\n(`useForm<Input, Context, Output>`) is accepted as is.",
             "defaultValue": null,
             "parent": {
               "name": "FormRootProps",
@@ -5094,7 +5094,7 @@
             "type": {
               "name": "SubmitHandler<AgencyValues>"
             },
-            "description": "Called with the typed values once validation passes. Wrapped in\n`methods.handleSubmit`, which prevents the native submit and focuses the\nfirst invalid field; when it is omitted the form validates and does nothing\nelse.",
+            "description": "Called with the validated values once validation passes: the resolver's\noutput when it transforms them, the form's values otherwise. Wrapped in\n`methods.handleSubmit`, which prevents the native submit and focuses the\nfirst invalid field; when it is omitted the form validates and does nothing\nelse.",
             "defaultValue": null,
             "parent": {
               "name": "FormRootProps",
@@ -8305,6 +8305,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 3401
+    "durationMs": 4816
   }
 }
