@@ -5610,9 +5610,16 @@
           "snippet": "const WithAnchor = () => (\n    <Popover.Root>\n        <div className=\"flex flex-col items-center gap-4\">\n            <Popover.Anchor className=\"rounded-md border border-border-default-base-primary px-4 py-2 text-sm text-text-default-base-secondary\">\n                Anchored here\n            </Popover.Anchor>\n            <Popover.Trigger asChild>\n                <Button variant=\"secondary\">Toggle from below</Button>\n            </Popover.Trigger>\n        </div>\n        <Popover.Content side=\"top\">\n            <p className=\"text-sm text-text-default-base-primary\">Positioned against the anchor</p>\n        </Popover.Content>\n    </Popover.Root>\n);",
           "description": "`Anchor` positions the Content against an element other than the Trigger —\nuseful when the visual anchor differs from the toggle button.",
           "summary": "Popover positioned against a separate `Anchor` element"
+        },
+        {
+          "id": "components-popover--modal-from-inside-popover",
+          "name": "Modal From Inside Popover",
+          "snippet": "const ModalFromInsidePopover = () => (\n    <Popover.Root>\n        <Popover.Trigger asChild>\n            <Button variant=\"secondary\">Renewal 2026</Button>\n        </Popover.Trigger>\n        <Popover.Content align=\"start\">\n            <div className=\"flex flex-col gap-3\">\n                <p className=\"text-sm text-text-default-base-primary\">\n                    Applied to 12 contracts across 3 carriers.\n                </p>\n                <Modal.Root>\n                    <Modal.Trigger asChild>\n                        <Button variant=\"secondary\" size=\"sm\">\n                            Delete tag\n                        </Button>\n                    </Modal.Trigger>\n                    <Modal.Content>\n                        <Modal.Title>Delete this tag?</Modal.Title>\n                        <Modal.Description>\n                            It will be removed from the 12 contracts that carry it.\n                        </Modal.Description>\n                        <Modal.Footer>\n                            <Modal.Close asChild>\n                                <Button variant=\"ghost\">Cancel</Button>\n                            </Modal.Close>\n                            <Button variant=\"primary\">Delete</Button>\n                        </Modal.Footer>\n                    </Modal.Content>\n                </Modal.Root>\n            </div>\n        </Popover.Content>\n    </Popover.Root>\n);",
+          "description": "A Modal opened from a button inside the Popover. Both share\n`--z-index-top-layer`, so the modal opens last and paints over the popover\nwhile the overlay dims it. The popover stays mounted underneath, which keeps\nfocus returning to its trigger once the modal closes.",
+          "summary": "Modal opened from inside a Popover paints above it"
         }
       ],
-      "import": "import { Button, Popover } from \"@agentero/design-system\";"
+      "import": "import { Button, Modal, Popover } from \"@agentero/design-system\";"
     },
     "components-progress": {
       "id": "components-progress",
@@ -7575,6 +7582,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4136
+    "durationMs": 3093
   }
 }
