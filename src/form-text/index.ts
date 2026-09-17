@@ -1,2 +1,2 @@
 export { FormText } from './form-text';
-export type { FormTextInputProps, FormTextProps } from './form-text';
+export type { FormTextInputProps, FormTextPath, FormTextProps } from './form-text';

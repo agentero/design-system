@@ -59,6 +59,10 @@ So, before migrating a call site:
   that control, which owns its own value mapping and can convert before storing.
   Migrating it anyway changes the submitted type, and a schema that does not
   cast breaks: `z.number()` rejects `"60"`, while `yup.number()` would cast it.
+  When the form is typed (`useForm<Values>` and `<FormText<Values>`, or
+  `control`), the type system enforces this: `name` only accepts paths whose
+  value is a string (`FormTextPath`), so a `z.number()` field fails to compile
+  rather than at validation.
 
 Find them with:
 

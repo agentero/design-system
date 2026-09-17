@@ -4,7 +4,7 @@ import { ReactNode } from 'react';
 
 import {
 	type Control,
-	type FieldPath,
+	type FieldPathByValue,
 	type FieldValues,
 	type UseControllerProps,
 	useController
@@ -22,14 +22,27 @@ import { Input, type InputProps } from '../input';
  */
 export type FormTextInputProps = Omit<InputProps, 'id' | 'name' | 'value' | 'defaultValue' | 'ref'>;
 
+/**
+ * The paths of a form's values a `FormText` can bind to: those holding a
+ * string, `null` and `undefined` included, since an input stores a string and
+ * an empty form often starts from either. A path to a number, a boolean or an
+ * object is rejected at compile time; it belongs to the `Form<X>` of that
+ * value type. Untyped forms (`FieldValues`) accept any path.
+ */
+export type FormTextPath<TFieldValues extends FieldValues> = FieldPathByValue<
+	TFieldValues,
+	string | null | undefined
+>;
+
 export type FormTextProps<
 	TFieldValues extends FieldValues = FieldValues,
-	TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+	TName extends FormTextPath<TFieldValues> = FormTextPath<TFieldValues>
 > = Omit<FieldTextProps, 'invalid' | 'children'> & {
 	/**
 	 * Path of the value in the form, nested paths included (`'agency.npn'`).
 	 * Type it against the form's values with the generic
-	 * (`<FormText<Values> name="agency.npn" />`) or by passing `control`.
+	 * (`<FormText<Values> name="agency.npn" />`) or by passing `control`: the
+	 * path must then exist and hold a string (`FormTextPath`).
 	 */
 	name: TName;
 	/**
@@ -98,7 +111,8 @@ export type FormTextProps<
  * A complete text field bound to one react-hook-form value: label, `Input`,
  * helper text and validation error, laid out in the standard order and wired
  * through `useController`. It renders inside a `Form.Root`, which provides the
- * form, and needs only a `name`. The `required`, `invalid` and error states
+ * form, and needs only a `name`, which on a typed form must point at a string
+ * (`FormTextPath`). The `required`, `invalid` and error states
  * reach the label, the input's `aria-*` attributes and the message with no
  * ids written by hand.
  *
@@ -131,7 +145,7 @@ export type FormTextProps<
  */
 export const FormText = <
 	TFieldValues extends FieldValues = FieldValues,
-	TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+	TName extends FormTextPath<TFieldValues> = FormTextPath<TFieldValues>
 >({
 	name,
 	control,
@@ -153,8 +167,8 @@ export const FormText = <
 
 	// `field.value` is `undefined` until the form holds a value for `name`, and
 	// an `<input value={undefined}>` starts uncontrolled; the empty string keeps
-	// it controlled from the first render. The cast collapses the path generic:
-	// this is a text control, so the value is a string.
+	// it controlled from the first render. `FormTextPath` guarantees the value
+	// is a string once there; the cast only collapses the unresolved generic.
 	const controlProps: Partial<InputProps> = {
 		name: field.name,
 		value: (field.value ?? '') as InputProps['value'],
