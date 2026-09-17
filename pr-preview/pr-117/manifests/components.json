@@ -4619,7 +4619,7 @@
         "displayName": "FormText",
         "exportName": "FormText",
         "filePath": "/home/runner/work/design-system/design-system/src/form-text/index.ts",
-        "description": "A complete text field bound to one react-hook-form value: label, `Input`,\nhelper text and validation error, laid out in the standard order and wired\nthrough `useController`. It renders inside a `Form.Root`, which provides the\nform, and needs only a `name`. The `required`, `invalid` and error states\nreach the label, the input's `aria-*` attributes and the message with no\nids written by hand.\n\nUse it for the common case: a labelled single-line input in a form. When\nthe layout is different — an input with addons, another control, a\nmessage rendered elsewhere — compose the primitives yourself:\n`useController` with [FieldText](?path=/docs/components-fieldtext--docs),\n`Label`, `Input`, `Field.Description` and `Field.Error`. `FormText` adds no\nbehaviour of its own over that composition.\n\nErrors come from `useController`'s per-field state, never from\n`formState.errors`, so the message stays fresh under the React Compiler.\nWith `criteriaMode: 'all'` on the form the error carries every rule that\nfailed and `Field.Error` lists them all. An error on an array or object path\n(`error.root`) is not this field's: render a `Field.Error` for it where the\ngroup lives.",
+        "description": "A complete text field bound to one react-hook-form value: label, `Input`,\nhelper text and validation error, laid out in the standard order and wired\nthrough `useController`. It renders inside a `Form.Root`, which provides the\nform, and needs only a `name`, which on a typed form must point at a string\n(`FormTextPath`). The `required`, `invalid` and error states\nreach the label, the input's `aria-*` attributes and the message with no\nids written by hand.\n\nUse it for the common case: a labelled single-line input in a form. When\nthe layout is different — an input with addons, another control, a\nmessage rendered elsewhere — compose the primitives yourself:\n`useController` with [FieldText](?path=/docs/components-fieldtext--docs),\n`Label`, `Input`, `Field.Description` and `Field.Error`. `FormText` adds no\nbehaviour of its own over that composition.\n\nErrors come from `useController`'s per-field state, never from\n`formState.errors`, so the message stays fresh under the React Compiler.\nWith `criteriaMode: 'all'` on the form the error carries every rule that\nfailed and `Field.Error` lists them all. An error on an array or object path\n(`error.root`) is not this field's: render a `Field.Error` for it where the\ngroup lives.",
         "jsDocTags": {
           "summary": [
             "Label, Input, description and error bound to one react-hook-form field"
@@ -4750,7 +4750,7 @@
             "type": {
               "name": "\"agencyName\""
             },
-            "description": "Path of the value in the form, nested paths included (`'agency.npn'`).\nType it against the form's values with the generic\n(`<FormText<Values> name=\"agency.npn\" />`) or by passing `control`.",
+            "description": "Path of the value in the form, nested paths included (`'agency.npn'`).\nType it against the form's values with the generic\n(`<FormText<Values> name=\"agency.npn\" />`) or by passing `control`: the\npath must then exist and hold a string (`FormTextPath`).",
             "defaultValue": null,
             "parent": {
               "name": "FormTextProps",
@@ -8305,6 +8305,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4251
+    "durationMs": 3401
   }
 }
