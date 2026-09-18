@@ -247,6 +247,53 @@ export const MultipleErrors: Story = {
 };
 
 /**
+ * One error whose `types` lists every rule that failed renders as that same
+ * list. A form library fills it when it collects all the failures instead of
+ * stopping at the first (react-hook-form's `criteriaMode: 'all'`), leaving only
+ * the first one in `message`, so the messages take precedence over it. A rule
+ * that failed without a message of its own contributes nothing.
+ *
+ * @summary Every rule a single error collected, rendered as a list
+ */
+export const ErrorWithTypes: Story = {
+	args: {
+		invalid: true
+	},
+	render: args => (
+		<Field.Root {...args}>
+			<Label>Password</Label>
+			<DemoInput type="password" defaultValue="short" />
+			<Field.Error
+				errors={[
+					{
+						message: 'At least one uppercase letter.',
+						types: {
+							uppercase: 'At least one uppercase letter.',
+							number: 'At least one number.',
+							length: ['At least 10 characters.'],
+							unnamed: true
+						}
+					}
+				]}
+			/>
+		</Field.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		const alert = canvas.getByRole('alert');
+		const items = within(alert).getAllByRole('listitem');
+
+		// The rule that failed without a message adds nothing to the list.
+		await expect(items).toHaveLength(3);
+		await expect(items[0]).toHaveTextContent('At least one uppercase letter.');
+		await expect(items[1]).toHaveTextContent('At least one number.');
+		await expect(items[2]).toHaveTextContent('At least 10 characters.');
+		await expect(alert).not.toHaveTextContent('true');
+	}
+};
+
+/**
  * `Field.Error` renders nothing without a message, so it can stay mounted and
  * receive `undefined` entries while the field is valid. With no description
  * either, the control carries no `aria-describedby` at all.
