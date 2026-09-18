@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, within } from 'storybook/test';
 
 import { Button } from './button';
 
@@ -8,8 +7,6 @@ const TEXT = 'Button';
 const VARIANTS = ['primary', 'secondary', 'tertiary', 'ghost', 'link'] as const;
 const SIZES = ['xs', 'sm', 'md', 'lg'] as const;
 const NON_LINK_VARIANTS = ['primary', 'secondary', 'tertiary', 'ghost'] as const;
-
-const SCALE_ON_PRESS_CLASS = 'motion-safe:active:[transform:scale(0.97)]';
 
 const IconAdd = () => (
 	<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -68,8 +65,7 @@ const meta = {
 		},
 		loading: { control: 'boolean' },
 		disabled: { control: 'boolean' },
-		rounded: { control: 'boolean' },
-		scaleOnPress: { control: 'boolean' }
+		rounded: { control: 'boolean' }
 	},
 	args: {
 		children: TEXT,
@@ -83,8 +79,8 @@ type Story = StoryObj<typeof meta>;
 
 /**
  * Args-controlled playground. Toggle `variant`, `size`, `status`, `loading`,
- * `disabled`, `rounded`, and `scaleOnPress` from the Controls panel to explore
- * every visual combination of the Button.
+ * `disabled`, and `rounded` from the Controls panel to explore every visual
+ * combination of the Button.
  *
  * @summary Default args playground for Button
  */
@@ -321,63 +317,4 @@ export const AsChild: Story = {
 			</Button>
 		</Row>
 	)
-};
-
-/* --------------- Press feedback --------------- */
-
-/**
- * With `scaleOnPress`, a button dips to 97% while held so the control answers
- * the pointer rather than only changing color. Press and hold one below to
- * feel it — the effect is deliberately small, and if a quick click draws the
- * eye it is too strong. It is off by default: pass the prop where the extra
- * feedback is wanted.
- *
- * `variant="link"` is excluded even with the prop set: it has no padding or
- * background, so scaling bare text reads as a wobble rather than a button
- * being pushed. Disabled buttons are excluded too, including the `asChild`
- * anchor form, which stays keyboard-focusable and would otherwise dip on
- * Enter. The whole effect is gated behind `motion-safe`, so it disappears
- * under `prefers-reduced-motion`.
- *
- * @summary Opt-in press feedback via `scaleOnPress`, excluding `link` and disabled
- */
-export const Pressed: Story = {
-	render: () => (
-		<Stack>
-			<Row>
-				{NON_LINK_VARIANTS.map(variant => (
-					<Button key={variant} variant={variant} scaleOnPress>
-						Press {variant}
-					</Button>
-				))}
-			</Row>
-			<Row>
-				<Button variant="primary">Opted out stays still</Button>
-				<Button variant="link" scaleOnPress>
-					Link stays still
-				</Button>
-				<Button variant="primary" scaleOnPress disabled>
-					Disabled stays still
-				</Button>
-				<Button asChild variant="secondary" scaleOnPress disabled>
-					<a href="/dashboard">Disabled anchor stays still</a>
-				</Button>
-			</Row>
-		</Stack>
-	),
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-		const button = canvas.getByRole('button', { name: 'Press primary' });
-		const optedOut = canvas.getByRole('button', { name: 'Opted out stays still' });
-
-		// `:active` only responds to real input, so a play function cannot hold the
-		// button down — untrusted events never trigger the pseudo-class. What is
-		// worth guarding is that the dip animates instead of snapping: Tailwind's
-		// `scale-*` utilities set the standalone `scale` property, so writing the
-		// press as `scale-97` would leave it outside this allowlist and un-eased.
-		await expect(getComputedStyle(button).transitionProperty).toContain('transform');
-		await expect(button.className).toContain(SCALE_ON_PRESS_CLASS);
-		// Off by default: no `scaleOnPress`, no dip.
-		await expect(optedOut.className).not.toContain(SCALE_ON_PRESS_CLASS);
-	}
 };

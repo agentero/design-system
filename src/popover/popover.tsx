@@ -59,7 +59,7 @@ export const Portal = PopoverPrimitive.Portal;
 
 export const popoverRecipe = tv({
 	base: [
-		'z-(--z-index-flyover) rounded-md bg-bg-default-base-primary px-2 py-3 shadow-md',
+		'z-(--z-index-top-layer) rounded-md bg-bg-default-base-primary px-2 py-3 shadow-md',
 		'border border-border-default-base-primary',
 		'will-change-[transform,opacity]',
 		// Radix computes the exact origin (accounts for side + align) so the scale grows from the trigger edge.

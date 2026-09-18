@@ -54,7 +54,7 @@ export const hoverCardRecipe = tv({
 		// Cap the width here rather than leaving it to callers. Popper content is
 		// shrink-to-fit, so an unconstrained card grows to the collision boundary
 		// and a sentence of text becomes one long line. Override with `max-w-*`.
-		'z-(--z-index-flyover) max-w-80 rounded-lg bg-bg-default-base-primary p-4 shadow-xl',
+		'z-(--z-index-top-layer) max-w-80 rounded-lg bg-bg-default-base-primary p-4 shadow-xl',
 		'border border-border-default-base-primary',
 		'text-sm text-text-default-base-primary',
 		// No overflow: the Arrow renders inside Content and pokes past its edge.

@@ -87,12 +87,12 @@ const ModalVariantContext = createContext<ModalVariant>('dialog');
 export const modalRecipe = tv({
 	slots: {
 		overlay: [
-			'fixed inset-0 z-(--z-index-overlay) bg-overlay-dark-300',
+			'fixed inset-0 z-(--z-index-top-layer) bg-overlay-dark-300',
 			'data-[state=open]:animate-modal-overlay-in data-[state=closed]:animate-modal-overlay-out',
 			'motion-reduce:animate-none!'
 		],
 		content: [
-			'fixed top-1/2 left-1/2 z-(--z-index-modal) -translate-x-1/2 -translate-y-1/2',
+			'fixed top-1/2 left-1/2 z-(--z-index-top-layer) -translate-x-1/2 -translate-y-1/2',
 			'flex max-h-[calc(100dvh-4rem)] w-[calc(100vw-2rem)] flex-col gap-6',
 			'rounded-lg bg-bg-default-base-primary py-10 shadow-sm outline-none',
 			'data-[state=open]:animate-modal-content-in data-[state=closed]:animate-modal-content-out',

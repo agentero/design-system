@@ -325,6 +325,11 @@
 	--color-bg-button-brand-enable: var(--color-brand-600);
 	--color-bg-button-brand-hover: var(--color-brand-700);
 
+	--color-bg-checkbox-selected: var(--color-neutrals-900);
+	--color-bg-checkbox-disabled: var(--color-neutrals-200);
+	--color-bg-checkbox-invalid-disabled: var(--color-danger-200);
+	--color-border-checkbox-disabled: var(--color-neutrals-100);
+
 	/* Border Tokens */
 	--color-border-input-default: var(--color-slate-200);
 	--color-border-input-hover: var(--color-slate-400);
@@ -827,12 +832,25 @@
 	--z-index-floating: 1000;
 	--z-index-sticky: 1100;
 	--z-index-banner: 1200;
-	--z-index-overlay: 1300;
-	--z-index-modal: 1400;
-	--z-index-flyover: 1500;
-	--z-index-skip-nav: 1600;
-	--z-index-toast: 1700;
-	--z-index-tooltip: 1800;
+	/*
+	 * One tier for every surface that portals to the body and is mounted when it
+	 * opens. Sharing a z-index makes them paint in DOM order, and a portal is
+	 * appended to the body as it mounts, so they paint in the order they were
+	 * opened in and the last one opened wins. That holds whichever way the
+	 * surfaces are nested, which a tier per component cannot do: any fixed order
+	 * between two tiers is the wrong one for one of the two nesting directions.
+	 *
+	 * A surface leaves the rule when its position in the DOM stops matching when
+	 * it opened: content that is mounted before it opens, and content portalled
+	 * into a container other than the body, which stacks inside that container's
+	 * ancestors instead. Both then need a z-index of their own.
+	 */
+	--z-index-top-layer: 1300;
+	/* Deprecated alias of --z-index-top-layer; drop once @agentero/ui Combobox stops using it. */
+	--z-index-flyover: 1300;
+	--z-index-skip-nav: 1400;
+	--z-index-toast: 1500;
+	--z-index-tooltip: 1600;
 
 	/* ========================================
     * BREAKPOINTS
