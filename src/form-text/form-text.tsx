@@ -19,8 +19,26 @@ import { Input, type InputProps } from '../input';
  * Props `FormText` forwards to its `Input`. The field owns `id` (pass
  * `controlId` on `FormText` to choose it) and react-hook-form owns `name`,
  * `value` and `defaultValue` (set it in `useForm`'s `defaultValues`).
+ *
+ * The state is the field's as well: `disabled`, `required` and `readOnly` are
+ * props of `FormText` itself and `aria-invalid` follows its validation state.
+ * An `Input` takes its own props over the ones its context hands it, so
+ * setting them here would move the control without the label and the root
+ * following. `aria-describedby` stays open: its ids join the ones the field
+ * wires rather than replacing them.
  */
-export type FormTextInputProps = Omit<InputProps, 'id' | 'name' | 'value' | 'defaultValue' | 'ref'>;
+export type FormTextInputProps = Omit<
+	InputProps,
+	| 'id'
+	| 'name'
+	| 'value'
+	| 'defaultValue'
+	| 'ref'
+	| 'disabled'
+	| 'required'
+	| 'readOnly'
+	| 'aria-invalid'
+>;
 
 /**
  * The paths of a form's values a `FormText` can bind to: those holding a
