@@ -68,14 +68,23 @@ export const Default: Story = {
 
 		await userEvent.click(input);
 		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(STATES.length));
-		await expect(body.getByRole('listbox')).toHaveAccessibleName('Search states');
+		// Named on its own: borrowing the input's name would resolve to the typed text.
+		await expect(body.getByRole('listbox')).toHaveAccessibleName('Suggestions');
 
 		// The default filter is `contains`: Colorado and Connecticut, not California.
 		await userEvent.type(input, 'co');
 		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(2));
 
+		// Nothing picked yet, so the clear button has nothing to clear and stays unmounted.
+		await expect(canvas.queryByRole('button', { name: /clear/i })).not.toBeInTheDocument();
+
 		await userEvent.click(body.getByRole('option', { name: 'Colorado' }));
 		await waitFor(() => expect(input).toHaveValue('Colorado'));
+
+		await userEvent.click(await canvas.findByRole('button', { name: /clear/i }));
+		await waitFor(() => expect(input).toHaveValue(''));
+		await expect(input).toHaveFocus();
+		await userEvent.keyboard('{Escape}');
 
 		// The surface stays mounted through its exit animation, so wait it out.
 		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
@@ -257,7 +266,7 @@ export const WithLeadingIcon: Story = {
 			<div className="relative">
 				<IconSearch
 					aria-hidden
-					className="pointer-events-none absolute top-1/2 left-3 size-6 -translate-y-1/2 [&>path]:fill-icon-default-base-tertiary"
+					className="pointer-events-none absolute top-1/2 left-3 z-1 size-6 -translate-y-1/2 [&>path]:fill-icon-default-base-tertiary"
 				/>
 				<Combobox.Input className="pl-11" placeholder="Search states" aria-label="Search states" />
 			</div>

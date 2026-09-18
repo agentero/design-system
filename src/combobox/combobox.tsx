@@ -2,13 +2,14 @@
 
 // Stays: `@base-ui/react/combobox` is `export * as Combobox`, so its parts hang off one
 // export like cmdk's — without the directive they arrive `undefined` (see `command.tsx`).
-import { ComponentPropsWithRef, createContext, use, useId } from 'react';
+import { ComponentPropsWithRef, use } from 'react';
 
 import { Combobox as ComboboxPrimitive } from '@base-ui/react/combobox';
 import { tv } from 'tailwind-variants';
 
 import { cn, useMergeProps } from '../../lib';
 import { InputContext, inputRecipe, InputSize } from '../input';
+import { IconCancel } from './icons';
 
 /**
  * Style recipe for Combobox. The surface carries its own chrome — border,
@@ -18,14 +19,31 @@ import { InputContext, inputRecipe, InputSize } from '../input';
  */
 export const comboboxRecipe = tv({
 	slots: {
+		// The input has no trailing slot, so the button is overlaid on it: the pair needs a
+		// `relative` parent and the input needs padding to keep its text clear of the icon.
+		field: 'relative',
+		clear: [
+			'absolute top-1/2 right-3 flex size-6 -translate-y-1/2 cursor-pointer items-center',
+			'justify-center rounded-sm [&>svg>path]:fill-icon-input-default',
+			'hover:[&>svg>path]:fill-icon-default-base-primary',
+			'disabled:cursor-default disabled:[&>svg>path]:fill-icon-input-disable'
+		],
 		content: [
 			'w-(--anchor-width) max-h-(--available-height) overflow-hidden rounded-md',
 			'border border-border-default-base-primary bg-bg-default-base-primary shadow-lg',
-			'origin-(--transform-origin)',
-			'data-open:data-[side=bottom]:animate-dropdown-slide-in-from-top',
-			'data-open:data-[side=top]:animate-dropdown-slide-in-from-bottom',
-			'data-closed:animate-dropdown-slide-out',
-			'motion-reduce:animate-none!'
+			// Not Base UI's `--transform-origin`: with `align="start"` it puts the origin on the left
+			// corner, and this surface is as wide as the input, so it has to grow from the edge it hangs from.
+			'data-[side=bottom]:origin-top data-[side=top]:origin-bottom',
+			// The legacy Datalist's own timing — a 100ms fade over a 0.95 scale — driven off Base UI's
+			// start/end attributes rather than the shared dropdown keyframes, whose 0.9 scale and
+			// translate read as a slow start on a surface this wide.
+			// `scale`, not `transform`: Tailwind v4 scale utilities set the standalone scale property.
+			'transition-[scale,opacity] duration-100 ease-in-out',
+			// Bracketed on purpose: Tailwind does not emit a rule for the bare `data-starting-style:`
+			// form, so the surface would appear with no transition at all.
+			'data-[starting-style]:scale-95 data-[starting-style]:opacity-0',
+			'data-[ending-style]:scale-95 data-[ending-style]:opacity-0',
+			'motion-reduce:transition-none'
 		],
 		// Never taller than the room left: the surface clips there and would hide the last rows.
 		// When empty, its padding alone would be a 16px band under `Empty`.
@@ -47,14 +65,6 @@ export const comboboxRecipe = tv({
 });
 
 const slots = comboboxRecipe();
-
-// Base UI leaves the listbox unnamed, which axe flags. `Root` hands one id down: `Input`
-// takes it unless a container (`FieldText`) or its own props bring one, and `List` labels
-// itself with the same resolution, so both agree without a render round-trip.
-const ComboboxIdContext = createContext<string | undefined>(undefined);
-
-const useInputId = (ownId: string | undefined) =>
-	ownId ?? use(InputContext)?.id ?? use(ComboboxIdContext);
 
 /**
  * Root of a combobox: a text input that filters a list of options and writes the
@@ -86,13 +96,7 @@ const useInputId = (ownId: string | undefined) =>
 export const Root = <Value, Multiple extends boolean | undefined = false, Item = Value>(
 	props: ComboboxPrimitive.Root.Props<Value, Multiple, Item>
 ) => {
-	const id = useId();
-
-	return (
-		<ComboboxIdContext value={id}>
-			<ComboboxPrimitive.Root {...props} />
-		</ComboboxIdContext>
-	);
+	return <ComboboxPrimitive.Root {...props} />;
 };
 Root.displayName = 'Combobox.Root';
 
@@ -100,6 +104,11 @@ Root.displayName = 'Combobox.Root';
 type InputProps = Omit<ComponentPropsWithRef<typeof ComboboxPrimitive.Input>, 'size'> & {
 	/** Control height, matching `Input`. Defaults to `'md'`. */
 	size?: InputSize;
+	/**
+	 * Accessible name for the clear button. Defaults to `'Clear'`; name it after
+	 * the field when a page carries several comboboxes.
+	 */
+	clearLabel?: string;
 };
 
 // `Root` owns the text through `inputValue`; a form adapter's copies would fight it.
@@ -120,24 +129,34 @@ const useComboboxInputContext = (props: InputProps) => {
  * `InputContext`, so inside a `FieldText` the label, the hint and the error point
  * at it with nothing passed by hand. Its own props win over the context.
  *
+ * It always carries a clear button, which Base UI mounts only once there is
+ * something to clear, so an untouched field shows nothing. Name it with
+ * `clearLabel` when a page has more than one combobox.
+ *
  * Pass `render` to swap the element for a richer control — a field with a leading
  * search icon, for instance — and the combobox wiring rides along.
  *
  * @summary Search field that opens the list on focus and filters it as you type
  * @dataAttribute {string} data-slot - Always set to "combobox-input"
  */
-export const Input = (props: InputProps) => {
-	const { className, size = 'md', id: ownId, ...rest } = useComboboxInputContext(props);
-	const id = useInputId(ownId);
+export const Input = ({ clearLabel = 'Clear', ...props }: InputProps) => {
+	const { className, size = 'md', ...rest } = useComboboxInputContext(props);
 
 	return (
-		<ComboboxPrimitive.Input
-			data-slot="combobox-input"
-			data-size={size}
-			id={id}
-			className={cn(inputRecipe({ size }), className)}
-			{...rest}
-		/>
+		<div data-slot="combobox-field" className={slots.field()}>
+			<ComboboxPrimitive.Input
+				data-slot="combobox-input"
+				data-size={size}
+				className={cn(inputRecipe({ size }), 'pr-11', className)}
+				{...rest}
+			/>
+			<ComboboxPrimitive.Clear
+				data-slot="combobox-clear"
+				aria-label={clearLabel}
+				className={slots.clear()}>
+				<IconCancel />
+			</ComboboxPrimitive.Clear>
+		</div>
 	);
 };
 Input.displayName = 'Combobox.Input';
@@ -196,21 +215,24 @@ type ListProps = ComponentPropsWithRef<typeof ComboboxPrimitive.List>;
 
 /**
  * Scrollable container for the items. Give it a function as its child to render
- * one `Item` per entry of the root's `items`. It takes its accessible name from
- * the input — so from the field label, when there is one — unless you label it
- * yourself.
+ * one `Item` per entry of the root's `items`.
+ *
+ * Base UI ships the listbox unnamed, which axe flags, so it carries a generic
+ * `aria-label`. Name it after the field when a page has more than one — and note
+ * it cannot borrow the input's name: `aria-labelledby` pointing at a text field
+ * resolves to that field's *value*, so the list would rename itself on every
+ * keystroke.
  *
  * @summary Scrollable list of the filtered items
  * @dataAttribute {string} data-slot - Always set to "combobox-list"
  */
 export const List = ({ className, ...props }: ListProps) => {
-	const inputId = useInputId(undefined);
 	const labelled = 'aria-label' in props || 'aria-labelledby' in props;
 
 	return (
 		<ComboboxPrimitive.List
 			data-slot="combobox-list"
-			aria-labelledby={labelled ? undefined : inputId}
+			aria-label={labelled ? undefined : 'Suggestions'}
 			className={cn(slots.list(), className)}
 			{...props}
 		/>
