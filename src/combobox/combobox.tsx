@@ -2,7 +2,7 @@
 
 // Stays: `@base-ui/react/combobox` is `export * as Combobox`, so its parts hang off one
 // export like cmdk's — without the directive they arrive `undefined` (see `command.tsx`).
-import { ComponentPropsWithRef, createContext, use, useEffect, useId, useState } from 'react';
+import { ComponentPropsWithRef, createContext, use, useId } from 'react';
 
 import { Combobox as ComboboxPrimitive } from '@base-ui/react/combobox';
 import { tv } from 'tailwind-variants';
@@ -28,7 +28,7 @@ export const comboboxRecipe = tv({
 			'motion-reduce:animate-none!'
 		],
 		// Never taller than the room left: the surface clips there and would hide the last rows.
-		// Empty, the padding alone would be a 16px band under `Empty`.
+		// When empty, its padding alone would be a 16px band under `Empty`.
 		list: [
 			'max-h-[min(10.25rem,var(--available-height))] overflow-y-auto scroll-py-2 py-2 outline-none',
 			'data-empty:py-0'
@@ -48,14 +48,13 @@ export const comboboxRecipe = tv({
 
 const slots = comboboxRecipe();
 
-// Base UI leaves the listbox unnamed, which axe flags. `Input` publishes its final id
-// here and `List` labels itself with it.
-type ComboboxContextValue = {
-	inputId: string | undefined;
-	setInputId: (id: string) => void;
-};
+// Base UI leaves the listbox unnamed, which axe flags. `Root` hands one id down: `Input`
+// takes it unless a container (`FieldText`) or its own props bring one, and `List` labels
+// itself with the same resolution, so both agree without a render round-trip.
+const ComboboxIdContext = createContext<string | undefined>(undefined);
 
-const ComboboxContext = createContext<ComboboxContextValue | null>(null);
+const useInputId = (ownId: string | undefined) =>
+	ownId ?? use(InputContext)?.id ?? use(ComboboxIdContext);
 
 /**
  * Root of a combobox: a text input that filters a list of options and writes the
@@ -87,12 +86,12 @@ const ComboboxContext = createContext<ComboboxContextValue | null>(null);
 export const Root = <Value, Multiple extends boolean | undefined = false, Item = Value>(
 	props: ComboboxPrimitive.Root.Props<Value, Multiple, Item>
 ) => {
-	const [inputId, setInputId] = useState<string>();
+	const id = useId();
 
 	return (
-		<ComboboxContext value={{ inputId, setInputId }}>
+		<ComboboxIdContext value={id}>
 			<ComboboxPrimitive.Root {...props} />
-		</ComboboxContext>
+		</ComboboxIdContext>
 	);
 };
 Root.displayName = 'Combobox.Root';
@@ -129,14 +128,7 @@ const useComboboxInputContext = (props: InputProps) => {
  */
 export const Input = (props: InputProps) => {
 	const { className, size = 'md', id: ownId, ...rest } = useComboboxInputContext(props);
-	const generatedId = useId();
-	const id = ownId ?? generatedId;
-	const combobox = use(ComboboxContext);
-
-	// After render on purpose: a container may impose its own id (FieldText's `controlId`).
-	useEffect(() => {
-		combobox?.setInputId(id);
-	}, [combobox, id]);
+	const id = useInputId(ownId);
 
 	return (
 		<ComboboxPrimitive.Input
@@ -187,7 +179,9 @@ export const Content = ({
 			alignOffset={alignOffset}
 			anchor={anchor}
 			collisionPadding={collisionPadding}
-			className="isolate z-(--z-index-top-layer)">
+			// A Radix modal (`Modal`) sets `pointer-events: none` on the body and re-enables only its
+			// own layers; the surface portals to the body, so it re-enables itself the same way.
+			className="isolate z-(--z-index-top-layer) pointer-events-auto">
 			<ComboboxPrimitive.Popup
 				data-slot="combobox-content"
 				className={cn(slots.content(), className)}
@@ -210,13 +204,13 @@ type ListProps = ComponentPropsWithRef<typeof ComboboxPrimitive.List>;
  * @dataAttribute {string} data-slot - Always set to "combobox-list"
  */
 export const List = ({ className, ...props }: ListProps) => {
-	const combobox = use(ComboboxContext);
+	const inputId = useInputId(undefined);
 	const labelled = 'aria-label' in props || 'aria-labelledby' in props;
 
 	return (
 		<ComboboxPrimitive.List
 			data-slot="combobox-list"
-			aria-labelledby={labelled ? undefined : combobox?.inputId}
+			aria-labelledby={labelled ? undefined : inputId}
 			className={cn(slots.list(), className)}
 			{...props}
 		/>

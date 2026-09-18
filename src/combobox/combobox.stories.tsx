@@ -4,10 +4,12 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { Combobox } from '.';
+import { Button } from '../button';
 import { IconSearch } from '../command/icons';
 import { Field } from '../field';
 import { FieldText } from '../field-text';
 import { Label } from '../label';
+import { Modal } from '../modal';
 
 /**
  * Combobox is a text input that filters a list and writes the chosen option back
@@ -282,5 +284,56 @@ export const WithLeadingIcon: Story = {
 
 		await userEvent.type(input, 'tex');
 		await expect(await body.findByRole('option', { name: 'Texas' })).toBeInTheDocument();
+	}
+};
+
+/**
+ * Inside a `Modal`, which is a Radix Dialog. The surface portals to the body, so
+ * this checks that the dialog's modal layer neither blocks pointer events on the
+ * list nor treats a click in it as a click outside and closes.
+ */
+export const InsideModal: Story = {
+	render: () => (
+		<Modal.Root>
+			<Modal.Trigger asChild>
+				<Button variant="secondary">Assign agency</Button>
+			</Modal.Trigger>
+			<Modal.Content>
+				<Modal.Title>Assign agency</Modal.Title>
+				<Modal.Body>
+					<Combobox.Root items={STATES}>
+						<Combobox.Input placeholder="Search states" aria-label="Search states" />
+						<Combobox.Content>
+							<Combobox.Empty>No matches found</Combobox.Empty>
+							<Combobox.List>
+								{(state: string) => (
+									<Combobox.Item key={state} value={state}>
+										{state}
+									</Combobox.Item>
+								)}
+							</Combobox.List>
+						</Combobox.Content>
+					</Combobox.Root>
+				</Modal.Body>
+			</Modal.Content>
+		</Modal.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const body = within(document.body);
+
+		await userEvent.click(canvas.getByRole('button', { name: /assign agency/i }));
+		const dialog = await body.findByRole('dialog', { name: /assign agency/i });
+		const input = within(dialog).getByRole('combobox', { name: /search states/i });
+
+		await userEvent.click(input);
+		await userEvent.type(input, 'flo');
+		const option = await body.findByRole('option', { name: 'Florida' });
+
+		await userEvent.click(option);
+		await waitFor(() => expect(input).toHaveValue('Florida'));
+		// The dialog must survive the click on the portalled list — still open, not exiting.
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+		await expect(dialog).toHaveAttribute('data-state', 'open');
 	}
 };
