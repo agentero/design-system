@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, within } from 'storybook/test';
 
+import { Field, useFieldContext } from '../field';
+import { inputRecipe } from '../input';
 import { Label } from './label';
 
 /**
@@ -40,7 +42,7 @@ export const Default: Story = {
 	render: args => (
 		<>
 			<Label {...args} />
-			<input id="email" placeholder="you@example.com" />
+			<input id="email" placeholder="you@example.com" className={inputRecipe()} />
 		</>
 	),
 	play: async ({ canvasElement }) => {
@@ -98,5 +100,46 @@ export const RequiredWinsOverOptional: Story = {
 
 		await expect(canvas.getByText('*')).toBeInTheDocument();
 		await expect(canvas.getByText('Agency name')).not.toHaveClass(/after:content/);
+	}
+};
+
+const FieldInput = () => {
+	const field = useFieldContext();
+
+	return (
+		<input id={field?.controlId} aria-describedby={field?.describedBy} className={inputRecipe()} />
+	);
+};
+
+/**
+ * Inside a `Field.Root` the label reads `LabelContext` and points at the
+ * field's control with no `htmlFor`. An explicit `htmlFor` still wins.
+ *
+ * @summary Inside a Field the label associates itself; explicit htmlFor wins
+ */
+export const InsideField: Story = {
+	render: () => (
+		<div className="flex flex-col gap-6">
+			<Field.Root>
+				<Label>Email</Label>
+				<FieldInput />
+			</Field.Root>
+
+			<Field.Root>
+				<Label htmlFor="explicit-control">Phone</Label>
+				<input id="explicit-control" className={inputRecipe()} />
+			</Field.Root>
+		</div>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		const email = canvas.getByRole('textbox', { name: 'Email' });
+
+		await expect(canvas.getByText('Email').closest('label')).toHaveAttribute('for', email.id);
+		await expect(canvas.getByText('Phone').closest('label')).toHaveAttribute(
+			'for',
+			'explicit-control'
+		);
 	}
 };

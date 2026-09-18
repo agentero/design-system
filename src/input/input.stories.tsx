@@ -4,9 +4,10 @@ import { expect, userEvent, within } from 'storybook/test';
 import { Input } from './input';
 
 /**
- * Input is the base single-line text control. It is intentionally unaware of
- * form fields and form libraries: `id`, `aria-invalid` and `aria-describedby`
- * are plain props, set by a field wrapper or by hand.
+ * Input is the base single-line text control. When a container such as
+ * `FieldText` provides `InputContext`, it picks up `id`, `aria-invalid` and
+ * `aria-describedby` on its own; standalone, as here, they are plain props set
+ * by hand.
  *
  * There is no `status` prop. Mark the control `aria-invalid` and the
  * destructive border follows, so the styling can never disagree with what
