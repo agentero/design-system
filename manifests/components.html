@@ -588,13 +588,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">27 components ok</span><span class="filter-pill ok" aria-disabled="true">215 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">29 components ok</span><span class="filter-pill ok" aria-disabled="true">238 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>3.1s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>4.0s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -4496,14 +4496,716 @@ actions outright unless the user needs to see them and understand why.</div>
   no-story-error
   no-doc-error"
   role="listitem"
+  aria-label="Field.Root">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Field.Root</h2>
+      <div class="badges">
+        <label for="c-11-components-field-props" class="badge ok as-toggle">6 prop types</label>
+        
+        <label for="c-11-components-field-stories" class="badge ok as-toggle">15 stories</label>
+        
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/field/field.stories.tsx">components-field · ./src/field/field.stories.tsx</div>
+    <div>Wraps a label, control, description and error into one field</div>
+    <div class="hint">Field lays out a single form field — label, control, helper text and error —
+and wires the accessibility relationships between them. `Field.Root`
+generates the ids and shares them through context: `Label` reads
+`LabelContext`, `Field.Description` and `Field.Error` read `FieldContext`,
+and a `Field&lt;X&gt;` such as `FieldText` provides the control&#39;s context. Nobody
+passes an `id` by hand.
+
+Presentational and form-library agnostic: pass `invalid` and the error
+messages from whatever validates the form. Spacing between fields belongs to
+`Field.Group`, never to a margin on the field itself.
+
+`Field.Description` and `Field.Error` register themselves with the root, so
+the control&#39;s `aria-describedby` lists exactly the messages on screen and is
+absent when there is none.</div>
+    <div class="kv"><span class="chip">summary: Wraps a label, control, description and error into one field</span><span class="chip">example: &lt;Field.Root invalid={!!error} required&gt;
+  &lt;Field.Label&gt;Email&lt;/Field.Label&gt;
+  &lt;Input type=&quot;email&quot; /&gt;
+  &lt;Field.Description&gt;We only use this for policy documents.&lt;/Field.Description&gt;
+  &lt;Field.Error errors={[error]} /&gt;
+&lt;/Field.Root&gt;</span></div>
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-11-components-field-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+  <input id="c-11-components-field-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-component-meta)</small></span>
+              <span class="badge ok">6 prop types</span>
+            </div>
+            <pre><code>Component: src/field/index.ts::Field</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>/**
+ * `id` for the control. Generated when omitted. Set it here, not on the
+ * control, so the label and the messages keep pointing at the right element.
+ */
+controlId?: string
+
+/**
+ * Disables the control through its context and sets `data-disabled` on the root.
+ */
+disabled?: boolean = false
+
+/**
+ * Marks the field as failing validation: sets `data-invalid` on the root and
+ * `aria-invalid` on the control through its context, which drives the
+ * control&#39;s destructive border. The label keeps its color by design.
+ */
+invalid?: boolean = false
+
+/**
+ * Layout of the field. `vertical` (default) stacks label, control and
+ * messages. `horizontal` is one row at every width: the first child fills it
+ * and the rest keep their natural width, aligned to the right, so the
+ * controls of stacked fields line up. `responsive` stacks below `28rem` and
+ * behaves like `horizontal` from there, measured on the field itself, so it
+ * needs no particular wrapper. In both, `Field.Content` groups a control with
+ * its messages, or a label with its description.
+ */
+orientation?: &quot;horizontal&quot; | &quot;vertical&quot; | &quot;responsive&quot; = &#39;vertical&#39;
+
+/**
+ * Makes the control read-only through its context (focusable and copyable,
+ * not editable, still submitted) and sets `data-readonly` on the root.
+ */
+readOnly?: boolean = false
+
+/**
+ * Single source of truth for a required field: the `Label` shows its
+ * asterisk and the control receives `required`, both through context.
+ */
+required?: boolean = false</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Field, FieldContext, Label } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Default vertical field with label, control and description</div>
+              <div class="hint">A vertical field with a label, a control and helper text. The label points
+at the control and the description is referenced by it — neither needed an
+explicit `id`.</div>
+              <pre><code>const Default = () =&gt; &lt;Field.Root
+    orientation=&quot;vertical&quot;
+    invalid={false}
+    disabled={false}
+    readOnly={false}
+    required={false}&gt;
+    &lt;Label&gt;Email&lt;/Label&gt;
+    &lt;DemoInput placeholder=&quot;you@example.com&quot; /&gt;
+    &lt;Field.Description&gt;We only use this to send policy documents.&lt;/Field.Description&gt;
+&lt;/Field.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Required</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Required field driven from the root alone</div>
+              <div class="hint">`required` on the root is the single source of truth: the label shows its
+asterisk and the control receives `required`, both through context.</div>
+              <pre><code>const Required = () =&gt; &lt;Field.Root
+    orientation=&quot;vertical&quot;
+    invalid={false}
+    disabled={false}
+    readOnly={false}
+    required&gt;
+    &lt;Label&gt;Full name&lt;/Label&gt;
+    &lt;DemoInput placeholder=&quot;Jane Doe&quot; /&gt;
+&lt;/Field.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Optional</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Optional field with the muted label suffix</div>
+              <div class="hint">`optional` on the label appends the muted suffix; the control stays
+non-required.</div>
+              <pre><code>const Optional = () =&gt; &lt;Field.Root
+    orientation=&quot;vertical&quot;
+    invalid={false}
+    disabled={false}
+    readOnly={false}
+    required={false}&gt;
+    &lt;Label optional&gt;Phone number&lt;/Label&gt;
+    &lt;DemoInput type=&quot;tel&quot; placeholder=&quot;+1 (555) 000-0000&quot; /&gt;
+&lt;/Field.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Tooltip</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Label with a tooltip trigger beside it</div>
+              <div class="hint">`Field.Label` puts an info button beside the caption. It is a sibling of the
+`&lt;label&gt;`, so it keeps its own accessible name, clicking it does not focus
+the control, and the control&#39;s name stays clean. It opens on focus too.</div>
+              <pre><code>const WithTooltip = () =&gt; &lt;Field.Root
+    orientation=&quot;vertical&quot;
+    invalid={false}
+    disabled={false}
+    readOnly={false}
+    required&gt;
+    &lt;Field.Label tooltip=&quot;Issued by the IRS to identify your business.&quot;&gt;Tax ID&lt;/Field.Label&gt;
+    &lt;DemoInput placeholder=&quot;XX-XXXXXXX&quot; /&gt;
+&lt;/Field.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Invalid</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Invalid field with a single error message</div>
+              <div class="hint">`invalid` on the root sets `data-invalid` for styling and `aria-invalid` on
+the control, which drives its destructive border; the label keeps its color
+by design. `Field.Error` takes the error objects as they come from a form
+library.</div>
+              <pre><code>const Invalid = () =&gt; &lt;Field.Root
+    orientation=&quot;vertical&quot;
+    invalid
+    disabled={false}
+    readOnly={false}
+    required={false}&gt;
+    &lt;Label&gt;Email&lt;/Label&gt;
+    &lt;DemoInput type=&quot;email&quot; defaultValue=&quot;not-an-email&quot; /&gt;
+    &lt;Field.Error errors={[{ message: &#39;Enter a valid email address.&#39; }]} /&gt;
+&lt;/Field.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Multiple Errors</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Several errors rendered as a de-duplicated list</div>
+              <div class="hint">Several errors render as a list, de-duplicated by message.</div>
+              <pre><code>const MultipleErrors = () =&gt; &lt;Field.Root
+    orientation=&quot;vertical&quot;
+    invalid
+    disabled={false}
+    readOnly={false}
+    required={false}&gt;
+    &lt;Label&gt;Password&lt;/Label&gt;
+    &lt;DemoInput type=&quot;password&quot; defaultValue=&quot;abc&quot; /&gt;
+    &lt;Field.Error
+        errors={[
+            { message: &#39;Use at least 8 characters.&#39; },
+            { message: &#39;Include a number.&#39; },
+            { message: &#39;Use at least 8 characters.&#39; }
+        ]} /&gt;
+&lt;/Field.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">No Error</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Error stays mounted and renders nothing while valid</div>
+              <div class="hint">`Field.Error` renders nothing without a message, so it can stay mounted and
+receive `undefined` entries while the field is valid. With no description
+either, the control carries no `aria-describedby` at all.</div>
+              <pre><code>const NoError = () =&gt; &lt;Field.Root
+    orientation=&quot;vertical&quot;
+    invalid={false}
+    disabled={false}
+    readOnly={false}
+    required={false}&gt;
+    &lt;Label&gt;Email&lt;/Label&gt;
+    &lt;DemoInput type=&quot;email&quot; /&gt;
+    &lt;Field.Error errors={[undefined]} /&gt;
+&lt;/Field.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Disabled</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Disabled field driven from the root</div>
+              <div class="hint">`disabled` on the root disables the control through context and sets
+`data-disabled` for styling.</div>
+              <pre><code>const Disabled = () =&gt; &lt;Field.Root
+    orientation=&quot;vertical&quot;
+    invalid={false}
+    disabled
+    readOnly={false}
+    required={false}&gt;
+    &lt;Label&gt;Agency&lt;/Label&gt;
+    &lt;DemoInput defaultValue=&quot;Acme Insurance&quot; /&gt;
+    &lt;Field.Description&gt;Managed by your administrator.&lt;/Field.Description&gt;
+&lt;/Field.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Read Only</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Read-only field driven from the root</div>
+              <div class="hint">`readOnly` on the root makes the control read-only through context and sets
+`data-readonly` for styling. Unlike `disabled`, the value stays focusable,
+copyable and submitted.</div>
+              <pre><code>const ReadOnly = () =&gt; &lt;Field.Root
+    orientation=&quot;vertical&quot;
+    invalid={false}
+    disabled={false}
+    readOnly
+    required={false}&gt;
+    &lt;Label&gt;Policy number&lt;/Label&gt;
+    &lt;DemoInput defaultValue=&quot;POL-2049-118&quot; /&gt;
+    &lt;Field.Description&gt;Assigned by the carrier; contact support to change it.&lt;/Field.Description&gt;
+&lt;/Field.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Horizontal</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Horizontal field, one row at every width, controls right-aligned</div>
+              <div class="hint">`horizontal` is one row at every width. The first child fills the row and
+everything after it keeps its natural width, aligned to the right edge, so
+the controls of stacked fields line up whatever their labels measure. Wrap a
+label with its description, or a control with its messages, in
+`Field.Content`. A control sets its own width: `Input` is `w-full`, so it
+gets one here.</div>
+              <pre><code>const Horizontal = () =&gt; (
+    &lt;Field.Group className=&quot;w-[40rem]&quot;&gt;
+        &lt;Field.Root orientation=&quot;horizontal&quot; data-testid=&quot;short&quot;&gt;
+            &lt;Label&gt;Full name&lt;/Label&gt;
+            &lt;DemoInput defaultValue=&quot;Rafa Moro&quot; className=&quot;w-72&quot; /&gt;
+        &lt;/Field.Root&gt;
+
+        &lt;Field.Root orientation=&quot;horizontal&quot; data-testid=&quot;long&quot;&gt;
+            &lt;Label&gt;Title&lt;/Label&gt;
+            &lt;Field.Content className=&quot;w-72&quot;&gt;
+                &lt;DemoInput placeholder=&quot;Software engineer&quot; /&gt;
+                &lt;Field.Description&gt;Shown on your public profile.&lt;/Field.Description&gt;
+            &lt;/Field.Content&gt;
+        &lt;/Field.Root&gt;
+
+        &lt;Field.Root orientation=&quot;horizontal&quot; data-testid=&quot;switch&quot;&gt;
+            &lt;Field.Content&gt;
+                &lt;Label&gt;Auto-renew&lt;/Label&gt;
+                &lt;Field.Description&gt;Renews the policy automatically before it expires.&lt;/Field.Description&gt;
+            &lt;/Field.Content&gt;
+            &lt;DemoInput type=&quot;checkbox&quot; className=&quot;size-5&quot; /&gt;
+        &lt;/Field.Root&gt;
+
+        &lt;div className=&quot;w-[20rem]&quot; data-testid=&quot;narrow&quot;&gt;
+            &lt;Field.Root orientation=&quot;horizontal&quot;&gt;
+                &lt;Label&gt;Email&lt;/Label&gt;
+                &lt;DemoInput type=&quot;email&quot; placeholder=&quot;you@example.com&quot; className=&quot;w-40&quot; /&gt;
+            &lt;/Field.Root&gt;
+        &lt;/div&gt;
+    &lt;/Field.Group&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Responsive</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Responsive field that stacks when narrow</div>
+              <div class="hint">`responsive` stacks the parts below `28rem` and behaves like `horizontal`
+from there: first child fills, the rest keep their width on the right. It
+measures the field itself, so it needs no particular wrapper. A width that
+should only apply once horizontal goes behind `@md/field:`.</div>
+              <pre><code>const Responsive = () =&gt; (
+    &lt;div className=&quot;flex flex-col gap-8&quot;&gt;
+        &lt;div className=&quot;w-full max-w-[40rem]&quot; data-testid=&quot;wide&quot;&gt;
+            &lt;Field.Root orientation=&quot;responsive&quot;&gt;
+                &lt;Label&gt;Email&lt;/Label&gt;
+                &lt;Field.Content className=&quot;@md/field:w-72&quot;&gt;
+                    &lt;DemoInput type=&quot;email&quot; placeholder=&quot;you@example.com&quot; /&gt;
+                    &lt;Field.Description&gt;
+                        We only use this to send policy documents, and never to contact you about anything
+                        else.
+                    &lt;/Field.Description&gt;
+                &lt;/Field.Content&gt;
+            &lt;/Field.Root&gt;
+        &lt;/div&gt;
+
+        &lt;div className=&quot;w-full max-w-[20rem]&quot; data-testid=&quot;narrow&quot;&gt;
+            &lt;Field.Root orientation=&quot;responsive&quot;&gt;
+                &lt;Label&gt;Email&lt;/Label&gt;
+                &lt;Field.Content&gt;
+                    &lt;DemoInput type=&quot;email&quot; placeholder=&quot;you@example.com&quot; /&gt;
+                    &lt;Field.Description&gt;We only use this to send policy documents.&lt;/Field.Description&gt;
+                &lt;/Field.Content&gt;
+            &lt;/Field.Root&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Group</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Several fields stacked in a group</div>
+              <div class="hint">`Field.Group` stacks fields and owns the space between them. Each field gets
+its own ids, so several on one page never collide.</div>
+              <pre><code>const Group = () =&gt; (
+    &lt;Field.Group&gt;
+        &lt;Field.Root required&gt;
+            &lt;Label&gt;Full name&lt;/Label&gt;
+            &lt;DemoInput placeholder=&quot;Jane Doe&quot; /&gt;
+        &lt;/Field.Root&gt;
+
+        &lt;Field.Root required invalid&gt;
+            &lt;Label&gt;Email&lt;/Label&gt;
+            &lt;DemoInput type=&quot;email&quot; defaultValue=&quot;not-an-email&quot; /&gt;
+            &lt;Field.Error&gt;Enter a valid email address.&lt;/Field.Error&gt;
+        &lt;/Field.Root&gt;
+
+        &lt;Field.Root&gt;
+            &lt;Label optional&gt;Phone number&lt;/Label&gt;
+            &lt;DemoInput type=&quot;tel&quot; placeholder=&quot;+1 (555) 000-0000&quot; /&gt;
+        &lt;/Field.Root&gt;
+    &lt;/Field.Group&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Standalone Outside Field</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Label and Field.Error used without a Field.Root</div>
+              <div class="hint">Outside a `Field.Root` every part reads a `null` context and works on its own
+props alone: `Label` needs its `htmlFor`, `Field.Error` its own `id`.</div>
+              <pre><code>const StandaloneOutsideField = () =&gt; (
+    &lt;div className=&quot;flex flex-col gap-2&quot;&gt;
+        &lt;Label htmlFor=&quot;standalone-email&quot;&gt;Email&lt;/Label&gt;
+        &lt;DemoInput id=&quot;standalone-email&quot; type=&quot;email&quot; aria-describedby=&quot;standalone-error&quot; /&gt;
+        &lt;Field.Error id=&quot;standalone-error&quot;&gt;Something went wrong.&lt;/Field.Error&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Own Props Win</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Explicit props on a part win over the field&#39;s context</div>
+              <div class="hint">A context is a default, never an override: an explicit `htmlFor` or `id` on a
+part wins over what `Field.Root` provides.</div>
+              <pre><code>const OwnPropsWin = () =&gt; (
+    &lt;Field.Root&gt;
+        &lt;Label htmlFor=&quot;own-input&quot;&gt;Email&lt;/Label&gt;
+        &lt;input id=&quot;own-input&quot; type=&quot;email&quot; className={inputRecipe()} /&gt;
+        &lt;Field.Description id=&quot;own-description&quot;&gt;Points wherever you say.&lt;/Field.Description&gt;
+    &lt;/Field.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Errors From Context</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Errors supplied to a bare Field.Error through context</div>
+              <div class="hint">`FieldContext` is an extension point: re-provided under the root with the
+errors, a bare `&lt;Field.Error /&gt;` renders them — here with `useState` and no
+form library. `InputContext` extends the same way with `value`, `onChange`,
+`onBlur` and `name`; see `FieldText`.</div>
+              <pre><code>const ErrorsFromContext = () =&gt; &lt;FieldWithSuppliedErrors /&gt;;</code></pre>
+            </div>
+        </div>
+    
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
+  aria-label="FieldText">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> FieldText</h2>
+      <div class="badges">
+        <label for="c-12-components-fieldtext-props" class="badge ok as-toggle">6 prop types</label>
+        
+        <label for="c-12-components-fieldtext-stories" class="badge ok as-toggle">7 stories</label>
+        
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/field-text/field-text.stories.tsx">components-fieldtext · ./src/field-text/field-text.stories.tsx</div>
+    <div>Field for a single-line text control, wiring the Input inside it</div>
+    <div class="hint">FieldText is a `Field.Root` for a single-line text control. It provides
+`InputContext`, so the `Input` inside associates itself with the label and
+the messages and takes `invalid`, `required`, `disabled` and `readOnly` from
+the field — no `id`, `htmlFor`, `aria-describedby` or `aria-invalid` written
+by hand.
+
+It knows nothing about form libraries, and its contexts compose: a provider
+nested inside it can extend `InputContext` with `value`, `onChange`, `onBlur`
+and `name`, and `FieldContext` with the errors, as the last story shows.</div>
+    <div class="kv"><span class="chip">summary: Field for a single-line text control, wiring the Input inside it</span><span class="chip">example: &lt;FieldText invalid={!!error} required&gt;
+  &lt;Label&gt;Email&lt;/Label&gt;
+  &lt;Input type=&quot;email&quot; /&gt;
+  &lt;Field.Description&gt;We only use this for policy documents.&lt;/Field.Description&gt;
+  &lt;Field.Error errors={[error]} /&gt;
+&lt;/FieldText&gt;</span></div>
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-12-components-fieldtext-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+  <input id="c-12-components-fieldtext-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-component-meta)</small></span>
+              <span class="badge ok">6 prop types</span>
+            </div>
+            <pre><code>Component: src/field-text/index.ts::FieldText</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>/**
+ * `id` for the control. Generated when omitted. Set it here, not on the
+ * control, so the label and the messages keep pointing at the right element.
+ */
+controlId?: string
+
+/**
+ * Disables the control through its context and sets `data-disabled` on the root.
+ */
+disabled?: boolean
+
+/**
+ * Marks the field as failing validation: sets `data-invalid` on the root and
+ * `aria-invalid` on the control through its context, which drives the
+ * control&#39;s destructive border. The label keeps its color by design.
+ */
+invalid?: boolean
+
+/**
+ * Layout of the field. `vertical` (default) stacks label, control and
+ * messages. `horizontal` is one row at every width: the first child fills it
+ * and the rest keep their natural width, aligned to the right, so the
+ * controls of stacked fields line up. `responsive` stacks below `28rem` and
+ * behaves like `horizontal` from there, measured on the field itself, so it
+ * needs no particular wrapper. In both, `Field.Content` groups a control with
+ * its messages, or a label with its description.
+ */
+orientation?: &quot;horizontal&quot; | &quot;vertical&quot; | &quot;responsive&quot;
+
+/**
+ * Makes the control read-only through its context (focusable and copyable,
+ * not editable, still submitted) and sets `data-readonly` on the root.
+ */
+readOnly?: boolean
+
+/**
+ * Single source of truth for a required field: the `Label` shows its
+ * asterisk and the control receives `required`, both through context.
+ */
+required?: boolean</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Field, FieldContext, FieldText, Input, InputContext, Label } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Label, Input and description wired with no ids</div>
+              <div class="hint">The composition consumers write: a label, the design system&#39;s `Input` and
+helper text. The label points at the input and the input is described by the
+text, all through context.</div>
+              <pre><code>const Default = () =&gt; &lt;FieldText
+    orientation=&quot;vertical&quot;
+    invalid={false}
+    disabled={false}
+    readOnly={false}
+    required={false}&gt;
+    &lt;Label&gt;Email&lt;/Label&gt;
+    &lt;Input type=&quot;email&quot; placeholder=&quot;you@example.com&quot; /&gt;
+    &lt;Field.Description&gt;We only use this to send policy documents.&lt;/Field.Description&gt;
+&lt;/FieldText&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Required</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Required field driven from the root alone</div>
+              <div class="hint">`required` on the field reaches both the label&#39;s asterisk and the input&#39;s
+`required` attribute.</div>
+              <pre><code>const Required = () =&gt; &lt;FieldText
+    orientation=&quot;vertical&quot;
+    invalid={false}
+    disabled={false}
+    readOnly={false}
+    required&gt;
+    &lt;Label&gt;Full name&lt;/Label&gt;
+    &lt;Input placeholder=&quot;Jane Doe&quot; /&gt;
+&lt;/FieldText&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Invalid</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Invalid field with the Input styled by aria-invalid</div>
+              <div class="hint">`invalid` on the field sets `aria-invalid` on the input, which drives its
+destructive border, and the error is announced with the input.</div>
+              <pre><code>const Invalid = () =&gt; &lt;FieldText
+    orientation=&quot;vertical&quot;
+    invalid
+    disabled={false}
+    readOnly={false}
+    required={false}&gt;
+    &lt;Label&gt;Email&lt;/Label&gt;
+    &lt;Input type=&quot;email&quot; defaultValue=&quot;not-an-email&quot; /&gt;
+    &lt;Field.Error errors={[{ message: &#39;Enter a valid email address.&#39; }]} /&gt;
+&lt;/FieldText&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Disabled</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Disabled field driven from the root</div>
+              <div class="hint">`disabled` on the field disables the input through context.</div>
+              <pre><code>const Disabled = () =&gt; &lt;FieldText
+    orientation=&quot;vertical&quot;
+    invalid={false}
+    disabled
+    readOnly={false}
+    required={false}&gt;
+    &lt;Label&gt;Agency&lt;/Label&gt;
+    &lt;Input defaultValue=&quot;Acme Insurance&quot; /&gt;
+&lt;/FieldText&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Read Only</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Read-only field driven from the root</div>
+              <div class="hint">`readOnly` on the field reaches the input through context. The value stays
+focusable, copyable and submitted, and the input looks like any other.</div>
+              <pre><code>const ReadOnly = () =&gt; &lt;FieldText
+    orientation=&quot;vertical&quot;
+    invalid={false}
+    disabled={false}
+    readOnly
+    required={false}&gt;
+    &lt;Label&gt;Policy number&lt;/Label&gt;
+    &lt;Input defaultValue=&quot;POL-2049-118&quot; /&gt;
+    &lt;Field.Description&gt;Assigned by the carrier; contact support to change it.&lt;/Field.Description&gt;
+&lt;/FieldText&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Own Props Win</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Input&#39;s own props merge with, and win over, the field&#39;s context</div>
+              <div class="hint">The context is a default, never an override: an extra `aria-describedby` is
+concatenated with the field&#39;s ids, `className` is merged and `size` passes
+through untouched.</div>
+              <pre><code>const OwnPropsWin = () =&gt; &lt;div className=&quot;flex flex-col gap-2&quot;&gt;
+    &lt;FieldText
+        orientation=&quot;vertical&quot;
+        invalid={false}
+        disabled={false}
+        readOnly={false}
+        required={false}&gt;
+        &lt;Label&gt;Website&lt;/Label&gt;
+        &lt;Input type=&quot;url&quot; size=&quot;lg&quot; className=&quot;max-w-xs&quot; aria-describedby=&quot;website-hint&quot; /&gt;
+        &lt;Field.Description&gt;Include the protocol.&lt;/Field.Description&gt;
+    &lt;/FieldText&gt;
+    &lt;p id=&quot;website-hint&quot; className=&quot;text-sm&quot;&gt;Shown on your public profile.
+                    &lt;/p&gt;
+&lt;/div&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Controlled From Context</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Input controlled and errors supplied from outside the field</div>
+              <div class="hint">The contexts are an extension point: a provider nested in the field adds
+`name`, `value`, `onChange` and `onBlur` to `InputContext`, so a bare
+`&lt;Input /&gt;` becomes controlled, and the errors to `FieldContext`, so a bare
+`&lt;Field.Error /&gt;` renders them — here with `useState` and no form library.
+The input&#39;s own `onChange` still runs, chained after the provider&#39;s.</div>
+              <pre><code>const ControlledFromContext = () =&gt; &lt;ControlledField /&gt;;</code></pre>
+            </div>
+        </div>
+    
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
   aria-label="HoverCard.Root">
   <div class="head">
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> HoverCard.Root</h2>
       <div class="badges">
-        <label for="c-11-components-hovercard-props" class="badge ok as-toggle">6 prop types</label>
+        <label for="c-13-components-hovercard-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-11-components-hovercard-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-13-components-hovercard-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -4535,10 +5237,10 @@ import { HoverCard } from &#39;@agentero/design-system/hover-card&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-11-components-hovercard-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-13-components-hovercard-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-11-components-hovercard-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-13-components-hovercard-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -4785,23 +5487,24 @@ trigger-dense UIs where an instant preview reads as more responsive.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Input</h2>
       <div class="badges">
-        <label for="c-12-components-input-props" class="badge ok as-toggle">7 prop types</label>
+        <label for="c-14-components-input-props" class="badge ok as-toggle">7 prop types</label>
         
-        <label for="c-12-components-input-stories" class="badge ok as-toggle">9 stories</label>
+        <label for="c-14-components-input-stories" class="badge ok as-toggle">9 stories</label>
         
         
       </div>
     </div>
     <div class="meta" title="./src/input/input.stories.tsx">components-input · ./src/input/input.stories.tsx</div>
-    <div>Base single-line text control, unaware of fields and form libraries</div>
-    <div class="hint">Input is the base single-line text control. It is intentionally unaware of
-form fields and form libraries: `id`, `aria-invalid` and `aria-describedby`
-are plain props, set by a field wrapper or by hand.
+    <div>Base single-line text control that takes its wiring from InputContext</div>
+    <div class="hint">Input is the base single-line text control. When a container such as
+`FieldText` provides `InputContext`, it picks up `id`, `aria-invalid` and
+`aria-describedby` on its own; standalone, as here, they are plain props set
+by hand.
 
 There is no `status` prop. Mark the control `aria-invalid` and the
 destructive border follows, so the styling can never disagree with what
 assistive technology announces.</div>
-    <div class="kv"><span class="chip">summary: Base single-line text control, unaware of fields and form libraries</span><span class="chip">example: &lt;Label htmlFor=&quot;email&quot;&gt;Email&lt;/Label&gt;
+    <div class="kv"><span class="chip">summary: Base single-line text control that takes its wiring from InputContext</span><span class="chip">example: &lt;Label htmlFor=&quot;email&quot;&gt;Email&lt;/Label&gt;
 &lt;Input id=&quot;email&quot; type=&quot;email&quot; placeholder=&quot;you@example.com&quot; /&gt;</span><span class="chip">example: &lt;Input id=&quot;email&quot; aria-invalid aria-describedby=&quot;email-error&quot; /&gt;
 &lt;span id=&quot;email-error&quot;&gt;Enter a valid email address.&lt;/span&gt;</span></div>
   </div>
@@ -4809,10 +5512,10 @@ assistive technology announces.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-12-components-input-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-14-components-input-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-12-components-input-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-14-components-input-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -5024,9 +5727,9 @@ they cannot change.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Label</h2>
       <div class="badges">
-        <label for="c-13-components-label-props" class="badge ok as-toggle">3 prop types</label>
+        <label for="c-15-components-label-props" class="badge ok as-toggle">3 prop types</label>
         
-        <label for="c-13-components-label-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-15-components-label-stories" class="badge ok as-toggle">5 stories</label>
         
         
       </div>
@@ -5046,10 +5749,10 @@ still has to carry `required` / `aria-required`.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-13-components-label-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-15-components-label-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-13-components-label-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-15-components-label-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -5085,7 +5788,7 @@ required?: boolean = false</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Label } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Field, Label } from "@agentero/design-system";</code></pre>
               </div>
           
           
@@ -5098,7 +5801,7 @@ required?: boolean = false</code></pre>
               <div class="hint">A plain caption, associated with its control through `htmlFor`.</div>
               <pre><code>const Default = () =&gt; &lt;&gt;
     &lt;Label htmlFor=&quot;email&quot;&gt;Email&lt;/Label&gt;
-    &lt;input id=&quot;email&quot; placeholder=&quot;you@example.com&quot; /&gt;
+    &lt;input id=&quot;email&quot; placeholder=&quot;you@example.com&quot; className={inputRecipe()} /&gt;
 &lt;/&gt;;</code></pre>
             </div>
             <div class="note ok">
@@ -5130,6 +5833,28 @@ required?: boolean = false</code></pre>
 dropped, so a mistake never takes the page down.</div>
               <pre><code>const RequiredWinsOverOptional = () =&gt; &lt;Label optional required&gt;Agency name&lt;/Label&gt;;</code></pre>
             </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Inside Field</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Inside a Field the label associates itself; explicit htmlFor wins</div>
+              <div class="hint">Inside a `Field.Root` the label reads `LabelContext` and points at the
+field&#39;s control with no `htmlFor`. An explicit `htmlFor` still wins.</div>
+              <pre><code>const InsideField = () =&gt; (
+    &lt;div className=&quot;flex flex-col gap-6&quot;&gt;
+        &lt;Field.Root&gt;
+            &lt;Label&gt;Email&lt;/Label&gt;
+            &lt;FieldInput /&gt;
+        &lt;/Field.Root&gt;
+
+        &lt;Field.Root&gt;
+            &lt;Label htmlFor=&quot;explicit-control&quot;&gt;Phone&lt;/Label&gt;
+            &lt;input id=&quot;explicit-control&quot; className={inputRecipe()} /&gt;
+        &lt;/Field.Root&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
         </div>
     
     
@@ -5147,9 +5872,9 @@ dropped, so a mistake never takes the page down.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Loading</h2>
       <div class="badges">
-        <label for="c-14-components-loading-props" class="badge ok as-toggle">1 prop type</label>
+        <label for="c-16-components-loading-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-14-components-loading-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-16-components-loading-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -5166,10 +5891,10 @@ parent font size via `em`-based size variants (`sm`, `md`, `lg`).</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-14-components-loading-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-16-components-loading-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-14-components-loading-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-16-components-loading-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -5320,9 +6045,9 @@ against the dark background.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Modal.Root</h2>
       <div class="badges">
-        <label for="c-15-components-modal-props" class="badge ok as-toggle">5 prop types</label>
+        <label for="c-17-components-modal-props" class="badge ok as-toggle">5 prop types</label>
         
-        <label for="c-15-components-modal-stories" class="badge ok as-toggle">6 stories</label>
+        <label for="c-17-components-modal-stories" class="badge ok as-toggle">6 stories</label>
         
         
       </div>
@@ -5368,10 +6093,10 @@ import { Modal } from &#39;@agentero/design-system/modal&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-15-components-modal-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-17-components-modal-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-15-components-modal-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-17-components-modal-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -5568,9 +6293,9 @@ announced as an `alertdialog`. Only the footer actions close it.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Pagination</h2>
       <div class="badges">
-        <label for="c-16-components-pagination-props" class="badge ok as-toggle">5 prop types</label>
+        <label for="c-18-components-pagination-props" class="badge ok as-toggle">5 prop types</label>
         
-        <label for="c-16-components-pagination-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-18-components-pagination-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -5600,10 +6325,10 @@ const [page, setPage] = useState(1);
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-16-components-pagination-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-18-components-pagination-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-16-components-pagination-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-18-components-pagination-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -5758,9 +6483,9 @@ entries summary follow along.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Popover.Root</h2>
       <div class="badges">
-        <label for="c-17-components-popover-props" class="badge ok as-toggle">5 prop types</label>
+        <label for="c-19-components-popover-props" class="badge ok as-toggle">5 prop types</label>
         
-        <label for="c-17-components-popover-stories" class="badge ok as-toggle">5 stories</label>
+        <label for="c-19-components-popover-stories" class="badge ok as-toggle">5 stories</label>
         
         
       </div>
@@ -5789,10 +6514,10 @@ import { Popover } from &#39;@agentero/design-system/popover&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-17-components-popover-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-19-components-popover-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-17-components-popover-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-19-components-popover-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -5991,9 +6716,9 @@ focus returning to its trigger once the modal closes.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Progress</h2>
       <div class="badges">
-        <label for="c-18-components-progress-props" class="badge ok as-toggle">4 prop types</label>
+        <label for="c-20-components-progress-props" class="badge ok as-toggle">4 prop types</label>
         
-        <label for="c-18-components-progress-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-20-components-progress-stories" class="badge ok as-toggle">4 stories</label>
         
         
       </div>
@@ -6012,10 +6737,10 @@ with `currentColor`, so recolor it with a plain text class — e.g.
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-18-components-progress-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-20-components-progress-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-18-components-progress-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-20-components-progress-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -6134,7 +6859,7 @@ percentage: number</code></pre>
       <div class="badges">
         
         
-        <label for="c-19-components-skeleton-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-21-components-skeleton-stories" class="badge ok as-toggle">4 stories</label>
         
         
       </div>
@@ -6151,7 +6876,7 @@ shape it with Tailwind classes to mirror the content it stands in for.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-19-components-skeleton-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-21-components-skeleton-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
   
@@ -6247,9 +6972,9 @@ shape it with Tailwind classes to mirror the content it stands in for.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Switch</h2>
       <div class="badges">
-        <label for="c-20-components-switch-props" class="badge ok as-toggle">8 prop types</label>
+        <label for="c-22-components-switch-props" class="badge ok as-toggle">8 prop types</label>
         
-        <label for="c-20-components-switch-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-22-components-switch-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -6265,10 +6990,10 @@ a Checkbox for a single boolean that applies instantly, and pair it with a
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-20-components-switch-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-22-components-switch-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-20-components-switch-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-22-components-switch-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -6449,9 +7174,9 @@ size?: &quot;sm&quot; | &quot;md&quot;</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Table.Root</h2>
       <div class="badges">
-        <label for="c-21-components-table-props" class="badge ok as-toggle">6 prop types</label>
+        <label for="c-23-components-table-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-21-components-table-stories" class="badge ok as-toggle">9 stories</label>
+        <label for="c-23-components-table-stories" class="badge ok as-toggle">9 stories</label>
         
         
       </div>
@@ -6482,10 +7207,10 @@ import { Table } from &#39;@agentero/design-system/table&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-21-components-table-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-23-components-table-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-21-components-table-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-23-components-table-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -6680,9 +7405,9 @@ import { Fragment } from "react";</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tabs.Root</h2>
       <div class="badges">
-        <label for="c-22-components-tabs-props" class="badge ok as-toggle">9 prop types</label>
+        <label for="c-24-components-tabs-props" class="badge ok as-toggle">9 prop types</label>
         
-        <label for="c-22-components-tabs-stories" class="badge ok as-toggle">8 stories</label>
+        <label for="c-24-components-tabs-stories" class="badge ok as-toggle">8 stories</label>
         
         
       </div>
@@ -6713,10 +7438,10 @@ import { Tabs } from &#39;@agentero/design-system/tabs&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-22-components-tabs-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-24-components-tabs-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-22-components-tabs-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-24-components-tabs-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -6937,9 +7662,9 @@ tablist role is announced.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tag</h2>
       <div class="badges">
-        <label for="c-23-components-tag-props" class="badge ok as-toggle">8 prop types</label>
+        <label for="c-25-components-tag-props" class="badge ok as-toggle">8 prop types</label>
         
-        <label for="c-23-components-tag-stories" class="badge ok as-toggle">12 stories</label>
+        <label for="c-25-components-tag-stories" class="badge ok as-toggle">12 stories</label>
         
         
       </div>
@@ -6958,10 +7683,10 @@ it an interactive link or button, which adds the pointer cursor and hover fill.<
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-23-components-tag-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-25-components-tag-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-23-components-tag-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-25-components-tag-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -7386,9 +8111,9 @@ leading + trailing icons, and icon-only.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Toast</h2>
       <div class="badges">
-        <label for="c-24-components-toast-props" class="badge ok as-toggle">11 prop types</label>
+        <label for="c-26-components-toast-props" class="badge ok as-toggle">11 prop types</label>
         
-        <label for="c-24-components-toast-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-26-components-toast-stories" class="badge ok as-toggle">11 stories</label>
         
         
       </div>
@@ -7407,10 +8132,10 @@ common feedback patterns.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-24-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-26-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-24-components-toast-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-26-components-toast-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -7839,9 +8564,9 @@ action (e.g., a sync icon for a sync-in-progress toast).</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tooltip</h2>
       <div class="badges">
-        <label for="c-25-components-tooltip-props" class="badge ok as-toggle">12 prop types</label>
+        <label for="c-27-components-tooltip-props" class="badge ok as-toggle">12 prop types</label>
         
-        <label for="c-25-components-tooltip-stories" class="badge ok as-toggle">5 stories</label>
+        <label for="c-27-components-tooltip-stories" class="badge ok as-toggle">5 stories</label>
         
         
       </div>
@@ -7860,10 +8585,10 @@ on hover or focus.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-25-components-tooltip-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-27-components-tooltip-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-25-components-tooltip-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-27-components-tooltip-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -8035,9 +8760,9 @@ sideOffset?: number = 4</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> ValidationList</h2>
       <div class="badges">
-        <label for="c-26-components-validationlist-props" class="badge ok as-toggle">2 prop types</label>
+        <label for="c-28-components-validationlist-props" class="badge ok as-toggle">2 prop types</label>
         
-        <label for="c-26-components-validationlist-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-28-components-validationlist-stories" class="badge ok as-toggle">4 stories</label>
         
         
       </div>
@@ -8058,10 +8783,10 @@ your form validation; it does not own the input or block submission.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-26-components-validationlist-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-28-components-validationlist-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-26-components-validationlist-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-28-components-validationlist-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     

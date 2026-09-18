@@ -4404,6 +4404,490 @@
       ],
       "import": "import { Button, DropdownMenu } from \"@agentero/design-system\";"
     },
+    "components-fieldtext": {
+      "id": "components-fieldtext",
+      "name": "FieldText",
+      "path": "./src/field-text/field-text.stories.tsx",
+      "jsDocTags": {
+        "summary": [
+          "Field for a single-line text control, wiring the Input inside it"
+        ],
+        "example": [
+          "<FieldText invalid={!!error} required>\n  <Label>Email</Label>\n  <Input type=\"email\" />\n  <Field.Description>We only use this for policy documents.</Field.Description>\n  <Field.Error errors={[error]} />\n</FieldText>"
+        ]
+      },
+      "description": "FieldText is a `Field.Root` for a single-line text control. It provides\n`InputContext`, so the `Input` inside associates itself with the label and\nthe messages and takes `invalid`, `required`, `disabled` and `readOnly` from\nthe field — no `id`, `htmlFor`, `aria-describedby` or `aria-invalid` written\nby hand.\n\nIt knows nothing about form libraries, and its contexts compose: a provider\nnested inside it can extend `InputContext` with `value`, `onChange`, `onBlur`\nand `name`, and `FieldContext` with the errors, as the last story shows.",
+      "summary": "Field for a single-line text control, wiring the Input inside it",
+      "reactComponentMeta": {
+        "displayName": "FieldText",
+        "exportName": "FieldText",
+        "filePath": "/home/runner/work/design-system/design-system/src/field-text/index.ts",
+        "description": "A `Field.Root` for a single-line text control: it provides `InputContext`,\nso the `Input` inside associates itself with the label and the messages and\ntakes `invalid`, `required`, `disabled` and `readOnly` from the field. Every\nother part (`Label`, `Field.Description`, `Field.Error`) works as in any\nfield.\n\nForm-library agnostic, and its contexts compose: a provider nested inside it\ncan extend `InputContext` with `name`, `value`, `onChange`, `onBlur` and\n`ref` to control the `Input`, and `FieldContext` with the errors, on top of\nthe wiring `FieldText` already set.",
+        "jsDocTags": {
+          "summary": [
+            "Field for a single-line text control, wiring the Input inside it"
+          ],
+          "example": [
+            "<FieldText invalid={!!error} required>\n  <Label>Email</Label>\n  <Input type=\"email\" />\n  <Field.Description>We only use this for policy documents.</Field.Description>\n  <Field.Error errors={[error]} />\n</FieldText>"
+          ]
+        },
+        "props": {
+          "orientation": {
+            "name": "orientation",
+            "required": false,
+            "type": {
+              "name": "enum",
+              "raw": "\"horizontal\" | \"vertical\" | \"responsive\"",
+              "value": [
+                {
+                  "value": "\"horizontal\""
+                },
+                {
+                  "value": "\"vertical\""
+                },
+                {
+                  "value": "\"responsive\""
+                }
+              ]
+            },
+            "description": "Layout of the field. `vertical` (default) stacks label, control and\nmessages. `horizontal` is one row at every width: the first child fills it\nand the rest keep their natural width, aligned to the right, so the\ncontrols of stacked fields line up. `responsive` stacks below `28rem` and\nbehaves like `horizontal` from there, measured on the field itself, so it\nneeds no particular wrapper. In both, `Field.Content` groups a control with\nits messages, or a label with its description.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
+          "invalid": {
+            "name": "invalid",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Marks the field as failing validation: sets `data-invalid` on the root and\n`aria-invalid` on the control through its context, which drives the\ncontrol's destructive border. The label keeps its color by design.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
+          "disabled": {
+            "name": "disabled",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Disables the control through its context and sets `data-disabled` on the root.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
+          "readOnly": {
+            "name": "readOnly",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Makes the control read-only through its context (focusable and copyable,\nnot editable, still submitted) and sets `data-readonly` on the root.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
+          "required": {
+            "name": "required",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Single source of truth for a required field: the `Label` shows its\nasterisk and the control receives `required`, both through context.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
+          "controlId": {
+            "name": "controlId",
+            "required": false,
+            "type": {
+              "name": "string"
+            },
+            "description": "`id` for the control. Generated when omitted. Set it here, not on the\ncontrol, so the label and the messages keep pointing at the right element.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          }
+        }
+      },
+      "stories": [
+        {
+          "id": "components-fieldtext--default",
+          "name": "Default",
+          "snippet": "const Default = () => <FieldText\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Label>Email</Label>\n    <Input type=\"email\" placeholder=\"you@example.com\" />\n    <Field.Description>We only use this to send policy documents.</Field.Description>\n</FieldText>;",
+          "description": "The composition consumers write: a label, the design system's `Input` and\nhelper text. The label points at the input and the input is described by the\ntext, all through context.",
+          "summary": "Label, Input and description wired with no ids"
+        },
+        {
+          "id": "components-fieldtext--required",
+          "name": "Required",
+          "snippet": "const Required = () => <FieldText\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required>\n    <Label>Full name</Label>\n    <Input placeholder=\"Jane Doe\" />\n</FieldText>;",
+          "description": "`required` on the field reaches both the label's asterisk and the input's\n`required` attribute.",
+          "summary": "Required field driven from the root alone"
+        },
+        {
+          "id": "components-fieldtext--invalid",
+          "name": "Invalid",
+          "snippet": "const Invalid = () => <FieldText\n    orientation=\"vertical\"\n    invalid\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Label>Email</Label>\n    <Input type=\"email\" defaultValue=\"not-an-email\" />\n    <Field.Error errors={[{ message: 'Enter a valid email address.' }]} />\n</FieldText>;",
+          "description": "`invalid` on the field sets `aria-invalid` on the input, which drives its\ndestructive border, and the error is announced with the input.",
+          "summary": "Invalid field with the Input styled by aria-invalid"
+        },
+        {
+          "id": "components-fieldtext--disabled",
+          "name": "Disabled",
+          "snippet": "const Disabled = () => <FieldText\n    orientation=\"vertical\"\n    invalid={false}\n    disabled\n    readOnly={false}\n    required={false}>\n    <Label>Agency</Label>\n    <Input defaultValue=\"Acme Insurance\" />\n</FieldText>;",
+          "description": "`disabled` on the field disables the input through context.",
+          "summary": "Disabled field driven from the root"
+        },
+        {
+          "id": "components-fieldtext--read-only",
+          "name": "Read Only",
+          "snippet": "const ReadOnly = () => <FieldText\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly\n    required={false}>\n    <Label>Policy number</Label>\n    <Input defaultValue=\"POL-2049-118\" />\n    <Field.Description>Assigned by the carrier; contact support to change it.</Field.Description>\n</FieldText>;",
+          "description": "`readOnly` on the field reaches the input through context. The value stays\nfocusable, copyable and submitted, and the input looks like any other.",
+          "summary": "Read-only field driven from the root"
+        },
+        {
+          "id": "components-fieldtext--own-props-win",
+          "name": "Own Props Win",
+          "snippet": "const OwnPropsWin = () => <div className=\"flex flex-col gap-2\">\n    <FieldText\n        orientation=\"vertical\"\n        invalid={false}\n        disabled={false}\n        readOnly={false}\n        required={false}>\n        <Label>Website</Label>\n        <Input type=\"url\" size=\"lg\" className=\"max-w-xs\" aria-describedby=\"website-hint\" />\n        <Field.Description>Include the protocol.</Field.Description>\n    </FieldText>\n    <p id=\"website-hint\" className=\"text-sm\">Shown on your public profile.\n                    </p>\n</div>;",
+          "description": "The context is a default, never an override: an extra `aria-describedby` is\nconcatenated with the field's ids, `className` is merged and `size` passes\nthrough untouched.",
+          "summary": "Input's own props merge with, and win over, the field's context"
+        },
+        {
+          "id": "components-fieldtext--controlled-from-context",
+          "name": "Controlled From Context",
+          "snippet": "const ControlledFromContext = () => <ControlledField />;",
+          "description": "The contexts are an extension point: a provider nested in the field adds\n`name`, `value`, `onChange` and `onBlur` to `InputContext`, so a bare\n`<Input />` becomes controlled, and the errors to `FieldContext`, so a bare\n`<Field.Error />` renders them — here with `useState` and no form library.\nThe input's own `onChange` still runs, chained after the provider's.",
+          "summary": "Input controlled and errors supplied from outside the field"
+        }
+      ],
+      "import": "import { Field, FieldContext, FieldText, Input, InputContext, Label } from \"@agentero/design-system\";"
+    },
+    "components-field": {
+      "id": "components-field",
+      "name": "Field.Root",
+      "path": "./src/field/field.stories.tsx",
+      "jsDocTags": {
+        "summary": [
+          "Wraps a label, control, description and error into one field"
+        ],
+        "example": [
+          "<Field.Root invalid={!!error} required>\n  <Field.Label>Email</Field.Label>\n  <Input type=\"email\" />\n  <Field.Description>We only use this for policy documents.</Field.Description>\n  <Field.Error errors={[error]} />\n</Field.Root>"
+        ]
+      },
+      "description": "Field lays out a single form field — label, control, helper text and error —\nand wires the accessibility relationships between them. `Field.Root`\ngenerates the ids and shares them through context: `Label` reads\n`LabelContext`, `Field.Description` and `Field.Error` read `FieldContext`,\nand a `Field<X>` such as `FieldText` provides the control's context. Nobody\npasses an `id` by hand.\n\nPresentational and form-library agnostic: pass `invalid` and the error\nmessages from whatever validates the form. Spacing between fields belongs to\n`Field.Group`, never to a margin on the field itself.\n\n`Field.Description` and `Field.Error` register themselves with the root, so\nthe control's `aria-describedby` lists exactly the messages on screen and is\nabsent when there is none.",
+      "summary": "Wraps a label, control, description and error into one field",
+      "reactComponentMeta": {
+        "displayName": "Field.Root",
+        "exportName": "Field",
+        "filePath": "/home/runner/work/design-system/design-system/src/field/index.ts",
+        "description": "Wraps one label, control, description and error into a single field and\nwires the accessibility relationships between them. It generates the ids\nand shares them through context: `Label` reads `LabelContext`,\n`Field.Description` and `Field.Error` read `FieldContext` and register\nthemselves so the control's `aria-describedby` lists exactly the messages on\nscreen, and a `Field<X>` such as `FieldText` provides the control's context so\nthe control associates itself too. Nobody passes an `id` by hand.\n\nPresentational and form-library agnostic: pass `invalid` and the error\nmessages from whatever validates the form. Deliberately not a `role=\"group\"`:\none field is not a set of related controls, and an unnamed group only adds\nscreen-reader verbosity. Real groupings belong to a fieldset with a legend.",
+        "jsDocTags": {
+          "summary": [
+            "Wraps a label, control, description and error into one field"
+          ],
+          "example": [
+            "<Field.Root invalid={!!error} required>\n  <Field.Label>Email</Field.Label>\n  <Input type=\"email\" />\n  <Field.Description>We only use this for policy documents.</Field.Description>\n  <Field.Error errors={[error]} />\n</Field.Root>"
+          ]
+        },
+        "props": {
+          "orientation": {
+            "name": "orientation",
+            "required": false,
+            "type": {
+              "name": "enum",
+              "raw": "\"horizontal\" | \"vertical\" | \"responsive\"",
+              "value": [
+                {
+                  "value": "\"horizontal\""
+                },
+                {
+                  "value": "\"vertical\""
+                },
+                {
+                  "value": "\"responsive\""
+                }
+              ]
+            },
+            "description": "Layout of the field. `vertical` (default) stacks label, control and\nmessages. `horizontal` is one row at every width: the first child fills it\nand the rest keep their natural width, aligned to the right, so the\ncontrols of stacked fields line up. `responsive` stacks below `28rem` and\nbehaves like `horizontal` from there, measured on the field itself, so it\nneeds no particular wrapper. In both, `Field.Content` groups a control with\nits messages, or a label with its description.",
+            "defaultValue": {
+              "value": "'vertical'"
+            },
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
+          "invalid": {
+            "name": "invalid",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Marks the field as failing validation: sets `data-invalid` on the root and\n`aria-invalid` on the control through its context, which drives the\ncontrol's destructive border. The label keeps its color by design.",
+            "defaultValue": {
+              "value": "false"
+            },
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
+          "disabled": {
+            "name": "disabled",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Disables the control through its context and sets `data-disabled` on the root.",
+            "defaultValue": {
+              "value": "false"
+            },
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
+          "readOnly": {
+            "name": "readOnly",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Makes the control read-only through its context (focusable and copyable,\nnot editable, still submitted) and sets `data-readonly` on the root.",
+            "defaultValue": {
+              "value": "false"
+            },
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
+          "required": {
+            "name": "required",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Single source of truth for a required field: the `Label` shows its\nasterisk and the control receives `required`, both through context.",
+            "defaultValue": {
+              "value": "false"
+            },
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
+          "controlId": {
+            "name": "controlId",
+            "required": false,
+            "type": {
+              "name": "string"
+            },
+            "description": "`id` for the control. Generated when omitted. Set it here, not on the\ncontrol, so the label and the messages keep pointing at the right element.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          }
+        }
+      },
+      "stories": [
+        {
+          "id": "components-field--default",
+          "name": "Default",
+          "snippet": "const Default = () => <Field.Root\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Label>Email</Label>\n    <DemoInput placeholder=\"you@example.com\" />\n    <Field.Description>We only use this to send policy documents.</Field.Description>\n</Field.Root>;",
+          "description": "A vertical field with a label, a control and helper text. The label points\nat the control and the description is referenced by it — neither needed an\nexplicit `id`.",
+          "summary": "Default vertical field with label, control and description"
+        },
+        {
+          "id": "components-field--required",
+          "name": "Required",
+          "snippet": "const Required = () => <Field.Root\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required>\n    <Label>Full name</Label>\n    <DemoInput placeholder=\"Jane Doe\" />\n</Field.Root>;",
+          "description": "`required` on the root is the single source of truth: the label shows its\nasterisk and the control receives `required`, both through context.",
+          "summary": "Required field driven from the root alone"
+        },
+        {
+          "id": "components-field--optional",
+          "name": "Optional",
+          "snippet": "const Optional = () => <Field.Root\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Label optional>Phone number</Label>\n    <DemoInput type=\"tel\" placeholder=\"+1 (555) 000-0000\" />\n</Field.Root>;",
+          "description": "`optional` on the label appends the muted suffix; the control stays\nnon-required.",
+          "summary": "Optional field with the muted label suffix"
+        },
+        {
+          "id": "components-field--with-tooltip",
+          "name": "With Tooltip",
+          "snippet": "const WithTooltip = () => <Field.Root\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required>\n    <Field.Label tooltip=\"Issued by the IRS to identify your business.\">Tax ID</Field.Label>\n    <DemoInput placeholder=\"XX-XXXXXXX\" />\n</Field.Root>;",
+          "description": "`Field.Label` puts an info button beside the caption. It is a sibling of the\n`<label>`, so it keeps its own accessible name, clicking it does not focus\nthe control, and the control's name stays clean. It opens on focus too.",
+          "summary": "Label with a tooltip trigger beside it"
+        },
+        {
+          "id": "components-field--invalid",
+          "name": "Invalid",
+          "snippet": "const Invalid = () => <Field.Root\n    orientation=\"vertical\"\n    invalid\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Label>Email</Label>\n    <DemoInput type=\"email\" defaultValue=\"not-an-email\" />\n    <Field.Error errors={[{ message: 'Enter a valid email address.' }]} />\n</Field.Root>;",
+          "description": "`invalid` on the root sets `data-invalid` for styling and `aria-invalid` on\nthe control, which drives its destructive border; the label keeps its color\nby design. `Field.Error` takes the error objects as they come from a form\nlibrary.",
+          "summary": "Invalid field with a single error message"
+        },
+        {
+          "id": "components-field--multiple-errors",
+          "name": "Multiple Errors",
+          "snippet": "const MultipleErrors = () => <Field.Root\n    orientation=\"vertical\"\n    invalid\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Label>Password</Label>\n    <DemoInput type=\"password\" defaultValue=\"abc\" />\n    <Field.Error\n        errors={[\n            { message: 'Use at least 8 characters.' },\n            { message: 'Include a number.' },\n            { message: 'Use at least 8 characters.' }\n        ]} />\n</Field.Root>;",
+          "description": "Several errors render as a list, de-duplicated by message.",
+          "summary": "Several errors rendered as a de-duplicated list"
+        },
+        {
+          "id": "components-field--no-error",
+          "name": "No Error",
+          "snippet": "const NoError = () => <Field.Root\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Label>Email</Label>\n    <DemoInput type=\"email\" />\n    <Field.Error errors={[undefined]} />\n</Field.Root>;",
+          "description": "`Field.Error` renders nothing without a message, so it can stay mounted and\nreceive `undefined` entries while the field is valid. With no description\neither, the control carries no `aria-describedby` at all.",
+          "summary": "Error stays mounted and renders nothing while valid"
+        },
+        {
+          "id": "components-field--disabled",
+          "name": "Disabled",
+          "snippet": "const Disabled = () => <Field.Root\n    orientation=\"vertical\"\n    invalid={false}\n    disabled\n    readOnly={false}\n    required={false}>\n    <Label>Agency</Label>\n    <DemoInput defaultValue=\"Acme Insurance\" />\n    <Field.Description>Managed by your administrator.</Field.Description>\n</Field.Root>;",
+          "description": "`disabled` on the root disables the control through context and sets\n`data-disabled` for styling.",
+          "summary": "Disabled field driven from the root"
+        },
+        {
+          "id": "components-field--read-only",
+          "name": "Read Only",
+          "snippet": "const ReadOnly = () => <Field.Root\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly\n    required={false}>\n    <Label>Policy number</Label>\n    <DemoInput defaultValue=\"POL-2049-118\" />\n    <Field.Description>Assigned by the carrier; contact support to change it.</Field.Description>\n</Field.Root>;",
+          "description": "`readOnly` on the root makes the control read-only through context and sets\n`data-readonly` for styling. Unlike `disabled`, the value stays focusable,\ncopyable and submitted.",
+          "summary": "Read-only field driven from the root"
+        },
+        {
+          "id": "components-field--horizontal",
+          "name": "Horizontal",
+          "snippet": "const Horizontal = () => (\n    <Field.Group className=\"w-[40rem]\">\n        <Field.Root orientation=\"horizontal\" data-testid=\"short\">\n            <Label>Full name</Label>\n            <DemoInput defaultValue=\"Rafa Moro\" className=\"w-72\" />\n        </Field.Root>\n\n        <Field.Root orientation=\"horizontal\" data-testid=\"long\">\n            <Label>Title</Label>\n            <Field.Content className=\"w-72\">\n                <DemoInput placeholder=\"Software engineer\" />\n                <Field.Description>Shown on your public profile.</Field.Description>\n            </Field.Content>\n        </Field.Root>\n\n        <Field.Root orientation=\"horizontal\" data-testid=\"switch\">\n            <Field.Content>\n                <Label>Auto-renew</Label>\n                <Field.Description>Renews the policy automatically before it expires.</Field.Description>\n            </Field.Content>\n            <DemoInput type=\"checkbox\" className=\"size-5\" />\n        </Field.Root>\n\n        <div className=\"w-[20rem]\" data-testid=\"narrow\">\n            <Field.Root orientation=\"horizontal\">\n                <Label>Email</Label>\n                <DemoInput type=\"email\" placeholder=\"you@example.com\" className=\"w-40\" />\n            </Field.Root>\n        </div>\n    </Field.Group>\n);",
+          "description": "`horizontal` is one row at every width. The first child fills the row and\neverything after it keeps its natural width, aligned to the right edge, so\nthe controls of stacked fields line up whatever their labels measure. Wrap a\nlabel with its description, or a control with its messages, in\n`Field.Content`. A control sets its own width: `Input` is `w-full`, so it\ngets one here.",
+          "summary": "Horizontal field, one row at every width, controls right-aligned"
+        },
+        {
+          "id": "components-field--responsive",
+          "name": "Responsive",
+          "snippet": "const Responsive = () => (\n    <div className=\"flex flex-col gap-8\">\n        <div className=\"w-full max-w-[40rem]\" data-testid=\"wide\">\n            <Field.Root orientation=\"responsive\">\n                <Label>Email</Label>\n                <Field.Content className=\"@md/field:w-72\">\n                    <DemoInput type=\"email\" placeholder=\"you@example.com\" />\n                    <Field.Description>\n                        We only use this to send policy documents, and never to contact you about anything\n                        else.\n                    </Field.Description>\n                </Field.Content>\n            </Field.Root>\n        </div>\n\n        <div className=\"w-full max-w-[20rem]\" data-testid=\"narrow\">\n            <Field.Root orientation=\"responsive\">\n                <Label>Email</Label>\n                <Field.Content>\n                    <DemoInput type=\"email\" placeholder=\"you@example.com\" />\n                    <Field.Description>We only use this to send policy documents.</Field.Description>\n                </Field.Content>\n            </Field.Root>\n        </div>\n    </div>\n);",
+          "description": "`responsive` stacks the parts below `28rem` and behaves like `horizontal`\nfrom there: first child fills, the rest keep their width on the right. It\nmeasures the field itself, so it needs no particular wrapper. A width that\nshould only apply once horizontal goes behind `@md/field:`.",
+          "summary": "Responsive field that stacks when narrow"
+        },
+        {
+          "id": "components-field--group",
+          "name": "Group",
+          "snippet": "const Group = () => (\n    <Field.Group>\n        <Field.Root required>\n            <Label>Full name</Label>\n            <DemoInput placeholder=\"Jane Doe\" />\n        </Field.Root>\n\n        <Field.Root required invalid>\n            <Label>Email</Label>\n            <DemoInput type=\"email\" defaultValue=\"not-an-email\" />\n            <Field.Error>Enter a valid email address.</Field.Error>\n        </Field.Root>\n\n        <Field.Root>\n            <Label optional>Phone number</Label>\n            <DemoInput type=\"tel\" placeholder=\"+1 (555) 000-0000\" />\n        </Field.Root>\n    </Field.Group>\n);",
+          "description": "`Field.Group` stacks fields and owns the space between them. Each field gets\nits own ids, so several on one page never collide.",
+          "summary": "Several fields stacked in a group"
+        },
+        {
+          "id": "components-field--standalone-outside-field",
+          "name": "Standalone Outside Field",
+          "snippet": "const StandaloneOutsideField = () => (\n    <div className=\"flex flex-col gap-2\">\n        <Label htmlFor=\"standalone-email\">Email</Label>\n        <DemoInput id=\"standalone-email\" type=\"email\" aria-describedby=\"standalone-error\" />\n        <Field.Error id=\"standalone-error\">Something went wrong.</Field.Error>\n    </div>\n);",
+          "description": "Outside a `Field.Root` every part reads a `null` context and works on its own\nprops alone: `Label` needs its `htmlFor`, `Field.Error` its own `id`.",
+          "summary": "Label and Field.Error used without a Field.Root"
+        },
+        {
+          "id": "components-field--own-props-win",
+          "name": "Own Props Win",
+          "snippet": "const OwnPropsWin = () => (\n    <Field.Root>\n        <Label htmlFor=\"own-input\">Email</Label>\n        <input id=\"own-input\" type=\"email\" className={inputRecipe()} />\n        <Field.Description id=\"own-description\">Points wherever you say.</Field.Description>\n    </Field.Root>\n);",
+          "description": "A context is a default, never an override: an explicit `htmlFor` or `id` on a\npart wins over what `Field.Root` provides.",
+          "summary": "Explicit props on a part win over the field's context"
+        },
+        {
+          "id": "components-field--errors-from-context",
+          "name": "Errors From Context",
+          "snippet": "const ErrorsFromContext = () => <FieldWithSuppliedErrors />;",
+          "description": "`FieldContext` is an extension point: re-provided under the root with the\nerrors, a bare `<Field.Error />` renders them — here with `useState` and no\nform library. `InputContext` extends the same way with `value`, `onChange`,\n`onBlur` and `name`; see `FieldText`.",
+          "summary": "Errors supplied to a bare Field.Error through context"
+        }
+      ],
+      "import": "import { Field, FieldContext, Label } from \"@agentero/design-system\";"
+    },
     "components-hovercard": {
       "id": "components-hovercard",
       "name": "HoverCard.Root",
@@ -4605,23 +5089,23 @@
       "path": "./src/input/input.stories.tsx",
       "jsDocTags": {
         "summary": [
-          "Base single-line text control, unaware of fields and form libraries"
+          "Base single-line text control that takes its wiring from InputContext"
         ],
         "example": [
           "<Label htmlFor=\"email\">Email</Label>\n<Input id=\"email\" type=\"email\" placeholder=\"you@example.com\" />",
           "<Input id=\"email\" aria-invalid aria-describedby=\"email-error\" />\n<span id=\"email-error\">Enter a valid email address.</span>"
         ]
       },
-      "description": "Input is the base single-line text control. It is intentionally unaware of\nform fields and form libraries: `id`, `aria-invalid` and `aria-describedby`\nare plain props, set by a field wrapper or by hand.\n\nThere is no `status` prop. Mark the control `aria-invalid` and the\ndestructive border follows, so the styling can never disagree with what\nassistive technology announces.",
-      "summary": "Base single-line text control, unaware of fields and form libraries",
+      "description": "Input is the base single-line text control. When a container such as\n`FieldText` provides `InputContext`, it picks up `id`, `aria-invalid` and\n`aria-describedby` on its own; standalone, as here, they are plain props set\nby hand.\n\nThere is no `status` prop. Mark the control `aria-invalid` and the\ndestructive border follows, so the styling can never disagree with what\nassistive technology announces.",
+      "summary": "Base single-line text control that takes its wiring from InputContext",
       "reactComponentMeta": {
         "displayName": "Input",
         "exportName": "Input",
         "filePath": "/home/runner/work/design-system/design-system/src/input/input.tsx",
-        "description": "Input is the design system's base single-line text control. Reach for it\nwhenever a form collects free text, and pair it with\n[Label](?path=/docs/components-label--docs) so the control has an accessible\nname.\n\nIt is deliberately self-contained: it renders the props it is given and\nknows nothing about form fields, form libraries, or surrounding layout.\nWiring (`id`, `aria-invalid`, `aria-describedby`) arrives as plain props, so\na field wrapper can inject them and standalone usage can set them by hand.\nThere is no `status` prop — mark the control `aria-invalid` and the\ndestructive border follows.\n\nDo not use Input for multi-line text; that is TextArea's job. It also has no\nslots for leading or trailing addons — an input with a currency prefix or a\nunit suffix belongs in an input group, not here.",
+        "description": "Input is the design system's base single-line text control. Reach for it\nwhenever a form collects free text, and pair it with\n[Label](?path=/docs/components-label--docs) so the control has an accessible\nname.\n\nWhen a container provides `InputContext`, the input takes its wiring (`id`,\n`aria-describedby`, `aria-invalid`, `required`, `disabled`, `readOnly`) from\nit with nothing passed by hand; `FieldText` is one such container. Standalone it\nrenders exactly the props it is given, and its own props always win over the\ncontext. There is no `status` prop — mark the control `aria-invalid` and the\ndestructive border follows.\n\nDo not use Input for multi-line text; that is TextArea's job. It also has no\nslots for leading or trailing addons — an input with a currency prefix or a\nunit suffix belongs in an input group, not here.",
         "jsDocTags": {
           "summary": [
-            "Base single-line text control, unaware of fields and form libraries"
+            "Base single-line text control that takes its wiring from InputContext"
           ],
           "example": [
             "<Label htmlFor=\"email\">Email</Label>\n<Input id=\"email\" type=\"email\" placeholder=\"you@example.com\" />",
@@ -4885,7 +5369,7 @@
         "displayName": "Label",
         "exportName": "Label",
         "filePath": "/home/runner/work/design-system/design-system/src/label/label.tsx",
-        "description": "Accessible caption for a form control, built on Radix's Label primitive so it\nassociates with the control via `htmlFor` and does not select text on\ndouble-click.\n\nKeep it text-only. Nesting an interactive element (a help tooltip trigger, a\nbutton) inside a `<label>` gives that element the label's accessible name and\nmakes a click focus the control — render it as a sibling instead.",
+        "description": "Accessible caption for a form control, built on Radix's Label primitive so it\nassociates with the control via `htmlFor` and does not select text on\ndouble-click.\n\nKeep it text-only. Nesting an interactive element (a help tooltip trigger, a\nbutton) inside a `<label>` gives that element the label's accessible name and\nmakes a click focus the control — render it as a sibling instead.\n\nWhen a container provides `LabelContext`, the label takes `htmlFor` and\n`required` from it and associates itself with the control without an explicit\n`htmlFor`; `Field.Root` is one such container. Standalone it behaves as a\nplain label. Its own props always win over the context.",
         "jsDocTags": {
           "summary": [
             "Accessible caption for a form control"
@@ -4962,7 +5446,7 @@
         {
           "id": "components-label--default",
           "name": "Default",
-          "snippet": "const Default = () => <>\n    <Label htmlFor=\"email\">Email</Label>\n    <input id=\"email\" placeholder=\"you@example.com\" />\n</>;",
+          "snippet": "const Default = () => <>\n    <Label htmlFor=\"email\">Email</Label>\n    <input id=\"email\" placeholder=\"you@example.com\" className={inputRecipe()} />\n</>;",
           "description": "A plain caption, associated with its control through `htmlFor`.",
           "summary": "Default label associated with a control"
         },
@@ -4986,9 +5470,16 @@
           "snippet": "const RequiredWinsOverOptional = () => <Label optional required>Agency name</Label>;",
           "description": "Contradictory props do not throw — `required` wins and the optional suffix is\ndropped, so a mistake never takes the page down.",
           "summary": "required takes precedence over optional"
+        },
+        {
+          "id": "components-label--inside-field",
+          "name": "Inside Field",
+          "snippet": "const InsideField = () => (\n    <div className=\"flex flex-col gap-6\">\n        <Field.Root>\n            <Label>Email</Label>\n            <FieldInput />\n        </Field.Root>\n\n        <Field.Root>\n            <Label htmlFor=\"explicit-control\">Phone</Label>\n            <input id=\"explicit-control\" className={inputRecipe()} />\n        </Field.Root>\n    </div>\n);",
+          "description": "Inside a `Field.Root` the label reads `LabelContext` and points at the\nfield's control with no `htmlFor`. An explicit `htmlFor` still wins.",
+          "summary": "Inside a Field the label associates itself; explicit htmlFor wins"
         }
       ],
-      "import": "import { Label } from \"@agentero/design-system\";"
+      "import": "import { Field, Label } from \"@agentero/design-system\";"
     },
     "components-loading": {
       "id": "components-loading",
@@ -7582,6 +8073,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 3093
+    "durationMs": 4021
   }
 }
