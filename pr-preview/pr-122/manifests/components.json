@@ -2800,7 +2800,7 @@
         {
           "id": "components-combobox--with-leading-icon",
           "name": "With Leading Icon",
-          "snippet": "const WithLeadingIcon = () => (\n    <Combobox.Root items={STATES}>\n        <div className=\"relative\">\n            <IconSearch\n                aria-hidden\n                className=\"pointer-events-none absolute top-1/2 left-3 size-6 -translate-y-1/2 [&>path]:fill-icon-default-base-tertiary\"\n            />\n            <Combobox.Input className=\"pl-11\" placeholder=\"Search states\" aria-label=\"Search states\" />\n        </div>\n        <Combobox.Content>\n            <Combobox.Empty>No matches found</Combobox.Empty>\n            <Combobox.List>\n                {(state: string) => (\n                    <Combobox.Item key={state} value={state}>\n                        {state}\n                    </Combobox.Item>\n                )}\n            </Combobox.List>\n        </Combobox.Content>\n    </Combobox.Root>\n);",
+          "snippet": "const WithLeadingIcon = () => (\n    <Combobox.Root items={STATES}>\n        <div className=\"relative\">\n            <IconSearch\n                aria-hidden\n                className=\"pointer-events-none absolute top-1/2 left-3 z-1 size-6 -translate-y-1/2 [&>path]:fill-icon-default-base-tertiary\"\n            />\n            <Combobox.Input className=\"pl-11\" placeholder=\"Search states\" aria-label=\"Search states\" />\n        </div>\n        <Combobox.Content>\n            <Combobox.Empty>No matches found</Combobox.Empty>\n            <Combobox.List>\n                {(state: string) => (\n                    <Combobox.Item key={state} value={state}>\n                        {state}\n                    </Combobox.Item>\n                )}\n            </Combobox.List>\n        </Combobox.Content>\n    </Combobox.Root>\n);",
           "description": "A leading icon is composed around the input, not baked in: not every combobox\nis a search (a FEIN lookup or a template picker are not), so the component\nships no icon of its own. Until `InputGroup` lands in the design system, the\nmarketplace search fields get theirs like this — the icon overlaid, the input\npadded past it."
         },
         {
@@ -9432,6 +9432,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4331
+    "durationMs": 4558
   }
 }
