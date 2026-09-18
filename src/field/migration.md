@@ -24,18 +24,22 @@ wiring `useController` yourself.
 
 ## Prop mapping for `FieldText` → `FormText`
 
-| Legacy                                                                                        | Here                     | Note                                                                                  |
-| --------------------------------------------------------------------------------------------- | ------------------------ | ------------------------------------------------------------------------------------- |
-| `name`, `label`, `optional`, `disabled`                                                       | same                     |                                                                                       |
-| `help`                                                                                        | `description`            | the helper text under the control                                                     |
-| `description`                                                                                 | `tooltip`                | legacy passed it to the label as `info`, an info tooltip                              |
-| `type`, `placeholder`, `maxLength`, `autoComplete`, `autoFocus`, `onPaste`, `onFocus`, `size` | `inputProps`             | everything the `<input>` itself takes                                                 |
-| `onChange`, `onBlur`                                                                          | `inputProps`             | they run after react-hook-form's, which are already wired                             |
-| `id`                                                                                          | `controlId` on the field | ids are generated; set this one only when something outside must point at the control |
-| `aria-label`                                                                                  | —                        | not in v1: every field is labelled                                                    |
-| `displayErrorMessage={false}`                                                                 | —                        | not in v1: render the primitives directly for a field whose message lives elsewhere   |
-| `getReadonlyValue`                                                                            | —                        | the read-only view belongs to dynamic forms, not to this layer                        |
-| `valueAsNumber`                                                                               | —                        | see below                                                                             |
+| Legacy                                                                                        | Here                                | Note                                                                                              |
+| --------------------------------------------------------------------------------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `name`, `label`, `optional`, `disabled`                                                       | same                                |                                                                                                   |
+| `help`                                                                                        | `description`                       | the helper text under the control                                                                 |
+| `description`                                                                                 | `tooltip`                           | legacy passed it to the label as `info`, an info tooltip                                          |
+| `type`, `placeholder`, `maxLength`, `autoComplete`, `autoFocus`, `onPaste`, `onFocus`, `size` | `inputProps`                        | everything the `<input>` itself takes                                                             |
+| `onChange`, `onBlur`                                                                          | `inputProps`                        | they run after react-hook-form's, which are already wired                                         |
+| `id`                                                                                          | `controlId` on the field            | ids are generated; set this one only when something outside must point at the control             |
+| `defaultValue`                                                                                | `useForm`'s `defaultValues`         | the form owns the initial value; `FormText` never takes one, so it moves up to the `useForm` call |
+| `minValue`, `maxValue`                                                                        | `inputProps.min` / `inputProps.max` | native attributes on the `<input>`                                                                |
+| `aria-label`                                                                                  | —                                   | not in v1: every field is labelled                                                                |
+| `displayErrorMessage={false}`                                                                 | —                                   | not in v1: render the primitives directly for a field whose message lives elsewhere               |
+| `getReadonlyValue`                                                                            | —                                   | the read-only view belongs to dynamic forms, not to this layer                                    |
+| `nested`                                                                                      | —                                   | it only changed the spacing; the surrounding layout owns it here (`Field.Group`)                  |
+| `children` (nested sub-fields)                                                                | —                                   | the dependent sub-fields container is ENG-2170                                                    |
+| `valueAsNumber`                                                                               | —                                   | see below                                                                                         |
 
 `required` is new and separate: it marks the field visually and natively.
 Validation stays in `rules` or in the form's resolver, and `rules.required`
