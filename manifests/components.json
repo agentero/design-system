@@ -4823,6 +4823,13 @@
           "summary": "Several errors rendered as a de-duplicated list"
         },
         {
+          "id": "components-field--error-with-types",
+          "name": "Error With Types",
+          "snippet": "const ErrorWithTypes = () => <Field.Root\n    orientation=\"vertical\"\n    invalid\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Label>Password</Label>\n    <DemoInput type=\"password\" defaultValue=\"short\" />\n    <Field.Error\n        errors={[\n            {\n                message: 'At least one uppercase letter.',\n                types: {\n                    uppercase: 'At least one uppercase letter.',\n                    number: 'At least one number.',\n                    length: ['At least 10 characters.'],\n                    unnamed: true\n                }\n            }\n        ]} />\n</Field.Root>;",
+          "description": "One error whose `types` lists every rule that failed renders as that same\nlist. A form library fills it when it collects all the failures instead of\nstopping at the first (react-hook-form's `criteriaMode: 'all'`), leaving only\nthe first one in `message`, so the messages take precedence over it. A rule\nthat failed without a message of its own contributes nothing.",
+          "summary": "Every rule a single error collected, rendered as a list"
+        },
+        {
           "id": "components-field--no-error",
           "name": "No Error",
           "snippet": "const NoError = () => <Field.Root\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Label>Email</Label>\n    <DemoInput type=\"email\" />\n    <Field.Error errors={[undefined]} />\n</Field.Root>;",
@@ -4887,6 +4894,532 @@
         }
       ],
       "import": "import { Field, FieldContext, Label } from \"@agentero/design-system\";"
+    },
+    "components-formtext": {
+      "id": "components-formtext",
+      "name": "FormText",
+      "path": "./src/form-text/form-text.stories.tsx",
+      "jsDocTags": {
+        "summary": [
+          "Label, Input, description and error bound to one react-hook-form field"
+        ],
+        "example": [
+          "<FormText\n  name=\"taxId\"\n  label=\"Tax ID\"\n  tooltip=\"The EIN the IRS issued to the agency.\"\n  description=\"Nine digits, with or without the dash.\"\n  required\n  rules={{ required: 'Enter the tax ID.', pattern: { value: /^\\d{2}-?\\d{7}$/, message: 'Nine digits.' } }}\n  inputProps={{ inputMode: 'numeric', autoComplete: 'off' }}\n/>"
+        ]
+      },
+      "description": "FormText is a complete text field bound to one react-hook-form value: label,\n`Input`, helper text and validation error in the standard order, wired\nthrough `useController`. It renders inside a `Form.Root` and needs only a\n`name`; `required`, `invalid` and the error reach the label, the input's\n`aria-*` attributes and the message with no ids written by hand.\n\nIt covers the common case. For another layout — an input with addons, a\ndifferent control, a message rendered elsewhere — compose `useController`\nwith the `FieldText`, `Label`, `Input` and `Field.*` primitives directly.",
+      "summary": "Label, Input, description and error bound to one react-hook-form field",
+      "reactComponentMeta": {
+        "displayName": "FormText",
+        "exportName": "FormText",
+        "filePath": "/home/runner/work/design-system/design-system/src/form-text/index.ts",
+        "description": "A complete text field bound to one react-hook-form value: label, `Input`,\nhelper text and validation error, laid out in the standard order and wired\nthrough `useController`. It renders inside a `Form.Root`, which provides the\nform, and needs only a `name`, which on a typed form must point at a string\n(`FormTextPath`). The `required`, `invalid` and error states\nreach the label, the input's `aria-*` attributes and the message with no\nids written by hand.\n\nUse it for the common case: a labelled single-line input in a form. When\nthe layout is different — an input with addons, another control, a\nmessage rendered elsewhere — compose the primitives yourself:\n`useController` with [FieldText](?path=/docs/components-fieldtext--docs),\n`Label`, `Input`, `Field.Description` and `Field.Error`. `FormText` adds no\nbehaviour of its own over that composition.\n\nErrors come from `useController`'s per-field state, never from\n`formState.errors`, so the message stays fresh under the React Compiler.\nWith `criteriaMode: 'all'` on the form the error carries every rule that\nfailed and `Field.Error` lists them all. An error on an array or object path\n(`error.root`) is not this field's: render a `Field.Error` for it where the\ngroup lives.",
+        "jsDocTags": {
+          "summary": [
+            "Label, Input, description and error bound to one react-hook-form field"
+          ],
+          "example": [
+            "<FormText\n  name=\"taxId\"\n  label=\"Tax ID\"\n  tooltip=\"The EIN the IRS issued to the agency.\"\n  description=\"Nine digits, with or without the dash.\"\n  required\n  rules={{ required: 'Enter the tax ID.', pattern: { value: /^\\d{2}-?\\d{7}$/, message: 'Nine digits.' } }}\n  inputProps={{ inputMode: 'numeric', autoComplete: 'off' }}\n/>"
+          ]
+        },
+        "props": {
+          "disabled": {
+            "name": "disabled",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Disables the control through its context and sets `data-disabled` on the root.\nDisables the input and marks the field. Unlike react-hook-form's own\n`disabled` option, the value stays in the submitted data: disabling a\nfield is a presentation decision, not a change to the form's values.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              },
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form-text/form-text.tsx"
+              }
+            ]
+          },
+          "orientation": {
+            "name": "orientation",
+            "required": false,
+            "type": {
+              "name": "enum",
+              "raw": "\"horizontal\" | \"vertical\" | \"responsive\"",
+              "value": [
+                {
+                  "value": "\"horizontal\""
+                },
+                {
+                  "value": "\"vertical\""
+                },
+                {
+                  "value": "\"responsive\""
+                }
+              ]
+            },
+            "description": "Layout of the field. `vertical` (default) stacks label, control and\nmessages. `horizontal` is one row at every width: the first child fills it\nand the rest keep their natural width, aligned to the right, so the\ncontrols of stacked fields line up. `responsive` stacks below `28rem` and\nbehaves like `horizontal` from there, measured on the field itself, so it\nneeds no particular wrapper. In both, `Field.Content` groups a control with\nits messages, or a label with its description.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
+          "required": {
+            "name": "required",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Single source of truth for a required field: the `Label` shows its\nasterisk and the control receives `required`, both through context.\nMarks the field required: an asterisk on the label and the native\n`required` attribute on the input, which assistive technology announces.\nIt does not validate — pair it with `rules.required` or a resolver — and it\nnever triggers the browser bubble, since `Form.Root` renders `noValidate`.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              },
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form-text/form-text.tsx"
+              }
+            ]
+          },
+          "readOnly": {
+            "name": "readOnly",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Makes the control read-only through its context (focusable and copyable,\nnot editable, still submitted) and sets `data-readonly` on the root.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
+          "controlId": {
+            "name": "controlId",
+            "required": false,
+            "type": {
+              "name": "string"
+            },
+            "description": "`id` for the control. Generated when omitted. Set it here, not on the\ncontrol, so the label and the messages keep pointing at the right element.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
+          "name": {
+            "name": "name",
+            "required": true,
+            "type": {
+              "name": "\"agencyName\""
+            },
+            "description": "Path of the value in the form, nested paths included (`'agency.npn'`).\nType it against the form's values with the generic\n(`<FormText<Values> name=\"agency.npn\" />`) or by passing `control`: the\npath must then exist and hold a string (`FormTextPath`).",
+            "defaultValue": null,
+            "parent": {
+              "name": "FormTextProps",
+              "fileName": "src/form-text/form-text.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form-text/form-text.tsx"
+              }
+            ]
+          },
+          "control": {
+            "name": "control",
+            "required": false,
+            "type": {
+              "name": "Control<FieldValues, any, FieldValues>"
+            },
+            "description": "The form's `control`, from `useForm()`. Defaults to the one the\nsurrounding `Form.Root` provides; pass it explicitly to get `name`\ninference without writing the generic, or when the field renders outside\na `Form.Root`. A `control` whose resolver transforms the values is\naccepted as is.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FormTextProps",
+              "fileName": "src/form-text/form-text.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form-text/form-text.tsx"
+              }
+            ]
+          },
+          "rules": {
+            "name": "rules",
+            "required": false,
+            "type": {
+              "name": "Omit<RegisterOptions<FieldValues, \"agencyName\">, \"disabled\" | \"valueAsNumber\" | \"valueAsDate\" | \"setValueAs\">"
+            },
+            "description": "react-hook-form validation rules for this field (`required`, `pattern`,\n`validate`…), same as `register`'s. They only validate: `rules.required`\ndoes not mark the field `required` — that is a separate, visible decision.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FormTextProps",
+              "fileName": "src/form-text/form-text.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form-text/form-text.tsx"
+              }
+            ]
+          },
+          "shouldUnregister": {
+            "name": "shouldUnregister",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Drops the value from the form when the field unmounts, react-hook-form's\n`shouldUnregister`. Defaults to `false`: a field revealed by another one\nkeeps its value while hidden.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FormTextProps",
+              "fileName": "src/form-text/form-text.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form-text/form-text.tsx"
+              }
+            ]
+          },
+          "label": {
+            "name": "label",
+            "required": true,
+            "type": {
+              "name": "ReactNode"
+            },
+            "description": "The caption, rendered as the field's label. Text in almost every case.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FormTextProps",
+              "fileName": "src/form-text/form-text.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form-text/form-text.tsx"
+              }
+            ]
+          },
+          "description": {
+            "name": "description",
+            "required": false,
+            "type": {
+              "name": "ReactNode"
+            },
+            "description": "Helper text shown under the control and announced through its\n`aria-describedby`. Use it for guidance the user needs before typing; put\ndetails worth a click in `tooltip` instead.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FormTextProps",
+              "fileName": "src/form-text/form-text.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form-text/form-text.tsx"
+              }
+            ]
+          },
+          "tooltip": {
+            "name": "tooltip",
+            "required": false,
+            "type": {
+              "name": "ReactNode"
+            },
+            "description": "Content of an info tooltip rendered beside the label, for details that\nwould clutter the description. The trigger is a sibling of the label, so\nthe field's accessible name stays the label text.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FormTextProps",
+              "fileName": "src/form-text/form-text.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form-text/form-text.tsx"
+              }
+            ]
+          },
+          "tooltipSide": {
+            "name": "tooltipSide",
+            "required": false,
+            "type": {
+              "name": "enum",
+              "raw": "\"right\" | \"top\" | \"bottom\" | \"left\"",
+              "value": [
+                {
+                  "value": "\"right\""
+                },
+                {
+                  "value": "\"top\""
+                },
+                {
+                  "value": "\"bottom\""
+                },
+                {
+                  "value": "\"left\""
+                }
+              ]
+            },
+            "description": "Preferred side of the tooltip. Defaults to `'top'`.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FormTextProps",
+              "fileName": "src/form-text/form-text.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form-text/form-text.tsx"
+              }
+            ]
+          },
+          "optional": {
+            "name": "optional",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Appends a muted \" (optional)\" to the label. The forms mark optional fields\nrather than required ones; ignored when `required` is set.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FormTextProps",
+              "fileName": "src/form-text/form-text.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form-text/form-text.tsx"
+              }
+            ]
+          },
+          "inputProps": {
+            "name": "inputProps",
+            "required": false,
+            "type": {
+              "name": "FormTextInputProps"
+            },
+            "description": "Everything else the `Input` should receive: `type`, `placeholder`,\n`maxLength`, `autoComplete`, `size`, `className`… Handlers such as\n`onChange` and `onBlur` run after react-hook-form's, which are already\nwired.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FormTextProps",
+              "fileName": "src/form-text/form-text.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form-text/form-text.tsx"
+              }
+            ]
+          }
+        }
+      },
+      "stories": [
+        {
+          "id": "components-formtext--default",
+          "name": "Default",
+          "snippet": "const Default = () => <AgencyNameForm\n    name=\"agencyName\"\n    label=\"Agency name\"\n    orientation=\"vertical\"\n    required\n    optional={false}\n    disabled={false}\n    readOnly={false} />;",
+          "description": "The field consumers write: a `name`, a `label` and the validation rule.\nSubmitting empty renders the error and marks the input invalid; typing\nclears both and the value reaches `onSubmit`.",
+          "summary": "Required text field validating on submit"
+        },
+        {
+          "id": "components-formtext--with-description-and-tooltip",
+          "name": "With Description And Tooltip",
+          "snippet": "const WithDescriptionAndTooltip = () => <TaxIdForm />;",
+          "description": "`description` is helper text under the input, announced through\n`aria-describedby`. `tooltip` is an info button beside the label for details\nworth a click; it is a sibling of the `<label>`, so the field's accessible\nname stays the label text.",
+          "summary": "Helper text under the input and an info tooltip beside the label"
+        },
+        {
+          "id": "components-formtext--optional",
+          "name": "Optional",
+          "snippet": "const Optional = () => <PhoneForm />;",
+          "description": "The forms mark optional fields rather than required ones: `optional`\nappends a muted suffix to the label and leaves the input without the\n`required` attribute.",
+          "summary": "Optional field with the \" (optional)\" label suffix"
+        },
+        {
+          "id": "components-formtext--with-rules",
+          "name": "With Rules",
+          "snippet": "const WithRules = () => <NpnForm />;",
+          "description": "`rules` are react-hook-form's, and `name` accepts nested paths typed against\nthe form's values through the generic. `rules.required` validates but does\nnot mark the field required: that stays an explicit `required` prop.",
+          "summary": "Nested path with validation rules, typed through the generic"
+        },
+        {
+          "id": "components-formtext--all-errors",
+          "name": "All Errors",
+          "snippet": "const AllErrors = () => <PasswordRulesForm />;",
+          "description": "A form set to react-hook-form's `criteriaMode: 'all'` collects every rule\nthat failed instead of stopping at the first, and the field lists them all.\nWith the default `'firstError'` a single message is rendered, as in the other\nstories.",
+          "summary": "Every failed rule listed under criteriaMode 'all'"
+        },
+        {
+          "id": "components-formtext--input-props-chaining",
+          "name": "Input Props Chaining",
+          "snippet": "const InputPropsChaining = () => <MobileForm />;",
+          "description": "`inputProps` carries the input's own attributes — `type`, `placeholder`,\n`maxLength`, `size`… — and its handlers. A consumer `onChange` runs after\nreact-hook-form's: by the time it fires, `getValues` already returns the new\nvalue.",
+          "summary": "Input attributes and a consumer onChange chained after the form's"
+        },
+        {
+          "id": "components-formtext--horizontal",
+          "name": "Horizontal",
+          "snippet": "const Horizontal = () => <ProfileForm />;",
+          "description": "Root props pass through: `orientation=\"horizontal\"` lays the label and the\ncontrol in a row, and `className` on the root or in `inputProps` sizes them.\nThe `Input` is full-width by default, so a settings row gives it a width.\n`responsive` stacks the field below 28rem and rows it from there.",
+          "summary": "Horizontal orientation and class names through the root props"
+        },
+        {
+          "id": "components-formtext--disabled",
+          "name": "Disabled",
+          "snippet": "const Disabled = () => <AccountForm />;",
+          "description": "`disabled` disables the input and marks the field, and the value still\nreaches `onSubmit` — unlike react-hook-form's own `disabled` option, which\ndrops it. Use `readOnly` for a value the user can copy but not edit.",
+          "summary": "Disabled field whose value is still submitted"
+        },
+        {
+          "id": "components-formtext--set-focus",
+          "name": "Set Focus",
+          "snippet": "const SetFocus = () => <SetFocusForm />;",
+          "description": "react-hook-form's `ref` reaches the `<input>`, so `setFocus` and the focus\non the first invalid field after submit both work with no ref written by\nhand.",
+          "summary": "setFocus reaches the input through the merged ref"
+        }
+      ],
+      "import": "import { Button, Field, Form, FormText } from \"@agentero/design-system\";"
+    },
+    "components-form": {
+      "id": "components-form",
+      "name": "Form.Root",
+      "path": "./src/form/form.stories.tsx",
+      "jsDocTags": {
+        "summary": [
+          "Form element bound to a react-hook-form instance, shared with its fields"
+        ],
+        "example": [
+          "const methods = useForm<Values>({ defaultValues: { agencyName: '', email: '' } });\n\n<Form.Root methods={methods} onSubmit={saveAgency} aria-label=\"Agency profile\">\n  <FormText name=\"agencyName\" label=\"Agency name\" required rules={{ required: 'Enter the agency name.' }} />\n  <FormText name=\"email\" label=\"Email\" inputProps={{ type: 'email' }} />\n  <Button type=\"submit\">Save</Button>\n</Form.Root>"
+        ]
+      },
+      "description": "Form is the react-hook-form binding of the design system. `Form.Root` renders\nthe `<form>` and provides the `useForm()` instance to the form fields inside\nit — `FormText` and the other `Form<X>` components — which bind themselves by\n`name`. The submit goes through `handleSubmit`, so `onSubmit` only runs with\nvalid, typed values, and the element is always `noValidate`: validation is\nreact-hook-form's, and the `required` a field sets is announced without the\nbrowser's own bubble.\n\n`react-hook-form` is an optional peer dependency: install it in the app and\nkeep a single copy, since the provider and the fields share one context.",
+      "summary": "Form element bound to a react-hook-form instance, shared with its fields",
+      "reactComponentMeta": {
+        "displayName": "Form.Root",
+        "exportName": "Form",
+        "filePath": "/home/runner/work/design-system/design-system/src/form/index.ts",
+        "description": "The `<form>` element of a react-hook-form form: it provides the `useForm()`\ninstance to the form fields inside it (`FormText` and the other `Form<X>`\ncomponents) and routes the submit through `handleSubmit`. It always renders\n`noValidate`, so the `required` attribute a field sets reaches assistive\ntechnology without the browser's own validation bubble getting in the way:\nvalidation is react-hook-form's, from `rules` or a resolver.\n\nUse it around any form built with the `Form<X>` fields. Without\nreact-hook-form, render a plain `<form>` with the presentational primitives\n([FieldText](?path=/docs/components-fieldtext--docs)) instead — this\ncomponent is only the binding.\n\n`react-hook-form` is an optional peer dependency: the design system never\nbundles its own copy, because `FormProvider` and the fields must share one\nReact context. Two copies in an app (a nested version under a workspace,\nsay) make every field throw from `useController`; `yarn why react-hook-form`\nshould list a single instance.",
+        "jsDocTags": {
+          "summary": [
+            "Form element bound to a react-hook-form instance, shared with its fields"
+          ],
+          "example": [
+            "const methods = useForm<Values>({ defaultValues: { agencyName: '', email: '' } });\n\n<Form.Root methods={methods} onSubmit={saveAgency} aria-label=\"Agency profile\">\n  <FormText name=\"agencyName\" label=\"Agency name\" required rules={{ required: 'Enter the agency name.' }} />\n  <FormText name=\"email\" label=\"Email\" inputProps={{ type: 'email' }} />\n  <Button type=\"submit\">Save</Button>\n</Form.Root>"
+          ]
+        },
+        "props": {
+          "aria-label": {
+            "name": "aria-label",
+            "required": true,
+            "type": {
+              "name": "string"
+            },
+            "description": "Defines a string value that labels the current element.\nAccessible name of the form. A `<form>` only becomes a landmark when it is\nnamed, and screen readers list landmarks by name, so it is required.",
+            "defaultValue": null,
+            "parent": {
+              "name": "AriaAttributes",
+              "fileName": "node_modules/@types/react/index.d.ts"
+            },
+            "declarations": [
+              {
+                "name": "AriaAttributes",
+                "fileName": "node_modules/@types/react/index.d.ts"
+              },
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form/form.tsx"
+              }
+            ]
+          },
+          "methods": {
+            "name": "methods",
+            "required": true,
+            "type": {
+              "name": "UseFormReturn<AgencyValues, any, AgencyValues>"
+            },
+            "description": "The object `useForm()` returns. `Form.Root` hands it to every form field\ninside through react-hook-form's `FormProvider`, so a `FormText` needs only\nits `name`. Create it in the component that owns the form and pass\n`defaultValues`: a field whose value is `undefined` on the first render\nstarts uncontrolled. A form whose resolver transforms the values\n(`useForm<Input, Context, Output>`) is accepted as is.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FormRootProps",
+              "fileName": "src/form/form.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form/form.tsx"
+              }
+            ]
+          },
+          "onSubmit": {
+            "name": "onSubmit",
+            "required": false,
+            "type": {
+              "name": "SubmitHandler<AgencyValues>"
+            },
+            "description": "Called with the validated values once validation passes: the resolver's\noutput when it transforms them, the form's values otherwise. Wrapped in\n`methods.handleSubmit`, which prevents the native submit and focuses the\nfirst invalid field; when it is omitted the form validates and does nothing\nelse.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FormRootProps",
+              "fileName": "src/form/form.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form/form.tsx"
+              }
+            ]
+          }
+        }
+      },
+      "stories": [
+        {
+          "id": "components-form--default",
+          "name": "Default",
+          "snippet": "const Default = () => <AgencyForm />;",
+          "description": "A form with two required fields and a submit button. Submitting empty shows\nboth errors, marks both inputs invalid and focuses the first one — proof that\nreact-hook-form's `ref` reached the inputs. Once filled in, `onSubmit`\nreceives the typed values.",
+          "summary": "Form.Root with FormText fields validating on submit"
+        },
+        {
+          "id": "components-form--no-validate",
+          "name": "No Validate",
+          "snippet": "const NoValidate = () => <NicknameForm />;",
+          "description": "`required` on a field reaches the native attribute, so assistive technology\nannounces it, but the form renders `noValidate`: without `rules`, submitting\nthe field empty is not blocked by the browser and `onSubmit` still runs.\nValidation is react-hook-form's alone.",
+          "summary": "Native required never triggers the browser's validation bubble"
+        }
+      ],
+      "import": "import { Button, Field, Form, FormText } from \"@agentero/design-system\";"
     },
     "components-hovercard": {
       "id": "components-hovercard",
@@ -8073,6 +8606,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4021
+    "durationMs": 4425
   }
 }
