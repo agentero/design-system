@@ -6,9 +6,7 @@ import { cn } from '../../lib';
 import { inputRecipe } from '../input';
 
 /**
- * Style recipe for TextArea. Extends `inputRecipe`, so it shares Input's skin
- * and states and only trades the fixed height for a minimum one: the first row
- * measures one Input of the same size and three rows show at rest. The corner
+ * Extends `inputRecipe`, trading Input's fixed height for a minimum one. The
  * handle drags vertically only, so the control can never break its column.
  *
  * @summary tailwind-variants recipe backing the TextArea component styles
@@ -33,18 +31,15 @@ export type TextAreaVariants = VariantProps<typeof textAreaRecipe>;
 /** Control size, the same three as Input. */
 export type TextAreaSize = NonNullable<TextAreaVariants['size']>;
 
-/**
- * Every `<textarea>` attribute is forwarded; the ones below are redeclared so
- * they show up in the docs and the MCP manifest.
- */
+/** Every `<textarea>` attribute is forwarded; these are redeclared so the docs and the MCP manifest list them. */
 export type TextAreaProps = ComponentPropsWithRef<'textarea'> & {
 	/**
-	 * Defaults to `'md'`. Matches Input's sizes; the minimum height shows three
-	 * rows: `sm` 76px, `md` 84px, `lg` 96px (with `text-base` and the `lg`
-	 * radius).
+	 * Defaults to `'md'`. The first row measures one Input of the same size and
+	 * three rows show at rest: `sm` 76px, `md` 84px, `lg` 96px (`lg` also raises
+	 * the text to `base` and the radius to `lg`).
 	 */
 	size?: TextAreaSize;
-	/** Rows visible at rest when the three the minimum height shows are not enough. */
+	/** Rows visible at rest when three are not enough. */
 	rows?: number;
 	/** Hint shown while empty; never a substitute for a label. */
 	placeholder?: string;
@@ -64,26 +59,20 @@ export type TextAreaProps = ComponentPropsWithRef<'textarea'> & {
 };
 
 /**
- * TextArea is the design system's multi-line text control. It shares Input's
- * skin, states and sizes, and pairs with
- * [Label](?path=/docs/components-label--docs) the same way.
+ * TextArea is the design system's multi-line text control: Input's skin, states
+ * and sizes on a single `<textarea>` with nothing around it, so the native
+ * resize handle and scrollbar keep working. Pair it with
+ * [Label](?path=/docs/components-label--docs) the way you pair an Input.
  *
- * It renders exactly the props it is given: `id`, `aria-describedby` and
- * `aria-invalid` are wired by whoever owns the field. There is no `status`
- * prop: mark the control `aria-invalid` and the destructive border follows.
- *
- * It renders a single `<textarea>` and nothing around it, so the native resize
- * handle and the scrollbar keep working. It holds no value, so a character
- * counter belongs to whoever owns it.
+ * It wires nothing itself — `id`, `aria-describedby` and `aria-invalid` are the
+ * field owner's job, and there is no `status` prop. It holds no value either, so
+ * a character counter belongs to whoever owns it.
  *
  * @summary Base multi-line text control sharing Input's skin, states and sizes
  *
  * @example
  * <Label htmlFor="notes">Notes</Label>
  * <TextArea id="notes" placeholder="Anything the underwriter should know" />
- *
- * @example
- * <TextArea id="reason" rows={6} maxLength={500} aria-label="Reason" />
  */
 export const TextArea = (props: TextAreaProps) => {
 	const { className, size, ...rest } = props;
