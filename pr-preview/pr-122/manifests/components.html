@@ -588,13 +588,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">32 components ok</span><span class="filter-pill ok" aria-disabled="true">256 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">33 components ok</span><span class="filter-pill ok" aria-disabled="true">263 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.6s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>4.5s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -2827,7 +2827,7 @@ import { CheckList } from &#39;@agentero/design-system/check-list&#39;;
       <div class="badges">
         <label for="c-7-components-combobox-props" class="badge ok as-toggle">38 prop types</label>
         
-        <label for="c-7-components-combobox-stories" class="badge ok as-toggle">6 stories</label>
+        <label for="c-7-components-combobox-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -3118,7 +3118,8 @@ virtualized?: boolean = false</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button, Combobox, Field, FieldText, IconSearch, Label, Modal } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Button, Combobox, Field, FieldText, IconSearch, Label, Modal, Skeleton } from "@agentero/design-system";
+import { Suspense } from "react";</code></pre>
               </div>
           
           
@@ -3176,11 +3177,24 @@ children only while nothing matches. It needs `items` on `Root` to know that.</d
                 <span class="badge ok">story ok</span>
               </div>
               
-              <div class="hint">Options fetched as you type, as objects — the shape every real consumer has.
-`filter={null}` turns off local filtering, the rows arrive through
-`filteredItems`, `Status` announces the wait politely and `Content` is marked
-busy meanwhile. Picking a row writes `itemToStringLabel` into the input.</div>
-              <pre><code>const AsyncSearch = () =&gt; &lt;RemoteSearch /&gt;;</code></pre>
+              <div class="hint">Options fetched as you type, the way the apps load data: the rows are a component
+that suspends on the request, so a `Suspense` boundary inside `Content` shows
+placeholder rows until they land. Nothing tracks `loading` by hand and no stale
+list lingers under the wait: the data is read by query, which is also what makes
+out-of-order responses harmless. Drop a `useSuspenseQuery` where `use()` is.</div>
+              <pre><code>const AsyncSearch = () =&gt; &lt;SuspenseSearch /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Async Search With Status</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">The same search without Suspense, for a consumer that gets a `loading` flag from
+its data layer instead: `filter={null}`, the rows arrive through `filteredItems`,
+`Content` is marked busy and `Status` announces the wait. The list is cleared
+before each request and a request that is no longer the latest is dropped.</div>
+              <pre><code>const AsyncSearchWithStatus = () =&gt; &lt;StatusSearch /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -9040,14 +9054,205 @@ leading + trailing icons, and icon-only.</div>
   no-story-error
   no-doc-error"
   role="listitem"
+  aria-label="TextArea">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> TextArea</h2>
+      <div class="badges">
+        <label for="c-29-components-textarea-props" class="badge ok as-toggle">8 prop types</label>
+        
+        <label for="c-29-components-textarea-stories" class="badge ok as-toggle">6 stories</label>
+        
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/textarea/textarea.stories.tsx">components-textarea · ./src/textarea/textarea.stories.tsx</div>
+    <div>Base multi-line text control sharing Input&#39;s skin, states and sizes</div>
+    <div class="hint">TextArea is the base multi-line text control, with Input&#39;s skin, sizes and
+states. It wires nothing on its own: `id`, `aria-invalid` and
+`aria-describedby` are plain props, set by whoever owns the field.</div>
+    <div class="kv"><span class="chip">summary: Base multi-line text control sharing Input&#39;s skin, states and sizes</span><span class="chip">example: &lt;Label htmlFor=&quot;notes&quot;&gt;Notes&lt;/Label&gt;
+&lt;TextArea id=&quot;notes&quot; placeholder=&quot;Anything the underwriter should know&quot; /&gt;</span></div>
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-29-components-textarea-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+  <input id="c-29-components-textarea-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-component-meta)</small></span>
+              <span class="badge ok">8 prop types</span>
+            </div>
+            <pre><code>Component: src/textarea/textarea.tsx::TextArea</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>/**
+ * Indicates the entered value does not conform to the format expected by the application.
+ * Drives the destructive border and is what assistive technology announces.
+ */
+aria-invalid?: boolean | &quot;true&quot; | &quot;false&quot; | &quot;grammar&quot; | &quot;spelling&quot; | undefined
+
+/**
+ * Blocks interaction and drops the value from the submission. Use `readOnly`
+ * when the user still needs to read or copy it.
+ */
+disabled?: boolean
+
+/**
+ * Caps the value in UTF-16 code units: typing stops there and a paste is cut.
+ */
+maxLength?: number
+
+/**
+ * Hint shown while empty; never a substitute for a label.
+ */
+placeholder?: string
+
+/**
+ * Focusable, copyable and submitted, but not editable.
+ */
+readOnly?: boolean
+
+/**
+ * Marks the control required for both the browser and assistive technology.
+ */
+required?: boolean
+
+/**
+ * Rows visible at rest when three are not enough.
+ */
+rows?: number
+
+/**
+ * Defaults to `&#39;md&#39;`. The first row measures one Input of the same size and
+ * three rows show at rest: `sm` 76px, `md` 84px, `lg` 96px (`lg` also raises
+ * the text to `base` and the radius to `lg`).
+ */
+size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { TextArea } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Default standalone text area</div>
+              <div class="hint">The default control at `md`: three rows at rest and a vertical resize handle
+the user can drag to make it taller.</div>
+              <pre><code>const Default = () =&gt; &lt;TextArea placeholder=&quot;Anything the underwriter should know&quot; aria-label=&quot;Notes&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">All Sizes</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>The three sizes, three rows tall at rest</div>
+              <div class="hint">The three sizes mirror Input&#39;s: the first row measures one Input of the same
+size and the minimum height shows three rows.</div>
+              <pre><code>const AllSizes = () =&gt; &lt;div style={{ display: &#39;grid&#39;, gap: &#39;1rem&#39; }}&gt;
+    &lt;TextArea size=&quot;sm&quot; aria-label=&quot;Small&quot; placeholder=&quot;sm — 76px, three rows&quot; /&gt;
+    &lt;TextArea size=&quot;md&quot; aria-label=&quot;Medium&quot; placeholder=&quot;md — 84px, three rows&quot; /&gt;
+    &lt;TextArea size=&quot;lg&quot; aria-label=&quot;Large&quot; placeholder=&quot;lg — 96px, three rows&quot; /&gt;
+&lt;/div&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Rows</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Taller initial height through the native rows attribute</div>
+              <div class="hint">`rows` sets a taller initial height when three rows are not enough.</div>
+              <pre><code>const Rows = () =&gt; &lt;TextArea
+    placeholder=&quot;Six rows visible before scrolling&quot;
+    aria-label=&quot;Notes&quot;
+    rows={6} /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Invalid</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Invalid state driven by aria-invalid</div>
+              <div class="hint">The invalid treatment comes purely from `aria-invalid`; point
+`aria-describedby` at the message so it is read with the control.</div>
+              <pre><code>const Invalid = () =&gt; &lt;div style={{ display: &#39;grid&#39;, gap: &#39;0.25rem&#39; }}&gt;
+    &lt;TextArea
+        placeholder=&quot;Anything the underwriter should know&quot;
+        aria-label=&quot;Reason&quot;
+        aria-invalid
+        aria-describedby=&quot;reason-error&quot;
+        defaultValue=&quot;n/a&quot; /&gt;
+    &lt;span id=&quot;reason-error&quot;&gt;Tell us why you are cancelling.&lt;/span&gt;
+&lt;/div&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Disabled</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Disabled state</div>
+              
+              <pre><code>const Disabled = () =&gt; &lt;TextArea
+    placeholder=&quot;Anything the underwriter should know&quot;
+    aria-label=&quot;Notes&quot;
+    disabled
+    defaultValue=&quot;Cannot be edited&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Read Only</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Read-only value that stays focusable and copyable</div>
+              
+              <pre><code>const ReadOnly = () =&gt; &lt;TextArea
+    placeholder=&quot;Anything the underwriter should know&quot;
+    aria-label=&quot;Notes&quot;
+    readOnly
+    defaultValue=&quot;Copy me, but do not change me&quot; /&gt;;</code></pre>
+            </div>
+        </div>
+    
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
   aria-label="Toast">
   <div class="head">
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Toast</h2>
       <div class="badges">
-        <label for="c-29-components-toast-props" class="badge ok as-toggle">11 prop types</label>
+        <label for="c-30-components-toast-props" class="badge ok as-toggle">11 prop types</label>
         
-        <label for="c-29-components-toast-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-30-components-toast-stories" class="badge ok as-toggle">11 stories</label>
         
         
       </div>
@@ -9066,10 +9271,10 @@ common feedback patterns.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-29-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-30-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-29-components-toast-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-30-components-toast-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -9498,9 +9703,9 @@ action (e.g., a sync icon for a sync-in-progress toast).</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tooltip</h2>
       <div class="badges">
-        <label for="c-30-components-tooltip-props" class="badge ok as-toggle">12 prop types</label>
+        <label for="c-31-components-tooltip-props" class="badge ok as-toggle">12 prop types</label>
         
-        <label for="c-30-components-tooltip-stories" class="badge ok as-toggle">5 stories</label>
+        <label for="c-31-components-tooltip-stories" class="badge ok as-toggle">5 stories</label>
         
         
       </div>
@@ -9519,10 +9724,10 @@ on hover or focus.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-30-components-tooltip-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-31-components-tooltip-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-30-components-tooltip-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-31-components-tooltip-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -9694,9 +9899,9 @@ sideOffset?: number = 4</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> ValidationList</h2>
       <div class="badges">
-        <label for="c-31-components-validationlist-props" class="badge ok as-toggle">2 prop types</label>
+        <label for="c-32-components-validationlist-props" class="badge ok as-toggle">2 prop types</label>
         
-        <label for="c-31-components-validationlist-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-32-components-validationlist-stories" class="badge ok as-toggle">4 stories</label>
         
         
       </div>
@@ -9717,10 +9922,10 @@ your form validation; it does not own the input or block submission.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-31-components-validationlist-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-32-components-validationlist-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-31-components-validationlist-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-32-components-validationlist-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
