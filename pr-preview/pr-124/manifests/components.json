@@ -7830,8 +7830,7 @@
           "Base multi-line text control sharing Input's skin, states and sizes"
         ],
         "example": [
-          "<Label htmlFor=\"notes\">Notes</Label>\n<TextArea id=\"notes\" placeholder=\"Anything the underwriter should know\" />",
-          "<TextArea id=\"reason\" rows={6} maxLength={500} aria-label=\"Reason\" />"
+          "<Label htmlFor=\"notes\">Notes</Label>\n<TextArea id=\"notes\" placeholder=\"Anything the underwriter should know\" />"
         ]
       },
       "description": "TextArea is the base multi-line text control, with Input's skin, sizes and\nstates. It wires nothing on its own: `id`, `aria-invalid` and\n`aria-describedby` are plain props, set by whoever owns the field.",
@@ -7840,14 +7839,13 @@
         "displayName": "TextArea",
         "exportName": "TextArea",
         "filePath": "/home/runner/work/design-system/design-system/src/textarea/textarea.tsx",
-        "description": "TextArea is the design system's multi-line text control. It shares Input's\nskin, states and sizes, and pairs with\n[Label](?path=/docs/components-label--docs) the same way.\n\nIt renders exactly the props it is given: `id`, `aria-describedby` and\n`aria-invalid` are wired by whoever owns the field. There is no `status`\nprop: mark the control `aria-invalid` and the destructive border follows.\n\nIt renders a single `<textarea>` and nothing around it, so the native resize\nhandle and the scrollbar keep working. It holds no value, so a character\ncounter belongs to whoever owns it.",
+        "description": "TextArea is the design system's multi-line text control: Input's skin, states\nand sizes on a single `<textarea>` with nothing around it, so the native\nresize handle and scrollbar keep working. Pair it with\n[Label](?path=/docs/components-label--docs) the way you pair an Input.\n\nIt wires nothing itself — `id`, `aria-describedby` and `aria-invalid` are the\nfield owner's job, and there is no `status` prop. It holds no value either, so\na character counter belongs to whoever owns it.",
         "jsDocTags": {
           "summary": [
             "Base multi-line text control sharing Input's skin, states and sizes"
           ],
           "example": [
-            "<Label htmlFor=\"notes\">Notes</Label>\n<TextArea id=\"notes\" placeholder=\"Anything the underwriter should know\" />",
-            "<TextArea id=\"reason\" rows={6} maxLength={500} aria-label=\"Reason\" />"
+            "<Label htmlFor=\"notes\">Notes</Label>\n<TextArea id=\"notes\" placeholder=\"Anything the underwriter should know\" />"
           ]
         },
         "props": {
@@ -7972,7 +7970,7 @@
             "type": {
               "name": "number"
             },
-            "description": "Rows visible at rest when the three the minimum height shows are not enough.",
+            "description": "Rows visible at rest when three are not enough.",
             "defaultValue": null,
             "parent": {
               "name": "TextareaHTMLAttributes",
@@ -8030,7 +8028,7 @@
                 }
               ]
             },
-            "description": "Defaults to `'md'`. Matches Input's sizes; the minimum height shows three\nrows: `sm` 76px, `md` 84px, `lg` 96px (with `text-base` and the `lg`\nradius).",
+            "description": "Defaults to `'md'`. The first row measures one Input of the same size and\nthree rows show at rest: `sm` 76px, `md` 84px, `lg` 96px (`lg` also raises\nthe text to `base` and the radius to `lg`).",
             "defaultValue": null,
             "parent": {
               "name": "TextAreaProps",
@@ -8876,6 +8874,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 3951
+    "durationMs": 3269
   }
 }

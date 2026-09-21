@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.0s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>3.3s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -8586,7 +8586,7 @@ leading + trailing icons, and icon-only.</div>
 states. It wires nothing on its own: `id`, `aria-invalid` and
 `aria-describedby` are plain props, set by whoever owns the field.</div>
     <div class="kv"><span class="chip">summary: Base multi-line text control sharing Input&#39;s skin, states and sizes</span><span class="chip">example: &lt;Label htmlFor=&quot;notes&quot;&gt;Notes&lt;/Label&gt;
-&lt;TextArea id=&quot;notes&quot; placeholder=&quot;Anything the underwriter should know&quot; /&gt;</span><span class="chip">example: &lt;TextArea id=&quot;reason&quot; rows={6} maxLength={500} aria-label=&quot;Reason&quot; /&gt;</span></div>
+&lt;TextArea id=&quot;notes&quot; placeholder=&quot;Anything the underwriter should know&quot; /&gt;</span></div>
   </div>
 
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
@@ -8642,14 +8642,14 @@ readOnly?: boolean
 required?: boolean
 
 /**
- * Rows visible at rest when the three the minimum height shows are not enough.
+ * Rows visible at rest when three are not enough.
  */
 rows?: number
 
 /**
- * Defaults to `&#39;md&#39;`. Matches Input&#39;s sizes; the minimum height shows three
- * rows: `sm` 76px, `md` 84px, `lg` 96px (with `text-base` and the `lg`
- * radius).
+ * Defaults to `&#39;md&#39;`. The first row measures one Input of the same size and
+ * three rows show at rest: `sm` 76px, `md` 84px, `lg` 96px (`lg` also raises
+ * the text to `base` and the radius to `lg`).
  */
 size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
           </div>
