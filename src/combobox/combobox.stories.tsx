@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { Suspense, use, useRef, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
@@ -10,6 +10,7 @@ import { Field } from '../field';
 import { FieldText } from '../field-text';
 import { Label } from '../label';
 import { Modal } from '../modal';
+import { Skeleton } from '../skeleton';
 
 /**
  * Combobox is a text input that filters a list and writes the chosen option back
@@ -139,7 +140,119 @@ const searchAgencies = (query: string) =>
 		);
 	});
 
-const RemoteSearch = () => {
+// Placeholder rows with an item's exact height, so the surface keeps its size while the results
+// land instead of collapsing to a status line and growing back.
+const SkeletonRows = () => (
+	<div data-slot="combobox-skeleton" className="py-2" aria-hidden="true">
+		{['w-28', 'w-36', 'w-32'].map(width => (
+			<div key={width} className="mx-2 my-px flex items-center px-3 py-2">
+				<Skeleton className={`h-5 ${width}`} />
+			</div>
+		))}
+	</div>
+);
+
+// Stand-in for react-query: one promise per query, reused across renders so `use()` can suspend
+// on it. Keyed by query, a late response for an older query settles into an entry nobody renders
+// any more — the same guard against out-of-order responses that a query key gives the apps.
+const agencyRequests = new Map<string, Promise<Agency[]>>();
+const loadAgencies = (query: string) => {
+	let request = agencyRequests.get(query);
+	if (!request) {
+		request = searchAgencies(query);
+		agencyRequests.set(query, request);
+	}
+	return request;
+};
+
+// `Combobox.Empty` needs `items` on `Root`, which this pattern never has: the rows are the
+// suspended child's, so the empty message is its as well.
+const AgencyItems = ({ query }: { query: string }) => {
+	const agencies = use(loadAgencies(query));
+
+	if (agencies.length === 0) {
+		return (
+			<div className="mx-2 my-px px-3 py-2 text-sm text-text-default-base-tertiary">
+				No agencies found
+			</div>
+		);
+	}
+
+	return (
+		<Combobox.List>
+			{agencies.map(agency => (
+				<Combobox.Item key={agency.id} value={agency}>
+					{agency.name}
+				</Combobox.Item>
+			))}
+		</Combobox.List>
+	);
+};
+
+const SuspenseSearch = () => {
+	const [query, setQuery] = useState('');
+
+	return (
+		// No `items` and `filter={null}`: the server did the filtering, the child renders what came
+		// back, and `isItemEqualToValue` keeps a re-fetched copy counting as the selected one.
+		<Combobox.Root
+			filter={null}
+			itemToStringLabel={(agency: Agency) => agency.name}
+			isItemEqualToValue={(a: Agency, b: Agency) => a.id === b.id}
+			onInputValueChange={(value, { reason }) => {
+				// Picking a row writes its label into the input; that is not a new search.
+				if (reason !== 'item-press') setQuery(value);
+			}}>
+			<Combobox.Input placeholder="Search agencies" aria-label="Search agencies" />
+			<Combobox.Content>
+				{query.length < 2 ? (
+					<div className="mx-2 my-px px-3 py-2 text-sm text-text-default-base-tertiary">
+						Type at least two characters
+					</div>
+				) : (
+					<Suspense fallback={<SkeletonRows />}>
+						<AgencyItems query={query} />
+					</Suspense>
+				)}
+			</Combobox.Content>
+		</Combobox.Root>
+	);
+};
+
+/**
+ * Options fetched as you type, the way the apps load data: the rows are a component
+ * that suspends on the request, so a `Suspense` boundary inside `Content` shows
+ * placeholder rows until they land. Nothing tracks `loading` by hand and no stale
+ * list lingers under the wait: the data is read by query, which is also what makes
+ * out-of-order responses harmless. Drop a `useSuspenseQuery` where `use()` is.
+ */
+export const AsyncSearch: Story = {
+	render: () => <SuspenseSearch />,
+	// The play stops at the placeholder rows. Once the boundary is suspended, the test harness
+	// (React's act environment) does not reliably flush the retry that lands the rows, so the
+	// resolved state is asserted on `AsyncSearchWithStatus` instead, where nothing suspends.
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const body = within(document.body);
+		const input = canvas.getByRole('combobox', { name: /search agencies/i });
+
+		// Focus opens the surface with the hint before anything is typed.
+		await userEvent.click(input);
+		await expect(await body.findByText(/at least two characters/i)).toBeInTheDocument();
+
+		await userEvent.type(input, 'an');
+
+		// Placeholder rows while the request is in flight, and no options yet.
+		await waitFor(() =>
+			expect(document.body.querySelector('[data-slot="combobox-skeleton"]')).toBeInTheDocument()
+		);
+		await expect(body.queryByText(/at least two characters/i)).not.toBeInTheDocument();
+		await expect(body.queryByRole('option')).not.toBeInTheDocument();
+		await userEvent.keyboard('{Escape}');
+	}
+};
+
+const StatusSearch = () => {
 	const [results, setResults] = useState<Agency[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	// Only the latest request may land; fast typing returns responses out of order.
@@ -148,8 +261,11 @@ const RemoteSearch = () => {
 	const onInputValueChange = async (query: string) => {
 		const request = ++latestRequest.current;
 
+		// The previous rows go before the wait starts: a list that no longer matches what is typed
+		// must not sit under the loading state.
+		setResults([]);
+
 		if (query.length < 2) {
-			setResults([]);
 			setIsLoading(false);
 			return;
 		}
@@ -164,7 +280,6 @@ const RemoteSearch = () => {
 
 	return (
 		// `filter={null}` hands filtering to the server; `filteredItems` is what came back.
-		// `isItemEqualToValue` keeps a re-fetched copy counting as the selected one.
 		<Combobox.Root
 			items={results}
 			filteredItems={results}
@@ -174,7 +289,11 @@ const RemoteSearch = () => {
 			onInputValueChange={onInputValueChange}>
 			<Combobox.Input placeholder="Search agencies" aria-label="Search agencies" />
 			<Combobox.Content aria-busy={isLoading || undefined}>
-				<Combobox.Status>{isLoading ? 'Searching…' : undefined}</Combobox.Status>
+				{/* The rows show the wait; `Status` only announces it. */}
+				<Combobox.Status className="sr-only">
+					{isLoading ? 'Searching…' : undefined}
+				</Combobox.Status>
+				{isLoading && <SkeletonRows />}
 				<Combobox.Empty>{isLoading ? undefined : 'No agencies found'}</Combobox.Empty>
 				<Combobox.List>
 					{(agency: Agency) => (
@@ -189,28 +308,32 @@ const RemoteSearch = () => {
 };
 
 /**
- * Options fetched as you type, as objects — the shape every real consumer has.
- * `filter={null}` turns off local filtering, the rows arrive through
- * `filteredItems`, `Status` announces the wait politely and `Content` is marked
- * busy meanwhile. Picking a row writes `itemToStringLabel` into the input.
+ * The same search without Suspense, for a consumer that gets a `loading` flag from
+ * its data layer instead: `filter={null}`, the rows arrive through `filteredItems`,
+ * `Content` is marked busy and `Status` announces the wait. The list is cleared
+ * before each request and a request that is no longer the latest is dropped.
  */
-export const AsyncSearch: Story = {
-	render: () => <RemoteSearch />,
+export const AsyncSearchWithStatus: Story = {
+	render: () => <StatusSearch />,
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 		const body = within(document.body);
+		const input = canvas.getByRole('combobox', { name: /search agencies/i });
 
-		await userEvent.type(canvas.getByRole('combobox', { name: /search agencies/i }), 'an');
+		await userEvent.type(input, 'an');
 
 		await expect(await body.findByText(/searching/i)).toBeInTheDocument();
+		await expect(body.queryByRole('option')).not.toBeInTheDocument();
 		await waitFor(() => expect(body.getAllByRole('option').length).toBeGreaterThan(0));
 
+		// Narrowing the query drops the old rows at once rather than leaving them under the wait.
+		await userEvent.type(input, 'ch');
+		await expect(body.queryByRole('option')).not.toBeInTheDocument();
+		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(1));
+
 		await userEvent.click(body.getByRole('option', { name: 'Anchor Brokers' }));
-		await waitFor(() =>
-			expect(canvas.getByRole('combobox', { name: /search agencies/i })).toHaveValue(
-				'Anchor Brokers'
-			)
-		);
+		await waitFor(() => expect(input).toHaveValue('Anchor Brokers'));
+		await userEvent.keyboard('{Escape}');
 	}
 };
 
