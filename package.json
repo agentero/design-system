@@ -51,6 +51,7 @@
     "./table": "./src/table/index.ts",
     "./tabs": "./src/tabs/index.ts",
     "./tag": "./src/tag/index.ts",
+    "./textarea": "./src/textarea/index.ts",
     "./toast": "./src/toast/index.ts",
     "./tooltip": "./src/tooltip/index.ts",
     "./validation-list": "./src/validation-list/index.ts",
