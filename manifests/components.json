@@ -7821,6 +7821,274 @@
       ],
       "import": "import { Tag } from \"@agentero/design-system\";"
     },
+    "components-textarea": {
+      "id": "components-textarea",
+      "name": "TextArea",
+      "path": "./src/textarea/textarea.stories.tsx",
+      "jsDocTags": {
+        "summary": [
+          "Base multi-line text control sharing Input's skin, states and sizes"
+        ],
+        "example": [
+          "<Label htmlFor=\"notes\">Notes</Label>\n<TextArea id=\"notes\" placeholder=\"Anything the underwriter should know\" />"
+        ]
+      },
+      "description": "TextArea is the base multi-line text control, with Input's skin, sizes and\nstates. It wires nothing on its own: `id`, `aria-invalid` and\n`aria-describedby` are plain props, set by whoever owns the field.",
+      "summary": "Base multi-line text control sharing Input's skin, states and sizes",
+      "reactComponentMeta": {
+        "displayName": "TextArea",
+        "exportName": "TextArea",
+        "filePath": "/home/runner/work/design-system/design-system/src/textarea/textarea.tsx",
+        "description": "TextArea is the design system's multi-line text control: Input's skin, states\nand sizes on a single `<textarea>` with nothing around it, so the native\nresize handle and scrollbar keep working. Pair it with\n[Label](?path=/docs/components-label--docs) the way you pair an Input.\n\nIt wires nothing itself — `id`, `aria-describedby` and `aria-invalid` are the\nfield owner's job, and there is no `status` prop. It holds no value either, so\na character counter belongs to whoever owns it.",
+        "jsDocTags": {
+          "summary": [
+            "Base multi-line text control sharing Input's skin, states and sizes"
+          ],
+          "example": [
+            "<Label htmlFor=\"notes\">Notes</Label>\n<TextArea id=\"notes\" placeholder=\"Anything the underwriter should know\" />"
+          ]
+        },
+        "props": {
+          "disabled": {
+            "name": "disabled",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Blocks interaction and drops the value from the submission. Use `readOnly`\nwhen the user still needs to read or copy it.",
+            "defaultValue": null,
+            "parent": {
+              "name": "TextareaHTMLAttributes",
+              "fileName": "node_modules/@types/react/index.d.ts"
+            },
+            "declarations": [
+              {
+                "name": "TextareaHTMLAttributes",
+                "fileName": "node_modules/@types/react/index.d.ts"
+              },
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/textarea/textarea.tsx"
+              }
+            ]
+          },
+          "maxLength": {
+            "name": "maxLength",
+            "required": false,
+            "type": {
+              "name": "number"
+            },
+            "description": "Caps the value in UTF-16 code units: typing stops there and a paste is cut.",
+            "defaultValue": null,
+            "parent": {
+              "name": "TextareaHTMLAttributes",
+              "fileName": "node_modules/@types/react/index.d.ts"
+            },
+            "declarations": [
+              {
+                "name": "TextareaHTMLAttributes",
+                "fileName": "node_modules/@types/react/index.d.ts"
+              },
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/textarea/textarea.tsx"
+              }
+            ]
+          },
+          "placeholder": {
+            "name": "placeholder",
+            "required": false,
+            "type": {
+              "name": "string"
+            },
+            "description": "Hint shown while empty; never a substitute for a label.",
+            "defaultValue": null,
+            "parent": {
+              "name": "TextareaHTMLAttributes",
+              "fileName": "node_modules/@types/react/index.d.ts"
+            },
+            "declarations": [
+              {
+                "name": "TextareaHTMLAttributes",
+                "fileName": "node_modules/@types/react/index.d.ts"
+              },
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/textarea/textarea.tsx"
+              }
+            ]
+          },
+          "readOnly": {
+            "name": "readOnly",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Focusable, copyable and submitted, but not editable.",
+            "defaultValue": null,
+            "parent": {
+              "name": "TextareaHTMLAttributes",
+              "fileName": "node_modules/@types/react/index.d.ts"
+            },
+            "declarations": [
+              {
+                "name": "TextareaHTMLAttributes",
+                "fileName": "node_modules/@types/react/index.d.ts"
+              },
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/textarea/textarea.tsx"
+              }
+            ]
+          },
+          "required": {
+            "name": "required",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Marks the control required for both the browser and assistive technology.",
+            "defaultValue": null,
+            "parent": {
+              "name": "TextareaHTMLAttributes",
+              "fileName": "node_modules/@types/react/index.d.ts"
+            },
+            "declarations": [
+              {
+                "name": "TextareaHTMLAttributes",
+                "fileName": "node_modules/@types/react/index.d.ts"
+              },
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/textarea/textarea.tsx"
+              }
+            ]
+          },
+          "rows": {
+            "name": "rows",
+            "required": false,
+            "type": {
+              "name": "number"
+            },
+            "description": "Rows visible at rest when three are not enough.",
+            "defaultValue": null,
+            "parent": {
+              "name": "TextareaHTMLAttributes",
+              "fileName": "node_modules/@types/react/index.d.ts"
+            },
+            "declarations": [
+              {
+                "name": "TextareaHTMLAttributes",
+                "fileName": "node_modules/@types/react/index.d.ts"
+              },
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/textarea/textarea.tsx"
+              }
+            ]
+          },
+          "aria-invalid": {
+            "name": "aria-invalid",
+            "required": false,
+            "type": {
+              "name": "boolean | \"true\" | \"false\" | \"grammar\" | \"spelling\" | undefined"
+            },
+            "description": "Indicates the entered value does not conform to the format expected by the application.\nDrives the destructive border and is what assistive technology announces.",
+            "defaultValue": null,
+            "parent": {
+              "name": "AriaAttributes",
+              "fileName": "node_modules/@types/react/index.d.ts"
+            },
+            "declarations": [
+              {
+                "name": "AriaAttributes",
+                "fileName": "node_modules/@types/react/index.d.ts"
+              },
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/textarea/textarea.tsx"
+              }
+            ]
+          },
+          "size": {
+            "name": "size",
+            "required": false,
+            "type": {
+              "name": "enum",
+              "raw": "\"sm\" | \"md\" | \"lg\"",
+              "value": [
+                {
+                  "value": "\"sm\""
+                },
+                {
+                  "value": "\"md\""
+                },
+                {
+                  "value": "\"lg\""
+                }
+              ]
+            },
+            "description": "Defaults to `'md'`. The first row measures one Input of the same size and\nthree rows show at rest: `sm` 76px, `md` 84px, `lg` 96px (`lg` also raises\nthe text to `base` and the radius to `lg`).",
+            "defaultValue": null,
+            "parent": {
+              "name": "TextAreaProps",
+              "fileName": "src/textarea/textarea.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/textarea/textarea.tsx"
+              }
+            ]
+          }
+        }
+      },
+      "stories": [
+        {
+          "id": "components-textarea--default",
+          "name": "Default",
+          "snippet": "const Default = () => <TextArea placeholder=\"Anything the underwriter should know\" aria-label=\"Notes\" />;",
+          "description": "The default control at `md`: three rows at rest and a vertical resize handle\nthe user can drag to make it taller.",
+          "summary": "Default standalone text area"
+        },
+        {
+          "id": "components-textarea--all-sizes",
+          "name": "All Sizes",
+          "snippet": "const AllSizes = () => <div style={{ display: 'grid', gap: '1rem' }}>\n    <TextArea size=\"sm\" aria-label=\"Small\" placeholder=\"sm — 76px, three rows\" />\n    <TextArea size=\"md\" aria-label=\"Medium\" placeholder=\"md — 84px, three rows\" />\n    <TextArea size=\"lg\" aria-label=\"Large\" placeholder=\"lg — 96px, three rows\" />\n</div>;",
+          "description": "The three sizes mirror Input's: the first row measures one Input of the same\nsize and the minimum height shows three rows.",
+          "summary": "The three sizes, three rows tall at rest"
+        },
+        {
+          "id": "components-textarea--rows",
+          "name": "Rows",
+          "snippet": "const Rows = () => <TextArea\n    placeholder=\"Six rows visible before scrolling\"\n    aria-label=\"Notes\"\n    rows={6} />;",
+          "description": "`rows` sets a taller initial height when three rows are not enough.",
+          "summary": "Taller initial height through the native rows attribute"
+        },
+        {
+          "id": "components-textarea--invalid",
+          "name": "Invalid",
+          "snippet": "const Invalid = () => <div style={{ display: 'grid', gap: '0.25rem' }}>\n    <TextArea\n        placeholder=\"Anything the underwriter should know\"\n        aria-label=\"Reason\"\n        aria-invalid\n        aria-describedby=\"reason-error\"\n        defaultValue=\"n/a\" />\n    <span id=\"reason-error\">Tell us why you are cancelling.</span>\n</div>;",
+          "description": "The invalid treatment comes purely from `aria-invalid`; point\n`aria-describedby` at the message so it is read with the control.",
+          "summary": "Invalid state driven by aria-invalid"
+        },
+        {
+          "id": "components-textarea--disabled",
+          "name": "Disabled",
+          "snippet": "const Disabled = () => <TextArea\n    placeholder=\"Anything the underwriter should know\"\n    aria-label=\"Notes\"\n    disabled\n    defaultValue=\"Cannot be edited\" />;",
+          "description": "",
+          "summary": "Disabled state"
+        },
+        {
+          "id": "components-textarea--read-only",
+          "name": "Read Only",
+          "snippet": "const ReadOnly = () => <TextArea\n    placeholder=\"Anything the underwriter should know\"\n    aria-label=\"Notes\"\n    readOnly\n    defaultValue=\"Copy me, but do not change me\" />;",
+          "description": "",
+          "summary": "Read-only value that stays focusable and copyable"
+        }
+      ],
+      "import": "import { TextArea } from \"@agentero/design-system\";"
+    },
     "components-toast": {
       "id": "components-toast",
       "name": "Toast",
@@ -8606,6 +8874,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4257
+    "durationMs": 4351
   }
 }
