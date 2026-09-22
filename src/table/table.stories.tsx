@@ -238,7 +238,39 @@ export const Enclosed: Story = {
  * @summary Selectable rows with a collapsing checkbox column
  */
 export const WithCheckbox: Story = {
-	render: args => renderTable(args, { checkbox: true })
+	render: args => renderTable(args, { checkbox: true }),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const cell = canvas.getByLabelText('Select Alice Williams').closest('td')!;
+
+		await expect(getComputedStyle(cell).paddingInlineEnd).toBe('0px');
+	}
+};
+
+/**
+ * A Switch carries a hidden checkbox so a form can read it without JS. A cell
+ * holding one is not a selection column and keeps its padding.
+ *
+ * @summary A cell whose only checkbox is hidden keeps its padding
+ */
+export const WithHiddenCheckbox: Story = {
+	render: args => (
+		<Table.Root {...args}>
+			<Table.Body>
+				<Table.Row>
+					<Table.Cell>
+						<input type="checkbox" aria-hidden tabIndex={-1} defaultChecked readOnly />
+					</Table.Cell>
+					<Table.Cell>Alice Williams</Table.Cell>
+				</Table.Row>
+			</Table.Body>
+		</Table.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const cell = canvasElement.querySelector('[data-slot=table-cell]')!;
+
+		await expect(getComputedStyle(cell).paddingInlineEnd).not.toBe('0px');
+	}
 };
 
 /**
