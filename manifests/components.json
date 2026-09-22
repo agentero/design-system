@@ -1986,6 +1986,838 @@
       ],
       "import": "import { Checkbox, Label } from \"@agentero/design-system\";"
     },
+    "components-combobox": {
+      "id": "components-combobox",
+      "name": "Combobox.Root",
+      "path": "./src/combobox/combobox.stories.tsx",
+      "jsDocTags": {
+        "summary": [
+          "Root provider for an input-triggered filterable list"
+        ],
+        "see": [
+          "{@link https://base-ui.com/react/components/combobox Base UI Combobox}"
+        ],
+        "example": [
+          "```tsx\nimport { Combobox } from '@agentero/design-system/combobox';\n\n<Combobox.Root items={states}>\n  <Combobox.Input placeholder=\"Search states\" />\n  <Combobox.Content>\n    <Combobox.Empty>No matches found</Combobox.Empty>\n    <Combobox.List>\n      {(state: string) => <Combobox.Item key={state} value={state}>{state}</Combobox.Item>}\n    </Combobox.List>\n  </Combobox.Content>\n</Combobox.Root>\n```"
+        ]
+      },
+      "description": "Combobox is a text input that filters a list and writes the chosen option back\ninto itself. Focusing the input or typing opens the list; picking a row fills the\ninput and closes it. Built on Base UI, whose Combobox primitive owns the\nfiltering, the keyboard navigation and the `role=\"combobox\"` wiring.",
+      "summary": "Root provider for an input-triggered filterable list",
+      "reactComponentMeta": {
+        "displayName": "Combobox.Root",
+        "exportName": "Combobox",
+        "filePath": "/home/runner/work/design-system/design-system/src/combobox/index.ts",
+        "description": "Root of a combobox: a text input that filters a list of options and writes the\nchosen one back into itself. With `Input` as the only trigger, the list opens on\nfocus or on the first keystroke.\n\nPass the options as `items`. For a list that comes from the server, set\n`filter={null}`, hand the already-filtered rows to `filteredItems`, and request\nthem from `onInputValueChange`; `Status` then announces the wait.",
+        "jsDocTags": {
+          "summary": [
+            "Root provider for an input-triggered filterable list"
+          ],
+          "see": [
+            "{@link https://base-ui.com/react/components/combobox Base UI Combobox}"
+          ],
+          "example": [
+            "```tsx\nimport { Combobox } from '@agentero/design-system/combobox';\n\n<Combobox.Root items={states}>\n  <Combobox.Input placeholder=\"Search states\" />\n  <Combobox.Content>\n    <Combobox.Empty>No matches found</Combobox.Empty>\n    <Combobox.List>\n      {(state: string) => <Combobox.Item key={state} value={state}>{state}</Combobox.Item>}\n    </Combobox.List>\n  </Combobox.Content>\n</Combobox.Root>\n```"
+          ]
+        },
+        "props": {
+          "filter": {
+            "name": "filter",
+            "required": false,
+            "type": {
+              "name": "((item: unknown, query: string, itemToString?: ((item: unknown) => string) | undefined) => boolean) | null | undefined"
+            },
+            "description": "Filter function used to match items vs input query.\nReceives the source item, which is the derived value's item when `items` is a `createItems()`\ncollection, and the item itself otherwise.",
+            "defaultValue": null,
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "ComboboxRootProps",
+                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+              }
+            ]
+          },
+          "form": {
+            "name": "form",
+            "required": false,
+            "type": {
+              "name": "string"
+            },
+            "description": "Identifies the form that owns the internal input.\nUseful when the combobox is rendered outside the form.",
+            "defaultValue": null,
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "ComboboxRootProps",
+                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+              }
+            ]
+          },
+          "id": {
+            "name": "id",
+            "required": false,
+            "type": {
+              "name": "string"
+            },
+            "description": "The id of the component.",
+            "defaultValue": null,
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "ComboboxRootProps",
+                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+              }
+            ]
+          },
+          "children": {
+            "name": "children",
+            "required": false,
+            "type": {
+              "name": "ReactNode"
+            },
+            "description": "",
+            "defaultValue": null,
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "ComboboxRootProps",
+                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+              }
+            ]
+          },
+          "grid": {
+            "name": "grid",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Whether list items are presented in a grid layout.\nWhen enabled, arrow keys navigate across rows and columns inferred from DOM rows.",
+            "defaultValue": {
+              "value": "false"
+            },
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "ComboboxRootProps",
+                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+              }
+            ]
+          },
+          "disabled": {
+            "name": "disabled",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Whether the component should ignore user interaction.",
+            "defaultValue": {
+              "value": "false"
+            },
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "ComboboxRootProps",
+                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+              }
+            ]
+          },
+          "defaultOpen": {
+            "name": "defaultOpen",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Whether the popup is initially open.\n\nTo render a controlled popup, use the `open` prop instead.",
+            "defaultValue": {
+              "value": "false"
+            },
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "ComboboxRootProps",
+                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+              }
+            ]
+          },
+          "open": {
+            "name": "open",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Whether the popup is currently open. Use when controlled.",
+            "defaultValue": null,
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "ComboboxRootProps",
+                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+              }
+            ]
+          },
+          "name": {
+            "name": "name",
+            "required": false,
+            "type": {
+              "name": "string"
+            },
+            "description": "Identifies the field when a form is submitted.",
+            "defaultValue": null,
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "ComboboxRootProps",
+                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+              }
+            ]
+          },
+          "inline": {
+            "name": "inline",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Whether the list is rendered inline without using the component's own popup.\n\nSpecify `open` unconditionally in conjunction with this prop so the list is considered\nvisible: `<Combobox.Root inline open>`\n\nIn a `Combobox.Root` > `Dialog.Root` composition, bind the Combobox's `open` and\n`onOpenChange` props to the `Dialog`'s `open` and `onOpenChange` state instead so the\ncomponent resets its transient state (filter query, highlighted item, and input value) when\nthe dialog closes.",
+            "defaultValue": {
+              "value": "false"
+            },
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "ComboboxRootProps",
+                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+              }
+            ]
+          },
+          "required": {
+            "name": "required",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Whether the user must choose a value before submitting a form.",
+            "defaultValue": {
+              "value": "false"
+            },
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "ComboboxRootProps",
+                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+              }
+            ]
+          },
+          "readOnly": {
+            "name": "readOnly",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Whether the user should be unable to choose a different option from the popup.",
+            "defaultValue": {
+              "value": "false"
+            },
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "ComboboxRootProps",
+                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+              }
+            ]
+          },
+          "onOpenChangeComplete": {
+            "name": "onOpenChangeComplete",
+            "required": false,
+            "type": {
+              "name": "(open: boolean) => void"
+            },
+            "description": "Event handler called after any animations complete when the popup is opened or closed.",
+            "defaultValue": null,
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "ComboboxRootProps",
+                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+              }
+            ]
+          },
+          "openOnInputClick": {
+            "name": "openOnInputClick",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Whether the popup opens when clicking the input.",
+            "defaultValue": {
+              "value": "true"
+            },
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "ComboboxRootProps",
+                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+              }
+            ]
+          },
+          "loopFocus": {
+            "name": "loopFocus",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Whether to loop keyboard focus back to the input when the end of the list is reached while using the arrow keys. The first item can then be reached by pressing <kbd>ArrowDown</kbd> again from the input, or the last item can be reached by pressing <kbd>ArrowUp</kbd> from the input.\nThe input is always included in the focus loop per [ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/).\nWhen disabled, focus does not move when on the last element and the user presses <kbd>ArrowDown</kbd>, or when on the first element and the user presses <kbd>ArrowUp</kbd>.",
+            "defaultValue": {
+              "value": "true"
+            },
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "ComboboxRootProps",
+                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+              }
+            ]
+          },
+          "inputValue": {
+            "name": "inputValue",
+            "required": false,
+            "type": {
+              "name": "string | number | readonly string[] | undefined"
+            },
+            "description": "The input value of the combobox. Use when controlled.",
+            "defaultValue": null,
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "ComboboxRootProps",
+                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+              }
+            ]
+          },
+          "defaultInputValue": {
+            "name": "defaultInputValue",
+            "required": false,
+            "type": {
+              "name": "string | number | readonly string[] | undefined"
+            },
+            "description": "The uncontrolled input value when initially rendered.\n\nTo render a controlled input, use the `inputValue` prop instead.",
+            "defaultValue": null,
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "ComboboxRootProps",
+                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+              }
+            ]
+          },
+          "inputRef": {
+            "name": "inputRef",
+            "required": false,
+            "type": {
+              "name": "Ref<HTMLInputElement> | undefined"
+            },
+            "description": "A ref to the hidden input element.",
+            "defaultValue": null,
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "ComboboxRootProps",
+                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+              }
+            ]
+          },
+          "items": {
+            "name": "items",
+            "required": false,
+            "type": {
+              "name": "readonly any[] | readonly Group<any>[] | ComboboxItemCollection<unknown, unknown> | undefined"
+            },
+            "description": "The items to be displayed in the list.\nCan be a flat array of items, an array of groups with items, or a collection created by\nthe `createItems()` function, which derives each item's selection value and label.\nNullish entries are not supported: remove them from the data before passing it.",
+            "defaultValue": null,
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "ComboboxRootProps",
+                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+              }
+            ]
+          },
+          "filteredItems": {
+            "name": "filteredItems",
+            "required": false,
+            "type": {
+              "name": "readonly unknown[] | readonly Group<unknown>[] | undefined"
+            },
+            "description": "Filtered items to display in the list.\nWhen provided, the list uses these items instead of filtering the `items` prop internally.\nWhen `items` is also provided, this array must preserve its flat or grouped structure.\nWith a `createItems()` collection, pass source items rather than derived values.\nNullish entries are not supported, as in `items`.\nUse when you want to control filtering logic externally with the `useFilter()` hook.",
+            "defaultValue": null,
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "ComboboxRootProps",
+                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+              }
+            ]
+          },
+          "virtualized": {
+            "name": "virtualized",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Whether the items are being externally virtualized.",
+            "defaultValue": {
+              "value": "false"
+            },
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "ComboboxRootProps",
+                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+              }
+            ]
+          },
+          "modal": {
+            "name": "modal",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Determines if the popup enters a modal state when open.\n- `true`: user interaction is limited to the popup: document page scroll is locked and pointer interactions on outside elements are disabled.\n- `false`: user interaction with the rest of the document is allowed.\n\nOn touch devices, a `true` modal blocks outside taps but leaves the page scrollable unless the popup spans nearly the full viewport width, matching native iOS behavior.",
+            "defaultValue": {
+              "value": "false"
+            },
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "ComboboxRootProps",
+                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+              }
+            ]
+          },
+          "limit": {
+            "name": "limit",
+            "required": false,
+            "type": {
+              "name": "number"
+            },
+            "description": "The maximum number of items to display in the list.",
+            "defaultValue": {
+              "value": "-1"
+            },
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "ComboboxRootProps",
+                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+              }
+            ]
+          },
+          "locale": {
+            "name": "locale",
+            "required": false,
+            "type": {
+              "name": "LocalesArgument"
+            },
+            "description": "The locale to use for string comparison.\nDefaults to the user's runtime locale.",
+            "defaultValue": null,
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "ComboboxRootProps",
+                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+              }
+            ]
+          },
+          "multiple": {
+            "name": "multiple",
+            "required": false,
+            "type": {
+              "name": "false"
+            },
+            "description": "Whether multiple items can be selected.",
+            "defaultValue": {
+              "value": "false"
+            },
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/ComboboxRoot.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "node_modules/@base-ui/react/combobox/root/ComboboxRoot.d.mts"
+              }
+            ]
+          },
+          "autoComplete": {
+            "name": "autoComplete",
+            "required": false,
+            "type": {
+              "name": "string"
+            },
+            "description": "Provides a hint to the browser for autofill.",
+            "defaultValue": null,
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/ComboboxRoot.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "node_modules/@base-ui/react/combobox/root/ComboboxRoot.d.mts"
+              }
+            ]
+          },
+          "autoHighlight": {
+            "name": "autoHighlight",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Whether the first matching item is highlighted automatically while filtering.",
+            "defaultValue": {
+              "value": "false"
+            },
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/ComboboxRoot.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "node_modules/@base-ui/react/combobox/root/ComboboxRoot.d.mts"
+              }
+            ]
+          },
+          "highlightItemOnHover": {
+            "name": "highlightItemOnHover",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Whether moving the pointer over items should highlight them.\nDisabling this prop allows CSS `:hover` to be differentiated from the `:focus` (`data-highlighted`) state.",
+            "defaultValue": {
+              "value": "true"
+            },
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/ComboboxRoot.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "node_modules/@base-ui/react/combobox/root/ComboboxRoot.d.mts"
+              }
+            ]
+          },
+          "itemToStringLabel": {
+            "name": "itemToStringLabel",
+            "required": false,
+            "type": {
+              "name": "(itemValue: unknown) => string"
+            },
+            "description": "When the item values are objects (`<Combobox.Item value={object}>`), this function converts the object value to a string representation for display in the input.\nIf the shape of the object is `{ value, label }`, the label will be used automatically without needing to specify this prop.\nWith a `createItems()` collection, this receives the derived value, and the collection's\n`getLabel` takes precedence for values it can resolve.",
+            "defaultValue": null,
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/ComboboxRoot.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "node_modules/@base-ui/react/combobox/root/ComboboxRoot.d.mts"
+              }
+            ]
+          },
+          "itemToStringValue": {
+            "name": "itemToStringValue",
+            "required": false,
+            "type": {
+              "name": "(itemValue: unknown) => string"
+            },
+            "description": "When the item values are objects (`<Combobox.Item value={object}>`), this function converts the object value to a string representation for form submission.\nIf the shape of the object is `{ value, label }`, the value will be used automatically without needing to specify this prop.\nWith a `createItems()` collection, this receives the derived value.",
+            "defaultValue": null,
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/ComboboxRoot.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "node_modules/@base-ui/react/combobox/root/ComboboxRoot.d.mts"
+              }
+            ]
+          },
+          "isItemEqualToValue": {
+            "name": "isItemEqualToValue",
+            "required": false,
+            "type": {
+              "name": "(itemValue: unknown, value: unknown) => boolean"
+            },
+            "description": "Custom comparison logic used to determine if a combobox item value matches the current selected value. Useful when item values are objects without matching referentially.\nWith a `createItems()` collection, both arguments are derived values.\nDefaults to `Object.is` comparison.",
+            "defaultValue": null,
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/ComboboxRoot.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "node_modules/@base-ui/react/combobox/root/ComboboxRoot.d.mts"
+              }
+            ]
+          },
+          "defaultValue": {
+            "name": "defaultValue",
+            "required": false,
+            "type": {
+              "name": "unknown"
+            },
+            "description": "The uncontrolled selected value of the combobox when it's initially rendered.\n\nTo render a controlled combobox, use the `value` prop instead.",
+            "defaultValue": null,
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/ComboboxRoot.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "node_modules/@base-ui/react/combobox/root/ComboboxRoot.d.mts"
+              }
+            ]
+          },
+          "actionsRef": {
+            "name": "actionsRef",
+            "required": false,
+            "type": {
+              "name": "RefObject<Actions | null>"
+            },
+            "description": "A ref to imperative actions.\n- `unmount`: Manually unmounts the combobox.\nCall this after any externally controlled closing animation finishes.",
+            "defaultValue": null,
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/ComboboxRoot.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "node_modules/@base-ui/react/combobox/root/ComboboxRoot.d.mts"
+              }
+            ]
+          },
+          "onOpenChange": {
+            "name": "onOpenChange",
+            "required": false,
+            "type": {
+              "name": "(open: boolean, eventDetails: ChangeEventDetails) => void"
+            },
+            "description": "Event handler called when the popup is opened or closed.",
+            "defaultValue": null,
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/ComboboxRoot.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "node_modules/@base-ui/react/combobox/root/ComboboxRoot.d.mts"
+              }
+            ]
+          },
+          "onInputValueChange": {
+            "name": "onInputValueChange",
+            "required": false,
+            "type": {
+              "name": "(inputValue: string, eventDetails: ChangeEventDetails) => void"
+            },
+            "description": "Event handler called when the input value changes.",
+            "defaultValue": null,
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/ComboboxRoot.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "node_modules/@base-ui/react/combobox/root/ComboboxRoot.d.mts"
+              }
+            ]
+          },
+          "onItemHighlighted": {
+            "name": "onItemHighlighted",
+            "required": false,
+            "type": {
+              "name": "(highlightedValue: unknown, eventDetails: HighlightEventDetails) => void"
+            },
+            "description": "Callback fired when an item is highlighted or unhighlighted.\nReceives the highlighted item value (or `undefined` if no item is highlighted) and event details with a `reason` property describing why the highlight changed.\nThe `reason` can be:\n- `'keyboard'`: the highlight changed due to keyboard navigation.\n- `'pointer'`: the highlight changed due to pointer hovering.\n- `'none'`: the highlight changed programmatically.",
+            "defaultValue": null,
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/ComboboxRoot.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "node_modules/@base-ui/react/combobox/root/ComboboxRoot.d.mts"
+              }
+            ]
+          },
+          "value": {
+            "name": "value",
+            "required": false,
+            "type": {
+              "name": "unknown"
+            },
+            "description": "The selected value of the combobox. Use when controlled.",
+            "defaultValue": null,
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/ComboboxRoot.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "node_modules/@base-ui/react/combobox/root/ComboboxRoot.d.mts"
+              }
+            ]
+          },
+          "onValueChange": {
+            "name": "onValueChange",
+            "required": false,
+            "type": {
+              "name": "(value: unknown, eventDetails: ChangeEventDetails) => void"
+            },
+            "description": "Event handler called when the selected value of the combobox changes.",
+            "defaultValue": null,
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/ComboboxRoot.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "node_modules/@base-ui/react/combobox/root/ComboboxRoot.d.mts"
+              }
+            ]
+          }
+        }
+      },
+      "stories": [
+        {
+          "id": "components-combobox--default",
+          "name": "Default",
+          "snippet": "const Default = () => (\n    <Combobox.Root items={STATES}>\n        <Combobox.Input placeholder=\"Search states\" aria-label=\"Search states\" />\n        <Combobox.Content>\n            <Combobox.Empty>No matches found</Combobox.Empty>\n            <Combobox.List>\n                {(state: string) => (\n                    <Combobox.Item key={state} value={state}>\n                        {state}\n                    </Combobox.Item>\n                )}\n            </Combobox.List>\n        </Combobox.Content>\n    </Combobox.Root>\n);",
+          "description": "The common case: options are already in memory and Base UI filters them against\nwhat you type. Selecting a row fills the input and closes the list."
+        },
+        {
+          "id": "components-combobox--no-matches",
+          "name": "No Matches",
+          "snippet": "const NoMatches = () => (\n    <Combobox.Root items={STATES}>\n        <Combobox.Input placeholder=\"Search states\" aria-label=\"Search states\" />\n        <Combobox.Content>\n            <Combobox.Empty>No matches found</Combobox.Empty>\n            <Combobox.List>\n                {(state: string) => (\n                    <Combobox.Item key={state} value={state}>\n                        {state}\n                    </Combobox.Item>\n                )}\n            </Combobox.List>\n        </Combobox.Content>\n    </Combobox.Root>\n);",
+          "description": "`Empty` stays mounted so screen readers announce the change; it renders its\nchildren only while nothing matches. It needs `items` on `Root` to know that."
+        },
+        {
+          "id": "components-combobox--async-search",
+          "name": "Async Search",
+          "snippet": "const AsyncSearch = () => <SuspenseSearch />;",
+          "description": "Options fetched as you type, the way the apps load data: the rows are a component\nthat suspends on the request, so a `Suspense` boundary inside `Content` shows\nplaceholder rows until they land. Nothing tracks `loading` by hand and no stale\nlist lingers under the wait: the data is read by query, which is also what makes\nout-of-order responses harmless. Drop a `useSuspenseQuery` where `use()` is."
+        },
+        {
+          "id": "components-combobox--async-search-with-status",
+          "name": "Async Search With Status",
+          "snippet": "const AsyncSearchWithStatus = () => <StatusSearch />;",
+          "description": "The same search without Suspense, for a consumer that gets a `loading` flag from\nits data layer instead: `filter={null}`, the rows arrive through `filteredItems`,\n`Content` is marked busy and `Status` announces the wait. The list is cleared\nbefore each request and a request that is no longer the latest is dropped."
+        },
+        {
+          "id": "components-combobox--inside-field-text",
+          "name": "Inside Field Text",
+          "snippet": "const InsideFieldText = () => (\n    <FieldText invalid required>\n        <Label>Agency</Label>\n        <Combobox.Root items={STATES}>\n            <Combobox.Input placeholder=\"Search agencies\" />\n            <Combobox.Content>\n                <Combobox.Empty>No matches found</Combobox.Empty>\n                <Combobox.List>\n                    {(state: string) => (\n                        <Combobox.Item key={state} value={state}>\n                            {state}\n                        </Combobox.Item>\n                    )}\n                </Combobox.List>\n            </Combobox.Content>\n        </Combobox.Root>\n        <Field.Description>The agency this agent will be added to.</Field.Description>\n        <Field.Error errors={[{ message: 'Pick an agency from the list' }]} />\n    </FieldText>\n);",
+          "description": "Dropped into a `FieldText`, the input takes the label, the description and\nthe error from the field with nothing wired by hand: `Combobox.Input` reads the\nsame `InputContext` the plain `Input` does."
+        },
+        {
+          "id": "components-combobox--with-leading-icon",
+          "name": "With Leading Icon",
+          "snippet": "const WithLeadingIcon = () => (\n    <Combobox.Root items={STATES}>\n        <div className=\"relative\">\n            <IconSearch\n                aria-hidden\n                className=\"pointer-events-none absolute top-1/2 left-3 z-1 size-6 -translate-y-1/2 [&>path]:fill-icon-default-base-tertiary\"\n            />\n            <Combobox.Input className=\"pl-11\" placeholder=\"Search states\" aria-label=\"Search states\" />\n        </div>\n        <Combobox.Content>\n            <Combobox.Empty>No matches found</Combobox.Empty>\n            <Combobox.List>\n                {(state: string) => (\n                    <Combobox.Item key={state} value={state}>\n                        {state}\n                    </Combobox.Item>\n                )}\n            </Combobox.List>\n        </Combobox.Content>\n    </Combobox.Root>\n);",
+          "description": "A leading icon is composed around the input, not baked in: not every combobox\nis a search (a FEIN lookup or a template picker are not), so the component\nships no icon of its own. Until `InputGroup` lands in the design system, the\nmarketplace search fields get theirs like this — the icon overlaid, the input\npadded past it."
+        },
+        {
+          "id": "components-combobox--inside-modal",
+          "name": "Inside Modal",
+          "snippet": "const InsideModal = () => (\n    <Modal.Root>\n        <Modal.Trigger asChild>\n            <Button variant=\"secondary\">Assign agency</Button>\n        </Modal.Trigger>\n        <Modal.Content>\n            <Modal.Title>Assign agency</Modal.Title>\n            <Modal.Body>\n                <Combobox.Root items={STATES}>\n                    <Combobox.Input placeholder=\"Search states\" aria-label=\"Search states\" />\n                    <Combobox.Content>\n                        <Combobox.Empty>No matches found</Combobox.Empty>\n                        <Combobox.List>\n                            {(state: string) => (\n                                <Combobox.Item key={state} value={state}>\n                                    {state}\n                                </Combobox.Item>\n                            )}\n                        </Combobox.List>\n                    </Combobox.Content>\n                </Combobox.Root>\n            </Modal.Body>\n        </Modal.Content>\n    </Modal.Root>\n);",
+          "description": "Inside a `Modal`, which is a Radix Dialog. The surface portals to the body, so\nthis checks that the dialog's modal layer neither blocks pointer events on the\nlist nor treats a click in it as a click outside and closes."
+        }
+      ],
+      "import": "import { Button, Combobox, Field, FieldText, IconSearch, Label, Modal, Skeleton } from \"@agentero/design-system\";\nimport { Suspense } from \"react\";"
+    },
     "components-command": {
       "id": "components-command",
       "name": "Command.Root",
@@ -5176,11 +6008,8 @@
             "required": false,
             "type": {
               "name": "enum",
-              "raw": "\"right\" | \"top\" | \"bottom\" | \"left\"",
+              "raw": "\"top\" | \"bottom\" | \"left\" | \"right\"",
               "value": [
-                {
-                  "value": "\"right\""
-                },
                 {
                   "value": "\"top\""
                 },
@@ -5189,6 +6018,9 @@
                 },
                 {
                   "value": "\"left\""
+                },
+                {
+                  "value": "\"right\""
                 }
               ]
             },
@@ -5738,13 +6570,13 @@
               }
             ]
           },
-          "placeholder": {
-            "name": "placeholder",
+          "readOnly": {
+            "name": "readOnly",
             "required": false,
             "type": {
-              "name": "string"
+              "name": "boolean"
             },
-            "description": "Short hint shown while the field is empty. It disappears on the first\nkeystroke, so it is never a substitute for a label.",
+            "description": "Keeps the value focusable and copyable but not editable, and still\nsubmits it. Unlike `disabled`, it stays in the tab order.",
             "defaultValue": null,
             "parent": {
               "name": "InputHTMLAttributes",
@@ -5761,13 +6593,13 @@
               }
             ]
           },
-          "readOnly": {
-            "name": "readOnly",
+          "placeholder": {
+            "name": "placeholder",
             "required": false,
             "type": {
-              "name": "boolean"
+              "name": "string"
             },
-            "description": "Keeps the value focusable and copyable but not editable, and still\nsubmits it. Unlike `disabled`, it stays in the tab order.",
+            "description": "Short hint shown while the field is empty. It disappears on the first\nkeystroke, so it is never a substitute for a label.",
             "defaultValue": null,
             "parent": {
               "name": "InputHTMLAttributes",
@@ -8519,11 +9351,8 @@
             "required": false,
             "type": {
               "name": "enum",
-              "raw": "\"right\" | \"top\" | \"bottom\" | \"left\"",
+              "raw": "\"top\" | \"bottom\" | \"left\" | \"right\"",
               "value": [
-                {
-                  "value": "\"right\""
-                },
                 {
                   "value": "\"top\""
                 },
@@ -8532,6 +9361,9 @@
                 },
                 {
                   "value": "\"left\""
+                },
+                {
+                  "value": "\"right\""
                 }
               ]
             },
@@ -8874,6 +9706,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4351
+    "durationMs": 4653
   }
 }
