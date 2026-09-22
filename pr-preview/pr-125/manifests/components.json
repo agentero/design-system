@@ -5635,7 +5635,7 @@
         "displayName": "Input",
         "exportName": "Input",
         "filePath": "/home/runner/work/design-system/design-system/src/input/input.tsx",
-        "description": "Input is the design system's base single-line text control. Reach for it\nwhenever a form collects free text, and pair it with\n[Label](?path=/docs/components-label--docs) so the control has an accessible\nname.\n\nWhen a container provides `InputContext`, the input takes its wiring (`id`,\n`aria-describedby`, `aria-invalid`, `required`, `disabled`, `readOnly`) from\nit with nothing passed by hand; `FieldText` is one such container. Standalone it\nrenders exactly the props it is given, and its own props always win over the\ncontext. Every standard `<input>` attribute is accepted and forwarded, so\n`type`, `placeholder`, `required`, `readOnly` and the rest work as in plain\nHTML. The invalid state has no prop of its own: `aria-invalid` drives the\ndestructive border, so the styling can never disagree with what assistive\ntechnology announces.\n\nDo not use Input for multi-line text; that is TextArea's job. It also has no\nslots for leading or trailing addons — an input with a currency prefix or a\nunit suffix belongs in an input group, not here.",
+        "description": "Input is the design system's base single-line text control. Reach for it\nwhenever a form collects free text, and pair it with\n[Label](?path=/docs/components-label--docs) so the control has an accessible\nname.\n\nWhen a container provides `InputContext`, the input takes its wiring (`id`,\n`aria-describedby`, `aria-invalid`, `required`, `disabled`, `readOnly`) from\nit with nothing passed by hand; `FieldText` is one such container. Standalone it\nrenders exactly the props it is given, and its own props always win over the\ncontext. Every standard `<input>` attribute is accepted and forwarded, so\n`type`, `placeholder`, `required`, `disabled`, `readOnly` and the rest work\nas in plain HTML. The invalid state has no prop of its own: `aria-invalid`\ndrives the destructive border, so the styling can never disagree with what\nassistive technology announces. Point `aria-describedby` at the error message\nso the two are read together.\n\nDo not use Input for multi-line text; that is TextArea's job. It also has no\nslots for leading or trailing addons — an input with a currency prefix or a\nunit suffix belongs in an input group, not here.",
         "jsDocTags": {
           "summary": [
             "Base single-line text control that takes its wiring from InputContext"
@@ -5646,52 +5646,6 @@
           ]
         },
         "props": {
-          "aria-invalid": {
-            "name": "aria-invalid",
-            "required": false,
-            "type": {
-              "name": "boolean | \"true\" | \"false\" | \"grammar\" | \"spelling\" | undefined"
-            },
-            "description": "Indicates the entered value does not conform to the format expected by the application.\nSet this when the value fails validation: it drives the destructive border\nand is what assistive technology announces. Point `aria-describedby` at\nthe error message so the two are read together.",
-            "defaultValue": null,
-            "parent": {
-              "name": "AriaAttributes",
-              "fileName": "node_modules/@types/react/index.d.ts"
-            },
-            "declarations": [
-              {
-                "name": "AriaAttributes",
-                "fileName": "node_modules/@types/react/index.d.ts"
-              },
-              {
-                "name": "TypeLiteral",
-                "fileName": "src/input/input.tsx"
-              }
-            ]
-          },
-          "disabled": {
-            "name": "disabled",
-            "required": false,
-            "type": {
-              "name": "boolean"
-            },
-            "description": "Blocks interaction, greys the control out and drops its shadow. The value\nis not submitted. When the user still needs to read or copy the value,\nuse `readOnly` instead.",
-            "defaultValue": null,
-            "parent": {
-              "name": "InputHTMLAttributes",
-              "fileName": "node_modules/@types/react/index.d.ts"
-            },
-            "declarations": [
-              {
-                "name": "InputHTMLAttributes",
-                "fileName": "node_modules/@types/react/index.d.ts"
-              },
-              {
-                "name": "TypeLiteral",
-                "fileName": "src/input/input.tsx"
-              }
-            ]
-          },
           "size": {
             "name": "size",
             "required": false,
@@ -7747,7 +7701,7 @@
         "displayName": "TextArea",
         "exportName": "TextArea",
         "filePath": "/home/runner/work/design-system/design-system/src/textarea/textarea.tsx",
-        "description": "TextArea is the design system's multi-line text control: Input's skin, states\nand sizes on a single `<textarea>` with nothing around it, so the native\nresize handle and scrollbar keep working. Pair it with\n[Label](?path=/docs/components-label--docs) the way you pair an Input.\n\nIt wires nothing itself — `id`, `aria-describedby` and `aria-invalid` are the\nfield owner's job. The invalid state has no prop of its own: `aria-invalid`\ndrives the destructive border, the same as Input. Every `<textarea>` attribute\nis accepted and forwarded, so `placeholder`, `required`, `readOnly`,\n`maxLength` and the rest work as in plain HTML. It holds no value either, so\na character counter belongs to whoever owns it.",
+        "description": "TextArea is the design system's multi-line text control: Input's skin, states\nand sizes on a single `<textarea>` with nothing around it, so the native\nresize handle and scrollbar keep working. Pair it with\n[Label](?path=/docs/components-label--docs) the way you pair an Input.\n\nIt wires nothing itself — `id`, `aria-describedby` and `aria-invalid` are the\nfield owner's job. The invalid state has no prop of its own: `aria-invalid`\ndrives the destructive border, the same as Input. Every `<textarea>` attribute\nis accepted and forwarded, so `placeholder`, `required`, `disabled`,\n`readOnly`, `maxLength` and the rest work as in plain HTML; `rows` raises the\nresting height when three rows are not enough. It holds no value either, so a\ncharacter counter belongs to whoever owns it.",
         "jsDocTags": {
           "summary": [
             "Base multi-line text control sharing Input's skin, states and sizes"
@@ -7757,75 +7711,6 @@
           ]
         },
         "props": {
-          "disabled": {
-            "name": "disabled",
-            "required": false,
-            "type": {
-              "name": "boolean"
-            },
-            "description": "Blocks interaction and drops the value from the submission. Use `readOnly`\nwhen the user still needs to read or copy it.",
-            "defaultValue": null,
-            "parent": {
-              "name": "TextareaHTMLAttributes",
-              "fileName": "node_modules/@types/react/index.d.ts"
-            },
-            "declarations": [
-              {
-                "name": "TextareaHTMLAttributes",
-                "fileName": "node_modules/@types/react/index.d.ts"
-              },
-              {
-                "name": "TypeLiteral",
-                "fileName": "src/textarea/textarea.tsx"
-              }
-            ]
-          },
-          "rows": {
-            "name": "rows",
-            "required": false,
-            "type": {
-              "name": "number"
-            },
-            "description": "Rows visible at rest when three are not enough.",
-            "defaultValue": null,
-            "parent": {
-              "name": "TextareaHTMLAttributes",
-              "fileName": "node_modules/@types/react/index.d.ts"
-            },
-            "declarations": [
-              {
-                "name": "TextareaHTMLAttributes",
-                "fileName": "node_modules/@types/react/index.d.ts"
-              },
-              {
-                "name": "TypeLiteral",
-                "fileName": "src/textarea/textarea.tsx"
-              }
-            ]
-          },
-          "aria-invalid": {
-            "name": "aria-invalid",
-            "required": false,
-            "type": {
-              "name": "boolean | \"true\" | \"false\" | \"grammar\" | \"spelling\" | undefined"
-            },
-            "description": "Indicates the entered value does not conform to the format expected by the application.\nDrives the destructive border and is what assistive technology announces.",
-            "defaultValue": null,
-            "parent": {
-              "name": "AriaAttributes",
-              "fileName": "node_modules/@types/react/index.d.ts"
-            },
-            "declarations": [
-              {
-                "name": "AriaAttributes",
-                "fileName": "node_modules/@types/react/index.d.ts"
-              },
-              {
-                "name": "TypeLiteral",
-                "fileName": "src/textarea/textarea.tsx"
-              }
-            ]
-          },
           "size": {
             "name": "size",
             "required": false,
@@ -8690,6 +8575,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4623
+    "durationMs": 4094
   }
 }

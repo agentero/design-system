@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.6s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>4.1s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -5949,7 +5949,7 @@ trigger-dense UIs where an instant preview reads as more responsive.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Input</h2>
       <div class="badges">
-        <label for="c-16-components-input-props" class="badge ok as-toggle">3 prop types</label>
+        <label for="c-16-components-input-props" class="badge ok as-toggle">1 prop type</label>
         
         <label for="c-16-components-input-stories" class="badge ok as-toggle">9 stories</label>
         
@@ -5987,26 +5987,11 @@ what assistive technology announces.</div>
           <div class="note ok">
             <div class="row">
               <span class="ex-name">Prop types <small>(react-component-meta)</small></span>
-              <span class="badge ok">3 prop types</span>
+              <span class="badge ok">1 prop type</span>
             </div>
             <pre><code>Component: src/input/input.tsx::Input</code></pre>
             <pre><code>Props:</code></pre>
             <pre><code>/**
- * Indicates the entered value does not conform to the format expected by the application.
- * Set this when the value fails validation: it drives the destructive border
- * and is what assistive technology announces. Point `aria-describedby` at
- * the error message so the two are read together.
- */
-aria-invalid?: boolean | &quot;true&quot; | &quot;false&quot; | &quot;grammar&quot; | &quot;spelling&quot; | undefined
-
-/**
- * Blocks interaction, greys the control out and drops its shadow. The value
- * is not submitted. When the user still needs to read or copy the value,
- * use `readOnly` instead.
- */
-disabled?: boolean
-
-/**
  * Control height. Defaults to `&#39;md&#39;`.
  * - `sm` (32px) — dense layouts where vertical space is tight.
  * - `md` (40px) — standard form density.
@@ -8548,7 +8533,7 @@ leading + trailing icons, and icon-only.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> TextArea</h2>
       <div class="badges">
-        <label for="c-28-components-textarea-props" class="badge ok as-toggle">4 prop types</label>
+        <label for="c-28-components-textarea-props" class="badge ok as-toggle">1 prop type</label>
         
         <label for="c-28-components-textarea-stories" class="badge ok as-toggle">6 stories</label>
         
@@ -8580,28 +8565,11 @@ states. It wires nothing on its own: `id`, `aria-invalid` and
           <div class="note ok">
             <div class="row">
               <span class="ex-name">Prop types <small>(react-component-meta)</small></span>
-              <span class="badge ok">4 prop types</span>
+              <span class="badge ok">1 prop type</span>
             </div>
             <pre><code>Component: src/textarea/textarea.tsx::TextArea</code></pre>
             <pre><code>Props:</code></pre>
             <pre><code>/**
- * Indicates the entered value does not conform to the format expected by the application.
- * Drives the destructive border and is what assistive technology announces.
- */
-aria-invalid?: boolean | &quot;true&quot; | &quot;false&quot; | &quot;grammar&quot; | &quot;spelling&quot; | undefined
-
-/**
- * Blocks interaction and drops the value from the submission. Use `readOnly`
- * when the user still needs to read or copy it.
- */
-disabled?: boolean
-
-/**
- * Rows visible at rest when three are not enough.
- */
-rows?: number
-
-/**
  * Defaults to `&#39;md&#39;`. The first row measures one Input of the same size and
  * three rows show at rest: `sm` 76px, `md` 84px, `lg` 96px (`lg` also raises
  * the text to `base` and the radius to `lg`).
