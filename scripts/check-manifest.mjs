@@ -12,7 +12,11 @@ import path from 'node:path';
 const MANIFEST = path.join('storybook-static', 'manifests', 'components.json');
 
 // Components whose root part legitimately declares no props of its own.
-const NO_OWN_PROPS = new Set(['components-checklist', 'components-skeleton']);
+const NO_OWN_PROPS = new Set([
+	'components-checklist',
+	'components-inputgroup',
+	'components-skeleton'
+]);
 
 if (!fs.existsSync(MANIFEST)) {
 	console.error(`✗ ${MANIFEST} not found — run \`yarn build-storybook\` first.`);
