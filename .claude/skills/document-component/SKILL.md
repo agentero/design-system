@@ -20,6 +20,7 @@ Add comprehensive JSDoc documentation to the component file at `$ARGUMENTS` so t
    - Cross-references to related components using Storybook markdown links: `[ComponentName](?path=/docs/componentname--docs)`.
    - A `@summary` tag with a concise one-line description (under 80 chars). This is critical — AI agents see this in list views.
    - An `@example` tag showing the most common usage pattern with realistic props.
+   - When the props type extends a native element (`ComponentPropsWithRef<'input'>`), one sentence stating that every native attribute is accepted and forwarded, naming two or three as examples. Put it here, on the component: `react-docgen-typescript` does not read the JSDoc above a type alias, so a note placed there never reaches the manifest.
 
    ```tsx
    /**
@@ -61,6 +62,8 @@ Add comprehensive JSDoc documentation to the component file at `$ARGUMENTS` so t
    }
    ```
 
+   **Native attributes** are inherited from `ComponentPropsWithRef<'element'>` and dropped from the manifest by docgen, because they are declared in `node_modules`. Do not redeclare one to make it appear. Redeclare it only when **its type differs here** (`size` on Input is `'sm' | 'md' | 'lg'`, not the native column count, so it is redeclared behind an `Omit`). What the design system does with an attribute goes in the component JSDoc, next to the forwarding sentence from step 3. See `src/input/input.tsx`.
+
 5. **Add JSDoc to sub-components** (compound component parts like Root, Image, Fallback, Trigger, Content, etc.) if they are exported:
    - Describe their role within the compound component pattern.
    - Note that they must be used inside the parent component's context.
@@ -89,7 +92,9 @@ After applying all documentation, **re-read the modified file** and verify again
 | 8 | Exported hooks have JSDoc with `@summary` | Search for exported hooks — confirm documentation |
 | 9 | No `@param` or `@type` tags added | Search for `@param` and `@type` — must find none that were added |
 | 10 | No runtime code was modified | Diff only shows JSDoc comment additions/changes |
-| 11 | TypeScript compiles without errors | Run `npx tsc --noEmit` and confirm clean output |
+| 11 | TypeScript compiles without errors | Run `yarn tsc` and confirm clean output |
+| 12 | Every redeclared native attribute has a different type here | For each prop that also exists on the native element, confirm its type differs; otherwise remove it and move any design-system note to the component JSDoc |
+| 13 | Component JSDoc states native forwarding | If the type extends a native element, find the "accepted and forwarded" sentence on the component JSDoc |
 
 If any check fails, fix the issue and re-verify before reporting completion.
 
@@ -104,3 +109,4 @@ If any check fails, fix the issue and re-verify before reporting completion.
 - **Match the project's code style** — observe the existing formatting, quotes, and indentation.
 - **Do NOT add `@param` tags for props** — `react-docgen-typescript` extracts these from the interface. Use JSDoc on the interface members instead.
 - **Do NOT add redundant type annotations** in JSDoc (e.g., `@type {string}`) — TypeScript types are already extracted.
+- **Do NOT write migration guidance** in component JSDoc — docs describe what the component does, not how it differs from what it replaced.
