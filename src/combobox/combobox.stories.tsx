@@ -8,6 +8,7 @@ import { Button } from '../button';
 import { IconSearch } from '../command/icons';
 import { Field } from '../field';
 import { FieldText } from '../field-text';
+import { InputGroup } from '../input-group';
 import { Label } from '../label';
 import { Modal } from '../modal';
 import { Skeleton } from '../skeleton';
@@ -362,22 +363,19 @@ export const InsideFieldText: Story = {
 };
 
 /**
- * A leading icon is composed around the input, not baked in: not every combobox
- * is a search (a FEIN lookup or a template picker are not), so the component
- * ships no icon of its own. Until `InputGroup` lands in the design system, the
- * marketplace search fields get theirs like this — the icon overlaid, the input
- * padded past it.
+ * A leading icon goes in the frame, not over the input: `Combobox.InputGroup` is
+ * the design system's `InputGroup`, so an `InputGroup.Addon` sits beside the
+ * field and the list hangs off the whole frame, as wide as it is.
  */
 export const WithLeadingIcon: Story = {
 	render: () => (
 		<Combobox.Root items={STATES}>
-			<div className="relative">
-				<IconSearch
-					aria-hidden
-					className="pointer-events-none absolute top-1/2 left-3 z-1 size-6 -translate-y-1/2 [&>path]:fill-icon-default-base-tertiary"
-				/>
-				<Combobox.Input className="pl-11" placeholder="Search states" aria-label="Search states" />
-			</div>
+			<Combobox.InputGroup>
+				<InputGroup.Addon>
+					<IconSearch aria-hidden />
+				</InputGroup.Addon>
+				<Combobox.Input placeholder="Search states" aria-label="Search states" />
+			</Combobox.InputGroup>
 			<Combobox.Content>
 				<Combobox.Empty>No matches found</Combobox.Empty>
 				<Combobox.List>
@@ -394,13 +392,19 @@ export const WithLeadingIcon: Story = {
 		const canvas = within(canvasElement);
 		const body = within(document.body);
 		const input = canvas.getByRole('combobox', { name: /search states/i });
+		const frame = canvasElement.querySelector<HTMLElement>('[data-slot="combobox-input-group"]')!;
 
 		// The icon is decoration: nothing for assistive technology, and the input keeps its name.
 		await expect(canvasElement.querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
-		await expect(input).toHaveClass('pl-11');
+		await expect(frame).toContainElement(input);
 
 		await userEvent.type(input, 'tex');
 		await expect(await body.findByRole('option', { name: 'Texas' })).toBeInTheDocument();
+
+		// The list is anchored to the frame, so it takes the frame's width, icon included.
+		const surface = document.querySelector<HTMLElement>('[data-slot="combobox-content"]')!;
+		await expect(surface.offsetWidth).toBe(frame.offsetWidth);
+		await userEvent.keyboard('{Escape}');
 	}
 };
 
