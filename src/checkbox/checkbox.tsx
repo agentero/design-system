@@ -1,10 +1,10 @@
 import { ComponentPropsWithRef } from 'react';
 
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
+import { CheckIcon, MinusIcon } from 'lucide-react';
 import { tv } from 'tailwind-variants';
 
 import { cn } from '../../lib';
-import { IconCheck, IconMinus } from './icons';
 
 /** Style recipe for Checkbox. Slots: `root` (the box), `indicator` (the glyph). */
 export const checkboxRecipe = tv({
@@ -85,8 +85,8 @@ export const Checkbox = ({ className, ref, ...props }: CheckboxProps) => {
 			className={cn(styles.root(), className)}
 			{...props}>
 			<CheckboxPrimitive.Indicator data-slot="checkbox-indicator" className={styles.indicator()}>
-				<IconCheck className="hidden size-3.5 group-data-[state=checked]/checkbox:block" />
-				<IconMinus className="hidden size-3.5 group-data-[state=indeterminate]/checkbox:block" />
+				<CheckIcon className="hidden size-3.5 group-data-[state=checked]/checkbox:block" />
+				<MinusIcon className="hidden size-3.5 group-data-[state=indeterminate]/checkbox:block" />
 			</CheckboxPrimitive.Indicator>
 		</CheckboxPrimitive.Root>
 	);

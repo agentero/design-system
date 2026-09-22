@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { PlusIcon } from 'lucide-react';
 import { expect, userEvent, within } from 'storybook/test';
 
 import { Tag, TagColor, TagVariant } from './tag';
@@ -20,12 +21,6 @@ const VARIANTS = [
 	'ghost',
 	'invisible'
 ] as const satisfies readonly TagVariant[];
-
-const IconAdd = () => (
-	<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-		<path d="M11.25 12.75H6.25C6.0375 12.75 5.85938 12.6781 5.71563 12.5343C5.57187 12.3905 5.5 12.2123 5.5 11.9997C5.5 11.7871 5.57187 11.609 5.71563 11.4654C5.85938 11.3218 6.0375 11.25 6.25 11.25H11.25V6.25003C11.25 6.03753 11.3219 5.85941 11.4657 5.71566C11.6095 5.57191 11.7877 5.50003 12.0003 5.50003C12.2129 5.50003 12.391 5.57191 12.5346 5.71566C12.6782 5.85941 12.7499 6.03753 12.7499 6.25003V11.25H17.75C17.9625 11.25 18.1406 11.3219 18.2843 11.4657C18.4281 11.6095 18.5 11.7877 18.5 12.0003C18.5 12.2129 18.4281 12.391 18.2843 12.5346C18.1406 12.6782 17.9625 12.75 17.75 12.75H12.7499V17.75C12.7499 17.9625 12.6781 18.1406 12.5342 18.2844C12.3904 18.4281 12.2122 18.5 11.9997 18.5C11.787 18.5 11.609 18.4281 11.4654 18.2844C11.3218 18.1406 11.25 17.9625 11.25 17.75V12.75Z" />
-	</svg>
-);
 
 const Row = ({ children }: { children: React.ReactNode }) => (
 	<div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
@@ -97,10 +92,10 @@ export const Sizes: Story = {
 							variant="secondary"
 							role="img"
 							aria-label={`${size} icon only`}>
-							<IconAdd />
+							<PlusIcon />
 						</Tag>
 						<Tag size={size} color="informative" variant="secondary">
-							<IconAdd />
+							<PlusIcon />
 							{size}
 						</Tag>
 						<Tag size={size} color="informative" variant="secondary">
@@ -159,7 +154,7 @@ export const Interactive: Story = {
 			</Tag>
 			<Tag color="informative" variant="secondary" asChild aria-label="add">
 				<button type="button">
-					<IconAdd />
+					<PlusIcon />
 				</button>
 			</Tag>
 		</Row>
@@ -282,9 +277,9 @@ export const WithIcon: Story = {
 				<Row key={color}>
 					{VARIANTS.map(variant => (
 						<Tag key={variant} color={color} variant={variant}>
-							<IconAdd />
+							<PlusIcon />
 							tag
-							<IconAdd />
+							<PlusIcon />
 						</Tag>
 					))}
 				</Row>
@@ -310,7 +305,7 @@ export const Truncate: Story = {
 			</div>
 			<div style={{ width: '9rem' }}>
 				<Tag truncate color="informative">
-					<IconAdd />
+					<PlusIcon />
 					Travel insurance limited lines producer
 				</Tag>
 			</div>
@@ -426,7 +421,7 @@ export const Colors: Story = {
 						<Row>
 							{VARIANTS.map(variant => (
 								<Tag key={variant} color={color} variant={variant}>
-									<IconAdd />
+									<PlusIcon />
 									{variant}
 								</Tag>
 							))}
@@ -441,9 +436,9 @@ export const Colors: Story = {
 						<Row>
 							{VARIANTS.map(variant => (
 								<Tag key={variant} color={color} variant={variant}>
-									<IconAdd />
+									<PlusIcon />
 									{variant}
-									<IconAdd />
+									<PlusIcon />
 								</Tag>
 							))}
 						</Row>
@@ -462,7 +457,7 @@ export const Colors: Story = {
 									variant={variant}
 									role="img"
 									aria-label={`${color} ${variant}`}>
-									<IconAdd />
+									<PlusIcon />
 								</Tag>
 							))}
 						</Row>

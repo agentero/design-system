@@ -5,11 +5,11 @@
 import { ComponentPropsWithRef, use } from 'react';
 
 import { Combobox as ComboboxPrimitive } from '@base-ui/react/combobox';
+import { CircleXIcon } from 'lucide-react';
 import { tv } from 'tailwind-variants';
 
 import { cn, useMergeProps } from '../../lib';
 import { InputContext, inputRecipe, InputSize } from '../input';
-import { IconCancel } from './icons';
 
 /**
  * Style recipe for Combobox. The surface carries its own chrome — border,
@@ -24,9 +24,9 @@ export const comboboxRecipe = tv({
 		field: 'relative',
 		clear: [
 			'absolute top-1/2 right-3 flex size-6 -translate-y-1/2 cursor-pointer items-center',
-			'justify-center rounded-sm [&>svg>path]:fill-icon-input-default',
-			'hover:[&>svg>path]:fill-icon-default-base-primary',
-			'disabled:cursor-default disabled:[&>svg>path]:fill-icon-input-disable'
+			'justify-center rounded-sm text-icon-input-default',
+			'hover:text-icon-default-base-primary',
+			'disabled:cursor-default disabled:text-icon-input-disable'
 		],
 		content: [
 			'w-(--anchor-width) max-h-(--available-height) overflow-hidden rounded-md',
@@ -154,7 +154,7 @@ export const Input = ({ clearLabel = 'Clear', ...props }: InputProps) => {
 				data-slot="combobox-clear"
 				aria-label={clearLabel}
 				className={slots.clear()}>
-				<IconCancel />
+				<CircleXIcon className="size-5" />
 			</ComboboxPrimitive.Clear>
 		</div>
 	);

@@ -9,6 +9,7 @@ import {
 	useState
 } from 'react';
 
+import { InfoIcon } from 'lucide-react';
 import { tv, VariantProps } from 'tailwind-variants';
 
 import { cn } from '../../lib';
@@ -22,7 +23,6 @@ import {
 	type FieldErrorProps,
 	useFieldContext
 } from './context';
-import { IconInfoOutline } from './icons';
 
 /**
  * Style recipe for Field. Slots: `group`, `root`, `content`, `label`,
@@ -42,7 +42,7 @@ export const fieldRecipe = tv({
 		label: 'flex flex-wrap items-center gap-1',
 		labelTooltip: [
 			'inline-flex shrink-0 cursor-pointer items-center justify-center rounded-sm',
-			'text-icon-default-base-secondary [&_svg]:size-5 [&_path]:fill-current',
+			'text-icon-default-base-secondary [&_svg]:size-4.5 [&_svg:not([fill=none])]:fill-current [&_svg_path[fill]]:fill-current',
 			'focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring-button-primary'
 		],
 		description: [
@@ -287,7 +287,7 @@ export const Label = ({ tooltip, tooltipSide, ...props }: FieldLabelProps) => (
 					data-slot="field-label-tooltip"
 					aria-label="More information"
 					className={slots.labelTooltip()}>
-					<IconInfoOutline />
+					<InfoIcon />
 				</button>
 			</Tooltip>
 		)}

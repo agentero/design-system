@@ -1,10 +1,10 @@
 import { ComponentProps } from 'react';
 
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
+import { ChevronDownIcon } from 'lucide-react';
 import { type VariantProps, tv } from 'tailwind-variants';
 
 import { cn } from '../../lib';
-import { IconKeyboardArrowDown } from './icons';
 
 const rootStyles = tv({
 	variants: {
@@ -89,9 +89,9 @@ export const Trigger = ({ className, children, asChild, ...props }: AccordionTri
 			) : (
 				<>
 					{children}
-					<IconKeyboardArrowDown
+					<ChevronDownIcon
 						aria-hidden
-						className="size-4 shrink-0 group-data-[state=open]:rotate-180 motion-safe:transition-transform motion-safe:duration-200"
+						className="size-3 shrink-0 group-data-[state=open]:rotate-180 motion-safe:transition-transform motion-safe:duration-200"
 					/>
 				</>
 			)}

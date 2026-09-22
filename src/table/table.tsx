@@ -10,11 +10,11 @@ import {
 	use
 } from 'react';
 
+import { ChevronDownIcon } from 'lucide-react';
 import { tv, VariantProps } from 'tailwind-variants';
 
 import { cn } from '../../lib';
 import { Button, ButtonProps } from '../button';
-import { IconKeyboardArrowDown } from './icons';
 
 /** Shared inline cell padding; the first/last cell widens to the `-ends` value.
  * Checkbox cells collapse to zero width; logical `ps`/`pe` mirror under RTL. */
@@ -259,7 +259,7 @@ export const Cell = ({
 Cell.displayName = 'Table.Cell';
 
 const expandButtonStyles = tv({
-	base: 'relative z-[1] [&>svg]:shrink-0 [&>svg]:transition-transform [&>svg]:duration-200 data-[state=open]:[&>svg]:rotate-180'
+	base: 'relative z-[1] [&_svg]:size-4.5 [&>svg]:shrink-0 [&>svg]:transition-transform [&>svg]:duration-200 data-[state=open]:[&>svg]:rotate-180'
 });
 
 type ExpandButtonProps = {
@@ -285,7 +285,7 @@ export const ExpandButton = ({
 		data-state={isExpanded ? 'open' : 'default'}
 		data-slot="table-expand-button"
 		{...props}>
-		<IconKeyboardArrowDown />
+		<ChevronDownIcon />
 	</Button>
 );
 ExpandButton.displayName = 'Table.ExpandButton';

@@ -20,12 +20,12 @@ import {
 	type TableOptions,
 	useReactTable
 } from '@tanstack/react-table';
+import { ArrowUpDownIcon, ArrowUpIcon } from 'lucide-react';
 import { tv } from 'tailwind-variants';
 
 import { cn } from '../../lib';
 import { Pagination, type PaginationProps } from '../pagination';
 import { Table, type TableRootProps } from '../table';
-import { IconArrowUpward, IconSwapVert } from './icons';
 
 /* ------------ Column meta ------------ */
 
@@ -174,7 +174,7 @@ ToolBar.displayName = 'DataTable.ToolBar';
 /* ------------ DataTable Table ------------ */
 
 const orderIconStyles = tv({
-	base: 'size-4 transition-transform duration-200',
+	base: 'size-3.5 transition-transform duration-200',
 	variants: {
 		direction: {
 			asc: '',
@@ -270,9 +270,9 @@ export const DataTableTable = ({
 										{canSort && (
 											<span className="size-4">
 												{sorted ? (
-													<IconArrowUpward className={orderIconStyles({ direction: sorted })} />
+													<ArrowUpIcon className={orderIconStyles({ direction: sorted })} />
 												) : (
-													<IconSwapVert className="size-4" />
+													<ArrowUpDownIcon className="size-3.5" />
 												)}
 											</span>
 										)}

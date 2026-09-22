@@ -8,9 +8,8 @@
 import { ComponentProps } from 'react';
 
 import { Command as CommandPrimitive } from 'cmdk';
+import { SearchIcon } from 'lucide-react';
 import { tv } from 'tailwind-variants';
-
-import { IconSearch } from './icons';
 
 export const commandRecipe = tv({
 	slots: {
@@ -20,7 +19,7 @@ export const commandRecipe = tv({
 		],
 		search: ['flex items-center gap-2 px-4 py-3', 'border-b border-border-default-base-primary'],
 		// Without shrink-0 the w-full input squeezes the icon below 24px.
-		searchIcon: 'shrink-0 pointer-events-none [&>path]:fill-icon-default-base-tertiary',
+		searchIcon: 'size-5 shrink-0 pointer-events-none text-icon-default-base-tertiary',
 		input: [
 			'w-full border-none bg-transparent text-sm text-text-default-base-primary outline-none',
 			'placeholder:text-text-default-base-tertiary'
@@ -133,7 +132,7 @@ type InputProps = ComponentProps<typeof CommandPrimitive.Input>;
  */
 export const Input = ({ className, ...props }: InputProps) => (
 	<div data-slot="command-search" className={slots.search({ className })}>
-		<IconSearch data-slot="command-search-icon" className={slots.searchIcon()} aria-hidden />
+		<SearchIcon data-slot="command-search-icon" className={slots.searchIcon()} aria-hidden />
 		<CommandPrimitive.Input data-slot="command-input" className={slots.input()} {...props} />
 	</div>
 );

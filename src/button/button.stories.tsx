@@ -1,24 +1,35 @@
+import type { SVGProps } from 'react';
+
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { PlusIcon, XIcon } from 'lucide-react';
+import { expect } from 'storybook/test';
 
 import { Button } from './button';
+
+// Not icons anyone should ship — stand-ins for what consumers still pass in.
+// `LegacyBarePathIcon` is a hand-drawn SVG whose path has no `fill` (it renders
+// black unless the recipe paints it); `LegacyHardcodedFillIcon` is the exact shape
+// `@agentero/icons` exports: root `fill="none"`, path with its own hex fill.
+const LegacyBarePathIcon = (props: SVGProps<SVGSVGElement>) => (
+	<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden {...props}>
+		<path d="M11.25 12.75H6.25a.75.75 0 0 1 0-1.5h5v-5a.75.75 0 0 1 1.5 0v5h5a.75.75 0 0 1 0 1.5h-5v5a.75.75 0 0 1-1.5 0z" />
+	</svg>
+);
+
+const LegacyHardcodedFillIcon = (props: SVGProps<SVGSVGElement>) => (
+	<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden {...props}>
+		<path
+			fill="#434856"
+			d="M11.25 12.75H6.25a.75.75 0 0 1 0-1.5h5v-5a.75.75 0 0 1 1.5 0v5h5a.75.75 0 0 1 0 1.5h-5v5a.75.75 0 0 1-1.5 0z"
+		/>
+	</svg>
+);
 
 const TEXT = 'Button';
 
 const VARIANTS = ['primary', 'secondary', 'tertiary', 'ghost', 'link'] as const;
 const SIZES = ['xs', 'sm', 'md', 'lg'] as const;
 const NON_LINK_VARIANTS = ['primary', 'secondary', 'tertiary', 'ghost'] as const;
-
-const IconAdd = () => (
-	<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-		<path d="M11.25 12.75H6.25C6.0375 12.75 5.85938 12.6781 5.71563 12.5343C5.57187 12.3905 5.5 12.2123 5.5 11.9997C5.5 11.7871 5.57187 11.609 5.71563 11.4654C5.85938 11.3218 6.0375 11.25 6.25 11.25H11.25V6.25003C11.25 6.03753 11.3219 5.85941 11.4657 5.71566C11.6095 5.57191 11.7877 5.50003 12.0003 5.50003C12.2129 5.50003 12.391 5.57191 12.5346 5.71566C12.6782 5.85941 12.7499 6.03753 12.7499 6.25003V11.25H17.75C17.9625 11.25 18.1406 11.3219 18.2843 11.4657C18.4281 11.6095 18.5 11.7877 18.5 12.0003C18.5 12.2129 18.4281 12.391 18.2843 12.5346C18.1406 12.6782 17.9625 12.75 17.75 12.75H12.7499V17.75C12.7499 17.9625 12.6781 18.1406 12.5342 18.2844C12.3904 18.4281 12.2122 18.5 11.9997 18.5C11.787 18.5 11.609 18.4281 11.4654 18.2844C11.3218 18.1406 11.25 17.9625 11.25 17.75V12.75Z" />
-	</svg>
-);
-
-const IconClose = () => (
-	<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-		<path d="M12 13.0538L6.92689 18.1269C6.78844 18.2654 6.6144 18.3362 6.40479 18.3394C6.19519 18.3426 6.01795 18.2718 5.87309 18.1269C5.7282 17.982 5.65576 17.8064 5.65576 17.6C5.65576 17.3936 5.7282 17.218 5.87309 17.0731L10.9462 12L5.87309 6.92689C5.73462 6.78844 5.66379 6.6144 5.66059 6.40479C5.65737 6.19519 5.7282 6.01795 5.87309 5.87309C6.01795 5.7282 6.19359 5.65576 6.39999 5.65576C6.60639 5.65576 6.78202 5.7282 6.92689 5.87309L12 10.9462L17.0731 5.87309C17.2115 5.73462 17.3856 5.66379 17.5952 5.66059C17.8048 5.65737 17.982 5.7282 18.1269 5.87309C18.2718 6.01795 18.3442 6.19359 18.3442 6.39999C18.3442 6.60639 18.2718 6.78202 18.1269 6.92689L13.0538 12L18.1269 17.0731C18.2654 17.2115 18.3362 17.3856 18.3394 17.5952C18.3426 17.8048 18.2718 17.982 18.1269 18.1269C17.982 18.2718 17.8064 18.3442 17.6 18.3442C17.3936 18.3442 17.218 18.2718 17.0731 18.1269L12 13.0538Z" />
-	</svg>
-);
 
 const Row = ({ children }: { children: React.ReactNode }) => (
 	<div
@@ -164,15 +175,80 @@ export const WithIcons: Story = {
 				<Row key={variant}>
 					{SIZES.map(size => (
 						<Button key={size} variant={variant} size={size}>
-							<IconAdd />
+							<PlusIcon />
 							{TEXT}
-							<IconAdd />
+							<PlusIcon />
 						</Button>
 					))}
 				</Row>
 			))}
 		</Stack>
 	)
+};
+
+// Reads what the browser actually painted: the icon's own color, and how each
+// shape reached it (lucide by stroke, the legacy shapes by fill).
+type Paint = ReturnType<typeof paintedWith>;
+
+const paintedWith = (svg: SVGElement) => {
+	const path = svg.querySelector('path') as SVGPathElement;
+	return {
+		color: getComputedStyle(svg).color,
+		svgFill: getComputedStyle(svg).fill,
+		pathFill: getComputedStyle(path).fill,
+		pathStroke: getComputedStyle(path).stroke
+	};
+};
+
+/**
+ * Test only — hidden from the sidebar and the docs page (`!dev`, `!autodocs`),
+ * so every visible story stays on lucide. Consumers still pass filled Material
+ * glyphs from `@agentero/icons`, in two shapes a stroke icon does not have: a
+ * `<path>` with no `fill` at all (black unless the recipe paints it) and a
+ * `<path>` carrying its own hardcoded `fill`. Both must land on the same token
+ * as a lucide icon in every variant — this run is what catches
+ * `[&_svg:not([fill=none])]:fill-current` and `[&_svg_path[fill]]:fill-current`
+ * regressing.
+ *
+ * @summary Legacy filled icons land on the same token as lucide ones
+ */
+export const LegacyFilledIcon: Story = {
+	tags: ['!dev', '!autodocs'],
+	render: () => (
+		<Stack>
+			{NON_LINK_VARIANTS.map(variant => (
+				<Row key={variant}>
+					<Button variant={variant}>
+						<PlusIcon />
+						lucide
+					</Button>
+					<Button variant={variant}>
+						<LegacyBarePathIcon />
+						bare path
+					</Button>
+					<Button variant={variant}>
+						<LegacyHardcodedFillIcon />
+						hardcoded fill
+					</Button>
+				</Row>
+			))}
+		</Stack>
+	),
+	play: async ({ canvasElement }) => {
+		const icons = [...canvasElement.querySelectorAll<SVGElement>('button svg')].map(paintedWith);
+		await expect(icons).toHaveLength(NON_LINK_VARIANTS.length * 3);
+		for (let i = 0; i < icons.length; i += 3) {
+			const [lucide, barePath, hardcoded] = icons.slice(i, i + 3) as [Paint, Paint, Paint];
+			// One variant per row: the three icons share the variant's icon token…
+			await expect(barePath.color).toBe(lucide.color);
+			await expect(hardcoded.color).toBe(lucide.color);
+			// …lucide by stroke, never filled; the legacy shapes by fill.
+			await expect(lucide.pathStroke).toBe(lucide.color);
+			await expect(lucide.pathFill).toBe('none');
+			await expect(barePath.pathFill).toBe(lucide.color);
+			await expect(hardcoded.pathFill).toBe(lucide.color);
+		}
+	}
 };
 
 /**
@@ -189,7 +265,7 @@ export const OnlyIcon: Story = {
 				<Row key={variant}>
 					{SIZES.map(size => (
 						<Button key={size} variant={variant} size={size} aria-label="Close">
-							<IconClose />
+							<XIcon />
 						</Button>
 					))}
 				</Row>
@@ -216,7 +292,7 @@ export const Loading: Story = {
 					{SIZES.map(size => (
 						<div key={size} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
 							<Button variant={variant} size={size} loading aria-label="Loading">
-								<IconAdd />
+								<PlusIcon />
 							</Button>
 							<Button variant={variant} size={size} loading>
 								{TEXT}
@@ -245,9 +321,9 @@ export const Status: Story = {
 			<Row>
 				{VARIANTS.map(variant => (
 					<Button key={variant} variant={variant} status="danger">
-						<IconAdd />
+						<PlusIcon />
 						{TEXT}
-						<IconAdd />
+						<PlusIcon />
 					</Button>
 				))}
 			</Row>
@@ -255,9 +331,9 @@ export const Status: Story = {
 				{VARIANTS.map(variant => (
 					<Button asChild key={variant} variant={variant} status="danger" disabled>
 						<a>
-							<IconAdd />
+							<PlusIcon />
 							{TEXT}
-							<IconAdd />
+							<PlusIcon />
 						</a>
 					</Button>
 				))}
@@ -281,9 +357,9 @@ export const Rounded: Story = {
 				<Row key={variant}>
 					{SIZES.map(size => (
 						<Button key={size} variant={variant} size={size} rounded>
-							<IconAdd />
+							<PlusIcon />
 							{TEXT}
-							<IconAdd />
+							<PlusIcon />
 						</Button>
 					))}
 				</Row>
