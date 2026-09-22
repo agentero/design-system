@@ -205,15 +205,9 @@ const SuspenseSearch = () => {
 			}}>
 			<Combobox.Input placeholder="Search agencies" aria-label="Search agencies" />
 			<Combobox.Content>
-				{query.length < 2 ? (
-					<div className="mx-2 my-px px-3 py-2 text-sm text-text-default-base-tertiary">
-						Type at least two characters
-					</div>
-				) : (
-					<Suspense fallback={<SkeletonRows />}>
-						<AgencyItems query={query} />
-					</Suspense>
-				)}
+				<Suspense fallback={<SkeletonRows />}>
+					<AgencyItems query={query} />
+				</Suspense>
 			</Combobox.Content>
 		</Combobox.Root>
 	);
@@ -236,17 +230,14 @@ export const AsyncSearch: Story = {
 		const body = within(document.body);
 		const input = canvas.getByRole('combobox', { name: /search agencies/i });
 
-		// Focus opens the surface with the hint before anything is typed.
+		// Focus opens the surface and the first request goes out for the empty query: no
+		// minimum length here, that is the consumer's rule to add where it fetches.
 		await userEvent.click(input);
-		await expect(await body.findByText(/at least two characters/i)).toBeInTheDocument();
-
-		await userEvent.type(input, 'an');
 
 		// Placeholder rows while the request is in flight, and no options yet.
 		await waitFor(() =>
 			expect(document.body.querySelector('[data-slot="combobox-skeleton"]')).toBeInTheDocument()
 		);
-		await expect(body.queryByText(/at least two characters/i)).not.toBeInTheDocument();
 		await expect(body.queryByRole('option')).not.toBeInTheDocument();
 		await userEvent.keyboard('{Escape}');
 	}
@@ -264,12 +255,6 @@ const StatusSearch = () => {
 		// The previous rows go before the wait starts: a list that no longer matches what is typed
 		// must not sit under the loading state.
 		setResults([]);
-
-		if (query.length < 2) {
-			setIsLoading(false);
-			return;
-		}
-
 		setIsLoading(true);
 		const agencies = await searchAgencies(query);
 		if (request !== latestRequest.current) return;
