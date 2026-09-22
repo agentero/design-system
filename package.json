@@ -28,6 +28,7 @@
     "./button": "./src/button/index.ts",
     "./check-list": "./src/check-list/index.ts",
     "./checkbox": "./src/checkbox/index.ts",
+    "./combobox": "./src/combobox/index.ts",
     "./command": "./src/command/index.ts",
     "./data-table": "./src/data-table/index.ts",
     "./divider": "./src/divider/index.ts",
@@ -69,6 +70,7 @@
     "test:storybook": "vitest run --project=storybook"
   },
   "dependencies": {
+    "@base-ui/react": "^1.8.0",
     "@radix-ui/react-accordion": "^1.2.14",
     "@radix-ui/react-avatar": "^1.1.11",
     "@radix-ui/react-checkbox": "^1.3.11",
