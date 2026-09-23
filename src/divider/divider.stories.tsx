@@ -213,7 +213,7 @@ export const InList: Story = {
  */
 export const InToolbar: Story = {
 	render: () => (
-		<div className="inline-flex h-10 items-center gap-1 rounded-lg border border-border-default-base-primary bg-bg-default-base-primary px-2 shadow-1">
+		<div className="inline-flex h-10 items-center gap-1 rounded-lg border border-border-default-base-primary bg-bg-default-base-primary px-2 shadow-xs">
 			<Button variant="ghost" size="xs">
 				Cut
 			</Button>
