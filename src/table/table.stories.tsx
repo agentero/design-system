@@ -5,6 +5,7 @@ import { expect, within } from 'storybook/test';
 
 import { Table, type TableRootProps } from '.';
 import { Button } from '../button';
+import { Switch } from '../switch';
 
 type Row = { id: string; name: string; email: string; role: string; amount: string };
 
@@ -238,7 +239,47 @@ export const Enclosed: Story = {
  * @summary Selectable rows with a collapsing checkbox column
  */
 export const WithCheckbox: Story = {
-	render: args => renderTable(args, { checkbox: true })
+	render: args => renderTable(args, { checkbox: true }),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const cell = canvas.getByLabelText('Select Alice Williams').closest('td')!;
+
+		await expect(getComputedStyle(cell).paddingInlineEnd).toBe('0px');
+	}
+};
+
+/**
+ * A Switch renders a hidden checkbox so a form can read its value without JS.
+ * Radix keeps it while the Switch sits in a form, and on the server render
+ * before hydration. A cell holding a Switch is not a selection column, so it
+ * keeps its padding.
+ *
+ * @summary A cell holding a Switch keeps its padding
+ */
+export const WithSwitch: Story = {
+	render: args => (
+		<form>
+			<Table.Root {...args}>
+				<Table.Body>
+					{ROWS.slice(0, 3).map(row => (
+						<Table.Row key={row.id}>
+							<Table.Cell>{row.name}</Table.Cell>
+							<Table.Cell>
+								<Switch size="sm" defaultChecked aria-label={`Notify ${row.name}`} />
+							</Table.Cell>
+						</Table.Row>
+					))}
+				</Table.Body>
+			</Table.Root>
+		</form>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const cell = canvas.getByRole('switch', { name: 'Notify Alice Williams' }).closest('td')!;
+
+		await expect(cell.querySelector('input[type="checkbox"][aria-hidden]')).not.toBeNull();
+		await expect(getComputedStyle(cell).paddingInlineEnd).not.toBe('0px');
+	}
 };
 
 /**
