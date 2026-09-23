@@ -5,6 +5,7 @@ import { expect, within } from 'storybook/test';
 
 import { Table, type TableRootProps } from '.';
 import { Button } from '../button';
+import { Switch } from '../switch';
 
 type Row = { id: string; name: string; email: string; role: string; amount: string };
 
@@ -248,27 +249,35 @@ export const WithCheckbox: Story = {
 };
 
 /**
- * A Switch carries a hidden checkbox so a form can read it without JS. A cell
- * holding one is not a selection column and keeps its padding.
+ * A Switch renders a hidden checkbox so a form can read its value without JS.
+ * Radix keeps it while the Switch sits in a form, and on the server render
+ * before hydration. A cell holding a Switch is not a selection column, so it
+ * keeps its padding.
  *
- * @summary A cell whose only checkbox is hidden keeps its padding
+ * @summary A cell holding a Switch keeps its padding
  */
-export const WithHiddenCheckbox: Story = {
+export const WithSwitch: Story = {
 	render: args => (
-		<Table.Root {...args}>
-			<Table.Body>
-				<Table.Row>
-					<Table.Cell>
-						<input type="checkbox" aria-hidden tabIndex={-1} defaultChecked readOnly />
-					</Table.Cell>
-					<Table.Cell>Alice Williams</Table.Cell>
-				</Table.Row>
-			</Table.Body>
-		</Table.Root>
+		<form>
+			<Table.Root {...args}>
+				<Table.Body>
+					{ROWS.slice(0, 3).map(row => (
+						<Table.Row key={row.id}>
+							<Table.Cell>{row.name}</Table.Cell>
+							<Table.Cell>
+								<Switch size="sm" defaultChecked aria-label={`Notify ${row.name}`} />
+							</Table.Cell>
+						</Table.Row>
+					))}
+				</Table.Body>
+			</Table.Root>
+		</form>
 	),
 	play: async ({ canvasElement }) => {
-		const cell = canvasElement.querySelector('[data-slot=table-cell]')!;
+		const canvas = within(canvasElement);
+		const cell = canvas.getByRole('switch', { name: 'Notify Alice Williams' }).closest('td')!;
 
+		await expect(cell.querySelector('input[type="checkbox"][aria-hidden]')).not.toBeNull();
 		await expect(getComputedStyle(cell).paddingInlineEnd).not.toBe('0px');
 	}
 };
