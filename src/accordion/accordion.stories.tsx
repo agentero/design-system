@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { ChevronDownIcon } from 'lucide-react';
 import { expect, userEvent, within } from 'storybook/test';
 
 import { Accordion } from '.';
-import { IconKeyboardArrowDown } from './icons';
 
 /**
  * Accordion is a compound built on Radix UI: `Root` holds the `Item`s, each
@@ -117,7 +117,7 @@ export const CustomTrigger: Story = {
 			<Accordion.Item value="covered">
 				<Accordion.Trigger asChild>
 					<button className="group flex w-full items-center gap-2 py-4 text-left text-base font-semibold">
-						<IconKeyboardArrowDown className="size-5 shrink-0 transition-transform duration-200 group-data-[state=open]:rotate-180" />
+						<ChevronDownIcon className="size-4 shrink-0 transition-transform duration-200 group-data-[state=open]:rotate-180" />
 						What is covered?
 					</button>
 				</Accordion.Trigger>

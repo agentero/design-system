@@ -13,18 +13,18 @@ import {
 	useId
 } from 'react';
 
+import {
+	CircleAlertIcon,
+	CircleCheckIcon,
+	InfoIcon,
+	StarIcon,
+	TriangleAlertIcon,
+	XIcon
+} from 'lucide-react';
 import { tv, VariantProps } from 'tailwind-variants';
 
 import { cn } from '../../lib';
 import { Button } from '../button';
-import {
-	IconCheckCircle,
-	IconClose,
-	IconErrorOutline,
-	IconInfoOutline,
-	IconStar,
-	IconWarning
-} from './icons';
 
 /**
  * Style recipe for Alert using tailwind-variants. Exposes five slots
@@ -48,7 +48,7 @@ export const alertRecipe = tv({
 		title: 'font-semibold',
 		paragraph: '',
 		content: 'flex flex-col h-full self-start',
-		icon: '[&_path]:fill-current'
+		icon: '[&:not([fill=none])]:fill-current [&_path[fill]]:fill-current'
 	},
 	variants: {
 		color: {
@@ -67,14 +67,14 @@ export const alertRecipe = tv({
 				title: 'text-sm',
 				paragraph: 'text-xs',
 				content: 'gap-1',
-				icon: 'size-5'
+				icon: 'size-4.5 mt-px'
 			},
 			md: {
 				root: 'px-8 py-6 gap-4',
 				title: 'text-lg',
 				paragraph: 'text-sm',
 				content: 'gap-2',
-				icon: 'size-6'
+				icon: 'size-5 mt-1'
 			}
 		},
 		ghost: {
@@ -276,14 +276,14 @@ export const useAlert = () => {
 const iconMapping: {
 	[key in AlertColorType]: ComponentType<SVGProps<SVGSVGElement>>;
 } = {
-	neutral: IconInfoOutline,
-	success: IconCheckCircle,
-	danger: IconErrorOutline,
-	warning: IconWarning,
-	info: IconInfoOutline,
-	creative: IconStar,
-	dynamic: IconInfoOutline,
-	playful: IconInfoOutline
+	neutral: InfoIcon,
+	success: CircleCheckIcon,
+	danger: CircleAlertIcon,
+	warning: TriangleAlertIcon,
+	info: InfoIcon,
+	creative: StarIcon,
+	dynamic: InfoIcon,
+	playful: InfoIcon
 };
 
 /* --------------- Sub-components --------------- */
@@ -566,9 +566,11 @@ export const Alert = ({
 							size={size}
 							iconOnly
 							aria-label="Dismiss"
-							className="text-current"
+							// The X follows the alert's color, not the ghost icon token — the
+							// second class outranks Button's own `[&_svg]:text-*` in the merge.
+							className="text-current [&_svg]:text-current"
 							onClick={onDismiss}>
-							<IconClose className="[&_path]:fill-current" />
+							<XIcon />
 						</Button>
 					</div>
 				)}

@@ -20,26 +20,26 @@ export const tagRecipe = tv({
 		'transition-[background-color,opacity] duration-200',
 		// shrink-0: an icon is a flex item, so without it a narrow Tag squashes it
 		// horizontally instead of clipping the label.
-		'[&_svg]:size-3.5 [&_svg]:shrink-0'
+		'[&_svg]:size-3.5 [&_svg]:shrink-0 [&_svg:not([fill=none])]:fill-current [&_svg_path[fill]]:fill-current'
 	],
 	variants: {
 		color: {
 			neutral:
-				'bg-bg-tag-neutral-enable text-text-tag-neutral border-border-tag-neutral [&_svg_path]:fill-icon-tag-neutral',
+				'bg-bg-tag-neutral-enable text-text-tag-neutral border-border-tag-neutral [&_svg]:text-icon-tag-neutral',
 			positive:
-				'bg-bg-tag-positive-enable text-text-tag-positive border-border-tag-positive [&_svg_path]:fill-icon-tag-positive',
+				'bg-bg-tag-positive-enable text-text-tag-positive border-border-tag-positive [&_svg]:text-icon-tag-positive',
 			danger:
-				'bg-bg-tag-danger-enable text-text-tag-danger border-border-tag-danger [&_svg_path]:fill-icon-tag-danger',
+				'bg-bg-tag-danger-enable text-text-tag-danger border-border-tag-danger [&_svg]:text-icon-tag-danger',
 			warning:
-				'bg-bg-tag-warning-enable text-text-tag-warning border-border-tag-warning [&_svg_path]:fill-icon-tag-warning',
+				'bg-bg-tag-warning-enable text-text-tag-warning border-border-tag-warning [&_svg]:text-icon-tag-warning',
 			informative:
-				'bg-bg-tag-informative-enable text-text-tag-informative border-border-tag-informative [&_svg_path]:fill-icon-tag-informative',
+				'bg-bg-tag-informative-enable text-text-tag-informative border-border-tag-informative [&_svg]:text-icon-tag-informative',
 			creative:
-				'bg-bg-tag-creative-enable text-text-tag-creative border-border-tag-creative [&_svg_path]:fill-icon-tag-creative',
+				'bg-bg-tag-creative-enable text-text-tag-creative border-border-tag-creative [&_svg]:text-icon-tag-creative',
 			dynamic:
-				'bg-bg-tag-dynamic-enable text-text-tag-dynamic border-border-tag-dynamic [&_svg_path]:fill-icon-tag-dynamic',
+				'bg-bg-tag-dynamic-enable text-text-tag-dynamic border-border-tag-dynamic [&_svg]:text-icon-tag-dynamic',
 			playful:
-				'bg-bg-tag-playful-enable text-text-tag-playful border-border-tag-playful [&_svg_path]:fill-icon-tag-playful'
+				'bg-bg-tag-playful-enable text-text-tag-playful border-border-tag-playful [&_svg]:text-icon-tag-playful'
 		},
 		variant: {
 			secondary: '',

@@ -25,7 +25,10 @@ export const avatarRecipe = tv({
 			'h-fit w-fit'
 		],
 		image: ['flex object-cover box-border h-full vertical-align-middle w-full'],
-		fallback: ['uppercase', '[&_svg]:size-[1.5em] [&_svg]:fill-neutral-500']
+		fallback: [
+			'uppercase',
+			'[&_svg]:size-[1.5em] [&_svg]:text-neutral-500 [&_svg:not([fill=none])]:fill-current [&_svg_path[fill]]:fill-current'
+		]
 	},
 	variants: {
 		size: {

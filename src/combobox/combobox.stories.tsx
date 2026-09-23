@@ -1,11 +1,11 @@
 import { Suspense, use, useRef, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { SearchIcon } from 'lucide-react';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { Combobox } from '.';
 import { Button } from '../button';
-import { IconSearch } from '../command/icons';
 import { Field } from '../field';
 import { FieldText } from '../field-text';
 import { Label } from '../label';
@@ -372,9 +372,9 @@ export const WithLeadingIcon: Story = {
 	render: () => (
 		<Combobox.Root items={STATES}>
 			<div className="relative">
-				<IconSearch
+				<SearchIcon
 					aria-hidden
-					className="pointer-events-none absolute top-1/2 left-3 z-1 size-6 -translate-y-1/2 [&>path]:fill-icon-default-base-tertiary"
+					className="pointer-events-none absolute top-1/2 left-3 z-1 size-6 -translate-y-1/2 text-icon-default-base-tertiary"
 				/>
 				<Combobox.Input className="pl-11" placeholder="Search states" aria-label="Search states" />
 			</div>

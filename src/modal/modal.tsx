@@ -3,11 +3,11 @@
 import { ComponentProps, createContext, useContext } from 'react';
 
 import * as DialogPrimitive from '@radix-ui/react-dialog';
+import { XIcon } from 'lucide-react';
 import { type VariantProps, tv } from 'tailwind-variants';
 
 import { cn } from '../../lib';
 import { Button } from '../button';
-import { IconClose } from './icons';
 
 type RootProps = ComponentProps<typeof DialogPrimitive.Root>;
 
@@ -202,7 +202,7 @@ export const Title = ({ className, children, ...props }: TitleProps) => {
 			{variant === 'dialog' && (
 				<DialogPrimitive.Close asChild>
 					<Button variant="ghost" size="sm" aria-label="Close" className="shrink-0">
-						<IconClose />
+						<XIcon />
 					</Button>
 				</DialogPrimitive.Close>
 			)}

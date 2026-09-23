@@ -51,6 +51,24 @@ Study `src/avatar/avatar.tsx` before adding new components — it's the canonica
 
 JSDoc and stories are load-bearing here — `react-docgen-typescript` feeds both the Storybook docs page and the MCP manifests consumers rely on. Use the `/document-component <path>` skill for JSDoc and `/story-component <path>` for `.stories.tsx`; those skills encode the MCP-facing conventions (`@summary` tags, required stories, arg controls). Don't hand-roll either.
 
+### Icons
+
+`lucide-react` is a runtime **dependency** of this package, not a peer: the design system owns the icon dependency so consumers never declare or version it. They reach it through the `@agentero/design-system/icons` subpath (`src/icons/index.ts`, a flat `export * from 'lucide-react'`). Inside this repo, import from `lucide-react` directly — component modules must not pull the barrel, or a consumer importing one component drags all ~6300 icon symbols into its module graph.
+
+There is no wrapper component and no size scale. A lucide icon is a plain SVG that takes `className`: `size-*` for size, a `text-*` token for color, `shrink-0` next to text in a flex row.
+
+**Size one step below what the Material glyph used.** Material drew inside a ~19–20px live area of its 24px box (2px keyline); lucide fills ~22px (1px padding plus half the stroke), so at the same class a lucide icon reads ×1.16 larger — measured on the paths. The components compensate per call site: status circles (Alert, Toast, Field, Combobox, Command) went one size down (24→20, 20→18 — `size-4.5` is a real Tailwind v4 class, the spacing scale is dynamic); chevrons (×1.31) went two (Pagination 32→24, Accordion/DropdownMenu 16→12); the sort arrows half a step (16→14); Checkbox stayed (Material Sharp already filled the box, ×1.0). Two glyphs were small on purpose and got a pinned size instead: the DropdownMenu submenu chevron (`size-3`) and the Toast dismiss X (`[&_svg]:size-4` on its Button). When a Button or Item sizes its icon through `[&_svg]:size-*`, override it on that element with the same variant, never with a `size-*` on the icon — the recipe's compound selector outranks it.
+
+**Color comes from `text-*`, never `fill-*`.** Lucide paints with `stroke="currentColor"` on a root that carries `fill="none"`, so a `fill-*` rule either does nothing to it or — with `fill-current` — turns its open paths into solid blobs (the Alert warning triangle became a filled wedge that way). Every recipe that takes an icon therefore drives the token through `[&_svg]:text-<token>` only. Consumers still pass filled `@agentero/icons` SVGs, and those need painting, so each such recipe (Button, Tag, Tabs, Avatar, DropdownMenu, Pagination, Alert, Toast, Field) carries two constant rules in its base:
+
+```
+[&_svg:not([fill=none])]:fill-current   [&_svg_path[fill]]:fill-current
+```
+
+Alert is the one place where the slot class lands on the icon's own `<svg>`, so there the same two rules target the element itself: `[&:not([fill=none])]:fill-current [&_path[fill]]:fill-current` — a `[&_svg…]` variant on the svg matches nothing. The first paints a legacy icon whose root has no `fill="none"` (a bare `<path>` otherwise renders black — SVG's default — and `text-*` cannot reach it); lucide's root is excluded by the `:not()`. The second repaints a `<path>` that carries its own hardcoded `fill`, which is what `@agentero/icons` ships (root `fill="none"`, path `fill="#434856"`) — CSS inheritance does not beat a presentation attribute on the element itself. `Button/LegacyFilledIcon` renders lucide, bare-path and hardcoded-fill side by side across the variants; it is the regression fixture for both rules, so keep it until the consumers finish migrating and the two rules can go.
+
+`Foundations/*` stories document a convention rather than a component, so they declare no `meta.component` and `scripts/check-manifest.mjs` skips them — the manifest is the component catalogue.
+
 ### Theme / tokens
 
 `themes/base.css` is the single source of truth for design tokens, declared as CSS custom properties inside a Tailwind v4 `@theme { ... }` block. Consumers include it via:

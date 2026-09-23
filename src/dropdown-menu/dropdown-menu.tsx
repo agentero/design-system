@@ -1,10 +1,10 @@
 import { ComponentProps } from 'react';
 
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
+import { ChevronRightIcon } from 'lucide-react';
 import { type VariantProps, tv } from 'tailwind-variants';
 
 import { cn } from '../../lib';
-import { IconArrowRight } from './icons';
 
 /**
  * Props for the DropdownMenu Root component.
@@ -270,7 +270,7 @@ export const Item = ({ className, ...props }: ItemProps) => (
 			'data-disabled:text-text-default-disable-primary',
 			'data-disabled:active:bg-bg-default-base-primary',
 			'[&>svg]:h-6',
-			'[&_path]:fill-icon-default-base-tertiary',
+			'[&_svg]:text-icon-default-base-tertiary [&_svg:not([fill=none])]:fill-current [&_svg_path[fill]]:fill-current',
 			className
 		)}
 		{...props}
@@ -426,12 +426,12 @@ export const SubTrigger = ({ className, children, ...props }: SubTriggerProps) =
 			'data-disabled:pointer-events-none data-disabled:cursor-not-allowed',
 			'data-disabled:text-text-default-disable-primary',
 			'[&>svg]:h-6',
-			'[&_path]:fill-icon-default-base-tertiary',
+			'[&_svg]:text-icon-default-base-tertiary [&_svg:not([fill=none])]:fill-current [&_svg_path[fill]]:fill-current',
 			className
 		)}
 		{...props}>
 		{children}
-		<IconArrowRight className="ml-auto h-4 w-4 [&>path]:fill-icon-default-base-tertiary" />
+		<ChevronRightIcon className="ml-auto size-3 text-icon-default-base-tertiary" />
 	</DropdownMenuPrimitive.SubTrigger>
 );
 SubTrigger.displayName = 'DropdownMenu.SubTrigger';

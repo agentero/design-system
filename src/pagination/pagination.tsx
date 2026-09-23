@@ -1,10 +1,10 @@
 'use client';
 
+import { ChevronLeftIcon, ChevronRightIcon, EllipsisIcon } from 'lucide-react';
 import { tv } from 'tailwind-variants';
 
 import { cn } from '../../lib';
 import { getPages, PageType } from './get-pages';
-import { IconHorizontalDots, IconKeyboardArrowLeft, IconKeyboardArrowRight } from './icons';
 
 /**
  * Style recipe for Pagination using tailwind-variants. Multi-slot recipe that
@@ -34,9 +34,9 @@ export const paginationRecipe = tv({
 			'disabled:pointer-events-none disabled:opacity-30',
 			'focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-[0.0625rem] focus-visible:outline-focus-ring-button-primary',
 			'hover:not-aria-[current=page]:border-border-button-secondary-enable hover:not-aria-[current=page]:shadow-1',
-			'[&_svg]:size-8 [&_svg]:-mx-2 [&_svg]:fill-current'
+			'[&_svg]:size-6 [&_svg:not([fill=none])]:fill-current [&_svg_path[fill]]:fill-current'
 		],
-		dots: 'inline-flex size-8 items-center justify-center text-text-button-ghost-enable [&_svg]:size-4 [&_svg]:fill-current'
+		dots: 'inline-flex size-8 items-center justify-center text-text-button-ghost-enable [&_svg]:size-3.5 [&_svg:not([fill=none])]:fill-current [&_svg_path[fill]]:fill-current'
 	},
 	variants: {
 		active: {
@@ -133,14 +133,14 @@ export const Pagination = ({
 							disabled={currentPage === 1}
 							aria-label="Go to previous page"
 							className={styles.button()}>
-							<IconKeyboardArrowLeft />
+							<ChevronLeftIcon />
 						</button>
 					</li>
 					{pages.map(({ number, type }, index) =>
 						type === PageType.Dots ? (
 							<li className={styles.item()} key={index}>
 								<span aria-hidden="true" className={styles.dots()}>
-									<IconHorizontalDots />
+									<EllipsisIcon />
 								</span>
 							</li>
 						) : (
@@ -162,7 +162,7 @@ export const Pagination = ({
 							disabled={currentPage === lastPage}
 							aria-label="Go to next page"
 							className={styles.button()}>
-							<IconKeyboardArrowRight />
+							<ChevronRightIcon />
 						</button>
 					</li>
 				</ul>

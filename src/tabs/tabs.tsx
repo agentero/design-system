@@ -39,7 +39,8 @@ export const tabsRecipe = tv({
 				list: 'gap-2',
 				trigger: [
 					'flex h-8 items-center gap-2.5 rounded-md px-3 text-sm font-normal text-text-default-base-secondary',
-					'[&>svg]:-mx-1 [&>svg]:size-4 [&>svg]:fill-icon-default-base-secondary',
+					'[&>svg]:-mx-1 [&>svg]:size-4 [&>svg]:text-icon-default-base-secondary',
+					'[&>svg:not([fill=none])]:fill-current [&>svg_path[fill]]:fill-current',
 					'hover:bg-bg-default-base-primary-hover data-[state=active]:bg-bg-default-base-primary-hover'
 				]
 			}
