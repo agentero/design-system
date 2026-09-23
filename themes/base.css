@@ -761,28 +761,20 @@
     * SHADOWS
     * ======================================== */
 
-	--shadow-1: 0 0.0625rem 0.125rem 0 var(--color-overlay-dark-050);
-	--shadow-2:
+	--shadow-xs: 0 0.0625rem 0.125rem 0 var(--color-overlay-dark-050);
+	--shadow-sm:
 		0 0.0625rem 0.125rem 0 var(--color-overlay-dark-050),
 		0 0.0625rem 0.125rem 0 var(--color-overlay-dark-050);
-	--shadow-3:
+	--shadow-md:
 		0 0.25rem 0.375rem -0.0625rem var(--color-overlay-dark-100),
 		0 0.125rem 0.25rem -0.0625rem var(--color-overlay-dark-050);
-	--shadow-4:
+	--shadow-lg:
 		0 0.625rem 0.9375rem -0.1875rem var(--color-overlay-dark-100),
 		0 0.25rem 0.375rem -0.125rem var(--color-overlay-dark-050);
-	--shadow-5:
+	--shadow-xl:
 		0 1.25rem 1.5625rem -0.3125rem var(--color-overlay-dark-100),
 		0 0.625rem 0.625rem -0.3125rem var(--color-overlay-dark-050);
-	--shadow-6: 0 1.5625rem 3.125rem -0.75rem var(--color-overlay-dark-200);
-
-	/* Semantic Shadows */
-	--shadow-xs: var(--shadow-1);
-	--shadow-sm: var(--shadow-2);
-	--shadow-md: var(--shadow-3);
-	--shadow-lg: var(--shadow-4);
-	--shadow-xl: var(--shadow-5);
-	--shadow-2xl: var(--shadow-6);
+	--shadow-2xl: 0 1.5625rem 3.125rem -0.75rem var(--color-overlay-dark-200);
 
 	/* ========================================
     * EASINGS / TRANSITIONS
