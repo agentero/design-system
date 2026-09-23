@@ -5003,7 +5003,7 @@
         {
           "id": "components-divider--in-toolbar",
           "name": "In Toolbar",
-          "snippet": "const InToolbar = () => (\n    <div className=\"inline-flex h-10 items-center gap-1 rounded-lg border border-border-default-base-primary bg-bg-default-base-primary px-2 shadow-1\">\n        <Button variant=\"ghost\" size=\"xs\">\n            Cut\n        </Button>\n        <Button variant=\"ghost\" size=\"xs\">\n            Copy\n        </Button>\n        <Button variant=\"ghost\" size=\"xs\">\n            Paste\n        </Button>\n        <Divider orientation=\"vertical\" className=\"mx-1 h-6\" />\n        <Button variant=\"ghost\" size=\"xs\">\n            Undo\n        </Button>\n        <Button variant=\"ghost\" size=\"xs\">\n            Redo\n        </Button>\n        <Divider orientation=\"vertical\" className=\"mx-1 h-6\" />\n        <Button variant=\"ghost\" size=\"xs\">\n            Settings\n        </Button>\n    </div>\n);",
+          "snippet": "const InToolbar = () => (\n    <div className=\"inline-flex h-10 items-center gap-1 rounded-lg border border-border-default-base-primary bg-bg-default-base-primary px-2 shadow-xs\">\n        <Button variant=\"ghost\" size=\"xs\">\n            Cut\n        </Button>\n        <Button variant=\"ghost\" size=\"xs\">\n            Copy\n        </Button>\n        <Button variant=\"ghost\" size=\"xs\">\n            Paste\n        </Button>\n        <Divider orientation=\"vertical\" className=\"mx-1 h-6\" />\n        <Button variant=\"ghost\" size=\"xs\">\n            Undo\n        </Button>\n        <Button variant=\"ghost\" size=\"xs\">\n            Redo\n        </Button>\n        <Divider orientation=\"vertical\" className=\"mx-1 h-6\" />\n        <Button variant=\"ghost\" size=\"xs\">\n            Settings\n        </Button>\n    </div>\n);",
           "description": "Vertical dividers grouping related toolbar actions. Use to separate logical\nclusters of buttons (editing vs. history vs. settings) without visual\nweight.",
           "summary": "Vertical dividers grouping toolbar actions"
         },
@@ -9414,6 +9414,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4721
+    "durationMs": 3082
   }
 }
