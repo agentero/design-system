@@ -7924,6 +7924,13 @@
           "summary": "Selectable rows with a collapsing checkbox column"
         },
         {
+          "id": "components-table--with-switch",
+          "name": "With Switch",
+          "snippet": "const WithSwitch = () => <form>\n    <Table.Root size=\"md\" embed={false}>\n        <Table.Body>\n            {ROWS.slice(0, 3).map(row => (\n                <Table.Row key={row.id}>\n                    <Table.Cell>{row.name}</Table.Cell>\n                    <Table.Cell>\n                        <Switch size=\"sm\" defaultChecked aria-label={`Notify ${row.name}`} />\n                    </Table.Cell>\n                </Table.Row>\n            ))}\n        </Table.Body>\n    </Table.Root>\n</form>;",
+          "description": "A Switch renders a hidden checkbox so a form can read its value without JS.\nRadix keeps it while the Switch sits in a form, and on the server render\nbefore hydration. A cell holding a Switch is not a selection column, so it\nkeeps its padding.",
+          "summary": "A cell holding a Switch keeps its padding"
+        },
+        {
           "id": "components-table--with-row-actions",
           "name": "With Row Actions",
           "snippet": "const WithRowActions = args => renderTable(args, { actions: true });",
@@ -7938,7 +7945,7 @@
           "summary": "Expandable rows with a detail panel"
         }
       ],
-      "import": "import { Button, Table } from \"@agentero/design-system\";\nimport { Fragment } from \"react\";"
+      "import": "import { Button, Switch, Table } from \"@agentero/design-system\";\nimport { Fragment } from \"react\";"
     },
     "components-tabs": {
       "id": "components-tabs",
@@ -9407,6 +9414,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 3521
+    "durationMs": 4483
   }
 }
