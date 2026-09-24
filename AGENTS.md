@@ -14,7 +14,7 @@ This file provides guidance to AI agents when working with code in this reposito
 - `yarn check:manifest` — validates `storybook-static/manifests/components.json` (description, `@summary`, props and import line per entry). Needs `yarn build-storybook` first; CI runs both in the `manifest` job.
 - `yarn test` — runs both Vitest projects declared in `vite.config.ts`: `storybook` (story files as tests, via `@storybook/addon-vitest` + Playwright/Chromium) and `unit` (plain node tests, `src/**/*.test.ts`). `yarn test:storybook` runs only the story suite; `yarn vitest run <file>` runs a single one.
 
-CI (`.github/workflows/ci.yml`) runs `yarn lint`, `yarn tsc`, `yarn test` and the `manifest` job (`yarn build-storybook` + `yarn check:manifest`) on PRs to `master` — nothing else gates merges.
+CI (`.github/workflows/ci.yml`) runs `yarn lint`, `yarn tsc`, `yarn test`, `yarn build` and the `manifest` job (`yarn build-storybook` + `yarn check:manifest`) on PRs to `master` — nothing else gates merges. The `build` job is what makes the `cleanDist` guard (see Build pipeline) fail the PR instead of the publish.
 
 ## Architecture
 
@@ -69,9 +69,9 @@ Components reference tokens either through Tailwind utility classes Tailwind gen
 1. **`vite-plugin-dts`** emits `.d.ts` files alongside each entry, excluding `*.stories.*` and `*.test.*`.
 2. **`generatePackageJson`** writes a *different* `package.json` into `dist/`. The shipped exports map points at compiled `.js` + `.d.ts`, not the source TS. It also adds `exports['./theme.css']`, an `./mcp` entry, and a `bin` for `design-system-mcp`.
 3. **`bundleMcpServer`** uses esbuild to bundle `mcp/server.ts` → `dist/mcp/server.mjs` and copies `storybook-static/manifests/*` into `dist/mcp/manifests/`. **Silently skipped** if the manifests don't exist — always run `yarn build-storybook` before `yarn build` when preparing a release, or the published package will be missing the MCP server.
-4. **`cleanDist`** removes `dist/_virtual` and `dist/node_modules` that Rollup sometimes leaves behind with `preserveModules: true`.
+4. **`cleanDist`** removes the `dist/_virtual` directory Rollup sometimes leaves behind with `preserveModules: true`, and **fails the build** if `dist/node_modules` exists, naming the packages in it (see below).
 
-Rollup externals include all peer deps, all runtime deps, and `react/jsx-runtime`. `preserveModules: true` keeps the output file structure aligned with source paths, so subpath imports resolve correctly.
+Rollup externals include all peer deps and all runtime deps, along with their subpaths (`react/jsx-runtime`, `@base-ui/react/combobox`). Anything else gets bundled under `dist/node_modules`, which npm never publishes, so the import would break in the app; `cleanDist` fails the build when that happens. `preserveModules: true` keeps the output file structure aligned with source paths, so subpath imports resolve correctly.
 
 ### MCP server (`mcp/server.ts`)
 
