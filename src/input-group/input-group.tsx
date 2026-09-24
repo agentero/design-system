@@ -33,14 +33,19 @@ export const inputGroupRecipe = tv({
 			'has-[input:disabled,textarea:disabled]:shadow-none',
 			'has-[input[data-size="lg"],textarea[data-size="lg"]]:rounded-lg',
 			'has-[input[aria-invalid="true"],textarea[aria-invalid="true"]]:border-border-input-destructive',
-			'has-[input[aria-invalid="true"]:focus-within,textarea[aria-invalid="true"]:focus-within]:outline-border-input-destructive',
+			'has-[input[aria-invalid="true"]:focus-within,textarea[aria-invalid="true"]:focus-within]:outline-outline-input-destructive',
 			// The 1px negative margins swallow the frame's border so the group is as tall as a
 			// standalone Input; the extra `focus-visible` reset is needed because the Input's own
 			// ring rule outranks a plain descendant reset.
 			'**:[input,textarea]:-my-0.25 **:[input,textarea]:border-none **:[input,textarea]:bg-transparent',
 			'**:[input,textarea]:px-0 **:[input,textarea]:pb-0.125 **:[input,textarea]:shadow-none',
 			'**:[input,textarea]:outline-none **:[input,textarea]:focus-visible:outline-none',
-			'**:[[data-slot=separator]]:bg-border-input-default'
+			'**:[[data-slot=separator]]:bg-border-input-default',
+			// A tag tucks into the frame's padding on the side it touches: leading tags pull
+			// left, a tag right after the input pulls right instead.
+			'**:[[data-slot=tag]]:-ms-1 **:[[data-slot=tag]]:rounded-sm',
+			'**:[input+[data-slot=input-group-addon]>[data-slot=tag]]:ms-0',
+			'**:[input+[data-slot=input-group-addon]>[data-slot=tag]]:-me-1'
 		],
 		addon: [
 			'flex h-auto cursor-text items-center justify-center',

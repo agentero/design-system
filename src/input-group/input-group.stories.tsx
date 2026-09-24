@@ -1,13 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, userEvent, waitFor, within } from 'storybook/test';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { InputGroup } from '.';
+import { Button } from '../button';
 import { IconSearch } from '../command/icons';
 import { Divider } from '../divider';
 import { Field } from '../field';
 import { FieldText } from '../field-text';
 import { Input, InputSize } from '../input';
 import { Label } from '../label';
+import { Tag } from '../tag';
 
 /**
  * InputGroup draws an `Input` and what sits beside it — an icon, a currency or
@@ -95,34 +97,122 @@ export const TextAffixes: Story = {
 };
 
 /**
- * A `Divider` separates a prefix from the value when the affix reads as a
- * distinct segment, like a protocol before a domain.
+ * A `Divider` separates an affix from the value when it reads as a distinct
+ * segment, like a protocol before a domain. It spans the full height of the
+ * frame, meeting its border at both ends.
  *
- * @summary Protocol prefix separated from the input by a vertical divider
+ * @summary Protocol prefix and domain suffix split off by vertical dividers
  */
 export const WithDivider: Story = {
 	render: () => (
 		<InputGroup.Root>
 			<InputGroup.Text>https://</InputGroup.Text>
-			<Divider orientation="vertical" className="my-2" />
+			<Divider orientation="vertical" />
 			<Input
 				type="text"
 				inputMode="url"
 				autoCapitalize="none"
-				placeholder="www.agentero.com"
+				placeholder="www.agentero"
 				aria-label="Agency website"
 			/>
+			<Divider orientation="vertical" />
+			<InputGroup.Text>.com</InputGroup.Text>
 		</InputGroup.Root>
 	),
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
-
+		const group = canvas.getByRole('group');
 		const input = canvas.getByRole('textbox', { name: 'Agency website' });
+		const dividers = group.querySelectorAll<HTMLElement>('[data-slot="separator"]');
 
-		await expect(canvas.getByText('https://')).toBeInTheDocument();
-		await expect(input).toHaveAttribute('inputmode', 'url');
-		await userEvent.type(input, 'www.agentero.com');
+		await expect(dividers).toHaveLength(2);
+		for (const divider of dividers) {
+			await expect(divider.offsetHeight).toBe(group.clientHeight);
+		}
+
+		await userEvent.type(input, 'www.agentero');
 		await expect((input as HTMLInputElement).validity.valid).toBe(true);
+	}
+};
+
+/**
+ * A `Tag` in an addon labels what the value is. It tucks into the frame's
+ * padding on the side it touches and takes a tighter radius, so it sits inside
+ * the corner instead of competing with it.
+ *
+ * @summary Leading and trailing tags tucked into the frame's padding
+ */
+export const WithTags: Story = {
+	render: () => (
+		<div className="flex flex-col gap-4">
+			<InputGroup.Root>
+				<InputGroup.Addon>
+					<Tag color="informative">FEIN</Tag>
+				</InputGroup.Addon>
+				<Input placeholder="XX-XXXXXXX" aria-label="FEIN" />
+			</InputGroup.Root>
+			<InputGroup.Root>
+				<InputGroup.Addon>
+					<IconSearch />
+				</InputGroup.Addon>
+				<Input placeholder="Describe your filters" aria-label="Describe your filters" />
+				<InputGroup.Addon>
+					<Tag color="informative">Beta</Tag>
+				</InputGroup.Addon>
+			</InputGroup.Root>
+		</div>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const leading = getComputedStyle(canvas.getByText('FEIN'));
+		const trailing = getComputedStyle(canvas.getByText('Beta'));
+		const standalone = document.createElement('span');
+		standalone.className = 'rounded-sm';
+		canvasElement.append(standalone);
+
+		await expect(leading.marginInlineStart).toBe('-4px');
+		await expect(trailing.marginInlineStart).toBe('0px');
+		await expect(trailing.marginInlineEnd).toBe('-4px');
+		await expect(leading.borderRadius).toBe(getComputedStyle(standalone).borderRadius);
+		standalone.remove();
+	}
+};
+
+/**
+ * A trailing action runs edge to edge: the addon cancels the frame's gap and
+ * padding with `-mx-(--input-group-gap)`, a `Divider` marks it off, and a
+ * square-cornered ghost `Button` fills the segment. Pressing the button runs
+ * it without moving focus into the input.
+ *
+ * @summary Ghost button filling a trailing segment of the frame
+ */
+const handleCopy = fn();
+
+export const WithButton: Story = {
+	render: () => (
+		<InputGroup.Root>
+			<Input value="https://agentero.com/r/abc123" readOnly aria-label="Referral link" />
+			<Divider orientation="vertical" />
+			<InputGroup.Addon className="-mx-(--input-group-gap)">
+				<Button variant="ghost" size="md" className="rounded-none" onClick={handleCopy}>
+					Copy link
+				</Button>
+			</InputGroup.Addon>
+		</InputGroup.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const group = canvas.getByRole('group');
+		const button = canvas.getByRole('button', { name: 'Copy link' });
+
+		await userEvent.click(button);
+		await expect(handleCopy).toHaveBeenCalledOnce();
+		await expect(canvas.getByRole('textbox', { name: 'Referral link' })).not.toHaveFocus();
+
+		const frame = group.getBoundingClientRect();
+		const edge = button.getBoundingClientRect();
+		await expect(edge.right).toBeCloseTo(frame.right - group.clientLeft, 0);
+		await expect(edge.height).toBeCloseTo(group.clientHeight, 0);
 	}
 };
 
