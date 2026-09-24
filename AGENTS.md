@@ -69,9 +69,9 @@ Components reference tokens either through Tailwind utility classes Tailwind gen
 1. **`vite-plugin-dts`** emits `.d.ts` files alongside each entry, excluding `*.stories.*` and `*.test.*`.
 2. **`generatePackageJson`** writes a *different* `package.json` into `dist/`. The shipped exports map points at compiled `.js` + `.d.ts`, not the source TS. It also adds `exports['./theme.css']`, an `./mcp` entry, and a `bin` for `design-system-mcp`.
 3. **`bundleMcpServer`** uses esbuild to bundle `mcp/server.ts` → `dist/mcp/server.mjs` and copies `storybook-static/manifests/*` into `dist/mcp/manifests/`. **Silently skipped** if the manifests don't exist — always run `yarn build-storybook` before `yarn build` when preparing a release, or the published package will be missing the MCP server.
-4. **`cleanDist`** removes `dist/_virtual` and `dist/node_modules` that Rollup sometimes leaves behind with `preserveModules: true`.
+4. **`cleanDist`** removes the `dist/_virtual` directory Rollup sometimes leaves behind with `preserveModules: true`, and **fails the build** if `dist/node_modules` exists, naming the packages in it (see below).
 
-Rollup externals include all peer deps and all runtime deps, along with their subpaths (`react/jsx-runtime`, `@base-ui/react/combobox`). A subpath that is not external gets bundled under `dist/node_modules`, which npm never publishes, so the import breaks in the app. `preserveModules: true` keeps the output file structure aligned with source paths, so subpath imports resolve correctly.
+Rollup externals include all peer deps and all runtime deps, along with their subpaths (`react/jsx-runtime`, `@base-ui/react/combobox`). Anything else gets bundled under `dist/node_modules`, which npm never publishes, so the import would break in the app; `cleanDist` fails the build when that happens. `preserveModules: true` keeps the output file structure aligned with source paths, so subpath imports resolve correctly.
 
 ### MCP server (`mcp/server.ts`)
 

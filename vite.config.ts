@@ -35,16 +35,41 @@ const externalDependencies = [
 const isExternalDependency = (id: string) =>
 	externalDependencies.some(dependency => id === dependency || id.startsWith(`${dependency}/`));
 
+/** Package names under `dist/node_modules`, scoped ones as `@scope/name`. */
+function bundledPackages(dir: string): string[] {
+	return fs
+		.readdirSync(dir)
+		.flatMap(name =>
+			name.startsWith('@')
+				? fs.readdirSync(path.join(dir, name)).map(scoped => `${name}/${scoped}`)
+				: [name]
+		);
+}
+
 function cleanDist(): Plugin {
 	return {
 		name: 'clean-dist',
 		closeBundle() {
 			const distDir = path.resolve(__dirname, 'dist');
-			for (const dir of ['_virtual', 'node_modules']) {
-				const target = path.join(distDir, dir);
-				if (fs.existsSync(target)) {
-					fs.rmSync(target, { recursive: true });
-				}
+
+			const virtualDir = path.join(distDir, '_virtual');
+			if (fs.existsSync(virtualDir)) {
+				fs.rmSync(virtualDir, { recursive: true });
+			}
+
+			// Anything here is an import `isExternalDependency` did not recognise,
+			// so Rollup bundled it. npm never publishes a nested node_modules, so
+			// the published import would break in the app. Fail the
+			// build instead of hiding the leak by deleting the directory.
+			const bundledDir = path.join(distDir, 'node_modules');
+			if (fs.existsSync(bundledDir)) {
+				throw new Error(
+					'dist/node_modules holds packages that were bundled instead of kept external:\n' +
+						bundledPackages(bundledDir)
+							.map(name => `  - ${name}`)
+							.join('\n') +
+						'\nDeclare each one under dependencies or peerDependencies in package.json.'
+				);
 			}
 		}
 	};
