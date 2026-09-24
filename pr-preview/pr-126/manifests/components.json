@@ -5003,7 +5003,7 @@
         {
           "id": "components-divider--in-toolbar",
           "name": "In Toolbar",
-          "snippet": "const InToolbar = () => (\n    <div className=\"inline-flex h-10 items-center gap-1 rounded-lg border border-border-default-base-primary bg-bg-default-base-primary px-2 shadow-1\">\n        <Button variant=\"ghost\" size=\"xs\">\n            Cut\n        </Button>\n        <Button variant=\"ghost\" size=\"xs\">\n            Copy\n        </Button>\n        <Button variant=\"ghost\" size=\"xs\">\n            Paste\n        </Button>\n        <Divider orientation=\"vertical\" className=\"mx-1 h-6\" />\n        <Button variant=\"ghost\" size=\"xs\">\n            Undo\n        </Button>\n        <Button variant=\"ghost\" size=\"xs\">\n            Redo\n        </Button>\n        <Divider orientation=\"vertical\" className=\"mx-1 h-6\" />\n        <Button variant=\"ghost\" size=\"xs\">\n            Settings\n        </Button>\n    </div>\n);",
+          "snippet": "const InToolbar = () => (\n    <div className=\"inline-flex h-10 items-center gap-1 rounded-lg border border-border-default-base-primary bg-bg-default-base-primary px-2 shadow-xs\">\n        <Button variant=\"ghost\" size=\"xs\">\n            Cut\n        </Button>\n        <Button variant=\"ghost\" size=\"xs\">\n            Copy\n        </Button>\n        <Button variant=\"ghost\" size=\"xs\">\n            Paste\n        </Button>\n        <Divider orientation=\"vertical\" className=\"mx-1 h-6\" />\n        <Button variant=\"ghost\" size=\"xs\">\n            Undo\n        </Button>\n        <Button variant=\"ghost\" size=\"xs\">\n            Redo\n        </Button>\n        <Divider orientation=\"vertical\" className=\"mx-1 h-6\" />\n        <Button variant=\"ghost\" size=\"xs\">\n            Settings\n        </Button>\n    </div>\n);",
           "description": "Vertical dividers grouping related toolbar actions. Use to separate logical\nclusters of buttons (editing vs. history vs. settings) without visual\nweight.",
           "summary": "Vertical dividers grouping toolbar actions"
         },
@@ -6501,9 +6501,21 @@
         {
           "id": "components-inputgroup--with-divider",
           "name": "With Divider",
-          "snippet": "const WithDivider = () => (\n    <InputGroup.Root>\n        <InputGroup.Text>https://</InputGroup.Text>\n        <Divider orientation=\"vertical\" className=\"my-2\" />\n        <Input\n            type=\"text\"\n            inputMode=\"url\"\n            autoCapitalize=\"none\"\n            placeholder=\"www.agentero.com\"\n            aria-label=\"Agency website\"\n        />\n    </InputGroup.Root>\n);",
-          "description": "A `Divider` separates a prefix from the value when the affix reads as a\ndistinct segment, like a protocol before a domain.",
-          "summary": "Protocol prefix separated from the input by a vertical divider"
+          "snippet": "const WithDivider = () => (\n    <InputGroup.Root>\n        <InputGroup.Text>https://</InputGroup.Text>\n        <Divider orientation=\"vertical\" />\n        <Input\n            type=\"text\"\n            inputMode=\"url\"\n            autoCapitalize=\"none\"\n            placeholder=\"www.agentero\"\n            aria-label=\"Agency website\"\n        />\n        <Divider orientation=\"vertical\" />\n        <InputGroup.Text>.com</InputGroup.Text>\n    </InputGroup.Root>\n);",
+          "description": "A `Divider` separates an affix from the value when it reads as a distinct\nsegment, like a protocol before a domain. It spans the full height of the\nframe, meeting its border at both ends.",
+          "summary": "Protocol prefix and domain suffix split off by vertical dividers"
+        },
+        {
+          "id": "components-inputgroup--with-tags",
+          "name": "With Tags",
+          "snippet": "const WithTags = () => (\n    <div className=\"flex flex-col gap-4\">\n        <InputGroup.Root>\n            <InputGroup.Addon>\n                <Tag color=\"informative\">FEIN</Tag>\n            </InputGroup.Addon>\n            <Input placeholder=\"XX-XXXXXXX\" aria-label=\"FEIN\" />\n        </InputGroup.Root>\n        <InputGroup.Root>\n            <InputGroup.Addon>\n                <IconSearch />\n            </InputGroup.Addon>\n            <Input placeholder=\"Describe your filters\" aria-label=\"Describe your filters\" />\n            <InputGroup.Addon>\n                <Tag color=\"informative\">Beta</Tag>\n            </InputGroup.Addon>\n        </InputGroup.Root>\n    </div>\n);",
+          "description": "A `Tag` in an addon labels what the value is. It tucks into the frame's\npadding on the side it touches and takes a tighter radius, so it sits inside\nthe corner instead of competing with it.",
+          "summary": "Leading and trailing tags tucked into the frame's padding"
+        },
+        {
+          "id": "components-inputgroup--with-button",
+          "name": "With Button",
+          "snippet": "const WithButton = () => (\n    <InputGroup.Root>\n        <Input value=\"https://agentero.com/r/abc123\" readOnly aria-label=\"Referral link\" />\n        <Divider orientation=\"vertical\" />\n        <InputGroup.Addon className=\"-mx-(--input-group-gap)\">\n            <Button variant=\"ghost\" size=\"md\" className=\"rounded-none\" onClick={handleCopy}>\n                Copy link\n            </Button>\n        </InputGroup.Addon>\n    </InputGroup.Root>\n);"
         },
         {
           "id": "components-inputgroup--disabled",
@@ -6534,7 +6546,7 @@
           "summary": "Label and description reaching the input through the frame"
         }
       ],
-      "import": "import { Divider, Field, FieldText, IconSearch, Input, InputGroup, Label } from \"@agentero/design-system\";"
+      "import": "import {\n    Button,\n    Divider,\n    Field,\n    FieldText,\n    IconSearch,\n    Input,\n    InputGroup,\n    Label,\n    Tag,\n} from \"@agentero/design-system\";"
     },
     "components-input": {
       "id": "components-input",
@@ -6549,13 +6561,13 @@
           "<Input id=\"email\" aria-invalid aria-describedby=\"email-error\" />\n<span id=\"email-error\">Enter a valid email address.</span>"
         ]
       },
-      "description": "Input is the base single-line text control. When a container such as\n`FieldText` provides `InputContext`, it picks up `id`, `aria-invalid` and\n`aria-describedby` on its own; standalone, as here, they are plain props set\nby hand.\n\nThere is no `status` prop. Mark the control `aria-invalid` and the\ndestructive border follows, so the styling can never disagree with what\nassistive technology announces.",
+      "description": "Input is the base single-line text control. When a container such as\n`FieldText` provides `InputContext`, it picks up `id`, `aria-invalid` and\n`aria-describedby` on its own; standalone, as here, they are plain props set\nby hand.\n\nThe invalid state has no prop of its own. Mark the control `aria-invalid`\nand the destructive border follows, so the styling can never disagree with\nwhat assistive technology announces.",
       "summary": "Base single-line text control that takes its wiring from InputContext",
       "reactComponentMeta": {
         "displayName": "Input",
         "exportName": "Input",
         "filePath": "/home/runner/work/design-system/design-system/src/input/input.tsx",
-        "description": "Input is the design system's base single-line text control. Reach for it\nwhenever a form collects free text, and pair it with\n[Label](?path=/docs/components-label--docs) so the control has an accessible\nname.\n\nWhen a container provides `InputContext`, the input takes its wiring (`id`,\n`aria-describedby`, `aria-invalid`, `required`, `disabled`, `readOnly`) from\nit with nothing passed by hand; `FieldText` is one such container. Standalone it\nrenders exactly the props it is given, and its own props always win over the\ncontext. There is no `status` prop — mark the control `aria-invalid` and the\ndestructive border follows.\n\nDo not use Input for multi-line text; that is TextArea's job. It also has no\nslots for leading or trailing addons — an input with a currency prefix or a\nunit suffix belongs in an input group, not here.",
+        "description": "Input is the design system's base single-line text control. Reach for it\nwhenever a form collects free text, and pair it with\n[Label](?path=/docs/components-label--docs) so the control has an accessible\nname.\n\nWhen a container provides `InputContext`, the input takes its wiring (`id`,\n`aria-describedby`, `aria-invalid`, `required`, `disabled`, `readOnly`) from\nit with nothing passed by hand; `FieldText` is one such container. Standalone it\nrenders exactly the props it is given, and its own props always win over the\ncontext. Every standard `<input>` attribute is accepted and forwarded, so\n`type`, `placeholder`, `required`, `disabled`, `readOnly` and the rest work\nas in plain HTML. The invalid state has no prop of its own: `aria-invalid`\ndrives the destructive border, so the styling can never disagree with what\nassistive technology announces. Point `aria-describedby` at the error message\nso the two are read together.\n\nDo not use Input for multi-line text; that is TextArea's job. It also has no\nslots for leading or trailing addons — an input with a currency prefix or a\nunit suffix belongs in an input group, not here.",
         "jsDocTags": {
           "summary": [
             "Base single-line text control that takes its wiring from InputContext"
@@ -6566,144 +6578,6 @@
           ]
         },
         "props": {
-          "aria-invalid": {
-            "name": "aria-invalid",
-            "required": false,
-            "type": {
-              "name": "boolean | \"true\" | \"false\" | \"grammar\" | \"spelling\" | undefined"
-            },
-            "description": "Indicates the entered value does not conform to the format expected by the application.\nSet this when the value fails validation: it drives the destructive border\nand is what assistive technology announces. Point `aria-describedby` at\nthe error message so the two are read together.",
-            "defaultValue": null,
-            "parent": {
-              "name": "AriaAttributes",
-              "fileName": "node_modules/@types/react/index.d.ts"
-            },
-            "declarations": [
-              {
-                "name": "AriaAttributes",
-                "fileName": "node_modules/@types/react/index.d.ts"
-              },
-              {
-                "name": "TypeLiteral",
-                "fileName": "src/input/input.tsx"
-              }
-            ]
-          },
-          "type": {
-            "name": "type",
-            "required": false,
-            "type": {
-              "name": "HTMLInputTypeAttribute | undefined"
-            },
-            "description": "Native input type. Picks the on-screen keyboard on touch devices and the\nbrowser's own parsing, so set it even when you validate yourself.\nDefaults to `'text'`. Multi-line text is not one of the options — that is\na TextArea.",
-            "defaultValue": null,
-            "parent": {
-              "name": "InputHTMLAttributes",
-              "fileName": "node_modules/@types/react/index.d.ts"
-            },
-            "declarations": [
-              {
-                "name": "InputHTMLAttributes",
-                "fileName": "node_modules/@types/react/index.d.ts"
-              },
-              {
-                "name": "TypeLiteral",
-                "fileName": "src/input/input.tsx"
-              }
-            ]
-          },
-          "disabled": {
-            "name": "disabled",
-            "required": false,
-            "type": {
-              "name": "boolean"
-            },
-            "description": "Blocks interaction, greys the control out and drops its shadow. The value\nis not submitted. When the user still needs to read or copy the value,\nuse `readOnly` instead.",
-            "defaultValue": null,
-            "parent": {
-              "name": "InputHTMLAttributes",
-              "fileName": "node_modules/@types/react/index.d.ts"
-            },
-            "declarations": [
-              {
-                "name": "InputHTMLAttributes",
-                "fileName": "node_modules/@types/react/index.d.ts"
-              },
-              {
-                "name": "TypeLiteral",
-                "fileName": "src/input/input.tsx"
-              }
-            ]
-          },
-          "required": {
-            "name": "required",
-            "required": false,
-            "type": {
-              "name": "boolean"
-            },
-            "description": "Marks the control required for both the browser and assistive technology.",
-            "defaultValue": null,
-            "parent": {
-              "name": "InputHTMLAttributes",
-              "fileName": "node_modules/@types/react/index.d.ts"
-            },
-            "declarations": [
-              {
-                "name": "InputHTMLAttributes",
-                "fileName": "node_modules/@types/react/index.d.ts"
-              },
-              {
-                "name": "TypeLiteral",
-                "fileName": "src/input/input.tsx"
-              }
-            ]
-          },
-          "readOnly": {
-            "name": "readOnly",
-            "required": false,
-            "type": {
-              "name": "boolean"
-            },
-            "description": "Keeps the value focusable and copyable but not editable, and still\nsubmits it. Unlike `disabled`, it stays in the tab order.",
-            "defaultValue": null,
-            "parent": {
-              "name": "InputHTMLAttributes",
-              "fileName": "node_modules/@types/react/index.d.ts"
-            },
-            "declarations": [
-              {
-                "name": "InputHTMLAttributes",
-                "fileName": "node_modules/@types/react/index.d.ts"
-              },
-              {
-                "name": "TypeLiteral",
-                "fileName": "src/input/input.tsx"
-              }
-            ]
-          },
-          "placeholder": {
-            "name": "placeholder",
-            "required": false,
-            "type": {
-              "name": "string"
-            },
-            "description": "Short hint shown while the field is empty. It disappears on the first\nkeystroke, so it is never a substitute for a label.",
-            "defaultValue": null,
-            "parent": {
-              "name": "InputHTMLAttributes",
-              "fileName": "node_modules/@types/react/index.d.ts"
-            },
-            "declarations": [
-              {
-                "name": "InputHTMLAttributes",
-                "fileName": "node_modules/@types/react/index.d.ts"
-              },
-              {
-                "name": "TypeLiteral",
-                "fileName": "src/input/input.tsx"
-              }
-            ]
-          },
           "size": {
             "name": "size",
             "required": false,
@@ -8150,6 +8024,13 @@
           "summary": "Selectable rows with a collapsing checkbox column"
         },
         {
+          "id": "components-table--with-switch",
+          "name": "With Switch",
+          "snippet": "const WithSwitch = () => <form>\n    <Table.Root size=\"md\" embed={false}>\n        <Table.Body>\n            {ROWS.slice(0, 3).map(row => (\n                <Table.Row key={row.id}>\n                    <Table.Cell>{row.name}</Table.Cell>\n                    <Table.Cell>\n                        <Switch size=\"sm\" defaultChecked aria-label={`Notify ${row.name}`} />\n                    </Table.Cell>\n                </Table.Row>\n            ))}\n        </Table.Body>\n    </Table.Root>\n</form>;",
+          "description": "A Switch renders a hidden checkbox so a form can read its value without JS.\nRadix keeps it while the Switch sits in a form, and on the server render\nbefore hydration. A cell holding a Switch is not a selection column, so it\nkeeps its padding.",
+          "summary": "A cell holding a Switch keeps its padding"
+        },
+        {
           "id": "components-table--with-row-actions",
           "name": "With Row Actions",
           "snippet": "const WithRowActions = args => renderTable(args, { actions: true });",
@@ -8164,7 +8045,7 @@
           "summary": "Expandable rows with a detail panel"
         }
       ],
-      "import": "import { Button, Table } from \"@agentero/design-system\";\nimport { Fragment } from \"react\";"
+      "import": "import { Button, Switch, Table } from \"@agentero/design-system\";\nimport { Fragment } from \"react\";"
     },
     "components-tabs": {
       "id": "components-tabs",
@@ -8759,7 +8640,7 @@
         "displayName": "TextArea",
         "exportName": "TextArea",
         "filePath": "/home/runner/work/design-system/design-system/src/textarea/textarea.tsx",
-        "description": "TextArea is the design system's multi-line text control: Input's skin, states\nand sizes on a single `<textarea>` with nothing around it, so the native\nresize handle and scrollbar keep working. Pair it with\n[Label](?path=/docs/components-label--docs) the way you pair an Input.\n\nIt wires nothing itself — `id`, `aria-describedby` and `aria-invalid` are the\nfield owner's job, and there is no `status` prop. It holds no value either, so\na character counter belongs to whoever owns it.",
+        "description": "TextArea is the design system's multi-line text control: Input's skin, states\nand sizes on a single `<textarea>` with nothing around it, so the native\nresize handle and scrollbar keep working. Pair it with\n[Label](?path=/docs/components-label--docs) the way you pair an Input.\n\nIt wires nothing itself — `id`, `aria-describedby` and `aria-invalid` are the\nfield owner's job. The invalid state has no prop of its own: `aria-invalid`\ndrives the destructive border, the same as Input. Every `<textarea>` attribute\nis accepted and forwarded, so `placeholder`, `required`, `disabled`,\n`readOnly`, `maxLength` and the rest work as in plain HTML; `rows` raises the\nresting height when three rows are not enough. It holds no value either, so a\ncharacter counter belongs to whoever owns it.",
         "jsDocTags": {
           "summary": [
             "Base multi-line text control sharing Input's skin, states and sizes"
@@ -8769,167 +8650,6 @@
           ]
         },
         "props": {
-          "disabled": {
-            "name": "disabled",
-            "required": false,
-            "type": {
-              "name": "boolean"
-            },
-            "description": "Blocks interaction and drops the value from the submission. Use `readOnly`\nwhen the user still needs to read or copy it.",
-            "defaultValue": null,
-            "parent": {
-              "name": "TextareaHTMLAttributes",
-              "fileName": "node_modules/@types/react/index.d.ts"
-            },
-            "declarations": [
-              {
-                "name": "TextareaHTMLAttributes",
-                "fileName": "node_modules/@types/react/index.d.ts"
-              },
-              {
-                "name": "TypeLiteral",
-                "fileName": "src/textarea/textarea.tsx"
-              }
-            ]
-          },
-          "maxLength": {
-            "name": "maxLength",
-            "required": false,
-            "type": {
-              "name": "number"
-            },
-            "description": "Caps the value in UTF-16 code units: typing stops there and a paste is cut.",
-            "defaultValue": null,
-            "parent": {
-              "name": "TextareaHTMLAttributes",
-              "fileName": "node_modules/@types/react/index.d.ts"
-            },
-            "declarations": [
-              {
-                "name": "TextareaHTMLAttributes",
-                "fileName": "node_modules/@types/react/index.d.ts"
-              },
-              {
-                "name": "TypeLiteral",
-                "fileName": "src/textarea/textarea.tsx"
-              }
-            ]
-          },
-          "placeholder": {
-            "name": "placeholder",
-            "required": false,
-            "type": {
-              "name": "string"
-            },
-            "description": "Hint shown while empty; never a substitute for a label.",
-            "defaultValue": null,
-            "parent": {
-              "name": "TextareaHTMLAttributes",
-              "fileName": "node_modules/@types/react/index.d.ts"
-            },
-            "declarations": [
-              {
-                "name": "TextareaHTMLAttributes",
-                "fileName": "node_modules/@types/react/index.d.ts"
-              },
-              {
-                "name": "TypeLiteral",
-                "fileName": "src/textarea/textarea.tsx"
-              }
-            ]
-          },
-          "readOnly": {
-            "name": "readOnly",
-            "required": false,
-            "type": {
-              "name": "boolean"
-            },
-            "description": "Focusable, copyable and submitted, but not editable.",
-            "defaultValue": null,
-            "parent": {
-              "name": "TextareaHTMLAttributes",
-              "fileName": "node_modules/@types/react/index.d.ts"
-            },
-            "declarations": [
-              {
-                "name": "TextareaHTMLAttributes",
-                "fileName": "node_modules/@types/react/index.d.ts"
-              },
-              {
-                "name": "TypeLiteral",
-                "fileName": "src/textarea/textarea.tsx"
-              }
-            ]
-          },
-          "required": {
-            "name": "required",
-            "required": false,
-            "type": {
-              "name": "boolean"
-            },
-            "description": "Marks the control required for both the browser and assistive technology.",
-            "defaultValue": null,
-            "parent": {
-              "name": "TextareaHTMLAttributes",
-              "fileName": "node_modules/@types/react/index.d.ts"
-            },
-            "declarations": [
-              {
-                "name": "TextareaHTMLAttributes",
-                "fileName": "node_modules/@types/react/index.d.ts"
-              },
-              {
-                "name": "TypeLiteral",
-                "fileName": "src/textarea/textarea.tsx"
-              }
-            ]
-          },
-          "rows": {
-            "name": "rows",
-            "required": false,
-            "type": {
-              "name": "number"
-            },
-            "description": "Rows visible at rest when three are not enough.",
-            "defaultValue": null,
-            "parent": {
-              "name": "TextareaHTMLAttributes",
-              "fileName": "node_modules/@types/react/index.d.ts"
-            },
-            "declarations": [
-              {
-                "name": "TextareaHTMLAttributes",
-                "fileName": "node_modules/@types/react/index.d.ts"
-              },
-              {
-                "name": "TypeLiteral",
-                "fileName": "src/textarea/textarea.tsx"
-              }
-            ]
-          },
-          "aria-invalid": {
-            "name": "aria-invalid",
-            "required": false,
-            "type": {
-              "name": "boolean | \"true\" | \"false\" | \"grammar\" | \"spelling\" | undefined"
-            },
-            "description": "Indicates the entered value does not conform to the format expected by the application.\nDrives the destructive border and is what assistive technology announces.",
-            "defaultValue": null,
-            "parent": {
-              "name": "AriaAttributes",
-              "fileName": "node_modules/@types/react/index.d.ts"
-            },
-            "declarations": [
-              {
-                "name": "AriaAttributes",
-                "fileName": "node_modules/@types/react/index.d.ts"
-              },
-              {
-                "name": "TypeLiteral",
-                "fileName": "src/textarea/textarea.tsx"
-              }
-            ]
-          },
           "size": {
             "name": "size",
             "required": false,
@@ -9794,6 +9514,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 3860
+    "durationMs": 4480
   }
 }
