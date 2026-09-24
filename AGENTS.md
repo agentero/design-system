@@ -14,7 +14,7 @@ This file provides guidance to AI agents when working with code in this reposito
 - `yarn check:manifest` — validates `storybook-static/manifests/components.json` (description, `@summary`, props and import line per entry). Needs `yarn build-storybook` first; CI runs both in the `manifest` job.
 - `yarn test` — runs both Vitest projects declared in `vite.config.ts`: `storybook` (story files as tests, via `@storybook/addon-vitest` + Playwright/Chromium) and `unit` (plain node tests, `src/**/*.test.ts`). `yarn test:storybook` runs only the story suite; `yarn vitest run <file>` runs a single one.
 
-CI (`.github/workflows/ci.yml`) runs `yarn lint`, `yarn tsc`, `yarn test` and the `manifest` job (`yarn build-storybook` + `yarn check:manifest`) on PRs to `master` — nothing else gates merges.
+CI (`.github/workflows/ci.yml`) runs `yarn lint`, `yarn tsc`, `yarn test`, `yarn build` and the `manifest` job (`yarn build-storybook` + `yarn check:manifest`) on PRs to `master` — nothing else gates merges. The `build` job is what makes the `cleanDist` guard (see Build pipeline) fail the PR instead of the publish.
 
 ## Architecture
 
