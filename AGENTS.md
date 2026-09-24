@@ -71,7 +71,7 @@ Components reference tokens either through Tailwind utility classes Tailwind gen
 3. **`bundleMcpServer`** uses esbuild to bundle `mcp/server.ts` → `dist/mcp/server.mjs` and copies `storybook-static/manifests/*` into `dist/mcp/manifests/`. **Silently skipped** if the manifests don't exist — always run `yarn build-storybook` before `yarn build` when preparing a release, or the published package will be missing the MCP server.
 4. **`cleanDist`** removes `dist/_virtual` and `dist/node_modules` that Rollup sometimes leaves behind with `preserveModules: true`.
 
-Rollup externals include all peer deps, all runtime deps, and `react/jsx-runtime`. `preserveModules: true` keeps the output file structure aligned with source paths, so subpath imports resolve correctly.
+Rollup externals include all peer deps and all runtime deps, along with their subpaths (`react/jsx-runtime`, `@base-ui/react/combobox`). A subpath that is not external gets bundled under `dist/node_modules`, which npm never publishes, so the import breaks in the app. `preserveModules: true` keeps the output file structure aligned with source paths, so subpath imports resolve correctly.
 
 ### MCP server (`mcp/server.ts`)
 

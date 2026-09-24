@@ -27,6 +27,14 @@ const entry = Object.fromEntries([
 	['lib/index', './lib/index.ts']
 ]);
 
+const externalDependencies = [
+	...Object.keys(rootPkg.peerDependencies),
+	...Object.keys(rootPkg.dependencies)
+];
+
+const isExternalDependency = (id: string) =>
+	externalDependencies.some(dependency => id === dependency || id.startsWith(`${dependency}/`));
+
 function cleanDist(): Plugin {
 	return {
 		name: 'clean-dist',
@@ -171,11 +179,7 @@ export default defineConfig({
 			formats: ['es']
 		},
 		rollupOptions: {
-			external: [
-				...Object.keys(rootPkg.peerDependencies),
-				...Object.keys(rootPkg.dependencies),
-				'react/jsx-runtime'
-			],
+			external: isExternalDependency,
 			output: {
 				preserveModules: true,
 				preserveModulesRoot: '.'
