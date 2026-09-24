@@ -2,13 +2,14 @@
 
 // Stays: `@base-ui/react/combobox` is `export * as Combobox`, so its parts hang off one
 // export like cmdk's — without the directive they arrive `undefined` (see `command.tsx`).
-import { ComponentPropsWithRef, use } from 'react';
+import { ComponentPropsWithRef, createContext, use } from 'react';
 
 import { Combobox as ComboboxPrimitive } from '@base-ui/react/combobox';
 import { tv } from 'tailwind-variants';
 
 import { cn, useMergeProps } from '../../lib';
 import { InputContext, inputRecipe, InputSize } from '../input';
+import { inputGroupRecipe } from '../input-group';
 import { IconCancel } from './icons';
 
 /**
@@ -19,13 +20,9 @@ import { IconCancel } from './icons';
  */
 export const comboboxRecipe = tv({
 	slots: {
-		// The input has no trailing slot, so the button is overlaid on it: the pair needs a
-		// `relative` parent and the input needs padding to keep its text clear of the icon.
-		field: 'relative',
 		clear: [
-			'absolute top-1/2 right-3 flex size-6 -translate-y-1/2 cursor-pointer items-center',
-			'justify-center rounded-sm [&>svg>path]:fill-icon-input-default',
-			'hover:[&>svg>path]:fill-icon-default-base-primary',
+			'flex size-6 shrink-0 cursor-pointer items-center justify-center rounded-sm',
+			'[&>svg>path]:fill-icon-input-default hover:[&>svg>path]:fill-icon-default-base-primary',
 			'disabled:cursor-default disabled:[&>svg>path]:fill-icon-input-disable'
 		],
 		content: [
@@ -100,6 +97,40 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 };
 Root.displayName = 'Combobox.Root';
 
+const InputGroupContext = createContext(false);
+
+type InputGroupProps = ComponentPropsWithRef<typeof ComboboxPrimitive.InputGroup>;
+
+/**
+ * The bordered frame around the search field and whatever sits beside it: the
+ * clear button, a leading icon in an `InputGroup.Addon`, a prefix in an
+ * `InputGroup.Text`. It wears the design system's `InputGroup` recipe, so the
+ * frame draws the border and the focus ring and the input inside renders bare,
+ * and Base UI anchors the list to it, so the surface is as wide as the frame.
+ *
+ * `Combobox.Input` wraps itself in one when rendered alone; reach for this part
+ * only to put something next to the input.
+ *
+ * @summary Frame around the input and its addons, and the anchor of the list
+ * @dataAttribute {string} data-slot - Always set to "combobox-input-group"
+ *
+ * @example
+ * <Combobox.InputGroup>
+ *   <InputGroup.Addon><IconSearch /></InputGroup.Addon>
+ *   <Combobox.Input placeholder="Search agencies" />
+ * </Combobox.InputGroup>
+ */
+export const InputGroup = ({ className, ...props }: InputGroupProps) => (
+	<InputGroupContext value>
+		<ComboboxPrimitive.InputGroup
+			data-slot="combobox-input-group"
+			className={cn(inputGroupRecipe().root(), className)}
+			{...props}
+		/>
+	</InputGroupContext>
+);
+InputGroup.displayName = 'Combobox.InputGroup';
+
 // The native `size` is a number; intersected with the token union it collapses to `never`.
 type InputProps = Omit<ComponentPropsWithRef<typeof ComboboxPrimitive.Input>, 'size'> & {
 	/** Control height, matching `Input`. Defaults to `'md'`. */
@@ -133,8 +164,9 @@ const useComboboxInputContext = (props: InputProps) => {
  * something to clear, so an untouched field shows nothing. Name it with
  * `clearLabel` when a page has more than one combobox.
  *
- * Pass `render` to swap the element for a richer control — a field with a leading
- * search icon, for instance — and the combobox wiring rides along.
+ * On its own it wraps itself in a `Combobox.InputGroup`, the frame that draws
+ * the border and the ring. Inside one it renders bare, so an
+ * `InputGroup.Addon` or `InputGroup.Text` can sit beside it in the same frame.
  *
  * @summary Search field that opens the list on focus and filters it as you type
  * @dataAttribute {string} data-slot - Always set to "combobox-input"
@@ -142,12 +174,12 @@ const useComboboxInputContext = (props: InputProps) => {
 export const Input = ({ clearLabel = 'Clear', ...props }: InputProps) => {
 	const { className, size = 'md', ...rest } = useComboboxInputContext(props);
 
-	return (
-		<div data-slot="combobox-field" className={slots.field()}>
+	const control = (
+		<>
 			<ComboboxPrimitive.Input
 				data-slot="combobox-input"
 				data-size={size}
-				className={cn(inputRecipe({ size }), 'pr-11', className)}
+				className={cn(inputRecipe({ size }), className)}
 				{...rest}
 			/>
 			<ComboboxPrimitive.Clear
@@ -156,8 +188,10 @@ export const Input = ({ clearLabel = 'Clear', ...props }: InputProps) => {
 				className={slots.clear()}>
 				<IconCancel />
 			</ComboboxPrimitive.Clear>
-		</div>
+		</>
 	);
+
+	return use(InputGroupContext) ? control : <InputGroup>{control}</InputGroup>;
 };
 Input.displayName = 'Combobox.Input';
 
