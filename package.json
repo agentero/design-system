@@ -28,6 +28,7 @@
     "./button": "./src/button/index.ts",
     "./check-list": "./src/check-list/index.ts",
     "./checkbox": "./src/checkbox/index.ts",
+    "./checkbox-group": "./src/checkbox-group/index.ts",
     "./combobox": "./src/combobox/index.ts",
     "./command": "./src/command/index.ts",
     "./data-table": "./src/data-table/index.ts",
