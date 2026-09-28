@@ -248,19 +248,19 @@
         {
           "id": "components-accordion--default",
           "name": "Default",
-          "snippet": "const Default = () => <Accordion.Root type=\"single\" collapsible enclosed={false} disabled={false}>\n    <FaqItems />\n</Accordion.Root>;",
+          "snippet": "const Default = () => <Accordion.Root type=\"single\" collapsible enclosed={false} disabled={false}>\n    {FAQS.map(({ value, question, answer }) => (\n        <Accordion.Item key={value} value={value}>\n            <Accordion.Trigger>{question}</Accordion.Trigger>\n            <Accordion.Content>{answer}</Accordion.Content>\n        </Accordion.Item>\n    ))}\n</Accordion.Root>;",
           "description": "Exclusive accordion: one item open at a time, `collapsible` lets it close."
         },
         {
           "id": "components-accordion--multiple",
           "name": "Multiple",
-          "snippet": "const Multiple = () => (\n    <Accordion.Root type=\"multiple\" defaultValue={['covered', 'payment']}>\n        <FaqItems />\n    </Accordion.Root>\n);",
+          "snippet": "const Multiple = () => (\n    <Accordion.Root type=\"multiple\" defaultValue={['covered', 'payment']}>\n        {FAQS.map(({ value, question, answer }) => (\n            <Accordion.Item key={value} value={value}>\n                <Accordion.Trigger>{question}</Accordion.Trigger>\n                <Accordion.Content>{answer}</Accordion.Content>\n            </Accordion.Item>\n        ))}\n    </Accordion.Root>\n);",
           "description": "`type=\"multiple\"` lets several sections stay open at once."
         },
         {
           "id": "components-accordion--enclosed",
           "name": "Enclosed",
-          "snippet": "const Enclosed = () => (\n    <div className=\"flex flex-col gap-8\">\n        <Accordion.Root type=\"multiple\" defaultValue={['covered']}>\n            <FaqItems />\n        </Accordion.Root>\n        <Accordion.Root type=\"multiple\" enclosed defaultValue={['claim']}>\n            <FaqItems />\n        </Accordion.Root>\n    </div>\n);",
+          "snippet": "const Enclosed = () => (\n    <div className=\"flex flex-col gap-8\">\n        <Accordion.Root type=\"multiple\" defaultValue={['covered']}>\n            {FAQS.map(({ value, question, answer }) => (\n                <Accordion.Item key={value} value={value}>\n                    <Accordion.Trigger>{question}</Accordion.Trigger>\n                    <Accordion.Content>{answer}</Accordion.Content>\n                </Accordion.Item>\n            ))}\n        </Accordion.Root>\n        <Accordion.Root type=\"multiple\" enclosed defaultValue={['claim']}>\n            {FAQS.map(({ value, question, answer }) => (\n                <Accordion.Item key={value} value={value}>\n                    <Accordion.Trigger>{question}</Accordion.Trigger>\n                    <Accordion.Content>{answer}</Accordion.Content>\n                </Accordion.Item>\n            ))}\n        </Accordion.Root>\n    </div>\n);",
           "description": "`enclosed` wraps the group in a bordered card (default borderless on top)."
         },
         {
@@ -278,13 +278,13 @@
         {
           "id": "components-accordion--expand-collapse",
           "name": "Expand Collapse",
-          "snippet": "const ExpandCollapse = () => <Accordion.Root type=\"single\" collapsible>\n    <FaqItems />\n</Accordion.Root>;",
+          "snippet": "const ExpandCollapse = () => <Accordion.Root type=\"single\" collapsible>\n    {FAQS.map(({ value, question, answer }) => (\n        <Accordion.Item key={value} value={value}>\n            <Accordion.Trigger>{question}</Accordion.Trigger>\n            <Accordion.Content>{answer}</Accordion.Content>\n        </Accordion.Item>\n    ))}\n</Accordion.Root>;",
           "description": "`collapsible` lets clicking the open item close it (reach an all-closed state)."
         },
         {
           "id": "components-accordion--non-collapsible",
           "name": "Non Collapsible",
-          "snippet": "const NonCollapsible = () => <Accordion.Root type=\"single\" collapsible={false} defaultValue=\"covered\">\n    <FaqItems />\n</Accordion.Root>;",
+          "snippet": "const NonCollapsible = () => <Accordion.Root type=\"single\" collapsible={false} defaultValue=\"covered\">\n    {FAQS.map(({ value, question, answer }) => (\n        <Accordion.Item key={value} value={value}>\n            <Accordion.Trigger>{question}</Accordion.Trigger>\n            <Accordion.Content>{answer}</Accordion.Content>\n        </Accordion.Item>\n    ))}\n</Accordion.Root>;",
           "description": "Without `collapsible`, clicking the already-open item keeps it open."
         }
       ],
@@ -2788,13 +2788,13 @@
         {
           "id": "components-combobox--async-search",
           "name": "Async Search",
-          "snippet": "const AsyncSearch = () => <SuspenseSearch />;",
+          "snippet": "const AsyncSearch = () => {\n    const [query, setQuery] = useState('');\n\n    return (\n        // No `items` and `filter={null}`: the server did the filtering, the child renders what came\n        // back, and `isItemEqualToValue` keeps a re-fetched copy counting as the selected one.\n        <Combobox.Root\n            filter={null}\n            itemToStringLabel={(agency: Agency) => agency.name}\n            isItemEqualToValue={(a: Agency, b: Agency) => a.id === b.id}\n            onInputValueChange={(value, { reason }) => {\n                // Picking a row writes its label into the input; that is not a new search.\n                if (reason !== 'item-press') setQuery(value);\n            }}>\n            <Combobox.Input placeholder=\"Search agencies\" aria-label=\"Search agencies\" />\n            <Combobox.Content>\n                <Suspense fallback={<SkeletonRows />}>\n                    <AgencyItems query={query} />\n                </Suspense>\n            </Combobox.Content>\n        </Combobox.Root>\n    );\n};",
           "description": "Options fetched as you type, the way the apps load data: the rows are a component\nthat suspends on the request, so a `Suspense` boundary inside `Content` shows\nplaceholder rows until they land. Nothing tracks `loading` by hand and no stale\nlist lingers under the wait: the data is read by query, which is also what makes\nout-of-order responses harmless. Drop a `useSuspenseQuery` where `use()` is."
         },
         {
           "id": "components-combobox--async-search-with-status",
           "name": "Async Search With Status",
-          "snippet": "const AsyncSearchWithStatus = () => <StatusSearch />;",
+          "snippet": "const AsyncSearchWithStatus = () => {\n    const [results, setResults] = useState<Agency[]>([]);\n    const [isLoading, setIsLoading] = useState(false);\n    // Only the latest request may land; fast typing returns responses out of order.\n    const latestRequest = useRef(0);\n\n    const onInputValueChange = async (query: string) => {\n        const request = ++latestRequest.current;\n\n        // The previous rows go before the wait starts: a list that no longer matches what is typed\n        // must not sit under the loading state.\n        setResults([]);\n        setIsLoading(true);\n        const agencies = await searchAgencies(query);\n        if (request !== latestRequest.current) return;\n\n        setResults(agencies);\n        setIsLoading(false);\n    };\n\n    return (\n        // `filter={null}` hands filtering to the server; `filteredItems` is what came back.\n        <Combobox.Root\n            items={results}\n            filteredItems={results}\n            filter={null}\n            itemToStringLabel={(agency: Agency) => agency.name}\n            isItemEqualToValue={(a: Agency, b: Agency) => a.id === b.id}\n            onInputValueChange={onInputValueChange}>\n            <Combobox.Input placeholder=\"Search agencies\" aria-label=\"Search agencies\" />\n            <Combobox.Content aria-busy={isLoading || undefined}>\n                {/* The rows show the wait; `Status` only announces it. */}\n                <Combobox.Status className=\"sr-only\">\n                    {isLoading ? 'Searching…' : undefined}\n                </Combobox.Status>\n                {isLoading && <SkeletonRows />}\n                <Combobox.Empty>{isLoading ? undefined : 'No agencies found'}</Combobox.Empty>\n                <Combobox.List>\n                    {(agency: Agency) => (\n                        <Combobox.Item key={agency.id} value={agency}>\n                            {agency.name}\n                        </Combobox.Item>\n                    )}\n                </Combobox.List>\n            </Combobox.Content>\n        </Combobox.Root>\n    );\n};",
           "description": "The same search without Suspense, for a consumer that gets a `loading` flag from\nits data layer instead: `filter={null}`, the rows arrive through `filteredItems`,\n`Content` is marked busy and `Status` announces the wait. The list is cleared\nbefore each request and a request that is no longer the latest is dropped."
         },
         {
@@ -2806,7 +2806,7 @@
         {
           "id": "components-combobox--with-leading-icon",
           "name": "With Leading Icon",
-          "snippet": "const WithLeadingIcon = () => (\n    <Combobox.Root items={STATES}>\n        <div className=\"relative\">\n            <IconSearch\n                aria-hidden\n                className=\"pointer-events-none absolute top-1/2 left-3 z-1 size-6 -translate-y-1/2 [&>path]:fill-icon-default-base-tertiary\"\n            />\n            <Combobox.Input className=\"pl-11\" placeholder=\"Search states\" aria-label=\"Search states\" />\n        </div>\n        <Combobox.Content>\n            <Combobox.Empty>No matches found</Combobox.Empty>\n            <Combobox.List>\n                {(state: string) => (\n                    <Combobox.Item key={state} value={state}>\n                        {state}\n                    </Combobox.Item>\n                )}\n            </Combobox.List>\n        </Combobox.Content>\n    </Combobox.Root>\n);",
+          "snippet": "const WithLeadingIcon = () => (\n    <Combobox.Root items={STATES}>\n        <div className=\"relative\">\n            <IconSearch\n                aria-hidden\n                className=\"pointer-events-none absolute top-1/2 left-3 -z-hide size-6 -translate-y-1/2 [&>path]:fill-icon-default-base-tertiary\"\n            />\n            <Combobox.Input className=\"pl-11\" placeholder=\"Search states\" aria-label=\"Search states\" />\n        </div>\n        <Combobox.Content>\n            <Combobox.Empty>No matches found</Combobox.Empty>\n            <Combobox.List>\n                {(state: string) => (\n                    <Combobox.Item key={state} value={state}>\n                        {state}\n                    </Combobox.Item>\n                )}\n            </Combobox.List>\n        </Combobox.Content>\n    </Combobox.Root>\n);",
           "description": "A leading icon is composed around the input, not baked in: not every combobox\nis a search (a FEIN lookup or a template picker are not), so the component\nships no icon of its own. Until `InputGroup` lands in the design system, the\nmarketplace search fields get theirs like this — the icon overlaid, the input\npadded past it."
         },
         {
@@ -5438,7 +5438,7 @@
         {
           "id": "components-fieldtext--controlled-from-context",
           "name": "Controlled From Context",
-          "snippet": "const ControlledFromContext = () => <ControlledField />;",
+          "snippet": "const ControlledFromContext = () => {\n    const [value, setValue] = useState('');\n    const [touched, setTouched] = useState(false);\n\n    const errors = touched && !value ? [{ message: 'Required' }] : undefined;\n\n    return (\n        <FieldText invalid={!!errors} required>\n            <ContextExtension\n                inputProps={{\n                    name: 'email',\n                    value,\n                    onChange: event => setValue(event.target.value),\n                    onBlur: () => setTouched(true)\n                }}\n                errors={errors}>\n                <Label>Email</Label>\n                <Input type=\"email\" onChange={onOwnChange} />\n                <Field.Error />\n            </ContextExtension>\n        </FieldText>\n    );\n};",
           "description": "The contexts are an extension point: a provider nested in the field adds\n`name`, `value`, `onChange` and `onBlur` to `InputContext`, so a bare\n`<Input />` becomes controlled, and the errors to `FieldContext`, so a bare\n`<Field.Error />` renders them — here with `useState` and no form library.\nThe input's own `onChange` still runs, chained after the provider's.",
           "summary": "Input controlled and errors supplied from outside the field"
         }
@@ -5685,14 +5685,14 @@
         {
           "id": "components-field--horizontal",
           "name": "Horizontal",
-          "snippet": "const Horizontal = () => (\n    <Field.Group className=\"w-[40rem]\">\n        <Field.Root orientation=\"horizontal\" data-testid=\"short\">\n            <Label>Full name</Label>\n            <DemoInput defaultValue=\"Rafa Moro\" className=\"w-72\" />\n        </Field.Root>\n\n        <Field.Root orientation=\"horizontal\" data-testid=\"long\">\n            <Label>Title</Label>\n            <Field.Content className=\"w-72\">\n                <DemoInput placeholder=\"Software engineer\" />\n                <Field.Description>Shown on your public profile.</Field.Description>\n            </Field.Content>\n        </Field.Root>\n\n        <Field.Root orientation=\"horizontal\" data-testid=\"switch\">\n            <Field.Content>\n                <Label>Auto-renew</Label>\n                <Field.Description>Renews the policy automatically before it expires.</Field.Description>\n            </Field.Content>\n            <DemoInput type=\"checkbox\" className=\"size-5\" />\n        </Field.Root>\n\n        <div className=\"w-[20rem]\" data-testid=\"narrow\">\n            <Field.Root orientation=\"horizontal\">\n                <Label>Email</Label>\n                <DemoInput type=\"email\" placeholder=\"you@example.com\" className=\"w-40\" />\n            </Field.Root>\n        </div>\n    </Field.Group>\n);",
+          "snippet": "const Horizontal = () => (\n    <Field.Group className=\"w-160\">\n        <Field.Root orientation=\"horizontal\" data-testid=\"short\">\n            <Label>Full name</Label>\n            <DemoInput defaultValue=\"Rafa Moro\" className=\"w-72\" />\n        </Field.Root>\n\n        <Field.Root orientation=\"horizontal\" data-testid=\"long\">\n            <Label>Title</Label>\n            <Field.Content className=\"w-72\">\n                <DemoInput placeholder=\"Software engineer\" />\n                <Field.Description>Shown on your public profile.</Field.Description>\n            </Field.Content>\n        </Field.Root>\n\n        <Field.Root orientation=\"horizontal\" data-testid=\"switch\">\n            <Field.Content>\n                <Label>Auto-renew</Label>\n                <Field.Description>Renews the policy automatically before it expires.</Field.Description>\n            </Field.Content>\n            <DemoInput type=\"checkbox\" className=\"size-5\" />\n        </Field.Root>\n\n        <div className=\"w-[20rem]\" data-testid=\"narrow\">\n            <Field.Root orientation=\"horizontal\">\n                <Label>Email</Label>\n                <DemoInput type=\"email\" placeholder=\"you@example.com\" className=\"w-40\" />\n            </Field.Root>\n        </div>\n    </Field.Group>\n);",
           "description": "`horizontal` is one row at every width. The first child fills the row and\neverything after it keeps its natural width, aligned to the right edge, so\nthe controls of stacked fields line up whatever their labels measure. Wrap a\nlabel with its description, or a control with its messages, in\n`Field.Content`. A control sets its own width: `Input` is `w-full`, so it\ngets one here.",
           "summary": "Horizontal field, one row at every width, controls right-aligned"
         },
         {
           "id": "components-field--responsive",
           "name": "Responsive",
-          "snippet": "const Responsive = () => (\n    <div className=\"flex flex-col gap-8\">\n        <div className=\"w-full max-w-[40rem]\" data-testid=\"wide\">\n            <Field.Root orientation=\"responsive\">\n                <Label>Email</Label>\n                <Field.Content className=\"@md/field:w-72\">\n                    <DemoInput type=\"email\" placeholder=\"you@example.com\" />\n                    <Field.Description>\n                        We only use this to send policy documents, and never to contact you about anything\n                        else.\n                    </Field.Description>\n                </Field.Content>\n            </Field.Root>\n        </div>\n\n        <div className=\"w-full max-w-[20rem]\" data-testid=\"narrow\">\n            <Field.Root orientation=\"responsive\">\n                <Label>Email</Label>\n                <Field.Content>\n                    <DemoInput type=\"email\" placeholder=\"you@example.com\" />\n                    <Field.Description>We only use this to send policy documents.</Field.Description>\n                </Field.Content>\n            </Field.Root>\n        </div>\n    </div>\n);",
+          "snippet": "const Responsive = () => (\n    <div className=\"flex flex-col gap-8\">\n        <div className=\"w-full max-w-160\" data-testid=\"wide\">\n            <Field.Root orientation=\"responsive\">\n                <Label>Email</Label>\n                <Field.Content className=\"@md/field:w-72\">\n                    <DemoInput type=\"email\" placeholder=\"you@example.com\" />\n                    <Field.Description>\n                        We only use this to send policy documents, and never to contact you about anything\n                        else.\n                    </Field.Description>\n                </Field.Content>\n            </Field.Root>\n        </div>\n\n        <div className=\"w-full max-w-[20rem]\" data-testid=\"narrow\">\n            <Field.Root orientation=\"responsive\">\n                <Label>Email</Label>\n                <Field.Content>\n                    <DemoInput type=\"email\" placeholder=\"you@example.com\" />\n                    <Field.Description>We only use this to send policy documents.</Field.Description>\n                </Field.Content>\n            </Field.Root>\n        </div>\n    </div>\n);",
           "description": "`responsive` stacks the parts below `28rem` and behaves like `horizontal`\nfrom there: first child fills, the rest keep their width on the right. It\nmeasures the field itself, so it needs no particular wrapper. A width that\nshould only apply once horizontal goes behind `@md/field:`.",
           "summary": "Responsive field that stacks when narrow"
         },
@@ -5720,7 +5720,7 @@
         {
           "id": "components-field--errors-from-context",
           "name": "Errors From Context",
-          "snippet": "const ErrorsFromContext = () => <FieldWithSuppliedErrors />;",
+          "snippet": "const ErrorsFromContext = () => {\n    const [value, setValue] = useState('');\n    const [touched, setTouched] = useState(false);\n\n    const errors = touched && !value ? [{ message: 'Required' }] : undefined;\n\n    return (\n        <Field.Root invalid={!!errors} required>\n            <Label>Email</Label>\n            <DemoInput\n                type=\"email\"\n                value={value}\n                onChange={event => setValue(event.target.value)}\n                onBlur={() => setTouched(true)}\n            />\n            <ErrorProvider errors={errors}>\n                <Field.Error />\n            </ErrorProvider>\n        </Field.Root>\n    );\n};",
           "description": "`FieldContext` is an extension point: re-provided under the root with the\nerrors, a bare `<Field.Error />` renders them — here with `useState` and no\nform library. `InputContext` extends the same way with `value`, `onChange`,\n`onBlur` and `name`; see `FieldText`.",
           "summary": "Errors supplied to a bare Field.Error through context"
         }
@@ -5893,7 +5893,7 @@
             "name": "control",
             "required": false,
             "type": {
-              "name": "Control<FieldValues, any, FieldValues>"
+              "name": "Control<FieldValues, any, unknown>"
             },
             "description": "The form's `control`, from `useForm()`. Defaults to the one the\nsurrounding `Form.Root` provides; pass it explicitly to get `name`\ninference without writing the generic, or when the field renders outside\na `Form.Root`. A `control` whose resolver transforms the values is\naccepted as is.",
             "defaultValue": null,
@@ -6081,63 +6081,63 @@
         {
           "id": "components-formtext--default",
           "name": "Default",
-          "snippet": "const Default = () => <AgencyNameForm\n    name=\"agencyName\"\n    label=\"Agency name\"\n    orientation=\"vertical\"\n    required\n    optional={false}\n    disabled={false}\n    readOnly={false} />;",
+          "snippet": "const Default = () => {\n    const methods = useForm<AgencyValues>({ defaultValues: { agencyName: '' } });\n\n    return (\n        <Form.Root\n            methods={methods}\n            onSubmit={onSubmit}\n            aria-label=\"Agency\"\n            className=\"flex flex-col items-start gap-7\">\n            <FormText\n                rules={{ required: 'Enter the agency name.' }}\n                inputProps={{ placeholder: 'Acme Insurance' }}\n                label=\"Agency name\"\n                orientation=\"vertical\"\n                required\n                optional={false}\n                disabled={false}\n                readOnly={false}\n                name=\"agencyName\" />\n            <Button type=\"submit\">Save</Button>\n        </Form.Root>\n    );\n};",
           "description": "The field consumers write: a `name`, a `label` and the validation rule.\nSubmitting empty renders the error and marks the input invalid; typing\nclears both and the value reaches `onSubmit`.",
           "summary": "Required text field validating on submit"
         },
         {
           "id": "components-formtext--with-description-and-tooltip",
           "name": "With Description And Tooltip",
-          "snippet": "const WithDescriptionAndTooltip = () => <TaxIdForm />;",
+          "snippet": "const WithDescriptionAndTooltip = () => {\n    const methods = useForm<TaxValues>({ defaultValues: { taxId: '' } });\n\n    return (\n        <Form.Root methods={methods} aria-label=\"Tax details\">\n            <FormText\n                name=\"taxId\"\n                label=\"Tax ID\"\n                tooltip=\"The EIN the IRS issued to the agency.\"\n                description=\"Nine digits, with or without the dash.\"\n                inputProps={{ inputMode: 'numeric', autoComplete: 'off' }}\n            />\n        </Form.Root>\n    );\n};",
           "description": "`description` is helper text under the input, announced through\n`aria-describedby`. `tooltip` is an info button beside the label for details\nworth a click; it is a sibling of the `<label>`, so the field's accessible\nname stays the label text.",
           "summary": "Helper text under the input and an info tooltip beside the label"
         },
         {
           "id": "components-formtext--optional",
           "name": "Optional",
-          "snippet": "const Optional = () => <PhoneForm />;",
+          "snippet": "const Optional = () => {\n    const methods = useForm<PhoneValues>({ defaultValues: { phone: '' } });\n\n    return (\n        <Form.Root methods={methods} aria-label=\"Contact\">\n            <FormText name=\"phone\" label=\"Phone number\" optional inputProps={{ type: 'tel' }} />\n        </Form.Root>\n    );\n};",
           "description": "The forms mark optional fields rather than required ones: `optional`\nappends a muted suffix to the label and leaves the input without the\n`required` attribute.",
           "summary": "Optional field with the \" (optional)\" label suffix"
         },
         {
           "id": "components-formtext--with-rules",
           "name": "With Rules",
-          "snippet": "const WithRules = () => <NpnForm />;",
+          "snippet": "const WithRules = () => {\n    const methods = useForm<LicenseValues>({ defaultValues: { agency: { npn: '' } } });\n\n    return (\n        <Form.Root\n            methods={methods}\n            onSubmit={onSubmit}\n            aria-label=\"License\"\n            className=\"flex flex-col items-start gap-7\">\n            <FormText<LicenseValues>\n                name=\"agency.npn\"\n                label=\"NPN\"\n                rules={{\n                    required: 'Enter your NPN.',\n                    pattern: { value: /^\\d{6,10}$/, message: 'An NPN is 6 to 10 digits.' }\n                }}\n                inputProps={{ inputMode: 'numeric' }}\n            />\n            <Button type=\"submit\">Save</Button>\n        </Form.Root>\n    );\n};",
           "description": "`rules` are react-hook-form's, and `name` accepts nested paths typed against\nthe form's values through the generic. `rules.required` validates but does\nnot mark the field required: that stays an explicit `required` prop.",
           "summary": "Nested path with validation rules, typed through the generic"
         },
         {
           "id": "components-formtext--all-errors",
           "name": "All Errors",
-          "snippet": "const AllErrors = () => <PasswordRulesForm />;",
+          "snippet": "const AllErrors = () => {\n    const methods = useForm<PasswordValues>({\n        defaultValues: { password: '' },\n        criteriaMode: 'all'\n    });\n\n    return (\n        <Form.Root\n            methods={methods}\n            onSubmit={onSubmit}\n            aria-label=\"Account security\"\n            className=\"flex flex-col items-start gap-7\">\n            <FormText\n                name=\"password\"\n                label=\"Password\"\n                required\n                inputProps={{ type: 'password' }}\n                rules={{\n                    required: 'Enter a password.',\n                    validate: {\n                        uppercase: value => /[A-Z]/.test(value) || 'At least one uppercase letter.',\n                        number: value => /[0-9]/.test(value) || 'At least one number.',\n                        length: value => value.length >= 10 || 'At least 10 characters.'\n                    }\n                }}\n            />\n            <Button type=\"submit\">Save</Button>\n        </Form.Root>\n    );\n};",
           "description": "A form set to react-hook-form's `criteriaMode: 'all'` collects every rule\nthat failed instead of stopping at the first, and the field lists them all.\nWith the default `'firstError'` a single message is rendered, as in the other\nstories.",
           "summary": "Every failed rule listed under criteriaMode 'all'"
         },
         {
           "id": "components-formtext--input-props-chaining",
           "name": "Input Props Chaining",
-          "snippet": "const InputPropsChaining = () => <MobileForm />;",
+          "snippet": "const InputPropsChaining = () => {\n    const methods = useForm<PhoneValues>({ defaultValues: { phone: '' } });\n\n    return (\n        <Form.Root methods={methods} aria-label=\"Mobile\">\n            <FormText\n                name=\"phone\"\n                label=\"Mobile\"\n                inputProps={{\n                    type: 'tel',\n                    placeholder: '5550000000',\n                    maxLength: 10,\n                    size: 'lg',\n                    onChange: event => onOwnChange(methods.getValues('phone'), event.target.value)\n                }}\n            />\n        </Form.Root>\n    );\n};",
           "description": "`inputProps` carries the input's own attributes — `type`, `placeholder`,\n`maxLength`, `size`… — and its handlers. A consumer `onChange` runs after\nreact-hook-form's: by the time it fires, `getValues` already returns the new\nvalue.",
           "summary": "Input attributes and a consumer onChange chained after the form's"
         },
         {
           "id": "components-formtext--horizontal",
           "name": "Horizontal",
-          "snippet": "const Horizontal = () => <ProfileForm />;",
+          "snippet": "const Horizontal = () => {\n    const methods = useForm<ProfileValues>({\n        defaultValues: { fullName: 'Rafa Moro', title: '' }\n    });\n\n    return (\n        <Form.Root methods={methods} aria-label=\"Profile\" className=\"w-[40rem]\">\n            <Field.Group>\n                <FormText\n                    name=\"fullName\"\n                    label=\"Full name\"\n                    orientation=\"horizontal\"\n                    inputProps={{ className: 'w-72' }}\n                    data-testid=\"short\"\n                />\n                <FormText\n                    name=\"title\"\n                    label=\"Title\"\n                    description=\"Shown on your public profile.\"\n                    orientation=\"horizontal\"\n                    inputProps={{ className: 'w-72', placeholder: 'Software engineer' }}\n                    data-testid=\"long\"\n                />\n            </Field.Group>\n        </Form.Root>\n    );\n};",
           "description": "Root props pass through: `orientation=\"horizontal\"` lays the label and the\ncontrol in a row, and `className` on the root or in `inputProps` sizes them.\nThe `Input` is full-width by default, so a settings row gives it a width.\n`responsive` stacks the field below 28rem and rows it from there.",
           "summary": "Horizontal orientation and class names through the root props"
         },
         {
           "id": "components-formtext--disabled",
           "name": "Disabled",
-          "snippet": "const Disabled = () => <AccountForm />;",
+          "snippet": "const Disabled = () => {\n    const methods = useForm<AccountValues>({\n        defaultValues: { agencyId: 'AG-48213', email: 'ops@acme-insurance.com' }\n    });\n\n    return (\n        <Form.Root\n            methods={methods}\n            onSubmit={onSubmit}\n            aria-label=\"Account\"\n            className=\"flex flex-col items-start gap-7\">\n            <Field.Group>\n                <FormText name=\"agencyId\" label=\"Agency ID\" disabled />\n                <FormText name=\"email\" label=\"Email\" inputProps={{ type: 'email' }} />\n            </Field.Group>\n            <Button type=\"submit\">Save</Button>\n        </Form.Root>\n    );\n};",
           "description": "`disabled` disables the input and marks the field, and the value still\nreaches `onSubmit` — unlike react-hook-form's own `disabled` option, which\ndrops it. Use `readOnly` for a value the user can copy but not edit.",
           "summary": "Disabled field whose value is still submitted"
         },
         {
           "id": "components-formtext--set-focus",
           "name": "Set Focus",
-          "snippet": "const SetFocus = () => <SetFocusForm />;",
+          "snippet": "const SetFocus = () => {\n    const methods = useForm<AgencyValues & PhoneValues>({\n        defaultValues: { agencyName: '', phone: '' }\n    });\n\n    return (\n        <Form.Root\n            methods={methods}\n            aria-label=\"Agency contact\"\n            className=\"flex flex-col items-start gap-7\">\n            <Field.Group>\n                <FormText name=\"agencyName\" label=\"Agency name\" />\n                <FormText name=\"phone\" label=\"Phone number\" inputProps={{ type: 'tel' }} />\n            </Field.Group>\n            <Button type=\"button\" variant=\"secondary\" onClick={() => methods.setFocus('phone')}>\n                Focus phone\n            </Button>\n        </Form.Root>\n    );\n};",
           "description": "react-hook-form's `ref` reaches the `<input>`, so `setFocus` and the focus\non the first invalid field after submit both work with no ref written by\nhand.",
           "summary": "setFocus reaches the input through the merged ref"
         }
@@ -6239,14 +6239,14 @@
         {
           "id": "components-form--default",
           "name": "Default",
-          "snippet": "const Default = () => <AgencyForm />;",
+          "snippet": "const Default = () => {\n    const methods = useForm<AgencyValues>({ defaultValues: { agencyName: '', email: '' } });\n\n    return (\n        <Form.Root\n            methods={methods}\n            onSubmit={onSubmit}\n            aria-label=\"Agency profile\"\n            className=\"flex flex-col items-start gap-7\">\n            <Field.Group>\n                <FormText\n                    name=\"agencyName\"\n                    label=\"Agency name\"\n                    required\n                    rules={{ required: 'Enter the agency name.' }}\n                />\n                <FormText\n                    name=\"email\"\n                    label=\"Email\"\n                    required\n                    rules={{ required: 'Enter the agency email.' }}\n                    inputProps={{ type: 'email', autoComplete: 'email' }}\n                />\n            </Field.Group>\n            <Button type=\"submit\">Save</Button>\n        </Form.Root>\n    );\n};",
           "description": "A form with two required fields and a submit button. Submitting empty shows\nboth errors, marks both inputs invalid and focuses the first one — proof that\nreact-hook-form's `ref` reached the inputs. Once filled in, `onSubmit`\nreceives the typed values.",
           "summary": "Form.Root with FormText fields validating on submit"
         },
         {
           "id": "components-form--no-validate",
           "name": "No Validate",
-          "snippet": "const NoValidate = () => <NicknameForm />;",
+          "snippet": "const NoValidate = () => {\n    const methods = useForm<NicknameValues>({ defaultValues: { nickname: '' } });\n\n    return (\n        <Form.Root\n            methods={methods}\n            onSubmit={onSubmit}\n            aria-label=\"Display name\"\n            className=\"flex flex-col items-start gap-7\">\n            <FormText name=\"nickname\" label=\"Display name\" required />\n            <Button type=\"submit\">Save</Button>\n        </Form.Root>\n    );\n};",
           "description": "`required` on a field reaches the native attribute, so assistive technology\nannounces it, but the form renders `noValidate`: without `rules`, submitting\nthe field empty is not blocked by the browser and `onSubmit` still runs.\nValidation is react-hook-form's alone.",
           "summary": "Native required never triggers the browser's validation bubble"
         }
@@ -6967,7 +6967,7 @@
         {
           "id": "components-modal--controlled",
           "name": "Controlled",
-          "snippet": "const Controlled = () => <ControlledExample />;",
+          "snippet": "const Controlled = () => {\n    const [isOpen, setIsOpen] = useState(false);\n\n    return (\n        <>\n            <Button variant=\"secondary\" onClick={() => setIsOpen(true)}>\n                Open controlled\n            </Button>\n            <Modal.Root open={isOpen} onOpenChange={setIsOpen}>\n                <Modal.Content>\n                    <Modal.Title>Controlled modal</Modal.Title>\n                    <Modal.Body>\n                        <p>The open state lives in the consumer.</p>\n                    </Modal.Body>\n                    <Modal.Footer>\n                        <Button variant=\"primary\" onClick={() => setIsOpen(false)}>\n                            Done\n                        </Button>\n                    </Modal.Footer>\n                </Modal.Content>\n            </Modal.Root>\n        </>\n    );\n};",
           "description": "Controlled with `open`/`onOpenChange` — the dominant pattern in both apps. Also closes on `Escape`."
         },
         {
@@ -7940,7 +7940,7 @@
         {
           "id": "components-table--expandable-rows",
           "name": "Expandable Rows",
-          "snippet": "const ExpandableRows = args => {\n    const Demo = () => {\n        const [openId, setOpenId] = useState<string | null>(ROWS[0]!.id);\n        return (\n            <Table.Root {...args}>\n                <Table.Head>\n                    <Table.Row>\n                        <Table.Header>\n                            <span className=\"sr-only\">Expand</span>\n                        </Table.Header>\n                        <Table.Header>Name</Table.Header>\n                        <Table.Header>Email</Table.Header>\n                        <Table.Header>Role</Table.Header>\n                    </Table.Row>\n                </Table.Head>\n                <Table.Body>\n                    {ROWS.slice(0, 4).map(row => (\n                        <Fragment key={row.id}>\n                            <Table.Row>\n                                <Table.Cell>\n                                    <Table.ExpandButton\n                                        isExpanded={openId === row.id}\n                                        toggleExpanded={() => setOpenId(openId === row.id ? null : row.id)}\n                                        aria-label={`Toggle ${row.name}`}\n                                    />\n                                </Table.Cell>\n                                <Table.Cell className=\"font-bold\">{row.name}</Table.Cell>\n                                <Table.Cell className=\"text-text-default-base-secondary\">{row.email}</Table.Cell>\n                                <Table.Cell>{row.role}</Table.Cell>\n                            </Table.Row>\n                            {openId === row.id && (\n                                <Table.ExpandedRow>\n                                    <Table.Cell colSpan={4}>\n                                        <div className=\"py-2 text-text-default-base-secondary\">\n                                            Extended details for {row.name} — {row.amount} lifetime value.\n                                        </div>\n                                    </Table.Cell>\n                                </Table.ExpandedRow>\n                            )}\n                        </Fragment>\n                    ))}\n                </Table.Body>\n            </Table.Root>\n        );\n    };\n    return <Demo />;\n};",
+          "snippet": "const ExpandableRows = () => {\n    const [openId, setOpenId] = useState<string | null>(ROWS[0]!.id);\n\n    return (\n        <Table.Root size=\"md\" embed={false}>\n            <Table.Head>\n                <Table.Row>\n                    <Table.Header>\n                        <span className=\"sr-only\">Expand</span>\n                    </Table.Header>\n                    <Table.Header>Name</Table.Header>\n                    <Table.Header>Email</Table.Header>\n                    <Table.Header>Role</Table.Header>\n                </Table.Row>\n            </Table.Head>\n            <Table.Body>\n                {ROWS.slice(0, 4).map(row => (\n                    <Fragment key={row.id}>\n                        <Table.Row>\n                            <Table.Cell>\n                                <Table.ExpandButton\n                                    isExpanded={openId === row.id}\n                                    toggleExpanded={() => setOpenId(openId === row.id ? null : row.id)}\n                                    aria-label={`Toggle ${row.name}`}\n                                />\n                            </Table.Cell>\n                            <Table.Cell className=\"font-bold\">{row.name}</Table.Cell>\n                            <Table.Cell className=\"text-text-default-base-secondary\">{row.email}</Table.Cell>\n                            <Table.Cell>{row.role}</Table.Cell>\n                        </Table.Row>\n                        {openId === row.id && (\n                            <Table.ExpandedRow>\n                                <Table.Cell colSpan={4}>\n                                    <div className=\"py-2 text-text-default-base-secondary\">\n                                        Extended details for {row.name} — {row.amount} lifetime value.\n                                    </div>\n                                </Table.Cell>\n                            </Table.ExpandedRow>\n                        )}\n                    </Fragment>\n                ))}\n            </Table.Body>\n        </Table.Root>\n    );\n};",
           "description": "`Table.ExpandButton` toggles a `Table.ExpandedRow` detail panel under its row.",
           "summary": "Expandable rows with a detail panel"
         }
@@ -9414,6 +9414,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4771
+    "durationMs": 4500
   }
 }
