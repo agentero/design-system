@@ -304,50 +304,47 @@ export const WithRowActions: Story = {
  */
 export const ExpandableRows: Story = {
 	render: args => {
-		const Demo = () => {
-			const [openId, setOpenId] = useState<string | null>(ROWS[0]!.id);
-			return (
-				<Table.Root {...args}>
-					<Table.Head>
-						<Table.Row>
-							<Table.Header>
-								<span className="sr-only">Expand</span>
-							</Table.Header>
-							<Table.Header>Name</Table.Header>
-							<Table.Header>Email</Table.Header>
-							<Table.Header>Role</Table.Header>
-						</Table.Row>
-					</Table.Head>
-					<Table.Body>
-						{ROWS.slice(0, 4).map(row => (
-							<Fragment key={row.id}>
-								<Table.Row>
-									<Table.Cell>
-										<Table.ExpandButton
-											isExpanded={openId === row.id}
-											toggleExpanded={() => setOpenId(openId === row.id ? null : row.id)}
-											aria-label={`Toggle ${row.name}`}
-										/>
+		const [openId, setOpenId] = useState<string | null>(ROWS[0]!.id);
+		return (
+			<Table.Root {...args}>
+				<Table.Head>
+					<Table.Row>
+						<Table.Header>
+							<span className="sr-only">Expand</span>
+						</Table.Header>
+						<Table.Header>Name</Table.Header>
+						<Table.Header>Email</Table.Header>
+						<Table.Header>Role</Table.Header>
+					</Table.Row>
+				</Table.Head>
+				<Table.Body>
+					{ROWS.slice(0, 4).map(row => (
+						<Fragment key={row.id}>
+							<Table.Row>
+								<Table.Cell>
+									<Table.ExpandButton
+										isExpanded={openId === row.id}
+										toggleExpanded={() => setOpenId(openId === row.id ? null : row.id)}
+										aria-label={`Toggle ${row.name}`}
+									/>
+								</Table.Cell>
+								<Table.Cell className="font-bold">{row.name}</Table.Cell>
+								<Table.Cell className="text-text-default-base-secondary">{row.email}</Table.Cell>
+								<Table.Cell>{row.role}</Table.Cell>
+							</Table.Row>
+							{openId === row.id && (
+								<Table.ExpandedRow>
+									<Table.Cell colSpan={4}>
+										<div className="py-2 text-text-default-base-secondary">
+											Extended details for {row.name} — {row.amount} lifetime value.
+										</div>
 									</Table.Cell>
-									<Table.Cell className="font-bold">{row.name}</Table.Cell>
-									<Table.Cell className="text-text-default-base-secondary">{row.email}</Table.Cell>
-									<Table.Cell>{row.role}</Table.Cell>
-								</Table.Row>
-								{openId === row.id && (
-									<Table.ExpandedRow>
-										<Table.Cell colSpan={4}>
-											<div className="py-2 text-text-default-base-secondary">
-												Extended details for {row.name} — {row.amount} lifetime value.
-											</div>
-										</Table.Cell>
-									</Table.ExpandedRow>
-								)}
-							</Fragment>
-						))}
-					</Table.Body>
-				</Table.Root>
-			);
-		};
-		return <Demo />;
+								</Table.ExpandedRow>
+							)}
+						</Fragment>
+					))}
+				</Table.Body>
+			</Table.Root>
+		);
 	}
 };

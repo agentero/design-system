@@ -39,35 +39,6 @@ type AgencyValues = {
 
 const onSubmit = fn();
 
-const AgencyForm = () => {
-	const methods = useForm<AgencyValues>({ defaultValues: { agencyName: '', email: '' } });
-
-	return (
-		<Form.Root
-			methods={methods}
-			onSubmit={onSubmit}
-			aria-label="Agency profile"
-			className="flex flex-col items-start gap-7">
-			<Field.Group>
-				<FormText
-					name="agencyName"
-					label="Agency name"
-					required
-					rules={{ required: 'Enter the agency name.' }}
-				/>
-				<FormText
-					name="email"
-					label="Email"
-					required
-					rules={{ required: 'Enter the agency email.' }}
-					inputProps={{ type: 'email', autoComplete: 'email' }}
-				/>
-			</Field.Group>
-			<Button type="submit">Save</Button>
-		</Form.Root>
-	);
-};
-
 /**
  * A form with two required fields and a submit button. Submitting empty shows
  * both errors, marks both inputs invalid and focuses the first one — proof that
@@ -77,37 +48,34 @@ const AgencyForm = () => {
  * @summary Form.Root with FormText fields validating on submit
  */
 export const Default: Story = {
-	parameters: {
-		docs: {
-			source: {
-				code: `const methods = useForm<AgencyValues>({ defaultValues: { agencyName: '', email: '' } });
+	render: () => {
+		const methods = useForm<AgencyValues>({ defaultValues: { agencyName: '', email: '' } });
 
-<Form.Root
-  methods={methods}
-  onSubmit={saveAgency}
-  aria-label="Agency profile"
-  className="flex flex-col items-start gap-7">
-  <Field.Group>
-    <FormText
-      name="agencyName"
-      label="Agency name"
-      required
-      rules={{ required: 'Enter the agency name.' }}
-    />
-    <FormText
-      name="email"
-      label="Email"
-      required
-      rules={{ required: 'Enter the agency email.' }}
-      inputProps={{ type: 'email', autoComplete: 'email' }}
-    />
-  </Field.Group>
-  <Button type="submit">Save</Button>
-</Form.Root>`
-			}
-		}
+		return (
+			<Form.Root
+				methods={methods}
+				onSubmit={onSubmit}
+				aria-label="Agency profile"
+				className="flex flex-col items-start gap-7">
+				<Field.Group>
+					<FormText
+						name="agencyName"
+						label="Agency name"
+						required
+						rules={{ required: 'Enter the agency name.' }}
+					/>
+					<FormText
+						name="email"
+						label="Email"
+						required
+						rules={{ required: 'Enter the agency email.' }}
+						inputProps={{ type: 'email', autoComplete: 'email' }}
+					/>
+				</Field.Group>
+				<Button type="submit">Save</Button>
+			</Form.Root>
+		);
 	},
-	render: () => <AgencyForm />,
 	play: async ({ canvasElement }) => {
 		onSubmit.mockClear();
 		const canvas = within(canvasElement);
@@ -153,21 +121,6 @@ type NicknameValues = {
 	nickname: string;
 };
 
-const NicknameForm = () => {
-	const methods = useForm<NicknameValues>({ defaultValues: { nickname: '' } });
-
-	return (
-		<Form.Root
-			methods={methods}
-			onSubmit={onSubmit}
-			aria-label="Display name"
-			className="flex flex-col items-start gap-7">
-			<FormText name="nickname" label="Display name" required />
-			<Button type="submit">Save</Button>
-		</Form.Root>
-	);
-};
-
 /**
  * `required` on a field reaches the native attribute, so assistive technology
  * announces it, but the form renders `noValidate`: without `rules`, submitting
@@ -177,23 +130,20 @@ const NicknameForm = () => {
  * @summary Native required never triggers the browser's validation bubble
  */
 export const NoValidate: Story = {
-	parameters: {
-		docs: {
-			source: {
-				code: `const methods = useForm<NicknameValues>({ defaultValues: { nickname: '' } });
+	render: () => {
+		const methods = useForm<NicknameValues>({ defaultValues: { nickname: '' } });
 
-<Form.Root
-  methods={methods}
-  onSubmit={save}
-  aria-label="Display name"
-  className="flex flex-col items-start gap-7">
-  <FormText name="nickname" label="Display name" required />
-  <Button type="submit">Save</Button>
-</Form.Root>`
-			}
-		}
+		return (
+			<Form.Root
+				methods={methods}
+				onSubmit={onSubmit}
+				aria-label="Display name"
+				className="flex flex-col items-start gap-7">
+				<FormText name="nickname" label="Display name" required />
+				<Button type="submit">Save</Button>
+			</Form.Root>
+		);
 	},
-	render: () => <NicknameForm />,
 	play: async ({ canvasElement }) => {
 		onSubmit.mockClear();
 		const canvas = within(canvasElement);
