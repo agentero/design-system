@@ -189,30 +189,6 @@ const AgencyItems = ({ query }: { query: string }) => {
 	);
 };
 
-const SuspenseSearch = () => {
-	const [query, setQuery] = useState('');
-
-	return (
-		// No `items` and `filter={null}`: the server did the filtering, the child renders what came
-		// back, and `isItemEqualToValue` keeps a re-fetched copy counting as the selected one.
-		<Combobox.Root
-			filter={null}
-			itemToStringLabel={(agency: Agency) => agency.name}
-			isItemEqualToValue={(a: Agency, b: Agency) => a.id === b.id}
-			onInputValueChange={(value, { reason }) => {
-				// Picking a row writes its label into the input; that is not a new search.
-				if (reason !== 'item-press') setQuery(value);
-			}}>
-			<Combobox.Input placeholder="Search agencies" aria-label="Search agencies" />
-			<Combobox.Content>
-				<Suspense fallback={<SkeletonRows />}>
-					<AgencyItems query={query} />
-				</Suspense>
-			</Combobox.Content>
-		</Combobox.Root>
-	);
-};
-
 /**
  * Options fetched as you type, the way the apps load data: the rows are a component
  * that suspends on the request, so a `Suspense` boundary inside `Content` shows
@@ -221,7 +197,29 @@ const SuspenseSearch = () => {
  * out-of-order responses harmless. Drop a `useSuspenseQuery` where `use()` is.
  */
 export const AsyncSearch: Story = {
-	render: () => <SuspenseSearch />,
+	render: () => {
+		const [query, setQuery] = useState('');
+
+		return (
+			// No `items` and `filter={null}`: the server did the filtering, the child renders what came
+			// back, and `isItemEqualToValue` keeps a re-fetched copy counting as the selected one.
+			<Combobox.Root
+				filter={null}
+				itemToStringLabel={(agency: Agency) => agency.name}
+				isItemEqualToValue={(a: Agency, b: Agency) => a.id === b.id}
+				onInputValueChange={(value, { reason }) => {
+					// Picking a row writes its label into the input; that is not a new search.
+					if (reason !== 'item-press') setQuery(value);
+				}}>
+				<Combobox.Input placeholder="Search agencies" aria-label="Search agencies" />
+				<Combobox.Content>
+					<Suspense fallback={<SkeletonRows />}>
+						<AgencyItems query={query} />
+					</Suspense>
+				</Combobox.Content>
+			</Combobox.Root>
+		);
+	},
 	// The play stops at the placeholder rows. Once the boundary is suspended, the test harness
 	// (React's act environment) does not reliably flush the retry that lands the rows, so the
 	// resolved state is asserted on `AsyncSearchWithStatus` instead, where nothing suspends.
@@ -243,55 +241,6 @@ export const AsyncSearch: Story = {
 	}
 };
 
-const StatusSearch = () => {
-	const [results, setResults] = useState<Agency[]>([]);
-	const [isLoading, setIsLoading] = useState(false);
-	// Only the latest request may land; fast typing returns responses out of order.
-	const latestRequest = useRef(0);
-
-	const onInputValueChange = async (query: string) => {
-		const request = ++latestRequest.current;
-
-		// The previous rows go before the wait starts: a list that no longer matches what is typed
-		// must not sit under the loading state.
-		setResults([]);
-		setIsLoading(true);
-		const agencies = await searchAgencies(query);
-		if (request !== latestRequest.current) return;
-
-		setResults(agencies);
-		setIsLoading(false);
-	};
-
-	return (
-		// `filter={null}` hands filtering to the server; `filteredItems` is what came back.
-		<Combobox.Root
-			items={results}
-			filteredItems={results}
-			filter={null}
-			itemToStringLabel={(agency: Agency) => agency.name}
-			isItemEqualToValue={(a: Agency, b: Agency) => a.id === b.id}
-			onInputValueChange={onInputValueChange}>
-			<Combobox.Input placeholder="Search agencies" aria-label="Search agencies" />
-			<Combobox.Content aria-busy={isLoading || undefined}>
-				{/* The rows show the wait; `Status` only announces it. */}
-				<Combobox.Status className="sr-only">
-					{isLoading ? 'Searching…' : undefined}
-				</Combobox.Status>
-				{isLoading && <SkeletonRows />}
-				<Combobox.Empty>{isLoading ? undefined : 'No agencies found'}</Combobox.Empty>
-				<Combobox.List>
-					{(agency: Agency) => (
-						<Combobox.Item key={agency.id} value={agency}>
-							{agency.name}
-						</Combobox.Item>
-					)}
-				</Combobox.List>
-			</Combobox.Content>
-		</Combobox.Root>
-	);
-};
-
 /**
  * The same search without Suspense, for a consumer that gets a `loading` flag from
  * its data layer instead: `filter={null}`, the rows arrive through `filteredItems`,
@@ -299,7 +248,54 @@ const StatusSearch = () => {
  * before each request and a request that is no longer the latest is dropped.
  */
 export const AsyncSearchWithStatus: Story = {
-	render: () => <StatusSearch />,
+	render: () => {
+		const [results, setResults] = useState<Agency[]>([]);
+		const [isLoading, setIsLoading] = useState(false);
+		// Only the latest request may land; fast typing returns responses out of order.
+		const latestRequest = useRef(0);
+
+		const onInputValueChange = async (query: string) => {
+			const request = ++latestRequest.current;
+
+			// The previous rows go before the wait starts: a list that no longer matches what is typed
+			// must not sit under the loading state.
+			setResults([]);
+			setIsLoading(true);
+			const agencies = await searchAgencies(query);
+			if (request !== latestRequest.current) return;
+
+			setResults(agencies);
+			setIsLoading(false);
+		};
+
+		return (
+			// `filter={null}` hands filtering to the server; `filteredItems` is what came back.
+			<Combobox.Root
+				items={results}
+				filteredItems={results}
+				filter={null}
+				itemToStringLabel={(agency: Agency) => agency.name}
+				isItemEqualToValue={(a: Agency, b: Agency) => a.id === b.id}
+				onInputValueChange={onInputValueChange}>
+				<Combobox.Input placeholder="Search agencies" aria-label="Search agencies" />
+				<Combobox.Content aria-busy={isLoading || undefined}>
+					{/* The rows show the wait; `Status` only announces it. */}
+					<Combobox.Status className="sr-only">
+						{isLoading ? 'Searching…' : undefined}
+					</Combobox.Status>
+					{isLoading && <SkeletonRows />}
+					<Combobox.Empty>{isLoading ? undefined : 'No agencies found'}</Combobox.Empty>
+					<Combobox.List>
+						{(agency: Agency) => (
+							<Combobox.Item key={agency.id} value={agency}>
+								{agency.name}
+							</Combobox.Item>
+						)}
+					</Combobox.List>
+				</Combobox.Content>
+			</Combobox.Root>
+		);
+	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 		const body = within(document.body);
@@ -374,7 +370,7 @@ export const WithLeadingIcon: Story = {
 			<div className="relative">
 				<IconSearch
 					aria-hidden
-					className="pointer-events-none absolute top-1/2 left-3 z-1 size-6 -translate-y-1/2 [&>path]:fill-icon-default-base-tertiary"
+					className="pointer-events-none absolute top-1/2 left-3 -z-hide size-6 -translate-y-1/2 [&>path]:fill-icon-default-base-tertiary"
 				/>
 				<Combobox.Input className="pl-11" placeholder="Search states" aria-label="Search states" />
 			</div>
