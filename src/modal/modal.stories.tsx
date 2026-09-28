@@ -91,34 +91,32 @@ export const WithDescription: Story = {
 	}
 };
 
-const ControlledExample = () => {
-	const [isOpen, setIsOpen] = useState(false);
-
-	return (
-		<>
-			<Button variant="secondary" onClick={() => setIsOpen(true)}>
-				Open controlled
-			</Button>
-			<Modal.Root open={isOpen} onOpenChange={setIsOpen}>
-				<Modal.Content>
-					<Modal.Title>Controlled modal</Modal.Title>
-					<Modal.Body>
-						<p>The open state lives in the consumer.</p>
-					</Modal.Body>
-					<Modal.Footer>
-						<Button variant="primary" onClick={() => setIsOpen(false)}>
-							Done
-						</Button>
-					</Modal.Footer>
-				</Modal.Content>
-			</Modal.Root>
-		</>
-	);
-};
-
 /** Controlled with `open`/`onOpenChange` — the dominant pattern in both apps. Also closes on `Escape`. */
 export const Controlled: Story = {
-	render: () => <ControlledExample />,
+	render: () => {
+		const [isOpen, setIsOpen] = useState(false);
+
+		return (
+			<>
+				<Button variant="secondary" onClick={() => setIsOpen(true)}>
+					Open controlled
+				</Button>
+				<Modal.Root open={isOpen} onOpenChange={setIsOpen}>
+					<Modal.Content>
+						<Modal.Title>Controlled modal</Modal.Title>
+						<Modal.Body>
+							<p>The open state lives in the consumer.</p>
+						</Modal.Body>
+						<Modal.Footer>
+							<Button variant="primary" onClick={() => setIsOpen(false)}>
+								Done
+							</Button>
+						</Modal.Footer>
+					</Modal.Content>
+				</Modal.Root>
+			</>
+		);
+	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 		const body = within(document.body);

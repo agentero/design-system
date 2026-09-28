@@ -384,7 +384,7 @@ export const ReadOnly: Story = {
  */
 export const Horizontal: Story = {
 	render: () => (
-		<Field.Group className="w-[40rem]">
+		<Field.Group className="w-160">
 			<Field.Root orientation="horizontal" data-testid="short">
 				<Label>Full name</Label>
 				<DemoInput defaultValue="Rafa Moro" className="w-72" />
@@ -461,7 +461,7 @@ export const Horizontal: Story = {
 export const Responsive: Story = {
 	render: () => (
 		<div className="flex flex-col gap-8">
-			<div className="w-full max-w-[40rem]" data-testid="wide">
+			<div className="w-full max-w-160" data-testid="wide">
 				<Field.Root orientation="responsive">
 					<Label>Email</Label>
 					<Field.Content className="@md/field:w-72">
@@ -610,28 +610,6 @@ const ErrorProvider = ({
 	return <FieldContext value={field && { ...field, errors }}>{children}</FieldContext>;
 };
 
-const FieldWithSuppliedErrors = () => {
-	const [value, setValue] = useState('');
-	const [touched, setTouched] = useState(false);
-
-	const errors = touched && !value ? [{ message: 'Required' }] : undefined;
-
-	return (
-		<Field.Root invalid={!!errors} required>
-			<Label>Email</Label>
-			<DemoInput
-				type="email"
-				value={value}
-				onChange={event => setValue(event.target.value)}
-				onBlur={() => setTouched(true)}
-			/>
-			<ErrorProvider errors={errors}>
-				<Field.Error />
-			</ErrorProvider>
-		</Field.Root>
-	);
-};
-
 /**
  * `FieldContext` is an extension point: re-provided under the root with the
  * errors, a bare `<Field.Error />` renders them — here with `useState` and no
@@ -641,7 +619,27 @@ const FieldWithSuppliedErrors = () => {
  * @summary Errors supplied to a bare Field.Error through context
  */
 export const ErrorsFromContext: Story = {
-	render: () => <FieldWithSuppliedErrors />,
+	render: () => {
+		const [value, setValue] = useState('');
+		const [touched, setTouched] = useState(false);
+
+		const errors = touched && !value ? [{ message: 'Required' }] : undefined;
+
+		return (
+			<Field.Root invalid={!!errors} required>
+				<Label>Email</Label>
+				<DemoInput
+					type="email"
+					value={value}
+					onChange={event => setValue(event.target.value)}
+					onBlur={() => setTouched(true)}
+				/>
+				<ErrorProvider errors={errors}>
+					<Field.Error />
+				</ErrorProvider>
+			</Field.Root>
+		);
+	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 
