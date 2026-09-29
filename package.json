@@ -30,6 +30,7 @@
     "./checkbox": "./src/checkbox/index.ts",
     "./combobox": "./src/combobox/index.ts",
     "./command": "./src/command/index.ts",
+    "./copy-button": "./src/copy-button/index.ts",
     "./data-table": "./src/data-table/index.ts",
     "./divider": "./src/divider/index.ts",
     "./dropdown-menu": "./src/dropdown-menu/index.ts",
