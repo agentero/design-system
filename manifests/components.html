@@ -588,7 +588,7 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">33 components ok</span><span class="filter-pill ok" aria-disabled="true">264 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">33 components ok</span><span class="filter-pill ok" aria-disabled="true">265 stories ok</span></div>
   </div>
 </header>
 <main>
@@ -3412,7 +3412,7 @@ list nor treats a click in it as a click outside and closes.</div>
       <div class="badges">
         <label for="c-8-components-command-props" class="badge ok as-toggle">10 prop types</label>
         
-        <label for="c-8-components-command-stories" class="badge ok as-toggle">6 stories</label>
+        <label for="c-8-components-command-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -3421,7 +3421,9 @@ list nor treats a click in it as a click outside and closes.</div>
     <div>Filterable command palette container</div>
     <div class="hint">Command is a filterable list built on `cmdk`. Type to narrow the options,
 navigate with the arrow keys, select with Enter. It carries its own panel
-chrome, so dropping it inside a `Popover.Content` yields a combobox.</div>
+chrome, so dropping it inside a `Popover.Content` yields a combobox.
+`useCommandState` reads the search text and results of the surrounding
+`Command.Root` from any component rendered inside it.</div>
     <div class="kv"><span class="chip">summary: Filterable command palette container</span><span class="chip">see: {@link https://github.com/pacocoursey/cmdk cmdk}</span><span class="chip">example: ```tsx
 import { Command } from &#39;@agentero/design-system/command&#39;;
 
@@ -3643,6 +3645,23 @@ list does not invite the pointer.</div>
                             &lt;/Command.Item&gt;
     &lt;/Command.List&gt;
     &lt;Command.Empty&gt;No results found.&lt;/Command.Empty&gt;
+&lt;/Command.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Reading State</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">`useCommandState` reads the surrounding `Root` from a component inside it. Here the row
+offering to create an agency appears only when the search text matches no existing one.</div>
+              <pre><code>const ReadingState = () =&gt; &lt;Command.Root label=&quot;Search agencies&quot;&gt;
+    &lt;Command.Input placeholder=&quot;Search agencies...&quot; /&gt;
+    &lt;Command.List&gt;
+        &lt;Command.Item&gt;Pinnacle Shield Insurance&lt;/Command.Item&gt;
+        &lt;Command.Item&gt;Horizon Risk Solutions&lt;/Command.Item&gt;
+        &lt;CreateItem /&gt;
+    &lt;/Command.List&gt;
 &lt;/Command.Root&gt;;</code></pre>
             </div>
         </div>

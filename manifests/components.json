@@ -2834,13 +2834,13 @@
           "```tsx\n// Filtering handled upstream (async search): let every item through.\n<Command.Root label=\"Search options\" shouldFilter={false}>\n  <Command.Input placeholder=\"Search...\" />\n  <Command.List>...</Command.List>\n</Command.Root>\n```"
         ]
       },
-      "description": "Command is a filterable list built on `cmdk`. Type to narrow the options,\nnavigate with the arrow keys, select with Enter. It carries its own panel\nchrome, so dropping it inside a `Popover.Content` yields a combobox.",
+      "description": "Command is a filterable list built on `cmdk`. Type to narrow the options,\nnavigate with the arrow keys, select with Enter. It carries its own panel\nchrome, so dropping it inside a `Popover.Content` yields a combobox.\n`useCommandState` reads the search text and results of the surrounding\n`Command.Root` from any component rendered inside it.",
       "summary": "Filterable command palette container",
       "reactComponentMeta": {
         "displayName": "Command.Root",
         "exportName": "Command",
         "filePath": "/home/runner/work/design-system/design-system/src/command/index.ts",
-        "description": "Surface of a filterable list built on `cmdk`: type to narrow the options,\nnavigate with the arrow keys, select with Enter. Compose `Root` with `Input` /\n`List` / `Empty` / `Item`, plus `Group` when the options need sections.\n\n`Root` owns the search state, the filtering and the keyboard navigation, and\ncarries the panel chrome (border, radius, shadow), so it can be dropped\nstraight into a `Popover.Content` without extra wrapping to yield a combobox.\nReach for `DropdownMenu` instead when the options are actions and there is\nnothing to search.\n\n`label` names the search input — it is the only prop that can, see `Input`.",
+        "description": "Surface of a filterable list built on `cmdk`: type to narrow the options,\nnavigate with the arrow keys, select with Enter. Compose `Root` with `Input` /\n`List` / `Empty` / `Item`, plus `Group` when the options need sections.\n\n`Root` owns the search state, the filtering and the keyboard navigation, and\ncarries the panel chrome (border, radius, shadow), so it can be dropped\nstraight into a `Popover.Content` without extra wrapping to yield a combobox.\nReach for `DropdownMenu` instead when the options are actions and there is\nnothing to search.\n\n`label` names the search input — it is the only prop that can, see `Input`.\nA component rendered inside `Root` reads its search text and results with\n`useCommandState`, exported next to `Command`.",
         "jsDocTags": {
           "summary": [
             "Filterable command palette container"
@@ -3049,6 +3049,12 @@
           "name": "Disabled Item",
           "snippet": "const DisabledItem = () => <Command.Root label=\"Search agencies\">\n    <Command.Input placeholder=\"Search...\" />\n    <Command.List>\n        <Command.Item value=\"pinnacle\" onSelect={handleDisabledSelect}>Pinnacle Shield Insurance\n                            </Command.Item>\n        <Command.Item value=\"horizon\" disabled onSelect={handleDisabledSelect}>Horizon Risk Solutions\n                            </Command.Item>\n    </Command.List>\n    <Command.Empty>No results found.</Command.Empty>\n</Command.Root>;",
           "description": "A `disabled` row stays visible and searchable but cannot be chosen. cmdk skips it with the\narrow keys and swallows the click, and the row drops its hover and active styling so the\nlist does not invite the pointer."
+        },
+        {
+          "id": "components-command--reading-state",
+          "name": "Reading State",
+          "snippet": "const ReadingState = () => <Command.Root label=\"Search agencies\">\n    <Command.Input placeholder=\"Search agencies...\" />\n    <Command.List>\n        <Command.Item>Pinnacle Shield Insurance</Command.Item>\n        <Command.Item>Horizon Risk Solutions</Command.Item>\n        <CreateItem />\n    </Command.List>\n</Command.Root>;",
+          "description": "`useCommandState` reads the surrounding `Root` from a component inside it. Here the row\noffering to create an agency appears only when the search text matches no existing one."
         }
       ],
       "import": "import { Command } from \"@agentero/design-system\";"
@@ -9414,6 +9420,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4654
+    "durationMs": 4693
   }
 }
