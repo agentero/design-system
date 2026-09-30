@@ -5691,7 +5691,7 @@
         {
           "id": "components-field--horizontal",
           "name": "Horizontal",
-          "snippet": "const Horizontal = () => (\n    <Field.Group className=\"w-160\">\n        <Field.Root orientation=\"horizontal\" data-testid=\"short\">\n            <Label>Full name</Label>\n            <DemoInput defaultValue=\"Rafa Moro\" className=\"w-72\" />\n        </Field.Root>\n\n        <Field.Root orientation=\"horizontal\" data-testid=\"long\">\n            <Label>Title</Label>\n            <Field.Content className=\"w-72\">\n                <DemoInput placeholder=\"Software engineer\" />\n                <Field.Description>Shown on your public profile.</Field.Description>\n            </Field.Content>\n        </Field.Root>\n\n        <Field.Root orientation=\"horizontal\" data-testid=\"switch\">\n            <Field.Content>\n                <Label>Auto-renew</Label>\n                <Field.Description>Renews the policy automatically before it expires.</Field.Description>\n            </Field.Content>\n            <DemoInput type=\"checkbox\" className=\"size-5\" />\n        </Field.Root>\n\n        <div className=\"w-[20rem]\" data-testid=\"narrow\">\n            <Field.Root orientation=\"horizontal\">\n                <Label>Email</Label>\n                <DemoInput type=\"email\" placeholder=\"you@example.com\" className=\"w-40\" />\n            </Field.Root>\n        </div>\n    </Field.Group>\n);",
+          "snippet": "const Horizontal = () => (\n    <Field.Group className=\"w-160\">\n        <Field.Root orientation=\"horizontal\" data-testid=\"short\">\n            <Label>Full name</Label>\n            <DemoInput defaultValue=\"Rafa Moro\" className=\"w-72\" />\n        </Field.Root>\n\n        <Field.Root orientation=\"horizontal\" data-testid=\"long\">\n            <Label>Title</Label>\n            <Field.Content className=\"w-72\">\n                <DemoInput placeholder=\"Software engineer\" />\n                <Field.Description>Shown on your public profile.</Field.Description>\n            </Field.Content>\n        </Field.Root>\n\n        <Field.Root orientation=\"horizontal\" data-testid=\"switch\">\n            <Field.Content>\n                <Label>Auto-renew</Label>\n                <Field.Description>Renews the policy automatically before it expires.</Field.Description>\n            </Field.Content>\n            <DemoSwitch className=\"self-center\" />\n        </Field.Root>\n\n        <div className=\"w-[20rem]\" data-testid=\"narrow\">\n            <Field.Root orientation=\"horizontal\">\n                <Label>Email</Label>\n                <DemoInput type=\"email\" placeholder=\"you@example.com\" className=\"w-40\" />\n            </Field.Root>\n        </div>\n    </Field.Group>\n);",
           "description": "`horizontal` is one row at every width. The first child fills the row and\neverything after it keeps its natural width, aligned to the right edge, so\nthe controls of stacked fields line up whatever their labels measure. Wrap a\nlabel with its description, or a control with its messages, in\n`Field.Content`. A control sets its own width: `Input` is `w-full`, so it\ngets one here.",
           "summary": "Horizontal field, one row at every width, controls right-aligned"
         },
@@ -5731,7 +5731,7 @@
           "summary": "Errors supplied to a bare Field.Error through context"
         }
       ],
-      "import": "import { Field, FieldContext, Label } from \"@agentero/design-system\";"
+      "import": "import { Field, FieldContext, Label, Switch } from \"@agentero/design-system\";"
     },
     "components-formtext": {
       "id": "components-formtext",
@@ -9420,6 +9420,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5087
+    "durationMs": 3724
   }
 }
