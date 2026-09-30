@@ -57,7 +57,22 @@ JSDoc and stories are load-bearing here — `react-docgen-typescript` feeds both
 
 There is no wrapper component and no size scale. A lucide icon is a plain SVG that takes `className`: `size-*` for size, a `text-*` token for color, `shrink-0` next to text in a flex row.
 
-**Size one step below what the Material glyph used.** Material drew inside a ~19–20px live area of its 24px box (2px keyline); lucide fills ~22px (1px padding plus half the stroke), so at the same class a lucide icon reads ×1.16 larger — measured on the paths. The components compensate per call site: status circles (Alert, Toast, Field, Combobox, Command) went one size down (24→20, 20→18 — `size-4.5` is a real Tailwind v4 class, the spacing scale is dynamic); chevrons (×1.31) went two (Pagination 32→24, Accordion/DropdownMenu 16→12); the sort arrows half a step (16→14); Checkbox stayed (Material Sharp already filled the box, ×1.0). Two glyphs were small on purpose and got a pinned size instead: the DropdownMenu submenu chevron (`size-3`) and the Toast dismiss X (`[&_svg]:size-4` on its Button). When a Button or Item sizes its icon through `[&_svg]:size-*`, override it on that element with the same variant, never with a `size-*` on the icon — the recipe's compound selector outranks it.
+**Sizes come from the Figma library, per component** (Portal UI library → Icons page, the instance sheet next to the icon masters). The recipes encode them; don't derive a size from the old Material glyph:
+
+| Component | Icon size |
+|---|---|
+| Button with label | `lg`/`md` 20 · `sm`/`xs` 16 |
+| Button icon-only | `lg` 28 · `md` 20 · `sm` 16 · `xs` 12 |
+| Tag (lead/trail) | `md`/`sm` 14 · `xs` 12 — icon-only `md` 16 · `sm` 14 · `xs` 12 |
+| Avatar fallback | `lg` 28 · `md` 20 · `sm` 16 · `xs` 14 (larger sizes keep `1.5em`) |
+| Alert | `md` 20 · `sm` 16; dismiss = icon-only Button of the same size |
+| Toast | 20; dismiss = icon-only Button `sm` (16) |
+| DropdownMenu item | leading 20 · submenu chevron 20 |
+| Field label tooltip, Combobox, Command | 20 |
+| Pagination arrows | 20 |
+| Tabs | 16 |
+
+Components the sheet doesn't cover (Accordion, Checkbox, CheckList, DataTable, Table) keep the size tuned at the lucide migration. When a Button or Item sizes its icon through `[&_svg]:size-*`, override it on that element with the same variant, never with a `size-*` on the icon — the recipe's compound selector outranks it.
 
 **Color comes from `text-*`, never `fill-*`.** Lucide paints with `stroke="currentColor"` on a root that carries `fill="none"`, so a `fill-*` rule either does nothing to it or — with `fill-current` — turns its open paths into solid blobs (the Alert warning triangle became a filled wedge that way). Every recipe that takes an icon therefore drives the token through `[&_svg]:text-<token>` only. Consumers still pass filled `@agentero/icons` SVGs, and those need painting, so each such recipe (Button, Tag, Tabs, Avatar, DropdownMenu, Pagination, Alert, Toast, Field) carries two constant rules in its base:
 

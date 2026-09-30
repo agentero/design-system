@@ -48,7 +48,7 @@ export const alertRecipe = tv({
 		title: 'font-semibold',
 		paragraph: '',
 		content: 'flex flex-col h-full self-start',
-		icon: '[&:not([fill=none])]:fill-current [&_path[fill]]:fill-current'
+		icon: 'shrink-0 [&:not([fill=none])]:fill-current [&_path[fill]]:fill-current'
 	},
 	variants: {
 		color: {
@@ -67,7 +67,7 @@ export const alertRecipe = tv({
 				title: 'text-sm',
 				paragraph: 'text-xs',
 				content: 'gap-1',
-				icon: 'size-4.5 mt-px'
+				icon: 'size-4 mt-px'
 			},
 			md: {
 				root: 'px-8 py-6 gap-4',

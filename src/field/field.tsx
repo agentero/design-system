@@ -42,7 +42,7 @@ export const fieldRecipe = tv({
 		label: 'flex flex-wrap items-center gap-1',
 		labelTooltip: [
 			'inline-flex shrink-0 cursor-pointer items-center justify-center rounded-sm',
-			'text-icon-default-base-secondary [&_svg]:size-4.5 [&_svg:not([fill=none])]:fill-current [&_svg_path[fill]]:fill-current',
+			'text-icon-default-base-secondary [&_svg]:size-5 [&_svg:not([fill=none])]:fill-current [&_svg_path[fill]]:fill-current',
 			'focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring-button-primary'
 		],
 		description: [

@@ -68,10 +68,10 @@ export const buttonRecipe = tv({
 			]
 		},
 		size: {
-			xs: 'h-6 min-w-16 px-[0.6875rem] gap-2 text-xs [&_svg]:size-5 [&_svg]:-mx-1',
-			sm: 'h-8 min-w-[5.375rem] px-[0.6875rem] gap-2 text-sm [&_svg]:size-5 [&_svg]:-mx-1',
-			md: 'h-10 min-w-[6.25rem] px-[1.1875rem] gap-4 text-sm [&_svg]:size-6 [&_svg]:-mx-2',
-			lg: 'h-12 min-w-30 px-[1.1875rem] gap-4 text-base rounded-lg [&_svg]:size-6 [&_svg]:-mx-2'
+			xs: 'h-6 min-w-16 px-[0.6875rem] gap-2 text-xs [&_svg]:size-4 [&_svg]:-mx-1',
+			sm: 'h-8 min-w-[5.375rem] px-[0.6875rem] gap-2 text-sm [&_svg]:size-4 [&_svg]:-mx-1',
+			md: 'h-10 min-w-[6.25rem] px-[1.1875rem] gap-4 text-sm [&_svg]:size-5 [&_svg]:-mx-2',
+			lg: 'h-12 min-w-30 px-[1.1875rem] gap-4 text-base rounded-lg [&_svg]:size-5 [&_svg]:-mx-2'
 		},
 		status: {
 			danger: 'focus-visible:outline-focus-ring-button-destructive'
@@ -256,11 +256,16 @@ export const buttonRecipe = tv({
 			size: ['xs', 'sm', 'md', 'lg'],
 			class: 'h-auto min-w-[unset] px-0 py-0 gap-1 [&_svg]:mx-0'
 		},
-		/* Icon-only large renders at a bigger icon size */
+		/* Icon-only sizes differ from the labelled ones at both ends of the scale */
+		{
+			hasOnlyIcon: true,
+			size: 'xs',
+			class: '[&_svg]:size-3'
+		},
 		{
 			hasOnlyIcon: true,
 			size: 'lg',
-			class: 'rounded-md [&_svg]:size-8'
+			class: 'rounded-md [&_svg]:size-7'
 		}
 	],
 	defaultVariants: {

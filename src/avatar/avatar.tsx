@@ -34,19 +34,19 @@ export const avatarRecipe = tv({
 		size: {
 			xs: {
 				root: 'size-6',
-				fallback: 'text-xs leading-[1.125rem] [&_svg]:size-[0.9375rem]'
+				fallback: 'text-xs leading-[1.125rem] [&_svg]:size-3.5'
 			},
 			sm: {
 				root: 'size-8',
-				fallback: 'text-sm'
+				fallback: 'text-sm [&_svg]:size-4'
 			},
 			md: {
 				root: 'size-10',
-				fallback: 'text-base'
+				fallback: 'text-base [&_svg]:size-5'
 			},
 			lg: {
 				root: 'size-12',
-				fallback: 'text-lg'
+				fallback: 'text-lg [&_svg]:size-7'
 			},
 			xl: {
 				root: 'size-16',

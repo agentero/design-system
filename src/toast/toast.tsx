@@ -187,12 +187,7 @@ const ToastContent = ({
 				)}
 			</div>
 			{dismissible && (
-				<Button
-					onClick={() => sonnerToast.dismiss(id)}
-					aria-label="Close"
-					variant="ghost"
-					iconOnly
-					className="[&_svg]:size-4">
+				<Button onClick={() => sonnerToast.dismiss(id)} aria-label="Close" variant="ghost" iconOnly>
 					<XIcon />
 				</Button>
 			)}
