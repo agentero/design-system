@@ -4,6 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { Field, FieldContext, FieldErrorLike, useFieldContext } from '.';
+import { cn } from '../../lib';
 import { inputRecipe } from '../input';
 import { Label } from '../label';
 
@@ -57,7 +58,7 @@ type Story = StoryObj<typeof meta>;
  * own context instead (`Input` reads `InputContext`, provided by `FieldText`).
  * It borrows `inputRecipe` so it looks exactly like the design system's Input.
  */
-const DemoInput = (props: ComponentProps<'input'>) => {
+const DemoInput = ({ className, ...props }: ComponentProps<'input'>) => {
 	const field = useFieldContext();
 
 	return (
@@ -68,8 +69,8 @@ const DemoInput = (props: ComponentProps<'input'>) => {
 			required={field?.required || undefined}
 			disabled={field?.disabled || undefined}
 			readOnly={field?.readOnly || undefined}
-			className={inputRecipe()}
 			{...props}
+			className={cn(inputRecipe(), className)}
 		/>
 	);
 };
