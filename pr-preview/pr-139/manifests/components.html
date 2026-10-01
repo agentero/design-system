@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>5.5s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>4.8s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -3356,10 +3356,7 @@ before each request and a request that is no longer the latest is dropped.</div>
               
               <div class="hint">Dropped into a `FieldText`, the input takes the label, the description and
 the error from the field with nothing wired by hand: `Combobox.Input` reads the
-same `InputContext` the plain `Input` does. It also points `aria-labelledby`
-at the label, so the name survives the list opening: Base UI then hides the
-rest of the page from assistive technology, label included, and a
-`&lt;label for&gt;` alone would stop naming the input.</div>
+same `InputContext` the plain `Input` does.</div>
               <pre><code>const InsideFieldText = () =&gt; (
     &lt;FieldText invalid required&gt;
         &lt;Label&gt;Agency&lt;/Label&gt;
