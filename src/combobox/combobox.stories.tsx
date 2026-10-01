@@ -11,12 +11,14 @@ import { FieldText } from '../field-text';
 import { Label } from '../label';
 import { Modal } from '../modal';
 import { Skeleton } from '../skeleton';
+import { Tag } from '../tag';
 
 /**
  * Combobox is a text input that filters a list and writes the chosen option back
  * into itself. Focusing the input or typing opens the list; picking a row fills the
- * input and closes it. Built on Base UI, whose Combobox primitive owns the
- * filtering, the keyboard navigation and the `role="combobox"` wiring.
+ * input and closes it. With `multiple` the rows become checkbox-like toggles and the
+ * list stays open between picks. Built on Base UI, whose Combobox primitive owns
+ * the filtering, the keyboard navigation and the `role="combobox"` wiring.
  */
 // Annotated rather than `satisfies`: `Root`'s inferred props reach into Base UI's internal
 // `AriaCombobox` module, which stock tsc cannot name from here (TS2742).
@@ -71,6 +73,10 @@ export const Default: Story = {
 		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(STATES.length));
 		// Named on its own: borrowing the input's name would resolve to the typed text.
 		await expect(body.getByRole('listbox')).toHaveAccessibleName('Suggestions');
+		// A single-value list has no selection indicator: that is the multi-select row's.
+		await expect(
+			document.body.querySelector('[data-slot="combobox-item-indicator"]')
+		).not.toBeInTheDocument();
 
 		// The default filter is `contains`: Colorado and Connecticut, not California.
 		await userEvent.type(input, 'co');
@@ -120,6 +126,96 @@ export const NoMatches: Story = {
 
 		await expect(await body.findByText(/no matches found/i)).toBeInTheDocument();
 		await expect(body.queryByRole('option')).not.toBeInTheDocument();
+	}
+};
+
+/**
+ * Several values from one list, the way Lines of Authority or locations are
+ * assigned: each row leads with a checkbox-shaped indicator, picking a row toggles
+ * it, and the list stays open with the query intact so the next pick is one click
+ * away. The input never shows the selection; the field renders it alongside,
+ * here as tags.
+ */
+export const MultipleSelection: Story = {
+	render: () => {
+		const [selected, setSelected] = useState<string[]>([]);
+
+		return (
+			<div className="flex flex-col gap-4">
+				<Combobox.Root items={STATES} multiple value={selected} onValueChange={setSelected}>
+					<Combobox.Input placeholder="Assign states" aria-label="Assign states" />
+					<Combobox.Content>
+						<Combobox.Empty>No matches found</Combobox.Empty>
+						<Combobox.List aria-label="States">
+							{(state: string) => (
+								<Combobox.Item key={state} value={state}>
+									{state}
+								</Combobox.Item>
+							)}
+						</Combobox.List>
+					</Combobox.Content>
+				</Combobox.Root>
+				{selected.length > 0 && (
+					<ul aria-label="Selected states" className="flex flex-wrap gap-2">
+						{selected.map(state => (
+							<li key={state}>
+								<Tag size="sm">{state}</Tag>
+							</li>
+						))}
+					</ul>
+				)}
+			</div>
+		);
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const body = within(document.body);
+		const input = canvas.getByRole('combobox', { name: /assign states/i });
+
+		await userEvent.type(input, 'co');
+		const list = await body.findByRole('listbox', { name: 'States' });
+		await expect(list).toHaveAttribute('aria-multiselectable', 'true');
+		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(2));
+
+		// Every row carries an indicator, empty until the row is picked.
+		const colorado = body.getByRole('option', { name: 'Colorado' });
+		const indicator = colorado.querySelector('[data-slot="combobox-item-indicator"]');
+		await expect(indicator).toBeInTheDocument();
+		await expect(indicator).not.toHaveAttribute('data-selected');
+		await expect(colorado).toHaveAttribute('aria-selected', 'false');
+
+		// Keyboard: arrow onto a row and press Enter. The list stays open and the query stays put.
+		await userEvent.keyboard('{ArrowDown}{Enter}');
+		await waitFor(() => expect(colorado).toHaveAttribute('aria-selected', 'true'));
+		await expect(indicator).toHaveAttribute('data-selected');
+		await expect(input).toHaveValue('co');
+		await expect(body.getByRole('listbox', { name: 'States' })).toBeInTheDocument();
+		await expect(
+			within(canvas.getByRole('list', { name: /selected states/i })).getByText('Colorado')
+		).toBeInTheDocument();
+
+		// Mouse: the next pick adds to the selection without reopening or retyping.
+		await userEvent.click(body.getByRole('option', { name: 'Connecticut' }));
+		await waitFor(() =>
+			expect(body.getByRole('option', { name: 'Connecticut' })).toHaveAttribute(
+				'aria-selected',
+				'true'
+			)
+		);
+		await expect(colorado).toHaveAttribute('aria-selected', 'true');
+		await expect(input).toHaveValue('co');
+		await expect(canvas.getAllByRole('listitem')).toHaveLength(2);
+		// No clear button here: Base UI's would wipe the selection, not the query.
+		await expect(canvas.queryByRole('button', { name: /clear/i })).not.toBeInTheDocument();
+
+		// Picking a selected row again clears it.
+		await userEvent.click(colorado);
+		await waitFor(() => expect(colorado).toHaveAttribute('aria-selected', 'false'));
+		await expect(indicator).not.toHaveAttribute('data-selected');
+		await expect(canvas.getAllByRole('listitem')).toHaveLength(1);
+
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
 	}
 };
 
