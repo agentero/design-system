@@ -64,7 +64,7 @@ export const inputGroupRecipe = tv({
 			action: {
 				addon: [
 					'-mx-(--input-group-gap) shrink-0 items-stretch',
-					'*:[button]:h-auto *:[button]:rounded-none'
+					'*:[button]:h-auto *:[button]:rounded-none *:[button]:focus-visible:-outline-offset-2'
 				]
 			}
 		}

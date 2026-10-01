@@ -183,8 +183,8 @@ export const WithTags: Story = {
 };
 
 /**
- * `variant="action"` runs the button edge to edge, and a `Divider` marks it
- * off. Pressing it does not move focus into the input.
+ * `variant="action"` runs the button edge to edge, with its focus ring inset,
+ * and a `Divider` marks it off. Pressing it does not move focus into the input.
  *
  * @summary Ghost button filling a trailing segment of the frame
  */
@@ -217,6 +217,12 @@ export const WithButton: Story = {
 		await expect(edge.right).toBeCloseTo(frame.right - group.clientLeft, 0);
 		await expect(edge.height).toBeCloseTo(group.clientHeight, 0);
 		await expect(getComputedStyle(button).borderRadius).toBe('0px');
+
+		// The frame clips overflow, so the ring has to sit inside the button to be seen.
+		canvas.getByRole('textbox', { name: 'Referral link' }).focus();
+		await userEvent.tab();
+		await expect(button).toHaveFocus();
+		await expect(parseFloat(getComputedStyle(button).outlineOffset)).toBeLessThan(0);
 	}
 };
 
