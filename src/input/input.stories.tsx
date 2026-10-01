@@ -9,9 +9,9 @@ import { Input } from './input';
  * `aria-describedby` on its own; standalone, as here, they are plain props set
  * by hand.
  *
- * There is no `status` prop. Mark the control `aria-invalid` and the
- * destructive border follows, so the styling can never disagree with what
- * assistive technology announces.
+ * The invalid state has no prop of its own. Mark the control `aria-invalid`
+ * and the destructive border follows, so the styling can never disagree with
+ * what assistive technology announces.
  */
 const meta = {
 	title: 'Components/Input',

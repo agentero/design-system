@@ -1,13 +1,13 @@
 'use client';
 
-// Se queda: cmdk expone sus partes como propiedades de un único export
-// (`Command.Input`, `Command.Item`…). Sin esta directiva el fichero lo ejecuta
-// el servidor, `Command` llega como una sola referencia de cliente y sus partes
-// son `undefined` — el mismo fallo que arregla el patrón de AGENTS.md, pero
-// dentro de una dependencia que no controlamos.
+// Stays: cmdk hangs its parts off a single export (`Command.Input`,
+// `Command.Item`...). Without this directive the server runs this file,
+// `Command` arrives as a single client reference and its parts are
+// `undefined`: the same failure the AGENTS.md pattern fixes, but inside a
+// dependency we don't control.
 import { ComponentProps } from 'react';
 
-import { Command as CommandPrimitive } from 'cmdk';
+import { Command as CommandPrimitive, useCommandState as useCommandStatePrimitive } from 'cmdk';
 import { tv } from 'tailwind-variants';
 
 import { IconSearch } from './icons';
@@ -71,6 +71,8 @@ type RootProps = ComponentProps<typeof CommandPrimitive>;
  * nothing to search.
  *
  * `label` names the search input — it is the only prop that can, see `Input`.
+ * A component rendered inside `Root` reads its search text and results with
+ * `useCommandState`, exported next to `Command`.
  *
  * @summary Filterable command palette container
  * @see {@link https://github.com/pacocoursey/cmdk|cmdk}
@@ -253,3 +255,40 @@ export const Item = ({ className, ...props }: ItemProps) => (
 	/>
 );
 Item.displayName = 'Command.Item';
+
+/**
+ * Snapshot of the surrounding `Root` that `useCommandState` selects from.
+ *
+ * @property {string} search - Current text in `Input`.
+ * @property {string} value - Value of the active item.
+ * @property {string} [selectedItemId] - DOM id of the active item.
+ * @property {{ count: number; items: Map<string, number>; groups: Set<string> }} filtered -
+ *   Result of the current search: how many items match, each matching item's score keyed by
+ *   value, and the values of the groups that still hold a match.
+ */
+export type CommandState = Parameters<Parameters<typeof useCommandStatePrimitive>[0]>[0];
+
+/**
+ * Reads the state of the nearest `Command.Root`: the search text, the active
+ * value and the filtered results. The selector picks the slice a component
+ * needs, and the component re-renders only when that slice changes.
+ *
+ * Call it from a component rendered inside `Command.Root`. Import it from here,
+ * not from `cmdk`: this hook and `Root` resolve the same copy of `cmdk`, so it
+ * always finds the state, even when the app installs a different `cmdk` version.
+ *
+ * @summary Hook that reads the search text and results of the surrounding Command
+ *
+ * @example
+ * ```tsx
+ * import { Command, useCommandState } from '@agentero/design-system/command';
+ *
+ * const CreateItem = ({ onCreate }: { onCreate: (name: string) => void }) => {
+ * 	const search = useCommandState(state => state.search);
+ * 	if (!search) return null;
+ * 	return <Command.Item onSelect={() => onCreate(search)}>Create "{search}"</Command.Item>;
+ * };
+ * ```
+ */
+export const useCommandState = <T,>(selector: (state: CommandState) => T): T =>
+	useCommandStatePrimitive(selector);

@@ -5,6 +5,7 @@ import { expect, within } from 'storybook/test';
 
 import { Table, type TableRootProps } from '.';
 import { Button } from '../button';
+import { Switch } from '../switch';
 
 type Row = { id: string; name: string; email: string; role: string; amount: string };
 
@@ -238,7 +239,47 @@ export const Enclosed: Story = {
  * @summary Selectable rows with a collapsing checkbox column
  */
 export const WithCheckbox: Story = {
-	render: args => renderTable(args, { checkbox: true })
+	render: args => renderTable(args, { checkbox: true }),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const cell = canvas.getByLabelText('Select Alice Williams').closest('td')!;
+
+		await expect(getComputedStyle(cell).paddingInlineEnd).toBe('0px');
+	}
+};
+
+/**
+ * A Switch renders a hidden checkbox so a form can read its value without JS.
+ * Radix keeps it while the Switch sits in a form, and on the server render
+ * before hydration. A cell holding a Switch is not a selection column, so it
+ * keeps its padding.
+ *
+ * @summary A cell holding a Switch keeps its padding
+ */
+export const WithSwitch: Story = {
+	render: args => (
+		<form>
+			<Table.Root {...args}>
+				<Table.Body>
+					{ROWS.slice(0, 3).map(row => (
+						<Table.Row key={row.id}>
+							<Table.Cell>{row.name}</Table.Cell>
+							<Table.Cell>
+								<Switch size="sm" defaultChecked aria-label={`Notify ${row.name}`} />
+							</Table.Cell>
+						</Table.Row>
+					))}
+				</Table.Body>
+			</Table.Root>
+		</form>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const cell = canvas.getByRole('switch', { name: 'Notify Alice Williams' }).closest('td')!;
+
+		await expect(cell.querySelector('input[type="checkbox"][aria-hidden]')).not.toBeNull();
+		await expect(getComputedStyle(cell).paddingInlineEnd).not.toBe('0px');
+	}
 };
 
 /**
@@ -263,50 +304,47 @@ export const WithRowActions: Story = {
  */
 export const ExpandableRows: Story = {
 	render: args => {
-		const Demo = () => {
-			const [openId, setOpenId] = useState<string | null>(ROWS[0]!.id);
-			return (
-				<Table.Root {...args}>
-					<Table.Head>
-						<Table.Row>
-							<Table.Header>
-								<span className="sr-only">Expand</span>
-							</Table.Header>
-							<Table.Header>Name</Table.Header>
-							<Table.Header>Email</Table.Header>
-							<Table.Header>Role</Table.Header>
-						</Table.Row>
-					</Table.Head>
-					<Table.Body>
-						{ROWS.slice(0, 4).map(row => (
-							<Fragment key={row.id}>
-								<Table.Row>
-									<Table.Cell>
-										<Table.ExpandButton
-											isExpanded={openId === row.id}
-											toggleExpanded={() => setOpenId(openId === row.id ? null : row.id)}
-											aria-label={`Toggle ${row.name}`}
-										/>
+		const [openId, setOpenId] = useState<string | null>(ROWS[0]!.id);
+		return (
+			<Table.Root {...args}>
+				<Table.Head>
+					<Table.Row>
+						<Table.Header>
+							<span className="sr-only">Expand</span>
+						</Table.Header>
+						<Table.Header>Name</Table.Header>
+						<Table.Header>Email</Table.Header>
+						<Table.Header>Role</Table.Header>
+					</Table.Row>
+				</Table.Head>
+				<Table.Body>
+					{ROWS.slice(0, 4).map(row => (
+						<Fragment key={row.id}>
+							<Table.Row>
+								<Table.Cell>
+									<Table.ExpandButton
+										isExpanded={openId === row.id}
+										toggleExpanded={() => setOpenId(openId === row.id ? null : row.id)}
+										aria-label={`Toggle ${row.name}`}
+									/>
+								</Table.Cell>
+								<Table.Cell className="font-bold">{row.name}</Table.Cell>
+								<Table.Cell className="text-text-default-base-secondary">{row.email}</Table.Cell>
+								<Table.Cell>{row.role}</Table.Cell>
+							</Table.Row>
+							{openId === row.id && (
+								<Table.ExpandedRow>
+									<Table.Cell colSpan={4}>
+										<div className="py-2 text-text-default-base-secondary">
+											Extended details for {row.name} — {row.amount} lifetime value.
+										</div>
 									</Table.Cell>
-									<Table.Cell className="font-bold">{row.name}</Table.Cell>
-									<Table.Cell className="text-text-default-base-secondary">{row.email}</Table.Cell>
-									<Table.Cell>{row.role}</Table.Cell>
-								</Table.Row>
-								{openId === row.id && (
-									<Table.ExpandedRow>
-										<Table.Cell colSpan={4}>
-											<div className="py-2 text-text-default-base-secondary">
-												Extended details for {row.name} — {row.amount} lifetime value.
-											</div>
-										</Table.Cell>
-									</Table.ExpandedRow>
-								)}
-							</Fragment>
-						))}
-					</Table.Body>
-				</Table.Root>
-			);
-		};
-		return <Demo />;
+								</Table.ExpandedRow>
+							)}
+						</Fragment>
+					))}
+				</Table.Body>
+			</Table.Root>
+		);
 	}
 };

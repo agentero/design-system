@@ -235,30 +235,6 @@ const ContextExtension = ({
 
 const onOwnChange = fn();
 
-const ControlledField = () => {
-	const [value, setValue] = useState('');
-	const [touched, setTouched] = useState(false);
-
-	const errors = touched && !value ? [{ message: 'Required' }] : undefined;
-
-	return (
-		<FieldText invalid={!!errors} required>
-			<ContextExtension
-				inputProps={{
-					name: 'email',
-					value,
-					onChange: event => setValue(event.target.value),
-					onBlur: () => setTouched(true)
-				}}
-				errors={errors}>
-				<Label>Email</Label>
-				<Input type="email" onChange={onOwnChange} />
-				<Field.Error />
-			</ContextExtension>
-		</FieldText>
-	);
-};
-
 /**
  * The contexts are an extension point: a provider nested in the field adds
  * `name`, `value`, `onChange` and `onBlur` to `InputContext`, so a bare
@@ -269,7 +245,29 @@ const ControlledField = () => {
  * @summary Input controlled and errors supplied from outside the field
  */
 export const ControlledFromContext: Story = {
-	render: () => <ControlledField />,
+	render: () => {
+		const [value, setValue] = useState('');
+		const [touched, setTouched] = useState(false);
+
+		const errors = touched && !value ? [{ message: 'Required' }] : undefined;
+
+		return (
+			<FieldText invalid={!!errors} required>
+				<ContextExtension
+					inputProps={{
+						name: 'email',
+						value,
+						onChange: event => setValue(event.target.value),
+						onBlur: () => setTouched(true)
+					}}
+					errors={errors}>
+					<Label>Email</Label>
+					<Input type="email" onChange={onOwnChange} />
+					<Field.Error />
+				</ContextExtension>
+			</FieldText>
+		);
+	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 

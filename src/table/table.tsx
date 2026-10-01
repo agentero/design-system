@@ -17,9 +17,14 @@ import { Button, ButtonProps } from '../button';
 import { IconKeyboardArrowDown } from './icons';
 
 /** Shared inline cell padding; the first/last cell widens to the `-ends` value.
- * Checkbox cells collapse to zero width; logical `ps`/`pe` mirror under RTL. */
+ * Checkbox cells collapse to zero width; logical `ps`/`pe` mirror under RTL.
+ * The checkbox has to be a real one. A Switch carries a hidden checkbox so a
+ * form can still read it without JS, and a cell holding one is not a selection
+ * column. That checkbox also goes away once the client takes over, so matching
+ * it collapses the cell on the server and widens it again on hydration, which
+ * moves every column of the table. */
 const CELL_INLINE_PADDING =
-	'ps-[var(--table-cell-padding-inline)] pe-[var(--table-cell-padding-inline)] first:ps-[var(--table-cell-padding-inline-ends)] last:pe-[var(--table-cell-padding-inline-ends)] has-[[type=checkbox]]:w-0 has-[[type=checkbox]]:pe-0';
+	'ps-[var(--table-cell-padding-inline)] pe-[var(--table-cell-padding-inline)] first:ps-[var(--table-cell-padding-inline-ends)] last:pe-[var(--table-cell-padding-inline-ends)] has-[[type=checkbox]:not([aria-hidden])]:w-0 has-[[type=checkbox]:not([aria-hidden])]:pe-0';
 
 /**
  * Style recipe for the Table container. Inline spacing flows from two custom

@@ -41,14 +41,6 @@ const FAQS = [
 	}
 ] as const;
 
-const FaqItems = () =>
-	FAQS.map(({ value, question, answer }) => (
-		<Accordion.Item key={value} value={value}>
-			<Accordion.Trigger>{question}</Accordion.Trigger>
-			<Accordion.Content>{answer}</Accordion.Content>
-		</Accordion.Item>
-	));
-
 /** Exclusive accordion: one item open at a time, `collapsible` lets it close. */
 export const Default: Story = {
 	args: {
@@ -72,7 +64,12 @@ export const Default: Story = {
 	},
 	render: args => (
 		<Accordion.Root {...args}>
-			<FaqItems />
+			{FAQS.map(({ value, question, answer }) => (
+				<Accordion.Item key={value} value={value}>
+					<Accordion.Trigger>{question}</Accordion.Trigger>
+					<Accordion.Content>{answer}</Accordion.Content>
+				</Accordion.Item>
+			))}
 		</Accordion.Root>
 	)
 };
@@ -84,7 +81,12 @@ export const Multiple: Story = {
 	},
 	render: () => (
 		<Accordion.Root type="multiple" defaultValue={['covered', 'payment']}>
-			<FaqItems />
+			{FAQS.map(({ value, question, answer }) => (
+				<Accordion.Item key={value} value={value}>
+					<Accordion.Trigger>{question}</Accordion.Trigger>
+					<Accordion.Content>{answer}</Accordion.Content>
+				</Accordion.Item>
+			))}
 		</Accordion.Root>
 	)
 };
@@ -97,10 +99,20 @@ export const Enclosed: Story = {
 	render: () => (
 		<div className="flex flex-col gap-8">
 			<Accordion.Root type="multiple" defaultValue={['covered']}>
-				<FaqItems />
+				{FAQS.map(({ value, question, answer }) => (
+					<Accordion.Item key={value} value={value}>
+						<Accordion.Trigger>{question}</Accordion.Trigger>
+						<Accordion.Content>{answer}</Accordion.Content>
+					</Accordion.Item>
+				))}
 			</Accordion.Root>
 			<Accordion.Root type="multiple" enclosed defaultValue={['claim']}>
-				<FaqItems />
+				{FAQS.map(({ value, question, answer }) => (
+					<Accordion.Item key={value} value={value}>
+						<Accordion.Trigger>{question}</Accordion.Trigger>
+						<Accordion.Content>{answer}</Accordion.Content>
+					</Accordion.Item>
+				))}
 			</Accordion.Root>
 		</div>
 	)
@@ -155,7 +167,12 @@ export const ExpandCollapse: Story = {
 	},
 	render: args => (
 		<Accordion.Root {...args}>
-			<FaqItems />
+			{FAQS.map(({ value, question, answer }) => (
+				<Accordion.Item key={value} value={value}>
+					<Accordion.Trigger>{question}</Accordion.Trigger>
+					<Accordion.Content>{answer}</Accordion.Content>
+				</Accordion.Item>
+			))}
 		</Accordion.Root>
 	),
 	play: async ({ canvasElement }) => {
@@ -183,7 +200,12 @@ export const NonCollapsible: Story = {
 	},
 	render: args => (
 		<Accordion.Root {...args}>
-			<FaqItems />
+			{FAQS.map(({ value, question, answer }) => (
+				<Accordion.Item key={value} value={value}>
+					<Accordion.Trigger>{question}</Accordion.Trigger>
+					<Accordion.Content>{answer}</Accordion.Content>
+				</Accordion.Item>
+			))}
 		</Accordion.Root>
 	),
 	play: async ({ canvasElement }) => {

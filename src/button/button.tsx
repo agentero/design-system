@@ -43,7 +43,7 @@ export const buttonRecipe = tv({
 			secondary: [
 				'bg-bg-button-secondary-enable border-border-button-secondary-enable',
 				'text-text-button-secondary-enable',
-				'shadow-1',
+				'shadow-xs',
 				'[&_svg]:fill-icon-button-secondary-enable',
 				'hover:bg-bg-button-secondary-hover'
 			],

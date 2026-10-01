@@ -33,7 +33,7 @@ export const paginationRecipe = tv({
 			'transition-[background-color,border-color,color] duration-150',
 			'disabled:pointer-events-none disabled:opacity-30',
 			'focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-[0.0625rem] focus-visible:outline-focus-ring-button-primary',
-			'hover:not-aria-[current=page]:border-border-button-secondary-enable hover:not-aria-[current=page]:shadow-1',
+			'hover:not-aria-[current=page]:border-border-button-secondary-enable hover:not-aria-[current=page]:shadow-xs',
 			'[&_svg]:size-8 [&_svg]:-mx-2 [&_svg]:fill-current'
 		],
 		dots: 'inline-flex size-8 items-center justify-center text-text-button-ghost-enable [&_svg]:size-4 [&_svg]:fill-current'

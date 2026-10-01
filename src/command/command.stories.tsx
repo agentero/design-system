@@ -1,12 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
-import { Command } from '.';
+import { Command, useCommandState } from '.';
 
 /**
  * Command is a filterable list built on `cmdk`. Type to narrow the options,
  * navigate with the arrow keys, select with Enter. It carries its own panel
  * chrome, so dropping it inside a `Popover.Content` yields a combobox.
+ * `useCommandState` reads the search text and results of the surrounding
+ * `Command.Root` from any component rendered inside it.
  */
 const meta = {
 	title: 'Components/Command',
@@ -288,5 +290,49 @@ export const DisabledItem: Story = {
 		await userEvent.click(disabledOption);
 
 		await expect(handleDisabledSelect).not.toHaveBeenCalled();
+	}
+};
+
+const handleCreate = fn();
+
+const CreateItem = () => {
+	const search = useCommandState(state => state.search);
+	const matches = useCommandState(state => state.filtered.count);
+	if (!search || matches > 0) return null;
+	return (
+		<Command.Item value={`create-${search}`} forceMount onSelect={() => handleCreate(search)}>
+			Create agency "{search}"
+		</Command.Item>
+	);
+};
+
+/**
+ * `useCommandState` reads the surrounding `Root` from a component inside it. Here the row
+ * offering to create an agency appears only when the search text matches no existing one.
+ */
+export const ReadingState: Story = {
+	args: { label: 'Search agencies' },
+	render: args => (
+		<Command.Root {...args}>
+			<Command.Input placeholder="Search agencies..." />
+			<Command.List>
+				<Command.Item>Pinnacle Shield Insurance</Command.Item>
+				<Command.Item>Horizon Risk Solutions</Command.Item>
+				<CreateItem />
+			</Command.List>
+		</Command.Root>
+	),
+	play: async ({ canvasElement }) => {
+		handleCreate.mockClear();
+		const canvas = within(canvasElement);
+		const input = canvas.getByRole('combobox', { name: /search agencies/i });
+
+		await expect(canvas.queryByText(/create agency/i)).not.toBeInTheDocument();
+
+		await userEvent.type(input, 'Summit');
+
+		const create = await canvas.findByRole('option', { name: 'Create agency "Summit"' });
+		await userEvent.click(create);
+		await expect(handleCreate).toHaveBeenCalledWith('Summit');
 	}
 };

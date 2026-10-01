@@ -31,7 +31,6 @@ export type TextAreaVariants = VariantProps<typeof textAreaRecipe>;
 /** Control size, the same three as Input. */
 export type TextAreaSize = NonNullable<TextAreaVariants['size']>;
 
-/** Every `<textarea>` attribute is forwarded; these are redeclared so the docs and the MCP manifest list them. */
 export type TextAreaProps = ComponentPropsWithRef<'textarea'> & {
 	/**
 	 * Defaults to `'md'`. The first row measures one Input of the same size and
@@ -39,23 +38,6 @@ export type TextAreaProps = ComponentPropsWithRef<'textarea'> & {
 	 * the text to `base` and the radius to `lg`).
 	 */
 	size?: TextAreaSize;
-	/** Rows visible at rest when three are not enough. */
-	rows?: number;
-	/** Hint shown while empty; never a substitute for a label. */
-	placeholder?: string;
-	/** Caps the value in UTF-16 code units: typing stops there and a paste is cut. */
-	maxLength?: number;
-	/**
-	 * Blocks interaction and drops the value from the submission. Use `readOnly`
-	 * when the user still needs to read or copy it.
-	 */
-	disabled?: boolean;
-	/** Focusable, copyable and submitted, but not editable. */
-	readOnly?: boolean;
-	/** Marks the control required for both the browser and assistive technology. */
-	required?: boolean;
-	/** Drives the destructive border and is what assistive technology announces. */
-	'aria-invalid'?: ComponentPropsWithRef<'textarea'>['aria-invalid'];
 };
 
 /**
@@ -65,8 +47,12 @@ export type TextAreaProps = ComponentPropsWithRef<'textarea'> & {
  * [Label](?path=/docs/components-label--docs) the way you pair an Input.
  *
  * It wires nothing itself — `id`, `aria-describedby` and `aria-invalid` are the
- * field owner's job, and there is no `status` prop. It holds no value either, so
- * a character counter belongs to whoever owns it.
+ * field owner's job. The invalid state has no prop of its own: `aria-invalid`
+ * drives the destructive border, the same as Input. Every `<textarea>` attribute
+ * is accepted and forwarded, so `placeholder`, `required`, `disabled`,
+ * `readOnly`, `maxLength` and the rest work as in plain HTML; `rows` raises the
+ * resting height when three rows are not enough. It holds no value either, so a
+ * character counter belongs to whoever owns it.
  *
  * @summary Base multi-line text control sharing Input's skin, states and sizes
  *

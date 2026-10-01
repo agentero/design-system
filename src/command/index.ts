@@ -1,6 +1,7 @@
 import { Empty, Group, Input, Item, List, Root } from './command';
 
-export { commandRecipe } from './command';
+export { commandRecipe, useCommandState } from './command';
+export type { CommandState } from './command';
 
 // Assembled here on purpose: this file must stay free of the 'use client'
 // directive. See AGENTS.md, component authoring conventions.

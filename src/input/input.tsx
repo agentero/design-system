@@ -51,12 +51,6 @@ export type InputVariants = VariantProps<typeof inputRecipe>;
 /** Control height. See the `size` prop for when to reach for each one. */
 export type InputSize = NonNullable<InputVariants['size']>;
 
-/**
- * Every standard `<input>` attribute is accepted and forwarded. The handful
- * redeclared below are the ones worth documenting: they are what most callers
- * reach for, and `react-docgen` does not expand native attributes, so without
- * this they would be invisible in the docs and the MCP manifest.
- */
 export type InputProps = Omit<ComponentPropsWithRef<'input'>, 'size'> & {
 	/**
 	 * Control height. Defaults to `'md'`.
@@ -66,37 +60,6 @@ export type InputProps = Omit<ComponentPropsWithRef<'input'>, 'size'> & {
 	 *   the text to `base` and the corner radius to `lg`.
 	 */
 	size?: InputSize;
-	/**
-	 * Native input type. Picks the on-screen keyboard on touch devices and the
-	 * browser's own parsing, so set it even when you validate yourself.
-	 * Defaults to `'text'`. Multi-line text is not one of the options — that is
-	 * a TextArea.
-	 */
-	type?: ComponentPropsWithRef<'input'>['type'];
-	/**
-	 * Short hint shown while the field is empty. It disappears on the first
-	 * keystroke, so it is never a substitute for a label.
-	 */
-	placeholder?: string;
-	/**
-	 * Blocks interaction, greys the control out and drops its shadow. The value
-	 * is not submitted. When the user still needs to read or copy the value,
-	 * use `readOnly` instead.
-	 */
-	disabled?: boolean;
-	/**
-	 * Keeps the value focusable and copyable but not editable, and still
-	 * submits it. Unlike `disabled`, it stays in the tab order.
-	 */
-	readOnly?: boolean;
-	/** Marks the control required for both the browser and assistive technology. */
-	required?: boolean;
-	/**
-	 * Set this when the value fails validation: it drives the destructive border
-	 * and is what assistive technology announces. Point `aria-describedby` at
-	 * the error message so the two are read together.
-	 */
-	'aria-invalid'?: ComponentPropsWithRef<'input'>['aria-invalid'];
 };
 
 /**
@@ -109,8 +72,12 @@ export type InputProps = Omit<ComponentPropsWithRef<'input'>, 'size'> & {
  * `aria-describedby`, `aria-invalid`, `required`, `disabled`, `readOnly`) from
  * it with nothing passed by hand; `FieldText` is one such container. Standalone it
  * renders exactly the props it is given, and its own props always win over the
- * context. There is no `status` prop — mark the control `aria-invalid` and the
- * destructive border follows.
+ * context. Every standard `<input>` attribute is accepted and forwarded, so
+ * `type`, `placeholder`, `required`, `disabled`, `readOnly` and the rest work
+ * as in plain HTML. The invalid state has no prop of its own: `aria-invalid`
+ * drives the destructive border, so the styling can never disagree with what
+ * assistive technology announces. Point `aria-describedby` at the error message
+ * so the two are read together.
  *
  * Do not use Input for multi-line text; that is TextArea's job. It also has no
  * slots for leading or trailing addons — an input with a currency prefix or a
