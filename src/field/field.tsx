@@ -158,7 +158,9 @@ export type FieldRootProps = ComponentPropsWithRef<'div'> & {
  * `Field.Description` and `Field.Error` read `FieldContext` and register
  * themselves so the control's `aria-describedby` lists exactly the messages on
  * screen, and a `Field<X>` such as `FieldText` provides the control's context so
- * the control associates itself too. Nobody passes an `id` by hand.
+ * the control associates itself too. Nobody passes an `id` by hand. The label
+ * gets an id as well (`labelId` in `FieldContext`) for a control that must
+ * name itself with `aria-labelledby`, as `Combobox.Input` does.
  *
  * Presentational and form-library agnostic: pass `invalid` and the error
  * messages from whatever validates the form. Deliberately not a `role="group"`:
@@ -188,6 +190,7 @@ export const Root = ({
 	const generatedId = useId();
 
 	const controlId = controlIdProp ?? `${generatedId}-control`;
+	const labelId = `${generatedId}-label`;
 	const descriptionId = `${generatedId}-description`;
 	const errorId = `${generatedId}-error`;
 
@@ -211,6 +214,7 @@ export const Root = ({
 
 	const field: FieldContextValue = {
 		controlId,
+		labelId,
 		descriptionId,
 		errorId,
 		describedBy,
@@ -223,7 +227,7 @@ export const Root = ({
 
 	return (
 		<FieldContext value={field}>
-			<LabelContext value={{ htmlFor: controlId, required: required || undefined }}>
+			<LabelContext value={{ id: labelId, htmlFor: controlId, required: required || undefined }}>
 				<div
 					data-slot="field"
 					data-orientation={orientation}

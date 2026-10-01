@@ -25,6 +25,13 @@ export type FieldErrorLike =
 export type FieldContextValue = {
 	/** `id` the control must carry so the label points at it. */
 	controlId: string;
+	/**
+	 * `id` the `Label` carries, for a control that names itself with
+	 * `aria-labelledby` because a plain `<label for>` is not enough: a floating
+	 * surface that hides the rest of the page from assistive technology hides
+	 * the label with it, and only a direct reference survives that.
+	 */
+	labelId: string;
 	/** `id` the `Field.Description` takes by default. One description per field. */
 	descriptionId: string;
 	/** `id` the `Field.Error` takes by default. One error element per field. */

@@ -417,7 +417,10 @@ export const AsyncSearchWithStatus: Story = {
 /**
  * Dropped into a `FieldText`, the input takes the label, the description and
  * the error from the field with nothing wired by hand: `Combobox.Input` reads the
- * same `InputContext` the plain `Input` does.
+ * same `InputContext` the plain `Input` does. It also points `aria-labelledby`
+ * at the label, so the name survives the list opening: Base UI then hides the
+ * rest of the page from assistive technology, label included, and a
+ * `<label for>` alone would stop naming the input.
  */
 export const InsideFieldText: Story = {
 	render: () => (
@@ -450,6 +453,17 @@ export const InsideFieldText: Story = {
 		await expect(input).toHaveAccessibleDescription(
 			/added to.*Pick an agency|Pick an agency.*added to/
 		);
+
+		// Named through a direct reference to the label as well as its `for`. The JS matcher
+		// cannot see the `aria-hidden` Base UI sets while open — only a browser's accessibility
+		// tree does — so this checks the wiring; the name itself from Chrome stays a manual check.
+		const label = canvas.getByText('Agency').closest('label');
+		await expect(label).toHaveAttribute('id');
+		await expect(input).toHaveAttribute('aria-labelledby', label?.getAttribute('id') ?? '');
+		await userEvent.click(input);
+		await within(document.body).findByRole('listbox');
+		await expect(input).toHaveAccessibleName('Agency');
+		await userEvent.keyboard('{Escape}');
 	}
 };
 
