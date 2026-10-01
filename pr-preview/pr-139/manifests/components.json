@@ -2807,7 +2807,7 @@
           "id": "components-combobox--inside-field-text",
           "name": "Inside Field Text",
           "snippet": "const InsideFieldText = () => (\n    <FieldText invalid required>\n        <Label>Agency</Label>\n        <Combobox.Root items={STATES}>\n            <Combobox.Input placeholder=\"Search agencies\" />\n            <Combobox.Content>\n                <Combobox.Empty>No matches found</Combobox.Empty>\n                <Combobox.List>\n                    {(state: string) => (\n                        <Combobox.Item key={state} value={state}>\n                            {state}\n                        </Combobox.Item>\n                    )}\n                </Combobox.List>\n            </Combobox.Content>\n        </Combobox.Root>\n        <Field.Description>The agency this agent will be added to.</Field.Description>\n        <Field.Error errors={[{ message: 'Pick an agency from the list' }]} />\n    </FieldText>\n);",
-          "description": "Dropped into a `FieldText`, the input takes the label, the description and\nthe error from the field with nothing wired by hand: `Combobox.Input` reads the\nsame `InputContext` the plain `Input` does."
+          "description": "Dropped into a `FieldText`, the input takes the label, the description and\nthe error from the field with nothing wired by hand: `Combobox.Input` reads the\nsame `InputContext` the plain `Input` does. It also points `aria-labelledby`\nat the label, so the name survives the list opening: Base UI then hides the\nrest of the page from assistive technology, label included, and a\n`<label for>` alone would stop naming the input."
         },
         {
           "id": "components-combobox--with-leading-icon",
@@ -5475,7 +5475,7 @@
         "displayName": "Field.Root",
         "exportName": "Field",
         "filePath": "/home/runner/work/design-system/design-system/src/field/index.ts",
-        "description": "Wraps one label, control, description and error into a single field and\nwires the accessibility relationships between them. It generates the ids\nand shares them through context: `Label` reads `LabelContext`,\n`Field.Description` and `Field.Error` read `FieldContext` and register\nthemselves so the control's `aria-describedby` lists exactly the messages on\nscreen, and a `Field<X>` such as `FieldText` provides the control's context so\nthe control associates itself too. Nobody passes an `id` by hand.\n\nPresentational and form-library agnostic: pass `invalid` and the error\nmessages from whatever validates the form. Deliberately not a `role=\"group\"`:\none field is not a set of related controls, and an unnamed group only adds\nscreen-reader verbosity. Real groupings belong to a fieldset with a legend.",
+        "description": "Wraps one label, control, description and error into a single field and\nwires the accessibility relationships between them. It generates the ids\nand shares them through context: `Label` reads `LabelContext`,\n`Field.Description` and `Field.Error` read `FieldContext` and register\nthemselves so the control's `aria-describedby` lists exactly the messages on\nscreen, and a `Field<X>` such as `FieldText` provides the control's context so\nthe control associates itself too. Nobody passes an `id` by hand. The label\ngets an id as well (`labelId` in `FieldContext`) for a control that must\nname itself with `aria-labelledby`, as `Combobox.Input` does.\n\nPresentational and form-library agnostic: pass `invalid` and the error\nmessages from whatever validates the form. Deliberately not a `role=\"group\"`:\none field is not a set of related controls, and an unnamed group only adds\nscreen-reader verbosity. Real groupings belong to a fieldset with a legend.",
         "jsDocTags": {
           "summary": [
             "Wraps a label, control, description and error into one field"
@@ -9426,6 +9426,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5116
+    "durationMs": 5536
   }
 }
