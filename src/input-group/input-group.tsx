@@ -2,15 +2,15 @@
 
 import { ComponentPropsWithRef, MouseEvent } from 'react';
 
-import { tv } from 'tailwind-variants';
+import { type VariantProps, tv } from 'tailwind-variants';
 
 import { cn } from '../../lib';
 
 /**
  * Style recipe for InputGroup. Slots: `root` (the bordered frame), `addon` and
- * `text`. There are no variants of its own: focus, disabled, invalid and size
- * all come from the `<input>` or `<textarea>` inside through `:has()`, so the
- * frame can never disagree with its control.
+ * `text`. Focus, disabled, invalid and size all come from the `<input>` or
+ * `<textarea>` inside through `:has()`, so the frame can never disagree with
+ * its control.
  *
  * @summary tailwind-variants recipe backing the InputGroup frame and addons
  */
@@ -57,8 +57,24 @@ export const inputGroupRecipe = tv({
 			'group-has-[input[data-size="lg"]]/input-group:text-base',
 			'group-has-[input:disabled,textarea:disabled]/input-group:text-text-input-disable'
 		]
+	},
+	variants: {
+		variant: {
+			default: {},
+			action: {
+				addon: [
+					'-mx-(--input-group-gap) shrink-0 items-stretch',
+					'*:[button]:h-auto *:[button]:rounded-none'
+				]
+			}
+		}
+	},
+	defaultVariants: {
+		variant: 'default'
 	}
 });
+
+type InputGroupVariants = VariantProps<typeof inputGroupRecipe>;
 
 const slots = inputGroupRecipe();
 
@@ -78,6 +94,7 @@ export type InputGroupRootProps = ComponentPropsWithRef<'div'>;
  * Use it for an input with a leading icon, a currency or unit affix, or a
  * trailing action. A plain input with nothing around it is just `Input`, and a
  * button beside an input that submits on its own is a form layout, not a group.
+ * Not a `role="group"`, like `Field`.
  *
  * @summary Bordered frame drawing an Input and its addons as one control
  * @dataAttribute {string} data-slot - Always set to "input-group"
@@ -90,11 +107,18 @@ export type InputGroupRootProps = ComponentPropsWithRef<'div'>;
  * </InputGroup.Root>
  */
 export const Root = ({ className, ...props }: InputGroupRootProps) => (
-	<div data-slot="input-group" role="group" className={cn(slots.root(), className)} {...props} />
+	<div data-slot="input-group" className={cn(slots.root(), className)} {...props} />
 );
 Root.displayName = 'InputGroup.Root';
 
-export type InputGroupAddonProps = ComponentPropsWithRef<'div'>;
+export type InputGroupAddonProps = ComponentPropsWithRef<'div'> & {
+	/**
+	 * `action` runs a button edge to edge at the frame's height.
+	 *
+	 * @default 'default'
+	 */
+	variant?: InputGroupVariants['variant'];
+};
 
 /**
  * A slot for an icon, a tag or a button inside the frame. Icons take the input
@@ -114,7 +138,7 @@ export type InputGroupAddonProps = ComponentPropsWithRef<'div'>;
  *   <Input type="search" placeholder="Search agencies" />
  * </InputGroup.Root>
  */
-export const Addon = ({ className, onMouseDown, ...props }: InputGroupAddonProps) => {
+export const Addon = ({ className, variant, onMouseDown, ...props }: InputGroupAddonProps) => {
 	const handleMouseDown = (event: MouseEvent<HTMLDivElement>) => {
 		onMouseDown?.(event);
 		if (event.defaultPrevented || (event.target as HTMLElement).closest('button, a')) return;
@@ -128,7 +152,7 @@ export const Addon = ({ className, onMouseDown, ...props }: InputGroupAddonProps
 	return (
 		<div
 			data-slot="input-group-addon"
-			className={cn(slots.addon(), className)}
+			className={cn(inputGroupRecipe({ variant }).addon(), className)}
 			onMouseDown={handleMouseDown}
 			{...props}
 		/>

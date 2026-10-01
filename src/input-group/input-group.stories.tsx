@@ -36,6 +36,10 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
+const getGroups = (canvasElement: HTMLElement) =>
+	Array.from(canvasElement.querySelectorAll<HTMLElement>('[data-slot="input-group"]'));
+const getGroup = (canvasElement: HTMLElement) => getGroups(canvasElement)[0]!;
+
 /**
  * A search field: the icon leads and the input takes the rest of the frame.
  * Pressing the icon focuses the input, and the frame — not the input — draws the
@@ -54,10 +58,10 @@ export const Default: Story = {
 	),
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
-		const group = canvas.getByRole('group');
+		const group = getGroup(canvasElement);
 		const input = canvas.getByRole('searchbox', { name: 'Search agencies' });
 
-		await expect(group).toHaveAttribute('data-slot', 'input-group');
+		await expect(group).not.toHaveAttribute('role');
 		await expect(input).toHaveAttribute('data-slot', 'input');
 
 		await userEvent.click(canvasElement.querySelector('[data-slot="input-group-addon"]')!);
@@ -121,7 +125,7 @@ export const WithDivider: Story = {
 	),
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
-		const group = canvas.getByRole('group');
+		const group = getGroup(canvasElement);
 		const input = canvas.getByRole('textbox', { name: 'Agency website' });
 		const dividers = group.querySelectorAll<HTMLElement>('[data-slot="separator"]');
 
@@ -179,10 +183,8 @@ export const WithTags: Story = {
 };
 
 /**
- * A trailing action runs edge to edge: the addon cancels the frame's gap and
- * padding with `-mx-(--input-group-gap)`, a `Divider` marks it off, and a
- * square-cornered ghost `Button` fills the segment. Pressing the button runs
- * it without moving focus into the input.
+ * `variant="action"` runs the button edge to edge, and a `Divider` marks it
+ * off. Pressing it does not move focus into the input.
  *
  * @summary Ghost button filling a trailing segment of the frame
  */
@@ -193,8 +195,8 @@ export const WithButton: Story = {
 		<InputGroup.Root>
 			<Input value="https://agentero.com/r/abc123" readOnly aria-label="Referral link" />
 			<Divider orientation="vertical" />
-			<InputGroup.Addon className="-mx-(--input-group-gap)">
-				<Button variant="ghost" size="md" className="rounded-none" onClick={handleCopy}>
+			<InputGroup.Addon variant="action">
+				<Button variant="ghost" size="md" onClick={handleCopy}>
 					Copy link
 				</Button>
 			</InputGroup.Addon>
@@ -202,7 +204,7 @@ export const WithButton: Story = {
 	),
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
-		const group = canvas.getByRole('group');
+		const group = getGroup(canvasElement);
 		const button = canvas.getByRole('button', { name: 'Copy link' });
 
 		await userEvent.click(button);
@@ -211,8 +213,10 @@ export const WithButton: Story = {
 
 		const frame = group.getBoundingClientRect();
 		const edge = button.getBoundingClientRect();
+		await expect(frame.height).toBe(40);
 		await expect(edge.right).toBeCloseTo(frame.right - group.clientLeft, 0);
 		await expect(edge.height).toBeCloseTo(group.clientHeight, 0);
+		await expect(getComputedStyle(button).borderRadius).toBe('0px');
 	}
 };
 
@@ -236,7 +240,7 @@ export const Disabled: Story = {
 		const canvas = within(canvasElement);
 
 		await expect(canvas.getByRole('textbox', { name: 'Search agencies' })).toBeDisabled();
-		await expect(getComputedStyle(canvas.getByRole('group')).cursor).toBe('default');
+		await expect(getComputedStyle(getGroup(canvasElement)).cursor).toBe('default');
 	}
 };
 
@@ -261,7 +265,7 @@ export const Invalid: Story = {
 		canvasElement.append(valid);
 
 		await expect(input).toHaveAttribute('aria-invalid', 'true');
-		await expect(getComputedStyle(canvas.getByRole('group')).borderColor).not.toBe(
+		await expect(getComputedStyle(getGroup(canvasElement)).borderColor).not.toBe(
 			getComputedStyle(valid).borderColor
 		);
 		valid.remove();
@@ -290,8 +294,7 @@ export const AllSizes: Story = {
 		</div>
 	),
 	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-		const [sm, md, lg] = canvas.getAllByRole('group') as [HTMLElement, HTMLElement, HTMLElement];
+		const [sm, md, lg] = getGroups(canvasElement) as [HTMLElement, HTMLElement, HTMLElement];
 
 		await expect(sm.getBoundingClientRect().height).toBe(32);
 		await expect(md.getBoundingClientRect().height).toBe(40);
@@ -326,6 +329,6 @@ export const InsideFieldText: Story = {
 
 		await expect(input).toBeRequired();
 		await expect(input).toHaveAccessibleDescription('Shown on your public profile.');
-		await expect(canvas.getByRole('group')).not.toHaveAttribute('id');
+		await expect(getGroup(canvasElement)).not.toHaveAttribute('id');
 	}
 };
