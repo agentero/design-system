@@ -588,13 +588,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">34 components ok</span><span class="filter-pill ok" aria-disabled="true">273 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">34 components ok</span><span class="filter-pill ok" aria-disabled="true">275 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.5s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>4.9s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -720,7 +720,12 @@ value?: string | string[] | undefined</code></pre>
               
               <div class="hint">Exclusive accordion: one item open at a time, `collapsible` lets it close.</div>
               <pre><code>const Default = () =&gt; &lt;Accordion.Root type=&quot;single&quot; collapsible enclosed={false} disabled={false}&gt;
-    &lt;FaqItems /&gt;
+    {FAQS.map(({ value, question, answer }) =&gt; (
+        &lt;Accordion.Item key={value} value={value}&gt;
+            &lt;Accordion.Trigger&gt;{question}&lt;/Accordion.Trigger&gt;
+            &lt;Accordion.Content&gt;{answer}&lt;/Accordion.Content&gt;
+        &lt;/Accordion.Item&gt;
+    ))}
 &lt;/Accordion.Root&gt;;</code></pre>
             </div>
             <div class="note ok">
@@ -732,7 +737,12 @@ value?: string | string[] | undefined</code></pre>
               <div class="hint">`type=&quot;multiple&quot;` lets several sections stay open at once.</div>
               <pre><code>const Multiple = () =&gt; (
     &lt;Accordion.Root type=&quot;multiple&quot; defaultValue={[&#39;covered&#39;, &#39;payment&#39;]}&gt;
-        &lt;FaqItems /&gt;
+        {FAQS.map(({ value, question, answer }) =&gt; (
+            &lt;Accordion.Item key={value} value={value}&gt;
+                &lt;Accordion.Trigger&gt;{question}&lt;/Accordion.Trigger&gt;
+                &lt;Accordion.Content&gt;{answer}&lt;/Accordion.Content&gt;
+            &lt;/Accordion.Item&gt;
+        ))}
     &lt;/Accordion.Root&gt;
 );</code></pre>
             </div>
@@ -746,10 +756,20 @@ value?: string | string[] | undefined</code></pre>
               <pre><code>const Enclosed = () =&gt; (
     &lt;div className=&quot;flex flex-col gap-8&quot;&gt;
         &lt;Accordion.Root type=&quot;multiple&quot; defaultValue={[&#39;covered&#39;]}&gt;
-            &lt;FaqItems /&gt;
+            {FAQS.map(({ value, question, answer }) =&gt; (
+                &lt;Accordion.Item key={value} value={value}&gt;
+                    &lt;Accordion.Trigger&gt;{question}&lt;/Accordion.Trigger&gt;
+                    &lt;Accordion.Content&gt;{answer}&lt;/Accordion.Content&gt;
+                &lt;/Accordion.Item&gt;
+            ))}
         &lt;/Accordion.Root&gt;
         &lt;Accordion.Root type=&quot;multiple&quot; enclosed defaultValue={[&#39;claim&#39;]}&gt;
-            &lt;FaqItems /&gt;
+            {FAQS.map(({ value, question, answer }) =&gt; (
+                &lt;Accordion.Item key={value} value={value}&gt;
+                    &lt;Accordion.Trigger&gt;{question}&lt;/Accordion.Trigger&gt;
+                    &lt;Accordion.Content&gt;{answer}&lt;/Accordion.Content&gt;
+                &lt;/Accordion.Item&gt;
+            ))}
         &lt;/Accordion.Root&gt;
     &lt;/div&gt;
 );</code></pre>
@@ -801,7 +821,12 @@ value?: string | string[] | undefined</code></pre>
               
               <div class="hint">`collapsible` lets clicking the open item close it (reach an all-closed state).</div>
               <pre><code>const ExpandCollapse = () =&gt; &lt;Accordion.Root type=&quot;single&quot; collapsible&gt;
-    &lt;FaqItems /&gt;
+    {FAQS.map(({ value, question, answer }) =&gt; (
+        &lt;Accordion.Item key={value} value={value}&gt;
+            &lt;Accordion.Trigger&gt;{question}&lt;/Accordion.Trigger&gt;
+            &lt;Accordion.Content&gt;{answer}&lt;/Accordion.Content&gt;
+        &lt;/Accordion.Item&gt;
+    ))}
 &lt;/Accordion.Root&gt;;</code></pre>
             </div>
             <div class="note ok">
@@ -812,7 +837,12 @@ value?: string | string[] | undefined</code></pre>
               
               <div class="hint">Without `collapsible`, clicking the already-open item keeps it open.</div>
               <pre><code>const NonCollapsible = () =&gt; &lt;Accordion.Root type=&quot;single&quot; collapsible={false} defaultValue=&quot;covered&quot;&gt;
-    &lt;FaqItems /&gt;
+    {FAQS.map(({ value, question, answer }) =&gt; (
+        &lt;Accordion.Item key={value} value={value}&gt;
+            &lt;Accordion.Trigger&gt;{question}&lt;/Accordion.Trigger&gt;
+            &lt;Accordion.Content&gt;{answer}&lt;/Accordion.Content&gt;
+        &lt;/Accordion.Item&gt;
+    ))}
 &lt;/Accordion.Root&gt;;</code></pre>
             </div>
         </div>
@@ -2827,7 +2857,7 @@ import { CheckList } from &#39;@agentero/design-system/check-list&#39;;
       <div class="badges">
         <label for="c-7-components-combobox-props" class="badge ok as-toggle">38 prop types</label>
         
-        <label for="c-7-components-combobox-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-7-components-combobox-stories" class="badge ok as-toggle">8 stories</label>
         
         
       </div>
@@ -2836,8 +2866,9 @@ import { CheckList } from &#39;@agentero/design-system/check-list&#39;;
     <div>Root provider for an input-triggered filterable list</div>
     <div class="hint">Combobox is a text input that filters a list and writes the chosen option back
 into itself. Focusing the input or typing opens the list; picking a row fills the
-input and closes it. Built on Base UI, whose Combobox primitive owns the
-filtering, the keyboard navigation and the `role=&quot;combobox&quot;` wiring.</div>
+input and closes it. With `multiple` the rows become checkbox-like toggles and the
+list stays open between picks. Built on Base UI, whose Combobox primitive owns
+the filtering, the keyboard navigation and the `role=&quot;combobox&quot;` wiring.</div>
     <div class="kv"><span class="chip">summary: Root provider for an input-triggered filterable list</span><span class="chip">see: {@link https://base-ui.com/react/components/combobox Base UI Combobox}</span><span class="chip">example: ```tsx
 import { Combobox } from &#39;@agentero/design-system/combobox&#39;;
 
@@ -3118,7 +3149,17 @@ virtualized?: boolean = false</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button, Combobox, Field, FieldText, IconSearch, Label, Modal, Skeleton } from "@agentero/design-system";
+                <pre><code>import {
+    Button,
+    Combobox,
+    Field,
+    FieldText,
+    IconSearch,
+    Label,
+    Modal,
+    Skeleton,
+    Tag,
+} from "@agentero/design-system";
 import { Suspense } from "react";</code></pre>
               </div>
           
@@ -3173,6 +3214,48 @@ children only while nothing matches. It needs `items` on `Root` to know that.</d
             </div>
             <div class="note ok">
               <div class="row">
+                <span class="ex-name">Multiple Selection</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Several values from one list, the way Lines of Authority or locations are
+assigned: each row leads with a checkbox-shaped indicator, picking a row toggles
+it, and the list stays open with the query intact so the next pick is one click
+away. The input never shows the selection; the field renders it alongside,
+here as tags.</div>
+              <pre><code>const MultipleSelection = () =&gt; {
+    const [selected, setSelected] = useState&lt;string[]&gt;([]);
+
+    return (
+        &lt;div className=&quot;flex flex-col gap-4&quot;&gt;
+            &lt;Combobox.Root items={STATES} multiple value={selected} onValueChange={setSelected}&gt;
+                &lt;Combobox.Input placeholder=&quot;Assign states&quot; aria-label=&quot;Assign states&quot; /&gt;
+                &lt;Combobox.Content&gt;
+                    &lt;Combobox.Empty&gt;No matches found&lt;/Combobox.Empty&gt;
+                    &lt;Combobox.List aria-label=&quot;States&quot;&gt;
+                        {(state: string) =&gt; (
+                            &lt;Combobox.Item key={state} value={state}&gt;
+                                {state}
+                            &lt;/Combobox.Item&gt;
+                        )}
+                    &lt;/Combobox.List&gt;
+                &lt;/Combobox.Content&gt;
+            &lt;/Combobox.Root&gt;
+            {selected.length &gt; 0 &amp;&amp; (
+                &lt;ul aria-label=&quot;Selected states&quot; className=&quot;flex flex-wrap gap-2&quot;&gt;
+                    {selected.map(state =&gt; (
+                        &lt;li key={state}&gt;
+                            &lt;Tag size=&quot;sm&quot;&gt;{state}&lt;/Tag&gt;
+                        &lt;/li&gt;
+                    ))}
+                &lt;/ul&gt;
+            )}
+        &lt;/div&gt;
+    );
+};</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
                 <span class="ex-name">Async Search</span>
                 <span class="badge ok">story ok</span>
               </div>
@@ -3182,7 +3265,29 @@ that suspends on the request, so a `Suspense` boundary inside `Content` shows
 placeholder rows until they land. Nothing tracks `loading` by hand and no stale
 list lingers under the wait: the data is read by query, which is also what makes
 out-of-order responses harmless. Drop a `useSuspenseQuery` where `use()` is.</div>
-              <pre><code>const AsyncSearch = () =&gt; &lt;SuspenseSearch /&gt;;</code></pre>
+              <pre><code>const AsyncSearch = () =&gt; {
+    const [query, setQuery] = useState(&#39;&#39;);
+
+    return (
+        // No `items` and `filter={null}`: the server did the filtering, the child renders what came
+        // back, and `isItemEqualToValue` keeps a re-fetched copy counting as the selected one.
+        &lt;Combobox.Root
+            filter={null}
+            itemToStringLabel={(agency: Agency) =&gt; agency.name}
+            isItemEqualToValue={(a: Agency, b: Agency) =&gt; a.id === b.id}
+            onInputValueChange={(value, { reason }) =&gt; {
+                // Picking a row writes its label into the input; that is not a new search.
+                if (reason !== &#39;item-press&#39;) setQuery(value);
+            }}&gt;
+            &lt;Combobox.Input placeholder=&quot;Search agencies&quot; aria-label=&quot;Search agencies&quot; /&gt;
+            &lt;Combobox.Content&gt;
+                &lt;Suspense fallback={&lt;SkeletonRows /&gt;}&gt;
+                    &lt;AgencyItems query={query} /&gt;
+                &lt;/Suspense&gt;
+            &lt;/Combobox.Content&gt;
+        &lt;/Combobox.Root&gt;
+    );
+};</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -3194,7 +3299,54 @@ out-of-order responses harmless. Drop a `useSuspenseQuery` where `use()` is.</di
 its data layer instead: `filter={null}`, the rows arrive through `filteredItems`,
 `Content` is marked busy and `Status` announces the wait. The list is cleared
 before each request and a request that is no longer the latest is dropped.</div>
-              <pre><code>const AsyncSearchWithStatus = () =&gt; &lt;StatusSearch /&gt;;</code></pre>
+              <pre><code>const AsyncSearchWithStatus = () =&gt; {
+    const [results, setResults] = useState&lt;Agency[]&gt;([]);
+    const [isLoading, setIsLoading] = useState(false);
+    // Only the latest request may land; fast typing returns responses out of order.
+    const latestRequest = useRef(0);
+
+    const onInputValueChange = async (query: string) =&gt; {
+        const request = ++latestRequest.current;
+
+        // The previous rows go before the wait starts: a list that no longer matches what is typed
+        // must not sit under the loading state.
+        setResults([]);
+        setIsLoading(true);
+        const agencies = await searchAgencies(query);
+        if (request !== latestRequest.current) return;
+
+        setResults(agencies);
+        setIsLoading(false);
+    };
+
+    return (
+        // `filter={null}` hands filtering to the server; `filteredItems` is what came back.
+        &lt;Combobox.Root
+            items={results}
+            filteredItems={results}
+            filter={null}
+            itemToStringLabel={(agency: Agency) =&gt; agency.name}
+            isItemEqualToValue={(a: Agency, b: Agency) =&gt; a.id === b.id}
+            onInputValueChange={onInputValueChange}&gt;
+            &lt;Combobox.Input placeholder=&quot;Search agencies&quot; aria-label=&quot;Search agencies&quot; /&gt;
+            &lt;Combobox.Content aria-busy={isLoading || undefined}&gt;
+                {/* The rows show the wait; `Status` only announces it. */}
+                &lt;Combobox.Status className=&quot;sr-only&quot;&gt;
+                    {isLoading ? &#39;Searching…&#39; : undefined}
+                &lt;/Combobox.Status&gt;
+                {isLoading &amp;&amp; &lt;SkeletonRows /&gt;}
+                &lt;Combobox.Empty&gt;{isLoading ? undefined : &#39;No agencies found&#39;}&lt;/Combobox.Empty&gt;
+                &lt;Combobox.List&gt;
+                    {(agency: Agency) =&gt; (
+                        &lt;Combobox.Item key={agency.id} value={agency}&gt;
+                            {agency.name}
+                        &lt;/Combobox.Item&gt;
+                    )}
+                &lt;/Combobox.List&gt;
+            &lt;/Combobox.Content&gt;
+        &lt;/Combobox.Root&gt;
+    );
+};</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -3204,7 +3356,10 @@ before each request and a request that is no longer the latest is dropped.</div>
               
               <div class="hint">Dropped into a `FieldText`, the input takes the label, the description and
 the error from the field with nothing wired by hand: `Combobox.Input` reads the
-same `InputContext` the plain `Input` does.</div>
+same `InputContext` the plain `Input` does. It also points `aria-labelledby`
+at the label, so the name survives the list opening: Base UI then hides the
+rest of the page from assistive technology, label included, and a
+`&lt;label for&gt;` alone would stop naming the input.</div>
               <pre><code>const InsideFieldText = () =&gt; (
     &lt;FieldText invalid required&gt;
         &lt;Label&gt;Agency&lt;/Label&gt;
@@ -3242,7 +3397,7 @@ padded past it.</div>
         &lt;div className=&quot;relative&quot;&gt;
             &lt;IconSearch
                 aria-hidden
-                className=&quot;pointer-events-none absolute top-1/2 left-3 z-1 size-6 -translate-y-1/2 [&amp;&gt;path]:fill-icon-default-base-tertiary&quot;
+                className=&quot;pointer-events-none absolute top-1/2 left-3 -z-hide size-6 -translate-y-1/2 [&amp;&gt;path]:fill-icon-default-base-tertiary&quot;
             /&gt;
             &lt;Combobox.Input className=&quot;pl-11&quot; placeholder=&quot;Search states&quot; aria-label=&quot;Search states&quot; /&gt;
         &lt;/div&gt;
@@ -3313,7 +3468,7 @@ list nor treats a click in it as a click outside and closes.</div>
       <div class="badges">
         <label for="c-8-components-command-props" class="badge ok as-toggle">10 prop types</label>
         
-        <label for="c-8-components-command-stories" class="badge ok as-toggle">6 stories</label>
+        <label for="c-8-components-command-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -3322,7 +3477,9 @@ list nor treats a click in it as a click outside and closes.</div>
     <div>Filterable command palette container</div>
     <div class="hint">Command is a filterable list built on `cmdk`. Type to narrow the options,
 navigate with the arrow keys, select with Enter. It carries its own panel
-chrome, so dropping it inside a `Popover.Content` yields a combobox.</div>
+chrome, so dropping it inside a `Popover.Content` yields a combobox.
+`useCommandState` reads the search text and results of the surrounding
+`Command.Root` from any component rendered inside it.</div>
     <div class="kv"><span class="chip">summary: Filterable command palette container</span><span class="chip">see: {@link https://github.com/pacocoursey/cmdk cmdk}</span><span class="chip">example: ```tsx
 import { Command } from &#39;@agentero/design-system/command&#39;;
 
@@ -3544,6 +3701,23 @@ list does not invite the pointer.</div>
                             &lt;/Command.Item&gt;
     &lt;/Command.List&gt;
     &lt;Command.Empty&gt;No results found.&lt;/Command.Empty&gt;
+&lt;/Command.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Reading State</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">`useCommandState` reads the surrounding `Root` from a component inside it. Here the row
+offering to create an agency appears only when the search text matches no existing one.</div>
+              <pre><code>const ReadingState = () =&gt; &lt;Command.Root label=&quot;Search agencies&quot;&gt;
+    &lt;Command.Input placeholder=&quot;Search agencies...&quot; /&gt;
+    &lt;Command.List&gt;
+        &lt;Command.Item&gt;Pinnacle Shield Insurance&lt;/Command.Item&gt;
+        &lt;Command.Item&gt;Horizon Risk Solutions&lt;/Command.Item&gt;
+        &lt;CreateItem /&gt;
+    &lt;/Command.List&gt;
 &lt;/Command.Root&gt;;</code></pre>
             </div>
         </div>
@@ -5089,7 +5263,7 @@ required?: boolean = false</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Field, FieldContext, Label } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Field, FieldContext, Label, Switch } from "@agentero/design-system";</code></pre>
               </div>
           
           
@@ -5317,7 +5491,7 @@ label with its description, or a control with its messages, in
 `Field.Content`. A control sets its own width: `Input` is `w-full`, so it
 gets one here.</div>
               <pre><code>const Horizontal = () =&gt; (
-    &lt;Field.Group className=&quot;w-[40rem]&quot;&gt;
+    &lt;Field.Group className=&quot;w-160&quot;&gt;
         &lt;Field.Root orientation=&quot;horizontal&quot; data-testid=&quot;short&quot;&gt;
             &lt;Label&gt;Full name&lt;/Label&gt;
             &lt;DemoInput defaultValue=&quot;Rafa Moro&quot; className=&quot;w-72&quot; /&gt;
@@ -5336,7 +5510,7 @@ gets one here.</div>
                 &lt;Label&gt;Auto-renew&lt;/Label&gt;
                 &lt;Field.Description&gt;Renews the policy automatically before it expires.&lt;/Field.Description&gt;
             &lt;/Field.Content&gt;
-            &lt;DemoInput type=&quot;checkbox&quot; className=&quot;size-5&quot; /&gt;
+            &lt;DemoSwitch className=&quot;self-center&quot; /&gt;
         &lt;/Field.Root&gt;
 
         &lt;div className=&quot;w-[20rem]&quot; data-testid=&quot;narrow&quot;&gt;
@@ -5360,7 +5534,7 @@ measures the field itself, so it needs no particular wrapper. A width that
 should only apply once horizontal goes behind `@md/field:`.</div>
               <pre><code>const Responsive = () =&gt; (
     &lt;div className=&quot;flex flex-col gap-8&quot;&gt;
-        &lt;div className=&quot;w-full max-w-[40rem]&quot; data-testid=&quot;wide&quot;&gt;
+        &lt;div className=&quot;w-full max-w-160&quot; data-testid=&quot;wide&quot;&gt;
             &lt;Field.Root orientation=&quot;responsive&quot;&gt;
                 &lt;Label&gt;Email&lt;/Label&gt;
                 &lt;Field.Content className=&quot;@md/field:w-72&quot;&gt;
@@ -5455,7 +5629,27 @@ part wins over what `Field.Root` provides.</div>
 errors, a bare `&lt;Field.Error /&gt;` renders them — here with `useState` and no
 form library. `InputContext` extends the same way with `value`, `onChange`,
 `onBlur` and `name`; see `FieldText`.</div>
-              <pre><code>const ErrorsFromContext = () =&gt; &lt;FieldWithSuppliedErrors /&gt;;</code></pre>
+              <pre><code>const ErrorsFromContext = () =&gt; {
+    const [value, setValue] = useState(&#39;&#39;);
+    const [touched, setTouched] = useState(false);
+
+    const errors = touched &amp;&amp; !value ? [{ message: &#39;Required&#39; }] : undefined;
+
+    return (
+        &lt;Field.Root invalid={!!errors} required&gt;
+            &lt;Label&gt;Email&lt;/Label&gt;
+            &lt;DemoInput
+                type=&quot;email&quot;
+                value={value}
+                onChange={event =&gt; setValue(event.target.value)}
+                onBlur={() =&gt; setTouched(true)}
+            /&gt;
+            &lt;ErrorProvider errors={errors}&gt;
+                &lt;Field.Error /&gt;
+            &lt;/ErrorProvider&gt;
+        &lt;/Field.Root&gt;
+    );
+};</code></pre>
             </div>
         </div>
     
@@ -5703,7 +5897,29 @@ through untouched.</div>
 `&lt;Input /&gt;` becomes controlled, and the errors to `FieldContext`, so a bare
 `&lt;Field.Error /&gt;` renders them — here with `useState` and no form library.
 The input&#39;s own `onChange` still runs, chained after the provider&#39;s.</div>
-              <pre><code>const ControlledFromContext = () =&gt; &lt;ControlledField /&gt;;</code></pre>
+              <pre><code>const ControlledFromContext = () =&gt; {
+    const [value, setValue] = useState(&#39;&#39;);
+    const [touched, setTouched] = useState(false);
+
+    const errors = touched &amp;&amp; !value ? [{ message: &#39;Required&#39; }] : undefined;
+
+    return (
+        &lt;FieldText invalid={!!errors} required&gt;
+            &lt;ContextExtension
+                inputProps={{
+                    name: &#39;email&#39;,
+                    value,
+                    onChange: event =&gt; setValue(event.target.value),
+                    onBlur: () =&gt; setTouched(true)
+                }}
+                errors={errors}&gt;
+                &lt;Label&gt;Email&lt;/Label&gt;
+                &lt;Input type=&quot;email&quot; onChange={onOwnChange} /&gt;
+                &lt;Field.Error /&gt;
+            &lt;/ContextExtension&gt;
+        &lt;/FieldText&gt;
+    );
+};</code></pre>
             </div>
         </div>
     
@@ -5820,7 +6036,34 @@ onSubmit?: SubmitHandler&lt;AgencyValues&gt;</code></pre>
 both errors, marks both inputs invalid and focuses the first one — proof that
 react-hook-form&#39;s `ref` reached the inputs. Once filled in, `onSubmit`
 receives the typed values.</div>
-              <pre><code>const Default = () =&gt; &lt;AgencyForm /&gt;;</code></pre>
+              <pre><code>const Default = () =&gt; {
+    const methods = useForm&lt;AgencyValues&gt;({ defaultValues: { agencyName: &#39;&#39;, email: &#39;&#39; } });
+
+    return (
+        &lt;Form.Root
+            methods={methods}
+            onSubmit={onSubmit}
+            aria-label=&quot;Agency profile&quot;
+            className=&quot;flex flex-col items-start gap-7&quot;&gt;
+            &lt;Field.Group&gt;
+                &lt;FormText
+                    name=&quot;agencyName&quot;
+                    label=&quot;Agency name&quot;
+                    required
+                    rules={{ required: &#39;Enter the agency name.&#39; }}
+                /&gt;
+                &lt;FormText
+                    name=&quot;email&quot;
+                    label=&quot;Email&quot;
+                    required
+                    rules={{ required: &#39;Enter the agency email.&#39; }}
+                    inputProps={{ type: &#39;email&#39;, autoComplete: &#39;email&#39; }}
+                /&gt;
+            &lt;/Field.Group&gt;
+            &lt;Button type=&quot;submit&quot;&gt;Save&lt;/Button&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -5832,7 +6075,20 @@ receives the typed values.</div>
 announces it, but the form renders `noValidate`: without `rules`, submitting
 the field empty is not blocked by the browser and `onSubmit` still runs.
 Validation is react-hook-form&#39;s alone.</div>
-              <pre><code>const NoValidate = () =&gt; &lt;NicknameForm /&gt;;</code></pre>
+              <pre><code>const NoValidate = () =&gt; {
+    const methods = useForm&lt;NicknameValues&gt;({ defaultValues: { nickname: &#39;&#39; } });
+
+    return (
+        &lt;Form.Root
+            methods={methods}
+            onSubmit={onSubmit}
+            aria-label=&quot;Display name&quot;
+            className=&quot;flex flex-col items-start gap-7&quot;&gt;
+            &lt;FormText name=&quot;nickname&quot; label=&quot;Display name&quot; required /&gt;
+            &lt;Button type=&quot;submit&quot;&gt;Save&lt;/Button&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
             </div>
         </div>
     
@@ -5907,7 +6163,7 @@ with the `FieldText`, `Label`, `Input` and `Field.*` primitives directly.</div>
  * a `Form.Root`. A `control` whose resolver transforms the values is
  * accepted as is.
  */
-control?: Control&lt;FieldValues, any, FieldValues&gt;
+control?: Control&lt;FieldValues, any, unknown&gt;
 
 /**
  * `id` for the control. Generated when omitted. Set it here, not on the
@@ -6033,14 +6289,29 @@ tooltipSide?: &quot;top&quot; | &quot;bottom&quot; | &quot;left&quot; | &quot;ri
               <div class="hint">The field consumers write: a `name`, a `label` and the validation rule.
 Submitting empty renders the error and marks the input invalid; typing
 clears both and the value reaches `onSubmit`.</div>
-              <pre><code>const Default = () =&gt; &lt;AgencyNameForm
-    name=&quot;agencyName&quot;
-    label=&quot;Agency name&quot;
-    orientation=&quot;vertical&quot;
-    required
-    optional={false}
-    disabled={false}
-    readOnly={false} /&gt;;</code></pre>
+              <pre><code>const Default = () =&gt; {
+    const methods = useForm&lt;AgencyValues&gt;({ defaultValues: { agencyName: &#39;&#39; } });
+
+    return (
+        &lt;Form.Root
+            methods={methods}
+            onSubmit={onSubmit}
+            aria-label=&quot;Agency&quot;
+            className=&quot;flex flex-col items-start gap-7&quot;&gt;
+            &lt;FormText
+                rules={{ required: &#39;Enter the agency name.&#39; }}
+                inputProps={{ placeholder: &#39;Acme Insurance&#39; }}
+                label=&quot;Agency name&quot;
+                orientation=&quot;vertical&quot;
+                required
+                optional={false}
+                disabled={false}
+                readOnly={false}
+                name=&quot;agencyName&quot; /&gt;
+            &lt;Button type=&quot;submit&quot;&gt;Save&lt;/Button&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -6052,7 +6323,21 @@ clears both and the value reaches `onSubmit`.</div>
 `aria-describedby`. `tooltip` is an info button beside the label for details
 worth a click; it is a sibling of the `&lt;label&gt;`, so the field&#39;s accessible
 name stays the label text.</div>
-              <pre><code>const WithDescriptionAndTooltip = () =&gt; &lt;TaxIdForm /&gt;;</code></pre>
+              <pre><code>const WithDescriptionAndTooltip = () =&gt; {
+    const methods = useForm&lt;TaxValues&gt;({ defaultValues: { taxId: &#39;&#39; } });
+
+    return (
+        &lt;Form.Root methods={methods} aria-label=&quot;Tax details&quot;&gt;
+            &lt;FormText
+                name=&quot;taxId&quot;
+                label=&quot;Tax ID&quot;
+                tooltip=&quot;The EIN the IRS issued to the agency.&quot;
+                description=&quot;Nine digits, with or without the dash.&quot;
+                inputProps={{ inputMode: &#39;numeric&#39;, autoComplete: &#39;off&#39; }}
+            /&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -6063,7 +6348,15 @@ name stays the label text.</div>
               <div class="hint">The forms mark optional fields rather than required ones: `optional`
 appends a muted suffix to the label and leaves the input without the
 `required` attribute.</div>
-              <pre><code>const Optional = () =&gt; &lt;PhoneForm /&gt;;</code></pre>
+              <pre><code>const Optional = () =&gt; {
+    const methods = useForm&lt;PhoneValues&gt;({ defaultValues: { phone: &#39;&#39; } });
+
+    return (
+        &lt;Form.Root methods={methods} aria-label=&quot;Contact&quot;&gt;
+            &lt;FormText name=&quot;phone&quot; label=&quot;Phone number&quot; optional inputProps={{ type: &#39;tel&#39; }} /&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -6074,7 +6367,28 @@ appends a muted suffix to the label and leaves the input without the
               <div class="hint">`rules` are react-hook-form&#39;s, and `name` accepts nested paths typed against
 the form&#39;s values through the generic. `rules.required` validates but does
 not mark the field required: that stays an explicit `required` prop.</div>
-              <pre><code>const WithRules = () =&gt; &lt;NpnForm /&gt;;</code></pre>
+              <pre><code>const WithRules = () =&gt; {
+    const methods = useForm&lt;LicenseValues&gt;({ defaultValues: { agency: { npn: &#39;&#39; } } });
+
+    return (
+        &lt;Form.Root
+            methods={methods}
+            onSubmit={onSubmit}
+            aria-label=&quot;License&quot;
+            className=&quot;flex flex-col items-start gap-7&quot;&gt;
+            &lt;FormText&lt;LicenseValues&gt;
+                name=&quot;agency.npn&quot;
+                label=&quot;NPN&quot;
+                rules={{
+                    required: &#39;Enter your NPN.&#39;,
+                    pattern: { value: /^\d{6,10}$/, message: &#39;An NPN is 6 to 10 digits.&#39; }
+                }}
+                inputProps={{ inputMode: &#39;numeric&#39; }}
+            /&gt;
+            &lt;Button type=&quot;submit&quot;&gt;Save&lt;/Button&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -6086,7 +6400,36 @@ not mark the field required: that stays an explicit `required` prop.</div>
 that failed instead of stopping at the first, and the field lists them all.
 With the default `&#39;firstError&#39;` a single message is rendered, as in the other
 stories.</div>
-              <pre><code>const AllErrors = () =&gt; &lt;PasswordRulesForm /&gt;;</code></pre>
+              <pre><code>const AllErrors = () =&gt; {
+    const methods = useForm&lt;PasswordValues&gt;({
+        defaultValues: { password: &#39;&#39; },
+        criteriaMode: &#39;all&#39;
+    });
+
+    return (
+        &lt;Form.Root
+            methods={methods}
+            onSubmit={onSubmit}
+            aria-label=&quot;Account security&quot;
+            className=&quot;flex flex-col items-start gap-7&quot;&gt;
+            &lt;FormText
+                name=&quot;password&quot;
+                label=&quot;Password&quot;
+                required
+                inputProps={{ type: &#39;password&#39; }}
+                rules={{
+                    required: &#39;Enter a password.&#39;,
+                    validate: {
+                        uppercase: value =&gt; /[A-Z]/.test(value) || &#39;At least one uppercase letter.&#39;,
+                        number: value =&gt; /[0-9]/.test(value) || &#39;At least one number.&#39;,
+                        length: value =&gt; value.length &gt;= 10 || &#39;At least 10 characters.&#39;
+                    }
+                }}
+            /&gt;
+            &lt;Button type=&quot;submit&quot;&gt;Save&lt;/Button&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -6098,7 +6441,25 @@ stories.</div>
 `maxLength`, `size`… — and its handlers. A consumer `onChange` runs after
 react-hook-form&#39;s: by the time it fires, `getValues` already returns the new
 value.</div>
-              <pre><code>const InputPropsChaining = () =&gt; &lt;MobileForm /&gt;;</code></pre>
+              <pre><code>const InputPropsChaining = () =&gt; {
+    const methods = useForm&lt;PhoneValues&gt;({ defaultValues: { phone: &#39;&#39; } });
+
+    return (
+        &lt;Form.Root methods={methods} aria-label=&quot;Mobile&quot;&gt;
+            &lt;FormText
+                name=&quot;phone&quot;
+                label=&quot;Mobile&quot;
+                inputProps={{
+                    type: &#39;tel&#39;,
+                    placeholder: &#39;5550000000&#39;,
+                    maxLength: 10,
+                    size: &#39;lg&#39;,
+                    onChange: event =&gt; onOwnChange(methods.getValues(&#39;phone&#39;), event.target.value)
+                }}
+            /&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -6110,7 +6471,33 @@ value.</div>
 control in a row, and `className` on the root or in `inputProps` sizes them.
 The `Input` is full-width by default, so a settings row gives it a width.
 `responsive` stacks the field below 28rem and rows it from there.</div>
-              <pre><code>const Horizontal = () =&gt; &lt;ProfileForm /&gt;;</code></pre>
+              <pre><code>const Horizontal = () =&gt; {
+    const methods = useForm&lt;ProfileValues&gt;({
+        defaultValues: { fullName: &#39;Rafa Moro&#39;, title: &#39;&#39; }
+    });
+
+    return (
+        &lt;Form.Root methods={methods} aria-label=&quot;Profile&quot; className=&quot;w-[40rem]&quot;&gt;
+            &lt;Field.Group&gt;
+                &lt;FormText
+                    name=&quot;fullName&quot;
+                    label=&quot;Full name&quot;
+                    orientation=&quot;horizontal&quot;
+                    inputProps={{ className: &#39;w-72&#39; }}
+                    data-testid=&quot;short&quot;
+                /&gt;
+                &lt;FormText
+                    name=&quot;title&quot;
+                    label=&quot;Title&quot;
+                    description=&quot;Shown on your public profile.&quot;
+                    orientation=&quot;horizontal&quot;
+                    inputProps={{ className: &#39;w-72&#39;, placeholder: &#39;Software engineer&#39; }}
+                    data-testid=&quot;long&quot;
+                /&gt;
+            &lt;/Field.Group&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -6121,7 +6508,25 @@ The `Input` is full-width by default, so a settings row gives it a width.
               <div class="hint">`disabled` disables the input and marks the field, and the value still
 reaches `onSubmit` — unlike react-hook-form&#39;s own `disabled` option, which
 drops it. Use `readOnly` for a value the user can copy but not edit.</div>
-              <pre><code>const Disabled = () =&gt; &lt;AccountForm /&gt;;</code></pre>
+              <pre><code>const Disabled = () =&gt; {
+    const methods = useForm&lt;AccountValues&gt;({
+        defaultValues: { agencyId: &#39;AG-48213&#39;, email: &#39;ops@acme-insurance.com&#39; }
+    });
+
+    return (
+        &lt;Form.Root
+            methods={methods}
+            onSubmit={onSubmit}
+            aria-label=&quot;Account&quot;
+            className=&quot;flex flex-col items-start gap-7&quot;&gt;
+            &lt;Field.Group&gt;
+                &lt;FormText name=&quot;agencyId&quot; label=&quot;Agency ID&quot; disabled /&gt;
+                &lt;FormText name=&quot;email&quot; label=&quot;Email&quot; inputProps={{ type: &#39;email&#39; }} /&gt;
+            &lt;/Field.Group&gt;
+            &lt;Button type=&quot;submit&quot;&gt;Save&lt;/Button&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -6132,7 +6537,26 @@ drops it. Use `readOnly` for a value the user can copy but not edit.</div>
               <div class="hint">react-hook-form&#39;s `ref` reaches the `&lt;input&gt;`, so `setFocus` and the focus
 on the first invalid field after submit both work with no ref written by
 hand.</div>
-              <pre><code>const SetFocus = () =&gt; &lt;SetFocusForm /&gt;;</code></pre>
+              <pre><code>const SetFocus = () =&gt; {
+    const methods = useForm&lt;AgencyValues &amp; PhoneValues&gt;({
+        defaultValues: { agencyName: &#39;&#39;, phone: &#39;&#39; }
+    });
+
+    return (
+        &lt;Form.Root
+            methods={methods}
+            aria-label=&quot;Agency contact&quot;
+            className=&quot;flex flex-col items-start gap-7&quot;&gt;
+            &lt;Field.Group&gt;
+                &lt;FormText name=&quot;agencyName&quot; label=&quot;Agency name&quot; /&gt;
+                &lt;FormText name=&quot;phone&quot; label=&quot;Phone number&quot; inputProps={{ type: &#39;tel&#39; }} /&gt;
+            &lt;/Field.Group&gt;
+            &lt;Button type=&quot;button&quot; variant=&quot;secondary&quot; onClick={() =&gt; methods.setFocus(&#39;phone&#39;)}&gt;
+                Focus phone
+            &lt;/Button&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
             </div>
         </div>
     
@@ -6791,8 +7215,8 @@ the corner instead of competing with it.</div>
     &lt;InputGroup.Root&gt;
         &lt;Input value=&quot;https://agentero.com/r/abc123&quot; readOnly aria-label=&quot;Referral link&quot; /&gt;
         &lt;Divider orientation=&quot;vertical&quot; /&gt;
-        &lt;InputGroup.Addon className=&quot;-mx-(--input-group-gap)&quot;&gt;
-            &lt;Button variant=&quot;ghost&quot; size=&quot;md&quot; className=&quot;rounded-none&quot; onClick={handleCopy}&gt;
+        &lt;InputGroup.Addon variant=&quot;action&quot;&gt;
+            &lt;Button variant=&quot;ghost&quot; size=&quot;md&quot; onClick={handleCopy}&gt;
                 Copy link
             &lt;/Button&gt;
         &lt;/InputGroup.Addon&gt;
@@ -7356,7 +7780,30 @@ open?: boolean</code></pre>
               </div>
               
               <div class="hint">Controlled with `open`/`onOpenChange` — the dominant pattern in both apps. Also closes on `Escape`.</div>
-              <pre><code>const Controlled = () =&gt; &lt;ControlledExample /&gt;;</code></pre>
+              <pre><code>const Controlled = () =&gt; {
+    const [isOpen, setIsOpen] = useState(false);
+
+    return (
+        &lt;&gt;
+            &lt;Button variant=&quot;secondary&quot; onClick={() =&gt; setIsOpen(true)}&gt;
+                Open controlled
+            &lt;/Button&gt;
+            &lt;Modal.Root open={isOpen} onOpenChange={setIsOpen}&gt;
+                &lt;Modal.Content&gt;
+                    &lt;Modal.Title&gt;Controlled modal&lt;/Modal.Title&gt;
+                    &lt;Modal.Body&gt;
+                        &lt;p&gt;The open state lives in the consumer.&lt;/p&gt;
+                    &lt;/Modal.Body&gt;
+                    &lt;Modal.Footer&gt;
+                        &lt;Button variant=&quot;primary&quot; onClick={() =&gt; setIsOpen(false)}&gt;
+                            Done
+                        &lt;/Button&gt;
+                    &lt;/Modal.Footer&gt;
+                &lt;/Modal.Content&gt;
+            &lt;/Modal.Root&gt;
+        &lt;/&gt;
+    );
+};</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -8528,52 +8975,50 @@ keeps its padding.</div>
               </div>
               <div>Expandable rows with a detail panel</div>
               <div class="hint">`Table.ExpandButton` toggles a `Table.ExpandedRow` detail panel under its row.</div>
-              <pre><code>const ExpandableRows = args =&gt; {
-    const Demo = () =&gt; {
-        const [openId, setOpenId] = useState&lt;string | null&gt;(ROWS[0]!.id);
-        return (
-            &lt;Table.Root {...args}&gt;
-                &lt;Table.Head&gt;
-                    &lt;Table.Row&gt;
-                        &lt;Table.Header&gt;
-                            &lt;span className=&quot;sr-only&quot;&gt;Expand&lt;/span&gt;
-                        &lt;/Table.Header&gt;
-                        &lt;Table.Header&gt;Name&lt;/Table.Header&gt;
-                        &lt;Table.Header&gt;Email&lt;/Table.Header&gt;
-                        &lt;Table.Header&gt;Role&lt;/Table.Header&gt;
-                    &lt;/Table.Row&gt;
-                &lt;/Table.Head&gt;
-                &lt;Table.Body&gt;
-                    {ROWS.slice(0, 4).map(row =&gt; (
-                        &lt;Fragment key={row.id}&gt;
-                            &lt;Table.Row&gt;
-                                &lt;Table.Cell&gt;
-                                    &lt;Table.ExpandButton
-                                        isExpanded={openId === row.id}
-                                        toggleExpanded={() =&gt; setOpenId(openId === row.id ? null : row.id)}
-                                        aria-label={`Toggle ${row.name}`}
-                                    /&gt;
+              <pre><code>const ExpandableRows = () =&gt; {
+    const [openId, setOpenId] = useState&lt;string | null&gt;(ROWS[0]!.id);
+
+    return (
+        &lt;Table.Root size=&quot;md&quot; embed={false}&gt;
+            &lt;Table.Head&gt;
+                &lt;Table.Row&gt;
+                    &lt;Table.Header&gt;
+                        &lt;span className=&quot;sr-only&quot;&gt;Expand&lt;/span&gt;
+                    &lt;/Table.Header&gt;
+                    &lt;Table.Header&gt;Name&lt;/Table.Header&gt;
+                    &lt;Table.Header&gt;Email&lt;/Table.Header&gt;
+                    &lt;Table.Header&gt;Role&lt;/Table.Header&gt;
+                &lt;/Table.Row&gt;
+            &lt;/Table.Head&gt;
+            &lt;Table.Body&gt;
+                {ROWS.slice(0, 4).map(row =&gt; (
+                    &lt;Fragment key={row.id}&gt;
+                        &lt;Table.Row&gt;
+                            &lt;Table.Cell&gt;
+                                &lt;Table.ExpandButton
+                                    isExpanded={openId === row.id}
+                                    toggleExpanded={() =&gt; setOpenId(openId === row.id ? null : row.id)}
+                                    aria-label={`Toggle ${row.name}`}
+                                /&gt;
+                            &lt;/Table.Cell&gt;
+                            &lt;Table.Cell className=&quot;font-bold&quot;&gt;{row.name}&lt;/Table.Cell&gt;
+                            &lt;Table.Cell className=&quot;text-text-default-base-secondary&quot;&gt;{row.email}&lt;/Table.Cell&gt;
+                            &lt;Table.Cell&gt;{row.role}&lt;/Table.Cell&gt;
+                        &lt;/Table.Row&gt;
+                        {openId === row.id &amp;&amp; (
+                            &lt;Table.ExpandedRow&gt;
+                                &lt;Table.Cell colSpan={4}&gt;
+                                    &lt;div className=&quot;py-2 text-text-default-base-secondary&quot;&gt;
+                                        Extended details for {row.name} — {row.amount} lifetime value.
+                                    &lt;/div&gt;
                                 &lt;/Table.Cell&gt;
-                                &lt;Table.Cell className=&quot;font-bold&quot;&gt;{row.name}&lt;/Table.Cell&gt;
-                                &lt;Table.Cell className=&quot;text-text-default-base-secondary&quot;&gt;{row.email}&lt;/Table.Cell&gt;
-                                &lt;Table.Cell&gt;{row.role}&lt;/Table.Cell&gt;
-                            &lt;/Table.Row&gt;
-                            {openId === row.id &amp;&amp; (
-                                &lt;Table.ExpandedRow&gt;
-                                    &lt;Table.Cell colSpan={4}&gt;
-                                        &lt;div className=&quot;py-2 text-text-default-base-secondary&quot;&gt;
-                                            Extended details for {row.name} — {row.amount} lifetime value.
-                                        &lt;/div&gt;
-                                    &lt;/Table.Cell&gt;
-                                &lt;/Table.ExpandedRow&gt;
-                            )}
-                        &lt;/Fragment&gt;
-                    ))}
-                &lt;/Table.Body&gt;
-            &lt;/Table.Root&gt;
-        );
-    };
-    return &lt;Demo /&gt;;
+                            &lt;/Table.ExpandedRow&gt;
+                        )}
+                    &lt;/Fragment&gt;
+                ))}
+            &lt;/Table.Body&gt;
+        &lt;/Table.Root&gt;
+    );
 };</code></pre>
             </div>
         </div>
