@@ -8,6 +8,7 @@ import { Combobox as ComboboxPrimitive } from '@base-ui/react/combobox';
 import { tv } from 'tailwind-variants';
 
 import { cn, useMergeProps } from '../../lib';
+import { useFieldContext } from '../field';
 import { InputContext, inputRecipe, InputSize } from '../input';
 import { IconCancel, IconCheck } from './icons';
 
@@ -156,11 +157,19 @@ const ROOT_OWNED_KEYS = new Set(['value', 'defaultValue', 'onChange']);
 
 const useComboboxInputContext = (props: InputProps) => {
 	const context = use(InputContext);
+	const field = useFieldContext();
 	const wiring = context
 		? Object.fromEntries(Object.entries(context).filter(([key]) => !ROOT_OWNED_KEYS.has(key)))
 		: null;
 
-	return useMergeProps(wiring as Partial<InputProps> | null, props);
+	// The field's `<label for>` is not enough here: while the list is open, Base UI hides
+	// everything but the input and the list from assistive technology, label included, and
+	// Chrome then drops it from the name. A direct `aria-labelledby` reference survives that.
+	// Only as a default: a name the consumer gave, either way, wins.
+	const named = 'aria-label' in props || 'aria-labelledby' in props;
+	const labelledBy = !named && field ? { 'aria-labelledby': field.labelId } : null;
+
+	return useMergeProps({ ...wiring, ...labelledBy } as Partial<InputProps> | null, props);
 };
 
 /**
@@ -168,6 +177,13 @@ const useComboboxInputContext = (props: InputProps) => {
  * list. It wears the same styling as `Input` and takes the same wiring from
  * `InputContext`, so inside a `FieldText` the label, the hint and the error point
  * at it with nothing passed by hand. Its own props win over the context.
+ *
+ * Inside a field it also names itself with `aria-labelledby` pointing at the
+ * label, on top of the label's own `for`. While the list is open, Base UI hides
+ * everything but the input and the list from assistive technology, label
+ * included, and a `<label for>` alone then stops naming the input; a direct
+ * reference keeps the name. Outside a field, give it `aria-label` or an
+ * `aria-labelledby` of your own.
  *
  * It carries a clear button, which Base UI mounts only once there is something
  * to clear, so an untouched field shows nothing. Name it with `clearLabel` when
