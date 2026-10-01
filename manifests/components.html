@@ -588,7 +588,7 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">33 components ok</span><span class="filter-pill ok" aria-disabled="true">265 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">33 components ok</span><span class="filter-pill ok" aria-disabled="true">266 stories ok</span></div>
   </div>
 </header>
 <main>
@@ -2857,7 +2857,7 @@ import { CheckList } from &#39;@agentero/design-system/check-list&#39;;
       <div class="badges">
         <label for="c-7-components-combobox-props" class="badge ok as-toggle">38 prop types</label>
         
-        <label for="c-7-components-combobox-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-7-components-combobox-stories" class="badge ok as-toggle">8 stories</label>
         
         
       </div>
@@ -2866,8 +2866,9 @@ import { CheckList } from &#39;@agentero/design-system/check-list&#39;;
     <div>Root provider for an input-triggered filterable list</div>
     <div class="hint">Combobox is a text input that filters a list and writes the chosen option back
 into itself. Focusing the input or typing opens the list; picking a row fills the
-input and closes it. Built on Base UI, whose Combobox primitive owns the
-filtering, the keyboard navigation and the `role=&quot;combobox&quot;` wiring.</div>
+input and closes it. With `multiple` the rows become checkbox-like toggles and the
+list stays open between picks. Built on Base UI, whose Combobox primitive owns
+the filtering, the keyboard navigation and the `role=&quot;combobox&quot;` wiring.</div>
     <div class="kv"><span class="chip">summary: Root provider for an input-triggered filterable list</span><span class="chip">see: {@link https://base-ui.com/react/components/combobox Base UI Combobox}</span><span class="chip">example: ```tsx
 import { Combobox } from &#39;@agentero/design-system/combobox&#39;;
 
@@ -3148,7 +3149,17 @@ virtualized?: boolean = false</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button, Combobox, Field, FieldText, IconSearch, Label, Modal, Skeleton } from "@agentero/design-system";
+                <pre><code>import {
+    Button,
+    Combobox,
+    Field,
+    FieldText,
+    IconSearch,
+    Label,
+    Modal,
+    Skeleton,
+    Tag,
+} from "@agentero/design-system";
 import { Suspense } from "react";</code></pre>
               </div>
           
@@ -3200,6 +3211,48 @@ children only while nothing matches. It needs `items` on `Root` to know that.</d
         &lt;/Combobox.Content&gt;
     &lt;/Combobox.Root&gt;
 );</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Multiple Selection</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Several values from one list, the way Lines of Authority or locations are
+assigned: each row leads with a checkbox-shaped indicator, picking a row toggles
+it, and the list stays open with the query intact so the next pick is one click
+away. The input never shows the selection; the field renders it alongside,
+here as tags.</div>
+              <pre><code>const MultipleSelection = () =&gt; {
+    const [selected, setSelected] = useState&lt;string[]&gt;([]);
+
+    return (
+        &lt;div className=&quot;flex flex-col gap-4&quot;&gt;
+            &lt;Combobox.Root items={STATES} multiple value={selected} onValueChange={setSelected}&gt;
+                &lt;Combobox.Input placeholder=&quot;Assign states&quot; aria-label=&quot;Assign states&quot; /&gt;
+                &lt;Combobox.Content&gt;
+                    &lt;Combobox.Empty&gt;No matches found&lt;/Combobox.Empty&gt;
+                    &lt;Combobox.List aria-label=&quot;States&quot;&gt;
+                        {(state: string) =&gt; (
+                            &lt;Combobox.Item key={state} value={state}&gt;
+                                {state}
+                            &lt;/Combobox.Item&gt;
+                        )}
+                    &lt;/Combobox.List&gt;
+                &lt;/Combobox.Content&gt;
+            &lt;/Combobox.Root&gt;
+            {selected.length &gt; 0 &amp;&amp; (
+                &lt;ul aria-label=&quot;Selected states&quot; className=&quot;flex flex-wrap gap-2&quot;&gt;
+                    {selected.map(state =&gt; (
+                        &lt;li key={state}&gt;
+                            &lt;Tag size=&quot;sm&quot;&gt;{state}&lt;/Tag&gt;
+                        &lt;/li&gt;
+                    ))}
+                &lt;/ul&gt;
+            )}
+        &lt;/div&gt;
+    );
+};</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -3303,7 +3356,10 @@ before each request and a request that is no longer the latest is dropped.</div>
               
               <div class="hint">Dropped into a `FieldText`, the input takes the label, the description and
 the error from the field with nothing wired by hand: `Combobox.Input` reads the
-same `InputContext` the plain `Input` does.</div>
+same `InputContext` the plain `Input` does. It also points `aria-labelledby`
+at the label, so the name survives the list opening: Base UI then hides the
+rest of the page from assistive technology, label included, and a
+`&lt;label for&gt;` alone would stop naming the input.</div>
               <pre><code>const InsideFieldText = () =&gt; (
     &lt;FieldText invalid required&gt;
         &lt;Label&gt;Agency&lt;/Label&gt;

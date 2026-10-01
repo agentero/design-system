@@ -2001,13 +2001,13 @@
           "```tsx\nimport { Combobox } from '@agentero/design-system/combobox';\n\n<Combobox.Root items={states}>\n  <Combobox.Input placeholder=\"Search states\" />\n  <Combobox.Content>\n    <Combobox.Empty>No matches found</Combobox.Empty>\n    <Combobox.List>\n      {(state: string) => <Combobox.Item key={state} value={state}>{state}</Combobox.Item>}\n    </Combobox.List>\n  </Combobox.Content>\n</Combobox.Root>\n```"
         ]
       },
-      "description": "Combobox is a text input that filters a list and writes the chosen option back\ninto itself. Focusing the input or typing opens the list; picking a row fills the\ninput and closes it. Built on Base UI, whose Combobox primitive owns the\nfiltering, the keyboard navigation and the `role=\"combobox\"` wiring.",
+      "description": "Combobox is a text input that filters a list and writes the chosen option back\ninto itself. Focusing the input or typing opens the list; picking a row fills the\ninput and closes it. With `multiple` the rows become checkbox-like toggles and the\nlist stays open between picks. Built on Base UI, whose Combobox primitive owns\nthe filtering, the keyboard navigation and the `role=\"combobox\"` wiring.",
       "summary": "Root provider for an input-triggered filterable list",
       "reactComponentMeta": {
         "displayName": "Combobox.Root",
         "exportName": "Combobox",
         "filePath": "/home/runner/work/design-system/design-system/src/combobox/index.ts",
-        "description": "Root of a combobox: a text input that filters a list of options and writes the\nchosen one back into itself. With `Input` as the only trigger, the list opens on\nfocus or on the first keystroke.\n\nPass the options as `items`. For a list that comes from the server, set\n`filter={null}`, hand the already-filtered rows to `filteredItems`, and request\nthem from `onInputValueChange`; `Status` then announces the wait.",
+        "description": "Root of a combobox: a text input that filters a list of options and writes the\nchosen one back into itself. With `Input` as the only trigger, the list opens on\nfocus or on the first keystroke.\n\nPass the options as `items`. For a list that comes from the server, set\n`filter={null}`, hand the already-filtered rows to `filteredItems`, and request\nthem from `onInputValueChange`; `Status` then announces the wait.\n\nWith `multiple`, the value is an array and picking a row toggles it. The list\nstays open and keeps the typed query between picks, so several rows can be\nticked from one search; closing the list (Escape, a click outside) still resets\nthe query. Each row then shows whether it is selected — see `Item`. Nothing is\nwritten back into the input: render the selection next to the field.",
         "jsDocTags": {
           "summary": [
             "Root provider for an input-triggered filterable list"
@@ -2786,6 +2786,12 @@
           "description": "`Empty` stays mounted so screen readers announce the change; it renders its\nchildren only while nothing matches. It needs `items` on `Root` to know that."
         },
         {
+          "id": "components-combobox--multiple-selection",
+          "name": "Multiple Selection",
+          "snippet": "const MultipleSelection = () => {\n    const [selected, setSelected] = useState<string[]>([]);\n\n    return (\n        <div className=\"flex flex-col gap-4\">\n            <Combobox.Root items={STATES} multiple value={selected} onValueChange={setSelected}>\n                <Combobox.Input placeholder=\"Assign states\" aria-label=\"Assign states\" />\n                <Combobox.Content>\n                    <Combobox.Empty>No matches found</Combobox.Empty>\n                    <Combobox.List aria-label=\"States\">\n                        {(state: string) => (\n                            <Combobox.Item key={state} value={state}>\n                                {state}\n                            </Combobox.Item>\n                        )}\n                    </Combobox.List>\n                </Combobox.Content>\n            </Combobox.Root>\n            {selected.length > 0 && (\n                <ul aria-label=\"Selected states\" className=\"flex flex-wrap gap-2\">\n                    {selected.map(state => (\n                        <li key={state}>\n                            <Tag size=\"sm\">{state}</Tag>\n                        </li>\n                    ))}\n                </ul>\n            )}\n        </div>\n    );\n};",
+          "description": "Several values from one list, the way Lines of Authority or locations are\nassigned: each row leads with a checkbox-shaped indicator, picking a row toggles\nit, and the list stays open with the query intact so the next pick is one click\naway. The input never shows the selection; the field renders it alongside,\nhere as tags."
+        },
+        {
           "id": "components-combobox--async-search",
           "name": "Async Search",
           "snippet": "const AsyncSearch = () => {\n    const [query, setQuery] = useState('');\n\n    return (\n        // No `items` and `filter={null}`: the server did the filtering, the child renders what came\n        // back, and `isItemEqualToValue` keeps a re-fetched copy counting as the selected one.\n        <Combobox.Root\n            filter={null}\n            itemToStringLabel={(agency: Agency) => agency.name}\n            isItemEqualToValue={(a: Agency, b: Agency) => a.id === b.id}\n            onInputValueChange={(value, { reason }) => {\n                // Picking a row writes its label into the input; that is not a new search.\n                if (reason !== 'item-press') setQuery(value);\n            }}>\n            <Combobox.Input placeholder=\"Search agencies\" aria-label=\"Search agencies\" />\n            <Combobox.Content>\n                <Suspense fallback={<SkeletonRows />}>\n                    <AgencyItems query={query} />\n                </Suspense>\n            </Combobox.Content>\n        </Combobox.Root>\n    );\n};",
@@ -2801,7 +2807,7 @@
           "id": "components-combobox--inside-field-text",
           "name": "Inside Field Text",
           "snippet": "const InsideFieldText = () => (\n    <FieldText invalid required>\n        <Label>Agency</Label>\n        <Combobox.Root items={STATES}>\n            <Combobox.Input placeholder=\"Search agencies\" />\n            <Combobox.Content>\n                <Combobox.Empty>No matches found</Combobox.Empty>\n                <Combobox.List>\n                    {(state: string) => (\n                        <Combobox.Item key={state} value={state}>\n                            {state}\n                        </Combobox.Item>\n                    )}\n                </Combobox.List>\n            </Combobox.Content>\n        </Combobox.Root>\n        <Field.Description>The agency this agent will be added to.</Field.Description>\n        <Field.Error errors={[{ message: 'Pick an agency from the list' }]} />\n    </FieldText>\n);",
-          "description": "Dropped into a `FieldText`, the input takes the label, the description and\nthe error from the field with nothing wired by hand: `Combobox.Input` reads the\nsame `InputContext` the plain `Input` does."
+          "description": "Dropped into a `FieldText`, the input takes the label, the description and\nthe error from the field with nothing wired by hand: `Combobox.Input` reads the\nsame `InputContext` the plain `Input` does. It also points `aria-labelledby`\nat the label, so the name survives the list opening: Base UI then hides the\nrest of the page from assistive technology, label included, and a\n`<label for>` alone would stop naming the input."
         },
         {
           "id": "components-combobox--with-leading-icon",
@@ -2816,7 +2822,7 @@
           "description": "Inside a `Modal`, which is a Radix Dialog. The surface portals to the body, so\nthis checks that the dialog's modal layer neither blocks pointer events on the\nlist nor treats a click in it as a click outside and closes."
         }
       ],
-      "import": "import { Button, Combobox, Field, FieldText, IconSearch, Label, Modal, Skeleton } from \"@agentero/design-system\";\nimport { Suspense } from \"react\";"
+      "import": "import {\n    Button,\n    Combobox,\n    Field,\n    FieldText,\n    IconSearch,\n    Label,\n    Modal,\n    Skeleton,\n    Tag,\n} from \"@agentero/design-system\";\nimport { Suspense } from \"react\";"
     },
     "components-command": {
       "id": "components-command",
@@ -5469,7 +5475,7 @@
         "displayName": "Field.Root",
         "exportName": "Field",
         "filePath": "/home/runner/work/design-system/design-system/src/field/index.ts",
-        "description": "Wraps one label, control, description and error into a single field and\nwires the accessibility relationships between them. It generates the ids\nand shares them through context: `Label` reads `LabelContext`,\n`Field.Description` and `Field.Error` read `FieldContext` and register\nthemselves so the control's `aria-describedby` lists exactly the messages on\nscreen, and a `Field<X>` such as `FieldText` provides the control's context so\nthe control associates itself too. Nobody passes an `id` by hand.\n\nPresentational and form-library agnostic: pass `invalid` and the error\nmessages from whatever validates the form. Deliberately not a `role=\"group\"`:\none field is not a set of related controls, and an unnamed group only adds\nscreen-reader verbosity. Real groupings belong to a fieldset with a legend.",
+        "description": "Wraps one label, control, description and error into a single field and\nwires the accessibility relationships between them. It generates the ids\nand shares them through context: `Label` reads `LabelContext`,\n`Field.Description` and `Field.Error` read `FieldContext` and register\nthemselves so the control's `aria-describedby` lists exactly the messages on\nscreen, and a `Field<X>` such as `FieldText` provides the control's context so\nthe control associates itself too. Nobody passes an `id` by hand. The label\ngets an id as well (`labelId` in `FieldContext`) for a control that must\nname itself with `aria-labelledby`, as `Combobox.Input` does.\n\nPresentational and form-library agnostic: pass `invalid` and the error\nmessages from whatever validates the form. Deliberately not a `role=\"group\"`:\none field is not a set of related controls, and an unnamed group only adds\nscreen-reader verbosity. Real groupings belong to a fieldset with a legend.",
         "jsDocTags": {
           "summary": [
             "Wraps a label, control, description and error into one field"
@@ -9420,6 +9426,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4552
+    "durationMs": 4566
   }
 }
