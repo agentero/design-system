@@ -216,7 +216,10 @@ export const WithButton: Story = {
 		await expect(frame.height).toBe(40);
 		await expect(edge.right).toBeCloseTo(frame.right - group.clientLeft, 0);
 		await expect(edge.height).toBeCloseTo(group.clientHeight, 0);
-		await expect(getComputedStyle(button).borderRadius).toBe('0px');
+		await expect(getComputedStyle(button).borderTopLeftRadius).toBe('0px');
+		await expect(getComputedStyle(button).borderTopRightRadius).toBe(
+			getComputedStyle(group).borderTopRightRadius
+		);
 
 		// The frame clips overflow, so the ring has to sit inside the button to be seen.
 		canvas.getByRole('textbox', { name: 'Referral link' }).focus();
