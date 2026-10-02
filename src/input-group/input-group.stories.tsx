@@ -1,10 +1,15 @@
+import { type FormEvent, type ReactNode, type SVGProps, useRef, useState } from 'react';
+
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { InputGroup } from '.';
+import { IconKeyboardArrowDown } from '../accordion/icons';
 import { Button } from '../button';
+import { IconCancel } from '../combobox/icons';
 import { IconSearch } from '../command/icons';
 import { Divider } from '../divider';
+import { DropdownMenu } from '../dropdown-menu';
 import { Field } from '../field';
 import { FieldText } from '../field-text';
 import { Input, InputSize } from '../input';
@@ -196,7 +201,7 @@ export const WithButton: Story = {
 			<Input value="https://agentero.com/r/abc123" readOnly aria-label="Referral link" />
 			<Divider orientation="vertical" />
 			<InputGroup.Addon variant="action">
-				<Button variant="ghost" size="md" onClick={handleCopy}>
+				<Button type="button" variant="ghost" size="md" onClick={handleCopy}>
 					Copy link
 				</Button>
 			</InputGroup.Addon>
@@ -339,5 +344,275 @@ export const InsideFieldText: Story = {
 		await expect(input).toBeRequired();
 		await expect(input).toHaveAccessibleDescription('Shown on your public profile.');
 		await expect(getGroup(canvasElement)).not.toHaveAttribute('id');
+	}
+};
+
+const IconMail = (props: SVGProps<SVGSVGElement>) => (
+	<svg
+		width="24"
+		height="24"
+		viewBox="0 0 24 24"
+		fill="none"
+		xmlns="http://www.w3.org/2000/svg"
+		{...props}>
+		<path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z" />
+	</svg>
+);
+
+type FieldStatesProps = {
+	label: ReactNode;
+	tooltip?: ReactNode;
+	required?: boolean;
+	error: string;
+	children: ReactNode;
+};
+
+/** Renders a field twice, as the Portal UI library templates do: valid, then invalid with its error. */
+const FieldStates = ({ label, tooltip, required, error, children }: FieldStatesProps) => (
+	<div className="flex flex-col gap-6">
+		{[false, true].map(invalid => (
+			<FieldText key={String(invalid)} invalid={invalid} required={required}>
+				<Field.Label required={required} optional={!required} tooltip={tooltip}>
+					{label}
+				</Field.Label>
+				{children}
+				{invalid ? (
+					<Field.Error errors={[{ message: error }]} />
+				) : (
+					<Field.Description>Helper text</Field.Description>
+				)}
+			</FieldText>
+		))}
+	</div>
+);
+
+const SearchInput = () => {
+	const [value, setValue] = useState('');
+	const inputRef = useRef<HTMLInputElement>(null);
+
+	return (
+		<InputGroup.Root>
+			<InputGroup.Addon>
+				<IconSearch />
+			</InputGroup.Addon>
+			<Input
+				ref={inputRef}
+				value={value}
+				onChange={event => setValue(event.target.value)}
+				placeholder="Search agencies"
+			/>
+			{value && (
+				<InputGroup.Addon>
+					<Button
+						variant="ghost"
+						size="xs"
+						type="button"
+						iconOnly
+						aria-label="Clear search"
+						onClick={() => {
+							setValue('');
+							inputRef.current?.focus();
+						}}>
+						<IconCancel />
+					</Button>
+				</InputGroup.Addon>
+			)}
+		</InputGroup.Root>
+	);
+};
+
+/**
+ * The search field from the Portal UI library: a leading icon, and a clear
+ * button that appears once there is a value. Clearing empties the input and
+ * puts the focus back in it. It is a plain text input, so the browser's own
+ * search cancel button does not show beside this one. When the search picks
+ * from a list of results, use `Combobox`, which brings its own clear button.
+ *
+ * @summary Search field with a clear button, valid and invalid
+ */
+const handleSearchSubmit = fn((event: FormEvent) => event.preventDefault());
+
+export const SearchField: Story = {
+	render: () => (
+		<form onSubmit={handleSearchSubmit}>
+			<FieldStates
+				label="Agency"
+				tooltip="Search by agency name or NPN."
+				required
+				error="Pick an agency from the list.">
+				<SearchInput />
+			</FieldStates>
+		</form>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const [input] = canvas.getAllByRole('textbox', { name: /Agency/ }) as [HTMLElement];
+
+		await expect(canvas.queryByRole('button', { name: 'Clear search' })).not.toBeInTheDocument();
+		await userEvent.type(input, 'Acme');
+		await userEvent.click(canvas.getByRole('button', { name: 'Clear search' }));
+		await expect(input).toHaveValue('');
+		await expect(input).toHaveFocus();
+		await expect(handleSearchSubmit).not.toHaveBeenCalled();
+		await expect(canvas.queryByRole('button', { name: 'Clear search' })).not.toBeInTheDocument();
+	}
+};
+
+/**
+ * The email field from the Portal UI library: a leading icon is all it adds
+ * to the input.
+ *
+ * @summary Email field with a leading icon, valid and invalid
+ */
+export const EmailField: Story = {
+	render: () => (
+		<FieldStates label="Email" required error="Enter a valid email address.">
+			<InputGroup.Root>
+				<InputGroup.Addon>
+					<IconMail />
+				</InputGroup.Addon>
+				<Input type="email" placeholder="me@email.com" />
+			</InputGroup.Root>
+		</FieldStates>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const [valid, invalid] = canvas.getAllByRole('textbox', { name: /Email/ }) as [
+			HTMLElement,
+			HTMLElement
+		];
+
+		await expect(valid).not.toHaveAttribute('aria-invalid');
+		await expect(invalid).toHaveAttribute('aria-invalid', 'true');
+		await expect(invalid).toHaveAccessibleDescription('Enter a valid email address.');
+	}
+};
+
+const CURRENCIES = ['USD', 'EUR', 'MXN'];
+
+const PriceInput = () => {
+	const [currency, setCurrency] = useState('USD');
+
+	return (
+		<InputGroup.Root>
+			<InputGroup.Text>$</InputGroup.Text>
+			<Input inputMode="decimal" placeholder="0.00" />
+			<InputGroup.Addon variant="action">
+				<DropdownMenu.Root>
+					<DropdownMenu.Trigger asChild>
+						<Button variant="ghost" size="sm" aria-label={`Currency: ${currency}`}>
+							{currency}
+							<IconKeyboardArrowDown />
+						</Button>
+					</DropdownMenu.Trigger>
+					<DropdownMenu.Portal>
+						<DropdownMenu.Content align="end">
+							{CURRENCIES.map(option => (
+								<DropdownMenu.Item key={option} onSelect={() => setCurrency(option)}>
+									{option}
+								</DropdownMenu.Item>
+							))}
+						</DropdownMenu.Content>
+					</DropdownMenu.Portal>
+				</DropdownMenu.Root>
+			</InputGroup.Addon>
+		</InputGroup.Root>
+	);
+};
+
+/**
+ * The price field from the Portal UI library: a currency symbol before the
+ * value and a currency picker after it. The picker is a `DropdownMenu` whose
+ * trigger fills an `action` addon, so it keeps the frame's height and an inset
+ * focus ring.
+ *
+ * @summary Price field with a symbol and a currency picker, valid and invalid
+ */
+export const PriceField: Story = {
+	render: () => (
+		<FieldStates label="Price" required error="Enter a price above zero.">
+			<PriceInput />
+		</FieldStates>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const body = within(canvasElement.ownerDocument.body);
+		const [group] = getGroups(canvasElement) as [HTMLElement];
+		const [trigger] = canvas.getAllByRole('button', { name: 'Currency: USD' }) as [HTMLElement];
+
+		await expect(group.getBoundingClientRect().height).toBe(40);
+		await userEvent.click(trigger);
+		await userEvent.click(await body.findByRole('menuitem', { name: 'EUR' }));
+		await waitFor(() => expect(body.queryByRole('menu')).not.toBeInTheDocument());
+		await expect(trigger).toHaveAccessibleName('Currency: EUR');
+		await expect(trigger).toHaveFocus();
+
+		// Back to USD so the story shows the template's default once the test is done.
+		await userEvent.click(trigger);
+		await userEvent.click(await body.findByRole('menuitem', { name: 'USD' }));
+		await waitFor(() => expect(body.queryByRole('menu')).not.toBeInTheDocument());
+	}
+};
+
+const COUNTRY_CODES = ['US +1', 'CA +1'];
+
+const PhoneInput = () => {
+	const [code, setCode] = useState('US +1');
+
+	return (
+		<InputGroup.Root>
+			<InputGroup.Addon variant="action">
+				<DropdownMenu.Root>
+					<DropdownMenu.Trigger asChild>
+						<Button variant="ghost" size="sm" aria-label={`Country code: ${code}`}>
+							{code}
+							<IconKeyboardArrowDown />
+						</Button>
+					</DropdownMenu.Trigger>
+					<DropdownMenu.Portal>
+						<DropdownMenu.Content align="start">
+							{COUNTRY_CODES.map(option => (
+								<DropdownMenu.Item key={option} onSelect={() => setCode(option)}>
+									{option}
+								</DropdownMenu.Item>
+							))}
+						</DropdownMenu.Content>
+					</DropdownMenu.Portal>
+				</DropdownMenu.Root>
+			</InputGroup.Addon>
+			<Input type="tel" autoComplete="tel-national" placeholder="(555) 000-0000" />
+		</InputGroup.Root>
+	);
+};
+
+/**
+ * The optional phone field from the Portal UI library: a country code picker
+ * before the number. The picker leads, so the `action` addon rounds its
+ * button's start corners with the frame.
+ *
+ * @summary Phone field with a leading country code picker, valid and invalid
+ */
+export const PhoneField: Story = {
+	render: () => (
+		<FieldStates label="Phone number" error="Enter a 10-digit phone number.">
+			<PhoneInput />
+		</FieldStates>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const [group] = getGroups(canvasElement) as [HTMLElement];
+		const [trigger] = canvas.getAllByRole('button', { name: 'Country code: US +1' }) as [
+			HTMLElement
+		];
+		const frame = group.getBoundingClientRect();
+
+		await expect(frame.height).toBe(40);
+		await expect(trigger.getBoundingClientRect().left).toBeCloseTo(
+			frame.left + group.clientLeft,
+			0
+		);
+		await expect(getComputedStyle(trigger).borderTopLeftRadius).toBe(
+			getComputedStyle(group).borderTopLeftRadius
+		);
 	}
 };
