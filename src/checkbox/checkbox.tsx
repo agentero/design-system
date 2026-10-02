@@ -12,7 +12,7 @@ export const checkboxRecipe = tv({
 		root: [
 			'group/checkbox box-border inline-flex size-4 shrink-0 appearance-none items-center justify-center rounded-sm',
 			'border border-solid border-border-input-default bg-bg-input-normal',
-			'cursor-pointer transition-colors duration-200 ease-in-out',
+			'cursor-pointer transition-colors duration-150',
 			'data-[state=checked]:border-bg-checkbox-selected data-[state=checked]:bg-bg-checkbox-selected',
 			'data-[state=indeterminate]:border-bg-checkbox-selected data-[state=indeterminate]:bg-bg-checkbox-selected',
 			'outline-solid outline-2 outline-offset-2 outline-transparent',

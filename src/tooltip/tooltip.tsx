@@ -13,11 +13,13 @@ export const tooltipRecipe = tv({
 		'rounded-sm border border-border-default-base-primary bg-bg-default-base-primary shadow-sm',
 		'text-xs text-pretty text-text-default-base-secondary select-none',
 		'will-change-[transform,opacity]',
-		'data-[side=bottom]:animate-tooltip-slide-in-from-top',
-		'data-[side=top]:animate-tooltip-slide-in-from-bottom',
-		'data-[side=left]:animate-tooltip-slide-in-from-right',
-		'data-[side=right]:animate-tooltip-slide-in-from-left',
-		// `!` so it outranks the higher-specificity data-[side=…] rules above
+		// Only the hover entrance animates. Radix marks a focus-opened tooltip
+		// `instant-open`; tabbing through triggers should not replay a slide per stop.
+		'data-[state=delayed-open]:data-[side=bottom]:animate-tooltip-slide-in-from-top',
+		'data-[state=delayed-open]:data-[side=top]:animate-tooltip-slide-in-from-bottom',
+		'data-[state=delayed-open]:data-[side=left]:animate-tooltip-slide-in-from-right',
+		'data-[state=delayed-open]:data-[side=right]:animate-tooltip-slide-in-from-left',
+		// `!` so it outranks the higher-specificity data-[state=…] rules above
 		'motion-reduce:animate-none!'
 	]
 });

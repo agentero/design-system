@@ -1,6 +1,6 @@
 'use client';
 
-import { ComponentPropsWithRef, createContext, ReactNode, use } from 'react';
+import { ComponentPropsWithRef, createContext, ReactNode, use, useState } from 'react';
 
 import * as AvatarPrimitive from '@radix-ui/react-avatar';
 import { tv, VariantProps } from 'tailwind-variants';
@@ -24,7 +24,11 @@ export const avatarRecipe = tv({
 			'border-[var(--avatar-border-color,var(--color-border-default-base-primary))]',
 			'h-fit w-fit'
 		],
-		image: ['flex object-cover box-border h-full vertical-align-middle w-full'],
+		image: [
+			'flex object-cover box-border h-full vertical-align-middle w-full',
+			// Radix mounts the <img> once it has loaded, so @starting-style is its entrance.
+			'data-loaded-late:transition-opacity data-loaded-late:duration-200 data-loaded-late:starting:opacity-0'
+		],
 		fallback: ['uppercase', '[&_svg]:size-[1.5em] [&_svg]:fill-neutral-500']
 	},
 	variants: {
@@ -198,9 +202,24 @@ const AvatarRoot = ({ size, variant, type, ...props }: AvatarRootProps) => {
 
 type AvatarImageProps = ComponentPropsWithRef<typeof AvatarPrimitive.Image>;
 
-const AvatarImage = (props: AvatarImageProps) => {
+const AvatarImage = ({ onLoadingStatusChange, ...props }: AvatarImageProps) => {
 	const { slotsStyles } = useAvatar();
-	return <AvatarPrimitive.Image {...props} className={cn(slotsStyles.image(), props.className)} />;
+	// Only a photo that arrives after the fallback was shown fades in. A cached
+	// one is there on the first paint; fading it would add motion to every list
+	// of avatars on every mount.
+	const [loadedLate, setLoadedLate] = useState(false);
+
+	return (
+		<AvatarPrimitive.Image
+			{...props}
+			data-loaded-late={loadedLate || undefined}
+			onLoadingStatusChange={status => {
+				if (status === 'loading') setLoadedLate(true);
+				onLoadingStatusChange?.(status);
+			}}
+			className={cn(slotsStyles.image(), props.className)}
+		/>
+	);
 };
 
 /* --------------- Fallback --------------- */
