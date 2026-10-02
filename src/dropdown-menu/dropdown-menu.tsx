@@ -148,16 +148,17 @@ const contentStyles = tv({
 		'z-(--z-index-top-layer) flex flex-col rounded-lg bg-bg-default-base-primary p-1 shadow-xl',
 		'border border-border-default-base-primary',
 		'will-change-[transform,opacity]',
-		'data-[state=open]:animate-[dropdownSlideIn_200ms_ease-out]',
-		'data-[state=closed]:animate-[dropdownSlideOut_150ms_ease-in]',
-		'data-[side=bottom]:origin-top',
-		'data-[side=left]:origin-right',
-		'data-[side=right]:origin-left',
-		'data-[side=top]:origin-bottom',
-		'data-[side=bottom]:animate-[dropdownSlideInFromTop_200ms_ease-out]',
-		'data-[side=left]:animate-[dropdownSlideInFromRight_200ms_ease-out]',
-		'data-[side=right]:animate-[dropdownSlideInFromLeft_200ms_ease-out]',
-		'data-[side=top]:animate-[dropdownSlideInFromBottom_200ms_ease-out]'
+		// Radix computes the exact origin (side + align) so the scale grows from the trigger.
+		'origin-(--radix-dropdown-menu-content-transform-origin)',
+		// Gate the entrance on data-[state=open]: data-side is still set while closing,
+		// so an ungated side rule ties with the exit on specificity.
+		'data-[state=open]:data-[side=bottom]:animate-dropdown-slide-in-from-top',
+		'data-[state=open]:data-[side=left]:animate-dropdown-slide-in-from-right',
+		'data-[state=open]:data-[side=right]:animate-dropdown-slide-in-from-left',
+		'data-[state=open]:data-[side=top]:animate-dropdown-slide-in-from-bottom',
+		'data-[state=closed]:animate-dropdown-slide-out',
+		// `!` so it outranks the higher-specificity data-[state=…] rules above
+		'motion-reduce:animate-none!'
 	],
 	variants: {
 		hasTriggerWidth: {
@@ -263,7 +264,7 @@ export const Item = ({ className, ...props }: ItemProps) => (
 		data-slot="dropdown-menu-item"
 		className={cn(
 			'flex items-center gap-2 bg-bg-default-base-primary px-3 py-1.75 text-sm text-text-default-base-primary',
-			'cursor-pointer rounded-md no-underline transition-colors outline-none',
+			'cursor-pointer rounded-md no-underline outline-none',
 			'min-w-40',
 			'data-highlighted:bg-bg-default-base-primary-hover',
 			'data-disabled:pointer-events-none data-disabled:cursor-not-allowed',
@@ -419,7 +420,7 @@ export const SubTrigger = ({ className, children, ...props }: SubTriggerProps) =
 		data-slot="dropdown-menu-sub-trigger"
 		className={cn(
 			'flex items-center gap-2 bg-bg-default-base-primary px-3 py-1.75 text-sm text-text-default-base-primary',
-			'cursor-pointer rounded-md no-underline transition-colors outline-none',
+			'cursor-pointer rounded-md no-underline outline-none',
 			'min-w-40',
 			'data-highlighted:bg-bg-default-base-primary-hover',
 			'data-[state=open]:bg-bg-default-base-primary-hover',
@@ -445,16 +446,13 @@ const subContentStyles = tv({
 		'z-(--z-index-top-layer) flex flex-col rounded-lg bg-bg-default-base-primary p-1 shadow-xl',
 		'border border-border-default-base-primary',
 		'will-change-[transform,opacity]',
-		'data-[state=open]:animate-[dropdownSlideIn_200ms_ease-out]',
-		'data-[state=closed]:animate-[dropdownSlideOut_150ms_ease-in]',
-		'data-[side=bottom]:origin-top',
-		'data-[side=left]:origin-right',
-		'data-[side=right]:origin-left',
-		'data-[side=top]:origin-bottom',
-		'data-[side=bottom]:animate-[dropdownSlideInFromTop_200ms_ease-out]',
-		'data-[side=left]:animate-[dropdownSlideInFromRight_200ms_ease-out]',
-		'data-[side=right]:animate-[dropdownSlideInFromLeft_200ms_ease-out]',
-		'data-[side=top]:animate-[dropdownSlideInFromBottom_200ms_ease-out]'
+		'origin-(--radix-dropdown-menu-content-transform-origin)',
+		'data-[state=open]:data-[side=bottom]:animate-dropdown-slide-in-from-top',
+		'data-[state=open]:data-[side=left]:animate-dropdown-slide-in-from-right',
+		'data-[state=open]:data-[side=right]:animate-dropdown-slide-in-from-left',
+		'data-[state=open]:data-[side=top]:animate-dropdown-slide-in-from-bottom',
+		'data-[state=closed]:animate-dropdown-slide-out',
+		'motion-reduce:animate-none!'
 	]
 });
 

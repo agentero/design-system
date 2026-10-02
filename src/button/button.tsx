@@ -396,6 +396,9 @@ const ButtonLoading = () => (
 		className={cn(
 			'absolute inset-0 grid place-items-center',
 			'rounded-[inherit] bg-inherit',
+			// The overlay mounts when loading starts, so it fades in over the label
+			// instead of cutting to the spinner. Opacity only: safe under reduced motion.
+			'transition-opacity duration-150 starting:opacity-0',
 			'before:content-[""] before:block before:size-[1em]',
 			'before:border-2 before:border-solid before:rounded-full',
 			'before:border-current before:border-t-transparent',

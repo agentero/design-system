@@ -174,7 +174,7 @@ ToolBar.displayName = 'DataTable.ToolBar';
 /* ------------ DataTable Table ------------ */
 
 const orderIconStyles = tv({
-	base: 'size-4 transition-transform duration-200',
+	base: 'size-4 transition-transform duration-200 motion-reduce:transition-none',
 	variants: {
 		direction: {
 			asc: '',

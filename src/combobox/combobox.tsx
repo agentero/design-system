@@ -66,7 +66,7 @@ export const comboboxRecipe = tv({
 		indicator: [
 			'mr-2 flex size-4 shrink-0 items-center justify-center rounded-sm',
 			'border border-border-input-default bg-bg-input-normal',
-			'text-text-default-base-inverse-primary transition-colors duration-200 ease-in-out',
+			'text-text-default-base-inverse-primary transition-colors duration-150',
 			'data-selected:border-bg-checkbox-selected data-selected:bg-bg-checkbox-selected',
 			'[&>svg]:hidden data-selected:[&>svg]:block',
 			'group-data-disabled/item:border-border-checkbox-disabled',

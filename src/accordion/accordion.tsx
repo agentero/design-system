@@ -107,8 +107,8 @@ export const Content = ({ className, children, ...props }: AccordionContentProps
 		data-slot="accordion-content"
 		className={cn(
 			'overflow-hidden px-4 text-sm',
-			'motion-safe:data-[state=open]:animate-[accordionDown_200ms_ease-out]',
-			'motion-safe:data-[state=closed]:animate-[accordionUp_200ms_ease-out]',
+			'motion-safe:data-[state=open]:animate-accordion-down',
+			'motion-safe:data-[state=closed]:animate-accordion-up',
 			className
 		)}
 		{...props}>
