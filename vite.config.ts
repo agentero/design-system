@@ -13,7 +13,7 @@ import type { Plugin } from 'vite';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 
-import rootPkg from './package.json';
+import rootPkg from './package.json' with { type: 'json' };
 
 const __dirname =
 	typeof globalThis.__dirname !== 'undefined'
