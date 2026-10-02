@@ -6527,7 +6527,7 @@
         {
           "id": "components-inputgroup--with-button",
           "name": "With Button",
-          "snippet": "const WithButton = () => (\n    <InputGroup.Root>\n        <Input value=\"https://agentero.com/r/abc123\" readOnly aria-label=\"Referral link\" />\n        <Divider orientation=\"vertical\" />\n        <InputGroup.Addon variant=\"action\">\n            <Button variant=\"ghost\" size=\"md\" onClick={handleCopy}>\n                Copy link\n            </Button>\n        </InputGroup.Addon>\n    </InputGroup.Root>\n);"
+          "snippet": "const WithButton = () => (\n    <InputGroup.Root>\n        <Input value=\"https://agentero.com/r/abc123\" readOnly aria-label=\"Referral link\" />\n        <Divider orientation=\"vertical\" />\n        <InputGroup.Addon variant=\"action\">\n            <Button type=\"button\" variant=\"ghost\" size=\"md\" onClick={handleCopy}>\n                Copy link\n            </Button>\n        </InputGroup.Addon>\n    </InputGroup.Root>\n);"
         },
         {
           "id": "components-inputgroup--disabled",
@@ -6556,9 +6556,35 @@
           "snippet": "const InsideFieldText = () => (\n    <FieldText required>\n        <Label>Agency website</Label>\n        <InputGroup.Root>\n            <InputGroup.Text>https://</InputGroup.Text>\n            <Input type=\"text\" inputMode=\"url\" autoCapitalize=\"none\" placeholder=\"www.agentero.com\" />\n        </InputGroup.Root>\n        <Field.Description>Shown on your public profile.</Field.Description>\n    </FieldText>\n);",
           "description": "Inside a `FieldText` nothing changes for the group: the `Input` reads the\nfield's context at any depth, so the label names it and the description\ndescribes it with no ids written by hand. The frame is not in the way.",
           "summary": "Label and description reaching the input through the frame"
+        },
+        {
+          "id": "components-inputgroup--search-field",
+          "name": "Search Field",
+          "snippet": "const SearchField = () => (\n    <form onSubmit={handleSearchSubmit}>\n        <FieldStates\n            label=\"Agency\"\n            tooltip=\"Search by agency name or NPN.\"\n            required\n            error=\"Pick an agency from the list.\">\n            <SearchInput />\n        </FieldStates>\n    </form>\n);"
+        },
+        {
+          "id": "components-inputgroup--email-field",
+          "name": "Email Field",
+          "snippet": "const EmailField = () => (\n    <FieldStates label=\"Email\" required error=\"Enter a valid email address.\">\n        <InputGroup.Root>\n            <InputGroup.Addon>\n                <IconMail />\n            </InputGroup.Addon>\n            <Input type=\"email\" placeholder=\"me@email.com\" />\n        </InputGroup.Root>\n    </FieldStates>\n);",
+          "description": "The email field from the Portal UI library: a leading icon is all it adds\nto the input.",
+          "summary": "Email field with a leading icon, valid and invalid"
+        },
+        {
+          "id": "components-inputgroup--price-field",
+          "name": "Price Field",
+          "snippet": "const PriceField = () => (\n    <FieldStates label=\"Price\" required error=\"Enter a price above zero.\">\n        <PriceInput />\n    </FieldStates>\n);",
+          "description": "The price field from the Portal UI library: a currency symbol before the\nvalue and a currency picker after it. The picker is a `DropdownMenu` whose\ntrigger fills an `action` addon, so it keeps the frame's height and an inset\nfocus ring.",
+          "summary": "Price field with a symbol and a currency picker, valid and invalid"
+        },
+        {
+          "id": "components-inputgroup--phone-field",
+          "name": "Phone Field",
+          "snippet": "const PhoneField = () => (\n    <FieldStates label=\"Phone number\" error=\"Enter a 10-digit phone number.\">\n        <PhoneInput />\n    </FieldStates>\n);",
+          "description": "The optional phone field from the Portal UI library: a country code picker\nbefore the number. The picker leads, so the `action` addon rounds its\nbutton's start corners with the frame.",
+          "summary": "Phone field with a leading country code picker, valid and invalid"
         }
       ],
-      "import": "import {\n    Button,\n    Divider,\n    Field,\n    FieldText,\n    IconSearch,\n    Input,\n    InputGroup,\n    Label,\n    Tag,\n} from \"@agentero/design-system\";"
+      "import": "import {\n    Button,\n    Divider,\n    DropdownMenu,\n    Field,\n    FieldText,\n    IconCancel,\n    IconKeyboardArrowDown,\n    IconSearch,\n    Input,\n    InputGroup,\n    Label,\n    Tag,\n} from \"@agentero/design-system\";"
     },
     "components-input": {
       "id": "components-input",
@@ -9526,6 +9552,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5331
+    "durationMs": 3782
   }
 }

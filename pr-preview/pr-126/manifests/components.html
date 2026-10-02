@@ -588,13 +588,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">34 components ok</span><span class="filter-pill ok" aria-disabled="true">275 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">34 components ok</span><span class="filter-pill ok" aria-disabled="true">279 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>5.3s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>3.8s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -7061,7 +7061,7 @@ they cannot change.</div>
       <div class="badges">
         
         
-        <label for="c-18-components-inputgroup-stories" class="badge ok as-toggle">9 stories</label>
+        <label for="c-18-components-inputgroup-stories" class="badge ok as-toggle">13 stories</label>
         
         
       </div>
@@ -7105,8 +7105,11 @@ hands its state to the frame through `:has()`, so focus, `disabled`,
                 <pre><code>import {
     Button,
     Divider,
+    DropdownMenu,
     Field,
     FieldText,
+    IconCancel,
+    IconKeyboardArrowDown,
     IconSearch,
     Input,
     InputGroup,
@@ -7216,7 +7219,7 @@ the corner instead of competing with it.</div>
         &lt;Input value=&quot;https://agentero.com/r/abc123&quot; readOnly aria-label=&quot;Referral link&quot; /&gt;
         &lt;Divider orientation=&quot;vertical&quot; /&gt;
         &lt;InputGroup.Addon variant=&quot;action&quot;&gt;
-            &lt;Button variant=&quot;ghost&quot; size=&quot;md&quot; onClick={handleCopy}&gt;
+            &lt;Button type=&quot;button&quot; variant=&quot;ghost&quot; size=&quot;md&quot; onClick={handleCopy}&gt;
                 Copy link
             &lt;/Button&gt;
         &lt;/InputGroup.Addon&gt;
@@ -7295,6 +7298,75 @@ describes it with no ids written by hand. The frame is not in the way.</div>
         &lt;/InputGroup.Root&gt;
         &lt;Field.Description&gt;Shown on your public profile.&lt;/Field.Description&gt;
     &lt;/FieldText&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Search Field</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              
+              <pre><code>const SearchField = () =&gt; (
+    &lt;form onSubmit={handleSearchSubmit}&gt;
+        &lt;FieldStates
+            label=&quot;Agency&quot;
+            tooltip=&quot;Search by agency name or NPN.&quot;
+            required
+            error=&quot;Pick an agency from the list.&quot;&gt;
+            &lt;SearchInput /&gt;
+        &lt;/FieldStates&gt;
+    &lt;/form&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Email Field</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Email field with a leading icon, valid and invalid</div>
+              <div class="hint">The email field from the Portal UI library: a leading icon is all it adds
+to the input.</div>
+              <pre><code>const EmailField = () =&gt; (
+    &lt;FieldStates label=&quot;Email&quot; required error=&quot;Enter a valid email address.&quot;&gt;
+        &lt;InputGroup.Root&gt;
+            &lt;InputGroup.Addon&gt;
+                &lt;IconMail /&gt;
+            &lt;/InputGroup.Addon&gt;
+            &lt;Input type=&quot;email&quot; placeholder=&quot;me@email.com&quot; /&gt;
+        &lt;/InputGroup.Root&gt;
+    &lt;/FieldStates&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Price Field</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Price field with a symbol and a currency picker, valid and invalid</div>
+              <div class="hint">The price field from the Portal UI library: a currency symbol before the
+value and a currency picker after it. The picker is a `DropdownMenu` whose
+trigger fills an `action` addon, so it keeps the frame&#39;s height and an inset
+focus ring.</div>
+              <pre><code>const PriceField = () =&gt; (
+    &lt;FieldStates label=&quot;Price&quot; required error=&quot;Enter a price above zero.&quot;&gt;
+        &lt;PriceInput /&gt;
+    &lt;/FieldStates&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Phone Field</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Phone field with a leading country code picker, valid and invalid</div>
+              <div class="hint">The optional phone field from the Portal UI library: a country code picker
+before the number. The picker leads, so the `action` addon rounds its
+button&#39;s start corners with the frame.</div>
+              <pre><code>const PhoneField = () =&gt; (
+    &lt;FieldStates label=&quot;Phone number&quot; error=&quot;Enter a 10-digit phone number.&quot;&gt;
+        &lt;PhoneInput /&gt;
+    &lt;/FieldStates&gt;
 );</code></pre>
             </div>
         </div>
