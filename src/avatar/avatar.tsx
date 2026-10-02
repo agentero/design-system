@@ -204,9 +204,8 @@ type AvatarImageProps = ComponentPropsWithRef<typeof AvatarPrimitive.Image>;
 
 const AvatarImage = ({ onLoadingStatusChange, ...props }: AvatarImageProps) => {
 	const { slotsStyles } = useAvatar();
-	// Only a photo that arrives after the fallback was shown fades in. A cached
-	// one is there on the first paint; fading it would add motion to every list
-	// of avatars on every mount.
+	// Only a photo that had to load fades in. A cached one is there on the first
+	// paint; fading it would add motion to every list of avatars on every mount.
 	const [loadedLate, setLoadedLate] = useState(false);
 
 	return (
@@ -307,6 +306,10 @@ export const Avatar = ({
 	...props
 }: AvatarProps) => {
 	const colorizeStyle = colorize ? getStyleFromColorize(colorize) : undefined;
+	// The fallback is for a missing or failed image, not for a loading one. While
+	// a photo is on its way the avatar stays empty: showing the fallback for a few
+	// frames and then swapping it for the photo reads as a pop.
+	const [imageFailed, setImageFailed] = useState(false);
 
 	return (
 		<AvatarRoot
@@ -316,8 +319,12 @@ export const Avatar = ({
 			variant={variant}
 			type={type}
 			style={{ ...colorizeStyle, ...props.style }}>
-			<AvatarImage alt={alt} src={src} />
-			<AvatarFallback>{fallback}</AvatarFallback>
+			<AvatarImage
+				alt={alt}
+				src={src}
+				onLoadingStatusChange={status => setImageFailed(status === 'error')}
+			/>
+			{(!src || imageFailed) && <AvatarFallback>{fallback}</AvatarFallback>}
 		</AvatarRoot>
 	);
 };
