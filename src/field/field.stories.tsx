@@ -4,8 +4,10 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { Field, FieldContext, FieldErrorLike, useFieldContext } from '.';
+import { cn } from '../../lib';
 import { inputRecipe } from '../input';
 import { Label } from '../label';
+import { Switch, SwitchProps } from '../switch';
 
 /**
  * Field lays out a single form field — label, control, helper text and error —
@@ -57,7 +59,7 @@ type Story = StoryObj<typeof meta>;
  * own context instead (`Input` reads `InputContext`, provided by `FieldText`).
  * It borrows `inputRecipe` so it looks exactly like the design system's Input.
  */
-const DemoInput = (props: ComponentProps<'input'>) => {
+const DemoInput = ({ className, ...props }: ComponentProps<'input'>) => {
 	const field = useFieldContext();
 
 	return (
@@ -68,7 +70,25 @@ const DemoInput = (props: ComponentProps<'input'>) => {
 			required={field?.required || undefined}
 			disabled={field?.disabled || undefined}
 			readOnly={field?.readOnly || undefined}
-			className={inputRecipe()}
+			{...props}
+			className={cn(inputRecipe(), className)}
+		/>
+	);
+};
+
+/**
+ * The same hand wiring as `DemoInput`, applied to the design system's Switch.
+ */
+const DemoSwitch = (props: SwitchProps) => {
+	const field = useFieldContext();
+
+	return (
+		<Switch
+			id={field?.controlId}
+			aria-describedby={field?.describedBy}
+			aria-invalid={field?.invalid || undefined}
+			required={field?.required || undefined}
+			disabled={field?.disabled || undefined}
 			{...props}
 		/>
 	);
@@ -403,7 +423,7 @@ export const Horizontal: Story = {
 					<Label>Auto-renew</Label>
 					<Field.Description>Renews the policy automatically before it expires.</Field.Description>
 				</Field.Content>
-				<DemoInput type="checkbox" className="size-5" />
+				<DemoSwitch className="self-center" />
 			</Field.Root>
 
 			<div className="w-[20rem]" data-testid="narrow">
@@ -435,7 +455,7 @@ export const Horizontal: Story = {
 		await expect(longInput).toHaveAccessibleDescription('Shown on your public profile.');
 
 		// A natural-width control sits at the right edge too.
-		const toggle = canvas.getByTestId('switch').querySelector('input') as HTMLElement;
+		const toggle = canvas.getByRole('switch', { name: 'Auto-renew' });
 
 		await expect(Math.round(rect(toggle).right)).toBe(
 			Math.round(rect(canvas.getByTestId('switch')).right)

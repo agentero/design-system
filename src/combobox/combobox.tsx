@@ -2,14 +2,15 @@
 
 // Stays: `@base-ui/react/combobox` is `export * as Combobox`, so its parts hang off one
 // export like cmdk's — without the directive they arrive `undefined` (see `command.tsx`).
-import { ComponentPropsWithRef, use } from 'react';
+import { ComponentPropsWithRef, createContext, use } from 'react';
 
 import { Combobox as ComboboxPrimitive } from '@base-ui/react/combobox';
 import { tv } from 'tailwind-variants';
 
 import { cn, useMergeProps } from '../../lib';
+import { useFieldContext } from '../field';
 import { InputContext, inputRecipe, InputSize } from '../input';
-import { IconCancel } from './icons';
+import { IconCancel, IconCheck } from './icons';
 
 /**
  * Style recipe for Combobox. The surface carries its own chrome — border,
@@ -53,11 +54,24 @@ export const comboboxRecipe = tv({
 		],
 		item: [
 			// Panel radius minus the 2px gap, so the row reads as concentric with the panel.
-			'mx-2 my-px flex cursor-pointer items-center rounded-[calc(var(--radius-md)-2px)]',
+			'group/item mx-2 my-px flex cursor-pointer items-center rounded-[calc(var(--radius-md)-2px)]',
 			'px-3 py-2 text-sm text-text-default-base-primary select-none',
 			// `data-highlighted` covers pointer and keyboard alike; no `hover:` needed.
 			'data-highlighted:bg-bg-default-base-primary-hover',
 			'data-disabled:cursor-default data-disabled:text-text-default-base-tertiary'
+		],
+		// A checkbox lookalike on the same tokens as `Checkbox`, so a multi-select row reads as the
+		// legacy checkbox row did. Presentational: the row itself is the option, so a real checkbox
+		// here would nest one control inside another.
+		indicator: [
+			'mr-2 flex size-4 shrink-0 items-center justify-center rounded-sm',
+			'border border-border-input-default bg-bg-input-normal',
+			'text-text-default-base-inverse-primary transition-colors duration-200 ease-in-out',
+			'data-selected:border-bg-checkbox-selected data-selected:bg-bg-checkbox-selected',
+			'[&>svg]:hidden data-selected:[&>svg]:block',
+			'group-data-disabled/item:border-border-checkbox-disabled',
+			'group-data-disabled/item:data-selected:border-bg-checkbox-disabled',
+			'group-data-disabled/item:data-selected:bg-bg-checkbox-disabled'
 		],
 		// Both stay mounted to be announced, so idle they collapse instead of hiding.
 		message: ['mx-2 my-px px-3 py-2 text-sm text-text-default-base-tertiary', 'empty:m-0 empty:p-0']
@@ -65,6 +79,11 @@ export const comboboxRecipe = tv({
 });
 
 const slots = comboboxRecipe();
+
+// Whether the nearest `Root` holds several values. `Item` reads it to show the selection
+// indicator and `Input` to drop the clear button; Base UI keeps its own selection mode in
+// a private store.
+const MultipleContext = createContext(false);
 
 /**
  * Root of a combobox: a text input that filters a list of options and writes the
@@ -74,6 +93,12 @@ const slots = comboboxRecipe();
  * Pass the options as `items`. For a list that comes from the server, set
  * `filter={null}`, hand the already-filtered rows to `filteredItems`, and request
  * them from `onInputValueChange`; `Status` then announces the wait.
+ *
+ * With `multiple`, the value is an array and picking a row toggles it. The list
+ * stays open and keeps the typed query between picks, so several rows can be
+ * ticked from one search; closing the list (Escape, a click outside) still resets
+ * the query. Each row then shows whether it is selected — see `Item`. Nothing is
+ * written back into the input: render the selection next to the field.
  *
  * @summary Root provider for an input-triggered filterable list
  * @see {@link https://base-ui.com/react/components/combobox|Base UI Combobox}
@@ -93,10 +118,26 @@ const slots = comboboxRecipe();
  * </Combobox.Root>
  * ```
  */
-export const Root = <Value, Multiple extends boolean | undefined = false, Item = Value>(
-	props: ComboboxPrimitive.Root.Props<Value, Multiple, Item>
-) => {
-	return <ComboboxPrimitive.Root {...props} />;
+export const Root = <Value, Multiple extends boolean | undefined = false, Item = Value>({
+	onOpenChange,
+	...props
+}: ComboboxPrimitive.Root.Props<Value, Multiple, Item>) => {
+	const multiple = Boolean(props.multiple);
+
+	const handleOpenChange: typeof onOpenChange = (open, eventDetails) => {
+		onOpenChange?.(open, eventDetails);
+		// Base UI closes the list (and so clears the query) after a pick made while filtering;
+		// cancelling that request is its documented way to keep picking from one search.
+		if (multiple && !open && eventDetails.reason === 'item-press') {
+			eventDetails.cancel();
+		}
+	};
+
+	return (
+		<MultipleContext value={multiple}>
+			<ComboboxPrimitive.Root onOpenChange={handleOpenChange} {...props} />
+		</MultipleContext>
+	);
 };
 Root.displayName = 'Combobox.Root';
 
@@ -116,11 +157,19 @@ const ROOT_OWNED_KEYS = new Set(['value', 'defaultValue', 'onChange']);
 
 const useComboboxInputContext = (props: InputProps) => {
 	const context = use(InputContext);
+	const field = useFieldContext();
 	const wiring = context
 		? Object.fromEntries(Object.entries(context).filter(([key]) => !ROOT_OWNED_KEYS.has(key)))
 		: null;
 
-	return useMergeProps(wiring as Partial<InputProps> | null, props);
+	// The field's `<label for>` is not enough here: while the list is open, Base UI hides
+	// everything but the input and the list from assistive technology, label included, and
+	// Chrome then drops it from the name. A direct `aria-labelledby` reference survives that.
+	// Only as a default: a name the consumer gave, either way, wins.
+	const named = 'aria-label' in props || 'aria-labelledby' in props;
+	const labelledBy = !named && field ? { 'aria-labelledby': field.labelId } : null;
+
+	return useMergeProps({ ...wiring, ...labelledBy } as Partial<InputProps> | null, props);
 };
 
 /**
@@ -129,9 +178,19 @@ const useComboboxInputContext = (props: InputProps) => {
  * `InputContext`, so inside a `FieldText` the label, the hint and the error point
  * at it with nothing passed by hand. Its own props win over the context.
  *
- * It always carries a clear button, which Base UI mounts only once there is
- * something to clear, so an untouched field shows nothing. Name it with
- * `clearLabel` when a page has more than one combobox.
+ * Inside a field it also names itself with `aria-labelledby` pointing at the
+ * label, on top of the label's own `for`. While the list is open, Base UI hides
+ * everything but the input and the list from assistive technology, label
+ * included, and a `<label for>` alone then stops naming the input; a direct
+ * reference keeps the name. Outside a field, give it `aria-label` or an
+ * `aria-labelledby` of your own.
+ *
+ * It carries a clear button, which Base UI mounts only once there is something
+ * to clear, so an untouched field shows nothing. Name it with `clearLabel` when
+ * a page has more than one combobox. Under a `multiple` root there is no clear
+ * button: Base UI's would drop the whole selection, while a cross inside a search
+ * field reads as "clear what I typed" — and the selection is rendered outside
+ * the field, with its own way to remove each entry.
  *
  * Pass `render` to swap the element for a richer control — a field with a leading
  * search icon, for instance — and the combobox wiring rides along.
@@ -141,6 +200,7 @@ const useComboboxInputContext = (props: InputProps) => {
  */
 export const Input = ({ clearLabel = 'Clear', ...props }: InputProps) => {
 	const { className, size = 'md', ...rest } = useComboboxInputContext(props);
+	const multiple = use(MultipleContext);
 
 	return (
 		<div data-slot="combobox-field" className={slots.field()}>
@@ -150,12 +210,14 @@ export const Input = ({ clearLabel = 'Clear', ...props }: InputProps) => {
 				className={cn(inputRecipe({ size }), 'pr-11', className)}
 				{...rest}
 			/>
-			<ComboboxPrimitive.Clear
-				data-slot="combobox-clear"
-				aria-label={clearLabel}
-				className={slots.clear()}>
-				<IconCancel />
-			</ComboboxPrimitive.Clear>
+			{!multiple && (
+				<ComboboxPrimitive.Clear
+					data-slot="combobox-clear"
+					aria-label={clearLabel}
+					className={slots.clear()}>
+					<IconCancel />
+				</ComboboxPrimitive.Clear>
+			)}
 		</div>
 	);
 };
@@ -246,16 +308,36 @@ type ItemProps = ComponentPropsWithRef<typeof ComboboxPrimitive.Item>;
  * A selectable row. `value` is what the combobox stores and what
  * `itemToStringLabel` turns into the text written back into the input.
  *
+ * Under a `multiple` root it leads with a checkbox-shaped indicator that fills
+ * while the row is selected, and the row announces `aria-selected` to assistive
+ * technology. The indicator is decoration, not a control: clicking anywhere on
+ * the row, or pressing Enter on it, is what toggles the selection.
+ *
  * @summary Selectable row inside the list
  * @dataAttribute {string} data-slot - Always set to "combobox-item"
+ * @dataAttribute {string} data-selected - Present while the row is selected
  */
-export const Item = ({ className, ...props }: ItemProps) => (
-	<ComboboxPrimitive.Item
-		data-slot="combobox-item"
-		className={cn(slots.item(), className)}
-		{...props}
-	/>
-);
+export const Item = ({ className, children, ...props }: ItemProps) => {
+	const multiple = use(MultipleContext);
+
+	return (
+		<ComboboxPrimitive.Item
+			data-slot="combobox-item"
+			className={cn(slots.item(), className)}
+			{...props}>
+			{multiple && (
+				// Kept mounted so the empty box shows the row can be ticked, as a checkbox would.
+				<ComboboxPrimitive.ItemIndicator
+					keepMounted
+					data-slot="combobox-item-indicator"
+					className={slots.indicator()}>
+					<IconCheck className="size-3.5" />
+				</ComboboxPrimitive.ItemIndicator>
+			)}
+			{children}
+		</ComboboxPrimitive.Item>
+	);
+};
 Item.displayName = 'Combobox.Item';
 
 type EmptyProps = ComponentPropsWithRef<typeof ComboboxPrimitive.Empty>;
