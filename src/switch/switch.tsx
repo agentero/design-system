@@ -12,9 +12,10 @@ export const switchRecipe = tv({
 		wrapper: 'inline-flex items-center gap-2.5',
 		root: [
 			'peer inline-flex shrink-0 cursor-pointer items-center rounded-full transition-colors',
-			'bg-bg-default-base-tertiary data-[state=checked]:bg-bg-default-base-inverse-primary',
+			'bg-slate-200 enabled:hover:bg-slate-300',
+			'enabled:data-[state=checked]:bg-slate-700 enabled:data-[state=checked]:hover:bg-slate-900',
 			'focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring-button-primary',
-			'disabled:cursor-not-allowed disabled:opacity-50'
+			'disabled:cursor-not-allowed disabled:bg-slate-100'
 		],
 		thumb:
 			'block translate-x-0 rounded-full bg-bg-default-base-primary shadow-sm transition-transform',
