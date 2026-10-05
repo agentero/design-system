@@ -56,10 +56,12 @@ export const comboboxRecipe = tv({
 			'motion-reduce:transition-none'
 		],
 		// Never taller than the room left: the surface clips there and would hide the last rows.
-		// When empty, its padding alone would be a 16px band under `Empty`.
+		// When empty, its padding alone would be a 16px band under `Empty`. `:empty`, not Base UI's
+		// `data-empty`: that one tracks the root's `items`, so a list whose rows are rendered by hand
+		// (a server search with no `items`) is always flagged empty and loses its padding.
 		list: [
 			'max-h-[min(10.25rem,var(--available-height))] overflow-y-auto scroll-py-2 py-2 outline-none',
-			'data-empty:py-0'
+			'empty:py-0'
 		],
 		item: [
 			// Panel radius minus the 2px gap, so the row reads as concentric with the panel.
