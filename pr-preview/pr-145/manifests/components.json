@@ -2819,7 +2819,7 @@
           "id": "components-combobox--select-with-clear",
           "name": "Select With Clear",
           "snippet": "const SelectWithClear = () => (\n    <Combobox.Root items={STATES} defaultValue=\"Florida\">\n        <Combobox.Input variant=\"select\" showClear placeholder=\"Choose a state\" aria-label=\"State\" />\n        <Combobox.Content>\n            <Combobox.Empty>No matches found</Combobox.Empty>\n            <Combobox.List>\n                {(state: string) => (\n                    <Combobox.Item key={state} value={state}>\n                        {state}\n                    </Combobox.Item>\n                )}\n            </Combobox.List>\n        </Combobox.Content>\n    </Combobox.Root>\n);",
-          "description": "`showClear` overrides the variant's default: here it adds the clear button to a\n`select`, before the chevron, so a picked option can be removed without\nselecting the text and deleting it. Passing `false` drops it from `search`.",
+          "description": "`showClear` overrides the variant's default: here it adds the clear button to a\n`select`, so a picked option can be removed without selecting the text and\ndeleting it. While there is a value it takes the chevron's place; clearing\nbrings the chevron back. Passing `false` drops it from `search`.",
           "summary": "Select field with a clear button added through showClear"
         },
         {
@@ -9590,6 +9590,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4883
+    "durationMs": 5223
   }
 }

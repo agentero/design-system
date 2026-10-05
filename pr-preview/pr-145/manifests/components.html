@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.9s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>5.2s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -3246,8 +3246,9 @@ opens the list from the keyboard with the arrow keys.</div>
               </div>
               <div>Select field with a clear button added through showClear</div>
               <div class="hint">`showClear` overrides the variant&#39;s default: here it adds the clear button to a
-`select`, before the chevron, so a picked option can be removed without
-selecting the text and deleting it. Passing `false` drops it from `search`.</div>
+`select`, so a picked option can be removed without selecting the text and
+deleting it. While there is a value it takes the chevron&#39;s place; clearing
+brings the chevron back. Passing `false` drops it from `search`.</div>
               <pre><code>const SelectWithClear = () =&gt; (
     &lt;Combobox.Root items={STATES} defaultValue=&quot;Florida&quot;&gt;
         &lt;Combobox.Input variant=&quot;select&quot; showClear placeholder=&quot;Choose a state&quot; aria-label=&quot;State&quot; /&gt;
