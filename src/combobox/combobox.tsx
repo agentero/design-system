@@ -77,7 +77,7 @@ export const comboboxRecipe = tv({
 		// here would nest one control inside another.
 		indicator: [
 			'mr-2 flex size-4 shrink-0 items-center justify-center rounded-sm',
-			'border border-border-input-default bg-bg-input-normal',
+			'border-[1.5px] border-border-checkbox-default bg-bg-input-normal',
 			'text-text-default-base-inverse-primary transition-colors duration-150',
 			'data-selected:border-bg-checkbox-selected data-selected:bg-bg-checkbox-selected',
 			'[&>svg]:hidden data-selected:[&>svg]:block',
@@ -513,7 +513,7 @@ export const Item = ({ className, children, ...props }: ItemProps) => {
 					keepMounted
 					data-slot="combobox-item-indicator"
 					className={slots.indicator()}>
-					<IconCheck className="size-3.5" />
+					<IconCheck className="size-4 shrink-0" />
 				</ComboboxPrimitive.ItemIndicator>
 			)}
 			{children}
