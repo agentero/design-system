@@ -15,7 +15,9 @@ import { IconCancel, IconCheck, IconKeyboardArrowDown, IconSearch } from './icon
 
 /**
  * Style recipe for Combobox. Slots: `action` and `trigger` (the clear and
- * chevron buttons inside the input's frame, which is `InputGroup`'s), `content`,
+ * chevron buttons inside the input's frame, which is `InputGroup`'s),
+ * `triggerReplaced` (hides the chevron once the clear button has a value to
+ * clear), `content`,
  * `list`, `item`, `indicator` and `message`. The surface carries its
  * own chrome — border, background and shadow — because the list it holds is
  * plain content.
@@ -33,6 +35,9 @@ export const comboboxRecipe = tv({
 		],
 		trigger:
 			'transition-[rotate] duration-100 data-popup-open:rotate-180 motion-reduce:transition-none',
+		// With a clear button beside it, the chevron gives way to it once there is a value, as in
+		// Base UI's own example. Base UI marks the frame `data-placeholder` while there is none.
+		triggerReplaced: '[[data-slot=combobox-field]:not([data-placeholder])_&]:hidden',
 		content: [
 			'w-(--anchor-width) max-h-(--available-height) overflow-hidden rounded-md',
 			'border border-border-default-base-primary bg-bg-default-base-primary shadow-lg',
@@ -213,7 +218,8 @@ type InputProps = Omit<ComponentPropsWithRef<typeof ComboboxPrimitive.Input>, 's
 	/**
 	 * Whether a clear button follows the input once an option is picked.
 	 * Defaults to `true` for `search` and `false` for `plain` and `select`; pass
-	 * it to override the variant. Ignored under a `multiple` root, which never
+	 * it to override the variant. On a `select` it replaces the chevron while
+	 * there is a value. Ignored under a `multiple` root, which never
 	 * shows one.
 	 */
 	showClear?: boolean;
@@ -271,7 +277,8 @@ const useComboboxInputContext = (props: InputProps) => {
  *   the user may want to browse before typing.
  *
  * Only `search` carries a clear button by default; `showClear` adds it to the
- * other two or drops it from `search`. Base UI mounts it only once there is
+ * other two or drops it from `search`. On a `select`, the clear button takes the
+ * chevron's place once an option is picked; the list still opens from the input. Base UI mounts it only once there is
  * something to clear — a picked option — so an untouched field shows nothing. Name it with
  * `clearLabel`, and the chevron with `triggerLabel`, when a page has more than
  * one combobox.
@@ -329,7 +336,7 @@ export const Input = ({
 				<ComboboxPrimitive.Trigger
 					data-slot="combobox-trigger"
 					aria-label={triggerLabel}
-					className={cn(slots.action(), slots.trigger())}>
+					className={cn(slots.action(), slots.trigger(), showClear && slots.triggerReplaced())}>
 					<IconKeyboardArrowDown />
 				</ComboboxPrimitive.Trigger>
 			)}

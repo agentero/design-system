@@ -213,8 +213,9 @@ export const Select: Story = {
 
 /**
  * `showClear` overrides the variant's default: here it adds the clear button to a
- * `select`, before the chevron, so a picked option can be removed without
- * selecting the text and deleting it. Passing `false` drops it from `search`.
+ * `select`, so a picked option can be removed without selecting the text and
+ * deleting it. While there is a value it takes the chevron's place; clearing
+ * brings the chevron back. Passing `false` drops it from `search`.
  *
  * @summary Select field with a clear button added through showClear
  */
@@ -237,15 +238,18 @@ export const SelectWithClear: Story = {
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 		const input = canvas.getByRole('combobox', { name: 'State' });
-		const clear = canvas.getByRole('button', { name: /clear/i });
+		const trigger = canvasElement.querySelector<HTMLElement>('[data-slot="combobox-trigger"]')!;
 
-		// The clear button comes first, the chevron closes the frame.
-		await expect(clear.nextElementSibling).toHaveAttribute('data-slot', 'combobox-trigger');
-
-		await userEvent.click(clear);
+		// A value: the clear button stands where the chevron was.
+		await expect(trigger).not.toBeVisible();
+		await userEvent.click(canvas.getByRole('button', { name: /clear/i }));
 		await waitFor(() => expect(input).toHaveValue(''));
 		await expect(input).toHaveFocus();
 		await userEvent.keyboard('{Escape}');
+
+		// No value: the clear button is gone and the chevron is back.
+		await expect(canvas.queryByRole('button', { name: /clear/i })).not.toBeInTheDocument();
+		await expect(trigger).toBeVisible();
 	}
 };
 
