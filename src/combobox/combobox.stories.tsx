@@ -160,6 +160,7 @@ export const Plain: Story = {
 
 		// A picked value would mount the clear button in the other variants.
 		await expect(canvas.queryByRole('button', { name: /clear/i })).not.toBeInTheDocument();
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
 	}
 };
 
@@ -208,6 +209,7 @@ export const Select: Story = {
 		await userEvent.click(await body.findByRole('option', { name: 'Florida' }));
 		await waitFor(() => expect(input).toHaveValue('Florida'));
 		await expect(canvas.queryByRole('button', { name: /clear/i })).not.toBeInTheDocument();
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
 	}
 };
 
@@ -246,6 +248,9 @@ export const SelectWithClear: Story = {
 		await waitFor(() => expect(input).toHaveValue(''));
 		await expect(input).toHaveFocus();
 		await userEvent.keyboard('{Escape}');
+		await waitFor(() =>
+			expect(within(document.body).queryByRole('listbox')).not.toBeInTheDocument()
+		);
 
 		// No value: the clear button is gone and the chevron is back.
 		await expect(canvas.queryByRole('button', { name: /clear/i })).not.toBeInTheDocument();
@@ -493,6 +498,7 @@ export const AsyncSearch: Story = {
 		);
 		await expect(body.queryByRole('option')).not.toBeInTheDocument();
 		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
 	}
 };
 
@@ -599,6 +605,7 @@ export const AsyncSearchWithStatus: Story = {
 		await userEvent.click(await body.findByRole('option', { name: 'Anchor Brokers' }));
 		await waitFor(() => expect(input).toHaveValue('Anchor Brokers'));
 		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
 	}
 };
 
@@ -652,6 +659,9 @@ export const InsideFieldText: Story = {
 		await within(document.body).findByRole('listbox');
 		await expect(input).toHaveAccessibleName('Agency');
 		await userEvent.keyboard('{Escape}');
+		await waitFor(() =>
+			expect(within(document.body).queryByRole('listbox')).not.toBeInTheDocument()
+		);
 	}
 };
 
