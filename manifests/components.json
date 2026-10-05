@@ -2007,7 +2007,7 @@
         "displayName": "Combobox.Root",
         "exportName": "Combobox",
         "filePath": "/home/runner/work/design-system/design-system/src/combobox/index.ts",
-        "description": "Root of a combobox: a text input that filters a list of options and writes the\nchosen one back into itself. With `Input` as the only trigger, the list opens on\nfocus or on the first keystroke.\n\nPass the options as `items`. For a list that comes from the server, set\n`filter={null}`, hand the already-filtered rows to `filteredItems`, and request\nthem from `onInputValueChange`; `Status` then announces the wait.\n\nWith `multiple`, the value is an array and picking a row toggles it. The list\nstays open and keeps the typed query between picks, so several rows can be\nticked from one search; closing the list (Escape, a click outside) still resets\nthe query. Each row then shows whether it is selected — see `Item`. Nothing is\nwritten back into the input: render the selection next to the field.",
+        "description": "Root of a combobox: a text input that filters a list of options and writes the\nchosen one back into itself. The list opens on focus, on the first keystroke\nor from the chevron of `Input`'s `select` variant.\n\nFor a search against an API, set `minInputLength` so the list stays shut until\nthe query is worth sending: a field that opens an empty list on focus reads as\nbroken. For a pick from a short fixed list with no typing at all, prefer a\nselect.\n\nPass the options as `items`. For a list that comes from the server, set\n`filter={null}`, hand the already-filtered rows to `filteredItems`, and request\nthem from `onInputValueChange`; `Status` then announces the wait.\n\nEvery Base UI root prop is accepted and forwarded — `items`, `filter`,\n`value`, `onValueChange` and so on. `open` stays the consumer's to control;\n`minInputLength` only refuses to open below the minimum.\n\nWith `multiple`, the value is an array and picking a row toggles it. The list\nstays open and keeps the typed query between picks, so several rows can be\nticked from one search; closing the list (Escape, a click outside) still resets\nthe query. Each row then shows whether it is selected — see `Item`. Nothing is\nwritten back into the input: render the selection next to the field.",
         "jsDocTags": {
           "summary": [
             "Root provider for an input-triggered filterable list"
@@ -2769,6 +2769,27 @@
                 "fileName": "node_modules/@base-ui/react/combobox/root/ComboboxRoot.d.mts"
               }
             ]
+          },
+          "minInputLength": {
+            "name": "minInputLength",
+            "required": false,
+            "type": {
+              "name": "number"
+            },
+            "description": "Characters the query needs, spaces aside, before the list opens. Below it\nfocusing, clicking or pressing the chevron leaves the list shut, and\ndeleting back under it closes the list. Defaults to `0`: the list opens on\nfocus.",
+            "defaultValue": {
+              "value": "0"
+            },
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "src/combobox/combobox.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/combobox/combobox.tsx"
+              }
+            ]
           }
         }
       },
@@ -2777,7 +2798,29 @@
           "id": "components-combobox--default",
           "name": "Default",
           "snippet": "const Default = () => (\n    <Combobox.Root items={STATES}>\n        <Combobox.Input placeholder=\"Search states\" aria-label=\"Search states\" />\n        <Combobox.Content>\n            <Combobox.Empty>No matches found</Combobox.Empty>\n            <Combobox.List>\n                {(state: string) => (\n                    <Combobox.Item key={state} value={state}>\n                        {state}\n                    </Combobox.Item>\n                )}\n            </Combobox.List>\n        </Combobox.Content>\n    </Combobox.Root>\n);",
-          "description": "The common case: options are already in memory and Base UI filters them against\nwhat you type. Selecting a row fills the input and closes the list."
+          "description": "The common case: options are already in memory and Base UI filters them against\nwhat you type. Selecting a row fills the input and closes the list. The field is\na search out of the box — a magnifier in front, a clear button once something is\npicked — and the list hangs from the whole field.",
+          "summary": "Search field with a magnifier and clear button over an in-memory list"
+        },
+        {
+          "id": "components-combobox--plain",
+          "name": "Plain",
+          "snippet": "const Plain = () => (\n    <Combobox.Root items={STATES}>\n        <Combobox.Input variant=\"plain\" placeholder=\"State\" aria-label=\"State\" />\n        <Combobox.Content>\n            <Combobox.Empty>No matches found</Combobox.Empty>\n            <Combobox.List>\n                {(state: string) => (\n                    <Combobox.Item key={state} value={state}>\n                        {state}\n                    </Combobox.Item>\n                )}\n            </Combobox.List>\n        </Combobox.Content>\n    </Combobox.Root>\n);",
+          "description": "`variant=\"plain\"`: the input alone, with no magnifier and no clear button, for a\nfield that needs no affordance — a FEIN lookup, a template name. The list still\nmatches the field's width.",
+          "summary": "Bare input with no icon and no clear button"
+        },
+        {
+          "id": "components-combobox--select",
+          "name": "Select",
+          "snippet": "const Select = () => (\n    <Combobox.Root items={STATES}>\n        <Combobox.Input variant=\"select\" placeholder=\"Choose a state\" aria-label=\"State\" />\n        <Combobox.Content>\n            <Combobox.Empty>No matches found</Combobox.Empty>\n            <Combobox.List>\n                {(state: string) => (\n                    <Combobox.Item key={state} value={state}>\n                        {state}\n                    </Combobox.Item>\n                )}\n            </Combobox.List>\n        </Combobox.Content>\n    </Combobox.Root>\n);",
+          "description": "`variant=\"select\"`: a chevron after the input opens and closes the list, for a\nshort known list the user may want to browse before typing. It has no clear\nbutton by default. The chevron is out of the tab order — the input already\nopens the list from the keyboard with the arrow keys.",
+          "summary": "Field with a chevron that toggles the list, for short known lists"
+        },
+        {
+          "id": "components-combobox--select-with-clear",
+          "name": "Select With Clear",
+          "snippet": "const SelectWithClear = () => (\n    <Combobox.Root items={STATES} defaultValue=\"Florida\">\n        <Combobox.Input variant=\"select\" showClear placeholder=\"Choose a state\" aria-label=\"State\" />\n        <Combobox.Content>\n            <Combobox.Empty>No matches found</Combobox.Empty>\n            <Combobox.List>\n                {(state: string) => (\n                    <Combobox.Item key={state} value={state}>\n                        {state}\n                    </Combobox.Item>\n                )}\n            </Combobox.List>\n        </Combobox.Content>\n    </Combobox.Root>\n);",
+          "description": "`showClear` overrides the variant's default: here it adds the clear button to a\n`select`, so a picked option can be removed without selecting the text and\ndeleting it. While there is a value it takes the chevron's place; clearing\nbrings the chevron back. Passing `false` drops it from `search`.",
+          "summary": "Select field with a clear button added through showClear"
         },
         {
           "id": "components-combobox--no-matches",
@@ -2800,8 +2843,9 @@
         {
           "id": "components-combobox--async-search-with-status",
           "name": "Async Search With Status",
-          "snippet": "const AsyncSearchWithStatus = () => {\n    const [results, setResults] = useState<Agency[]>([]);\n    const [isLoading, setIsLoading] = useState(false);\n    // Only the latest request may land; fast typing returns responses out of order.\n    const latestRequest = useRef(0);\n\n    const onInputValueChange = async (query: string) => {\n        const request = ++latestRequest.current;\n\n        // The previous rows go before the wait starts: a list that no longer matches what is typed\n        // must not sit under the loading state.\n        setResults([]);\n        setIsLoading(true);\n        const agencies = await searchAgencies(query);\n        if (request !== latestRequest.current) return;\n\n        setResults(agencies);\n        setIsLoading(false);\n    };\n\n    return (\n        // `filter={null}` hands filtering to the server; `filteredItems` is what came back.\n        <Combobox.Root\n            items={results}\n            filteredItems={results}\n            filter={null}\n            itemToStringLabel={(agency: Agency) => agency.name}\n            isItemEqualToValue={(a: Agency, b: Agency) => a.id === b.id}\n            onInputValueChange={onInputValueChange}>\n            <Combobox.Input placeholder=\"Search agencies\" aria-label=\"Search agencies\" />\n            <Combobox.Content aria-busy={isLoading || undefined}>\n                {/* The rows show the wait; `Status` only announces it. */}\n                <Combobox.Status className=\"sr-only\">\n                    {isLoading ? 'Searching…' : undefined}\n                </Combobox.Status>\n                {isLoading && <SkeletonRows />}\n                <Combobox.Empty>{isLoading ? undefined : 'No agencies found'}</Combobox.Empty>\n                <Combobox.List>\n                    {(agency: Agency) => (\n                        <Combobox.Item key={agency.id} value={agency}>\n                            {agency.name}\n                        </Combobox.Item>\n                    )}\n                </Combobox.List>\n            </Combobox.Content>\n        </Combobox.Root>\n    );\n};",
-          "description": "The same search without Suspense, for a consumer that gets a `loading` flag from\nits data layer instead: `filter={null}`, the rows arrive through `filteredItems`,\n`Content` is marked busy and `Status` announces the wait. The list is cleared\nbefore each request and a request that is no longer the latest is dropped."
+          "snippet": "const AsyncSearchWithStatus = () => {\n    const [results, setResults] = useState<Agency[]>([]);\n    const [isLoading, setIsLoading] = useState(false);\n    // Only the latest request may land; fast typing returns responses out of order.\n    const latestRequest = useRef(0);\n\n    const onInputValueChange = async (query: string) => {\n        const request = ++latestRequest.current;\n        if (query.trim().length < MIN_QUERY_LENGTH) {\n            setResults([]);\n            setIsLoading(false);\n            return;\n        }\n\n        // The previous rows go before the wait starts: a list that no longer matches what is typed\n        // must not sit under the loading state.\n        setResults([]);\n        setIsLoading(true);\n        const agencies = await searchAgencies(query);\n        if (request !== latestRequest.current) return;\n\n        setResults(agencies);\n        setIsLoading(false);\n    };\n\n    return (\n        // `filter={null}` hands filtering to the server; `filteredItems` is what came back.\n        <Combobox.Root\n            items={results}\n            filteredItems={results}\n            filter={null}\n            minInputLength={MIN_QUERY_LENGTH}\n            itemToStringLabel={(agency: Agency) => agency.name}\n            isItemEqualToValue={(a: Agency, b: Agency) => a.id === b.id}\n            onInputValueChange={onInputValueChange}>\n            <Combobox.Input placeholder=\"Search agencies\" aria-label=\"Search agencies\" />\n            <Combobox.Content aria-busy={isLoading || undefined}>\n                {/* The rows show the wait; `Status` only announces it. */}\n                <Combobox.Status className=\"sr-only\">\n                    {isLoading ? 'Searching…' : undefined}\n                </Combobox.Status>\n                {isLoading && <SkeletonRows />}\n                <Combobox.Empty>{isLoading ? undefined : 'No agencies found'}</Combobox.Empty>\n                <Combobox.List>\n                    {(agency: Agency) => (\n                        <Combobox.Item key={agency.id} value={agency}>\n                            {agency.name}\n                        </Combobox.Item>\n                    )}\n                </Combobox.List>\n            </Combobox.Content>\n        </Combobox.Root>\n    );\n};",
+          "description": "The same search without Suspense, for a consumer that gets a `loading` flag from\nits data layer instead: `filter={null}`, the rows arrive through `filteredItems`,\n`Content` is marked busy and `Status` announces the wait. The list is cleared\nbefore each request and a request that is no longer the latest is dropped.\n\n`minInputLength` keeps the list shut until two characters are typed — focusing\nthe field opens nothing, and deleting back under the minimum closes it — and\nno request goes out for a shorter query either.",
+          "summary": "API search that waits for two characters, with loading status"
         },
         {
           "id": "components-combobox--inside-field-text",
@@ -2810,19 +2854,13 @@
           "description": "Dropped into a `FieldText`, the input takes the label, the description and\nthe error from the field with nothing wired by hand: `Combobox.Input` reads the\nsame `InputContext` the plain `Input` does. It also points `aria-labelledby`\nat the label, so the name survives the list opening: Base UI then hides the\nrest of the page from assistive technology, label included, and a\n`<label for>` alone would stop naming the input."
         },
         {
-          "id": "components-combobox--with-leading-icon",
-          "name": "With Leading Icon",
-          "snippet": "const WithLeadingIcon = () => (\n    <Combobox.Root items={STATES}>\n        <div className=\"relative\">\n            <IconSearch\n                aria-hidden\n                className=\"pointer-events-none absolute top-1/2 left-3 -z-hide size-6 -translate-y-1/2 [&>path]:fill-icon-default-base-tertiary\"\n            />\n            <Combobox.Input className=\"pl-11\" placeholder=\"Search states\" aria-label=\"Search states\" />\n        </div>\n        <Combobox.Content>\n            <Combobox.Empty>No matches found</Combobox.Empty>\n            <Combobox.List>\n                {(state: string) => (\n                    <Combobox.Item key={state} value={state}>\n                        {state}\n                    </Combobox.Item>\n                )}\n            </Combobox.List>\n        </Combobox.Content>\n    </Combobox.Root>\n);",
-          "description": "A leading icon is composed around the input, not baked in: not every combobox\nis a search (a FEIN lookup or a template picker are not), so the component\nships no icon of its own. Until `InputGroup` lands in the design system, the\nmarketplace search fields get theirs like this — the icon overlaid, the input\npadded past it."
-        },
-        {
           "id": "components-combobox--inside-modal",
           "name": "Inside Modal",
           "snippet": "const InsideModal = () => (\n    <Modal.Root>\n        <Modal.Trigger asChild>\n            <Button variant=\"secondary\">Assign agency</Button>\n        </Modal.Trigger>\n        <Modal.Content>\n            <Modal.Title>Assign agency</Modal.Title>\n            <Modal.Body>\n                <Combobox.Root items={STATES}>\n                    <Combobox.Input placeholder=\"Search states\" aria-label=\"Search states\" />\n                    <Combobox.Content>\n                        <Combobox.Empty>No matches found</Combobox.Empty>\n                        <Combobox.List>\n                            {(state: string) => (\n                                <Combobox.Item key={state} value={state}>\n                                    {state}\n                                </Combobox.Item>\n                            )}\n                        </Combobox.List>\n                    </Combobox.Content>\n                </Combobox.Root>\n            </Modal.Body>\n        </Modal.Content>\n    </Modal.Root>\n);",
           "description": "Inside a `Modal`, which is a Radix Dialog. The surface portals to the body, so\nthis checks that the dialog's modal layer neither blocks pointer events on the\nlist nor treats a click in it as a click outside and closes."
         }
       ],
-      "import": "import {\n    Button,\n    Combobox,\n    Field,\n    FieldText,\n    IconSearch,\n    Label,\n    Modal,\n    Skeleton,\n    Tag,\n} from \"@agentero/design-system\";\nimport { Suspense } from \"react\";"
+      "import": "import { Button, Combobox, Field, FieldText, Label, Modal, Skeleton, Tag } from \"@agentero/design-system\";\nimport { Suspense } from \"react\";"
     },
     "components-command": {
       "id": "components-command",
@@ -9552,6 +9590,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4822
+    "durationMs": 3176
   }
 }
