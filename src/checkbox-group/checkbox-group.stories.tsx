@@ -4,6 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { CheckboxGroup } from '.';
+import { Field } from '../field';
 
 /**
  * CheckboxGroup is a compound: `Root` owns the checked values as a
@@ -18,6 +19,7 @@ const meta = {
 	tags: ['autodocs'],
 	argTypes: {
 		disabled: { control: 'boolean' },
+		orientation: { control: 'inline-radio', options: ['vertical', 'horizontal'] },
 		'aria-invalid': { control: 'boolean' },
 		onValueChange: { action: 'valueChange' }
 	},
@@ -263,7 +265,7 @@ export const InForm: Story = {
 };
 
 /**
- * A long label wraps under itself and the box stays on its first line.
+ * A long label wraps under itself and the box stays level with its first line.
  *
  * @summary Wrapping label keeps the box on the first line
  */
@@ -282,12 +284,34 @@ export const LongLabel: Story = {
 		const canvas = within(canvasElement);
 		const checkbox = canvas.getByRole('checkbox', { name: /Homeowners/ });
 		const label = canvas.getByText(/Homeowners/);
+		const slot = checkbox.parentElement!.getBoundingClientRect();
+		const box = checkbox.getBoundingClientRect();
 
-		await expect(label.getBoundingClientRect().height).toBeGreaterThan(20);
-		await expect(getComputedStyle(checkbox).marginTop).toBe('2px');
-		const offset = checkbox.getBoundingClientRect().top - label.getBoundingClientRect().top;
-		await expect(offset).toBeGreaterThan(0);
-		await expect(offset).toBeLessThanOrEqual(2);
+		await expect(label.getBoundingClientRect().height).toBeGreaterThan(24);
+		await expect(slot.top).toBe(label.getBoundingClientRect().top);
+		await expect(slot.height).toBe(24);
+		await expect(box.top - slot.top).toBe(4);
+	}
+};
+
+/**
+ * Items laid in a row, 24px apart, wrapping when the row runs out of room.
+ *
+ * @summary Items in a row
+ */
+export const Horizontal: Story = {
+	args: { orientation: 'horizontal' },
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const [home, auto] = canvas
+			.getAllByRole('checkbox')
+			.map(checkbox =>
+				checkbox.closest('[data-slot=checkbox-group-item]')!.getBoundingClientRect()
+			) as [DOMRect, DOMRect];
+
+		await expect(canvas.getByRole('group')).toHaveAttribute('data-orientation', 'horizontal');
+		await expect(auto.top).toBe(home.top);
+		await expect(auto.left - home.right).toBe(24);
 	}
 };
 
@@ -316,5 +340,74 @@ export const ItemId: Story = {
 			'checked'
 		);
 		await expect(canvas.getByRole('checkbox', { name: 'Auto' }).id).not.toBe('');
+	}
+};
+
+/**
+ * Inside a `Field.Root` the group takes its name from the field's label, its
+ * description from the field's messages, and `invalid` and `disabled` from the
+ * field, with nothing wired by hand.
+ *
+ * @summary Wired to a surrounding Field
+ */
+export const InsideField: Story = {
+	args: { 'aria-label': undefined, defaultValue: [] },
+	render: args => (
+		<Field.Root invalid>
+			<Field.Label>Lines of business</Field.Label>
+			<Field.Description>The lines this agency writes.</Field.Description>
+			<CheckboxGroup.Root {...args}>
+				{LOBS.map(({ value, label }) => (
+					<CheckboxGroup.Item key={value} value={value}>
+						{label}
+					</CheckboxGroup.Item>
+				))}
+			</CheckboxGroup.Root>
+			<Field.Error errors={[{ message: 'Select at least one line of business' }]} />
+		</Field.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const group = canvas.getByRole('group', { name: 'Lines of business' });
+
+		await expect(group).toHaveAccessibleDescription(
+			/writes.*Select at least one|Select at least one.*writes/
+		);
+		await expect(group).not.toHaveAttribute('aria-invalid');
+		for (const checkbox of canvas.getAllByRole('checkbox')) {
+			await expect(checkbox).toHaveAttribute('aria-invalid', 'true');
+		}
+	}
+};
+
+/**
+ * The group's own props win over the field: here `aria-label` replaces the
+ * label as the name, and `disabled` on a field is overridden by
+ * `disabled={false}` on the group.
+ *
+ * @summary Own props override the Field wiring
+ */
+export const InsideFieldOverridden: Story = {
+	args: { 'aria-label': 'Lines written', disabled: false },
+	render: args => (
+		<Field.Root disabled>
+			<Field.Label>Lines of business</Field.Label>
+			<CheckboxGroup.Root {...args}>
+				{LOBS.map(({ value, label }) => (
+					<CheckboxGroup.Item key={value} value={value}>
+						{label}
+					</CheckboxGroup.Item>
+				))}
+			</CheckboxGroup.Root>
+		</Field.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const group = canvas.getByRole('group', { name: 'Lines written' });
+
+		await expect(group).not.toHaveAttribute('aria-labelledby');
+		for (const checkbox of canvas.getAllByRole('checkbox')) {
+			await expect(checkbox).toBeEnabled();
+		}
 	}
 };

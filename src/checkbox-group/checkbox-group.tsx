@@ -2,25 +2,41 @@
 
 import { ComponentPropsWithRef, createContext, ReactNode, use, useId, useState } from 'react';
 
-import { tv } from 'tailwind-variants';
+import { tv, VariantProps } from 'tailwind-variants';
 
 import { cn } from '../../lib';
 import { Checkbox } from '../checkbox';
+import { useFieldContext } from '../field';
 
-/** Style recipe for CheckboxGroup. Slots: `root` (the group), `item` (one row), `control` (its checkbox), `label` (its text). */
+/**
+ * Style recipe for CheckboxGroup. Slots: `root` (the group), `item` (one row),
+ * `control` (the 24px slot its checkbox is centred in), `label` (its text).
+ * The `orientation` variant stacks the items or lays them in a row.
+ */
 export const checkboxGroupRecipe = tv({
 	slots: {
-		root: 'flex flex-col gap-1',
-		item: 'flex items-start gap-2',
-		// Top-aligned row, so the box stays on the first line of a wrapping
-		// label: `mt-0.5` centres its 16px on the label's 20px line.
-		control: 'peer mt-0.5',
+		root: 'flex',
+		item: 'group/checkbox-group-item flex items-start gap-3',
+		control: 'flex size-6 shrink-0 items-center justify-center',
+		// At least one slot tall and centred in it, so a one-line label sits level with
+		// the box; a wrapping label grows downwards from the box's line.
 		label: [
-			'cursor-pointer text-sm text-text-default-base-primary select-none',
-			'peer-disabled:cursor-not-allowed peer-disabled:opacity-50'
+			'flex min-h-6 cursor-pointer items-center text-sm text-text-input-normal select-none',
+			'group-data-disabled/checkbox-group-item:cursor-not-allowed group-data-disabled/checkbox-group-item:opacity-50'
 		]
+	},
+	variants: {
+		orientation: {
+			vertical: { root: 'flex-col gap-2' },
+			horizontal: { root: 'flex-row flex-wrap gap-x-6 gap-y-2' }
+		}
+	},
+	defaultVariants: {
+		orientation: 'vertical'
 	}
 });
+
+export type CheckboxGroupVariants = VariantProps<typeof checkboxGroupRecipe>;
 
 type CheckboxGroupContextValue = {
 	value: string[];
@@ -44,14 +60,10 @@ export type CheckboxGroupRootProps = Omit<
 	onValueChange?: (value: string[]) => void;
 	/** Disables every item in the group. */
 	disabled?: boolean;
+	/** `vertical` (default) stacks the items; `horizontal` lays them in a row that wraps. */
+	orientation?: CheckboxGroupVariants['orientation'];
 	/** Form field name shared by every item; each checked item submits `name=value`. */
 	name?: string;
-	/**
-	 * Paints every item with the destructive treatment. It is forwarded to the
-	 * checkboxes, not set on the group: `role="group"` does not support it.
-	 * Point `aria-describedby` at the error message.
-	 */
-	'aria-invalid'?: ComponentPropsWithRef<'button'>['aria-invalid'];
 };
 
 /**
@@ -60,8 +72,13 @@ export type CheckboxGroupRootProps = Omit<
  * pointing at a visible heading, or with `aria-label`.
  *
  * Headless like [Checkbox](?path=/docs/components-checkbox--docs): no group
- * label, description, error or scroll container. Those belong to the field
- * layer or to the consumer.
+ * label, description, error or scroll container of its own. Put it inside a
+ * `Field.Root` for those: the group is then named by the field's label
+ * (`aria-labelledby`), described by its description and error, and takes
+ * `invalid` and `disabled`, all as defaults its own props override. The
+ * label's `for` reaches nothing, since a group is not a labelable element, so
+ * clicking the caption toggles no item. The field's `readOnly` is not read:
+ * checkboxes have no read-only state.
  *
  * Not for options inside a listbox such as a `Command` or `Combobox` list:
  * each item is a focusable control, which nests inside the option. Use the
@@ -69,6 +86,12 @@ export type CheckboxGroupRootProps = Omit<
  *
  * There is no `required`: "at least one" is a rule for the form layer, and
  * `required` on each checkbox would demand all of them.
+ *
+ * Every native `<div>` attribute is accepted and forwarded to the group
+ * (`className`, `aria-label`, `data-*`), except `aria-invalid`: it paints every
+ * item with the destructive treatment and is forwarded to the checkboxes
+ * instead, since `role="group"` does not support it. Point `aria-describedby`
+ * at the error message.
  *
  * @summary Multi-select checkbox list holding its checked values as a string array
  *
@@ -79,20 +102,29 @@ export type CheckboxGroupRootProps = Omit<
  *   <CheckboxGroup.Item value="auto">Auto</CheckboxGroup.Item>
  * </CheckboxGroup.Root>
  *
+ * @dataAttribute {string} data-orientation - "vertical" | "horizontal"
  * @dataAttribute {string} data-disabled - Present when the whole group is disabled
  */
 export const Root = ({
 	value: valueProp,
 	defaultValue = [],
 	onValueChange,
-	disabled,
+	disabled: disabledProp,
+	orientation = 'vertical',
 	name,
-	'aria-invalid': invalid,
+	'aria-invalid': invalidProp,
+	'aria-labelledby': labelledByProp,
+	'aria-describedby': describedByProp,
 	className,
 	children,
 	...props
 }: CheckboxGroupRootProps) => {
-	const styles = checkboxGroupRecipe();
+	const field = useFieldContext();
+	const styles = checkboxGroupRecipe({ orientation });
+	// A name the consumer gave, either way, wins over the field's label.
+	const labelledBy = labelledByProp ?? (props['aria-label'] ? undefined : field?.labelId);
+	const disabled = disabledProp ?? (field?.disabled || undefined);
+	const invalid = invalidProp ?? (field?.invalid || undefined);
 	const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue);
 	const value = valueProp ?? uncontrolledValue;
 
@@ -110,7 +142,10 @@ export const Root = ({
 			<div
 				role="group"
 				data-slot="checkbox-group"
+				data-orientation={orientation}
 				data-disabled={disabled || undefined}
+				aria-labelledby={labelledBy}
+				aria-describedby={describedByProp ?? field?.describedBy}
 				className={cn(styles.root(), className)}
 				{...props}>
 				{children}
@@ -119,9 +154,7 @@ export const Root = ({
 	);
 };
 
-export type CheckboxGroupItemProps = Omit<ComponentPropsWithRef<'div'>, 'children' | 'id'> & {
-	/** Id of the checkbox, which the label points at. Generated when omitted. */
-	id?: string;
+export type CheckboxGroupItemProps = Omit<ComponentPropsWithRef<'div'>, 'children'> & {
 	/** Value added to the group's list when this item is checked. */
 	value: string;
 	/** Disables this item only. The group's `disabled` wins over `false`. */
@@ -133,6 +166,10 @@ export type CheckboxGroupItemProps = Omit<ComponentPropsWithRef<'div'>, 'childre
 /**
  * One option of a [CheckboxGroup](?path=/docs/components-checkboxgroup--docs):
  * a `Checkbox` and its `<label>`. Must render inside `CheckboxGroup.Root`.
+ *
+ * Every native `<div>` attribute is accepted and forwarded to the row
+ * (`className`, `title`, `data-*`), except `id`: it goes to the checkbox, which
+ * the label points at, and is generated when omitted.
  *
  * @summary Checkbox and label for one value of the group
  *
@@ -164,16 +201,17 @@ export const Item = ({
 			data-disabled={isDisabled || undefined}
 			className={cn(styles.item(), className)}
 			{...props}>
-			<Checkbox
-				id={id}
-				className={styles.control()}
-				name={context.name}
-				value={value}
-				checked={checked}
-				onCheckedChange={checked => context.toggle(value, checked === true)}
-				disabled={isDisabled}
-				aria-invalid={context.invalid}
-			/>
+			<span data-slot="checkbox-group-item-control" className={styles.control()}>
+				<Checkbox
+					id={id}
+					name={context.name}
+					value={value}
+					checked={checked}
+					onCheckedChange={checked => context.toggle(value, checked === true)}
+					disabled={isDisabled}
+					aria-invalid={context.invalid}
+				/>
+			</span>
 			<label htmlFor={id} data-slot="checkbox-group-item-label" className={styles.label()}>
 				{children}
 			</label>
