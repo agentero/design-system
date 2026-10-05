@@ -157,6 +157,7 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 	open: openProp,
 	defaultOpen = false,
 	onOpenChange,
+	onOpenChangeComplete,
 	onInputValueChange,
 	...props
 }: ComboboxRootProps<Value, Multiple, Item>) => {
@@ -167,12 +168,18 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 	const query = useRef(String(props.inputValue ?? props.defaultInputValue ?? ''));
 	if (props.inputValue !== undefined) query.current = String(props.inputValue);
 	const isShort = (value: string) => value.trim().length < minInputLength;
+	// Once the list has closed, Base UI writes the selected label back into the input — or
+	// empties it when nothing is picked — to drop the abandoned query. When the minimum closed
+	// it, the user is still typing that query, so this write is skipped.
+	const closedForMinimum = useRef(false);
+	const skipCloseReset = useRef(false);
 
 	const handleOpenChange: typeof onOpenChange = (open, eventDetails) => {
 		if (open && isShort(query.current)) {
 			eventDetails.cancel();
 			return;
 		}
+		closedForMinimum.current = false;
 		onOpenChange?.(open, eventDetails);
 		// Base UI closes the list (and so clears the query) after a pick made while filtering;
 		// cancelling that request is its documented way to keep picking from one search.
@@ -182,11 +189,29 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 		if (!eventDetails.isCanceled) setOpenState(open);
 	};
 
+	const handleOpenChangeComplete: typeof onOpenChangeComplete = open => {
+		onOpenChangeComplete?.(open);
+		if (open || !closedForMinimum.current) return;
+
+		closedForMinimum.current = false;
+		// Base UI resets the input in this same synchronous pass, right after this callback.
+		skipCloseReset.current = true;
+		queueMicrotask(() => (skipCloseReset.current = false));
+	};
+
 	const handleInputValueChange: typeof onInputValueChange = (value, eventDetails) => {
+		if (skipCloseReset.current) {
+			skipCloseReset.current = false;
+			eventDetails.cancel();
+			return;
+		}
 		query.current = value;
 		onInputValueChange?.(value, eventDetails);
 		// Base UI only closes the list once the text is empty, so a minimum closes it here.
-		if (isShort(value)) setOpenState(false);
+		if (isShort(value) && openProp === undefined && openState) {
+			closedForMinimum.current = true;
+			setOpenState(false);
+		}
 	};
 
 	// Without a minimum, Base UI keeps its own open state, as it always has.
@@ -198,6 +223,7 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 				open={open}
 				defaultOpen={defaultOpen}
 				onOpenChange={handleOpenChange}
+				onOpenChangeComplete={handleOpenChangeComplete}
 				onInputValueChange={handleInputValueChange}
 				{...props}
 			/>

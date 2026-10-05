@@ -592,8 +592,10 @@ export const AsyncSearchWithStatus: Story = {
 		await userEvent.type(input, '{Backspace}{Backspace}{Backspace}');
 		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
 		await expect(input).toHaveAttribute('aria-expanded', 'false');
+		// What is left of the query stays: the user is still typing it.
+		await expect(input).toHaveValue('a');
 
-		await userEvent.type(input, 'ch');
+		await userEvent.type(input, 'nch');
 		await userEvent.click(await body.findByRole('option', { name: 'Anchor Brokers' }));
 		await waitFor(() => expect(input).toHaveValue('Anchor Brokers'));
 		await userEvent.keyboard('{Escape}');
