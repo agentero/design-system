@@ -40,3 +40,43 @@ export const IconCheck = (props: SVGProps<SVGSVGElement>) => (
 		<path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
 	</svg>
 );
+
+/**
+ * Magnifier leading the `search` variant of `Combobox.Input`, the same glyph
+ * `Command` uses. Fill color comes from the input group addon, so it follows
+ * the field's disabled state.
+ *
+ * @summary 24px search icon leading the Combobox search field
+ */
+export const IconSearch = (props: SVGProps<SVGSVGElement>) => (
+	<svg
+		width="24"
+		height="24"
+		viewBox="0 0 24 24"
+		fill="none"
+		aria-hidden="true"
+		xmlns="http://www.w3.org/2000/svg"
+		{...props}>
+		<path d="M9.52 15.615q-2.562 0-4.34-1.777Q3.405 12.062 3.405 9.5T5.18 5.162q1.776-1.777 4.338-1.777t4.339 1.777q1.777 1.776 1.777 4.338 0 1.071-.36 2.046a5.7 5.7 0 0 1-.96 1.696l5.754 5.754q.209.209.213.522a.7.7 0 0 1-.213.532.72.72 0 0 1-.527.217.72.72 0 0 1-.527-.217l-5.753-5.754q-.75.62-1.725.97t-2.018.35m0-1.5q1.933 0 3.273-1.341 1.342-1.34 1.342-3.274 0-1.932-1.342-3.274-1.34-1.341-3.274-1.341-1.932 0-3.274 1.34Q4.904 7.569 4.904 9.5q0 1.933 1.341 3.274 1.342 1.341 3.274 1.341" />
+	</svg>
+);
+
+/**
+ * Downward chevron inside the `chevron` variant's trigger, the same glyph
+ * `Accordion` uses. Fill color is supplied by the trigger's class so it
+ * follows the button's state.
+ *
+ * @summary 24px chevron-down icon used as the Combobox list trigger
+ */
+export const IconKeyboardArrowDown = (props: SVGProps<SVGSVGElement>) => (
+	<svg
+		width="24"
+		height="24"
+		viewBox="0 0 24 24"
+		fill="none"
+		aria-hidden="true"
+		xmlns="http://www.w3.org/2000/svg"
+		{...props}>
+		<path d="M12 14.677a.83.83 0 0 1-.633-.256L6.873 9.927a.73.73 0 0 1-.212-.522.7.7 0 0 1 .212-.532.72.72 0 0 1 .527-.217q.31 0 .527.217L12 12.946l4.073-4.073a.73.73 0 0 1 .522-.212.7.7 0 0 1 .532.212q.217.217.217.527a.72.72 0 0 1-.217.527l-4.494 4.494a.83.83 0 0 1-.633.256" />
+	</svg>
+);

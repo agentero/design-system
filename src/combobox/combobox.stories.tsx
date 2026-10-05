@@ -5,7 +5,6 @@ import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { Combobox } from '.';
 import { Button } from '../button';
-import { IconSearch } from '../command/icons';
 import { Field } from '../field';
 import { FieldText } from '../field-text';
 import { Label } from '../label';
@@ -44,9 +43,27 @@ type Story = StoryObj<typeof meta>;
 
 const STATES = ['California', 'Colorado', 'Connecticut', 'Florida', 'Texas', 'Washington'];
 
+// The list anchors to the whole field, not the bare input: as wide as the frame, from its left
+// edge. Synchronous, for `waitFor`: the surface grows in from 0.95 scale over 100ms.
+const expectListAlignedWithField = (canvasElement: HTMLElement) => {
+	const field = canvasElement
+		.querySelector('[data-slot="combobox-field"]')!
+		.getBoundingClientRect();
+	const content = document.body
+		.querySelector('[data-slot="combobox-content"]')!
+		.getBoundingClientRect();
+
+	expect(content.width).toBeCloseTo(field.width, 0);
+	expect(content.left).toBeCloseTo(field.left, 0);
+};
+
 /**
  * The common case: options are already in memory and Base UI filters them against
- * what you type. Selecting a row fills the input and closes the list.
+ * what you type. Selecting a row fills the input and closes the list. The field is
+ * a search out of the box — a magnifier in front, a clear button once something is
+ * picked — and the list hangs from the whole field.
+ *
+ * @summary Search field with a magnifier and clear button over an in-memory list
  */
 export const Default: Story = {
 	render: () => (
@@ -69,8 +86,13 @@ export const Default: Story = {
 		const body = within(document.body);
 		const input = canvas.getByRole('combobox', { name: /search states/i });
 
+		// The magnifier is decoration inside an input group addon.
+		const icon = canvasElement.querySelector('[data-slot="input-group-addon"] svg');
+		await expect(icon).toHaveAttribute('aria-hidden', 'true');
+
 		await userEvent.click(input);
 		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(STATES.length));
+		await waitFor(() => expectListAlignedWithField(canvasElement));
 		// Named on its own: borrowing the input's name would resolve to the typed text.
 		await expect(body.getByRole('listbox')).toHaveAccessibleName('Suggestions');
 		// A single-value list has no selection indicator: that is the multi-select row's.
@@ -95,6 +117,144 @@ export const Default: Story = {
 
 		// The surface stays mounted through its exit animation, so wait it out.
 		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+	}
+};
+
+/**
+ * `variant="plain"`: the input alone, with no magnifier and no clear button, for a
+ * field that needs no affordance — a FEIN lookup, a template name. The list still
+ * matches the field's width.
+ *
+ * @summary Bare input with no icon and no clear button
+ */
+export const Plain: Story = {
+	render: () => (
+		<Combobox.Root items={STATES}>
+			<Combobox.Input variant="plain" placeholder="State" aria-label="State" />
+			<Combobox.Content>
+				<Combobox.Empty>No matches found</Combobox.Empty>
+				<Combobox.List>
+					{(state: string) => (
+						<Combobox.Item key={state} value={state}>
+							{state}
+						</Combobox.Item>
+					)}
+				</Combobox.List>
+			</Combobox.Content>
+		</Combobox.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const body = within(document.body);
+		const input = canvas.getByRole('combobox', { name: 'State' });
+
+		await expect(canvasElement.querySelector('svg')).not.toBeInTheDocument();
+		// Alone in the frame, the text sits at a plain `Input`'s 16px inset, not the group's 12px.
+		const field = canvasElement.querySelector<HTMLElement>('[data-slot="combobox-field"]')!;
+		await expect(getComputedStyle(field).paddingLeft).toBe('16px');
+
+		await userEvent.type(input, 'tex');
+		await waitFor(() => expectListAlignedWithField(canvasElement));
+		await userEvent.click(await body.findByRole('option', { name: 'Texas' }));
+		await waitFor(() => expect(input).toHaveValue('Texas'));
+
+		// A picked value would mount the clear button in the other variants.
+		await expect(canvas.queryByRole('button', { name: /clear/i })).not.toBeInTheDocument();
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+	}
+};
+
+/**
+ * `variant="select"`: a chevron after the input opens and closes the list, for a
+ * short known list the user may want to browse before typing. It has no clear
+ * button by default. The chevron is out of the tab order — the input already
+ * opens the list from the keyboard with the arrow keys.
+ *
+ * @summary Field with a chevron that toggles the list, for short known lists
+ */
+export const Select: Story = {
+	render: () => (
+		<Combobox.Root items={STATES}>
+			<Combobox.Input variant="select" placeholder="Choose a state" aria-label="State" />
+			<Combobox.Content>
+				<Combobox.Empty>No matches found</Combobox.Empty>
+				<Combobox.List>
+					{(state: string) => (
+						<Combobox.Item key={state} value={state}>
+							{state}
+						</Combobox.Item>
+					)}
+				</Combobox.List>
+			</Combobox.Content>
+		</Combobox.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const body = within(document.body);
+		const input = canvas.getByRole('combobox', { name: 'State' });
+		const trigger = canvas.getByRole('button', { name: 'Show options' });
+
+		await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+
+		await userEvent.click(trigger);
+		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(STATES.length));
+		await expect(trigger).toHaveAttribute('aria-expanded', 'true');
+		await waitFor(() => expectListAlignedWithField(canvasElement));
+
+		await userEvent.click(trigger);
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+		await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+
+		await userEvent.click(trigger);
+		await userEvent.click(await body.findByRole('option', { name: 'Florida' }));
+		await waitFor(() => expect(input).toHaveValue('Florida'));
+		await expect(canvas.queryByRole('button', { name: /clear/i })).not.toBeInTheDocument();
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+	}
+};
+
+/**
+ * `showClear` overrides the variant's default: here it adds the clear button to a
+ * `select`, so a picked option can be removed without selecting the text and
+ * deleting it. While there is a value it takes the chevron's place; clearing
+ * brings the chevron back. Passing `false` drops it from `search`.
+ *
+ * @summary Select field with a clear button added through showClear
+ */
+export const SelectWithClear: Story = {
+	render: () => (
+		<Combobox.Root items={STATES} defaultValue="Florida">
+			<Combobox.Input variant="select" showClear placeholder="Choose a state" aria-label="State" />
+			<Combobox.Content>
+				<Combobox.Empty>No matches found</Combobox.Empty>
+				<Combobox.List>
+					{(state: string) => (
+						<Combobox.Item key={state} value={state}>
+							{state}
+						</Combobox.Item>
+					)}
+				</Combobox.List>
+			</Combobox.Content>
+		</Combobox.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const input = canvas.getByRole('combobox', { name: 'State' });
+		const trigger = canvasElement.querySelector<HTMLElement>('[data-slot="combobox-trigger"]')!;
+
+		// A value: the clear button stands where the chevron was.
+		await expect(trigger).not.toBeVisible();
+		await userEvent.click(canvas.getByRole('button', { name: /clear/i }));
+		await waitFor(() => expect(input).toHaveValue(''));
+		await expect(input).toHaveFocus();
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() =>
+			expect(within(document.body).queryByRole('listbox')).not.toBeInTheDocument()
+		);
+
+		// No value: the clear button is gone and the chevron is back.
+		await expect(canvas.queryByRole('button', { name: /clear/i })).not.toBeInTheDocument();
+		await expect(trigger).toBeVisible();
 	}
 };
 
@@ -205,8 +365,12 @@ export const MultipleSelection: Story = {
 		await expect(colorado).toHaveAttribute('aria-selected', 'true');
 		await expect(input).toHaveValue('co');
 		await expect(canvas.getAllByRole('listitem')).toHaveLength(2);
-		// No clear button here: Base UI's would wipe the selection, not the query.
+		// No clear button and no chevron here: Base UI's clear would wipe the selection, not the
+		// query, and a list that stays open between picks has nothing for a chevron to toggle.
 		await expect(canvas.queryByRole('button', { name: /clear/i })).not.toBeInTheDocument();
+		await expect(
+			canvasElement.querySelector('[data-slot="combobox-trigger"]')
+		).not.toBeInTheDocument();
 
 		// Picking a selected row again clears it.
 		await userEvent.click(colorado);
@@ -325,7 +489,7 @@ export const AsyncSearch: Story = {
 		const input = canvas.getByRole('combobox', { name: /search agencies/i });
 
 		// Focus opens the surface and the first request goes out for the empty query: no
-		// minimum length here, that is the consumer's rule to add where it fetches.
+		// `minInputLength` here — see `AsyncSearchWithStatus` for a search that waits for one.
 		await userEvent.click(input);
 
 		// Placeholder rows while the request is in flight, and no options yet.
@@ -334,14 +498,24 @@ export const AsyncSearch: Story = {
 		);
 		await expect(body.queryByRole('option')).not.toBeInTheDocument();
 		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
 	}
 };
+
+// What the apps wait for before asking the API.
+const MIN_QUERY_LENGTH = 2;
 
 /**
  * The same search without Suspense, for a consumer that gets a `loading` flag from
  * its data layer instead: `filter={null}`, the rows arrive through `filteredItems`,
  * `Content` is marked busy and `Status` announces the wait. The list is cleared
  * before each request and a request that is no longer the latest is dropped.
+ *
+ * `minInputLength` keeps the list shut until two characters are typed — focusing
+ * the field opens nothing, and deleting back under the minimum closes it — and
+ * no request goes out for a shorter query either.
+ *
+ * @summary API search that waits for two characters, with loading status
  */
 export const AsyncSearchWithStatus: Story = {
 	render: () => {
@@ -352,6 +526,11 @@ export const AsyncSearchWithStatus: Story = {
 
 		const onInputValueChange = async (query: string) => {
 			const request = ++latestRequest.current;
+			if (query.trim().length < MIN_QUERY_LENGTH) {
+				setResults([]);
+				setIsLoading(false);
+				return;
+			}
 
 			// The previous rows go before the wait starts: a list that no longer matches what is typed
 			// must not sit under the loading state.
@@ -370,6 +549,7 @@ export const AsyncSearchWithStatus: Story = {
 				items={results}
 				filteredItems={results}
 				filter={null}
+				minInputLength={MIN_QUERY_LENGTH}
 				itemToStringLabel={(agency: Agency) => agency.name}
 				isItemEqualToValue={(a: Agency, b: Agency) => a.id === b.id}
 				onInputValueChange={onInputValueChange}>
@@ -397,7 +577,13 @@ export const AsyncSearchWithStatus: Story = {
 		const body = within(document.body);
 		const input = canvas.getByRole('combobox', { name: /search agencies/i });
 
-		await userEvent.type(input, 'an');
+		// Under the minimum nothing opens: not on focus, not on the first character.
+		await userEvent.click(input);
+		await userEvent.type(input, 'a');
+		await expect(input).toHaveAttribute('aria-expanded', 'false');
+		await expect(body.queryByRole('listbox')).not.toBeInTheDocument();
+
+		await userEvent.type(input, 'n');
 
 		await expect(await body.findByText(/searching/i)).toBeInTheDocument();
 		await expect(body.queryByRole('option')).not.toBeInTheDocument();
@@ -408,9 +594,18 @@ export const AsyncSearchWithStatus: Story = {
 		await expect(body.queryByRole('option')).not.toBeInTheDocument();
 		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(1));
 
-		await userEvent.click(body.getByRole('option', { name: 'Anchor Brokers' }));
+		// Deleting back under the minimum closes the list.
+		await userEvent.type(input, '{Backspace}{Backspace}{Backspace}');
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+		await expect(input).toHaveAttribute('aria-expanded', 'false');
+		// What is left of the query stays: the user is still typing it.
+		await expect(input).toHaveValue('a');
+
+		await userEvent.type(input, 'nch');
+		await userEvent.click(await body.findByRole('option', { name: 'Anchor Brokers' }));
 		await waitFor(() => expect(input).toHaveValue('Anchor Brokers'));
 		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
 	}
 };
 
@@ -464,49 +659,9 @@ export const InsideFieldText: Story = {
 		await within(document.body).findByRole('listbox');
 		await expect(input).toHaveAccessibleName('Agency');
 		await userEvent.keyboard('{Escape}');
-	}
-};
-
-/**
- * A leading icon is composed around the input, not baked in: not every combobox
- * is a search (a FEIN lookup or a template picker are not), so the component
- * ships no icon of its own. Until `InputGroup` lands in the design system, the
- * marketplace search fields get theirs like this — the icon overlaid, the input
- * padded past it.
- */
-export const WithLeadingIcon: Story = {
-	render: () => (
-		<Combobox.Root items={STATES}>
-			<div className="relative">
-				<IconSearch
-					aria-hidden
-					className="pointer-events-none absolute top-1/2 left-3 -z-hide size-6 -translate-y-1/2 [&>path]:fill-icon-default-base-tertiary"
-				/>
-				<Combobox.Input className="pl-11" placeholder="Search states" aria-label="Search states" />
-			</div>
-			<Combobox.Content>
-				<Combobox.Empty>No matches found</Combobox.Empty>
-				<Combobox.List>
-					{(state: string) => (
-						<Combobox.Item key={state} value={state}>
-							{state}
-						</Combobox.Item>
-					)}
-				</Combobox.List>
-			</Combobox.Content>
-		</Combobox.Root>
-	),
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-		const body = within(document.body);
-		const input = canvas.getByRole('combobox', { name: /search states/i });
-
-		// The icon is decoration: nothing for assistive technology, and the input keeps its name.
-		await expect(canvasElement.querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
-		await expect(input).toHaveClass('pl-11');
-
-		await userEvent.type(input, 'tex');
-		await expect(await body.findByRole('option', { name: 'Texas' })).toBeInTheDocument();
+		await waitFor(() =>
+			expect(within(document.body).queryByRole('listbox')).not.toBeInTheDocument()
+		);
 	}
 };
 
