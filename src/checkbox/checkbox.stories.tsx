@@ -214,11 +214,12 @@ export const InsideSelectedGroup: Story = {
 };
 
 /**
- * Preserves the legacy palette and 16px footprint for every value and validation state.
+ * Every value, enabled and disabled, valid and invalid, as the Portal UI
+ * library's Base Checkbox draws them: a 16px box with a 1.5px border.
  *
- * @summary Legacy checkbox colours across all interaction states
+ * @summary Checkbox colours across all value and validation states
  */
-export const LegacyStates: Story = {
+export const AllStates: Story = {
 	render: () => (
 		<div className="flex flex-col gap-6">
 			{[false, true].map(invalid => (
@@ -245,26 +246,30 @@ export const LegacyStates: Story = {
 		const states = [
 			{
 				name: 'Valid enabled',
-				border: 'rgb(207, 210, 219)',
-				fill: 'rgb(36, 36, 36)',
+				border: 'rgb(179, 184, 199)',
+				fill: 'rgb(45, 48, 57)',
+				background: 'rgb(255, 255, 255)',
 				cursor: 'pointer'
 			},
 			{
 				name: 'Valid disabled',
-				border: 'rgb(227, 227, 227)',
-				fill: 'rgb(205, 205, 205)',
+				border: 'rgb(207, 210, 219)',
+				fill: 'rgb(207, 210, 219)',
+				background: 'rgb(247, 248, 250)',
 				cursor: 'not-allowed'
 			},
 			{
 				name: 'Invalid enabled',
 				border: 'rgb(217, 38, 38)',
 				fill: 'rgb(217, 38, 38)',
+				background: 'rgb(255, 255, 255)',
 				cursor: 'pointer'
 			},
 			{
 				name: 'Invalid disabled',
 				border: 'rgb(240, 168, 168)',
 				fill: 'rgb(240, 168, 168)',
+				background: 'rgb(247, 248, 250)',
 				cursor: 'not-allowed'
 			}
 		];
@@ -275,9 +280,12 @@ export const LegacyStates: Story = {
 				await expect(checkbox.getBoundingClientRect().width).toBe(16);
 				await expect(checkbox.getBoundingClientRect().height).toBe(16);
 				await expect(styles.borderRadius).toBe('4px');
-				await expect(styles.borderWidth).toBe('1px');
+				// Chrome snaps a border to whole device pixels: 1.5px renders as 1px at 1x.
+				await expect(styles.borderWidth).toBe(
+					`${Math.floor(1.5 * devicePixelRatio) / devicePixelRatio}px`
+				);
 				await expect(styles.backgroundColor).toBe(
-					value === 'false' ? 'rgb(255, 255, 255)' : state.fill
+					value === 'false' ? state.background : state.fill
 				);
 				await expect(styles.borderColor).toBe(value === 'false' ? state.border : state.fill);
 				await expect(styles.cursor).toBe(state.cursor);

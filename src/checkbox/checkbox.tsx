@@ -11,8 +11,12 @@ export const checkboxRecipe = tv({
 	slots: {
 		root: [
 			'group/checkbox box-border inline-flex size-4 shrink-0 appearance-none items-center justify-center rounded-sm',
-			'border border-solid border-border-input-default bg-bg-input-normal',
+			'border-[1.5px] border-solid border-border-checkbox-default bg-bg-input-normal',
 			'cursor-pointer transition-colors duration-200 ease-in-out',
+			// Only an enabled box lifts with the shadow, and only a valid one darkens on hover, so
+			// neither has to be undone by the disabled and invalid states below.
+			'enabled:data-[state=unchecked]:shadow-xs',
+			'enabled:not-aria-invalid:data-[state=unchecked]:hover:border-border-input-hover',
 			'data-[state=checked]:border-bg-checkbox-selected data-[state=checked]:bg-bg-checkbox-selected',
 			'data-[state=indeterminate]:border-bg-checkbox-selected data-[state=indeterminate]:bg-bg-checkbox-selected',
 			'outline-solid outline-2 outline-offset-2 outline-transparent',
@@ -21,7 +25,7 @@ export const checkboxRecipe = tv({
 			'aria-invalid:focus-visible:outline-focus-ring-button-destructive',
 			'aria-invalid:data-[state=checked]:border-bg-default-danger-primary aria-invalid:data-[state=checked]:bg-bg-default-danger-primary',
 			'aria-invalid:data-[state=indeterminate]:border-bg-default-danger-primary aria-invalid:data-[state=indeterminate]:bg-bg-default-danger-primary',
-			'disabled:cursor-not-allowed disabled:border-border-checkbox-disabled',
+			'disabled:cursor-not-allowed disabled:border-border-checkbox-disabled disabled:bg-bg-input-disable',
 			'disabled:data-[state=checked]:border-bg-checkbox-disabled disabled:data-[state=checked]:bg-bg-checkbox-disabled',
 			'disabled:data-[state=indeterminate]:border-bg-checkbox-disabled disabled:data-[state=indeterminate]:bg-bg-checkbox-disabled',
 			'aria-invalid:disabled:border-bg-checkbox-invalid-disabled',
@@ -59,7 +63,8 @@ export type CheckboxProps = Omit<
  * Base control for a boolean the user confirms later: one item of a
  * multi-select, a terms tick, a row picked for a bulk action. Supports the
  * mixed state for a parent that summarises a partially selected group.
- * Keeps the legacy 16px surface, glyphs and state colours during adoption.
+ * Drawn to the Portal UI library's Base Checkbox: a 16px box with a 1.5px
+ * border, filled slate when checked or mixed.
  *
  * Headless like [Input](?path=/docs/components-input--docs): pair it with
  * [Label](?path=/docs/components-label--docs) and `htmlFor`, or give it an
@@ -85,8 +90,8 @@ export const Checkbox = ({ className, ref, ...props }: CheckboxProps) => {
 			className={cn(styles.root(), className)}
 			{...props}>
 			<CheckboxPrimitive.Indicator data-slot="checkbox-indicator" className={styles.indicator()}>
-				<IconCheck className="hidden size-3.5 group-data-[state=checked]/checkbox:block" />
-				<IconMinus className="hidden size-3.5 group-data-[state=indeterminate]/checkbox:block" />
+				<IconCheck className="hidden size-4 shrink-0 group-data-[state=checked]/checkbox:block" />
+				<IconMinus className="hidden size-4 shrink-0 group-data-[state=indeterminate]/checkbox:block" />
 			</CheckboxPrimitive.Indicator>
 		</CheckboxPrimitive.Root>
 	);
