@@ -588,13 +588,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">35 components ok</span><span class="filter-pill ok" aria-disabled="true">291 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">35 components ok</span><span class="filter-pill ok" aria-disabled="true">294 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>5.2s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>5.1s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -2757,7 +2757,7 @@ governs a partially selected group.</div>
       <div class="badges">
         <label for="c-6-components-checkboxgroup-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-6-components-checkboxgroup-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-6-components-checkboxgroup-stories" class="badge ok as-toggle">13 stories</label>
         
         
       </div>
@@ -2773,7 +2773,7 @@ layer.</div>
 &lt;CheckboxGroup.Root aria-labelledby=&quot;lobs&quot; defaultValue={[&#39;home&#39;]} onValueChange={setLobs}&gt;
   &lt;CheckboxGroup.Item value=&quot;home&quot;&gt;Home&lt;/CheckboxGroup.Item&gt;
   &lt;CheckboxGroup.Item value=&quot;auto&quot;&gt;Auto&lt;/CheckboxGroup.Item&gt;
-&lt;/CheckboxGroup.Root&gt;</span><span class="chip">dataAttribute: {string} data-disabled - Present when the whole group is disabled</span></div>
+&lt;/CheckboxGroup.Root&gt;</span><span class="chip">dataAttribute: {string} data-orientation - &quot;vertical&quot; | &quot;horizontal&quot;</span><span class="chip">dataAttribute: {string} data-disabled - Present when the whole group is disabled</span></div>
   </div>
 
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
@@ -2797,14 +2797,6 @@ layer.</div>
             <pre><code>Component: src/checkbox-group/index.ts::CheckboxGroup</code></pre>
             <pre><code>Props:</code></pre>
             <pre><code>/**
- * Indicates the entered value does not conform to the format expected by the application.
- * Paints every item with the destructive treatment. It is forwarded to the
- * checkboxes, not set on the group: `role=&quot;group&quot;` does not support it.
- * Point `aria-describedby` at the error message.
- */
-aria-invalid?: boolean | &quot;true&quot; | &quot;false&quot; | &quot;grammar&quot; | &quot;spelling&quot; | undefined
-
-/**
  * Initial list of checked item values for an uncontrolled group.
  */
 defaultValue?: string[] = []
@@ -2825,6 +2817,11 @@ name?: string
 onValueChange?: (value: string[]) =&gt; void
 
 /**
+ * `vertical` (default) stacks the items; `horizontal` lays them in a row that wraps.
+ */
+orientation?: &quot;horizontal&quot; | &quot;vertical&quot; = &#39;vertical&#39;
+
+/**
  * Controlled list of checked item values.
  */
 value?: string[]</code></pre>
@@ -2839,7 +2836,7 @@ value?: string[]</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { CheckboxGroup } from "@agentero/design-system";</code></pre>
+                <pre><code>import { CheckboxGroup, Field } from "@agentero/design-system";</code></pre>
               </div>
           
           
@@ -3031,7 +3028,7 @@ the selection with `FormData.getAll`.</div>
                 <span class="badge ok">story ok</span>
               </div>
               <div>Wrapping label keeps the box on the first line</div>
-              <div class="hint">A long label wraps under itself and the box stays on its first line.</div>
+              <div class="hint">A long label wraps under itself and the box stays level with its first line.</div>
               <pre><code>const LongLabel = () =&gt; &lt;div className=&quot;w-60&quot;&gt;
     &lt;CheckboxGroup.Root aria-label=&quot;Lines of business&quot; defaultValue={[&#39;home&#39;]}&gt;
         &lt;CheckboxGroup.Item value=&quot;home&quot;&gt;Homeowners, including dwelling fire and condo unit owners policies
@@ -3039,6 +3036,24 @@ the selection with `FormData.getAll`.</div>
         &lt;CheckboxGroup.Item value=&quot;auto&quot;&gt;Auto&lt;/CheckboxGroup.Item&gt;
     &lt;/CheckboxGroup.Root&gt;
 &lt;/div&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Horizontal</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Items in a row</div>
+              <div class="hint">Items laid in a row, 24px apart, wrapping when the row runs out of room.</div>
+              <pre><code>const Horizontal = () =&gt; &lt;CheckboxGroup.Root
+    aria-label=&quot;Lines of business&quot;
+    defaultValue={[&#39;home&#39;]}
+    orientation=&quot;horizontal&quot;&gt;
+    {LOBS.map(({ value, label }) =&gt; (
+        &lt;CheckboxGroup.Item key={value} value={value}&gt;
+            {label}
+        &lt;/CheckboxGroup.Item&gt;
+    ))}
+&lt;/CheckboxGroup.Root&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -3053,6 +3068,48 @@ at it; otherwise one is generated.</div>
                     &lt;/CheckboxGroup.Item&gt;
     &lt;CheckboxGroup.Item value=&quot;auto&quot;&gt;Auto&lt;/CheckboxGroup.Item&gt;
 &lt;/CheckboxGroup.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Inside Field</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Wired to a surrounding Field</div>
+              <div class="hint">Inside a `Field.Root` the group takes its name from the field&#39;s label, its
+description from the field&#39;s messages, and `invalid` and `disabled` from the
+field, with nothing wired by hand.</div>
+              <pre><code>const InsideField = () =&gt; &lt;Field.Root invalid&gt;
+    &lt;Field.Label&gt;Lines of business&lt;/Field.Label&gt;
+    &lt;Field.Description&gt;The lines this agency writes.&lt;/Field.Description&gt;
+    &lt;CheckboxGroup.Root aria-label={undefined} defaultValue={[]}&gt;
+        {LOBS.map(({ value, label }) =&gt; (
+            &lt;CheckboxGroup.Item key={value} value={value}&gt;
+                {label}
+            &lt;/CheckboxGroup.Item&gt;
+        ))}
+    &lt;/CheckboxGroup.Root&gt;
+    &lt;Field.Error errors={[{ message: &#39;Select at least one line of business&#39; }]} /&gt;
+&lt;/Field.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Inside Field Overridden</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Own props override the Field wiring</div>
+              <div class="hint">The group&#39;s own props win over the field: here `aria-label` replaces the
+label as the name, and `disabled` on a field is overridden by
+`disabled={false}` on the group.</div>
+              <pre><code>const InsideFieldOverridden = () =&gt; &lt;Field.Root disabled&gt;
+    &lt;Field.Label&gt;Lines of business&lt;/Field.Label&gt;
+    &lt;CheckboxGroup.Root aria-label=&quot;Lines written&quot; defaultValue={[&#39;home&#39;]} disabled={false}&gt;
+        {LOBS.map(({ value, label }) =&gt; (
+            &lt;CheckboxGroup.Item key={value} value={value}&gt;
+                {label}
+            &lt;/CheckboxGroup.Item&gt;
+        ))}
+    &lt;/CheckboxGroup.Root&gt;
+&lt;/Field.Root&gt;;</code></pre>
             </div>
         </div>
     
