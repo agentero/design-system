@@ -1225,7 +1225,7 @@
           "summary": "All avatar shapes with a profile image"
         }
       ],
-      "import": "import { Avatar } from \"@agentero/design-system\";"
+      "import": "import { Avatar, Button } from \"@agentero/design-system\";"
     },
     "components-button": {
       "id": "components-button",
@@ -9590,6 +9590,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 3176
+    "durationMs": 3621
   }
 }
