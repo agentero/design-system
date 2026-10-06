@@ -1688,13 +1688,13 @@
           "{string} data-disabled - Present when the whole group is disabled"
         ]
       },
-      "description": "CheckboxGroup is a compound: `Root` owns the checked values as a\n`string[]` and renders `role=\"group\"`, and each `Item` renders one\n`Checkbox` with its label. Name the group with `aria-labelledby` or\n`aria-label`; the group label, description and error come from the field\nlayer.",
+      "description": "`Root` owns the checked values; each `Item` is a `Checkbox` with its label.",
       "summary": "Multi-select checkbox list holding its checked values as a string array",
       "reactComponentMeta": {
         "displayName": "CheckboxGroup.Root",
         "exportName": "CheckboxGroup",
         "filePath": "/home/runner/work/design-system/design-system/src/checkbox-group/index.ts",
-        "description": "Container for a multi-select list of checkboxes. Owns the selected values\nas a `string[]` and renders `role=\"group\"`: name it with `aria-labelledby`\npointing at a visible heading, or with `aria-label`.\n\nHeadless like [Checkbox](?path=/docs/components-checkbox--docs): no group\nlabel, description, error or scroll container of its own. Put it inside a\n`Field.Root` for those: the group is then named by the field's label\n(`aria-labelledby`), described by its description and error, and takes\n`invalid` and `disabled`, all as defaults its own props override. The\nlabel's `for` reaches nothing, since a group is not a labelable element, so\nclicking the caption toggles no item. The field's `readOnly` is not read:\ncheckboxes have no read-only state.\n\nNot for options inside a listbox such as a `Command` or `Combobox` list:\neach item is a focusable control, which nests inside the option. Use the\nCombobox's multiple selection there.\n\nThere is no `required`: \"at least one\" is a rule for the form layer, and\n`required` on each checkbox would demand all of them.\n\nEvery native `<div>` attribute is accepted and forwarded to the group\n(`className`, `aria-label`, `data-*`), except `aria-invalid`: it paints every\nitem with the destructive treatment and is forwarded to the checkboxes\ninstead, since `role=\"group\"` does not support it. Point `aria-describedby`\nat the error message.",
+        "description": "Multi-select list of checkboxes that holds its checked values as a\n`string[]`. Renders `role=\"group\"`: name it with `aria-labelledby` or\n`aria-label`, or put it inside a `Field.Root`, which names, describes,\ninvalidates and disables it (the group's own props win).\n\nNot for options inside a `Command` or `Combobox` list, where a focusable\ncheckbox would nest inside the option: use the Combobox's multiple\nselection. There is no `required`: \"at least one\" belongs to the form layer.\n\nEvery native `<div>` attribute is forwarded to the group except\n`aria-invalid`, which goes to the checkboxes (`role=\"group\"` does not\nsupport it).",
         "jsDocTags": {
           "summary": [
             "Multi-select checkbox list holding its checked values as a string array"
@@ -1884,7 +1884,7 @@
           "id": "components-checkboxgroup--invalid",
           "name": "Invalid",
           "snippet": "const Invalid = () => <div className=\"flex flex-col gap-2\">\n    <CheckboxGroup.Root\n        aria-label=\"Lines of business\"\n        defaultValue={[]}\n        aria-invalid\n        aria-describedby=\"lobs-error\">\n        {LOBS.map(({ value, label }) => (\n            <CheckboxGroup.Item key={value} value={value}>\n                {label}\n            </CheckboxGroup.Item>\n        ))}\n    </CheckboxGroup.Root>\n    <p id=\"lobs-error\" className=\"text-sm text-text-input-destructive\">Select at least one line of business.\n                    </p>\n</div>;",
-          "description": "`aria-invalid` on the root reaches every checkbox, never the group element\n(`role=\"group\"` does not support it).",
+          "description": "`aria-invalid` on the root reaches every checkbox, not the group element.",
           "summary": "Failed validation, forwarded to the items"
         },
         {
@@ -1912,21 +1912,21 @@
           "id": "components-checkboxgroup--item-id",
           "name": "Item Id",
           "snippet": "const ItemId = () => <CheckboxGroup.Root aria-label=\"Lines of business\" defaultValue={['home']}>\n    <CheckboxGroup.Item id=\"lob-home\" value=\"home\">Home\n                    </CheckboxGroup.Item>\n    <CheckboxGroup.Item value=\"auto\">Auto</CheckboxGroup.Item>\n</CheckboxGroup.Root>;",
-          "description": "An `id` on the item lands on its checkbox, so a message elsewhere can point\nat it; otherwise one is generated.",
+          "description": "",
           "summary": "Item id reaches the checkbox"
         },
         {
           "id": "components-checkboxgroup--inside-field",
           "name": "Inside Field",
           "snippet": "const InsideField = () => <Field.Root invalid>\n    <Field.Label>Lines of business</Field.Label>\n    <Field.Description>The lines this agency writes.</Field.Description>\n    <CheckboxGroup.Root aria-label={undefined} defaultValue={[]}>\n        {LOBS.map(({ value, label }) => (\n            <CheckboxGroup.Item key={value} value={value}>\n                {label}\n            </CheckboxGroup.Item>\n        ))}\n    </CheckboxGroup.Root>\n    <Field.Error errors={[{ message: 'Select at least one line of business' }]} />\n</Field.Root>;",
-          "description": "Inside a `Field.Root` the group takes its name from the field's label, its\ndescription from the field's messages, and `invalid` and `disabled` from the\nfield, with nothing wired by hand.",
+          "description": "Inside a `Field.Root`, label, messages, `invalid` and `disabled` reach the group with nothing wired by hand.",
           "summary": "Wired to a surrounding Field"
         },
         {
           "id": "components-checkboxgroup--inside-field-overridden",
           "name": "Inside Field Overridden",
           "snippet": "const InsideFieldOverridden = () => <Field.Root disabled>\n    <Field.Label>Lines of business</Field.Label>\n    <CheckboxGroup.Root aria-label=\"Lines written\" defaultValue={['home']} disabled={false}>\n        {LOBS.map(({ value, label }) => (\n            <CheckboxGroup.Item key={value} value={value}>\n                {label}\n            </CheckboxGroup.Item>\n        ))}\n    </CheckboxGroup.Root>\n</Field.Root>;",
-          "description": "The group's own props win over the field: here `aria-label` replaces the\nlabel as the name, and `disabled` on a field is overridden by\n`disabled={false}` on the group.",
+          "description": "`aria-label` and `disabled={false}` on the group win over the field.",
           "summary": "Own props override the Field wiring"
         }
       ],
@@ -9850,6 +9850,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5056
+    "durationMs": 4630
   }
 }

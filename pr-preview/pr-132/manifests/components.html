@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>5.1s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>4.6s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -2764,11 +2764,7 @@ governs a partially selected group.</div>
     </div>
     <div class="meta" title="./src/checkbox-group/checkbox-group.stories.tsx">components-checkboxgroup · ./src/checkbox-group/checkbox-group.stories.tsx</div>
     <div>Multi-select checkbox list holding its checked values as a string array</div>
-    <div class="hint">CheckboxGroup is a compound: `Root` owns the checked values as a
-`string[]` and renders `role=&quot;group&quot;`, and each `Item` renders one
-`Checkbox` with its label. Name the group with `aria-labelledby` or
-`aria-label`; the group label, description and error come from the field
-layer.</div>
+    <div class="hint">`Root` owns the checked values; each `Item` is a `Checkbox` with its label.</div>
     <div class="kv"><span class="chip">summary: Multi-select checkbox list holding its checked values as a string array</span><span class="chip">example: &lt;span id=&quot;lobs&quot;&gt;Lines of business&lt;/span&gt;
 &lt;CheckboxGroup.Root aria-labelledby=&quot;lobs&quot; defaultValue={[&#39;home&#39;]} onValueChange={setLobs}&gt;
   &lt;CheckboxGroup.Item value=&quot;home&quot;&gt;Home&lt;/CheckboxGroup.Item&gt;
@@ -2971,8 +2967,7 @@ stays in the value.</div>
                 <span class="badge ok">story ok</span>
               </div>
               <div>Failed validation, forwarded to the items</div>
-              <div class="hint">`aria-invalid` on the root reaches every checkbox, never the group element
-(`role=&quot;group&quot;` does not support it).</div>
+              <div class="hint">`aria-invalid` on the root reaches every checkbox, not the group element.</div>
               <pre><code>const Invalid = () =&gt; &lt;div className=&quot;flex flex-col gap-2&quot;&gt;
     &lt;CheckboxGroup.Root
         aria-label=&quot;Lines of business&quot;
@@ -3061,8 +3056,7 @@ the selection with `FormData.getAll`.</div>
                 <span class="badge ok">story ok</span>
               </div>
               <div>Item id reaches the checkbox</div>
-              <div class="hint">An `id` on the item lands on its checkbox, so a message elsewhere can point
-at it; otherwise one is generated.</div>
+              
               <pre><code>const ItemId = () =&gt; &lt;CheckboxGroup.Root aria-label=&quot;Lines of business&quot; defaultValue={[&#39;home&#39;]}&gt;
     &lt;CheckboxGroup.Item id=&quot;lob-home&quot; value=&quot;home&quot;&gt;Home
                     &lt;/CheckboxGroup.Item&gt;
@@ -3075,9 +3069,7 @@ at it; otherwise one is generated.</div>
                 <span class="badge ok">story ok</span>
               </div>
               <div>Wired to a surrounding Field</div>
-              <div class="hint">Inside a `Field.Root` the group takes its name from the field&#39;s label, its
-description from the field&#39;s messages, and `invalid` and `disabled` from the
-field, with nothing wired by hand.</div>
+              <div class="hint">Inside a `Field.Root`, label, messages, `invalid` and `disabled` reach the group with nothing wired by hand.</div>
               <pre><code>const InsideField = () =&gt; &lt;Field.Root invalid&gt;
     &lt;Field.Label&gt;Lines of business&lt;/Field.Label&gt;
     &lt;Field.Description&gt;The lines this agency writes.&lt;/Field.Description&gt;
@@ -3097,9 +3089,7 @@ field, with nothing wired by hand.</div>
                 <span class="badge ok">story ok</span>
               </div>
               <div>Own props override the Field wiring</div>
-              <div class="hint">The group&#39;s own props win over the field: here `aria-label` replaces the
-label as the name, and `disabled` on a field is overridden by
-`disabled={false}` on the group.</div>
+              <div class="hint">`aria-label` and `disabled={false}` on the group win over the field.</div>
               <pre><code>const InsideFieldOverridden = () =&gt; &lt;Field.Root disabled&gt;
     &lt;Field.Label&gt;Lines of business&lt;/Field.Label&gt;
     &lt;CheckboxGroup.Root aria-label=&quot;Lines written&quot; defaultValue={[&#39;home&#39;]} disabled={false}&gt;
