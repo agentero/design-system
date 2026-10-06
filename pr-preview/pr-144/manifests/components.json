@@ -1225,7 +1225,7 @@
           "summary": "All avatar shapes with a profile image"
         }
       ],
-      "import": "import { Avatar } from \"@agentero/design-system\";"
+      "import": "import { Avatar, Button } from \"@agentero/design-system\";"
     },
     "components-button": {
       "id": "components-button",
@@ -2007,7 +2007,7 @@
         "displayName": "Combobox.Root",
         "exportName": "Combobox",
         "filePath": "/home/runner/work/design-system/design-system/src/combobox/index.ts",
-        "description": "Root of a combobox: a text input that filters a list of options and writes the\nchosen one back into itself. With `Input` as the only trigger, the list opens on\nfocus or on the first keystroke.\n\nPass the options as `items`. For a list that comes from the server, set\n`filter={null}`, hand the already-filtered rows to `filteredItems`, and request\nthem from `onInputValueChange`; `Status` then announces the wait.\n\nWith `multiple`, the value is an array and picking a row toggles it. The list\nstays open and keeps the typed query between picks, so several rows can be\nticked from one search; closing the list (Escape, a click outside) still resets\nthe query. Each row then shows whether it is selected — see `Item`. Nothing is\nwritten back into the input: render the selection next to the field.",
+        "description": "Root of a combobox: a text input that filters a list of options and writes the\nchosen one back into itself. The list opens on focus, on the first keystroke\nor from the chevron of `Input`'s `select` variant.\n\nFor a search against an API, set `minInputLength` so the list stays shut until\nthe query is worth sending: a field that opens an empty list on focus reads as\nbroken. For a pick from a short fixed list with no typing at all, prefer a\nselect.\n\nPass the options as `items`. For a list that comes from the server, set\n`filter={null}`, hand the already-filtered rows to `filteredItems`, and request\nthem from `onInputValueChange`; `Status` then announces the wait.\n\nEvery Base UI root prop is accepted and forwarded — `items`, `filter`,\n`value`, `onValueChange` and so on. `open` stays the consumer's to control;\n`minInputLength` only refuses to open below the minimum.\n\nWith `multiple`, the value is an array and picking a row toggles it. The list\nstays open and keeps the typed query between picks, so several rows can be\nticked from one search; closing the list (Escape, a click outside) still resets\nthe query. Each row then shows whether it is selected — see `Item`. Nothing is\nwritten back into the input: render the selection next to the field.",
         "jsDocTags": {
           "summary": [
             "Root provider for an input-triggered filterable list"
@@ -2769,6 +2769,27 @@
                 "fileName": "node_modules/@base-ui/react/combobox/root/ComboboxRoot.d.mts"
               }
             ]
+          },
+          "minInputLength": {
+            "name": "minInputLength",
+            "required": false,
+            "type": {
+              "name": "number"
+            },
+            "description": "Characters the query needs, spaces aside, before the list opens. Below it\nfocusing, clicking or pressing the chevron leaves the list shut, and\ndeleting back under it closes the list. Defaults to `0`: the list opens on\nfocus.",
+            "defaultValue": {
+              "value": "0"
+            },
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "src/combobox/combobox.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/combobox/combobox.tsx"
+              }
+            ]
           }
         }
       },
@@ -2777,7 +2798,29 @@
           "id": "components-combobox--default",
           "name": "Default",
           "snippet": "const Default = () => (\n    <Combobox.Root items={STATES}>\n        <Combobox.Input placeholder=\"Search states\" aria-label=\"Search states\" />\n        <Combobox.Content>\n            <Combobox.Empty>No matches found</Combobox.Empty>\n            <Combobox.List>\n                {(state: string) => (\n                    <Combobox.Item key={state} value={state}>\n                        {state}\n                    </Combobox.Item>\n                )}\n            </Combobox.List>\n        </Combobox.Content>\n    </Combobox.Root>\n);",
-          "description": "The common case: options are already in memory and Base UI filters them against\nwhat you type. Selecting a row fills the input and closes the list."
+          "description": "The common case: options are already in memory and Base UI filters them against\nwhat you type. Selecting a row fills the input and closes the list. The field is\na search out of the box — a magnifier in front, a clear button once something is\npicked — and the list hangs from the whole field.",
+          "summary": "Search field with a magnifier and clear button over an in-memory list"
+        },
+        {
+          "id": "components-combobox--plain",
+          "name": "Plain",
+          "snippet": "const Plain = () => (\n    <Combobox.Root items={STATES}>\n        <Combobox.Input variant=\"plain\" placeholder=\"State\" aria-label=\"State\" />\n        <Combobox.Content>\n            <Combobox.Empty>No matches found</Combobox.Empty>\n            <Combobox.List>\n                {(state: string) => (\n                    <Combobox.Item key={state} value={state}>\n                        {state}\n                    </Combobox.Item>\n                )}\n            </Combobox.List>\n        </Combobox.Content>\n    </Combobox.Root>\n);",
+          "description": "`variant=\"plain\"`: the input alone, with no magnifier and no clear button, for a\nfield that needs no affordance — a FEIN lookup, a template name. The list still\nmatches the field's width.",
+          "summary": "Bare input with no icon and no clear button"
+        },
+        {
+          "id": "components-combobox--select",
+          "name": "Select",
+          "snippet": "const Select = () => (\n    <Combobox.Root items={STATES}>\n        <Combobox.Input variant=\"select\" placeholder=\"Choose a state\" aria-label=\"State\" />\n        <Combobox.Content>\n            <Combobox.Empty>No matches found</Combobox.Empty>\n            <Combobox.List>\n                {(state: string) => (\n                    <Combobox.Item key={state} value={state}>\n                        {state}\n                    </Combobox.Item>\n                )}\n            </Combobox.List>\n        </Combobox.Content>\n    </Combobox.Root>\n);",
+          "description": "`variant=\"select\"`: a chevron after the input opens and closes the list, for a\nshort known list the user may want to browse before typing. It has no clear\nbutton by default. The chevron is out of the tab order — the input already\nopens the list from the keyboard with the arrow keys.",
+          "summary": "Field with a chevron that toggles the list, for short known lists"
+        },
+        {
+          "id": "components-combobox--select-with-clear",
+          "name": "Select With Clear",
+          "snippet": "const SelectWithClear = () => (\n    <Combobox.Root items={STATES} defaultValue=\"Florida\">\n        <Combobox.Input variant=\"select\" showClear placeholder=\"Choose a state\" aria-label=\"State\" />\n        <Combobox.Content>\n            <Combobox.Empty>No matches found</Combobox.Empty>\n            <Combobox.List>\n                {(state: string) => (\n                    <Combobox.Item key={state} value={state}>\n                        {state}\n                    </Combobox.Item>\n                )}\n            </Combobox.List>\n        </Combobox.Content>\n    </Combobox.Root>\n);",
+          "description": "`showClear` overrides the variant's default: here it adds the clear button to a\n`select`, so a picked option can be removed without selecting the text and\ndeleting it. While there is a value it takes the chevron's place; clearing\nbrings the chevron back. Passing `false` drops it from `search`.",
+          "summary": "Select field with a clear button added through showClear"
         },
         {
           "id": "components-combobox--no-matches",
@@ -2800,8 +2843,9 @@
         {
           "id": "components-combobox--async-search-with-status",
           "name": "Async Search With Status",
-          "snippet": "const AsyncSearchWithStatus = () => {\n    const [results, setResults] = useState<Agency[]>([]);\n    const [isLoading, setIsLoading] = useState(false);\n    // Only the latest request may land; fast typing returns responses out of order.\n    const latestRequest = useRef(0);\n\n    const onInputValueChange = async (query: string) => {\n        const request = ++latestRequest.current;\n\n        // The previous rows go before the wait starts: a list that no longer matches what is typed\n        // must not sit under the loading state.\n        setResults([]);\n        setIsLoading(true);\n        const agencies = await searchAgencies(query);\n        if (request !== latestRequest.current) return;\n\n        setResults(agencies);\n        setIsLoading(false);\n    };\n\n    return (\n        // `filter={null}` hands filtering to the server; `filteredItems` is what came back.\n        <Combobox.Root\n            items={results}\n            filteredItems={results}\n            filter={null}\n            itemToStringLabel={(agency: Agency) => agency.name}\n            isItemEqualToValue={(a: Agency, b: Agency) => a.id === b.id}\n            onInputValueChange={onInputValueChange}>\n            <Combobox.Input placeholder=\"Search agencies\" aria-label=\"Search agencies\" />\n            <Combobox.Content aria-busy={isLoading || undefined}>\n                {/* The rows show the wait; `Status` only announces it. */}\n                <Combobox.Status className=\"sr-only\">\n                    {isLoading ? 'Searching…' : undefined}\n                </Combobox.Status>\n                {isLoading && <SkeletonRows />}\n                <Combobox.Empty>{isLoading ? undefined : 'No agencies found'}</Combobox.Empty>\n                <Combobox.List>\n                    {(agency: Agency) => (\n                        <Combobox.Item key={agency.id} value={agency}>\n                            {agency.name}\n                        </Combobox.Item>\n                    )}\n                </Combobox.List>\n            </Combobox.Content>\n        </Combobox.Root>\n    );\n};",
-          "description": "The same search without Suspense, for a consumer that gets a `loading` flag from\nits data layer instead: `filter={null}`, the rows arrive through `filteredItems`,\n`Content` is marked busy and `Status` announces the wait. The list is cleared\nbefore each request and a request that is no longer the latest is dropped."
+          "snippet": "const AsyncSearchWithStatus = () => {\n    const [results, setResults] = useState<Agency[]>([]);\n    const [isLoading, setIsLoading] = useState(false);\n    // Only the latest request may land; fast typing returns responses out of order.\n    const latestRequest = useRef(0);\n\n    const onInputValueChange = async (query: string) => {\n        const request = ++latestRequest.current;\n        if (query.trim().length < MIN_QUERY_LENGTH) {\n            setResults([]);\n            setIsLoading(false);\n            return;\n        }\n\n        // The previous rows go before the wait starts: a list that no longer matches what is typed\n        // must not sit under the loading state.\n        setResults([]);\n        setIsLoading(true);\n        const agencies = await searchAgencies(query);\n        if (request !== latestRequest.current) return;\n\n        setResults(agencies);\n        setIsLoading(false);\n    };\n\n    return (\n        // `filter={null}` hands filtering to the server; `filteredItems` is what came back.\n        <Combobox.Root\n            items={results}\n            filteredItems={results}\n            filter={null}\n            minInputLength={MIN_QUERY_LENGTH}\n            itemToStringLabel={(agency: Agency) => agency.name}\n            isItemEqualToValue={(a: Agency, b: Agency) => a.id === b.id}\n            onInputValueChange={onInputValueChange}>\n            <Combobox.Input placeholder=\"Search agencies\" aria-label=\"Search agencies\" />\n            <Combobox.Content aria-busy={isLoading || undefined}>\n                {/* The rows show the wait; `Status` only announces it. */}\n                <Combobox.Status className=\"sr-only\">\n                    {isLoading ? 'Searching…' : undefined}\n                </Combobox.Status>\n                {isLoading && <SkeletonRows />}\n                <Combobox.Empty>{isLoading ? undefined : 'No agencies found'}</Combobox.Empty>\n                <Combobox.List>\n                    {(agency: Agency) => (\n                        <Combobox.Item key={agency.id} value={agency}>\n                            {agency.name}\n                        </Combobox.Item>\n                    )}\n                </Combobox.List>\n            </Combobox.Content>\n        </Combobox.Root>\n    );\n};",
+          "description": "The same search without Suspense, for a consumer that gets a `loading` flag from\nits data layer instead: `filter={null}`, the rows arrive through `filteredItems`,\n`Content` is marked busy and `Status` announces the wait. The list is cleared\nbefore each request and a request that is no longer the latest is dropped.\n\n`minInputLength` keeps the list shut until two characters are typed — focusing\nthe field opens nothing, and deleting back under the minimum closes it — and\nno request goes out for a shorter query either.",
+          "summary": "API search that waits for two characters, with loading status"
         },
         {
           "id": "components-combobox--inside-field-text",
@@ -2810,19 +2854,13 @@
           "description": "Dropped into a `FieldText`, the input takes the label, the description and\nthe error from the field with nothing wired by hand: `Combobox.Input` reads the\nsame `InputContext` the plain `Input` does. It also points `aria-labelledby`\nat the label, so the name survives the list opening: Base UI then hides the\nrest of the page from assistive technology, label included, and a\n`<label for>` alone would stop naming the input."
         },
         {
-          "id": "components-combobox--with-leading-icon",
-          "name": "With Leading Icon",
-          "snippet": "const WithLeadingIcon = () => (\n    <Combobox.Root items={STATES}>\n        <div className=\"relative\">\n            <IconSearch\n                aria-hidden\n                className=\"pointer-events-none absolute top-1/2 left-3 -z-hide size-6 -translate-y-1/2 [&>path]:fill-icon-default-base-tertiary\"\n            />\n            <Combobox.Input className=\"pl-11\" placeholder=\"Search states\" aria-label=\"Search states\" />\n        </div>\n        <Combobox.Content>\n            <Combobox.Empty>No matches found</Combobox.Empty>\n            <Combobox.List>\n                {(state: string) => (\n                    <Combobox.Item key={state} value={state}>\n                        {state}\n                    </Combobox.Item>\n                )}\n            </Combobox.List>\n        </Combobox.Content>\n    </Combobox.Root>\n);",
-          "description": "A leading icon is composed around the input, not baked in: not every combobox\nis a search (a FEIN lookup or a template picker are not), so the component\nships no icon of its own. Until `InputGroup` lands in the design system, the\nmarketplace search fields get theirs like this — the icon overlaid, the input\npadded past it."
-        },
-        {
           "id": "components-combobox--inside-modal",
           "name": "Inside Modal",
           "snippet": "const InsideModal = () => (\n    <Modal.Root>\n        <Modal.Trigger asChild>\n            <Button variant=\"secondary\">Assign agency</Button>\n        </Modal.Trigger>\n        <Modal.Content>\n            <Modal.Title>Assign agency</Modal.Title>\n            <Modal.Body>\n                <Combobox.Root items={STATES}>\n                    <Combobox.Input placeholder=\"Search states\" aria-label=\"Search states\" />\n                    <Combobox.Content>\n                        <Combobox.Empty>No matches found</Combobox.Empty>\n                        <Combobox.List>\n                            {(state: string) => (\n                                <Combobox.Item key={state} value={state}>\n                                    {state}\n                                </Combobox.Item>\n                            )}\n                        </Combobox.List>\n                    </Combobox.Content>\n                </Combobox.Root>\n            </Modal.Body>\n        </Modal.Content>\n    </Modal.Root>\n);",
           "description": "Inside a `Modal`, which is a Radix Dialog. The surface portals to the body, so\nthis checks that the dialog's modal layer neither blocks pointer events on the\nlist nor treats a click in it as a click outside and closes."
         }
       ],
-      "import": "import {\n    Button,\n    Combobox,\n    Field,\n    FieldText,\n    IconSearch,\n    Label,\n    Modal,\n    Skeleton,\n    Tag,\n} from \"@agentero/design-system\";\nimport { Suspense } from \"react\";"
+      "import": "import { Button, Combobox, Field, FieldText, Label, Modal, Skeleton, Tag } from \"@agentero/design-system\";\nimport { Suspense } from \"react\";"
     },
     "components-command": {
       "id": "components-command",
@@ -6460,6 +6498,132 @@
       ],
       "import": "import { Avatar, Button, HoverCard } from \"@agentero/design-system\";"
     },
+    "components-inputgroup": {
+      "id": "components-inputgroup",
+      "name": "InputGroup.Root",
+      "path": "./src/input-group/input-group.stories.tsx",
+      "jsDocTags": {
+        "summary": [
+          "Bordered frame drawing an Input and its addons as one control"
+        ],
+        "dataAttribute": [
+          "{string} data-slot - Always set to \"input-group\""
+        ],
+        "example": [
+          "<InputGroup.Root>\n  <InputGroup.Text>$</InputGroup.Text>\n  <Input inputMode=\"decimal\" placeholder=\"0.00\" />\n  <InputGroup.Text>USD</InputGroup.Text>\n</InputGroup.Root>"
+        ]
+      },
+      "description": "InputGroup draws an `Input` and what sits beside it — an icon, a currency or\nunit affix, a trailing action — as one bordered control. The frame owns the\nborder, the shadow and the focus ring; the `Input` inside renders bare and\nhands its state to the frame through `:has()`, so focus, `disabled`,\n`aria-invalid` and `size` are never wired by hand. Inside a `FieldText` the\n`Input` keeps taking its label and messages from the field.",
+      "summary": "Bordered frame drawing an Input and its addons as one control",
+      "reactComponentMeta": {
+        "displayName": "InputGroup.Root",
+        "exportName": "InputGroup",
+        "filePath": "/home/runner/work/design-system/design-system/src/input-group/index.ts",
+        "description": "The bordered frame of an input group: one box around an `Input` and its\naddons, drawn as a single control. It carries the border, the shadow, the\nfocus ring and the horizontal padding; the `Input` inside renders bare and\ngives the frame its state — focus, `disabled`, `aria-invalid` and `size`\nall propagate through `:has()`, so nothing is passed to the frame by hand.\n\nPut the `Input` and any `InputGroup.Addon` or `InputGroup.Text` inside, in\nreading order. Inside a `FieldText` the `Input` still takes its label and\nmessages from the field, at any depth; the frame needs nothing.\n\nUse it for an input with a leading icon, a currency or unit affix, or a\ntrailing action. A plain input with nothing around it is just `Input`, and a\nbutton beside an input that submits on its own is a form layout, not a group.\nNot a `role=\"group\"`, like `Field`.",
+        "jsDocTags": {
+          "summary": [
+            "Bordered frame drawing an Input and its addons as one control"
+          ],
+          "dataAttribute": [
+            "{string} data-slot - Always set to \"input-group\""
+          ],
+          "example": [
+            "<InputGroup.Root>\n  <InputGroup.Text>$</InputGroup.Text>\n  <Input inputMode=\"decimal\" placeholder=\"0.00\" />\n  <InputGroup.Text>USD</InputGroup.Text>\n</InputGroup.Root>"
+          ]
+        },
+        "props": {}
+      },
+      "stories": [
+        {
+          "id": "components-inputgroup--default",
+          "name": "Default",
+          "snippet": "const Default = () => (\n    <InputGroup.Root>\n        <InputGroup.Addon>\n            <IconSearch />\n        </InputGroup.Addon>\n        <Input type=\"search\" placeholder=\"Search agencies\" aria-label=\"Search agencies\" />\n    </InputGroup.Root>\n);",
+          "description": "A search field: the icon leads and the input takes the rest of the frame.\nPressing the icon focuses the input, and the frame — not the input — draws the\nfocus ring, so the two never show a double border.",
+          "summary": "Leading icon addon with the frame drawing the focus ring"
+        },
+        {
+          "id": "components-inputgroup--text-affixes",
+          "name": "Text Affixes",
+          "snippet": "const TextAffixes = () => (\n    <InputGroup.Root>\n        <InputGroup.Text>$</InputGroup.Text>\n        <Input inputMode=\"decimal\" placeholder=\"0.00\" aria-label=\"Premium in US dollars\" />\n        <InputGroup.Text>USD</InputGroup.Text>\n    </InputGroup.Root>\n);",
+          "description": "Text affixes on both sides. They are decoration only — a screen reader does\nnot read them as part of the value — so the unit is also in the label.",
+          "summary": "Currency prefix and unit suffix around an amount"
+        },
+        {
+          "id": "components-inputgroup--with-divider",
+          "name": "With Divider",
+          "snippet": "const WithDivider = () => (\n    <InputGroup.Root>\n        <InputGroup.Text>https://</InputGroup.Text>\n        <Divider orientation=\"vertical\" />\n        <Input\n            type=\"text\"\n            inputMode=\"url\"\n            autoCapitalize=\"none\"\n            placeholder=\"www.agentero\"\n            aria-label=\"Agency website\"\n        />\n        <Divider orientation=\"vertical\" />\n        <InputGroup.Text>.com</InputGroup.Text>\n    </InputGroup.Root>\n);",
+          "description": "A `Divider` separates an affix from the value when it reads as a distinct\nsegment, like a protocol before a domain. It spans the full height of the\nframe, meeting its border at both ends.",
+          "summary": "Protocol prefix and domain suffix split off by vertical dividers"
+        },
+        {
+          "id": "components-inputgroup--with-tags",
+          "name": "With Tags",
+          "snippet": "const WithTags = () => (\n    <div className=\"flex flex-col gap-4\">\n        <InputGroup.Root>\n            <InputGroup.Addon>\n                <Tag color=\"informative\">FEIN</Tag>\n            </InputGroup.Addon>\n            <Input placeholder=\"XX-XXXXXXX\" aria-label=\"FEIN\" />\n        </InputGroup.Root>\n        <InputGroup.Root>\n            <InputGroup.Addon>\n                <IconSearch />\n            </InputGroup.Addon>\n            <Input placeholder=\"Describe your filters\" aria-label=\"Describe your filters\" />\n            <InputGroup.Addon>\n                <Tag color=\"informative\">Beta</Tag>\n            </InputGroup.Addon>\n        </InputGroup.Root>\n    </div>\n);",
+          "description": "A `Tag` in an addon labels what the value is. It tucks into the frame's\npadding on the side it touches and takes a tighter radius, so it sits inside\nthe corner instead of competing with it.",
+          "summary": "Leading and trailing tags tucked into the frame's padding"
+        },
+        {
+          "id": "components-inputgroup--with-button",
+          "name": "With Button",
+          "snippet": "const WithButton = () => (\n    <InputGroup.Root>\n        <Input value=\"https://agentero.com/r/abc123\" readOnly aria-label=\"Referral link\" />\n        <Divider orientation=\"vertical\" />\n        <InputGroup.Addon variant=\"action\">\n            <Button type=\"button\" variant=\"ghost\" size=\"md\" onClick={handleCopy}>\n                Copy link\n            </Button>\n        </InputGroup.Addon>\n    </InputGroup.Root>\n);"
+        },
+        {
+          "id": "components-inputgroup--disabled",
+          "name": "Disabled",
+          "snippet": "const Disabled = () => (\n    <InputGroup.Root>\n        <InputGroup.Addon>\n            <IconSearch />\n        </InputGroup.Addon>\n        <Input placeholder=\"Search agencies\" aria-label=\"Search agencies\" disabled />\n        <InputGroup.Text>USD</InputGroup.Text>\n    </InputGroup.Root>\n);",
+          "description": "`disabled` on the input greys out the whole frame — background, border, icon\nand affix — and the frame stops offering the text cursor.",
+          "summary": "Disabled input greying out the frame and its addons"
+        },
+        {
+          "id": "components-inputgroup--invalid",
+          "name": "Invalid",
+          "snippet": "const Invalid = () => (\n    <InputGroup.Root>\n        <InputGroup.Text>$</InputGroup.Text>\n        <Input defaultValue=\"-40\" aria-invalid aria-label=\"Premium in US dollars\" />\n    </InputGroup.Root>\n);",
+          "description": "`aria-invalid` on the input moves the destructive border to the frame, and\nthe ring follows it on focus.",
+          "summary": "Invalid input driving the frame's destructive border"
+        },
+        {
+          "id": "components-inputgroup--all-sizes",
+          "name": "All Sizes",
+          "snippet": "const AllSizes = () => (\n    <div className=\"flex flex-col gap-4\">\n        {SIZES.map(size => (\n            <InputGroup.Root key={size}>\n                <InputGroup.Addon>\n                    <IconSearch />\n                </InputGroup.Addon>\n                <Input size={size} placeholder={`Size ${size}`} aria-label={`Size ${size}`} />\n            </InputGroup.Root>\n        ))}\n    </div>\n);",
+          "description": "The frame follows the input's `size`: the same height as a standalone\n`Input` of that size, and the larger corner radius with `lg`.",
+          "summary": "The three input sizes inside the frame, heights matching Input"
+        },
+        {
+          "id": "components-inputgroup--inside-field-text",
+          "name": "Inside Field Text",
+          "snippet": "const InsideFieldText = () => (\n    <FieldText required>\n        <Label>Agency website</Label>\n        <InputGroup.Root>\n            <InputGroup.Text>https://</InputGroup.Text>\n            <Input type=\"text\" inputMode=\"url\" autoCapitalize=\"none\" placeholder=\"www.agentero.com\" />\n        </InputGroup.Root>\n        <Field.Description>Shown on your public profile.</Field.Description>\n    </FieldText>\n);",
+          "description": "Inside a `FieldText` nothing changes for the group: the `Input` reads the\nfield's context at any depth, so the label names it and the description\ndescribes it with no ids written by hand. The frame is not in the way.",
+          "summary": "Label and description reaching the input through the frame"
+        },
+        {
+          "id": "components-inputgroup--search-field",
+          "name": "Search Field",
+          "snippet": "const SearchField = () => (\n    <form onSubmit={handleSearchSubmit}>\n        <FieldStates\n            label=\"Agency\"\n            tooltip=\"Search by agency name or NPN.\"\n            required\n            error=\"Pick an agency from the list.\">\n            <SearchInput />\n        </FieldStates>\n    </form>\n);"
+        },
+        {
+          "id": "components-inputgroup--email-field",
+          "name": "Email Field",
+          "snippet": "const EmailField = () => (\n    <FieldStates label=\"Email\" required error=\"Enter a valid email address.\">\n        <InputGroup.Root>\n            <InputGroup.Addon>\n                <IconMail />\n            </InputGroup.Addon>\n            <Input type=\"email\" placeholder=\"me@email.com\" />\n        </InputGroup.Root>\n    </FieldStates>\n);",
+          "description": "The email field from the Portal UI library: a leading icon is all it adds\nto the input.",
+          "summary": "Email field with a leading icon, valid and invalid"
+        },
+        {
+          "id": "components-inputgroup--price-field",
+          "name": "Price Field",
+          "snippet": "const PriceField = () => (\n    <FieldStates label=\"Price\" required error=\"Enter a price above zero.\">\n        <PriceInput />\n    </FieldStates>\n);",
+          "description": "The price field from the Portal UI library: a currency symbol before the\nvalue and a currency picker after it. The picker is a `DropdownMenu` whose\ntrigger fills an `action` addon, so it keeps the frame's height and an inset\nfocus ring.",
+          "summary": "Price field with a symbol and a currency picker, valid and invalid"
+        },
+        {
+          "id": "components-inputgroup--phone-field",
+          "name": "Phone Field",
+          "snippet": "const PhoneField = () => (\n    <FieldStates label=\"Phone number\" error=\"Enter a 10-digit phone number.\">\n        <PhoneInput />\n    </FieldStates>\n);",
+          "description": "The optional phone field from the Portal UI library: a country code picker\nbefore the number. The picker leads, so the `action` addon rounds its\nbutton's start corners with the frame.",
+          "summary": "Phone field with a leading country code picker, valid and invalid"
+        }
+      ],
+      "import": "import {\n    Button,\n    Divider,\n    DropdownMenu,\n    Field,\n    FieldText,\n    IconCancel,\n    IconKeyboardArrowDown,\n    IconSearch,\n    Input,\n    InputGroup,\n    Label,\n    Tag,\n} from \"@agentero/design-system\";"
+    },
     "components-input": {
       "id": "components-input",
       "name": "Input",
@@ -9426,6 +9590,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4260
+    "durationMs": 4585
   }
 }
