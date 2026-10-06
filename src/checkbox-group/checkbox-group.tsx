@@ -8,18 +8,12 @@ import { cn } from '../../lib';
 import { Checkbox } from '../checkbox';
 import { useFieldContext } from '../field';
 
-/**
- * Style recipe for CheckboxGroup. Slots: `root` (the group), `item` (one row),
- * `control` (the 24px slot its checkbox is centred in), `label` (its text).
- * The `orientation` variant stacks the items or lays them in a row.
- */
+/** Style recipe for CheckboxGroup. Slots: `root`, `item`, `control` (24px slot for the box), `label`. */
 export const checkboxGroupRecipe = tv({
 	slots: {
 		root: 'flex',
 		item: 'group/checkbox-group-item flex items-start gap-3',
 		control: 'flex size-6 shrink-0 items-center justify-center',
-		// At least one slot tall and centred in it, so a one-line label sits level with
-		// the box; a wrapping label grows downwards from the box's line.
 		label: [
 			'flex min-h-6 cursor-pointer items-center text-sm text-text-input-normal select-none',
 			'group-data-disabled/checkbox-group-item:cursor-not-allowed group-data-disabled/checkbox-group-item:opacity-50'
@@ -67,31 +61,18 @@ export type CheckboxGroupRootProps = Omit<
 };
 
 /**
- * Container for a multi-select list of checkboxes. Owns the selected values
- * as a `string[]` and renders `role="group"`: name it with `aria-labelledby`
- * pointing at a visible heading, or with `aria-label`.
+ * Multi-select list of checkboxes that holds its checked values as a
+ * `string[]`. Renders `role="group"`: name it with `aria-labelledby` or
+ * `aria-label`, or put it inside a `Field.Root`, which names, describes,
+ * invalidates and disables it (the group's own props win).
  *
- * Headless like [Checkbox](?path=/docs/components-checkbox--docs): no group
- * label, description, error or scroll container of its own. Put it inside a
- * `Field.Root` for those: the group is then named by the field's label
- * (`aria-labelledby`), described by its description and error, and takes
- * `invalid` and `disabled`, all as defaults its own props override. The
- * label's `for` reaches nothing, since a group is not a labelable element, so
- * clicking the caption toggles no item. The field's `readOnly` is not read:
- * checkboxes have no read-only state.
+ * Not for options inside a `Command` or `Combobox` list, where a focusable
+ * checkbox would nest inside the option: use the Combobox's multiple
+ * selection. There is no `required`: "at least one" belongs to the form layer.
  *
- * Not for options inside a listbox such as a `Command` or `Combobox` list:
- * each item is a focusable control, which nests inside the option. Use the
- * Combobox's multiple selection there.
- *
- * There is no `required`: "at least one" is a rule for the form layer, and
- * `required` on each checkbox would demand all of them.
- *
- * Every native `<div>` attribute is accepted and forwarded to the group
- * (`className`, `aria-label`, `data-*`), except `aria-invalid`: it paints every
- * item with the destructive treatment and is forwarded to the checkboxes
- * instead, since `role="group"` does not support it. Point `aria-describedby`
- * at the error message.
+ * Every native `<div>` attribute is forwarded to the group except
+ * `aria-invalid`, which goes to the checkboxes (`role="group"` does not
+ * support it).
  *
  * @summary Multi-select checkbox list holding its checked values as a string array
  *
@@ -121,7 +102,6 @@ export const Root = ({
 }: CheckboxGroupRootProps) => {
 	const field = useFieldContext();
 	const styles = checkboxGroupRecipe({ orientation });
-	// A name the consumer gave, either way, wins over the field's label.
 	const labelledBy = labelledByProp ?? (props['aria-label'] ? undefined : field?.labelId);
 	const disabled = disabledProp ?? (field?.disabled || undefined);
 	const invalid = invalidProp ?? (field?.invalid || undefined);
@@ -165,11 +145,8 @@ export type CheckboxGroupItemProps = Omit<ComponentPropsWithRef<'div'>, 'childre
 
 /**
  * One option of a [CheckboxGroup](?path=/docs/components-checkboxgroup--docs):
- * a `Checkbox` and its `<label>`. Must render inside `CheckboxGroup.Root`.
- *
- * Every native `<div>` attribute is accepted and forwarded to the row
- * (`className`, `title`, `data-*`), except `id`: it goes to the checkbox, which
- * the label points at, and is generated when omitted.
+ * a `Checkbox` and its `<label>`, inside `CheckboxGroup.Root`. Native `<div>`
+ * attributes go to the row, except `id`, which goes to the checkbox.
  *
  * @summary Checkbox and label for one value of the group
  *

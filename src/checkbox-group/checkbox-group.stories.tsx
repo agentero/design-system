@@ -6,13 +6,7 @@ import { expect, fn, userEvent, within } from 'storybook/test';
 import { CheckboxGroup } from '.';
 import { Field } from '../field';
 
-/**
- * CheckboxGroup is a compound: `Root` owns the checked values as a
- * `string[]` and renders `role="group"`, and each `Item` renders one
- * `Checkbox` with its label. Name the group with `aria-labelledby` or
- * `aria-label`; the group label, description and error come from the field
- * layer.
- */
+/** `Root` owns the checked values; each `Item` is a `Checkbox` with its label. */
 const meta = {
 	title: 'Components/CheckboxGroup',
 	component: CheckboxGroup.Root,
@@ -191,8 +185,7 @@ export const DisabledItem: Story = {
 };
 
 /**
- * `aria-invalid` on the root reaches every checkbox, never the group element
- * (`role="group"` does not support it).
+ * `aria-invalid` on the root reaches every checkbox, not the group element.
  *
  * @summary Failed validation, forwarded to the items
  */
@@ -315,12 +308,7 @@ export const Horizontal: Story = {
 	}
 };
 
-/**
- * An `id` on the item lands on its checkbox, so a message elsewhere can point
- * at it; otherwise one is generated.
- *
- * @summary Item id reaches the checkbox
- */
+/** @summary Item id reaches the checkbox */
 export const ItemId: Story = {
 	render: args => (
 		<CheckboxGroup.Root {...args}>
@@ -344,9 +332,7 @@ export const ItemId: Story = {
 };
 
 /**
- * Inside a `Field.Root` the group takes its name from the field's label, its
- * description from the field's messages, and `invalid` and `disabled` from the
- * field, with nothing wired by hand.
+ * Inside a `Field.Root`, label, messages, `invalid` and `disabled` reach the group with nothing wired by hand.
  *
  * @summary Wired to a surrounding Field
  */
@@ -381,9 +367,7 @@ export const InsideField: Story = {
 };
 
 /**
- * The group's own props win over the field: here `aria-label` replaces the
- * label as the name, and `disabled` on a field is overridden by
- * `disabled={false}` on the group.
+ * `aria-label` and `disabled={false}` on the group win over the field.
  *
  * @summary Own props override the Field wiring
  */
