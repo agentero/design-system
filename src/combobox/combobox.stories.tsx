@@ -1,9 +1,9 @@
-import { Suspense, use, useRef, useState } from 'react';
+import { ComponentProps, Suspense, use, useRef, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
-import { Combobox } from '.';
+import { Combobox, type ComboboxRootProps } from '.';
 import { Button } from '../button';
 import { Field } from '../field';
 import { FieldText } from '../field-text';
@@ -24,6 +24,15 @@ import { Tag } from '../tag';
 const meta: Meta<typeof Combobox.Root> = {
 	title: 'Components/Combobox',
 	component: Combobox.Root,
+	// One props table per part on the docs page; `Root`'s alone leaves out `Input`'s.
+	subcomponents: {
+		'Combobox.Input': Combobox.Input,
+		'Combobox.Content': Combobox.Content,
+		'Combobox.List': Combobox.List,
+		'Combobox.Item': Combobox.Item,
+		'Combobox.Empty': Combobox.Empty,
+		'Combobox.Status': Combobox.Status
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: { story: { height: '320px' } }
@@ -42,6 +51,14 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const STATES = ['California', 'Colorado', 'Connecticut', 'Florida', 'Texas', 'Washington'];
+
+// `Default` drives props of two parts, so its args are its own: two of `Root`'s and the ones
+// `Input` adds. `Root`'s full table is Base UI's, mostly callbacks a control can't set.
+type DefaultArgs = Pick<ComboboxRootProps<string, false, string>, 'minInputLength' | 'disabled'> &
+	Pick<
+		ComponentProps<typeof Combobox.Input>,
+		'variant' | 'size' | 'showClear' | 'placeholder' | 'aria-label'
+	>;
 
 // The list anchors to the whole field, not the bare input: as wide as the frame, from its left
 // edge. Synchronous, for `waitFor`: the surface grows in from 0.95 scale over 100ms.
@@ -65,10 +82,34 @@ const expectListAlignedWithField = (canvasElement: HTMLElement) => {
  *
  * @summary Search field with a magnifier and clear button over an in-memory list
  */
-export const Default: Story = {
-	render: () => (
-		<Combobox.Root items={STATES}>
-			<Combobox.Input placeholder="Search states" aria-label="Search states" />
+export const Default: StoryObj<DefaultArgs> = {
+	args: {
+		variant: 'search',
+		size: 'md',
+		placeholder: 'Search states',
+		'aria-label': 'Search states',
+		minInputLength: 0
+	},
+	argTypes: {
+		variant: {
+			control: 'radio',
+			options: ['search', 'plain', 'select'],
+			description: 'search = magnifier and clear button; plain = input alone; select = chevron'
+		},
+		size: { control: 'radio', options: ['sm', 'md', 'lg'] },
+		showClear: { control: 'boolean' },
+		placeholder: { control: 'text' },
+		minInputLength: { control: { type: 'number', min: 0 } },
+		disabled: { control: 'boolean' }
+	},
+	parameters: {
+		controls: {
+			include: ['variant', 'size', 'showClear', 'placeholder', 'minInputLength', 'disabled']
+		}
+	},
+	render: ({ minInputLength, disabled, ...input }) => (
+		<Combobox.Root items={STATES} minInputLength={minInputLength} disabled={disabled}>
+			<Combobox.Input {...input} />
 			<Combobox.Content>
 				<Combobox.Empty>No matches found</Combobox.Empty>
 				<Combobox.List>
