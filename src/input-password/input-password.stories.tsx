@@ -130,10 +130,12 @@ export const Invalid: Story = {
 };
 
 /**
- * The three sizes match Input's: the frame is 32, 40 or 48px tall and the
- * toggle grows with it.
+ * The three sizes match Input's: the frame is 32, 40 or 48px tall. The toggle
+ * grows with it (a 24px button with a 16px icon at `sm`, 32px with 20px at
+ * `md`, 32px with 24px at `lg`) and sits as far from the right edge as from
+ * the top and bottom.
  *
- * @summary The three sizes, 32, 40 and 48px tall
+ * @summary The three sizes, with the toggle scaled and evenly inset
  */
 export const AllSizes: Story = {
 	render: args => (
@@ -144,9 +146,26 @@ export const AllSizes: Story = {
 		</div>
 	),
 	play: async ({ canvasElement }) => {
-		const heights = getFrames(canvasElement).map(frame => frame.getBoundingClientRect().height);
+		const measures = getFrames(canvasElement).map(frame => {
+			const box = frame.getBoundingClientRect();
+			const button = frame.querySelector('button')!.getBoundingClientRect();
+			const icon = frame.querySelector('button svg')!.getBoundingClientRect();
 
-		await expect(heights).toEqual([32, 40, 48]);
+			return {
+				frame: box.height,
+				button: button.height,
+				icon: icon.height,
+				top: button.top - box.top,
+				bottom: box.bottom - button.bottom,
+				right: box.right - button.right
+			};
+		});
+
+		await expect(measures).toEqual([
+			{ frame: 32, button: 24, icon: 16, top: 4, bottom: 4, right: 4 },
+			{ frame: 40, button: 32, icon: 20, top: 4, bottom: 4, right: 4 },
+			{ frame: 48, button: 32, icon: 24, top: 8, bottom: 8, right: 8 }
+		]);
 	}
 };
 

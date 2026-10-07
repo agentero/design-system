@@ -2,10 +2,38 @@
 
 import { useState } from 'react';
 
+import { tv } from 'tailwind-variants';
+
 import { Button } from '../button';
 import { Input, InputProps } from '../input';
 import { InputGroup } from '../input-group';
 import { IconVisibility, IconVisibilityOff } from './icons';
+
+/**
+ * Style recipe for InputPassword. Slots: `toggle` (the addon holding the
+ * button) and `button`. The `size` variant follows the input's: the button is
+ * 24px at `sm` and 32px above, the icon 16, 20 or 24px, and a negative end
+ * margin pulls the addon into the frame's padding so the button sits as far
+ * from the right edge as from the top and bottom (4px, 8px at `lg`).
+ *
+ * @summary tailwind-variants recipe backing the InputPassword toggle
+ */
+export const inputPasswordRecipe = tv({
+	slots: {
+		toggle: 'group-has-[input:disabled]/input-group:hidden',
+		button: '[&_svg]:mx-0'
+	},
+	variants: {
+		size: {
+			sm: { toggle: '-me-2.25', button: 'rounded-sm [&_svg]:size-4' },
+			md: { toggle: '-me-2.25', button: 'rounded-sm [&_svg]:size-5' },
+			lg: { toggle: '-me-1.25', button: '[&_svg]:size-6' }
+		}
+	},
+	defaultVariants: {
+		size: 'md'
+	}
+});
 
 export type InputPasswordProps = Omit<InputProps, 'type'>;
 
@@ -45,16 +73,18 @@ export type InputPasswordProps = Omit<InputProps, 'type'>;
 export const InputPassword = ({ className, size, ...props }: InputPasswordProps) => {
 	const [type, setType] = useState<'password' | 'text'>('password');
 	const isHidden = type === 'password';
+	const styles = inputPasswordRecipe({ size });
 
 	return (
 		<InputGroup.Root data-slot="input-password" className={className}>
 			<Input {...props} size={size} type={type} />
-			<InputGroup.Addon className="group-has-[input:disabled]/input-group:hidden">
+			<InputGroup.Addon className={styles.toggle()}>
 				<Button
 					type="button"
 					variant="ghost"
 					iconOnly
-					size={size === 'lg' ? 'sm' : 'xs'}
+					size={size === 'sm' ? 'xs' : 'sm'}
+					className={styles.button()}
 					aria-label={isHidden ? 'Show password' : 'Hide password'}
 					onMouseDown={event => event.preventDefault()}
 					onClick={() => setType(isHidden ? 'text' : 'password')}>
