@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>3.4s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>4.0s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -7558,9 +7558,11 @@ with the input.</div>
                 <span class="ex-name">All Sizes</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>The three sizes, 32, 40 and 48px tall</div>
-              <div class="hint">The three sizes match Input&#39;s: the frame is 32, 40 or 48px tall and the
-toggle grows with it.</div>
+              <div>The three sizes, with the toggle scaled and evenly inset</div>
+              <div class="hint">The three sizes match Input&#39;s: the frame is 32, 40 or 48px tall. The toggle
+grows with it (a 24px button with a 16px icon at `sm`, 32px with 20px at
+`md`, 32px with 24px at `lg`) and sits as far from the right edge as from
+the top and bottom.</div>
               <pre><code>const AllSizes = () =&gt; &lt;div style={{ display: &#39;grid&#39;, gap: &#39;1rem&#39; }}&gt;
     &lt;InputPassword autoComplete=&quot;current-password&quot; size=&quot;sm&quot; aria-label=&quot;Small&quot; /&gt;
     &lt;InputPassword autoComplete=&quot;current-password&quot; size=&quot;md&quot; aria-label=&quot;Medium&quot; /&gt;

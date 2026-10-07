@@ -6717,8 +6717,8 @@
           "id": "components-inputpassword--all-sizes",
           "name": "All Sizes",
           "snippet": "const AllSizes = () => <div style={{ display: 'grid', gap: '1rem' }}>\n    <InputPassword autoComplete=\"current-password\" size=\"sm\" aria-label=\"Small\" />\n    <InputPassword autoComplete=\"current-password\" size=\"md\" aria-label=\"Medium\" />\n    <InputPassword autoComplete=\"current-password\" size=\"lg\" aria-label=\"Large\" />\n</div>;",
-          "description": "The three sizes match Input's: the frame is 32, 40 or 48px tall and the\ntoggle grows with it.",
-          "summary": "The three sizes, 32, 40 and 48px tall"
+          "description": "The three sizes match Input's: the frame is 32, 40 or 48px tall. The toggle\ngrows with it (a 24px button with a 16px icon at `sm`, 32px with 20px at\n`md`, 32px with 24px at `lg`) and sits as far from the right edge as from\nthe top and bottom.",
+          "summary": "The three sizes, with the toggle scaled and evenly inset"
         },
         {
           "id": "components-inputpassword--inside-field-text",
@@ -9696,6 +9696,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 3400
+    "durationMs": 3985
   }
 }
