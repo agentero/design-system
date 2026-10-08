@@ -1,4 +1,4 @@
-import { type FormEvent, type ReactNode, type SVGProps, useRef, useState } from 'react';
+import { type ReactNode, type SVGProps, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
@@ -6,7 +6,6 @@ import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 import { InputGroup } from '.';
 import { IconKeyboardArrowDown } from '../accordion/icons';
 import { Button } from '../button';
-import { IconCancel } from '../combobox/icons';
 import { IconSearch } from '../command/icons';
 import { Divider } from '../divider';
 import { DropdownMenu } from '../dropdown-menu';
@@ -48,7 +47,9 @@ const getGroup = (canvasElement: HTMLElement) => getGroups(canvasElement)[0]!;
 /**
  * A search field: the icon leads and the input takes the rest of the frame.
  * Pressing the icon focuses the input, and the frame — not the input — draws the
- * focus ring, so the two never show a double border.
+ * focus ring, so the two never show a double border. A search field with a
+ * clear button and a loading state is
+ * [InputSearch](?path=/docs/components-inputsearch--docs), built on this frame.
  *
  * @summary Leading icon addon with the frame drawing the focus ring
  */
@@ -385,78 +386,6 @@ const FieldStates = ({ label, tooltip, required, error, children }: FieldStatesP
 		))}
 	</div>
 );
-
-const SearchInput = () => {
-	const [value, setValue] = useState('');
-	const inputRef = useRef<HTMLInputElement>(null);
-
-	return (
-		<InputGroup.Root>
-			<InputGroup.Addon>
-				<IconSearch />
-			</InputGroup.Addon>
-			<Input
-				ref={inputRef}
-				value={value}
-				onChange={event => setValue(event.target.value)}
-				placeholder="Search agencies"
-			/>
-			{value && (
-				<InputGroup.Addon>
-					<Button
-						variant="ghost"
-						size="xs"
-						type="button"
-						iconOnly
-						aria-label="Clear search"
-						onClick={() => {
-							setValue('');
-							inputRef.current?.focus();
-						}}>
-						<IconCancel />
-					</Button>
-				</InputGroup.Addon>
-			)}
-		</InputGroup.Root>
-	);
-};
-
-/**
- * The search field from the Portal UI library: a leading icon, and a clear
- * button that appears once there is a value. Clearing empties the input and
- * puts the focus back in it. It is a plain text input, so the browser's own
- * search cancel button does not show beside this one. When the search picks
- * from a list of results, use `Combobox`, which brings its own clear button.
- *
- * @summary Search field with a clear button, valid and invalid
- */
-const handleSearchSubmit = fn((event: FormEvent) => event.preventDefault());
-
-export const SearchField: Story = {
-	render: () => (
-		<form onSubmit={handleSearchSubmit}>
-			<FieldStates
-				label="Agency"
-				tooltip="Search by agency name or NPN."
-				required
-				error="Pick an agency from the list.">
-				<SearchInput />
-			</FieldStates>
-		</form>
-	),
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-		const [input] = canvas.getAllByRole('textbox', { name: /Agency/ }) as [HTMLElement];
-
-		await expect(canvas.queryByRole('button', { name: 'Clear search' })).not.toBeInTheDocument();
-		await userEvent.type(input, 'Acme');
-		await userEvent.click(canvas.getByRole('button', { name: 'Clear search' }));
-		await expect(input).toHaveValue('');
-		await expect(input).toHaveFocus();
-		await expect(handleSearchSubmit).not.toHaveBeenCalled();
-		await expect(canvas.queryByRole('button', { name: 'Clear search' })).not.toBeInTheDocument();
-	}
-};
 
 /**
  * The email field from the Portal UI library: a leading icon is all it adds
