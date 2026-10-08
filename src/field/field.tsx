@@ -173,8 +173,8 @@ export type FieldRootProps = ComponentPropsWithRef<'div'> & {
  * <Field.Root invalid={!!error} required>
  *   <Field.Label>Email</Field.Label>
  *   <Input type="email" />
- *   <Field.Description>We only use this for policy documents.</Field.Description>
  *   <Field.Error errors={[error]} />
+ *   <Field.Description>We only use this for policy documents.</Field.Description>
  * </Field.Root>
  */
 export const Root = ({
@@ -205,10 +205,11 @@ export const Root = ({
 		return () => setMessageIds(ids => ids.filter(existing => existing !== id));
 	}, []);
 
-	// The description reads before the error whatever the order they mounted in.
+	// The error reads before the description, as it sits above it, whatever the
+	// order they mounted in.
 	const describedBy =
 		[
-			...[descriptionId, errorId].filter(id => messageIds.includes(id)),
+			...[errorId, descriptionId].filter(id => messageIds.includes(id)),
 			...messageIds.filter(id => id !== descriptionId && id !== errorId)
 		].join(' ') || undefined;
 
@@ -349,7 +350,9 @@ const toMessages = (error: FieldErrorLike): string[] => {
 
 /**
  * Validation feedback for the field, announced as an alert when it appears.
- * Renders nothing without a message, so it can stay mounted unconditionally;
+ * Place it right after the control, before `Field.Description`: the control's
+ * `aria-describedby` reads the error first as well. Renders nothing without a
+ * message, so it can stay mounted unconditionally;
  * set `invalid` on `Field.Root` alongside it. Takes `children` or an `errors`
  * array, and a form adapter can supply `errors` through `FieldContext` so a
  * bare `<Field.Error />` renders them. One per field: it takes the field's
