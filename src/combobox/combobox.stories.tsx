@@ -60,8 +60,8 @@ const expectListAlignedWithField = (canvasElement: HTMLElement) => {
 /**
  * The common case: options are already in memory and Base UI filters them against
  * what you type. Selecting a row fills the input and closes the list. The field is
- * a search out of the box — a magnifier in front, a clear button once something is
- * picked — and the list hangs from the whole field.
+ * a search out of the box — a magnifier in front, a clear button once there is
+ * text — and the list hangs from the whole field. Clearing drops the picked option.
  *
  * @summary Search field with a magnifier and clear button over an in-memory list
  */
@@ -104,8 +104,8 @@ export const Default: Story = {
 		await userEvent.type(input, 'co');
 		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(2));
 
-		// Nothing picked yet, so the clear button has nothing to clear and stays unmounted.
-		await expect(canvas.queryByRole('button', { name: /clear/i })).not.toBeInTheDocument();
+		// The clear button follows the text, so it is there before anything is picked.
+		await expect(canvas.getByRole('button', { name: /clear/i })).toBeInTheDocument();
 
 		await userEvent.click(body.getByRole('option', { name: 'Colorado' }));
 		await waitFor(() => expect(input).toHaveValue('Colorado'));
@@ -113,6 +113,13 @@ export const Default: Story = {
 		await userEvent.click(await canvas.findByRole('button', { name: /clear/i }));
 		await waitFor(() => expect(input).toHaveValue(''));
 		await expect(input).toHaveFocus();
+		// Emptying the text drops the picked option too: reopened, no row is selected.
+		await userEvent.keyboard('{ArrowDown}');
+		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(STATES.length));
+		await expect(body.getByRole('option', { name: 'Colorado' })).not.toHaveAttribute(
+			'aria-selected',
+			'true'
+		);
 		await userEvent.keyboard('{Escape}');
 
 		// The surface stays mounted through its exit animation, so wait it out.
