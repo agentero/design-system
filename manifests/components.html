@@ -588,13 +588,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">35 components ok</span><span class="filter-pill ok" aria-disabled="true">286 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">35 components ok</span><span class="filter-pill ok" aria-disabled="true">288 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>2.9s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>3.8s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -3463,8 +3463,8 @@ rest of the page from assistive technology, label included, and a
                 &lt;/Combobox.List&gt;
             &lt;/Combobox.Content&gt;
         &lt;/Combobox.Root&gt;
-        &lt;Field.Description&gt;The agency this agent will be added to.&lt;/Field.Description&gt;
         &lt;Field.Error errors={[{ message: &#39;Pick an agency from the list&#39; }]} /&gt;
+        &lt;Field.Description&gt;The agency this agent will be added to.&lt;/Field.Description&gt;
     &lt;/FieldText&gt;
 );</code></pre>
             </div>
@@ -5217,7 +5217,7 @@ actions outright unless the user needs to see them and understand why.</div>
       <div class="badges">
         <label for="c-12-components-field-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-12-components-field-stories" class="badge ok as-toggle">16 stories</label>
+        <label for="c-12-components-field-stories" class="badge ok as-toggle">17 stories</label>
         
         
       </div>
@@ -5241,8 +5241,8 @@ absent when there is none.</div>
     <div class="kv"><span class="chip">summary: Wraps a label, control, description and error into one field</span><span class="chip">example: &lt;Field.Root invalid={!!error} required&gt;
   &lt;Field.Label&gt;Email&lt;/Field.Label&gt;
   &lt;Input type=&quot;email&quot; /&gt;
-  &lt;Field.Description&gt;We only use this for policy documents.&lt;/Field.Description&gt;
   &lt;Field.Error errors={[error]} /&gt;
+  &lt;Field.Description&gt;We only use this for policy documents.&lt;/Field.Description&gt;
 &lt;/Field.Root&gt;</span></div>
   </div>
 
@@ -5495,6 +5495,37 @@ either, the control carries no `aria-describedby` at all.</div>
             </div>
             <div class="note ok">
               <div class="row">
+                <span class="ex-name">Error Before Description</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Error announced before the description, whenever it appears</div>
+              <div class="hint">The error sits right under the control and is announced before the
+description, even when it appears after the description is on screen and
+carries an `id` of its own.</div>
+              <pre><code>const ErrorBeforeDescription = () =&gt; {
+    const [error, setError] = useState&lt;string&gt;();
+
+    return (
+        &lt;div className=&quot;flex flex-col items-start gap-4&quot;&gt;
+            &lt;Field.Root
+                orientation=&quot;vertical&quot;
+                disabled={false}
+                readOnly={false}
+                required={false}
+                invalid={!!error}&gt;
+                &lt;Label&gt;Tax ID&lt;/Label&gt;
+                &lt;DemoInput inputMode=&quot;numeric&quot; /&gt;
+                &lt;Field.Error id=&quot;tax-id-error&quot;&gt;{error}&lt;/Field.Error&gt;
+                &lt;Field.Description&gt;Nine digits, with or without the dash.&lt;/Field.Description&gt;
+            &lt;/Field.Root&gt;
+            &lt;button type=&quot;button&quot; onClick={() =&gt; setError(&#39;Enter the tax ID.&#39;)}&gt;Validate
+                                &lt;/button&gt;
+        &lt;/div&gt;
+    );
+};</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
                 <span class="ex-name">Disabled</span>
                 <span class="badge ok">story ok</span>
               </div>
@@ -5743,8 +5774,8 @@ and `name`, and `FieldContext` with the errors, as the last story shows.</div>
     <div class="kv"><span class="chip">summary: Field for a single-line text control, wiring the Input inside it</span><span class="chip">example: &lt;FieldText invalid={!!error} required&gt;
   &lt;Label&gt;Email&lt;/Label&gt;
   &lt;Input type=&quot;email&quot; /&gt;
-  &lt;Field.Description&gt;We only use this for policy documents.&lt;/Field.Description&gt;
   &lt;Field.Error errors={[error]} /&gt;
+  &lt;Field.Description&gt;We only use this for policy documents.&lt;/Field.Description&gt;
 &lt;/FieldText&gt;</span></div>
   </div>
 
@@ -6163,7 +6194,7 @@ Validation is react-hook-form&#39;s alone.</div>
       <div class="badges">
         <label for="c-15-components-formtext-props" class="badge ok as-toggle">15 prop types</label>
         
-        <label for="c-15-components-formtext-stories" class="badge ok as-toggle">9 stories</label>
+        <label for="c-15-components-formtext-stories" class="badge ok as-toggle">10 stories</label>
         
         
       </div>
@@ -6226,9 +6257,9 @@ control?: Control&lt;FieldValues, any, unknown&gt;
 controlId?: string
 
 /**
- * Helper text shown under the control and announced through its
- * `aria-describedby`. Use it for guidance the user needs before typing; put
- * details worth a click in `tooltip` instead.
+ * Helper text shown under the control, below the error when there is one,
+ * and announced through its `aria-describedby`. Use it for guidance the
+ * user needs before typing; put details worth a click in `tooltip` instead.
  */
 description?: ReactNode
 
@@ -6438,6 +6469,36 @@ not mark the field required: that stays an explicit `required` prop.</div>
                     pattern: { value: /^\d{6,10}$/, message: &#39;An NPN is 6 to 10 digits.&#39; }
                 }}
                 inputProps={{ inputMode: &#39;numeric&#39; }}
+            /&gt;
+            &lt;Button type=&quot;submit&quot;&gt;Save&lt;/Button&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Error And Description</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Error under the input, above the helper text</div>
+              <div class="hint">The error sits right under the input and the description stays below it, so
+the message lands next to the value it is about. Screen readers announce
+them in the same order.</div>
+              <pre><code>const ErrorAndDescription = () =&gt; {
+    const methods = useForm&lt;TaxValues&gt;({ defaultValues: { taxId: &#39;&#39; } });
+
+    return (
+        &lt;Form.Root
+            methods={methods}
+            onSubmit={onSubmit}
+            aria-label=&quot;Tax details&quot;
+            className=&quot;flex flex-col items-start gap-7&quot;&gt;
+            &lt;FormText
+                name=&quot;taxId&quot;
+                label=&quot;Tax ID&quot;
+                description=&quot;Nine digits, with or without the dash.&quot;
+                rules={{ required: &#39;Enter the tax ID.&#39; }}
+                inputProps={{ inputMode: &#39;numeric&#39;, autoComplete: &#39;off&#39; }}
             /&gt;
             &lt;Button type=&quot;submit&quot;&gt;Save&lt;/Button&gt;
         &lt;/Form.Root&gt;

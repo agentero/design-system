@@ -2850,7 +2850,7 @@
         {
           "id": "components-combobox--inside-field-text",
           "name": "Inside Field Text",
-          "snippet": "const InsideFieldText = () => (\n    <FieldText invalid required>\n        <Label>Agency</Label>\n        <Combobox.Root items={STATES}>\n            <Combobox.Input placeholder=\"Search agencies\" />\n            <Combobox.Content>\n                <Combobox.Empty>No matches found</Combobox.Empty>\n                <Combobox.List>\n                    {(state: string) => (\n                        <Combobox.Item key={state} value={state}>\n                            {state}\n                        </Combobox.Item>\n                    )}\n                </Combobox.List>\n            </Combobox.Content>\n        </Combobox.Root>\n        <Field.Description>The agency this agent will be added to.</Field.Description>\n        <Field.Error errors={[{ message: 'Pick an agency from the list' }]} />\n    </FieldText>\n);",
+          "snippet": "const InsideFieldText = () => (\n    <FieldText invalid required>\n        <Label>Agency</Label>\n        <Combobox.Root items={STATES}>\n            <Combobox.Input placeholder=\"Search agencies\" />\n            <Combobox.Content>\n                <Combobox.Empty>No matches found</Combobox.Empty>\n                <Combobox.List>\n                    {(state: string) => (\n                        <Combobox.Item key={state} value={state}>\n                            {state}\n                        </Combobox.Item>\n                    )}\n                </Combobox.List>\n            </Combobox.Content>\n        </Combobox.Root>\n        <Field.Error errors={[{ message: 'Pick an agency from the list' }]} />\n        <Field.Description>The agency this agent will be added to.</Field.Description>\n    </FieldText>\n);",
           "description": "Dropped into a `FieldText`, the input takes the label, the description and\nthe error from the field with nothing wired by hand: `Combobox.Input` reads the\nsame `InputContext` the plain `Input` does. It also points `aria-labelledby`\nat the label, so the name survives the list opening: Base UI then hides the\nrest of the page from assistive technology, label included, and a\n`<label for>` alone would stop naming the input."
         },
         {
@@ -5295,7 +5295,7 @@
           "Field for a single-line text control, wiring the Input inside it"
         ],
         "example": [
-          "<FieldText invalid={!!error} required>\n  <Label>Email</Label>\n  <Input type=\"email\" />\n  <Field.Description>We only use this for policy documents.</Field.Description>\n  <Field.Error errors={[error]} />\n</FieldText>"
+          "<FieldText invalid={!!error} required>\n  <Label>Email</Label>\n  <Input type=\"email\" />\n  <Field.Error errors={[error]} />\n  <Field.Description>We only use this for policy documents.</Field.Description>\n</FieldText>"
         ]
       },
       "description": "FieldText is a `Field.Root` for a single-line text control. It provides\n`InputContext`, so the `Input` inside associates itself with the label and\nthe messages and takes `invalid`, `required`, `disabled` and `readOnly` from\nthe field — no `id`, `htmlFor`, `aria-describedby` or `aria-invalid` written\nby hand.\n\nIt knows nothing about form libraries, and its contexts compose: a provider\nnested inside it can extend `InputContext` with `value`, `onChange`, `onBlur`\nand `name`, and `FieldContext` with the errors, as the last story shows.",
@@ -5310,7 +5310,7 @@
             "Field for a single-line text control, wiring the Input inside it"
           ],
           "example": [
-            "<FieldText invalid={!!error} required>\n  <Label>Email</Label>\n  <Input type=\"email\" />\n  <Field.Description>We only use this for policy documents.</Field.Description>\n  <Field.Error errors={[error]} />\n</FieldText>"
+            "<FieldText invalid={!!error} required>\n  <Label>Email</Label>\n  <Input type=\"email\" />\n  <Field.Error errors={[error]} />\n  <Field.Description>We only use this for policy documents.</Field.Description>\n</FieldText>"
           ]
         },
         "props": {
@@ -5504,7 +5504,7 @@
           "Wraps a label, control, description and error into one field"
         ],
         "example": [
-          "<Field.Root invalid={!!error} required>\n  <Field.Label>Email</Field.Label>\n  <Input type=\"email\" />\n  <Field.Description>We only use this for policy documents.</Field.Description>\n  <Field.Error errors={[error]} />\n</Field.Root>"
+          "<Field.Root invalid={!!error} required>\n  <Field.Label>Email</Field.Label>\n  <Input type=\"email\" />\n  <Field.Error errors={[error]} />\n  <Field.Description>We only use this for policy documents.</Field.Description>\n</Field.Root>"
         ]
       },
       "description": "Field lays out a single form field — label, control, helper text and error —\nand wires the accessibility relationships between them. `Field.Root`\ngenerates the ids and shares them through context: `Label` reads\n`LabelContext`, `Field.Description` and `Field.Error` read `FieldContext`,\nand a `Field<X>` such as `FieldText` provides the control's context. Nobody\npasses an `id` by hand.\n\nPresentational and form-library agnostic: pass `invalid` and the error\nmessages from whatever validates the form. Spacing between fields belongs to\n`Field.Group`, never to a margin on the field itself.\n\n`Field.Description` and `Field.Error` register themselves with the root, so\nthe control's `aria-describedby` lists exactly the messages on screen and is\nabsent when there is none.",
@@ -5519,7 +5519,7 @@
             "Wraps a label, control, description and error into one field"
           ],
           "example": [
-            "<Field.Root invalid={!!error} required>\n  <Field.Label>Email</Field.Label>\n  <Input type=\"email\" />\n  <Field.Description>We only use this for policy documents.</Field.Description>\n  <Field.Error errors={[error]} />\n</Field.Root>"
+            "<Field.Root invalid={!!error} required>\n  <Field.Label>Email</Field.Label>\n  <Input type=\"email\" />\n  <Field.Error errors={[error]} />\n  <Field.Description>We only use this for policy documents.</Field.Description>\n</Field.Root>"
           ]
         },
         "props": {
@@ -5719,6 +5719,13 @@
           "summary": "Error stays mounted and renders nothing while valid"
         },
         {
+          "id": "components-field--error-before-description",
+          "name": "Error Before Description",
+          "snippet": "const ErrorBeforeDescription = () => {\n    const [error, setError] = useState<string>();\n\n    return (\n        <div className=\"flex flex-col items-start gap-4\">\n            <Field.Root\n                orientation=\"vertical\"\n                disabled={false}\n                readOnly={false}\n                required={false}\n                invalid={!!error}>\n                <Label>Tax ID</Label>\n                <DemoInput inputMode=\"numeric\" />\n                <Field.Error id=\"tax-id-error\">{error}</Field.Error>\n                <Field.Description>Nine digits, with or without the dash.</Field.Description>\n            </Field.Root>\n            <button type=\"button\" onClick={() => setError('Enter the tax ID.')}>Validate\n                                </button>\n        </div>\n    );\n};",
+          "description": "The error sits right under the control and is announced before the\ndescription, even when it appears after the description is on screen and\ncarries an `id` of its own.",
+          "summary": "Error announced before the description, whenever it appears"
+        },
+        {
           "id": "components-field--disabled",
           "name": "Disabled",
           "snippet": "const Disabled = () => <Field.Root\n    orientation=\"vertical\"\n    invalid={false}\n    disabled\n    readOnly={false}\n    required={false}>\n    <Label>Agency</Label>\n    <DemoInput defaultValue=\"Acme Insurance\" />\n    <Field.Description>Managed by your administrator.</Field.Description>\n</Field.Root>;",
@@ -5795,7 +5802,7 @@
         "displayName": "FormText",
         "exportName": "FormText",
         "filePath": "/home/runner/work/design-system/design-system/src/form-text/index.ts",
-        "description": "A complete text field bound to one react-hook-form value: label, `Input`,\nhelper text and validation error, laid out in the standard order and wired\nthrough `useController`. It renders inside a `Form.Root`, which provides the\nform, and needs only a `name`, which on a typed form must point at a string\n(`FormTextPath`). The `required`, `invalid` and error states\nreach the label, the input's `aria-*` attributes and the message with no\nids written by hand.\n\nUse it for the common case: a labelled single-line input in a form. When\nthe layout is different — an input with addons, another control, a\nmessage rendered elsewhere — compose the primitives yourself:\n`useController` with [FieldText](?path=/docs/components-fieldtext--docs),\n`Label`, `Input`, `Field.Description` and `Field.Error`. `FormText` adds no\nbehaviour of its own over that composition.\n\nErrors come from `useController`'s per-field state, never from\n`formState.errors`, so the message stays fresh under the React Compiler.\nWith `criteriaMode: 'all'` on the form the error carries every rule that\nfailed and `Field.Error` lists them all. An error on an array or object path\n(`error.root`) is not this field's: render a `Field.Error` for it where the\ngroup lives.",
+        "description": "A complete text field bound to one react-hook-form value: label, `Input`,\nvalidation error and helper text, laid out in the standard order and wired\nthrough `useController`. It renders inside a `Form.Root`, which provides the\nform, and needs only a `name`, which on a typed form must point at a string\n(`FormTextPath`). The `required`, `invalid` and error states\nreach the label, the input's `aria-*` attributes and the message with no\nids written by hand.\n\nUse it for the common case: a labelled single-line input in a form. When\nthe layout is different — an input with addons, another control, a\nmessage rendered elsewhere — compose the primitives yourself:\n`useController` with [FieldText](?path=/docs/components-fieldtext--docs),\n`Label`, `Input`, `Field.Description` and `Field.Error`. `FormText` adds no\nbehaviour of its own over that composition.\n\nErrors come from `useController`'s per-field state, never from\n`formState.errors`, so the message stays fresh under the React Compiler.\nWith `criteriaMode: 'all'` on the form the error carries every rule that\nfailed and `Field.Error` lists them all. An error on an array or object path\n(`error.root`) is not this field's: render a `Field.Error` for it where the\ngroup lives.",
         "jsDocTags": {
           "summary": [
             "Label, Input, description and error bound to one react-hook-form field"
@@ -6021,7 +6028,7 @@
             "type": {
               "name": "ReactNode"
             },
-            "description": "Helper text shown under the control and announced through its\n`aria-describedby`. Use it for guidance the user needs before typing; put\ndetails worth a click in `tooltip` instead.",
+            "description": "Helper text shown under the control, below the error when there is one,\nand announced through its `aria-describedby`. Use it for guidance the\nuser needs before typing; put details worth a click in `tooltip` instead.",
             "defaultValue": null,
             "parent": {
               "name": "FormTextProps",
@@ -6155,6 +6162,13 @@
           "snippet": "const WithRules = () => {\n    const methods = useForm<LicenseValues>({ defaultValues: { agency: { npn: '' } } });\n\n    return (\n        <Form.Root\n            methods={methods}\n            onSubmit={onSubmit}\n            aria-label=\"License\"\n            className=\"flex flex-col items-start gap-7\">\n            <FormText<LicenseValues>\n                name=\"agency.npn\"\n                label=\"NPN\"\n                rules={{\n                    required: 'Enter your NPN.',\n                    pattern: { value: /^\\d{6,10}$/, message: 'An NPN is 6 to 10 digits.' }\n                }}\n                inputProps={{ inputMode: 'numeric' }}\n            />\n            <Button type=\"submit\">Save</Button>\n        </Form.Root>\n    );\n};",
           "description": "`rules` are react-hook-form's, and `name` accepts nested paths typed against\nthe form's values through the generic. `rules.required` validates but does\nnot mark the field required: that stays an explicit `required` prop.",
           "summary": "Nested path with validation rules, typed through the generic"
+        },
+        {
+          "id": "components-formtext--error-and-description",
+          "name": "Error And Description",
+          "snippet": "const ErrorAndDescription = () => {\n    const methods = useForm<TaxValues>({ defaultValues: { taxId: '' } });\n\n    return (\n        <Form.Root\n            methods={methods}\n            onSubmit={onSubmit}\n            aria-label=\"Tax details\"\n            className=\"flex flex-col items-start gap-7\">\n            <FormText\n                name=\"taxId\"\n                label=\"Tax ID\"\n                description=\"Nine digits, with or without the dash.\"\n                rules={{ required: 'Enter the tax ID.' }}\n                inputProps={{ inputMode: 'numeric', autoComplete: 'off' }}\n            />\n            <Button type=\"submit\">Save</Button>\n        </Form.Root>\n    );\n};",
+          "description": "The error sits right under the input and the description stays below it, so\nthe message lands next to the value it is about. Screen readers announce\nthem in the same order.",
+          "summary": "Error under the input, above the helper text"
         },
         {
           "id": "components-formtext--all-errors",
@@ -9696,6 +9710,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 2861
+    "durationMs": 3809
   }
 }
