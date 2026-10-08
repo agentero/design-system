@@ -12,6 +12,9 @@ const PEOPLE = [
 	{ fallback: 'HT', colorize: 'Harriet Tubman' }
 ];
 
+const PROFILE_PHOTO =
+	'https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?&w=256&h=256&q=70&crop=focalpoint&fp-x=0.5&fp-y=0.3&fp-z=1&fit=crop';
+
 /**
  * AvatarGroup stacks `<Avatar>` children into an overlapping row and collapses
  * everything past `max` into a trailing `+N` bubble. The group owns the layout:
@@ -54,6 +57,8 @@ export const Default: Story = {
 		await expect(canvas.getByText('MK')).toBeInTheDocument();
 		await expect(canvas.queryByText('RP')).not.toBeInTheDocument();
 		await expect(canvas.getByText('+2')).toBeInTheDocument();
+		await expect(canvas.getByRole('img', { name: 'AL' })).toBeInTheDocument();
+		await expect(canvas.getByRole('img', { name: '+2' })).toBeInTheDocument();
 
 		const items = canvasElement.querySelectorAll('[data-slot="avatar-group"] > *');
 		expect(items).toHaveLength(4); // 3 visible + the +2 bubble
@@ -85,7 +90,106 @@ export const WithinMax: Story = {
 		const canvas = within(canvasElement);
 
 		await expect(canvas.getByText('HT')).toBeInTheDocument();
+		await expect(canvas.getByRole('img', { name: 'HT' })).toBeInTheDocument();
 		await expect(canvas.queryByText(/^\+/)).not.toBeInTheDocument();
+	}
+};
+
+/**
+ * Initials are a poor accessible name. Give each avatar `role="img"` and an
+ * `aria-label` with the person's name; the group keeps what the caller sets.
+ *
+ * @summary Avatars named by the caller keep their accessible names
+ */
+export const WithNames: Story = {
+	render: args => (
+		<AvatarGroup {...args}>
+			{PEOPLE.map(person => (
+				<Avatar
+					key={person.colorize}
+					role="img"
+					aria-label={person.colorize}
+					fallback={person.fallback}
+					colorize={person.colorize}
+				/>
+			))}
+		</AvatarGroup>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		await expect(canvas.getByRole('img', { name: 'Ada Lovelace' })).toBeInTheDocument();
+		await expect(canvas.queryByRole('img', { name: 'AL' })).not.toBeInTheDocument();
+	}
+};
+
+/**
+ * An avatar with a photo is named by its `alt`, so the group adds no fallback
+ * name on top of it.
+ *
+ * @summary A photo is named by its alt, not by its fallback
+ */
+export const WithPhoto: Story = {
+	render: args => (
+		<AvatarGroup {...args}>
+			<Avatar src={PROFILE_PHOTO} alt="Alex Morgan" fallback="AM" />
+			{PEOPLE.map(person => (
+				<Avatar key={person.colorize} fallback={person.fallback} colorize={person.colorize} />
+			))}
+		</AvatarGroup>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		await expect(canvas.queryByRole('img', { name: 'AM' })).not.toBeInTheDocument();
+		await expect(canvas.getByRole('img', { name: 'AL' })).toBeInTheDocument();
+	}
+};
+
+/**
+ * A role says what the avatar is, not what it is called. An avatar that carries
+ * its own role keeps it and still takes its text fallback as its name. An
+ * avatar marked `presentation` is left without one.
+ *
+ * @summary A caller's role is kept and the fallback still names the avatar
+ */
+export const WithRole: Story = {
+	tags: ['!manifest'],
+	render: args => (
+		<AvatarGroup {...args}>
+			<Avatar role="button" tabIndex={0} fallback="AL" colorize="Ada Lovelace" />
+			<Avatar role="presentation" fallback="GH" colorize="Grace Hopper" />
+		</AvatarGroup>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		await expect(canvas.getByRole('button', { name: 'AL' })).toBeInTheDocument();
+		await expect(canvas.getByText('GH').closest('[role="presentation"]')).not.toHaveAttribute(
+			'aria-label'
+		);
+	}
+};
+
+/**
+ * Initials wrapped in an element or a fragment are read from its text, so the
+ * avatar is still named.
+ *
+ * @summary Initials wrapped in an element still name the avatar
+ */
+export const WithWrappedInitials: Story = {
+	tags: ['!manifest'],
+	render: args => (
+		<AvatarGroup {...args}>
+			<Avatar fallback={<span>AL</span>} colorize="Ada Lovelace" />
+			<Avatar fallback={<>GH</>} colorize="Grace Hopper" />
+		</AvatarGroup>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		await expect(canvas.getByRole('img', { name: 'AL' })).toBeInTheDocument();
+		await expect(canvas.getByRole('img', { name: 'GH' })).toBeInTheDocument();
 	}
 };
 

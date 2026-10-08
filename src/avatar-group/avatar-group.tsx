@@ -40,6 +40,31 @@ export const avatarGroupRecipe = tv({
 	}
 });
 
+const textOf = (node: ReactNode): string => {
+	if (typeof node === 'string' || typeof node === 'number') return String(node);
+	if (Array.isArray(node)) return node.map(textOf).join('');
+	if (isValidElement<{ children?: ReactNode }>(node)) return textOf(node.props.children);
+	return '';
+};
+
+// Avatar hides its fallback from assistive technology. A grouped avatar has no
+// name beside it, so the text of its fallback stays its accessible name, unless
+// the caller names the avatar, marks it decorative, or it has a photo, which
+// `alt` names. A role the caller set is kept: it is not a name.
+const fallbackName = ({
+	fallback,
+	src,
+	role = 'img',
+	'aria-label': ariaLabel,
+	'aria-labelledby': ariaLabelledBy
+}: ComponentProps<typeof Avatar>) => {
+	const text = textOf(fallback).trim();
+	const isNamed = ariaLabel !== undefined || ariaLabelledBy !== undefined;
+	const isDecorative = role === 'presentation' || role === 'none';
+
+	return text && !src && !isNamed && !isDecorative ? { role, 'aria-label': text } : undefined;
+};
+
 export type AvatarGroupProps = Omit<ComponentPropsWithRef<'div'>, 'children'> & {
 	children?: ReactNode;
 	max?: number;
@@ -53,6 +78,14 @@ export type AvatarGroupProps = Omit<ComponentPropsWithRef<'div'>, 'children'> & 
  * `max` (default 3) into a trailing `+N` bubble. Pass `<Avatar>` elements
  * directly — the group clones each to force a uniform `size`/`variant` and the
  * overlap, so wrapped children won't pick those up.
+ *
+ * Avatar hides its fallback from assistive technology, and a grouped avatar has
+ * no name beside it. The group therefore exposes an avatar without `src` as an
+ * image named by the text of its fallback, and the `+N` bubble as an image
+ * named `+N`. An icon fallback has no text, so it gets no name.
+ * Initials are a poor name: give each avatar `role="img"` and an `aria-label`
+ * with the person's name, and the group keeps them. An avatar with `src` is
+ * named by its `alt` only, so it has no name if the photo fails to load.
  *
  * @summary Overlapping row of avatars, collapsing the rest into `+N`
  *
@@ -87,12 +120,15 @@ export const AvatarGroup = ({
 				cloneElement(avatar, {
 					size,
 					variant,
-					className: cn(itemClassName, avatar.props.className)
+					className: cn(itemClassName, avatar.props.className),
+					...fallbackName(avatar.props)
 				})
 			)}
 			{overflow > 0 && (
 				<Avatar
 					data-slot="avatar-group-overflow"
+					role="img"
+					aria-label={`+${overflow}`}
 					size={size}
 					variant={variant}
 					fallback={`+${overflow}`}

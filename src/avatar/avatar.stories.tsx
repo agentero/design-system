@@ -116,6 +116,34 @@ export const WithFallbackInitials: Story = {
 	}
 };
 
+/**
+ * The fallback is decorative and hidden from assistive technology, so the
+ * accessible name comes from the text next to the avatar. This link is
+ * announced as "Olivia Bennett", not "O Olivia Bennett".
+ *
+ * @summary Fallback initial stays out of the link's accessible name
+ */
+export const WithNameInLink: Story = {
+	args: {
+		size: 'sm',
+		fallback: 'O',
+		colorize: 'Olivia Bennett'
+	},
+	render: args => (
+		<a
+			href="/producers/olivia-bennett"
+			style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+			<Avatar {...args} />
+			Olivia Bennett
+		</a>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		await expect(canvas.getByRole('link', { name: 'Olivia Bennett' })).toBeInTheDocument();
+	}
+};
+
 /* --------------- Variants --------------- */
 
 /**

@@ -227,17 +227,30 @@ type AvatarFallbackProps = ComponentPropsWithRef<typeof AvatarPrimitive.Fallback
 
 const AvatarFallback = (props: AvatarFallbackProps) => {
 	const { slotsStyles } = useAvatar();
+	// Hidden from assistive technology: an initial next to the person's name
+	// would be read as part of it ("O Olivia Bennett").
 	return (
-		<AvatarPrimitive.Fallback {...props} className={cn(slotsStyles.fallback(), props.className)} />
+		<AvatarPrimitive.Fallback
+			aria-hidden
+			{...props}
+			className={cn(slotsStyles.fallback(), props.className)}
+		/>
 	);
 };
 
 type AvatarProps = ComponentPropsWithRef<typeof AvatarPrimitive.Root> & {
-	/** Accessible alt text describing the avatar image. Required when `src` is provided. */
+	/**
+	 * Accessible alt text describing the avatar image. Required when `src` is provided.
+	 * It names the image only and is not used while the fallback shows.
+	 */
 	alt?: string;
 	/** Image URL to display. When unavailable or loading fails, `fallback` content is shown instead. */
 	src?: string;
-	/** Content rendered when `src` is missing or fails to load. Typically user initials (e.g., "JD") or an icon. */
+	/**
+	 * Content rendered when `src` is missing or fails to load. Typically user initials (e.g., "JD") or an icon.
+	 * Decorative: it is hidden from assistive technology, so it never becomes part of the
+	 * accessible name of a link or button around the avatar.
+	 */
 	fallback?: ReactNode;
 	/**
 	 * When provided, deterministically maps the string (typically a user name) to a
@@ -282,6 +295,11 @@ type AvatarProps = ComponentPropsWithRef<typeof AvatarPrimitive.Root> & {
  *
  * Renders an image when `src` is provided; otherwise displays `fallback` content
  * (typically initials or an icon). Built on Radix UI Avatar primitives.
+ *
+ * The fallback is decorative and hidden from assistive technology: an initial
+ * next to a name would be read as part of it ("O Olivia Bennett"). Render the
+ * name as text beside the avatar. For an avatar that stands alone, pass
+ * `role="img"` and `aria-label`; both are forwarded to the root element.
  *
  * Available shapes: `circle` (default), `square`, `pillow`, and `pentagon`.
  * Sizes range from `xs` (24px) to `4xl` (128px), defaulting to `md` (40px).
