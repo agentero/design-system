@@ -339,6 +339,47 @@ export const NoError: Story = {
 };
 
 /**
+ * The error sits right under the control and is announced before the
+ * description, even when it appears after the description is on screen and
+ * carries an `id` of its own.
+ *
+ * @summary Error announced before the description, whenever it appears
+ */
+export const ErrorBeforeDescription: Story = {
+	render: args => {
+		const [error, setError] = useState<string>();
+
+		return (
+			<div className="flex flex-col items-start gap-4">
+				<Field.Root {...args} invalid={!!error}>
+					<Label>Tax ID</Label>
+					<DemoInput inputMode="numeric" />
+					<Field.Error id="tax-id-error">{error}</Field.Error>
+					<Field.Description>Nine digits, with or without the dash.</Field.Description>
+				</Field.Root>
+				<button type="button" onClick={() => setError('Enter the tax ID.')}>
+					Validate
+				</button>
+			</div>
+		);
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		const input = canvas.getByRole('textbox', { name: 'Tax ID' });
+
+		await expect(input).toHaveAccessibleDescription('Nine digits, with or without the dash.');
+
+		await userEvent.click(canvas.getByRole('button', { name: 'Validate' }));
+
+		await expect(await canvas.findByRole('alert')).toHaveAttribute('id', 'tax-id-error');
+		await expect(input).toHaveAccessibleDescription(
+			'Enter the tax ID. Nine digits, with or without the dash.'
+		);
+	}
+};
+
+/**
  * `disabled` on the root disables the control through context and sets
  * `data-disabled` for styling.
  *

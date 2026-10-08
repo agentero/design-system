@@ -87,9 +87,9 @@ export type FormTextProps<
 	/** The caption, rendered as the field's label. Text in almost every case. */
 	label: ReactNode;
 	/**
-	 * Helper text shown under the control and announced through its
-	 * `aria-describedby`. Use it for guidance the user needs before typing; put
-	 * details worth a click in `tooltip` instead.
+	 * Helper text shown under the control, below the error when there is one,
+	 * and announced through its `aria-describedby`. Use it for guidance the
+	 * user needs before typing; put details worth a click in `tooltip` instead.
 	 */
 	description?: ReactNode;
 	/**
@@ -129,7 +129,7 @@ export type FormTextProps<
 
 /**
  * A complete text field bound to one react-hook-form value: label, `Input`,
- * helper text and validation error, laid out in the standard order and wired
+ * validation error and helper text, laid out in the standard order and wired
  * through `useController`. It renders inside a `Form.Root`, which provides the
  * form, and needs only a `name`, which on a typed form must point at a string
  * (`FormTextPath`). The `required`, `invalid` and error states
@@ -207,8 +207,8 @@ export const FormText = <
 			    messages under the control when the field lays out as a row. */}
 			<Field.Content>
 				<Input {...mergeProps(controlProps, inputProps ?? {})} />
-				{description && <Field.Description>{description}</Field.Description>}
 				<Field.Error errors={fieldState.error ? [fieldState.error] : undefined} />
+				{description && <Field.Description>{description}</Field.Description>}
 			</Field.Content>
 		</FieldText>
 	);
