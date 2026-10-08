@@ -17,6 +17,9 @@ export type FieldErrorLike =
 	  }
 	| undefined;
 
+/** What a registered message is, which sets its place in `aria-describedby`. */
+export type FieldMessageKind = 'error' | 'description';
+
 /**
  * State of the surrounding `Field.Root`, shared with the Field family
  * (`Field.Description`, `Field.Error`) and with controls that have no context
@@ -45,9 +48,11 @@ export type FieldContextValue = {
 	/**
 	 * Adds a message element to `describedBy` and returns the function that
 	 * removes it. `Field.Description` and `Field.Error` call it from a layout
-	 * effect; a custom message element can do the same.
+	 * effect; a custom message element can do the same. Errors are listed first,
+	 * then descriptions, then messages registered without a `kind`, each in the
+	 * order they registered.
 	 */
-	registerMessage: (id: string) => () => void;
+	registerMessage: (id: string, kind?: FieldMessageKind) => () => void;
 	invalid: boolean;
 	disabled: boolean;
 	readOnly: boolean;

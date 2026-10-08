@@ -20,6 +20,7 @@ import {
 	type FieldDescriptionProps,
 	type FieldErrorLike,
 	type FieldErrorProps,
+	type FieldMessageKind,
 	useFieldContext
 } from './context';
 import { IconInfoOutline } from './icons';
@@ -98,6 +99,9 @@ export const fieldRecipe = tv({
 });
 
 const slots = fieldRecipe();
+
+const messageRank = (kind?: FieldMessageKind) =>
+	kind === 'error' ? 0 : kind === 'description' ? 1 : 2;
 
 export type FieldVariants = VariantProps<typeof fieldRecipe>;
 
@@ -197,21 +201,23 @@ export const Root = ({
 	// The messages register themselves from a layout effect, so `aria-describedby`
 	// lists exactly the elements in the DOM and never a dangling id. Registering
 	// an id twice is a no-op: the same array comes back and React skips the render.
-	const [messageIds, setMessageIds] = useState<string[]>([]);
+	const [messages, setMessages] = useState<{ id: string; kind?: FieldMessageKind }[]>([]);
 
-	const registerMessage = useCallback((id: string) => {
-		setMessageIds(ids => (ids.includes(id) ? ids : [...ids, id]));
+	const registerMessage = useCallback((id: string, kind?: FieldMessageKind) => {
+		setMessages(registered =>
+			registered.some(message => message.id === id) ? registered : [...registered, { id, kind }]
+		);
 
-		return () => setMessageIds(ids => ids.filter(existing => existing !== id));
+		return () => setMessages(registered => registered.filter(message => message.id !== id));
 	}, []);
 
 	// The error reads before the description, as it sits above it, whatever the
 	// order they mounted in.
 	const describedBy =
-		[
-			...[errorId, descriptionId].filter(id => messageIds.includes(id)),
-			...messageIds.filter(id => id !== descriptionId && id !== errorId)
-		].join(' ') || undefined;
+		[...messages]
+			.sort((a, b) => messageRank(a.kind) - messageRank(b.kind))
+			.map(message => message.id)
+			.join(' ') || undefined;
 
 	const field: FieldContextValue = {
 		controlId,
@@ -317,7 +323,10 @@ export const Description = ({ className, id: idProp, ...props }: FieldDescriptio
 
 	// A layout effect, so the root re-renders with the id before the first paint
 	// and the control never shows a frame without its description.
-	useLayoutEffect(() => (id ? registerMessage?.(id) : undefined), [registerMessage, id]);
+	useLayoutEffect(
+		() => (id ? registerMessage?.(id, 'description') : undefined),
+		[registerMessage, id]
+	);
 
 	return (
 		<p
@@ -393,7 +402,7 @@ const FieldError = ({
 	const hasContent = !!content;
 
 	useLayoutEffect(
-		() => (hasContent && id ? registerMessage?.(id) : undefined),
+		() => (hasContent && id ? registerMessage?.(id, 'error') : undefined),
 		[registerMessage, hasContent, id]
 	);
 
