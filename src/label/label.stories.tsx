@@ -53,14 +53,29 @@ export const Default: Story = {
 };
 
 /**
- * Appends a muted " (optional)" suffix for fields that can be left blank.
+ * Appends a muted " (optional)" suffix for fields that can be left blank. The
+ * suffix is real text, so it is part of the control's accessible name.
  *
  * @summary Optional field with a muted suffix
  */
 export const Optional: Story = {
 	args: {
 		optional: true,
+		htmlFor: 'phone',
 		children: 'Phone number'
+	},
+	render: args => (
+		<>
+			<Label {...args} />
+			<input id="phone" type="tel" className={inputRecipe()} />
+		</>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		await expect(
+			canvas.getByRole('textbox', { name: 'Phone number (optional)' })
+		).toBeInTheDocument();
 	}
 };
 
@@ -99,7 +114,7 @@ export const RequiredWinsOverOptional: Story = {
 		const canvas = within(canvasElement);
 
 		await expect(canvas.getByText('*')).toBeInTheDocument();
-		await expect(canvas.getByText('Agency name')).not.toHaveClass(/after:content/);
+		await expect(canvas.queryByText(/\(optional\)/)).not.toBeInTheDocument();
 	}
 };
 
