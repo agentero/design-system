@@ -40,6 +40,7 @@
     "./hover-card": "./src/hover-card/index.ts",
     "./input": "./src/input/index.ts",
     "./input-group": "./src/input-group/index.ts",
+    "./input-number": "./src/input-number/index.ts",
     "./input-password": "./src/input-password/index.ts",
     "./input-search": "./src/input-search/index.ts",
     "./label": "./src/label/index.ts",
@@ -91,6 +92,7 @@
     "@radix-ui/react-tooltip": "^1.2.11",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
+    "react-number-format": "5.4.5",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.5.0",
     "tailwind-variants": "^3.2.2"
