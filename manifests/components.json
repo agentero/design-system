@@ -2798,7 +2798,7 @@
           "id": "components-combobox--default",
           "name": "Default",
           "snippet": "const Default = () => (\n    <Combobox.Root items={STATES}>\n        <Combobox.Input placeholder=\"Search states\" aria-label=\"Search states\" />\n        <Combobox.Content>\n            <Combobox.Empty>No matches found</Combobox.Empty>\n            <Combobox.List>\n                {(state: string) => (\n                    <Combobox.Item key={state} value={state}>\n                        {state}\n                    </Combobox.Item>\n                )}\n            </Combobox.List>\n        </Combobox.Content>\n    </Combobox.Root>\n);",
-          "description": "The common case: options are already in memory and Base UI filters them against\nwhat you type. Selecting a row fills the input and closes the list. The field is\na search out of the box — a magnifier in front, a clear button once something is\npicked — and the list hangs from the whole field.",
+          "description": "The common case: options are already in memory and Base UI filters them against\nwhat you type. Selecting a row fills the input and closes the list. The field is\na search out of the box — a magnifier in front, a clear button once there is\ntext — and the list hangs from the whole field. Clearing drops the picked option.",
           "summary": "Search field with a magnifier and clear button over an in-memory list"
         },
         {
@@ -6552,7 +6552,7 @@
           "id": "components-inputgroup--default",
           "name": "Default",
           "snippet": "const Default = () => (\n    <InputGroup.Root>\n        <InputGroup.Addon>\n            <IconSearch />\n        </InputGroup.Addon>\n        <Input type=\"search\" placeholder=\"Search agencies\" aria-label=\"Search agencies\" />\n    </InputGroup.Root>\n);",
-          "description": "A search field: the icon leads and the input takes the rest of the frame.\nPressing the icon focuses the input, and the frame — not the input — draws the\nfocus ring, so the two never show a double border.",
+          "description": "A search field: the icon leads and the input takes the rest of the frame.\nPressing the icon focuses the input, and the frame — not the input — draws the\nfocus ring, so the two never show a double border. A search field with a\nclear button and a loading state is\n[InputSearch](?path=/docs/components-inputsearch--docs), built on this frame.",
           "summary": "Leading icon addon with the frame drawing the focus ring"
         },
         {
@@ -6610,11 +6610,6 @@
           "summary": "Label and description reaching the input through the frame"
         },
         {
-          "id": "components-inputgroup--search-field",
-          "name": "Search Field",
-          "snippet": "const SearchField = () => (\n    <form onSubmit={handleSearchSubmit}>\n        <FieldStates\n            label=\"Agency\"\n            tooltip=\"Search by agency name or NPN.\"\n            required\n            error=\"Pick an agency from the list.\">\n            <SearchInput />\n        </FieldStates>\n    </form>\n);"
-        },
-        {
           "id": "components-inputgroup--email-field",
           "name": "Email Field",
           "snippet": "const EmailField = () => (\n    <FieldStates label=\"Email\" required error=\"Enter a valid email address.\">\n        <InputGroup.Root>\n            <InputGroup.Addon>\n                <IconMail />\n            </InputGroup.Addon>\n            <Input type=\"email\" placeholder=\"me@email.com\" />\n        </InputGroup.Root>\n    </FieldStates>\n);",
@@ -6636,7 +6631,7 @@
           "summary": "Phone field with a leading country code picker, valid and invalid"
         }
       ],
-      "import": "import {\n    Button,\n    Divider,\n    DropdownMenu,\n    Field,\n    FieldText,\n    IconCancel,\n    IconKeyboardArrowDown,\n    IconSearch,\n    Input,\n    InputGroup,\n    Label,\n    Tag,\n} from \"@agentero/design-system\";"
+      "import": "import {\n    Button,\n    Divider,\n    DropdownMenu,\n    Field,\n    FieldText,\n    IconKeyboardArrowDown,\n    IconSearch,\n    Input,\n    InputGroup,\n    Label,\n    Tag,\n} from \"@agentero/design-system\";"
     },
     "components-inputpassword": {
       "id": "components-inputpassword",
@@ -6743,6 +6738,168 @@
         }
       ],
       "import": "import { Field, FieldText, InputPassword, Label } from \"@agentero/design-system\";"
+    },
+    "components-inputsearch": {
+      "id": "components-inputsearch",
+      "name": "InputSearch",
+      "path": "./src/input-search/input-search.stories.tsx",
+      "jsDocTags": {
+        "summary": [
+          "Search input with a leading icon, a clear button and a loading slot"
+        ],
+        "dataAttribute": [
+          "{string} data-slot - Always set to \"input-search\" on the frame"
+        ],
+        "example": [
+          "<InputSearch\n  aria-label=\"Search agencies\"\n  value={query}\n  onChange={event => setQuery(event.target.value)}\n  isLoading={isFetching}\n/>"
+        ]
+      },
+      "description": "InputSearch is a search field with a magnifier in front and a clear button\nonce there is text. It is an `Input` of `type=\"search\"` inside an\n`InputGroup`: `className` styles the frame and every other prop reaches the\n`<input>`. Clearing reports a real change event with an empty value, and\n`isLoading` swaps the clear button for a spinner.",
+      "summary": "Search input with a leading icon, a clear button and a loading slot",
+      "reactComponentMeta": {
+        "displayName": "InputSearch",
+        "exportName": "InputSearch",
+        "filePath": "/home/runner/work/design-system/design-system/src/input-search/input-search.tsx",
+        "description": "InputSearch is a search field: a magnifier in front of the text and, once\nthere is text, a clear button after it, named \"Clear search\" unless\n`clearLabel` says otherwise. The clear button empties the field\nand puts focus back in it, and it reports the change through `onChange` like\na keystroke would: a real change event whose `event.target.value` is `''`,\nso a controlled field, an uncontrolled one and one registered with\nreact-hook-form all clear the same way. While `isLoading` is set, a spinner\ntakes the clear button's place. The clear button is not rendered while the\ninput is disabled, whether `disabled` comes from the prop, from a\nsurrounding `FieldText` or from a `<fieldset disabled>`.\n\nIt is an [Input](?path=/docs/components-input--docs) of `type=\"search\"`\ninside an [InputGroup](?path=/docs/components-inputgroup--docs) frame, so\nit is announced as a search box. `className` styles the frame. Every other\nprop goes to the `<input>`: the `ref`, `id`, `name`, `value`, `onChange`,\n`aria-*` and every other standard attribute. Only `type` is not accepted.\n`placeholder` defaults to `'Search'`. Inside a `FieldText` the input takes\nits label, messages and states from the field as a plain `Input` does. The\ninvalid state comes from `aria-invalid`, and the frame paints the\ndestructive border.\n\nDo not use it to pick a value from a list; that is\n[Combobox](?path=/docs/components-combobox--docs), whose `search` field is\ndrawn by InputSearch. For a filter that should\nrun only once the user pauses typing, use `DebouncedInputSearch`.",
+        "jsDocTags": {
+          "summary": [
+            "Search input with a leading icon, a clear button and a loading slot"
+          ],
+          "dataAttribute": [
+            "{string} data-slot - Always set to \"input-search\" on the frame"
+          ],
+          "example": [
+            "<InputSearch\n  aria-label=\"Search agencies\"\n  value={query}\n  onChange={event => setQuery(event.target.value)}\n  isLoading={isFetching}\n/>"
+          ]
+        },
+        "props": {
+          "size": {
+            "name": "size",
+            "required": false,
+            "type": {
+              "name": "enum",
+              "raw": "\"sm\" | \"md\" | \"lg\"",
+              "value": [
+                {
+                  "value": "\"sm\""
+                },
+                {
+                  "value": "\"md\""
+                },
+                {
+                  "value": "\"lg\""
+                }
+              ]
+            },
+            "description": "Control height. Defaults to `'md'`.\n- `sm` (32px) — dense layouts where vertical space is tight.\n- `md` (40px) — standard form density.\n- `lg` (48px) — low-density forms and larger touch targets. Also raises\n  the text to `base` and the corner radius to `lg`.",
+            "defaultValue": null,
+            "parent": {
+              "name": "InputProps",
+              "fileName": "src/input/input.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input/input.tsx"
+              }
+            ]
+          },
+          "isLoading": {
+            "name": "isLoading",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Shows a spinner at the end of the frame, in place of the clear button,\nwhile the results for the current text are on their way. Defaults to\n`false`.",
+            "defaultValue": {
+              "value": "false"
+            },
+            "parent": {
+              "name": "InputSearchProps",
+              "fileName": "src/input-search/input-search.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input-search/input-search.tsx"
+              }
+            ]
+          },
+          "clearLabel": {
+            "name": "clearLabel",
+            "required": false,
+            "type": {
+              "name": "string"
+            },
+            "description": "Accessible name of the clear button. Defaults to `'Clear search'`; name it\nafter what is searched (`'Clear agency search'`) when a page carries\nseveral search fields.",
+            "defaultValue": {
+              "value": "'Clear search'"
+            },
+            "parent": {
+              "name": "InputSearchProps",
+              "fileName": "src/input-search/input-search.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input-search/input-search.tsx"
+              }
+            ]
+          }
+        }
+      },
+      "stories": [
+        {
+          "id": "components-inputsearch--default",
+          "name": "Default",
+          "snippet": "const Default = () => {\n    const [query, setQuery] = useState('');\n\n    return (\n        <InputSearch\n            aria-label=\"Search agencies\"\n            value={query}\n            onChange={event => {\n                setQuery(event.target.value);\n                args.onChange?.(event);\n            }} />\n    );\n};",
+          "description": "A controlled search. The clear button appears once there is text; pressing\nit calls `onChange` with an empty `event.target.value`, so the state that\nowns the query empties too, and focus goes back to the input. The browser's\nown cancel button is hidden.",
+          "summary": "Controlled search with a clear button that empties the query"
+        },
+        {
+          "id": "components-inputsearch--loading",
+          "name": "Loading",
+          "snippet": "const Loading = () => <InputSearch\n    aria-label=\"Search agencies\"\n    onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n    isLoading\n    defaultValue=\"Acme\" />;",
+          "description": "While `isLoading` is set a spinner takes the clear button's place, even with\ntext in the field.",
+          "summary": "Spinner in place of the clear button while results load"
+        },
+        {
+          "id": "components-inputsearch--uncontrolled",
+          "name": "Uncontrolled",
+          "snippet": "const Uncontrolled = () => <InputSearch\n    aria-label=\"Search agencies\"\n    onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n    defaultValue=\"Acme Insurance\" />;",
+          "description": "An uncontrolled search with a `defaultValue`. The clear button follows what\nis in the field, and clearing still calls `onChange` with an empty value.",
+          "summary": "Uncontrolled search starting from a default value"
+        },
+        {
+          "id": "components-inputsearch--disabled",
+          "name": "Disabled",
+          "snippet": "const Disabled = () => <div style={{ display: 'grid', gap: '1rem' }}>\n    <InputSearch\n        aria-label=\"Search agencies\"\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        disabled\n        defaultValue=\"Acme\" />\n    <fieldset disabled style={{ border: 0, margin: 0, padding: 0 }}>\n        <InputSearch\n            onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n            aria-label=\"Search carriers\"\n            defaultValue=\"Travelers\" />\n    </fieldset>\n</div>;",
+          "description": "A disabled search has no clear button, whether `disabled` is set on the\ninput itself or comes from a `<fieldset disabled>` around it.",
+          "summary": "Disabled search with the clear button removed"
+        },
+        {
+          "id": "components-inputsearch--all-sizes",
+          "name": "All Sizes",
+          "snippet": "const AllSizes = () => <div style={{ display: 'grid', gap: '1rem' }}>\n    <InputSearch\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        size=\"sm\"\n        aria-label=\"Small\"\n        defaultValue=\"Acme\" />\n    <InputSearch\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        size=\"md\"\n        aria-label=\"Medium\"\n        defaultValue=\"Acme\" />\n    <InputSearch\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        size=\"lg\"\n        aria-label=\"Large\"\n        defaultValue=\"Acme\" />\n</div>;",
+          "description": "The three sizes match Input's: the frame is 32, 40 or 48px tall.",
+          "summary": "The three sizes side by side"
+        },
+        {
+          "id": "components-inputsearch--inside-field-text",
+          "name": "Inside Field Text",
+          "snippet": "const InsideFieldText = () => (\n    <div style={{ display: 'grid', gap: '1.5rem' }}>\n        <FieldText>\n            <Label>Agency</Label>\n            <InputSearch defaultValue=\"Acme\" />\n            <Field.Description>Search by agency name or NPN.</Field.Description>\n        </FieldText>\n        <FieldText disabled>\n            <Label>Carrier</Label>\n            <InputSearch defaultValue=\"Travelers\" />\n        </FieldText>\n    </div>\n);",
+          "description": "Inside a `FieldText` the input takes its label, description and states from\nthe field through the frame. A disabled field removes the clear button too.",
+          "summary": "Label and disabled state reaching the input through the frame"
+        },
+        {
+          "id": "components-inputsearch--clear-label",
+          "name": "Clear Label",
+          "snippet": "const ClearLabel = () => <InputSearch\n    aria-label=\"Search agencies\"\n    onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n    defaultValue=\"Acme\"\n    clearLabel=\"Clear agency search\" />;",
+          "description": "`clearLabel` names the clear button after what is searched, so a page with\nseveral search fields does not read \"Clear search\" twice.",
+          "summary": "Clear button named after what the field searches"
+        }
+      ],
+      "import": "import { Field, FieldText, InputSearch, Label } from \"@agentero/design-system\";"
     },
     "components-input": {
       "id": "components-input",
@@ -9710,6 +9867,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5236
+    "durationMs": 4704
   }
 }
