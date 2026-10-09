@@ -11,6 +11,7 @@ import { cn, useMergeProps } from '../../lib';
 import { useFieldContext } from '../field';
 import { InputContext, inputRecipe, InputSize } from '../input';
 import { InputGroup } from '../input-group';
+import { InputSearch, InputSearchProps } from '../input-search';
 import { IconCancel, IconCheck, IconKeyboardArrowDown, IconSearch } from './icons';
 
 /**
@@ -244,7 +245,8 @@ type InputProps = Omit<ComponentPropsWithRef<typeof ComboboxPrimitive.Input>, 's
 	 */
 	variant?: 'search' | 'plain' | 'select';
 	/**
-	 * Whether a clear button follows the input once an option is picked.
+	 * Whether a clear button follows the input: on `search` once there is text,
+	 * on the others once an option is picked.
 	 * Defaults to `true` for `search` and `false` for `plain` and `select`; pass
 	 * it to override the variant. On a `select` it replaces the chevron while
 	 * there is a value. Ignored under a `multiple` root, which never
@@ -305,11 +307,13 @@ const useComboboxInputContext = (props: InputProps) => {
  *   the user may want to browse before typing.
  *
  * Only `search` carries a clear button by default; `showClear` adds it to the
- * other two or drops it from `search`. On a `select`, the clear button takes the
- * chevron's place once an option is picked; the list still opens from the input. Base UI mounts it only once there is
- * something to clear — a picked option — so an untouched field shows nothing. Name it with
- * `clearLabel`, and the chevron with `triggerLabel`, when a page has more than
- * one combobox.
+ * other two or drops it from `search`. The `search` field is an
+ * [InputSearch](?path=/docs/components-inputsearch--docs): its clear button
+ * shows as soon as there is text, typed or picked, and pressing it empties the
+ * text, which drops the picked option and closes the list. On a `select`, the
+ * clear button takes the chevron's place once an option is picked; the list
+ * still opens from the input. Name it with `clearLabel`, and the chevron with
+ * `triggerLabel`, when a page has more than one combobox.
  *
  * Under a `multiple` root there is neither: the list stays open between picks,
  * so a chevron has nothing to toggle, and Base UI's clear button would drop the
@@ -318,7 +322,9 @@ const useComboboxInputContext = (props: InputProps) => {
  * remove each entry.
  *
  * Every native input attribute is accepted and forwarded to the `<input>` —
- * `placeholder`, `disabled`, `autoComplete` — and so is `className`.
+ * `placeholder`, `disabled`, `autoComplete`. `className` styles the `<input>`
+ * too, except on the `search` field with a clear button, where it styles the
+ * frame, as on InputSearch.
  *
  * @summary Search, plain or select field that opens and filters the list
  * @dataAttribute {string} data-slot - Always set to "combobox-input"
@@ -332,6 +338,32 @@ export const Input = ({
 }: InputProps) => {
 	const { className, size = 'md', ...rest } = useComboboxInputContext(props);
 	const multiple = use(MultipleContext);
+
+	// The search field with a clear button is InputSearch: Base UI's props reach its
+	// `<input>` through `render`, and emptying the text — which its clear button does
+	// through a real change event — is what makes Base UI drop a single selection.
+	// The null context keeps InputSearch's own `Input` from merging the field's wiring
+	// a second time; it was merged above.
+	if (variant === 'search' && showClear && !multiple) {
+		return (
+			<ComboboxPrimitive.InputGroup render={<div />} data-slot="combobox-field">
+				<InputContext value={null}>
+					<ComboboxPrimitive.Input
+						data-slot="combobox-input"
+						className={className}
+						{...rest}
+						render={inputProps => (
+							<InputSearch
+								{...(inputProps as InputSearchProps)}
+								size={size}
+								clearLabel={clearLabel}
+							/>
+						)}
+					/>
+				</InputContext>
+			</ComboboxPrimitive.InputGroup>
+		);
+	}
 
 	return (
 		// Base UI's part, so the list anchors to the whole frame — icon and buttons included —

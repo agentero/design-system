@@ -41,6 +41,7 @@
     "./input": "./src/input/index.ts",
     "./input-group": "./src/input-group/index.ts",
     "./input-password": "./src/input-password/index.ts",
+    "./input-search": "./src/input-search/index.ts",
     "./label": "./src/label/index.ts",
     "./lib": "./lib/index.ts",
     "./loading": "./src/loading/index.ts",
