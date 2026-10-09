@@ -20,8 +20,12 @@ export const InputContext = createContext<Partial<InputProps> | null>(null);
  * `aria-describedby` ids are concatenated. In development it warns when the
  * input carries an `id` that differs from the one the container provides,
  * since the label would then point elsewhere.
+ *
+ * Generic over the props so a wrapper whose props narrow or widen the
+ * input's (a `type` limited to a few values, a `value` that takes `null`)
+ * gets its own type back, with the context's wiring merged in.
  */
-export const useInputContext = (props: InputProps) => {
+export const useInputContext = <P extends Pick<InputProps, 'id'>>(props: P): P => {
 	const context = use(InputContext);
 
 	if (process.env.NODE_ENV !== 'production' && context?.id && props.id && context.id !== props.id) {
@@ -30,5 +34,5 @@ export const useInputContext = (props: InputProps) => {
 		);
 	}
 
-	return useMergeProps(context, props);
+	return useMergeProps(context as Partial<P> | null, props);
 };
