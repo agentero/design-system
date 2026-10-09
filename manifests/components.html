@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>3.8s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>5.2s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -3339,11 +3339,19 @@ here as tags.</div>
               
               <div class="hint">Options fetched as you type, the way the apps load data: the rows are a component
 that suspends on the request, so a `Suspense` boundary inside `Content` shows
-placeholder rows until they land. Nothing tracks `loading` by hand and no stale
-list lingers under the wait: the data is read by query, which is also what makes
-out-of-order responses harmless. Drop a `useSuspenseQuery` where `use()` is.</div>
+placeholder rows until the first results land. The rows read a deferred copy of
+the query, so a new search keeps the previous rows on screen while it loads and
+`Content` is marked busy until they are replaced; the placeholders never come
+back. Nothing tracks `loading` by hand, and reading the data by query is what
+makes out-of-order responses harmless. With react-query, drop a
+`useSuspenseQuery` where `use()` is, or use `placeholderData: keepPreviousData`
+with a plain `useQuery` for the same behaviour.</div>
               <pre><code>const AsyncSearch = () =&gt; {
     const [query, setQuery] = useState(&#39;&#39;);
+    // The rows read the deferred query: while the new one suspends, React keeps rendering the
+    // old rows instead of falling back to the placeholders.
+    const deferredQuery = useDeferredValue(query);
+    const isStale = query !== deferredQuery;
 
     return (
         // No `items` and `filter={null}`: the server did the filtering, the child renders what came
@@ -3357,9 +3365,9 @@ out-of-order responses harmless. Drop a `useSuspenseQuery` where `use()` is.</di
                 if (reason !== &#39;item-press&#39;) setQuery(value);
             }}&gt;
             &lt;Combobox.Input placeholder=&quot;Search agencies&quot; aria-label=&quot;Search agencies&quot; /&gt;
-            &lt;Combobox.Content&gt;
+            &lt;Combobox.Content aria-busy={isStale || undefined}&gt;
                 &lt;Suspense fallback={&lt;SkeletonRows /&gt;}&gt;
-                    &lt;AgencyItems query={query} /&gt;
+                    &lt;AgencyItems query={deferredQuery} /&gt;
                 &lt;/Suspense&gt;
             &lt;/Combobox.Content&gt;
         &lt;/Combobox.Root&gt;
@@ -3374,8 +3382,10 @@ out-of-order responses harmless. Drop a `useSuspenseQuery` where `use()` is.</di
               <div>API search that waits for two characters, with loading status</div>
               <div class="hint">The same search without Suspense, for a consumer that gets a `loading` flag from
 its data layer instead: `filter={null}`, the rows arrive through `filteredItems`,
-`Content` is marked busy and `Status` announces the wait. The list is cleared
-before each request and a request that is no longer the latest is dropped.
+`Content` is marked busy and `Status` announces the wait. Placeholder rows show
+only while there is nothing to show yet; after that, the previous rows stay
+until the new ones replace them. A request that is no longer the latest is
+dropped.
 
 `minInputLength` keeps the list shut until two characters are typed — focusing
 the field opens nothing, and deleting back under the minimum closes it — and
@@ -3394,9 +3404,7 @@ no request goes out for a shorter query either.</div>
             return;
         }
 
-        // The previous rows go before the wait starts: a list that no longer matches what is typed
-        // must not sit under the loading state.
-        setResults([]);
+        // The previous rows stay through the wait, marked busy, rather than blinking out and back.
         setIsLoading(true);
         const agencies = await searchAgencies(query);
         if (request !== latestRequest.current) return;
@@ -3421,7 +3429,7 @@ no request goes out for a shorter query either.</div>
                 &lt;Combobox.Status className=&quot;sr-only&quot;&gt;
                     {isLoading ? &#39;Searching…&#39; : undefined}
                 &lt;/Combobox.Status&gt;
-                {isLoading &amp;&amp; &lt;SkeletonRows /&gt;}
+                {isLoading &amp;&amp; results.length === 0 &amp;&amp; &lt;SkeletonRows /&gt;}
                 &lt;Combobox.Empty&gt;{isLoading ? undefined : &#39;No agencies found&#39;}&lt;/Combobox.Empty&gt;
                 &lt;Combobox.List&gt;
                     {(agency: Agency) =&gt; (
