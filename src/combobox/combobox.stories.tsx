@@ -1,7 +1,7 @@
-import { Suspense, use, useRef, useState } from 'react';
+import { Suspense, use, useDeferredValue, useRef, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, userEvent, waitFor, within } from 'storybook/test';
+import { configure, expect, getConfig, userEvent, waitFor, within } from 'storybook/test';
 
 import { Combobox } from '.';
 import { Button } from '../button';
@@ -452,13 +452,21 @@ const AgencyItems = ({ query }: { query: string }) => {
 /**
  * Options fetched as you type, the way the apps load data: the rows are a component
  * that suspends on the request, so a `Suspense` boundary inside `Content` shows
- * placeholder rows until they land. Nothing tracks `loading` by hand and no stale
- * list lingers under the wait: the data is read by query, which is also what makes
- * out-of-order responses harmless. Drop a `useSuspenseQuery` where `use()` is.
+ * placeholder rows until the first results land. The rows read a deferred copy of
+ * the query, so a new search keeps the previous rows on screen while it loads and
+ * `Content` is marked busy until they are replaced; the placeholders never come
+ * back. Nothing tracks `loading` by hand, and reading the data by query is what
+ * makes out-of-order responses harmless. With react-query, drop a
+ * `useSuspenseQuery` where `use()` is, or use `placeholderData: keepPreviousData`
+ * with a plain `useQuery` for the same behaviour.
  */
 export const AsyncSearch: Story = {
 	render: () => {
 		const [query, setQuery] = useState('');
+		// The rows read the deferred query: while the new one suspends, React keeps rendering the
+		// old rows instead of falling back to the placeholders.
+		const deferredQuery = useDeferredValue(query);
+		const isStale = query !== deferredQuery;
 
 		return (
 			// No `items` and `filter={null}`: the server did the filtering, the child renders what came
@@ -472,31 +480,48 @@ export const AsyncSearch: Story = {
 					if (reason !== 'item-press') setQuery(value);
 				}}>
 				<Combobox.Input placeholder="Search agencies" aria-label="Search agencies" />
-				<Combobox.Content>
+				<Combobox.Content aria-busy={isStale || undefined}>
 					<Suspense fallback={<SkeletonRows />}>
-						<AgencyItems query={query} />
+						<AgencyItems query={deferredQuery} />
 					</Suspense>
 				</Combobox.Content>
 			</Combobox.Root>
 		);
 	},
-	// The play stops at the placeholder rows. Once the boundary is suspended, the test harness
-	// (React's act environment) does not reliably flush the retry that lands the rows, so the
-	// resolved state is asserted on `AsyncSearchWithStatus` instead, where nothing suspends.
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 		const body = within(document.body);
 		const input = canvas.getByRole('combobox', { name: /search agencies/i });
+		const skeleton = () => document.body.querySelector('[data-slot="combobox-skeleton"]');
+		const content = () => document.body.querySelector('[data-slot="combobox-content"]');
 
 		// Focus opens the surface and the first request goes out for the empty query: no
 		// `minInputLength` here — see `AsyncSearchWithStatus` for a search that waits for one.
 		await userEvent.click(input);
 
-		// Placeholder rows while the request is in flight, and no options yet.
-		await waitFor(() =>
-			expect(document.body.querySelector('[data-slot="combobox-skeleton"]')).toBeInTheDocument()
-		);
+		// Placeholder rows on the first load, and no options yet.
+		await waitFor(() => expect(skeleton()).toBeInTheDocument());
 		await expect(body.queryByRole('option')).not.toBeInTheDocument();
+		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(4));
+		await expect(content()).not.toHaveAttribute('aria-busy');
+
+		// A new search keeps the previous rows, marked busy, until its own land. Storybook wraps each
+		// event in an `act()` it does not await, and a deferred render that suspends inside one is
+		// never retried; typing outside it lets React schedule the retry the way it does in the app.
+		const { eventWrapper } = getConfig();
+		configure({ eventWrapper: event => event() });
+		try {
+			await userEvent.type(input, 'b');
+		} finally {
+			configure({ eventWrapper });
+		}
+		await waitFor(() => expect(content()).toHaveAttribute('aria-busy', 'true'));
+		await expect(skeleton()).not.toBeInTheDocument();
+		await expect(body.getAllByRole('option')).toHaveLength(4);
+		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(2));
+		await expect(content()).not.toHaveAttribute('aria-busy');
+		await expect(skeleton()).not.toBeInTheDocument();
+
 		await userEvent.keyboard('{Escape}');
 		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
 	}
@@ -508,8 +533,10 @@ const MIN_QUERY_LENGTH = 2;
 /**
  * The same search without Suspense, for a consumer that gets a `loading` flag from
  * its data layer instead: `filter={null}`, the rows arrive through `filteredItems`,
- * `Content` is marked busy and `Status` announces the wait. The list is cleared
- * before each request and a request that is no longer the latest is dropped.
+ * `Content` is marked busy and `Status` announces the wait. Placeholder rows show
+ * only while there is nothing to show yet; after that, the previous rows stay
+ * until the new ones replace them. A request that is no longer the latest is
+ * dropped.
  *
  * `minInputLength` keeps the list shut until two characters are typed — focusing
  * the field opens nothing, and deleting back under the minimum closes it — and
@@ -532,9 +559,7 @@ export const AsyncSearchWithStatus: Story = {
 				return;
 			}
 
-			// The previous rows go before the wait starts: a list that no longer matches what is typed
-			// must not sit under the loading state.
-			setResults([]);
+			// The previous rows stay through the wait, marked busy, rather than blinking out and back.
 			setIsLoading(true);
 			const agencies = await searchAgencies(query);
 			if (request !== latestRequest.current) return;
@@ -559,7 +584,7 @@ export const AsyncSearchWithStatus: Story = {
 					<Combobox.Status className="sr-only">
 						{isLoading ? 'Searching…' : undefined}
 					</Combobox.Status>
-					{isLoading && <SkeletonRows />}
+					{isLoading && results.length === 0 && <SkeletonRows />}
 					<Combobox.Empty>{isLoading ? undefined : 'No agencies found'}</Combobox.Empty>
 					<Combobox.List>
 						{(agency: Agency) => (
@@ -589,10 +614,21 @@ export const AsyncSearchWithStatus: Story = {
 		await expect(body.queryByRole('option')).not.toBeInTheDocument();
 		await waitFor(() => expect(body.getAllByRole('option').length).toBeGreaterThan(0));
 
-		// Narrowing the query drops the old rows at once rather than leaving them under the wait.
+		await expect(
+			document.body.querySelector('[data-slot="combobox-skeleton"]')
+		).not.toBeInTheDocument();
+
+		// Narrowing the query keeps the previous rows, marked busy, until the new ones land.
+		const content = document.body.querySelector('[data-slot="combobox-content"]');
+		const previous = body.getAllByRole('option').length;
 		await userEvent.type(input, 'ch');
-		await expect(body.queryByRole('option')).not.toBeInTheDocument();
+		await expect(content).toHaveAttribute('aria-busy', 'true');
+		await expect(body.getAllByRole('option')).toHaveLength(previous);
+		await expect(
+			document.body.querySelector('[data-slot="combobox-skeleton"]')
+		).not.toBeInTheDocument();
 		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(1));
+		await expect(content).not.toHaveAttribute('aria-busy');
 
 		// Deleting back under the minimum closes the list.
 		await userEvent.type(input, '{Backspace}{Backspace}{Backspace}');
