@@ -1225,7 +1225,7 @@
           "summary": "All avatar shapes with a profile image"
         }
       ],
-      "import": "import { Avatar } from \"@agentero/design-system\";"
+      "import": "import { Avatar, Button } from \"@agentero/design-system\";"
     },
     "components-button": {
       "id": "components-button",
@@ -3058,7 +3058,7 @@
           "id": "components-combobox--default",
           "name": "Default",
           "snippet": "const Default = () => (\n    <Combobox.Root items={STATES}>\n        <Combobox.Input placeholder=\"Search states\" aria-label=\"Search states\" />\n        <Combobox.Content>\n            <Combobox.Empty>No matches found</Combobox.Empty>\n            <Combobox.List>\n                {(state: string) => (\n                    <Combobox.Item key={state} value={state}>\n                        {state}\n                    </Combobox.Item>\n                )}\n            </Combobox.List>\n        </Combobox.Content>\n    </Combobox.Root>\n);",
-          "description": "The common case: options are already in memory and Base UI filters them against\nwhat you type. Selecting a row fills the input and closes the list. The field is\na search out of the box — a magnifier in front, a clear button once something is\npicked — and the list hangs from the whole field.",
+          "description": "The common case: options are already in memory and Base UI filters them against\nwhat you type. Selecting a row fills the input and closes the list. The field is\na search out of the box — a magnifier in front, a clear button once there is\ntext — and the list hangs from the whole field. Clearing drops the picked option.",
           "summary": "Search field with a magnifier and clear button over an in-memory list"
         },
         {
@@ -3097,20 +3097,20 @@
         {
           "id": "components-combobox--async-search",
           "name": "Async Search",
-          "snippet": "const AsyncSearch = () => {\n    const [query, setQuery] = useState('');\n\n    return (\n        // No `items` and `filter={null}`: the server did the filtering, the child renders what came\n        // back, and `isItemEqualToValue` keeps a re-fetched copy counting as the selected one.\n        <Combobox.Root\n            filter={null}\n            itemToStringLabel={(agency: Agency) => agency.name}\n            isItemEqualToValue={(a: Agency, b: Agency) => a.id === b.id}\n            onInputValueChange={(value, { reason }) => {\n                // Picking a row writes its label into the input; that is not a new search.\n                if (reason !== 'item-press') setQuery(value);\n            }}>\n            <Combobox.Input placeholder=\"Search agencies\" aria-label=\"Search agencies\" />\n            <Combobox.Content>\n                <Suspense fallback={<SkeletonRows />}>\n                    <AgencyItems query={query} />\n                </Suspense>\n            </Combobox.Content>\n        </Combobox.Root>\n    );\n};",
-          "description": "Options fetched as you type, the way the apps load data: the rows are a component\nthat suspends on the request, so a `Suspense` boundary inside `Content` shows\nplaceholder rows until they land. Nothing tracks `loading` by hand and no stale\nlist lingers under the wait: the data is read by query, which is also what makes\nout-of-order responses harmless. Drop a `useSuspenseQuery` where `use()` is."
+          "snippet": "const AsyncSearch = () => {\n    const [query, setQuery] = useState('');\n    // The rows read the deferred query: while the new one suspends, React keeps rendering the\n    // old rows instead of falling back to the placeholders.\n    const deferredQuery = useDeferredValue(query);\n    const isStale = query !== deferredQuery;\n\n    return (\n        // No `items` and `filter={null}`: the server did the filtering, the child renders what came\n        // back, and `isItemEqualToValue` keeps a re-fetched copy counting as the selected one.\n        <Combobox.Root\n            filter={null}\n            itemToStringLabel={(agency: Agency) => agency.name}\n            isItemEqualToValue={(a: Agency, b: Agency) => a.id === b.id}\n            onInputValueChange={(value, { reason }) => {\n                // Picking a row writes its label into the input; that is not a new search.\n                if (reason !== 'item-press') setQuery(value);\n            }}>\n            <Combobox.Input placeholder=\"Search agencies\" aria-label=\"Search agencies\" />\n            <Combobox.Content aria-busy={isStale || undefined}>\n                <Suspense fallback={<SkeletonRows />}>\n                    <AgencyItems query={deferredQuery} />\n                </Suspense>\n            </Combobox.Content>\n        </Combobox.Root>\n    );\n};",
+          "description": "Options fetched as you type, the way the apps load data: the rows are a component\nthat suspends on the request, so a `Suspense` boundary inside `Content` shows\nplaceholder rows until the first results land. The rows read a deferred copy of\nthe query, so a new search keeps the previous rows on screen while it loads and\n`Content` is marked busy until they are replaced; the placeholders never come\nback. Nothing tracks `loading` by hand, and reading the data by query is what\nmakes out-of-order responses harmless. With react-query, drop a\n`useSuspenseQuery` where `use()` is, or use `placeholderData: keepPreviousData`\nwith a plain `useQuery` for the same behaviour."
         },
         {
           "id": "components-combobox--async-search-with-status",
           "name": "Async Search With Status",
-          "snippet": "const AsyncSearchWithStatus = () => {\n    const [results, setResults] = useState<Agency[]>([]);\n    const [isLoading, setIsLoading] = useState(false);\n    // Only the latest request may land; fast typing returns responses out of order.\n    const latestRequest = useRef(0);\n\n    const onInputValueChange = async (query: string) => {\n        const request = ++latestRequest.current;\n        if (query.trim().length < MIN_QUERY_LENGTH) {\n            setResults([]);\n            setIsLoading(false);\n            return;\n        }\n\n        // The previous rows go before the wait starts: a list that no longer matches what is typed\n        // must not sit under the loading state.\n        setResults([]);\n        setIsLoading(true);\n        const agencies = await searchAgencies(query);\n        if (request !== latestRequest.current) return;\n\n        setResults(agencies);\n        setIsLoading(false);\n    };\n\n    return (\n        // `filter={null}` hands filtering to the server; `filteredItems` is what came back.\n        <Combobox.Root\n            items={results}\n            filteredItems={results}\n            filter={null}\n            minInputLength={MIN_QUERY_LENGTH}\n            itemToStringLabel={(agency: Agency) => agency.name}\n            isItemEqualToValue={(a: Agency, b: Agency) => a.id === b.id}\n            onInputValueChange={onInputValueChange}>\n            <Combobox.Input placeholder=\"Search agencies\" aria-label=\"Search agencies\" />\n            <Combobox.Content aria-busy={isLoading || undefined}>\n                {/* The rows show the wait; `Status` only announces it. */}\n                <Combobox.Status className=\"sr-only\">\n                    {isLoading ? 'Searching…' : undefined}\n                </Combobox.Status>\n                {isLoading && <SkeletonRows />}\n                <Combobox.Empty>{isLoading ? undefined : 'No agencies found'}</Combobox.Empty>\n                <Combobox.List>\n                    {(agency: Agency) => (\n                        <Combobox.Item key={agency.id} value={agency}>\n                            {agency.name}\n                        </Combobox.Item>\n                    )}\n                </Combobox.List>\n            </Combobox.Content>\n        </Combobox.Root>\n    );\n};",
-          "description": "The same search without Suspense, for a consumer that gets a `loading` flag from\nits data layer instead: `filter={null}`, the rows arrive through `filteredItems`,\n`Content` is marked busy and `Status` announces the wait. The list is cleared\nbefore each request and a request that is no longer the latest is dropped.\n\n`minInputLength` keeps the list shut until two characters are typed — focusing\nthe field opens nothing, and deleting back under the minimum closes it — and\nno request goes out for a shorter query either.",
+          "snippet": "const AsyncSearchWithStatus = () => {\n    const [results, setResults] = useState<Agency[]>([]);\n    const [isLoading, setIsLoading] = useState(false);\n    // Only the latest request may land; fast typing returns responses out of order.\n    const latestRequest = useRef(0);\n\n    const onInputValueChange = async (query: string) => {\n        const request = ++latestRequest.current;\n        if (query.trim().length < MIN_QUERY_LENGTH) {\n            setResults([]);\n            setIsLoading(false);\n            return;\n        }\n\n        // The previous rows stay through the wait, marked busy, rather than blinking out and back.\n        setIsLoading(true);\n        const agencies = await searchAgencies(query);\n        if (request !== latestRequest.current) return;\n\n        setResults(agencies);\n        setIsLoading(false);\n    };\n\n    return (\n        // `filter={null}` hands filtering to the server; `filteredItems` is what came back.\n        <Combobox.Root\n            items={results}\n            filteredItems={results}\n            filter={null}\n            minInputLength={MIN_QUERY_LENGTH}\n            itemToStringLabel={(agency: Agency) => agency.name}\n            isItemEqualToValue={(a: Agency, b: Agency) => a.id === b.id}\n            onInputValueChange={onInputValueChange}>\n            <Combobox.Input placeholder=\"Search agencies\" aria-label=\"Search agencies\" />\n            <Combobox.Content aria-busy={isLoading || undefined}>\n                {/* The rows show the wait; `Status` only announces it. */}\n                <Combobox.Status className=\"sr-only\">\n                    {isLoading ? 'Searching…' : undefined}\n                </Combobox.Status>\n                {isLoading && results.length === 0 && <SkeletonRows />}\n                <Combobox.Empty>{isLoading ? undefined : 'No agencies found'}</Combobox.Empty>\n                <Combobox.List>\n                    {(agency: Agency) => (\n                        <Combobox.Item key={agency.id} value={agency}>\n                            {agency.name}\n                        </Combobox.Item>\n                    )}\n                </Combobox.List>\n            </Combobox.Content>\n        </Combobox.Root>\n    );\n};",
+          "description": "The same search without Suspense, for a consumer that gets a `loading` flag from\nits data layer instead: `filter={null}`, the rows arrive through `filteredItems`,\n`Content` is marked busy and `Status` announces the wait. Placeholder rows show\nonly while there is nothing to show yet; after that, the previous rows stay\nuntil the new ones replace them. A request that is no longer the latest is\ndropped.\n\n`minInputLength` keeps the list shut until two characters are typed — focusing\nthe field opens nothing, and deleting back under the minimum closes it — and\nno request goes out for a shorter query either.",
           "summary": "API search that waits for two characters, with loading status"
         },
         {
           "id": "components-combobox--inside-field-text",
           "name": "Inside Field Text",
-          "snippet": "const InsideFieldText = () => (\n    <FieldText invalid required>\n        <Label>Agency</Label>\n        <Combobox.Root items={STATES}>\n            <Combobox.Input placeholder=\"Search agencies\" />\n            <Combobox.Content>\n                <Combobox.Empty>No matches found</Combobox.Empty>\n                <Combobox.List>\n                    {(state: string) => (\n                        <Combobox.Item key={state} value={state}>\n                            {state}\n                        </Combobox.Item>\n                    )}\n                </Combobox.List>\n            </Combobox.Content>\n        </Combobox.Root>\n        <Field.Description>The agency this agent will be added to.</Field.Description>\n        <Field.Error errors={[{ message: 'Pick an agency from the list' }]} />\n    </FieldText>\n);",
+          "snippet": "const InsideFieldText = () => (\n    <FieldText invalid required>\n        <Label>Agency</Label>\n        <Combobox.Root items={STATES}>\n            <Combobox.Input placeholder=\"Search agencies\" />\n            <Combobox.Content>\n                <Combobox.Empty>No matches found</Combobox.Empty>\n                <Combobox.List>\n                    {(state: string) => (\n                        <Combobox.Item key={state} value={state}>\n                            {state}\n                        </Combobox.Item>\n                    )}\n                </Combobox.List>\n            </Combobox.Content>\n        </Combobox.Root>\n        <Field.Error errors={[{ message: 'Pick an agency from the list' }]} />\n        <Field.Description>The agency this agent will be added to.</Field.Description>\n    </FieldText>\n);",
           "description": "Dropped into a `FieldText`, the input takes the label, the description and\nthe error from the field with nothing wired by hand: `Combobox.Input` reads the\nsame `InputContext` the plain `Input` does. It also points `aria-labelledby`\nat the label, so the name survives the list opening: Base UI then hides the\nrest of the page from assistive technology, label included, and a\n`<label for>` alone would stop naming the input."
         },
         {
@@ -5555,7 +5555,7 @@
           "Field for a single-line text control, wiring the Input inside it"
         ],
         "example": [
-          "<FieldText invalid={!!error} required>\n  <Label>Email</Label>\n  <Input type=\"email\" />\n  <Field.Description>We only use this for policy documents.</Field.Description>\n  <Field.Error errors={[error]} />\n</FieldText>"
+          "<FieldText invalid={!!error} required>\n  <Label>Email</Label>\n  <Input type=\"email\" />\n  <Field.Error errors={[error]} />\n  <Field.Description>We only use this for policy documents.</Field.Description>\n</FieldText>"
         ]
       },
       "description": "FieldText is a `Field.Root` for a single-line text control. It provides\n`InputContext`, so the `Input` inside associates itself with the label and\nthe messages and takes `invalid`, `required`, `disabled` and `readOnly` from\nthe field — no `id`, `htmlFor`, `aria-describedby` or `aria-invalid` written\nby hand.\n\nIt knows nothing about form libraries, and its contexts compose: a provider\nnested inside it can extend `InputContext` with `value`, `onChange`, `onBlur`\nand `name`, and `FieldContext` with the errors, as the last story shows.",
@@ -5570,7 +5570,7 @@
             "Field for a single-line text control, wiring the Input inside it"
           ],
           "example": [
-            "<FieldText invalid={!!error} required>\n  <Label>Email</Label>\n  <Input type=\"email\" />\n  <Field.Description>We only use this for policy documents.</Field.Description>\n  <Field.Error errors={[error]} />\n</FieldText>"
+            "<FieldText invalid={!!error} required>\n  <Label>Email</Label>\n  <Input type=\"email\" />\n  <Field.Error errors={[error]} />\n  <Field.Description>We only use this for policy documents.</Field.Description>\n</FieldText>"
           ]
         },
         "props": {
@@ -5764,7 +5764,7 @@
           "Wraps a label, control, description and error into one field"
         ],
         "example": [
-          "<Field.Root invalid={!!error} required>\n  <Field.Label>Email</Field.Label>\n  <Input type=\"email\" />\n  <Field.Description>We only use this for policy documents.</Field.Description>\n  <Field.Error errors={[error]} />\n</Field.Root>"
+          "<Field.Root invalid={!!error} required>\n  <Field.Label>Email</Field.Label>\n  <Input type=\"email\" />\n  <Field.Error errors={[error]} />\n  <Field.Description>We only use this for policy documents.</Field.Description>\n</Field.Root>"
         ]
       },
       "description": "Field lays out a single form field — label, control, helper text and error —\nand wires the accessibility relationships between them. `Field.Root`\ngenerates the ids and shares them through context: `Label` reads\n`LabelContext`, `Field.Description` and `Field.Error` read `FieldContext`,\nand a `Field<X>` such as `FieldText` provides the control's context. Nobody\npasses an `id` by hand.\n\nPresentational and form-library agnostic: pass `invalid` and the error\nmessages from whatever validates the form. Spacing between fields belongs to\n`Field.Group`, never to a margin on the field itself.\n\n`Field.Description` and `Field.Error` register themselves with the root, so\nthe control's `aria-describedby` lists exactly the messages on screen and is\nabsent when there is none.",
@@ -5779,7 +5779,7 @@
             "Wraps a label, control, description and error into one field"
           ],
           "example": [
-            "<Field.Root invalid={!!error} required>\n  <Field.Label>Email</Field.Label>\n  <Input type=\"email\" />\n  <Field.Description>We only use this for policy documents.</Field.Description>\n  <Field.Error errors={[error]} />\n</Field.Root>"
+            "<Field.Root invalid={!!error} required>\n  <Field.Label>Email</Field.Label>\n  <Input type=\"email\" />\n  <Field.Error errors={[error]} />\n  <Field.Description>We only use this for policy documents.</Field.Description>\n</Field.Root>"
           ]
         },
         "props": {
@@ -5979,6 +5979,13 @@
           "summary": "Error stays mounted and renders nothing while valid"
         },
         {
+          "id": "components-field--error-before-description",
+          "name": "Error Before Description",
+          "snippet": "const ErrorBeforeDescription = () => {\n    const [error, setError] = useState<string>();\n\n    return (\n        <div className=\"flex flex-col items-start gap-4\">\n            <Field.Root\n                orientation=\"vertical\"\n                disabled={false}\n                readOnly={false}\n                required={false}\n                invalid={!!error}>\n                <Label>Tax ID</Label>\n                <DemoInput inputMode=\"numeric\" />\n                <Field.Error id=\"tax-id-error\">{error}</Field.Error>\n                <Field.Description>Nine digits, with or without the dash.</Field.Description>\n            </Field.Root>\n            <button type=\"button\" onClick={() => setError('Enter the tax ID.')}>Validate\n                                </button>\n        </div>\n    );\n};",
+          "description": "The error sits right under the control and is announced before the\ndescription, even when it appears after the description is on screen and\ncarries an `id` of its own.",
+          "summary": "Error announced before the description, whenever it appears"
+        },
+        {
           "id": "components-field--disabled",
           "name": "Disabled",
           "snippet": "const Disabled = () => <Field.Root\n    orientation=\"vertical\"\n    invalid={false}\n    disabled\n    readOnly={false}\n    required={false}>\n    <Label>Agency</Label>\n    <DemoInput defaultValue=\"Acme Insurance\" />\n    <Field.Description>Managed by your administrator.</Field.Description>\n</Field.Root>;",
@@ -6055,7 +6062,7 @@
         "displayName": "FormText",
         "exportName": "FormText",
         "filePath": "/home/runner/work/design-system/design-system/src/form-text/index.ts",
-        "description": "A complete text field bound to one react-hook-form value: label, `Input`,\nhelper text and validation error, laid out in the standard order and wired\nthrough `useController`. It renders inside a `Form.Root`, which provides the\nform, and needs only a `name`, which on a typed form must point at a string\n(`FormTextPath`). The `required`, `invalid` and error states\nreach the label, the input's `aria-*` attributes and the message with no\nids written by hand.\n\nUse it for the common case: a labelled single-line input in a form. When\nthe layout is different — an input with addons, another control, a\nmessage rendered elsewhere — compose the primitives yourself:\n`useController` with [FieldText](?path=/docs/components-fieldtext--docs),\n`Label`, `Input`, `Field.Description` and `Field.Error`. `FormText` adds no\nbehaviour of its own over that composition.\n\nErrors come from `useController`'s per-field state, never from\n`formState.errors`, so the message stays fresh under the React Compiler.\nWith `criteriaMode: 'all'` on the form the error carries every rule that\nfailed and `Field.Error` lists them all. An error on an array or object path\n(`error.root`) is not this field's: render a `Field.Error` for it where the\ngroup lives.",
+        "description": "A complete text field bound to one react-hook-form value: label, `Input`,\nvalidation error and helper text, laid out in the standard order and wired\nthrough `useController`. It renders inside a `Form.Root`, which provides the\nform, and needs only a `name`, which on a typed form must point at a string\n(`FormTextPath`). The `required`, `invalid` and error states\nreach the label, the input's `aria-*` attributes and the message with no\nids written by hand.\n\nUse it for the common case: a labelled single-line input in a form. When\nthe layout is different — an input with addons, another control, a\nmessage rendered elsewhere — compose the primitives yourself:\n`useController` with [FieldText](?path=/docs/components-fieldtext--docs),\n`Label`, `Input`, `Field.Description` and `Field.Error`. `FormText` adds no\nbehaviour of its own over that composition.\n\nErrors come from `useController`'s per-field state, never from\n`formState.errors`, so the message stays fresh under the React Compiler.\nWith `criteriaMode: 'all'` on the form the error carries every rule that\nfailed and `Field.Error` lists them all. An error on an array or object path\n(`error.root`) is not this field's: render a `Field.Error` for it where the\ngroup lives.",
         "jsDocTags": {
           "summary": [
             "Label, Input, description and error bound to one react-hook-form field"
@@ -6281,7 +6288,7 @@
             "type": {
               "name": "ReactNode"
             },
-            "description": "Helper text shown under the control and announced through its\n`aria-describedby`. Use it for guidance the user needs before typing; put\ndetails worth a click in `tooltip` instead.",
+            "description": "Helper text shown under the control, below the error when there is one,\nand announced through its `aria-describedby`. Use it for guidance the\nuser needs before typing; put details worth a click in `tooltip` instead.",
             "defaultValue": null,
             "parent": {
               "name": "FormTextProps",
@@ -6415,6 +6422,13 @@
           "snippet": "const WithRules = () => {\n    const methods = useForm<LicenseValues>({ defaultValues: { agency: { npn: '' } } });\n\n    return (\n        <Form.Root\n            methods={methods}\n            onSubmit={onSubmit}\n            aria-label=\"License\"\n            className=\"flex flex-col items-start gap-7\">\n            <FormText<LicenseValues>\n                name=\"agency.npn\"\n                label=\"NPN\"\n                rules={{\n                    required: 'Enter your NPN.',\n                    pattern: { value: /^\\d{6,10}$/, message: 'An NPN is 6 to 10 digits.' }\n                }}\n                inputProps={{ inputMode: 'numeric' }}\n            />\n            <Button type=\"submit\">Save</Button>\n        </Form.Root>\n    );\n};",
           "description": "`rules` are react-hook-form's, and `name` accepts nested paths typed against\nthe form's values through the generic. `rules.required` validates but does\nnot mark the field required: that stays an explicit `required` prop.",
           "summary": "Nested path with validation rules, typed through the generic"
+        },
+        {
+          "id": "components-formtext--error-and-description",
+          "name": "Error And Description",
+          "snippet": "const ErrorAndDescription = () => {\n    const methods = useForm<TaxValues>({ defaultValues: { taxId: '' } });\n\n    return (\n        <Form.Root\n            methods={methods}\n            onSubmit={onSubmit}\n            aria-label=\"Tax details\"\n            className=\"flex flex-col items-start gap-7\">\n            <FormText\n                name=\"taxId\"\n                label=\"Tax ID\"\n                description=\"Nine digits, with or without the dash.\"\n                rules={{ required: 'Enter the tax ID.' }}\n                inputProps={{ inputMode: 'numeric', autoComplete: 'off' }}\n            />\n            <Button type=\"submit\">Save</Button>\n        </Form.Root>\n    );\n};",
+          "description": "The error sits right under the input and the description stays below it, so\nthe message lands next to the value it is about. Screen readers announce\nthem in the same order.",
+          "summary": "Error under the input, above the helper text"
         },
         {
           "id": "components-formtext--all-errors",
@@ -6798,7 +6812,7 @@
           "id": "components-inputgroup--default",
           "name": "Default",
           "snippet": "const Default = () => (\n    <InputGroup.Root>\n        <InputGroup.Addon>\n            <IconSearch />\n        </InputGroup.Addon>\n        <Input type=\"search\" placeholder=\"Search agencies\" aria-label=\"Search agencies\" />\n    </InputGroup.Root>\n);",
-          "description": "A search field: the icon leads and the input takes the rest of the frame.\nPressing the icon focuses the input, and the frame — not the input — draws the\nfocus ring, so the two never show a double border.",
+          "description": "A search field: the icon leads and the input takes the rest of the frame.\nPressing the icon focuses the input, and the frame — not the input — draws the\nfocus ring, so the two never show a double border. A search field with a\nclear button and a loading state is\n[InputSearch](?path=/docs/components-inputsearch--docs), built on this frame.",
           "summary": "Leading icon addon with the frame drawing the focus ring"
         },
         {
@@ -6856,11 +6870,6 @@
           "summary": "Label and description reaching the input through the frame"
         },
         {
-          "id": "components-inputgroup--search-field",
-          "name": "Search Field",
-          "snippet": "const SearchField = () => (\n    <form onSubmit={handleSearchSubmit}>\n        <FieldStates\n            label=\"Agency\"\n            tooltip=\"Search by agency name or NPN.\"\n            required\n            error=\"Pick an agency from the list.\">\n            <SearchInput />\n        </FieldStates>\n    </form>\n);"
-        },
-        {
           "id": "components-inputgroup--email-field",
           "name": "Email Field",
           "snippet": "const EmailField = () => (\n    <FieldStates label=\"Email\" required error=\"Enter a valid email address.\">\n        <InputGroup.Root>\n            <InputGroup.Addon>\n                <IconMail />\n            </InputGroup.Addon>\n            <Input type=\"email\" placeholder=\"me@email.com\" />\n        </InputGroup.Root>\n    </FieldStates>\n);",
@@ -6882,7 +6891,275 @@
           "summary": "Phone field with a leading country code picker, valid and invalid"
         }
       ],
-      "import": "import {\n    Button,\n    Divider,\n    DropdownMenu,\n    Field,\n    FieldText,\n    IconCancel,\n    IconKeyboardArrowDown,\n    IconSearch,\n    Input,\n    InputGroup,\n    Label,\n    Tag,\n} from \"@agentero/design-system\";"
+      "import": "import {\n    Button,\n    Divider,\n    DropdownMenu,\n    Field,\n    FieldText,\n    IconKeyboardArrowDown,\n    IconSearch,\n    Input,\n    InputGroup,\n    Label,\n    Tag,\n} from \"@agentero/design-system\";"
+    },
+    "components-inputpassword": {
+      "id": "components-inputpassword",
+      "name": "InputPassword",
+      "path": "./src/input-password/input-password.stories.tsx",
+      "jsDocTags": {
+        "summary": [
+          "Password input with a show/hide toggle inside the frame"
+        ],
+        "dataAttribute": [
+          "{string} data-slot - Always set to \"input-password\" on the frame"
+        ],
+        "example": [
+          "<FieldText required>\n  <Label>Password</Label>\n  <InputPassword name=\"password\" autoComplete=\"current-password\" />\n</FieldText>"
+        ]
+      },
+      "description": "InputPassword is a password field with a show/hide toggle at the end of its\nframe. It is an `Input` inside an `InputGroup`: `className` styles the\nframe and every other prop reaches the `<input>`, which takes its label,\nmessages and states from a surrounding `FieldText`. The toggle is not\nrendered while the input is disabled.",
+      "summary": "Password input with a show/hide toggle inside the frame",
+      "reactComponentMeta": {
+        "displayName": "InputPassword",
+        "exportName": "InputPassword",
+        "filePath": "/home/runner/work/design-system/design-system/src/input-password/input-password.tsx",
+        "description": "InputPassword is a password field with a show/hide toggle at the end of its\nframe. The value starts hidden; the toggle reveals it as plain text and\nhides it again. Its accessible name reads \"Show password\" or \"Hide\npassword\", depending on what the next press does. Pressing the toggle keeps\nfocus and the caret in the input. The toggle is not rendered while the input\nis disabled, whether `disabled` comes from the prop, from a surrounding\n`FieldText` or from a `<fieldset disabled>`.\n\nIt is an [Input](?path=/docs/components-input--docs) inside an\n[InputGroup](?path=/docs/components-inputgroup--docs) frame. `className`\nstyles the frame. Every other prop goes to the `<input>`: the `ref`, `id`,\n`name`, `value`, `onChange`, `aria-*` and every other standard attribute,\nsuch as `autoComplete`, `required` or `maxLength`. Only `type` is not\naccepted, because the toggle owns it. Inside a `FieldText` the input takes\nits label, messages and states from the field as a plain `Input` does. The\ninvalid state comes from `aria-invalid`, and the frame paints the\ndestructive border. Set `autoComplete` to `current-password` on sign-in and\n`new-password` when the user picks one, so password managers fill the right\nvalue.\n\nDo not use it for text that is not secret; use `Input` instead. A one-time\ncode is an `Input` with `autoComplete=\"one-time-code\"`, not a password.",
+        "jsDocTags": {
+          "summary": [
+            "Password input with a show/hide toggle inside the frame"
+          ],
+          "dataAttribute": [
+            "{string} data-slot - Always set to \"input-password\" on the frame"
+          ],
+          "example": [
+            "<FieldText required>\n  <Label>Password</Label>\n  <InputPassword name=\"password\" autoComplete=\"current-password\" />\n</FieldText>"
+          ]
+        },
+        "props": {
+          "size": {
+            "name": "size",
+            "required": false,
+            "type": {
+              "name": "enum",
+              "raw": "\"sm\" | \"md\" | \"lg\"",
+              "value": [
+                {
+                  "value": "\"sm\""
+                },
+                {
+                  "value": "\"md\""
+                },
+                {
+                  "value": "\"lg\""
+                }
+              ]
+            },
+            "description": "Control height. Defaults to `'md'`.\n- `sm` (32px) — dense layouts where vertical space is tight.\n- `md` (40px) — standard form density.\n- `lg` (48px) — low-density forms and larger touch targets. Also raises\n  the text to `base` and the corner radius to `lg`.",
+            "defaultValue": null,
+            "parent": {
+              "name": "InputProps",
+              "fileName": "src/input/input.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input/input.tsx"
+              }
+            ]
+          }
+        }
+      },
+      "stories": [
+        {
+          "id": "components-inputpassword--default",
+          "name": "Default",
+          "snippet": "const Default = () => <InputPassword aria-label=\"Password\" autoComplete=\"current-password\" />;",
+          "description": "The value starts hidden. The toggle shows it as plain text and hides it\nagain; pressing it leaves focus and the caret in the input.",
+          "summary": "Hidden value with a toggle that reveals and hides it"
+        },
+        {
+          "id": "components-inputpassword--disabled",
+          "name": "Disabled",
+          "snippet": "const Disabled = () => <div style={{ display: 'grid', gap: '1rem' }}>\n    <InputPassword\n        aria-label=\"Password\"\n        autoComplete=\"current-password\"\n        disabled\n        defaultValue=\"hunter22\" />\n    <fieldset disabled style={{ border: 0, margin: 0, padding: 0 }}>\n        <InputPassword aria-label=\"New password\" autoComplete=\"new-password\" />\n    </fieldset>\n</div>;",
+          "description": "A disabled input has no toggle, whether `disabled` is set on the input\nitself or comes from a `<fieldset disabled>` around it.",
+          "summary": "Disabled input with the toggle removed"
+        },
+        {
+          "id": "components-inputpassword--invalid",
+          "name": "Invalid",
+          "snippet": "const Invalid = () => <div style={{ display: 'grid', gap: '1.5rem' }}>\n    <InputPassword\n        autoComplete=\"current-password\"\n        aria-label=\"Valid password\"\n        defaultValue=\"hunter22\" />\n    <FieldText invalid>\n        <Label>Password</Label>\n        <InputPassword autoComplete=\"new-password\" defaultValue=\"hunter\" />\n        <Field.Error errors={[{ message: 'Use at least 8 characters.' }]} />\n    </FieldText>\n</div>;",
+          "description": "`invalid` on the surrounding `FieldText` sets `aria-invalid` on the input,\nwhich paints the frame's destructive border, and `Field.Error` is announced\nwith the input.",
+          "summary": "Invalid field driving the frame's destructive border"
+        },
+        {
+          "id": "components-inputpassword--all-sizes",
+          "name": "All Sizes",
+          "snippet": "const AllSizes = () => <div style={{ display: 'grid', gap: '1rem' }}>\n    <InputPassword autoComplete=\"current-password\" size=\"sm\" aria-label=\"Small\" />\n    <InputPassword autoComplete=\"current-password\" size=\"md\" aria-label=\"Medium\" />\n    <InputPassword autoComplete=\"current-password\" size=\"lg\" aria-label=\"Large\" />\n</div>;",
+          "description": "The three sizes match Input's: the frame is 32, 40 or 48px tall. The toggle\ngrows with it (a 24px button with a 16px icon at `sm`, 32px with 20px at\n`md`, 32px with 24px at `lg`) and sits as far from the right edge as from\nthe top and bottom.",
+          "summary": "The three sizes, with the toggle scaled and evenly inset"
+        },
+        {
+          "id": "components-inputpassword--inside-field-text",
+          "name": "Inside Field Text",
+          "snippet": "const InsideFieldText = () => (\n    <div style={{ display: 'grid', gap: '1.5rem' }}>\n        <FieldText required>\n            <Label>Password</Label>\n            <InputPassword autoComplete=\"new-password\" />\n            <Field.Description>At least 8 characters.</Field.Description>\n        </FieldText>\n        <FieldText disabled>\n            <Label>Current password</Label>\n            <InputPassword autoComplete=\"current-password\" defaultValue=\"hunter22\" />\n        </FieldText>\n    </div>\n);",
+          "description": "Inside a `FieldText` the input takes its label, description and states from\nthe field through the frame. A disabled field removes the toggle too.",
+          "summary": "Label and disabled state reaching the input through the frame"
+        }
+      ],
+      "import": "import { Field, FieldText, InputPassword, Label } from \"@agentero/design-system\";"
+    },
+    "components-inputsearch": {
+      "id": "components-inputsearch",
+      "name": "InputSearch",
+      "path": "./src/input-search/input-search.stories.tsx",
+      "jsDocTags": {
+        "summary": [
+          "Search input with a leading icon, a clear button and a loading slot"
+        ],
+        "dataAttribute": [
+          "{string} data-slot - Always set to \"input-search\" on the frame"
+        ],
+        "example": [
+          "<InputSearch\n  aria-label=\"Search agencies\"\n  value={query}\n  onChange={event => setQuery(event.target.value)}\n  isLoading={isFetching}\n/>"
+        ]
+      },
+      "description": "InputSearch is a search field with a magnifier in front and a clear button\nonce there is text. It is an `Input` of `type=\"search\"` inside an\n`InputGroup`: `className` styles the frame and every other prop reaches the\n`<input>`. Clearing reports a real change event with an empty value, and\n`isLoading` swaps the clear button for a spinner.",
+      "summary": "Search input with a leading icon, a clear button and a loading slot",
+      "reactComponentMeta": {
+        "displayName": "InputSearch",
+        "exportName": "InputSearch",
+        "filePath": "/home/runner/work/design-system/design-system/src/input-search/input-search.tsx",
+        "description": "InputSearch is a search field: a magnifier in front of the text and, once\nthere is text, a clear button after it, named \"Clear search\" unless\n`clearLabel` says otherwise. The clear button empties the field\nand puts focus back in it, and it reports the change through `onChange` like\na keystroke would: a real change event whose `event.target.value` is `''`,\nso a controlled field, an uncontrolled one and one registered with\nreact-hook-form all clear the same way. While `isLoading` is set, a spinner\ntakes the clear button's place. The clear button is not rendered while the\ninput is disabled, whether `disabled` comes from the prop, from a\nsurrounding `FieldText` or from a `<fieldset disabled>`.\n\nIt is an [Input](?path=/docs/components-input--docs) of `type=\"search\"`\ninside an [InputGroup](?path=/docs/components-inputgroup--docs) frame, so\nit is announced as a search box. `className` styles the frame. Every other\nprop goes to the `<input>`: the `ref`, `id`, `name`, `value`, `onChange`,\n`aria-*` and every other standard attribute. Only `type` is not accepted.\n`placeholder` defaults to `'Search'`. Inside a `FieldText` the input takes\nits label, messages and states from the field as a plain `Input` does. The\ninvalid state comes from `aria-invalid`, and the frame paints the\ndestructive border.\n\nDo not use it to pick a value from a list; that is\n[Combobox](?path=/docs/components-combobox--docs), whose `search` field is\ndrawn by InputSearch. For a filter that should\nrun only once the user pauses typing, use `DebouncedInputSearch`.",
+        "jsDocTags": {
+          "summary": [
+            "Search input with a leading icon, a clear button and a loading slot"
+          ],
+          "dataAttribute": [
+            "{string} data-slot - Always set to \"input-search\" on the frame"
+          ],
+          "example": [
+            "<InputSearch\n  aria-label=\"Search agencies\"\n  value={query}\n  onChange={event => setQuery(event.target.value)}\n  isLoading={isFetching}\n/>"
+          ]
+        },
+        "props": {
+          "size": {
+            "name": "size",
+            "required": false,
+            "type": {
+              "name": "enum",
+              "raw": "\"sm\" | \"md\" | \"lg\"",
+              "value": [
+                {
+                  "value": "\"sm\""
+                },
+                {
+                  "value": "\"md\""
+                },
+                {
+                  "value": "\"lg\""
+                }
+              ]
+            },
+            "description": "Control height. Defaults to `'md'`.\n- `sm` (32px) — dense layouts where vertical space is tight.\n- `md` (40px) — standard form density.\n- `lg` (48px) — low-density forms and larger touch targets. Also raises\n  the text to `base` and the corner radius to `lg`.",
+            "defaultValue": null,
+            "parent": {
+              "name": "InputProps",
+              "fileName": "src/input/input.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input/input.tsx"
+              }
+            ]
+          },
+          "isLoading": {
+            "name": "isLoading",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Shows a spinner at the end of the frame, in place of the clear button,\nwhile the results for the current text are on their way. Defaults to\n`false`.",
+            "defaultValue": {
+              "value": "false"
+            },
+            "parent": {
+              "name": "InputSearchProps",
+              "fileName": "src/input-search/input-search.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input-search/input-search.tsx"
+              }
+            ]
+          },
+          "clearLabel": {
+            "name": "clearLabel",
+            "required": false,
+            "type": {
+              "name": "string"
+            },
+            "description": "Accessible name of the clear button. Defaults to `'Clear search'`; name it\nafter what is searched (`'Clear agency search'`) when a page carries\nseveral search fields.",
+            "defaultValue": {
+              "value": "'Clear search'"
+            },
+            "parent": {
+              "name": "InputSearchProps",
+              "fileName": "src/input-search/input-search.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input-search/input-search.tsx"
+              }
+            ]
+          }
+        }
+      },
+      "stories": [
+        {
+          "id": "components-inputsearch--default",
+          "name": "Default",
+          "snippet": "const Default = () => {\n    const [query, setQuery] = useState('');\n\n    return (\n        <InputSearch\n            aria-label=\"Search agencies\"\n            value={query}\n            onChange={event => {\n                setQuery(event.target.value);\n                args.onChange?.(event);\n            }} />\n    );\n};",
+          "description": "A controlled search. The clear button appears once there is text; pressing\nit calls `onChange` with an empty `event.target.value`, so the state that\nowns the query empties too, and focus goes back to the input. The browser's\nown cancel button is hidden.",
+          "summary": "Controlled search with a clear button that empties the query"
+        },
+        {
+          "id": "components-inputsearch--loading",
+          "name": "Loading",
+          "snippet": "const Loading = () => <InputSearch\n    aria-label=\"Search agencies\"\n    onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n    isLoading\n    defaultValue=\"Acme\" />;",
+          "description": "While `isLoading` is set a spinner takes the clear button's place, even with\ntext in the field.",
+          "summary": "Spinner in place of the clear button while results load"
+        },
+        {
+          "id": "components-inputsearch--uncontrolled",
+          "name": "Uncontrolled",
+          "snippet": "const Uncontrolled = () => <InputSearch\n    aria-label=\"Search agencies\"\n    onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n    defaultValue=\"Acme Insurance\" />;",
+          "description": "An uncontrolled search with a `defaultValue`. The clear button follows what\nis in the field, and clearing still calls `onChange` with an empty value.",
+          "summary": "Uncontrolled search starting from a default value"
+        },
+        {
+          "id": "components-inputsearch--disabled",
+          "name": "Disabled",
+          "snippet": "const Disabled = () => <div style={{ display: 'grid', gap: '1rem' }}>\n    <InputSearch\n        aria-label=\"Search agencies\"\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        disabled\n        defaultValue=\"Acme\" />\n    <fieldset disabled style={{ border: 0, margin: 0, padding: 0 }}>\n        <InputSearch\n            onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n            aria-label=\"Search carriers\"\n            defaultValue=\"Travelers\" />\n    </fieldset>\n</div>;",
+          "description": "A disabled search has no clear button, whether `disabled` is set on the\ninput itself or comes from a `<fieldset disabled>` around it.",
+          "summary": "Disabled search with the clear button removed"
+        },
+        {
+          "id": "components-inputsearch--all-sizes",
+          "name": "All Sizes",
+          "snippet": "const AllSizes = () => <div style={{ display: 'grid', gap: '1rem' }}>\n    <InputSearch\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        size=\"sm\"\n        aria-label=\"Small\"\n        defaultValue=\"Acme\" />\n    <InputSearch\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        size=\"md\"\n        aria-label=\"Medium\"\n        defaultValue=\"Acme\" />\n    <InputSearch\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        size=\"lg\"\n        aria-label=\"Large\"\n        defaultValue=\"Acme\" />\n</div>;",
+          "description": "The three sizes match Input's: the frame is 32, 40 or 48px tall.",
+          "summary": "The three sizes side by side"
+        },
+        {
+          "id": "components-inputsearch--inside-field-text",
+          "name": "Inside Field Text",
+          "snippet": "const InsideFieldText = () => (\n    <div style={{ display: 'grid', gap: '1.5rem' }}>\n        <FieldText>\n            <Label>Agency</Label>\n            <InputSearch defaultValue=\"Acme\" />\n            <Field.Description>Search by agency name or NPN.</Field.Description>\n        </FieldText>\n        <FieldText disabled>\n            <Label>Carrier</Label>\n            <InputSearch defaultValue=\"Travelers\" />\n        </FieldText>\n    </div>\n);",
+          "description": "Inside a `FieldText` the input takes its label, description and states from\nthe field through the frame. A disabled field removes the clear button too.",
+          "summary": "Label and disabled state reaching the input through the frame"
+        },
+        {
+          "id": "components-inputsearch--clear-label",
+          "name": "Clear Label",
+          "snippet": "const ClearLabel = () => <InputSearch\n    aria-label=\"Search agencies\"\n    onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n    defaultValue=\"Acme\"\n    clearLabel=\"Clear agency search\" />;",
+          "description": "`clearLabel` names the clear button after what is searched, so a page with\nseveral search fields does not read \"Clear search\" twice.",
+          "summary": "Clear button named after what the field searches"
+        }
+      ],
+      "import": "import { Field, FieldText, InputSearch, Label } from \"@agentero/design-system\";"
     },
     "components-input": {
       "id": "components-input",
@@ -7116,8 +7393,8 @@
         {
           "id": "components-label--optional",
           "name": "Optional",
-          "snippet": "const Optional = () => <Label optional>Phone number</Label>;",
-          "description": "Appends a muted \" (optional)\" suffix for fields that can be left blank.",
+          "snippet": "const Optional = () => <>\n    <Label optional htmlFor=\"phone\">Phone number</Label>\n    <input id=\"phone\" type=\"tel\" className={inputRecipe()} />\n</>;",
+          "description": "Appends a muted \" (optional)\" suffix for fields that can be left blank. The\nsuffix is real text, so it is part of the control's accessible name.",
           "summary": "Optional field with a muted suffix"
         },
         {
@@ -9850,6 +10127,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4630
+    "durationMs": 3027
   }
 }
