@@ -7133,8 +7133,8 @@
         {
           "id": "components-label--optional",
           "name": "Optional",
-          "snippet": "const Optional = () => <Label optional>Phone number</Label>;",
-          "description": "Appends a muted \" (optional)\" suffix for fields that can be left blank.",
+          "snippet": "const Optional = () => <>\n    <Label optional htmlFor=\"phone\">Phone number</Label>\n    <input id=\"phone\" type=\"tel\" className={inputRecipe()} />\n</>;",
+          "description": "Appends a muted \" (optional)\" suffix for fields that can be left blank. The\nsuffix is real text, so it is part of the control's accessible name.",
           "summary": "Optional field with a muted suffix"
         },
         {
@@ -9867,6 +9867,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4704
+    "durationMs": 5200
   }
 }
