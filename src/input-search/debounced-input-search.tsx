@@ -8,7 +8,10 @@ import { chain } from '../../lib';
 import { DEBOUNCE_TIME } from './constants';
 import { InputSearch, InputSearchProps } from './input-search';
 
-export type DebouncedInputSearchProps = Omit<InputSearchProps, 'value' | 'onChange'> & {
+export type DebouncedInputSearchProps = Omit<
+	InputSearchProps,
+	'value' | 'defaultValue' | 'onChange'
+> & {
 	/**
 	 * The query the page is filtering by. The field shows it, and follows it
 	 * when it changes from outside (a reset button, a saved filter, navigation),
@@ -20,8 +23,8 @@ export type DebouncedInputSearchProps = Omit<InputSearchProps, 'value' | 'onChan
 	 * Fires once the user has stopped typing for `DEBOUNCE_TIME` milliseconds,
 	 * with the change event of the last keystroke; clearing the field goes
 	 * through the same delay. A pending call fires at once when the user
-	 * presses Enter, and when the field unmounts or the page is hidden, so
-	 * the last text typed is never lost. Read the text from `event.target.value`, which is
+	 * presses Enter, and is dropped when the field unmounts, so a page that is
+	 * navigating away is not sent back. Read the text from `event.target.value`, which is
 	 * what the field shows at that moment. `event.currentTarget` is no longer
 	 * set by then, since the event is delivered after the browser's dispatch.
 	 */
@@ -67,9 +70,7 @@ export const DebouncedInputSearch = ({
 }: DebouncedInputSearchProps) => {
 	const [text, setText] = useState(value);
 	const [prevValue, setPrevValue] = useState(value);
-	const debouncedChange = useDebouncedCallback(onChange, DEBOUNCE_TIME, {
-		flushOnExit: true
-	});
+	const debouncedChange = useDebouncedCallback(onChange, DEBOUNCE_TIME);
 
 	// Follows a `value` changed from outside, but not while a change is pending:
 	// the page is about to receive what the user typed and would overwrite it.
@@ -85,8 +86,11 @@ export const DebouncedInputSearch = ({
 		debouncedChange(event);
 	};
 
+	// Safari sends the Enter that commits an IME candidate with `isComposing`
+	// false, but still with `keyCode` 229.
 	const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-		if (event.key === 'Enter' && !event.nativeEvent.isComposing) debouncedChange.flush();
+		const isComposing = event.nativeEvent.isComposing || event.keyCode === 229;
+		if (event.key === 'Enter' && !isComposing) debouncedChange.flush();
 	};
 
 	return (

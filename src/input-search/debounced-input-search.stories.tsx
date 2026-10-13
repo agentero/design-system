@@ -4,6 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fireEvent, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { Button } from '../button';
+import { DEBOUNCE_TIME } from './constants';
 import { DebouncedInputSearch } from './debounced-input-search';
 
 /**
@@ -222,31 +223,22 @@ export const SubmitOnEnter: Story = {
 
 /**
  * When the field unmounts with a call pending, here because the panel holding
- * it closes, `onChange` fires at once with what was typed instead of being lost.
+ * it closes, the call is dropped: on a client-side navigation the page is
+ * leaving, and an `onChange` that writes the query to the URL would send it back.
  *
- * @summary Pending query reported when the field unmounts
+ * @summary Pending query dropped when the field unmounts
  */
-export const ReportOnUnmount: Story = {
+export const DiscardOnUnmount: Story = {
+	tags: ['!dev', '!autodocs', '!manifest'],
 	render: function Render(args) {
-		const [query, setQuery] = useState('');
 		const [open, setOpen] = useState(true);
 
 		return (
 			<div style={{ display: 'grid', gap: '1rem' }}>
-				{open && (
-					<DebouncedInputSearch
-						{...args}
-						value={query}
-						onChange={event => {
-							setQuery(event.target.value);
-							args.onChange(event);
-						}}
-					/>
-				)}
+				{open && <DebouncedInputSearch {...args} />}
 				<Button variant="secondary" size="sm" onClick={() => setOpen(false)}>
 					Close filters
 				</Button>
-				<output>Filtering by: {query}</output>
 			</div>
 		);
 	},
@@ -255,9 +247,9 @@ export const ReportOnUnmount: Story = {
 
 		await userEvent.type(canvas.getByRole('searchbox', { name: 'Search agencies' }), 'Acme');
 		await userEvent.click(canvas.getByRole('button', { name: 'Close filters' }));
-
 		await expect(canvas.queryByRole('searchbox')).not.toBeInTheDocument();
-		await expect(calls(args.onChange)).toEqual(['Acme']);
-		await expect(canvas.getByRole('status')).toHaveTextContent('Filtering by: Acme');
+
+		await new Promise(resolve => setTimeout(resolve, DEBOUNCE_TIME * 2));
+		await expect(args.onChange).not.toHaveBeenCalled();
 	}
 };
