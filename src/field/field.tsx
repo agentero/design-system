@@ -20,6 +20,7 @@ import {
 	type FieldDescriptionProps,
 	type FieldErrorLike,
 	type FieldErrorProps,
+	type FieldMessageKind,
 	useFieldContext
 } from './context';
 import { IconInfoOutline } from './icons';
@@ -99,6 +100,9 @@ export const fieldRecipe = tv({
 
 const slots = fieldRecipe();
 
+const messageRank = (kind?: FieldMessageKind) =>
+	kind === 'error' ? 0 : kind === 'description' ? 1 : 2;
+
 export type FieldVariants = VariantProps<typeof fieldRecipe>;
 
 export type FieldGroupProps = ComponentPropsWithRef<'div'>;
@@ -173,8 +177,8 @@ export type FieldRootProps = ComponentPropsWithRef<'div'> & {
  * <Field.Root invalid={!!error} required>
  *   <Field.Label>Email</Field.Label>
  *   <Input type="email" />
- *   <Field.Description>We only use this for policy documents.</Field.Description>
  *   <Field.Error errors={[error]} />
+ *   <Field.Description>We only use this for policy documents.</Field.Description>
  * </Field.Root>
  */
 export const Root = ({
@@ -197,20 +201,23 @@ export const Root = ({
 	// The messages register themselves from a layout effect, so `aria-describedby`
 	// lists exactly the elements in the DOM and never a dangling id. Registering
 	// an id twice is a no-op: the same array comes back and React skips the render.
-	const [messageIds, setMessageIds] = useState<string[]>([]);
+	const [messages, setMessages] = useState<{ id: string; kind?: FieldMessageKind }[]>([]);
 
-	const registerMessage = useCallback((id: string) => {
-		setMessageIds(ids => (ids.includes(id) ? ids : [...ids, id]));
+	const registerMessage = useCallback((id: string, kind?: FieldMessageKind) => {
+		setMessages(registered =>
+			registered.some(message => message.id === id) ? registered : [...registered, { id, kind }]
+		);
 
-		return () => setMessageIds(ids => ids.filter(existing => existing !== id));
+		return () => setMessages(registered => registered.filter(message => message.id !== id));
 	}, []);
 
-	// The description reads before the error whatever the order they mounted in.
+	// The error reads before the description, as it sits above it, whatever the
+	// order they mounted in.
 	const describedBy =
-		[
-			...[descriptionId, errorId].filter(id => messageIds.includes(id)),
-			...messageIds.filter(id => id !== descriptionId && id !== errorId)
-		].join(' ') || undefined;
+		[...messages]
+			.sort((a, b) => messageRank(a.kind) - messageRank(b.kind))
+			.map(message => message.id)
+			.join(' ') || undefined;
 
 	const field: FieldContextValue = {
 		controlId,
@@ -316,7 +323,10 @@ export const Description = ({ className, id: idProp, ...props }: FieldDescriptio
 
 	// A layout effect, so the root re-renders with the id before the first paint
 	// and the control never shows a frame without its description.
-	useLayoutEffect(() => (id ? registerMessage?.(id) : undefined), [registerMessage, id]);
+	useLayoutEffect(
+		() => (id ? registerMessage?.(id, 'description') : undefined),
+		[registerMessage, id]
+	);
 
 	return (
 		<p
@@ -349,7 +359,9 @@ const toMessages = (error: FieldErrorLike): string[] => {
 
 /**
  * Validation feedback for the field, announced as an alert when it appears.
- * Renders nothing without a message, so it can stay mounted unconditionally;
+ * Place it right after the control, before `Field.Description`: the control's
+ * `aria-describedby` reads the error first as well. Renders nothing without a
+ * message, so it can stay mounted unconditionally;
  * set `invalid` on `Field.Root` alongside it. Takes `children` or an `errors`
  * array, and a form adapter can supply `errors` through `FieldContext` so a
  * bare `<Field.Error />` renders them. One per field: it takes the field's
@@ -390,7 +402,7 @@ const FieldError = ({
 	const hasContent = !!content;
 
 	useLayoutEffect(
-		() => (hasContent && id ? registerMessage?.(id) : undefined),
+		() => (hasContent && id ? registerMessage?.(id, 'error') : undefined),
 		[registerMessage, hasContent, id]
 	);
 

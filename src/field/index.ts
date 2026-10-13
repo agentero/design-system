@@ -14,7 +14,8 @@ export type {
 	FieldContextValue,
 	FieldDescriptionProps,
 	FieldErrorLike,
-	FieldErrorProps
+	FieldErrorProps,
+	FieldMessageKind
 } from './context';
 
 // Assembled here on purpose: this file must stay free of the 'use client'

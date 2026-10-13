@@ -18,7 +18,7 @@ export const switchRecipe = tv({
 			'disabled:cursor-not-allowed disabled:bg-slate-100'
 		],
 		thumb:
-			'block translate-x-0 rounded-full bg-bg-default-base-primary shadow-sm transition-transform',
+			'block translate-x-0 rounded-full bg-bg-default-base-primary shadow-sm transition-transform motion-reduce:transition-none',
 		label: [
 			'cursor-pointer text-sm text-text-default-base-primary select-none',
 			'peer-disabled:cursor-not-allowed peer-disabled:opacity-50'

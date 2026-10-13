@@ -1,6 +1,13 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import { useState } from 'react';
 
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, waitFor, within } from 'storybook/test';
+
+import { Button } from '../button';
 import { Avatar } from './avatar';
+
+const PROFILE_PHOTO =
+	'https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?&w=256&h=256&q=70&crop=focalpoint&fp-x=0.5&fp-y=0.3&fp-z=1&fit=crop';
 
 /**
  * Avatar displays a user's profile image, initials, or a fallback icon.
@@ -62,6 +69,35 @@ export const WithImage: Story = {
 };
 
 /**
+ * A photo that has to load fades in, and the avatar stays empty until it
+ * arrives: the fallback is not shown for a loading image. A cached photo is
+ * there on the first paint and does not fade. Each reload asks for a URL the
+ * browser has not cached, so the photo loads again.
+ *
+ * @summary Photo that loads late fades in over an empty avatar
+ */
+export const WithLateLoadingImage: Story = {
+	tags: ['!manifest'],
+	args: {
+		size: 'xl',
+		alt: 'Alex Morgan',
+		fallback: 'AM'
+	},
+	render: args => {
+		const [reloads, setReloads] = useState(0);
+
+		return (
+			<div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+				<Avatar {...args} key={reloads} src={`${PROFILE_PHOTO}&reload=${reloads}`} />
+				<Button variant="secondary" size="sm" onClick={() => setReloads(reloads + 1)}>
+					Reload photo
+				</Button>
+			</div>
+		);
+	}
+};
+
+/**
  * When the image fails to load, the fallback content is displayed.
  * Pass initials, an icon, or any ReactNode as the `fallback` prop.
  *
@@ -71,6 +107,12 @@ export const WithFallbackInitials: Story = {
 	args: {
 		src: 'https://broken-url.example/photo.jpg',
 		fallback: 'AM'
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		await waitFor(() => expect(canvas.getByText('AM')).toBeVisible(), { timeout: 10000 });
+		await expect(canvas.queryByRole('img')).toBeNull();
 	}
 };
 

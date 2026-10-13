@@ -178,10 +178,9 @@ export const Optional: Story = {
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 
-		const input = canvas.getByRole('textbox', { name: 'Phone number' });
-
-		await expect(input).not.toBeRequired();
-		await expect(canvas.getByText('Phone number')).toHaveClass(/after:content-/);
+		await expect(
+			canvas.getByRole('textbox', { name: 'Phone number (optional)' })
+		).not.toBeRequired();
 	}
 };
 
@@ -248,6 +247,54 @@ export const WithRules: Story = {
 			expect(onSubmit).toHaveBeenCalledWith({ agency: { npn: '1234567' } }, expect.anything())
 		);
 		await expect(canvas.queryByRole('alert')).toBeNull();
+	}
+};
+
+/**
+ * The error sits right under the input and the description stays below it, so
+ * the message lands next to the value it is about. Screen readers announce
+ * them in the same order.
+ *
+ * @summary Error under the input, above the helper text
+ */
+export const ErrorAndDescription: Story = {
+	render: () => {
+		const methods = useForm<TaxValues>({ defaultValues: { taxId: '' } });
+
+		return (
+			<Form.Root
+				methods={methods}
+				onSubmit={onSubmit}
+				aria-label="Tax details"
+				className="flex flex-col items-start gap-7">
+				<FormText
+					name="taxId"
+					label="Tax ID"
+					description="Nine digits, with or without the dash."
+					rules={{ required: 'Enter the tax ID.' }}
+					inputProps={{ inputMode: 'numeric', autoComplete: 'off' }}
+				/>
+				<Button type="submit">Save</Button>
+			</Form.Root>
+		);
+	},
+	play: async ({ canvasElement }) => {
+		onSubmit.mockClear();
+		const canvas = within(canvasElement);
+
+		const input = canvas.getByRole('textbox', { name: 'Tax ID' });
+
+		await userEvent.click(canvas.getByRole('button', { name: 'Save' }));
+
+		const alert = await canvas.findByRole('alert');
+		const description = canvas.getByText('Nine digits, with or without the dash.');
+
+		await expect(input.nextElementSibling).toBe(alert);
+		await expect(alert.nextElementSibling).toBe(description);
+		await expect(input).toHaveAccessibleDescription(
+			'Enter the tax ID. Nine digits, with or without the dash.'
+		);
+		await expect(onSubmit).not.toHaveBeenCalled();
 	}
 };
 

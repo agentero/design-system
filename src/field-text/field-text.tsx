@@ -40,8 +40,8 @@ export type FieldTextProps = FieldRootProps;
  * <FieldText invalid={!!error} required>
  *   <Label>Email</Label>
  *   <Input type="email" />
- *   <Field.Description>We only use this for policy documents.</Field.Description>
  *   <Field.Error errors={[error]} />
+ *   <Field.Description>We only use this for policy documents.</Field.Description>
  * </FieldText>
  */
 export const FieldText = ({ children, ...props }: FieldTextProps) => (

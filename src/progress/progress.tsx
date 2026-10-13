@@ -12,7 +12,7 @@ export const progressRecipe = tv({
 		// color IS the fill color — consumers recolor it with a `text-*` class.
 		track: 'relative h-2 w-full overflow-hidden rounded-sm bg-neutrals-200 text-neutrals-900',
 		indicator:
-			'size-full bg-current transition-transform duration-600 ease-in-out motion-reduce:transition-none',
+			'size-full bg-current transition-transform duration-300 ease-in-out motion-reduce:transition-none',
 		labelRow: 'flex items-center justify-between gap-2',
 		label: 'text-sm text-text-default-base-primary',
 		value: 'text-base text-text-default-base-primary'

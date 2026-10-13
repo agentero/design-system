@@ -66,13 +66,13 @@ export const hoverCardRecipe = tv({
 		// leaves without ever reaching the card — and keyframes restart the exit at
 		// full opacity/scale, so the half-faded card pops to fully visible before
 		// shrinking away. A transition reverses from wherever the entrance got to.
-		'transition-[opacity,transform] duration-200 ease-out',
+		'transition-[opacity,transform] duration-200 ease-out-quint',
 		// Direction comes from the side-aware origin above, not a translate:
 		// @starting-style is captured before Floating UI resolves a collision flip,
 		// so a translate keyed on data-side runs backwards whenever the card flips.
 		'starting:opacity-0 starting:[transform:scale(0.9)]',
 		'data-[state=closed]:opacity-0 data-[state=closed]:[transform:scale(0.9)]',
-		'data-[state=closed]:duration-150 data-[state=closed]:ease-in',
+		'data-[state=closed]:duration-150',
 		// Presence unmounts on animationend, so the exit needs an animation to wait
 		// on; presence-hold is a no-op whose duration matches the exit transition.
 		'data-[state=closed]:animate-presence-hold',

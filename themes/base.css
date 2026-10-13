@@ -782,6 +782,10 @@
 
 	--ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
 	--ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+	/* Strong ease-out for surfaces entering and leaving. The built-in ease-out is
+    * too flat to read at 150–200ms, and ease-in holds back the first frames of
+    * an exit, which is the part people watch. */
+	--ease-out-quint: cubic-bezier(0.23, 1, 0.32, 1);
 	--ease-in: cubic-bezier(0.4, 0, 1, 1);
 	--ease-out: cubic-bezier(0, 0, 0.2, 1);
 	--ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
@@ -790,29 +794,31 @@
     * ANIMATIONS
     * ======================================== */
 
-	--animate-cmd-overlay-in: cmd-overlay-in 200ms cubic-bezier(0.23, 1, 0.32, 1);
-	--animate-cmd-overlay-out: cmd-overlay-out 150ms ease-in forwards;
-	--animate-cmd-content-in: cmd-content-in 200ms cubic-bezier(0.23, 1, 0.32, 1);
-	--animate-cmd-content-out: cmd-content-out 150ms ease-in forwards;
+	--animate-cmd-overlay-in: cmd-overlay-in 200ms var(--ease-out-quint);
+	--animate-cmd-overlay-out: cmd-overlay-out 150ms var(--ease-out-quint) forwards;
+	--animate-cmd-content-in: cmd-content-in 200ms var(--ease-out-quint);
+	--animate-cmd-content-out: cmd-content-out 150ms var(--ease-out-quint) forwards;
 	--animate-fade-in: fadeIn 0.3s forwards;
-	--animate-dropdown-slide-in: dropdownSlideIn 200ms ease-out;
-	--animate-dropdown-slide-out: dropdownSlideOut 150ms ease-in;
+	--animate-dropdown-slide-in: dropdownSlideIn 200ms var(--ease-out-quint);
+	--animate-dropdown-slide-out: dropdownSlideOut 150ms var(--ease-out-quint);
 	/* Radix Presence unmounts as soon as a node's CSS animation ends, so a node
     * whose exit is driven by a transition needs a placeholder animation to hold
     * it mounted. Keep the duration in sync with any exit transition using it. */
 	--animate-presence-hold: presenceHold 150ms linear;
-	--animate-dropdown-slide-in-from-top: dropdownSlideInFromTop 200ms ease-out;
-	--animate-dropdown-slide-in-from-bottom: dropdownSlideInFromBottom 200ms ease-out;
-	--animate-dropdown-slide-in-from-left: dropdownSlideInFromLeft 200ms ease-out;
-	--animate-dropdown-slide-in-from-right: dropdownSlideInFromRight 200ms ease-out;
-	--animate-modal-overlay-in: modalOverlayIn 200ms ease-out;
-	--animate-modal-overlay-out: modalOverlayOut 150ms ease-in forwards;
-	--animate-modal-content-in: modalContentIn 200ms ease-out;
-	--animate-modal-content-out: modalContentOut 150ms ease-in forwards;
-	--animate-tooltip-slide-in-from-top: tooltipSlideInFromTop 200ms ease-out;
-	--animate-tooltip-slide-in-from-bottom: tooltipSlideInFromBottom 200ms ease-out;
-	--animate-tooltip-slide-in-from-left: tooltipSlideInFromLeft 200ms ease-out;
-	--animate-tooltip-slide-in-from-right: tooltipSlideInFromRight 200ms ease-out;
+	--animate-dropdown-slide-in-from-top: dropdownSlideInFromTop 200ms var(--ease-out-quint);
+	--animate-dropdown-slide-in-from-bottom: dropdownSlideInFromBottom 200ms var(--ease-out-quint);
+	--animate-dropdown-slide-in-from-left: dropdownSlideInFromLeft 200ms var(--ease-out-quint);
+	--animate-dropdown-slide-in-from-right: dropdownSlideInFromRight 200ms var(--ease-out-quint);
+	--animate-modal-overlay-in: modalOverlayIn 200ms var(--ease-out-quint);
+	--animate-modal-overlay-out: modalOverlayOut 150ms var(--ease-out-quint) forwards;
+	--animate-modal-content-in: modalContentIn 200ms var(--ease-out-quint);
+	--animate-modal-content-out: modalContentOut 150ms var(--ease-out-quint) forwards;
+	--animate-tooltip-slide-in-from-top: tooltipSlideInFromTop 150ms var(--ease-out-quint);
+	--animate-tooltip-slide-in-from-bottom: tooltipSlideInFromBottom 150ms var(--ease-out-quint);
+	--animate-tooltip-slide-in-from-left: tooltipSlideInFromLeft 150ms var(--ease-out-quint);
+	--animate-tooltip-slide-in-from-right: tooltipSlideInFromRight 150ms var(--ease-out-quint);
+	--animate-accordion-down: accordionDown 200ms var(--ease-out-quint);
+	--animate-accordion-up: accordionUp 200ms var(--ease-out-quint);
 
 	/* ========================================
     * Z-INDEX
