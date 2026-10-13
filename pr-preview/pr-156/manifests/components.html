@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.8s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>5.0s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -7500,9 +7500,9 @@ button&#39;s start corners with the frame.</div>
     </div>
     <div class="meta" title="./src/input-number/input-number.stories.tsx">components-inputnumber · ./src/input-number/input-number.stories.tsx</div>
     <div>Numeric input formatting as you type, built on react-number-format</div>
-    <div class="hint">InputNumber is a text field that only takes digits and formats them as the
-user types: thousands separators on request, leading zeros kept unless
-turned off, no sign. `onChange` fires with the formatted text in
+    <div class="hint">InputNumber is a text field that only takes digits and a decimal point and
+formats them as the user types: thousands separators on request, leading
+zeros kept unless turned off, no sign. `onChange` fires with the formatted text in
 `event.target.value`. It is an `Input` driven by `react-number-format`, so
 it takes its label, messages and states from a surrounding `FieldText`.</div>
     <div class="kv"><span class="chip">summary: Numeric input formatting as you type, built on react-number-format</span><span class="chip">dataAttribute: {string} data-slot - Always set to &quot;input-number&quot;</span><span class="chip">example: &lt;FieldText&gt;
@@ -7534,7 +7534,8 @@ it takes its label, messages and states from a surrounding `FieldText`.</div>
             <pre><code>/**
  * Keeps zeros typed in front of the number (`007`), which an identifier
  * such as an NPN or a ZIP code needs. Set it to `false` for an amount, so
- * `007` becomes `7` once the field loses focus. Defaults to `true`.
+ * `007` becomes `7` once the field loses focus, and `onChange` fires with
+ * the trimmed value. Defaults to `true`.
  */
 allowLeadingZeros?: boolean = true
 
@@ -7601,9 +7602,9 @@ value?: string | number | null | undefined</code></pre>
                 <span class="ex-name">Default</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Digits-only field that ignores letters and signs</div>
-              <div class="hint">Only digits make it into the field: letters and a minus sign are ignored as
-they are typed. `onChange` reports the text as it is shown, and the `ref`
+              <div>Numeric field that ignores letters and signs</div>
+              <div class="hint">Only digits and a decimal point make it into the field: letters and a minus
+sign are ignored as they are typed. `onChange` reports the text as it is shown, and the `ref`
 points at the `&lt;input&gt;` element.</div>
               <pre><code>const Default = () =&gt; &lt;InputNumber
     aria-label=&quot;Premium&quot;
@@ -7658,7 +7659,7 @@ called for it.</div>
               <div>Leading zeros kept by default, dropped on blur when turned off</div>
               <div class="hint">Leading zeros are kept by default, as an NPN or a ZIP code needs. With
 `allowLeadingZeros` off they are dropped once the field loses focus, which
-is what an amount wants.</div>
+is what an amount wants, and `onChange` reports the trimmed value.</div>
               <pre><code>const LeadingZeros = () =&gt; &lt;div style={{ display: &#39;grid&#39;, gap: &#39;1rem&#39; }}&gt;
     &lt;InputNumber
         onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)}
@@ -8292,8 +8293,12 @@ required?: boolean = false</code></pre>
                 <span class="badge ok">story ok</span>
               </div>
               <div>Optional field with a muted suffix</div>
-              <div class="hint">Appends a muted &quot; (optional)&quot; suffix for fields that can be left blank.</div>
-              <pre><code>const Optional = () =&gt; &lt;Label optional&gt;Phone number&lt;/Label&gt;;</code></pre>
+              <div class="hint">Appends a muted &quot; (optional)&quot; suffix for fields that can be left blank. The
+suffix is real text, so it is part of the control&#39;s accessible name.</div>
+              <pre><code>const Optional = () =&gt; &lt;&gt;
+    &lt;Label optional htmlFor=&quot;phone&quot;&gt;Phone number&lt;/Label&gt;
+    &lt;input id=&quot;phone&quot; type=&quot;tel&quot; className={inputRecipe()} /&gt;
+&lt;/&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">

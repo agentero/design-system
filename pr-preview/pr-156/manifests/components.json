@@ -6648,13 +6648,13 @@
           "<FieldText>\n  <Label>Annual premium</Label>\n  <InputNumber name=\"premium\" thousandSeparator allowLeadingZeros={false} />\n</FieldText>"
         ]
       },
-      "description": "InputNumber is a text field that only takes digits and formats them as the\nuser types: thousands separators on request, leading zeros kept unless\nturned off, no sign. `onChange` fires with the formatted text in\n`event.target.value`. It is an `Input` driven by `react-number-format`, so\nit takes its label, messages and states from a surrounding `FieldText`.",
+      "description": "InputNumber is a text field that only takes digits and a decimal point and\nformats them as the user types: thousands separators on request, leading\nzeros kept unless turned off, no sign. `onChange` fires with the formatted text in\n`event.target.value`. It is an `Input` driven by `react-number-format`, so\nit takes its label, messages and states from a surrounding `FieldText`.",
       "summary": "Numeric input formatting as you type, built on react-number-format",
       "reactComponentMeta": {
         "displayName": "InputNumber",
         "exportName": "InputNumber",
         "filePath": "/home/runner/work/design-system/design-system/src/input-number/input-number.tsx",
-        "description": "InputNumber is a text field that only takes digits and formats them as the\nuser types: a thousands separator when `thousandSeparator` is set, leading\nzeros kept unless `allowLeadingZeros` is off, no sign, no decimal rounding.\nAnything that is not a digit or the decimal point is ignored, and\n`maxNumber` drops any edit that would exceed it. `onChange` fires with the\nformatted text in `event.target.value` (`\"1,234\"`, not `1234`), which is\nwhat a form library stores; parse it where the number is consumed.\n\nIt is an [Input](?path=/docs/components-input--docs) driven by\n`react-number-format`, so it keeps the caret in place while it reformats\nand takes its wiring from a surrounding `FieldText` as a plain `Input`\ndoes. Every standard `<input>` attribute is accepted and forwarded, such as\n`placeholder`, `required`, `maxLength` or `aria-invalid`; `type` is limited\nto `text`, `tel` and `password`, and `value` and `defaultValue` also take a\nnumber or `null`. The invalid state comes from `aria-invalid`, which paints\nthe destructive border. Place it inside an\n[InputGroup](?path=/docs/components-inputgroup--docs) to show a currency or\nunit affix.\n\nDo not use it for a phone number, which is formatted by `InputTel`, nor for\nfree text with some digits in it, which is a plain `Input`. It is not a\n`type=\"number\"` input on purpose: that one drops leading zeros and cannot\nshow separators, which identifiers and amounts both need.",
+        "description": "InputNumber is a text field that only takes digits and a decimal point and\nformats them as the user types: a thousands separator when\n`thousandSeparator` is set, leading zeros kept unless `allowLeadingZeros` is\noff, no sign, no decimal rounding.\nAnything that is not a digit or the decimal point is ignored, and\n`maxNumber` drops any edit that would exceed it. `onChange` fires with the\nformatted text in `event.target.value` (`\"1,234\"`, not `1234`), which is\nwhat a form library stores; parse it where the number is consumed.\n\nIt is an [Input](?path=/docs/components-input--docs) driven by\n`react-number-format`, so it keeps the caret in place while it reformats\nand takes its wiring from a surrounding `FieldText` as a plain `Input`\ndoes. Every standard `<input>` attribute is accepted and forwarded, such as\n`placeholder`, `required`, `maxLength` or `aria-invalid`; `type` is limited\nto `text`, `tel` and `password`, and `value` and `defaultValue` also take a\nnumber or `null`. The invalid state comes from `aria-invalid`, which paints\nthe destructive border. Place it inside an\n[InputGroup](?path=/docs/components-inputgroup--docs) to show a currency or\nunit affix.\n\nDo not use it for a phone number, which is formatted by `InputTel`, nor for\nfree text with some digits in it, which is a plain `Input`. It is not a\n`type=\"number\"` input on purpose: that one drops leading zeros and cannot\nshow separators, which identifiers and amounts both need.",
         "jsDocTags": {
           "summary": [
             "Numeric input formatting as you type, built on react-number-format"
@@ -6744,7 +6744,7 @@
             "type": {
               "name": "boolean"
             },
-            "description": "Keeps zeros typed in front of the number (`007`), which an identifier\nsuch as an NPN or a ZIP code needs. Set it to `false` for an amount, so\n`007` becomes `7` once the field loses focus. Defaults to `true`.",
+            "description": "Keeps zeros typed in front of the number (`007`), which an identifier\nsuch as an NPN or a ZIP code needs. Set it to `false` for an amount, so\n`007` becomes `7` once the field loses focus, and `onChange` fires with\nthe trimmed value. Defaults to `true`.",
             "defaultValue": {
               "value": "true"
             },
@@ -6835,8 +6835,8 @@
           "id": "components-inputnumber--default",
           "name": "Default",
           "snippet": "const Default = () => <InputNumber\n    aria-label=\"Premium\"\n    onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n    ref={inputRef} />;",
-          "description": "Only digits make it into the field: letters and a minus sign are ignored as\nthey are typed. `onChange` reports the text as it is shown, and the `ref`\npoints at the `<input>` element.",
-          "summary": "Digits-only field that ignores letters and signs"
+          "description": "Only digits and a decimal point make it into the field: letters and a minus\nsign are ignored as they are typed. `onChange` reports the text as it is shown, and the `ref`\npoints at the `<input>` element.",
+          "summary": "Numeric field that ignores letters and signs"
         },
         {
           "id": "components-inputnumber--type-tel",
@@ -6863,7 +6863,7 @@
           "id": "components-inputnumber--leading-zeros",
           "name": "Leading Zeros",
           "snippet": "const LeadingZeros = () => <div style={{ display: 'grid', gap: '1rem' }}>\n    <InputNumber\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        aria-label=\"ZIP code\" />\n    <InputNumber\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        aria-label=\"Amount\"\n        allowLeadingZeros={false} />\n</div>;",
-          "description": "Leading zeros are kept by default, as an NPN or a ZIP code needs. With\n`allowLeadingZeros` off they are dropped once the field loses focus, which\nis what an amount wants.",
+          "description": "Leading zeros are kept by default, as an NPN or a ZIP code needs. With\n`allowLeadingZeros` off they are dropped once the field loses focus, which\nis what an amount wants, and `onChange` reports the trimmed value.",
           "summary": "Leading zeros kept by default, dropped on blur when turned off"
         },
         {
@@ -7411,8 +7411,8 @@
         {
           "id": "components-label--optional",
           "name": "Optional",
-          "snippet": "const Optional = () => <Label optional>Phone number</Label>;",
-          "description": "Appends a muted \" (optional)\" suffix for fields that can be left blank.",
+          "snippet": "const Optional = () => <>\n    <Label optional htmlFor=\"phone\">Phone number</Label>\n    <input id=\"phone\" type=\"tel\" className={inputRecipe()} />\n</>;",
+          "description": "Appends a muted \" (optional)\" suffix for fields that can be left blank. The\nsuffix is real text, so it is part of the control's accessible name.",
           "summary": "Optional field with a muted suffix"
         },
         {
@@ -10145,6 +10145,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4835
+    "durationMs": 5038
   }
 }
