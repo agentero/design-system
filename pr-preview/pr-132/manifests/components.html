@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>3.0s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>4.9s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -3071,8 +3071,10 @@ the selection with `FormData.getAll`.</div>
               <div>Wired to a surrounding Field</div>
               <div class="hint">Inside a `Field.Root`, label, messages, `invalid` and `disabled` reach the group with nothing wired by hand.</div>
               <pre><code>const InsideField = () =&gt; &lt;Field.Root invalid&gt;
-    &lt;Field.Label&gt;Lines of business&lt;/Field.Label&gt;
-    &lt;Field.Description&gt;The lines this agency writes.&lt;/Field.Description&gt;
+    &lt;Field.Content&gt;
+        &lt;Field.Label&gt;Lines of business&lt;/Field.Label&gt;
+        &lt;Field.Description&gt;The lines this agency writes.&lt;/Field.Description&gt;
+    &lt;/Field.Content&gt;
     &lt;CheckboxGroup.Root aria-label={undefined} defaultValue={[]}&gt;
         {LOBS.map(({ value, label }) =&gt; (
             &lt;CheckboxGroup.Item key={value} value={value}&gt;
@@ -3089,10 +3091,17 @@ the selection with `FormData.getAll`.</div>
                 <span class="badge ok">story ok</span>
               </div>
               <div>Own props override the Field wiring</div>
-              <div class="hint">`aria-label` and `disabled={false}` on the group win over the field.</div>
+              <div class="hint">`aria-label` and `disabled={false}` on the group win over the field. Its own
+`aria-describedby` joins the field&#39;s messages instead of replacing them.</div>
               <pre><code>const InsideFieldOverridden = () =&gt; &lt;Field.Root disabled&gt;
     &lt;Field.Label&gt;Lines of business&lt;/Field.Label&gt;
-    &lt;CheckboxGroup.Root aria-label=&quot;Lines written&quot; defaultValue={[&#39;home&#39;]} disabled={false}&gt;
+    &lt;Field.Description&gt;The lines this agency writes.&lt;/Field.Description&gt;
+    &lt;p id=&quot;lobs-note&quot;&gt;Ask the principal before changing them.&lt;/p&gt;
+    &lt;CheckboxGroup.Root
+        aria-label=&quot;Lines written&quot;
+        defaultValue={[&#39;home&#39;]}
+        aria-describedby=&quot;lobs-note&quot;
+        disabled={false}&gt;
         {LOBS.map(({ value, label }) =&gt; (
             &lt;CheckboxGroup.Item key={value} value={value}&gt;
                 {label}

@@ -1918,15 +1918,15 @@
         {
           "id": "components-checkboxgroup--inside-field",
           "name": "Inside Field",
-          "snippet": "const InsideField = () => <Field.Root invalid>\n    <Field.Label>Lines of business</Field.Label>\n    <Field.Description>The lines this agency writes.</Field.Description>\n    <CheckboxGroup.Root aria-label={undefined} defaultValue={[]}>\n        {LOBS.map(({ value, label }) => (\n            <CheckboxGroup.Item key={value} value={value}>\n                {label}\n            </CheckboxGroup.Item>\n        ))}\n    </CheckboxGroup.Root>\n    <Field.Error errors={[{ message: 'Select at least one line of business' }]} />\n</Field.Root>;",
+          "snippet": "const InsideField = () => <Field.Root invalid>\n    <Field.Content>\n        <Field.Label>Lines of business</Field.Label>\n        <Field.Description>The lines this agency writes.</Field.Description>\n    </Field.Content>\n    <CheckboxGroup.Root aria-label={undefined} defaultValue={[]}>\n        {LOBS.map(({ value, label }) => (\n            <CheckboxGroup.Item key={value} value={value}>\n                {label}\n            </CheckboxGroup.Item>\n        ))}\n    </CheckboxGroup.Root>\n    <Field.Error errors={[{ message: 'Select at least one line of business' }]} />\n</Field.Root>;",
           "description": "Inside a `Field.Root`, label, messages, `invalid` and `disabled` reach the group with nothing wired by hand.",
           "summary": "Wired to a surrounding Field"
         },
         {
           "id": "components-checkboxgroup--inside-field-overridden",
           "name": "Inside Field Overridden",
-          "snippet": "const InsideFieldOverridden = () => <Field.Root disabled>\n    <Field.Label>Lines of business</Field.Label>\n    <CheckboxGroup.Root aria-label=\"Lines written\" defaultValue={['home']} disabled={false}>\n        {LOBS.map(({ value, label }) => (\n            <CheckboxGroup.Item key={value} value={value}>\n                {label}\n            </CheckboxGroup.Item>\n        ))}\n    </CheckboxGroup.Root>\n</Field.Root>;",
-          "description": "`aria-label` and `disabled={false}` on the group win over the field.",
+          "snippet": "const InsideFieldOverridden = () => <Field.Root disabled>\n    <Field.Label>Lines of business</Field.Label>\n    <Field.Description>The lines this agency writes.</Field.Description>\n    <p id=\"lobs-note\">Ask the principal before changing them.</p>\n    <CheckboxGroup.Root\n        aria-label=\"Lines written\"\n        defaultValue={['home']}\n        aria-describedby=\"lobs-note\"\n        disabled={false}>\n        {LOBS.map(({ value, label }) => (\n            <CheckboxGroup.Item key={value} value={value}>\n                {label}\n            </CheckboxGroup.Item>\n        ))}\n    </CheckboxGroup.Root>\n</Field.Root>;",
+          "description": "`aria-label` and `disabled={false}` on the group win over the field. Its own\n`aria-describedby` joins the field's messages instead of replacing them.",
           "summary": "Own props override the Field wiring"
         }
       ],
@@ -10127,6 +10127,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 3027
+    "durationMs": 4857
   }
 }
