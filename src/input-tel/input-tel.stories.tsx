@@ -268,6 +268,34 @@ export const WithReactHookForm: Story = {
 };
 
 /**
+ * Regression check, kept out of the manifest: react-hook-form writes the
+ * default value straight into the DOM after mount, and the first edit in the
+ * middle of it still keeps the caret after the digit just typed.
+ *
+ * @summary Caret staying put on a value react-hook-form wrote
+ */
+export const WithReactHookFormDefaultValue: Story = {
+	tags: ['!manifest'],
+	render: function Render(args) {
+		const { register } = useForm<ContactValues>({
+			defaultValues: { phone: '(555) 123-4567' }
+		});
+
+		return <InputTel aria-label={args['aria-label']} {...register('phone')} />;
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const input = canvas.getByRole<HTMLInputElement>('textbox', { name: 'Phone number' });
+
+		await expect(input).toHaveValue('(555) 123-4567');
+		await userEvent.type(input, '9', { initialSelectionStart: 2, initialSelectionEnd: 2 });
+
+		await expect(input).toHaveValue('(595) 512-3456');
+		await waitFor(() => expect(input.selectionStart).toBe(3));
+	}
+};
+
+/**
  * Regression check, kept out of the manifest: a handler handed down through
  * `InputContext` runs once per keystroke, after the mask, so it reads the
  * masked value too.
@@ -320,7 +348,7 @@ export const Invalid: Story = {
 	args: {
 		'aria-invalid': true,
 		'aria-describedby': 'phone-error',
-		defaultValue: '(555) 123'
+		defaultValue: '(555) 12'
 	},
 	render: args => (
 		<div style={{ display: 'grid', gap: '0.5rem' }}>

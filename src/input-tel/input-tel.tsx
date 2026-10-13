@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEvent, useMemo, useRef } from 'react';
+import { ChangeEvent, FocusEvent, useMemo, useRef } from 'react';
 
 import { mergeRefs } from '../../lib';
 import { Input, InputContext, InputProps, useInputContext } from '../input';
@@ -48,10 +48,17 @@ export type InputTelProps = Omit<InputProps, 'type'>;
 export const InputTel = (props: InputTelProps) => {
 	// The context is merged here, once, and the inner Input is cut off from it:
 	// a handler the context provides must run after the mask, not before it.
-	const { onChange, ref, ...rest } = useInputContext(props);
+	const { onChange, onFocus, ref, ...rest } = useInputContext(props);
 	const inputRef = useRef<HTMLInputElement>(null);
-	const phoneBeforeInput = useRef(String(rest.value ?? rest.defaultValue ?? ''));
+	const phoneBeforeInput = useRef('');
 	const mergedRef = useMemo(() => mergeRefs(inputRef, ref), [ref]);
+
+	// Read on focus rather than from props: react-hook-form's `register` and
+	// `reset` write the value straight into the DOM, behind React's back.
+	const handleFocus = (event: FocusEvent<HTMLInputElement>) => {
+		phoneBeforeInput.current = event.target.value;
+		onFocus?.(event);
+	};
 
 	const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const deletion = getDeletionType((event.nativeEvent as InputEvent).inputType);
@@ -72,7 +79,7 @@ export const InputTel = (props: InputTelProps) => {
 			deletion
 		});
 
-		phoneBeforeInput.current = userInput;
+		phoneBeforeInput.current = maskedValue;
 		event.target.value = maskedValue;
 
 		if (onChange) {
@@ -92,7 +99,14 @@ export const InputTel = (props: InputTelProps) => {
 
 	return (
 		<InputContext value={null}>
-			<Input data-slot="input-tel" {...rest} type="tel" ref={mergedRef} onChange={handleChange} />
+			<Input
+				data-slot="input-tel"
+				{...rest}
+				type="tel"
+				ref={mergedRef}
+				onFocus={handleFocus}
+				onChange={handleChange}
+			/>
 		</InputContext>
 	);
 };
