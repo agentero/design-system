@@ -1,18 +1,12 @@
 'use client';
 
-import { ChangeEvent, ChangeEventHandler, useState } from 'react';
+import { ChangeEvent, ChangeEventHandler, KeyboardEvent, useState } from 'react';
 
 import { useDebouncedCallback } from 'use-debounce';
 
+import { chain } from '../../lib';
+import { DEBOUNCE_TIME } from './constants';
 import { InputSearch, InputSearchProps } from './input-search';
-
-/**
- * Milliseconds DebouncedInputSearch waits after the last keystroke before it
- * calls `onChange`.
- *
- * @summary Debounce delay of DebouncedInputSearch, in milliseconds
- */
-export const DEBOUNCE_TIME = 300;
 
 export type DebouncedInputSearchProps = Omit<InputSearchProps, 'value' | 'onChange'> & {
 	/**
@@ -25,7 +19,9 @@ export type DebouncedInputSearchProps = Omit<InputSearchProps, 'value' | 'onChan
 	/**
 	 * Fires once the user has stopped typing for `DEBOUNCE_TIME` milliseconds,
 	 * with the change event of the last keystroke; clearing the field goes
-	 * through the same delay. Read the text from `event.target.value`, which is
+	 * through the same delay. A pending call fires at once when the user
+	 * presses Enter, and when the field unmounts or the page is hidden, so
+	 * the last text typed is never lost. Read the text from `event.target.value`, which is
 	 * what the field shows at that moment. `event.currentTarget` is no longer
 	 * set by then, since the event is delivered after the browser's dispatch.
 	 */
@@ -63,10 +59,17 @@ export type DebouncedInputSearchProps = Omit<InputSearchProps, 'value' | 'onChan
  *   isLoading={isFetching}
  * />
  */
-export const DebouncedInputSearch = ({ value, onChange, ...props }: DebouncedInputSearchProps) => {
+export const DebouncedInputSearch = ({
+	value,
+	onChange,
+	onKeyDown,
+	...props
+}: DebouncedInputSearchProps) => {
 	const [text, setText] = useState(value);
 	const [prevValue, setPrevValue] = useState(value);
-	const debouncedChange = useDebouncedCallback(onChange, DEBOUNCE_TIME);
+	const debouncedChange = useDebouncedCallback(onChange, DEBOUNCE_TIME, {
+		flushOnExit: true
+	});
 
 	// Follows a `value` changed from outside, but not while a change is pending:
 	// the page is about to receive what the user typed and would overwrite it.
@@ -82,7 +85,18 @@ export const DebouncedInputSearch = ({ value, onChange, ...props }: DebouncedInp
 		debouncedChange(event);
 	};
 
-	return <InputSearch {...props} value={text} onChange={handleChange} />;
+	const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+		if (event.key === 'Enter' && !event.nativeEvent.isComposing) debouncedChange.flush();
+	};
+
+	return (
+		<InputSearch
+			{...props}
+			value={text}
+			onChange={handleChange}
+			onKeyDown={chain(handleKeyDown, onKeyDown)}
+		/>
+	);
 };
 
 DebouncedInputSearch.displayName = 'DebouncedInputSearch';
