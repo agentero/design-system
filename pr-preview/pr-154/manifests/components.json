@@ -6754,7 +6754,7 @@
           "<DebouncedInputSearch\n  aria-label=\"Search agencies\"\n  value={filters.query}\n  onChange={event => setFilters({ ...filters, query: event.target.value })}\n  isLoading={isFetching}\n/>"
         ]
       },
-      "description": "DebouncedInputSearch is an `InputSearch` for filters that are expensive to\nrun. Keystrokes show up at once, but `onChange` fires only once the user\npauses for 300ms, with the last change event. It is always controlled:\n`value` and `onChange` are required, and the field follows a `value`\nchanged from outside while the user is not typing.",
+      "description": "DebouncedInputSearch is an `InputSearch` for filters that are expensive to\nrun. Keystrokes show up at once, but `onChange` fires only once the user\npauses for 300ms, with the last change event. It is always controlled:\n`value` and `onChange` are required, and the field follows a `value`\nchanged from outside.",
       "summary": "Search input that reports the query once the user pauses typing",
       "reactComponentMeta": {
         "displayName": "DebouncedInputSearch",
@@ -6867,7 +6867,7 @@
             "type": {
               "name": "ChangeEventHandler<HTMLInputElement>"
             },
-            "description": "Fires once the user has stopped typing for `DEBOUNCE_TIME` milliseconds,\nwith the change event of the last keystroke; clearing the field goes\nthrough the same delay. Read the text from `event.target.value`, which is\nwhat the field shows at that moment. `event.currentTarget` is no longer\nset by then, since the event is delivered after the browser's dispatch.",
+            "description": "Fires once the user has stopped typing for `DEBOUNCE_TIME` milliseconds,\nwith the change event of the last keystroke; clearing the field goes\nthrough the same delay. A pending call fires at once when the user\npresses Enter, and when the field unmounts or the page is hidden, so\nthe last text typed is never lost. Read the text from `event.target.value`, which is\nwhat the field shows at that moment. `event.currentTarget` is no longer\nset by then, since the event is delivered after the browser's dispatch.",
             "defaultValue": null,
             "parent": {
               "name": "DebouncedInputSearchProps",
@@ -6905,11 +6905,18 @@
           "summary": "Typing in progress wins over a value changed from outside"
         },
         {
-          "id": "components-debouncedinputsearch--loading",
-          "name": "Loading",
-          "snippet": "const Loading = () => <DebouncedInputSearch\n    aria-label=\"Search agencies\"\n    value=\"Acme\"\n    onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n    isLoading />;",
-          "description": "While the results for the current query load, `isLoading` shows a spinner\nin place of the clear button, as on InputSearch.",
-          "summary": "Spinner in place of the clear button while results load"
+          "id": "components-debouncedinputsearch--submit-on-enter",
+          "name": "Submit On Enter",
+          "snippet": "const SubmitOnEnter = () => {\n    const [query, setQuery] = useState(args.value);\n\n    return (\n        <DebouncedInputSearch\n            aria-label=\"Search agencies\"\n            value={query}\n            onChange={event => {\n                setQuery(event.target.value);\n                args.onChange(event);\n            }} />\n    );\n};",
+          "description": "Pressing Enter reports the text at once instead of waiting for the pause.",
+          "summary": "Enter reports the pending query without waiting"
+        },
+        {
+          "id": "components-debouncedinputsearch--report-on-unmount",
+          "name": "Report On Unmount",
+          "snippet": "const ReportOnUnmount = function Render(args) {\n    const [query, setQuery] = useState('');\n    const [open, setOpen] = useState(true);\n\n    return (\n        <div style={{ display: 'grid', gap: '1rem' }}>\n            {open && (\n                <DebouncedInputSearch\n                    {...args}\n                    value={query}\n                    onChange={event => {\n                        setQuery(event.target.value);\n                        args.onChange(event);\n                    }}\n                />\n            )}\n            <Button variant=\"secondary\" size=\"sm\" onClick={() => setOpen(false)}>\n                Close filters\n            </Button>\n            <output>Filtering by: {query}</output>\n        </div>\n    );\n};",
+          "description": "When the field unmounts with a call pending, here because the panel holding\nit closes, `onChange` fires at once with what was typed instead of being lost.",
+          "summary": "Pending query reported when the field unmounts"
         }
       ],
       "import": "import { Button, DebouncedInputSearch } from \"@agentero/design-system\";"
@@ -7308,8 +7315,8 @@
         {
           "id": "components-label--optional",
           "name": "Optional",
-          "snippet": "const Optional = () => <Label optional>Phone number</Label>;",
-          "description": "Appends a muted \" (optional)\" suffix for fields that can be left blank.",
+          "snippet": "const Optional = () => <>\n    <Label optional htmlFor=\"phone\">Phone number</Label>\n    <input id=\"phone\" type=\"tel\" className={inputRecipe()} />\n</>;",
+          "description": "Appends a muted \" (optional)\" suffix for fields that can be left blank. The\nsuffix is real text, so it is part of the control's accessible name.",
           "summary": "Optional field with a muted suffix"
         },
         {
@@ -10042,6 +10049,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 3329
+    "durationMs": 5469
   }
 }
