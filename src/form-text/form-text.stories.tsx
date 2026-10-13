@@ -178,10 +178,9 @@ export const Optional: Story = {
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 
-		const input = canvas.getByRole('textbox', { name: 'Phone number' });
-
-		await expect(input).not.toBeRequired();
-		await expect(canvas.getByText('Phone number')).toHaveClass(/after:content-/);
+		await expect(
+			canvas.getByRole('textbox', { name: 'Phone number (optional)' })
+		).not.toBeRequired();
 	}
 };
 
