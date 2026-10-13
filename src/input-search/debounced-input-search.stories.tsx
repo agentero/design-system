@@ -54,9 +54,10 @@ const calls = (onChange: unknown) =>
 	(onChange as ReturnType<typeof fn>).mock.results.map(r => r.value);
 
 /**
- * A page filtering by a query it owns. Typing shows up in the field at once;
- * `onChange` arrives once the user pauses, with the whole text in
- * `event.target.value`. Clearing the field goes through the same delay.
+ * A page filtering by a query it owns, shown below the field. Typing shows up
+ * in the field at once; `onChange` arrives once the user pauses, with the
+ * whole text in `event.target.value`, and only then does the query below
+ * change. Clearing the field goes through the same delay.
  *
  * @summary Controlled query reported once the user stops typing
  */
@@ -65,14 +66,17 @@ export const Default: Story = {
 		const [query, setQuery] = useState(args.value);
 
 		return (
-			<DebouncedInputSearch
-				{...args}
-				value={query}
-				onChange={event => {
-					setQuery(event.target.value);
-					args.onChange(event);
-				}}
-			/>
+			<div style={{ display: 'grid', gap: '1rem' }}>
+				<DebouncedInputSearch
+					{...args}
+					value={query}
+					onChange={event => {
+						setQuery(event.target.value);
+						args.onChange(event);
+					}}
+				/>
+				<output>Filtering by: {query}</output>
+			</div>
 		);
 	},
 	play: async ({ args, canvasElement }) => {
@@ -86,12 +90,14 @@ export const Default: Story = {
 
 		await waitFor(() => expect(args.onChange).toHaveBeenCalledTimes(1));
 		await expect(calls(args.onChange)).toEqual(['Acme']);
+		await expect(canvas.getByRole('status')).toHaveTextContent('Filtering by: Acme');
 
 		await userEvent.click(canvas.getByRole('button', { name: 'Clear search' }));
 		await expect(input).toHaveValue('');
 
 		await waitFor(() => expect(args.onChange).toHaveBeenCalledTimes(2));
 		await expect(calls(args.onChange)).toEqual(['Acme', '']);
+		await expect(canvas.getByRole('status')).toHaveTextContent(/^Filtering by:$/);
 	}
 };
 
@@ -119,6 +125,7 @@ export const ExternalValue: Story = {
 				<Button variant="secondary" size="sm" onClick={() => setQuery('Travelers')}>
 					Apply saved search
 				</Button>
+				<output>Filtering by: {query}</output>
 			</div>
 		);
 	},
@@ -129,6 +136,7 @@ export const ExternalValue: Story = {
 		await expect(input).toHaveValue('Acme');
 		await userEvent.click(canvas.getByRole('button', { name: 'Apply saved search' }));
 		await expect(input).toHaveValue('Travelers');
+		await expect(canvas.getByRole('status')).toHaveTextContent('Filtering by: Travelers');
 		await expect(args.onChange).not.toHaveBeenCalled();
 	}
 };
@@ -141,6 +149,9 @@ export const ExternalValue: Story = {
  * @summary Typing in progress wins over a value changed from outside
  */
 export const TypingWins: Story = {
+	// Runs as a test only: by hand, clicking the button always takes longer than
+	// the delay, so nothing is pending and the field follows the new value.
+	tags: ['!dev', '!autodocs', '!manifest'],
 	render: function Render(args) {
 		const [query, setQuery] = useState('');
 
@@ -186,14 +197,17 @@ export const SubmitOnEnter: Story = {
 		const [query, setQuery] = useState(args.value);
 
 		return (
-			<DebouncedInputSearch
-				{...args}
-				value={query}
-				onChange={event => {
-					setQuery(event.target.value);
-					args.onChange(event);
-				}}
-			/>
+			<div style={{ display: 'grid', gap: '1rem' }}>
+				<DebouncedInputSearch
+					{...args}
+					value={query}
+					onChange={event => {
+						setQuery(event.target.value);
+						args.onChange(event);
+					}}
+				/>
+				<output>Filtering by: {query}</output>
+			</div>
 		);
 	},
 	play: async ({ args, canvasElement }) => {
@@ -202,6 +216,7 @@ export const SubmitOnEnter: Story = {
 
 		await userEvent.type(input, 'Acme{Enter}');
 		await expect(calls(args.onChange)).toEqual(['Acme']);
+		await expect(canvas.getByRole('status')).toHaveTextContent('Filtering by: Acme');
 	}
 };
 
