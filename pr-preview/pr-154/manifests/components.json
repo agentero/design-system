@@ -6886,28 +6886,21 @@
         {
           "id": "components-debouncedinputsearch--default",
           "name": "Default",
-          "snippet": "const Default = () => {\n    const [query, setQuery] = useState(args.value);\n\n    return (\n        <DebouncedInputSearch\n            aria-label=\"Search agencies\"\n            value={query}\n            onChange={event => {\n                setQuery(event.target.value);\n                args.onChange(event);\n            }} />\n    );\n};",
-          "description": "A page filtering by a query it owns. Typing shows up in the field at once;\n`onChange` arrives once the user pauses, with the whole text in\n`event.target.value`. Clearing the field goes through the same delay.",
+          "snippet": "const Default = () => {\n    const [query, setQuery] = useState(args.value);\n\n    return (\n        <div style={{ display: 'grid', gap: '1rem' }}>\n            <DebouncedInputSearch\n                aria-label=\"Search agencies\"\n                value={query}\n                onChange={event => {\n                    setQuery(event.target.value);\n                    args.onChange(event);\n                }} />\n            <output>Filtering by: {query}</output>\n        </div>\n    );\n};",
+          "description": "A page filtering by a query it owns, shown below the field. Typing shows up\nin the field at once; `onChange` arrives once the user pauses, with the\nwhole text in `event.target.value`, and only then does the query below\nchange. Clearing the field goes through the same delay.",
           "summary": "Controlled query reported once the user stops typing"
         },
         {
           "id": "components-debouncedinputsearch--external-value",
           "name": "External Value",
-          "snippet": "const ExternalValue = () => {\n    const [query, setQuery] = useState('Acme');\n\n    return (\n        <div style={{ display: 'grid', gap: '1rem' }}>\n            <DebouncedInputSearch\n                aria-label=\"Search agencies\"\n                value={query}\n                onChange={event => {\n                    setQuery(event.target.value);\n                    args.onChange(event);\n                }} />\n            <Button variant=\"secondary\" size=\"sm\" onClick={() => setQuery('Travelers')}>Apply saved search\n                                </Button>\n        </div>\n    );\n};",
+          "snippet": "const ExternalValue = () => {\n    const [query, setQuery] = useState('Acme');\n\n    return (\n        <div style={{ display: 'grid', gap: '1rem' }}>\n            <DebouncedInputSearch\n                aria-label=\"Search agencies\"\n                value={query}\n                onChange={event => {\n                    setQuery(event.target.value);\n                    args.onChange(event);\n                }} />\n            <Button variant=\"secondary\" size=\"sm\" onClick={() => setQuery('Travelers')}>Apply saved search\n                                </Button>\n            <output>Filtering by: {query}</output>\n        </div>\n    );\n};",
           "description": "The field follows `value` when the page changes it from outside, here a\nsaved search applied with a button: nothing is being typed, so the new\nquery replaces the text.",
           "summary": "Field following a value changed from outside while idle"
         },
         {
-          "id": "components-debouncedinputsearch--typing-wins",
-          "name": "Typing Wins",
-          "snippet": "const TypingWins = () => {\n    const [query, setQuery] = useState('');\n\n    return (\n        <div style={{ display: 'grid', gap: '1rem' }}>\n            <DebouncedInputSearch\n                aria-label=\"Search agencies\"\n                value={query}\n                onChange={event => {\n                    setQuery(event.target.value);\n                    args.onChange(event);\n                }} />\n            <Button variant=\"secondary\" size=\"sm\" onClick={() => setQuery('Travelers')}>Apply saved search\n                                </Button>\n        </div>\n    );\n};",
-          "description": "A `value` that changes from outside while the user is still typing does not\noverwrite the text. The page gets what was typed once the user pauses, and\nthe field keeps showing it.",
-          "summary": "Typing in progress wins over a value changed from outside"
-        },
-        {
           "id": "components-debouncedinputsearch--submit-on-enter",
           "name": "Submit On Enter",
-          "snippet": "const SubmitOnEnter = () => {\n    const [query, setQuery] = useState(args.value);\n\n    return (\n        <DebouncedInputSearch\n            aria-label=\"Search agencies\"\n            value={query}\n            onChange={event => {\n                setQuery(event.target.value);\n                args.onChange(event);\n            }} />\n    );\n};",
+          "snippet": "const SubmitOnEnter = () => {\n    const [query, setQuery] = useState(args.value);\n\n    return (\n        <div style={{ display: 'grid', gap: '1rem' }}>\n            <DebouncedInputSearch\n                aria-label=\"Search agencies\"\n                value={query}\n                onChange={event => {\n                    setQuery(event.target.value);\n                    args.onChange(event);\n                }} />\n            <output>Filtering by: {query}</output>\n        </div>\n    );\n};",
           "description": "Pressing Enter reports the text at once instead of waiting for the pause.",
           "summary": "Enter reports the pending query without waiting"
         },
@@ -10049,6 +10042,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5469
+    "durationMs": 3302
   }
 }

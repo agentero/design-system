@@ -588,13 +588,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">37 components ok</span><span class="filter-pill ok" aria-disabled="true">299 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">37 components ok</span><span class="filter-pill ok" aria-disabled="true">298 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>5.5s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>3.3s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -4427,7 +4427,7 @@ in flight.</div>
       <div class="badges">
         <label for="c-10-components-debouncedinputsearch-props" class="badge ok as-toggle">5 prop types</label>
         
-        <label for="c-10-components-debouncedinputsearch-stories" class="badge ok as-toggle">5 stories</label>
+        <label for="c-10-components-debouncedinputsearch-stories" class="badge ok as-toggle">4 stories</label>
         
         
       </div>
@@ -4529,20 +4529,24 @@ value: string</code></pre>
                 <span class="badge ok">story ok</span>
               </div>
               <div>Controlled query reported once the user stops typing</div>
-              <div class="hint">A page filtering by a query it owns. Typing shows up in the field at once;
-`onChange` arrives once the user pauses, with the whole text in
-`event.target.value`. Clearing the field goes through the same delay.</div>
+              <div class="hint">A page filtering by a query it owns, shown below the field. Typing shows up
+in the field at once; `onChange` arrives once the user pauses, with the
+whole text in `event.target.value`, and only then does the query below
+change. Clearing the field goes through the same delay.</div>
               <pre><code>const Default = () =&gt; {
     const [query, setQuery] = useState(args.value);
 
     return (
-        &lt;DebouncedInputSearch
-            aria-label=&quot;Search agencies&quot;
-            value={query}
-            onChange={event =&gt; {
-                setQuery(event.target.value);
-                args.onChange(event);
-            }} /&gt;
+        &lt;div style={{ display: &#39;grid&#39;, gap: &#39;1rem&#39; }}&gt;
+            &lt;DebouncedInputSearch
+                aria-label=&quot;Search agencies&quot;
+                value={query}
+                onChange={event =&gt; {
+                    setQuery(event.target.value);
+                    args.onChange(event);
+                }} /&gt;
+            &lt;output&gt;Filtering by: {query}&lt;/output&gt;
+        &lt;/div&gt;
     );
 };</code></pre>
             </div>
@@ -4569,33 +4573,7 @@ query replaces the text.</div>
                 }} /&gt;
             &lt;Button variant=&quot;secondary&quot; size=&quot;sm&quot; onClick={() =&gt; setQuery(&#39;Travelers&#39;)}&gt;Apply saved search
                                 &lt;/Button&gt;
-        &lt;/div&gt;
-    );
-};</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Typing Wins</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Typing in progress wins over a value changed from outside</div>
-              <div class="hint">A `value` that changes from outside while the user is still typing does not
-overwrite the text. The page gets what was typed once the user pauses, and
-the field keeps showing it.</div>
-              <pre><code>const TypingWins = () =&gt; {
-    const [query, setQuery] = useState(&#39;&#39;);
-
-    return (
-        &lt;div style={{ display: &#39;grid&#39;, gap: &#39;1rem&#39; }}&gt;
-            &lt;DebouncedInputSearch
-                aria-label=&quot;Search agencies&quot;
-                value={query}
-                onChange={event =&gt; {
-                    setQuery(event.target.value);
-                    args.onChange(event);
-                }} /&gt;
-            &lt;Button variant=&quot;secondary&quot; size=&quot;sm&quot; onClick={() =&gt; setQuery(&#39;Travelers&#39;)}&gt;Apply saved search
-                                &lt;/Button&gt;
+            &lt;output&gt;Filtering by: {query}&lt;/output&gt;
         &lt;/div&gt;
     );
 };</code></pre>
@@ -4611,13 +4589,16 @@ the field keeps showing it.</div>
     const [query, setQuery] = useState(args.value);
 
     return (
-        &lt;DebouncedInputSearch
-            aria-label=&quot;Search agencies&quot;
-            value={query}
-            onChange={event =&gt; {
-                setQuery(event.target.value);
-                args.onChange(event);
-            }} /&gt;
+        &lt;div style={{ display: &#39;grid&#39;, gap: &#39;1rem&#39; }}&gt;
+            &lt;DebouncedInputSearch
+                aria-label=&quot;Search agencies&quot;
+                value={query}
+                onChange={event =&gt; {
+                    setQuery(event.target.value);
+                    args.onChange(event);
+                }} /&gt;
+            &lt;output&gt;Filtering by: {query}&lt;/output&gt;
+        &lt;/div&gt;
     );
 };</code></pre>
             </div>
