@@ -1,16 +1,21 @@
 'use client';
 
-import { ComponentProps, createContext, use } from 'react';
+import { ComponentProps, createContext, use, useLayoutEffect, useRef } from 'react';
 
 import * as TabsPrimitive from '@radix-ui/react-tabs';
 import { type VariantProps, tv } from 'tailwind-variants';
 
-import { cn } from '../../lib';
+import { cn, mergeRefs } from '../../lib';
 
 export const tabsRecipe = tv({
 	slots: {
 		root: 'flex flex-col',
-		list: 'z-1 flex shrink-0 overflow-x-auto overflow-y-hidden',
+		list: 'group/tabs-list relative z-1 flex shrink-0 overflow-x-auto overflow-y-hidden',
+		indicator: [
+			'pointer-events-none absolute left-0 opacity-0 group-data-[indicator=ready]/tabs-list:opacity-100',
+			'data-animated:transition-transform data-animated:duration-200 data-animated:ease-(--ease-out-quint)',
+			'motion-reduce:transition-none'
+		],
 		trigger: [
 			'relative cursor-pointer text-sm font-semibold text-text-default-base-secondary no-underline transition-colors duration-150',
 			'hover:text-text-default-base-primary',
@@ -27,13 +32,17 @@ export const tabsRecipe = tv({
 				trigger: [
 					'grid h-10 content-center text-text-default-base-tertiary',
 					"before:absolute before:inset-x-0 before:bottom-0 before:h-0.5 before:bg-text-button-secondary-enable before:opacity-0 before:transition-opacity before:duration-150 before:content-['']",
-					'data-[state=active]:before:opacity-100'
-				]
+					'data-[state=active]:before:opacity-100 group-data-[indicator=ready]/tabs-list:before:hidden'
+				],
+				indicator: 'bottom-0 h-0.5 w-px origin-left bg-text-button-secondary-enable'
 			},
 			enclosed: {
 				list: 'inline-grid max-w-full auto-cols-fr grid-flow-col rounded-md bg-bg-default-base-tertiary p-1',
-				trigger:
-					'flex items-center justify-center rounded-sm px-3 py-1 text-center data-[state=active]:bg-bg-default-base-primary'
+				trigger: [
+					'flex items-center justify-center rounded-sm px-3 py-1 text-center data-[state=active]:bg-bg-default-base-primary',
+					'group-data-[indicator=ready]/tabs-list:data-[state=active]:bg-transparent'
+				],
+				indicator: 'inset-y-1 rounded-sm bg-bg-default-base-primary'
 			},
 			button: {
 				list: 'gap-2',
@@ -41,7 +50,9 @@ export const tabsRecipe = tv({
 					'flex h-8 items-center gap-2.5 rounded-md px-3 text-sm font-normal text-text-default-base-secondary',
 					'[&>svg]:-mx-1 [&>svg]:size-4 [&>svg]:fill-icon-default-base-secondary',
 					'hover:bg-bg-default-base-primary-hover data-[state=active]:bg-bg-default-base-primary-hover'
-				]
+				],
+				// Button tabs mark the active one with its own fill, like a pressed button; nothing slides.
+				indicator: 'hidden'
 			}
 		},
 		position: {
@@ -66,8 +77,9 @@ export const tabsRecipe = tv({
 
 type TabsVariants = VariantProps<typeof tabsRecipe>;
 type TabsSlots = ReturnType<typeof tabsRecipe>;
+type TabsContextValue = { styles: TabsSlots; variant: NonNullable<TabsVariants['variant']> };
 
-const TabsContext = createContext<TabsSlots | null>(null);
+const TabsContext = createContext<TabsContextValue | null>(null);
 
 const useTabs = () => {
 	const context = use(TabsContext);
@@ -106,7 +118,7 @@ export const Root = ({ className, variant, position, ...props }: TabsRootProps) 
 	const styles = tabsRecipe({ variant, position });
 
 	return (
-		<TabsContext value={styles}>
+		<TabsContext value={{ styles, variant: variant ?? 'line' }}>
 			<TabsPrimitive.Root
 				data-slot="tabs-root"
 				className={cn(styles.root(), className)}
@@ -119,11 +131,99 @@ Root.displayName = 'Tabs.Root';
 
 export type TabsListProps = ComponentProps<typeof TabsPrimitive.List>;
 
-export const List = ({ className, ...props }: TabsListProps) => {
-	const styles = useTabs();
+const TAB_SELECTOR = ':scope > [role="tab"]';
+
+/**
+ * Places the list's indicator on the active trigger and keeps it there: on a tab change (Radix flips `data-state`),
+ * when triggers are added or removed, and when a trigger or the list resizes (a count loading, a font swapping in).
+ * The first placement lands without motion, so the mark never slides in on load.
+ */
+const useSlidingIndicator = (variant: TabsContextValue['variant']) => {
+	const listRef = useRef<HTMLDivElement>(null);
+	const indicatorRef = useRef<HTMLSpanElement>(null);
+
+	useLayoutEffect(() => {
+		const list = listRef.current;
+		const indicator = indicatorRef.current;
+		if (!list || !indicator || variant === 'button') return;
+		const isLine = variant === 'line';
+		indicator.style.width = '';
+
+		const place = () => {
+			const active = list.querySelector<HTMLElement>(`${TAB_SELECTOR}[data-state="active"]`);
+			if (!active) {
+				delete list.dataset.indicator;
+				return;
+			}
+			// A 1px line scales to the trigger's width; a pill takes the width outright, since scaling would stretch its
+			// rounded corners. Either way only transform transitions.
+			indicator.style.transform = isLine
+				? `translateX(${active.offsetLeft}px) scaleX(${active.offsetWidth})`
+				: `translateX(${active.offsetLeft}px)`;
+			if (!isLine) indicator.style.width = `${active.offsetWidth}px`;
+			list.dataset.indicator = 'ready';
+		};
+
+		const resizes = new ResizeObserver(place);
+		const observeTriggers = () => {
+			resizes.disconnect();
+			resizes.observe(list);
+			list.querySelectorAll(TAB_SELECTOR).forEach(trigger => resizes.observe(trigger));
+		};
+		const changes = new MutationObserver(records => {
+			if (records.some(record => record.type === 'childList')) observeTriggers();
+			place();
+		});
+
+		place();
+		observeTriggers();
+		changes.observe(list, { childList: true, subtree: true, attributeFilter: ['data-state'] });
+		const frame = requestAnimationFrame(() => {
+			indicator.dataset.animated = '';
+		});
+
+		return () => {
+			cancelAnimationFrame(frame);
+			resizes.disconnect();
+			changes.disconnect();
+			delete indicator.dataset.animated;
+			delete list.dataset.indicator;
+		};
+	}, [variant]);
+
+	return { listRef, indicatorRef };
+};
+
+/**
+ * The row of `Trigger`s. For `line` and `enclosed` it draws one indicator — the underline or the pill — and slides it
+ * to the active trigger on every change, so switching tabs reads as one mark moving. The slide takes 200ms on a strong
+ * ease-out, animates `transform` only and stops under `prefers-reduced-motion`. Until the list has measured its
+ * triggers (server render, before hydration) each trigger draws its own static mark. `button` tabs keep their own fill
+ * and nothing slides. Every native attribute is forwarded to the underlying element, and `ref` is merged with the
+ * list's own.
+ *
+ * @summary Row of tab triggers with a sliding active indicator
+ * @dataAttribute {string} data-slot - "tabs-list" on the list, "tabs-indicator" on the indicator
+ * @dataAttribute {string} data-indicator - "ready" once the indicator is placed and the triggers' own marks are hidden
+ */
+export const List = ({ className, children, ref, ...props }: TabsListProps) => {
+	const { styles, variant } = useTabs();
+	const { listRef, indicatorRef } = useSlidingIndicator(variant);
 
 	return (
-		<TabsPrimitive.List data-slot="tabs-list" className={cn(styles.list(), className)} {...props} />
+		<TabsPrimitive.List
+			ref={mergeRefs(listRef, ref)}
+			data-slot="tabs-list"
+			className={cn(styles.list(), className)}
+			{...props}>
+			<span
+				ref={indicatorRef}
+				data-slot="tabs-indicator"
+				aria-hidden
+				className={styles.indicator()}
+			/>
+			{children}
+		</TabsPrimitive.List>
 	);
 };
 List.displayName = 'Tabs.List';
@@ -131,7 +231,7 @@ List.displayName = 'Tabs.List';
 export type TabsTriggerProps = ComponentProps<typeof TabsPrimitive.Trigger>;
 
 export const Trigger = ({ className, ...props }: TabsTriggerProps) => {
-	const styles = useTabs();
+	const { styles } = useTabs();
 
 	return (
 		<TabsPrimitive.Trigger
@@ -146,7 +246,7 @@ Trigger.displayName = 'Tabs.Trigger';
 export type TabsContentProps = ComponentProps<typeof TabsPrimitive.Content>;
 
 export const Content = ({ className, ...props }: TabsContentProps) => {
-	const styles = useTabs();
+	const { styles } = useTabs();
 
 	return (
 		<TabsPrimitive.Content
@@ -183,7 +283,7 @@ export type TabsLabelProps = ComponentProps<'span'> & {
  */
 export const Label = ({ className, variant, ...props }: TabsLabelProps) => {
 	const context = use(TabsContext);
-	const styles = context ?? tabsRecipe({ variant });
+	const styles = context?.styles ?? tabsRecipe({ variant });
 
 	return (
 		<span

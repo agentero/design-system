@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { Tabs } from '.';
 
@@ -170,6 +170,64 @@ export const SwitchTabs: Story = {
 		await expect(documents).toHaveAttribute('data-state', 'active');
 		await expect(overview).toHaveAttribute('data-state', 'inactive');
 		await expect(await canvas.findByText(/declarations, endorsements/i)).toBeVisible();
+	}
+};
+
+const indicatorOf = (canvasElement: HTMLElement) => {
+	const indicator = canvasElement.querySelector<HTMLElement>('[data-slot="tabs-indicator"]');
+	if (!indicator) throw new Error('No tabs indicator rendered');
+	return indicator;
+};
+
+const translateX = (element: HTMLElement) => new DOMMatrix(element.style.transform).m41;
+
+/**
+ * `line` and `enclosed` draw one indicator for the whole list and slide it to the active trigger, so a tab change
+ * reads as the mark moving (200ms, strong ease-out, `transform` only). It lands without motion on first render and
+ * stays put under `prefers-reduced-motion`. `button` tabs keep their own fill.
+ */
+export const SlidingIndicator: Story = {
+	args: {
+		defaultValue: 'overview'
+	},
+	render: args => (
+		<div className="flex flex-col gap-8">
+			{(['line', 'enclosed'] as const).map(variant => (
+				<Tabs.Root key={variant} {...args} variant={variant}>
+					<Tabs.List aria-label={`${variant} tabs`}>
+						<TabItems />
+					</Tabs.List>
+					<TabPanels />
+				</Tabs.Root>
+			))}
+		</div>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const line = canvas.getByRole('tablist', { name: /line tabs/i });
+		const enclosed = canvas.getByRole('tablist', { name: /enclosed tabs/i });
+
+		for (const list of [line, enclosed]) {
+			const indicator = indicatorOf(list);
+			const overview = within(list).getByRole('tab', { name: /overview/i });
+			const activity = within(list).getByRole('tab', { name: /activity/i });
+
+			await waitFor(() => expect(list).toHaveAttribute('data-indicator', 'ready'));
+			await expect(translateX(indicator)).toBe(overview.offsetLeft);
+			// Transitions switch on a frame after the first placement, so the mark never slides in on load.
+			await waitFor(() => expect(indicator).toHaveAttribute('data-animated'));
+
+			await userEvent.click(activity);
+			await waitFor(() => expect(translateX(indicator)).toBe(activity.offsetLeft));
+		}
+
+		// The pill takes the trigger's width; the line scales a 1px bar to it.
+		const pill = indicatorOf(enclosed);
+		const activePill = within(enclosed).getByRole('tab', { name: /activity/i });
+		await expect(pill.style.width).toBe(`${activePill.offsetWidth}px`);
+		const bar = indicatorOf(line);
+		const activeLine = within(line).getByRole('tab', { name: /activity/i });
+		await expect(new DOMMatrix(bar.style.transform).a).toBe(activeLine.offsetWidth);
 	}
 };
 
