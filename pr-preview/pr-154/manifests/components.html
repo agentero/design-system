@@ -588,13 +588,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">37 components ok</span><span class="filter-pill ok" aria-disabled="true">298 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">37 components ok</span><span class="filter-pill ok" aria-disabled="true">297 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>3.3s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>3.8s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -4427,7 +4427,7 @@ in flight.</div>
       <div class="badges">
         <label for="c-10-components-debouncedinputsearch-props" class="badge ok as-toggle">5 prop types</label>
         
-        <label for="c-10-components-debouncedinputsearch-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-10-components-debouncedinputsearch-stories" class="badge ok as-toggle">3 stories</label>
         
         
       </div>
@@ -4485,8 +4485,8 @@ isLoading?: boolean
  * Fires once the user has stopped typing for `DEBOUNCE_TIME` milliseconds,
  * with the change event of the last keystroke; clearing the field goes
  * through the same delay. A pending call fires at once when the user
- * presses Enter, and when the field unmounts or the page is hidden, so
- * the last text typed is never lost. Read the text from `event.target.value`, which is
+ * presses Enter, and is dropped when the field unmounts, so a page that is
+ * navigating away is not sent back. Read the text from `event.target.value`, which is
  * what the field shows at that moment. `event.currentTarget` is no longer
  * set by then, since the event is delivered after the browser&#39;s dispatch.
  */
@@ -4597,38 +4597,6 @@ query replaces the text.</div>
                     setQuery(event.target.value);
                     args.onChange(event);
                 }} /&gt;
-            &lt;output&gt;Filtering by: {query}&lt;/output&gt;
-        &lt;/div&gt;
-    );
-};</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Report On Unmount</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Pending query reported when the field unmounts</div>
-              <div class="hint">When the field unmounts with a call pending, here because the panel holding
-it closes, `onChange` fires at once with what was typed instead of being lost.</div>
-              <pre><code>const ReportOnUnmount = function Render(args) {
-    const [query, setQuery] = useState(&#39;&#39;);
-    const [open, setOpen] = useState(true);
-
-    return (
-        &lt;div style={{ display: &#39;grid&#39;, gap: &#39;1rem&#39; }}&gt;
-            {open &amp;&amp; (
-                &lt;DebouncedInputSearch
-                    {...args}
-                    value={query}
-                    onChange={event =&gt; {
-                        setQuery(event.target.value);
-                        args.onChange(event);
-                    }}
-                /&gt;
-            )}
-            &lt;Button variant=&quot;secondary&quot; size=&quot;sm&quot; onClick={() =&gt; setOpen(false)}&gt;
-                Close filters
-            &lt;/Button&gt;
             &lt;output&gt;Filtering by: {query}&lt;/output&gt;
         &lt;/div&gt;
     );

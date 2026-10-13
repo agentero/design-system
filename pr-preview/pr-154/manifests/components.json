@@ -6867,7 +6867,7 @@
             "type": {
               "name": "ChangeEventHandler<HTMLInputElement>"
             },
-            "description": "Fires once the user has stopped typing for `DEBOUNCE_TIME` milliseconds,\nwith the change event of the last keystroke; clearing the field goes\nthrough the same delay. A pending call fires at once when the user\npresses Enter, and when the field unmounts or the page is hidden, so\nthe last text typed is never lost. Read the text from `event.target.value`, which is\nwhat the field shows at that moment. `event.currentTarget` is no longer\nset by then, since the event is delivered after the browser's dispatch.",
+            "description": "Fires once the user has stopped typing for `DEBOUNCE_TIME` milliseconds,\nwith the change event of the last keystroke; clearing the field goes\nthrough the same delay. A pending call fires at once when the user\npresses Enter, and is dropped when the field unmounts, so a page that is\nnavigating away is not sent back. Read the text from `event.target.value`, which is\nwhat the field shows at that moment. `event.currentTarget` is no longer\nset by then, since the event is delivered after the browser's dispatch.",
             "defaultValue": null,
             "parent": {
               "name": "DebouncedInputSearchProps",
@@ -6903,13 +6903,6 @@
           "snippet": "const SubmitOnEnter = () => {\n    const [query, setQuery] = useState(args.value);\n\n    return (\n        <div style={{ display: 'grid', gap: '1rem' }}>\n            <DebouncedInputSearch\n                aria-label=\"Search agencies\"\n                value={query}\n                onChange={event => {\n                    setQuery(event.target.value);\n                    args.onChange(event);\n                }} />\n            <output>Filtering by: {query}</output>\n        </div>\n    );\n};",
           "description": "Pressing Enter reports the text at once instead of waiting for the pause.",
           "summary": "Enter reports the pending query without waiting"
-        },
-        {
-          "id": "components-debouncedinputsearch--report-on-unmount",
-          "name": "Report On Unmount",
-          "snippet": "const ReportOnUnmount = function Render(args) {\n    const [query, setQuery] = useState('');\n    const [open, setOpen] = useState(true);\n\n    return (\n        <div style={{ display: 'grid', gap: '1rem' }}>\n            {open && (\n                <DebouncedInputSearch\n                    {...args}\n                    value={query}\n                    onChange={event => {\n                        setQuery(event.target.value);\n                        args.onChange(event);\n                    }}\n                />\n            )}\n            <Button variant=\"secondary\" size=\"sm\" onClick={() => setOpen(false)}>\n                Close filters\n            </Button>\n            <output>Filtering by: {query}</output>\n        </div>\n    );\n};",
-          "description": "When the field unmounts with a call pending, here because the panel holding\nit closes, `onChange` fires at once with what was typed instead of being lost.",
-          "summary": "Pending query reported when the field unmounts"
         }
       ],
       "import": "import { Button, DebouncedInputSearch } from \"@agentero/design-system\";"
@@ -10042,6 +10035,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 3302
+    "durationMs": 3828
   }
 }
