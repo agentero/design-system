@@ -503,6 +503,15 @@ export const Horizontal: Story = {
 			Math.round(rect(canvas.getByTestId('switch')).right)
 		);
 
+		// A description right under its label touches it, as in Figma: no gap between the two.
+		const switchField = canvas.getByTestId('switch');
+		const switchLabel = switchField.querySelector('[data-slot=label]') as HTMLElement;
+		const switchDescription = switchField.querySelector(
+			'[data-slot=field-description]'
+		) as HTMLElement;
+
+		await expect(rect(switchDescription).top).toBe(rect(switchLabel).bottom);
+
 		// Horizontal never folds: the row holds even when the field is narrow.
 		const narrow = canvas.getByTestId('narrow');
 		const narrowLabel = narrow.querySelector('label') as HTMLElement;
