@@ -81,6 +81,11 @@ export type InputNumberProps = Omit<InputProps, 'type' | 'value' | 'defaultValue
  * `type="number"` input on purpose: that one drops leading zeros and cannot
  * show separators, which identifiers and amounts both need.
  *
+ * It renders from `value`, not from the DOM, so bind it to a form through a
+ * controlled value (react-hook-form's `Controller` or `useController`), not
+ * through `register`: a value `register` writes into the `<input>`, such as a
+ * default or a `reset`, is wiped on the next render.
+ *
  * @summary Numeric input formatting as you type, built on react-number-format
  * @dataAttribute {string} data-slot - Always set to "input-number"
  *
@@ -119,7 +124,9 @@ export const InputNumber = (props: InputNumberProps) => {
 				const input = event.target as HTMLInputElement;
 				input.value = formattedValue;
 				onChange?.(
-					Object.assign(Object.create(event), { type: 'change' }) as ChangeEvent<HTMLInputElement>
+					Object.assign(Object.create(event), event, {
+						type: 'change'
+					}) as ChangeEvent<HTMLInputElement>
 				);
 			}}
 			isAllowed={({ floatValue }) =>

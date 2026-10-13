@@ -1,8 +1,8 @@
 import { ChangeEvent, createRef, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { useForm } from 'react-hook-form';
-import { expect, fn, userEvent, within } from 'storybook/test';
+import { Controller, useForm, type UseFormReturn } from 'react-hook-form';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { Field } from '../field';
 import { FieldText } from '../field-text';
@@ -351,32 +351,42 @@ export const AllSizes: Story = {
 
 type AgencyValues = { npn: string };
 
-let readForm: () => AgencyValues;
+let form: UseFormReturn<AgencyValues>;
 
 /**
- * Regression check, kept out of the manifest: react-hook-form's `register`
- * hands over `ref`, `onChange` and `onBlur`, and the form stores the
- * formatted text that `onChange` reports.
+ * Regression check, kept out of the manifest: bound through react-hook-form's
+ * `Controller`, the field shows the form's default, stores the formatted text
+ * that `onChange` reports and follows `reset`.
  *
- * @summary Register storing the formatted text through onChange
+ * @summary Controller showing defaults and storing the formatted text
  */
 export const WithReactHookForm: Story = {
 	tags: ['!manifest'],
 	render: function Render(args) {
-		const { register, getValues } = useForm<AgencyValues>({
-			defaultValues: { npn: '' }
-		});
-		readForm = getValues;
+		form = useForm<AgencyValues>({ defaultValues: { npn: '1234' } });
 
-		return <InputNumber aria-label={args['aria-label']} thousandSeparator {...register('npn')} />;
+		return (
+			<Controller
+				control={form.control}
+				name="npn"
+				render={({ field }) => (
+					<InputNumber aria-label={args['aria-label']} thousandSeparator {...field} />
+				)}
+			/>
+		);
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 		const input = canvas.getByRole('textbox');
 
-		await userEvent.type(input, '1234');
 		await expect(input).toHaveValue('1,234');
-		await expect(readForm().npn).toBe('1,234');
+
+		await userEvent.type(input, '5');
+		await expect(input).toHaveValue('12,345');
+		await expect(form.getValues().npn).toBe('12,345');
+
+		form.reset({ npn: '42' });
+		await waitFor(() => expect(input).toHaveValue('42'));
 	}
 };
 
