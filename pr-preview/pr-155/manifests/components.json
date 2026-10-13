@@ -6922,7 +6922,7 @@
         "displayName": "InputTel",
         "exportName": "InputTel",
         "filePath": "/home/runner/work/design-system/design-system/src/input-tel/input-tel.tsx",
-        "description": "InputTel is a US phone number field that masks as you type: the digits the\nuser enters are laid out as `(555) 123-4567` while typing, pasting or\ndeleting, anything that is not a digit is dropped, and the caret stays next\nto the digit just edited instead of jumping to the end. The eleventh digit\nand beyond are ignored. `onChange` receives the native change event with the\nmasked text already in `event.target.value`, so a controlled field, an\nuncontrolled one and one registered with react-hook-form all store\n`(555) 123-4567`, never the bare digits.\n\nIt is an [Input](?path=/docs/components-input--docs) of `type=\"tel\"`, with\nno frame of its own: put it inside an\n[InputGroup](?path=/docs/components-inputgroup--docs) to set a `+1` prefix\nbeside it. Every standard `<input>` attribute is accepted and forwarded, such\nas `name`, `placeholder`, `autoComplete` or `required`; only `type` is not\naccepted. Inside a `FieldText` it takes its label, messages and states from\nthe field as a plain `Input` does, and the invalid state comes from\n`aria-invalid`.\n\nDo not use it for international numbers or extensions; the mask only knows\nthe ten-digit US format. For free-form text that happens to hold a number,\nuse `Input`.",
+        "description": "InputTel is a US phone number field that masks as you type: the digits the\nuser enters are laid out as `(555) 123-4567` while typing, pasting or\ndeleting, anything that is not a digit is dropped, and the caret stays next\nto the digit just edited instead of jumping to the end. A leading `+1`\ncountry code, as pasted or filled in by the browser's autofill, is dropped\ntoo; past that, the eleventh digit and beyond are ignored. `onChange` receives the native change event with the\nmasked text already in `event.target.value`, so a controlled field, an\nuncontrolled one and one registered with react-hook-form all store\n`(555) 123-4567`, never the bare digits.\n\nIt is an [Input](?path=/docs/components-input--docs) of `type=\"tel\"`, with\nno frame of its own: put it inside an\n[InputGroup](?path=/docs/components-inputgroup--docs) to set a `+1` prefix\nbeside it. Every standard `<input>` attribute is accepted and forwarded, such\nas `name`, `placeholder`, `autoComplete` or `required`; only `type` is not\naccepted. Inside a `FieldText` it takes its label, messages and states from\nthe field as a plain `Input` does, and the invalid state comes from\n`aria-invalid`.\n\nDo not use it for international numbers or extensions; the mask only knows\nthe ten-digit US format. For free-form text that happens to hold a number,\nuse `Input`.",
         "jsDocTags": {
           "summary": [
             "US phone input that masks as you type and reports the masked value"
@@ -7005,6 +7005,13 @@
           "summary": "Pasted number reduced to its digits and masked"
         },
         {
+          "id": "components-inputtel--paste-with-country-code",
+          "name": "Paste With Country Code",
+          "snippet": "const PasteWithCountryCode = () => <InputTel\n    aria-label=\"Phone number\"\n    onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)} />;",
+          "description": "A number that carries the `+1` country code, as copied from a signature or\nfilled in by the browser's autofill, loses the code and keeps its ten\nnational digits: `+1 (555) 123-4567` ends up as `(555) 123-4567`.",
+          "summary": "Pasted number with a +1 country code"
+        },
+        {
           "id": "components-inputtel--inside-input-group",
           "name": "Inside Input Group",
           "snippet": "const InsideInputGroup = () => <InputGroup.Root>\n    <InputGroup.Text>+1</InputGroup.Text>\n    <InputTel\n        aria-label=\"Phone number\"\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        autoComplete=\"tel-national\"\n        placeholder=\"(555) 000-0000\" />\n</InputGroup.Root>;",
@@ -7035,7 +7042,7 @@
         {
           "id": "components-inputtel--invalid",
           "name": "Invalid",
-          "snippet": "const Invalid = () => <div style={{ display: 'grid', gap: '0.5rem' }}>\n    <InputTel\n        aria-label=\"Phone number\"\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        aria-invalid\n        aria-describedby=\"phone-error\"\n        defaultValue=\"(555) 123\" />\n    <span id=\"phone-error\">Enter a 10-digit phone number.</span>\n</div>;",
+          "snippet": "const Invalid = () => <div style={{ display: 'grid', gap: '0.5rem' }}>\n    <InputTel\n        aria-label=\"Phone number\"\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        aria-invalid\n        aria-describedby=\"phone-error\"\n        defaultValue=\"(555) 12\" />\n    <span id=\"phone-error\">Enter a 10-digit phone number.</span>\n</div>;",
           "description": "`aria-invalid` paints the destructive border; point `aria-describedby` at\nthe message so both are read together.",
           "summary": "Invalid phone field with its error message"
         },
@@ -7281,8 +7288,8 @@
         {
           "id": "components-label--optional",
           "name": "Optional",
-          "snippet": "const Optional = () => <Label optional>Phone number</Label>;",
-          "description": "Appends a muted \" (optional)\" suffix for fields that can be left blank.",
+          "snippet": "const Optional = () => <>\n    <Label optional htmlFor=\"phone\">Phone number</Label>\n    <input id=\"phone\" type=\"tel\" className={inputRecipe()} />\n</>;",
+          "description": "Appends a muted \" (optional)\" suffix for fields that can be left blank. The\nsuffix is real text, so it is part of the control's accessible name.",
           "summary": "Optional field with a muted suffix"
         },
         {
@@ -10015,6 +10022,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5228
+    "durationMs": 3822
   }
 }

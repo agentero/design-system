@@ -588,13 +588,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">37 components ok</span><span class="filter-pill ok" aria-disabled="true">305 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">37 components ok</span><span class="filter-pill ok" aria-disabled="true">306 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>5.2s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>3.8s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -7891,7 +7891,7 @@ several search fields does not read &quot;Clear search&quot; twice.</div>
       <div class="badges">
         <label for="c-21-components-inputtel-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-21-components-inputtel-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-21-components-inputtel-stories" class="badge ok as-toggle">12 stories</label>
         
         
       </div>
@@ -8032,6 +8032,19 @@ under the caret instead of leaving a dangling `) `.</div>
             </div>
             <div class="note ok">
               <div class="row">
+                <span class="ex-name">Paste With Country Code</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Pasted number with a +1 country code</div>
+              <div class="hint">A number that carries the `+1` country code, as copied from a signature or
+filled in by the browser&#39;s autofill, loses the code and keeps its ten
+national digits: `+1 (555) 123-4567` ends up as `(555) 123-4567`.</div>
+              <pre><code>const PasteWithCountryCode = () =&gt; &lt;InputTel
+    aria-label=&quot;Phone number&quot;
+    onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)} /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
                 <span class="ex-name">Inside Input Group</span>
                 <span class="badge ok">story ok</span>
               </div>
@@ -8118,7 +8131,7 @@ the message so both are read together.</div>
         onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)}
         aria-invalid
         aria-describedby=&quot;phone-error&quot;
-        defaultValue=&quot;(555) 123&quot; /&gt;
+        defaultValue=&quot;(555) 12&quot; /&gt;
     &lt;span id=&quot;phone-error&quot;&gt;Enter a 10-digit phone number.&lt;/span&gt;
 &lt;/div&gt;;</code></pre>
             </div>
@@ -8247,8 +8260,12 @@ required?: boolean = false</code></pre>
                 <span class="badge ok">story ok</span>
               </div>
               <div>Optional field with a muted suffix</div>
-              <div class="hint">Appends a muted &quot; (optional)&quot; suffix for fields that can be left blank.</div>
-              <pre><code>const Optional = () =&gt; &lt;Label optional&gt;Phone number&lt;/Label&gt;;</code></pre>
+              <div class="hint">Appends a muted &quot; (optional)&quot; suffix for fields that can be left blank. The
+suffix is real text, so it is part of the control&#39;s accessible name.</div>
+              <pre><code>const Optional = () =&gt; &lt;&gt;
+    &lt;Label optional htmlFor=&quot;phone&quot;&gt;Phone number&lt;/Label&gt;
+    &lt;input id=&quot;phone&quot; type=&quot;tel&quot; className={inputRecipe()} /&gt;
+&lt;/&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
