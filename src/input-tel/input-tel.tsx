@@ -4,6 +4,7 @@ import { ChangeEvent, FocusEvent, useMemo, useRef } from 'react';
 
 import { mergeRefs } from '../../lib';
 import { Input, InputContext, InputProps, useInputContext } from '../input';
+import { InputGroup } from '../input-group';
 import {
 	applyMask,
 	getCursorPosition,
@@ -21,40 +22,40 @@ export type InputTelProps = Omit<InputProps, 'type'>;
  * deleting, anything that is not a digit is dropped, and the caret stays next
  * to the digit just edited instead of jumping to the end. A leading `+1`
  * country code, as pasted or filled in by the browser's autofill, is dropped
- * too; past that, the eleventh digit and beyond are ignored. `onChange` receives the native change event with the
- * masked text already in `event.target.value`, so a controlled field, an
- * uncontrolled one and one registered with react-hook-form all store
- * `(555) 123-4567`, never the bare digits.
+ * too; past that, the eleventh digit and beyond are ignored. `onChange`
+ * receives the native change event with the masked text already in
+ * `event.target.value`, so a controlled field, an uncontrolled one and one
+ * registered with react-hook-form all store `(555) 123-4567`, never the bare
+ * digits.
  *
- * It is an [Input](?path=/docs/components-input--docs) of `type="tel"`, with
- * no frame of its own: put it inside an
- * [InputGroup](?path=/docs/components-inputgroup--docs) to set a `+1` prefix
- * beside it. Every standard `<input>` attribute is accepted and forwarded, such
- * as `name`, `placeholder`, `autoComplete` or `required`; only `type` is not
- * accepted. Inside a `FieldText` it takes its label, messages and states from
- * the field as a plain `Input` does, and the invalid state comes from
- * `aria-invalid`.
+ * It is an [Input](?path=/docs/components-input--docs) of `type="tel"` inside
+ * an [InputGroup](?path=/docs/components-inputgroup--docs) frame that always
+ * shows a `+1` prefix in front of the number. The prefix is part of the frame,
+ * not of the value. `className` styles the frame. Every other prop goes to the
+ * `<input>`: the `ref`, `id`, `name`, `value`, `onChange`, `aria-*` and every
+ * other standard attribute, such as `placeholder`, `autoComplete` or
+ * `required`. Only `type` is not accepted. Inside a `FieldText` the input
+ * takes its label, messages and states from the field as a plain `Input` does.
+ * The invalid state comes from `aria-invalid`, and the frame paints the
+ * destructive border.
  *
  * Do not use it for international numbers or extensions; the mask only knows
  * the ten-digit US format. For free-form text that happens to hold a number,
  * use `Input`.
  *
- * @summary US phone input that masks as you type and reports the masked value
- * @dataAttribute {string} data-slot - Always set to "input-tel"
+ * @summary US phone input with a +1 prefix that masks as you type
+ * @dataAttribute {string} data-slot - Always set to "input-tel" on the frame
  *
  * @example
  * <FieldText>
  *   <Label>Phone number</Label>
- *   <InputGroup.Root>
- *     <InputGroup.Text>+1</InputGroup.Text>
- *     <InputTel name="phone" autoComplete="tel-national" />
- *   </InputGroup.Root>
+ *   <InputTel name="phone" autoComplete="tel-national" placeholder="(555) 000-0000" />
  * </FieldText>
  */
 export const InputTel = (props: InputTelProps) => {
 	// The context is merged here, once, and the inner Input is cut off from it:
 	// a handler the context provides must run after the mask, not before it.
-	const { onChange, onFocus, ref, ...rest } = useInputContext(props);
+	const { className, onChange, onFocus, ref, ...rest } = useInputContext(props);
 	const inputRef = useRef<HTMLInputElement>(null);
 	const phoneBeforeInput = useRef('');
 	const mergedRef = useMemo(() => mergeRefs(inputRef, ref), [ref]);
@@ -104,16 +105,12 @@ export const InputTel = (props: InputTelProps) => {
 	};
 
 	return (
-		<InputContext value={null}>
-			<Input
-				data-slot="input-tel"
-				{...rest}
-				type="tel"
-				ref={mergedRef}
-				onFocus={handleFocus}
-				onChange={handleChange}
-			/>
-		</InputContext>
+		<InputGroup.Root data-slot="input-tel" className={className}>
+			<InputGroup.Text>+1</InputGroup.Text>
+			<InputContext value={null}>
+				<Input {...rest} type="tel" ref={mergedRef} onFocus={handleFocus} onChange={handleChange} />
+			</InputContext>
+		</InputGroup.Root>
 	);
 };
 

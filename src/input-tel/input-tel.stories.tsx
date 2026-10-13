@@ -8,16 +8,15 @@ import { Button } from '../button';
 import { Field } from '../field';
 import { FieldText } from '../field-text';
 import { InputContext } from '../input';
-import { InputGroup } from '../input-group';
 import { Label } from '../label';
 import { InputTel } from './input-tel';
 
 /**
  * InputTel is a US phone number field that masks as you type: the digits are
  * laid out as `(555) 123-4567`, anything else is dropped and the caret stays
- * next to the digit just edited. It is an `Input` of `type="tel"` with no frame
- * of its own; `onChange` receives the native event with the masked text already
- * in `event.target.value`.
+ * next to the digit just edited. It is an `Input` of `type="tel"` inside an
+ * `InputGroup` frame with a `+1` prefix; `onChange` receives the native event
+ * with the masked text already in `event.target.value`.
  */
 const meta = {
 	title: 'Components/InputTel',
@@ -50,8 +49,8 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-const getInputs = (canvasElement: HTMLElement) =>
-	Array.from(canvasElement.querySelectorAll<HTMLInputElement>('[data-slot="input-tel"]'));
+const getFrames = (canvasElement: HTMLElement) =>
+	Array.from(canvasElement.querySelectorAll<HTMLElement>('[data-slot="input-tel"]'));
 
 // The spy returns `event.target.value` as it was when `onChange` ran: the
 // target is the live input, so reading it later would only show its current value.
@@ -59,11 +58,11 @@ const lastValue = (onChange: unknown) =>
 	(onChange as ReturnType<typeof fn>).mock.results.at(-1)?.value;
 
 /**
- * An uncontrolled phone field. Typing the ten digits lays them out as
- * `(555) 123-4567`, and every `onChange` call carries the masked text in
- * `event.target.value`.
+ * An uncontrolled phone field with its `+1` prefix. Typing the ten digits lays
+ * them out as `(555) 123-4567`, and every `onChange` call carries the masked
+ * text in `event.target.value`; the prefix never enters the value.
  *
- * @summary Phone field masking the digits as they are typed
+ * @summary Phone field with a +1 prefix masking the digits as they are typed
  */
 export const Default: Story = {
 	play: async ({ args, canvasElement }) => {
@@ -71,6 +70,7 @@ export const Default: Story = {
 		const input = canvas.getByRole('textbox', { name: 'Phone number' });
 
 		await expect(input).toHaveAttribute('type', 'tel');
+		await expect(canvas.getByText('+1')).toBeInTheDocument();
 
 		await userEvent.type(input, '5551234567');
 
@@ -192,32 +192,6 @@ export const PasteWithCountryCode: Story = {
 
 		await expect(input).toHaveValue('(555) 123-4567');
 		await expect(lastValue(args.onChange)).toBe('(555) 123-4567');
-	}
-};
-
-/**
- * The usual US phone layout: an `InputGroup` frame with a `+1` prefix in front
- * of the masked input. The prefix is decoration, so the value stays
- * `(555) 123-4567`.
- *
- * @summary Country prefix beside the masked input in an InputGroup
- */
-export const InsideInputGroup: Story = {
-	render: args => (
-		<InputGroup.Root>
-			<InputGroup.Text>+1</InputGroup.Text>
-			<InputTel {...args} autoComplete="tel-national" placeholder="(555) 000-0000" />
-		</InputGroup.Root>
-	),
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-		const input = canvas.getByRole('textbox', { name: 'Phone number' });
-
-		await expect(canvas.getByText('+1')).toBeInTheDocument();
-
-		await userEvent.type(input, '5551234567');
-
-		await expect(input).toHaveValue('(555) 123-4567');
 	}
 };
 
@@ -359,34 +333,38 @@ export const Disabled: Story = {
 };
 
 /**
- * `aria-invalid` paints the destructive border; point `aria-describedby` at
- * the message so both are read together.
+ * `invalid` on the surrounding `FieldText` sets `aria-invalid` on the input,
+ * which paints the frame's destructive border, and `Field.Error` is announced
+ * with the input.
  *
- * @summary Invalid phone field with its error message
+ * @summary Invalid field driving the frame's destructive border
  */
 export const Invalid: Story = {
-	args: {
-		'aria-invalid': true,
-		'aria-describedby': 'phone-error',
-		defaultValue: '(555) 12'
-	},
 	render: args => (
-		<div style={{ display: 'grid', gap: '0.5rem' }}>
-			<InputTel {...args} />
-			<span id="phone-error">Enter a 10-digit phone number.</span>
+		<div style={{ display: 'grid', gap: '1.5rem' }}>
+			<InputTel {...args} aria-label="Valid phone number" defaultValue="(555) 123-4567" />
+			<FieldText invalid>
+				<Label>Phone number</Label>
+				<InputTel defaultValue="(555) 12" />
+				<Field.Error errors={[{ message: 'Enter a 10-digit phone number.' }]} />
+			</FieldText>
 		</div>
 	),
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
-		const input = canvas.getByRole('textbox', { name: 'Phone number' });
+		const input = canvas.getByLabelText('Phone number');
+		const [valid, invalid] = getFrames(canvasElement) as [HTMLElement, HTMLElement];
 
-		await expect(input).toBeInvalid();
+		await expect(input).toHaveAttribute('aria-invalid', 'true');
 		await expect(input).toHaveAccessibleDescription('Enter a 10-digit phone number.');
+		await expect(getComputedStyle(invalid).borderColor).not.toBe(
+			getComputedStyle(valid).borderColor
+		);
 	}
 };
 
 /**
- * The three sizes match Input's: the control is 32, 40 or 48px tall.
+ * The three sizes match Input's: the frame is 32, 40 or 48px tall.
  *
  * @summary The three sizes side by side
  */
@@ -399,7 +377,7 @@ export const AllSizes: Story = {
 		</div>
 	),
 	play: async ({ canvasElement }) => {
-		const heights = getInputs(canvasElement).map(input => input.getBoundingClientRect().height);
+		const heights = getFrames(canvasElement).map(frame => frame.getBoundingClientRect().height);
 
 		await expect(heights).toEqual([32, 40, 48]);
 	}
