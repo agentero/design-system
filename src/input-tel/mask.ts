@@ -4,6 +4,18 @@ export const US_PHONE_MASK = '(...) ...-....';
 /** The character that marks a digit slot in a mask. */
 export const MASK_SYMBOL = '.';
 
+/**
+ * Reduces a phone number in any format to its national digits: drops
+ * everything that is not a digit and, past ten digits, the leading `1` of the
+ * `+1` country code. No US area code starts with `1`, so a national number is
+ * never cut.
+ */
+export const toNationalDigits = (value: string): string => {
+	const digits = value.replace(/\D/g, '');
+
+	return digits.length > 10 && digits.startsWith('1') ? digits.slice(1) : digits;
+};
+
 type ApplyMaskArgs = {
 	value: string;
 	mask: string;

@@ -176,6 +176,26 @@ export const Paste: Story = {
 };
 
 /**
+ * A number that carries the `+1` country code, as copied from a signature or
+ * filled in by the browser's autofill, loses the code and keeps its ten
+ * national digits: `+1 (555) 123-4567` ends up as `(555) 123-4567`.
+ *
+ * @summary Pasted number with a +1 country code
+ */
+export const PasteWithCountryCode: Story = {
+	play: async ({ args, canvasElement }) => {
+		const canvas = within(canvasElement);
+		const input = canvas.getByRole('textbox', { name: 'Phone number' });
+
+		await userEvent.click(input);
+		await userEvent.paste('+1 (555) 123-4567');
+
+		await expect(input).toHaveValue('(555) 123-4567');
+		await expect(lastValue(args.onChange)).toBe('(555) 123-4567');
+	}
+};
+
+/**
  * The usual US phone layout: an `InputGroup` frame with a `+1` prefix in front
  * of the masked input. The prefix is decoration, so the value stays
  * `(555) 123-4567`.

@@ -4,9 +4,14 @@ import { ChangeEvent, FocusEvent, useMemo, useRef } from 'react';
 
 import { mergeRefs } from '../../lib';
 import { Input, InputContext, InputProps, useInputContext } from '../input';
-import { applyMask, getCursorPosition, getDeletionType, MASK_SYMBOL, US_PHONE_MASK } from './mask';
-
-const removeNonDigits = (value: string): string => value.replace(/\D/g, '');
+import {
+	applyMask,
+	getCursorPosition,
+	getDeletionType,
+	MASK_SYMBOL,
+	toNationalDigits,
+	US_PHONE_MASK
+} from './mask';
 
 export type InputTelProps = Omit<InputProps, 'type'>;
 
@@ -14,8 +19,9 @@ export type InputTelProps = Omit<InputProps, 'type'>;
  * InputTel is a US phone number field that masks as you type: the digits the
  * user enters are laid out as `(555) 123-4567` while typing, pasting or
  * deleting, anything that is not a digit is dropped, and the caret stays next
- * to the digit just edited instead of jumping to the end. The eleventh digit
- * and beyond are ignored. `onChange` receives the native change event with the
+ * to the digit just edited instead of jumping to the end. A leading `+1`
+ * country code, as pasted or filled in by the browser's autofill, is dropped
+ * too; past that, the eleventh digit and beyond are ignored. `onChange` receives the native change event with the
  * masked text already in `event.target.value`, so a controlled field, an
  * uncontrolled one and one registered with react-hook-form all store
  * `(555) 123-4567`, never the bare digits.
@@ -65,7 +71,7 @@ export const InputTel = (props: InputTelProps) => {
 		const { value: userInput, selectionStart } = event.target;
 
 		const maskedValue = applyMask({
-			value: removeNonDigits(userInput),
+			value: toNationalDigits(userInput),
 			mask: US_PHONE_MASK,
 			maskSymbol: MASK_SYMBOL,
 			trimNonMaskCharsLeftover: deletion === 'backward'

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { applyMask, getCursorPosition } from './mask';
+import { applyMask, getCursorPosition, MASK_SYMBOL, toNationalDigits, US_PHONE_MASK } from './mask';
 
 describe('applyMask', () => {
 	it('should put each character of the value in a mask slot and keep the mask separators', () => {
@@ -198,5 +198,85 @@ describe('getCursorPosition', () => {
 				deletion: 'forward'
 			})
 		).toBe('+'.length);
+	});
+});
+
+describe('toNationalDigits', () => {
+	it('should keep only the digits', () => {
+		expect(toNationalDigits('555-123-4567')).toBe('5551234567');
+		expect(toNationalDigits('(555) 123-4567')).toBe('5551234567');
+		expect(toNationalDigits('a5b')).toBe('5');
+	});
+
+	it('should drop the +1 country code when it comes with a full number', () => {
+		expect(toNationalDigits('+1 (555) 123-4567')).toBe('5551234567');
+		expect(toNationalDigits('+15551234567')).toBe('5551234567');
+	});
+
+	it('should keep a leading 1 while the number is ten digits or shorter', () => {
+		expect(toNationalDigits('15551')).toBe('15551');
+		expect(toNationalDigits('1555123456')).toBe('1555123456');
+	});
+
+	it('should keep an eleventh digit that does not follow a leading 1', () => {
+		expect(toNationalDigits('55512345678')).toBe('55512345678');
+	});
+});
+
+describe('US phone mask', () => {
+	const maskUs = (value: string, trimNonMaskCharsLeftover = false) =>
+		applyMask({ value, mask: US_PHONE_MASK, maskSymbol: MASK_SYMBOL, trimNonMaskCharsLeftover });
+
+	it('should lay out the digits as (555) 123-4567', () => {
+		expect(maskUs('5551234567')).toBe('(555) 123-4567');
+		expect(maskUs('55512')).toBe('(555) 12');
+		expect(maskUs('555123')).toBe('(555) 123-');
+		expect(maskUs('555123', true)).toBe('(555) 123');
+	});
+
+	it('should keep the caret after the digit typed at the end', () => {
+		expect(
+			getCursorPosition({
+				phoneBeforeInput: '(555',
+				phoneAfterInput: '(5551',
+				cursorPositionAfterInput: '(5551'.length,
+				phoneAfterFormatted: '(555) 1'
+			})
+		).toBe('(555) 1'.length);
+	});
+
+	it('should keep the caret after a digit typed in the middle', () => {
+		expect(
+			getCursorPosition({
+				phoneBeforeInput: '(555) 123-4567',
+				phoneAfterInput: '(5955) 123-4567',
+				cursorPositionAfterInput: 3,
+				phoneAfterFormatted: '(595) 512-3456'
+			})
+		).toBe(3);
+	});
+
+	it('should leave the caret after the last digit when backspace trims the separators', () => {
+		expect(
+			getCursorPosition({
+				phoneBeforeInput: '(555) ',
+				phoneAfterInput: '(555)',
+				cursorPositionAfterInput: '(555)'.length,
+				phoneAfterFormatted: '(555',
+				deletion: 'backward'
+			})
+		).toBe('(555'.length);
+	});
+
+	it('should jump over the separators to the next digit on a forward delete', () => {
+		expect(
+			getCursorPosition({
+				phoneBeforeInput: '(555) 123-4567',
+				phoneAfterInput: '(555) 23-4567',
+				cursorPositionAfterInput: 6,
+				phoneAfterFormatted: '(555) 234-567',
+				deletion: 'forward'
+			})
+		).toBe(6);
 	});
 });
