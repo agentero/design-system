@@ -58,6 +58,11 @@ export const Default: Story = {
 		await userEvent.click(canvas.getByText('Home'));
 		await expect(canvas.getByRole('checkbox', { name: 'Home' })).not.toBeChecked();
 		await expect(args.onValueChange).toHaveBeenLastCalledWith(['auto']);
+
+		// The padding around the box and the gap before the text toggle too: the label wraps them.
+		const renters = canvas.getByRole('checkbox', { name: 'Renters' });
+		await userEvent.click(renters.closest('[data-slot=checkbox-group-item-control]')!);
+		await expect(renters).toBeChecked();
 	}
 };
 
@@ -340,8 +345,10 @@ export const InsideField: Story = {
 	args: { 'aria-label': undefined, defaultValue: [] },
 	render: args => (
 		<Field.Root invalid>
-			<Field.Label>Lines of business</Field.Label>
-			<Field.Description>The lines this agency writes.</Field.Description>
+			<Field.Content>
+				<Field.Label>Lines of business</Field.Label>
+				<Field.Description>The lines this agency writes.</Field.Description>
+			</Field.Content>
 			<CheckboxGroup.Root {...args}>
 				{LOBS.map(({ value, label }) => (
 					<CheckboxGroup.Item key={value} value={value}>
@@ -367,15 +374,18 @@ export const InsideField: Story = {
 };
 
 /**
- * `aria-label` and `disabled={false}` on the group win over the field.
+ * `aria-label` and `disabled={false}` on the group win over the field. Its own
+ * `aria-describedby` joins the field's messages instead of replacing them.
  *
  * @summary Own props override the Field wiring
  */
 export const InsideFieldOverridden: Story = {
-	args: { 'aria-label': 'Lines written', disabled: false },
+	args: { 'aria-label': 'Lines written', 'aria-describedby': 'lobs-note', disabled: false },
 	render: args => (
 		<Field.Root disabled>
 			<Field.Label>Lines of business</Field.Label>
+			<Field.Description>The lines this agency writes.</Field.Description>
+			<p id="lobs-note">Ask the principal before changing them.</p>
 			<CheckboxGroup.Root {...args}>
 				{LOBS.map(({ value, label }) => (
 					<CheckboxGroup.Item key={value} value={value}>
@@ -390,6 +400,9 @@ export const InsideFieldOverridden: Story = {
 		const group = canvas.getByRole('group', { name: 'Lines written' });
 
 		await expect(group).not.toHaveAttribute('aria-labelledby');
+		await expect(group).toHaveAccessibleDescription(
+			'The lines this agency writes. Ask the principal before changing them.'
+		);
 		for (const checkbox of canvas.getAllByRole('checkbox')) {
 			await expect(checkbox).toBeEnabled();
 		}

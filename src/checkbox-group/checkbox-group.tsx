@@ -4,20 +4,23 @@ import { ComponentPropsWithRef, createContext, ReactNode, use, useId, useState }
 
 import { tv, VariantProps } from 'tailwind-variants';
 
-import { cn } from '../../lib';
+import { cn, mergeProps } from '../../lib';
 import { Checkbox } from '../checkbox';
 import { useFieldContext } from '../field';
 
-/** Style recipe for CheckboxGroup. Slots: `root`, `item`, `control` (24px slot for the box), `label`. */
+/** Style recipe for CheckboxGroup. Slots: `root`, `item`, `label` (the clickable row), `control` (24px slot for the box), `text`. */
 export const checkboxGroupRecipe = tv({
 	slots: {
-		root: 'flex',
-		item: 'group/checkbox-group-item flex items-start gap-3',
-		control: 'flex size-6 shrink-0 items-center justify-center',
+		// Figma leaves 16px between the label block and the options, where the field's gap is 8.
+		root: 'flex [:is([data-slot=field-content],[data-slot=field-description])+&]:mt-2',
+		item: 'group/checkbox-group-item flex',
 		label: [
-			'flex min-h-6 cursor-pointer items-center text-sm text-text-input-normal select-none',
-			'group-data-disabled/checkbox-group-item:cursor-not-allowed group-data-disabled/checkbox-group-item:opacity-50'
-		]
+			'flex cursor-pointer items-start gap-3 text-sm text-text-input-normal select-none',
+			'group-data-disabled/checkbox-group-item:cursor-not-allowed'
+		],
+		control: 'flex size-6 shrink-0 items-center justify-center',
+		// The checkbox dims itself when disabled; only the text needs it here.
+		text: 'flex min-h-6 items-center group-data-disabled/checkbox-group-item:opacity-50'
 	},
 	variants: {
 		orientation: {
@@ -107,6 +110,11 @@ export const Root = ({
 	const invalid = invalidProp ?? (field?.invalid || undefined);
 	const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue);
 	const value = valueProp ?? uncontrolledValue;
+	// Own ids join the field's error and description instead of replacing them.
+	const describedBy = mergeProps(
+		{ 'aria-describedby': field?.describedBy },
+		{ 'aria-describedby': describedByProp }
+	)['aria-describedby'];
 
 	const toggle = (itemValue: string, checked: boolean) => {
 		const next = checked
@@ -125,7 +133,7 @@ export const Root = ({
 				data-orientation={orientation}
 				data-disabled={disabled || undefined}
 				aria-labelledby={labelledBy}
-				aria-describedby={describedByProp ?? field?.describedBy}
+				aria-describedby={describedBy}
 				className={cn(styles.root(), className)}
 				{...props}>
 				{children}
@@ -133,6 +141,7 @@ export const Root = ({
 		</CheckboxGroupContext>
 	);
 };
+Root.displayName = 'CheckboxGroup.Root';
 
 export type CheckboxGroupItemProps = Omit<ComponentPropsWithRef<'div'>, 'children'> & {
 	/** Value added to the group's list when this item is checked. */
@@ -178,20 +187,24 @@ export const Item = ({
 			data-disabled={isDisabled || undefined}
 			className={cn(styles.item(), className)}
 			{...props}>
-			<span data-slot="checkbox-group-item-control" className={styles.control()}>
-				<Checkbox
-					id={id}
-					name={context.name}
-					value={value}
-					checked={checked}
-					onCheckedChange={checked => context.toggle(value, checked === true)}
-					disabled={isDisabled}
-					aria-invalid={context.invalid}
-				/>
-			</span>
+			{/* The label wraps the box's slot and the gap too, so the whole row toggles. */}
 			<label htmlFor={id} data-slot="checkbox-group-item-label" className={styles.label()}>
-				{children}
+				<span data-slot="checkbox-group-item-control" className={styles.control()}>
+					<Checkbox
+						id={id}
+						name={context.name}
+						value={value}
+						checked={checked}
+						onCheckedChange={checked => context.toggle(value, checked === true)}
+						disabled={isDisabled}
+						aria-invalid={context.invalid}
+					/>
+				</span>
+				<span data-slot="checkbox-group-item-text" className={styles.text()}>
+					{children}
+				</span>
 			</label>
 		</div>
 	);
 };
+Item.displayName = 'CheckboxGroup.Item';
