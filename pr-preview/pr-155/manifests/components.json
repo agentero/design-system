@@ -7035,7 +7035,7 @@
         {
           "id": "components-inputtel--invalid",
           "name": "Invalid",
-          "snippet": "const Invalid = () => <div style={{ display: 'grid', gap: '1.5rem' }}>\n    <InputTel\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        aria-label=\"Valid phone number\"\n        defaultValue=\"(555) 123-4567\" />\n    <FieldText invalid>\n        <Label>Phone number</Label>\n        <InputTel defaultValue=\"(555) 12\" />\n        <Field.Error errors={[{ message: 'Enter a 10-digit phone number.' }]} />\n    </FieldText>\n</div>;",
+          "snippet": "const Invalid = () => (\n    <FieldText invalid>\n        <Label>Phone number</Label>\n        <InputTel defaultValue=\"(555) 12\" />\n        <Field.Error errors={[{ message: 'Enter a 10-digit phone number.' }]} />\n    </FieldText>\n);",
           "description": "`invalid` on the surrounding `FieldText` sets `aria-invalid` on the input,\nwhich paints the frame's destructive border, and `Field.Error` is announced\nwith the input.",
           "summary": "Invalid field driving the frame's destructive border"
         },
@@ -10015,6 +10015,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5441
+    "durationMs": 3133
   }
 }

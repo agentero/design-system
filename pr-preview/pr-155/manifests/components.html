@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>5.4s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>3.1s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -8105,17 +8105,13 @@ the field, and the masked value still reaches a handler the field provides.</div
               <div class="hint">`invalid` on the surrounding `FieldText` sets `aria-invalid` on the input,
 which paints the frame&#39;s destructive border, and `Field.Error` is announced
 with the input.</div>
-              <pre><code>const Invalid = () =&gt; &lt;div style={{ display: &#39;grid&#39;, gap: &#39;1.5rem&#39; }}&gt;
-    &lt;InputTel
-        onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)}
-        aria-label=&quot;Valid phone number&quot;
-        defaultValue=&quot;(555) 123-4567&quot; /&gt;
+              <pre><code>const Invalid = () =&gt; (
     &lt;FieldText invalid&gt;
         &lt;Label&gt;Phone number&lt;/Label&gt;
         &lt;InputTel defaultValue=&quot;(555) 12&quot; /&gt;
         &lt;Field.Error errors={[{ message: &#39;Enter a 10-digit phone number.&#39; }]} /&gt;
     &lt;/FieldText&gt;
-&lt;/div&gt;;</code></pre>
+);</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
