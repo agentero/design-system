@@ -588,13 +588,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">37 components ok</span><span class="filter-pill ok" aria-disabled="true">306 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">37 components ok</span><span class="filter-pill ok" aria-disabled="true">305 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>3.8s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>5.4s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -7891,24 +7891,21 @@ several search fields does not read &quot;Clear search&quot; twice.</div>
       <div class="badges">
         <label for="c-21-components-inputtel-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-21-components-inputtel-stories" class="badge ok as-toggle">12 stories</label>
+        <label for="c-21-components-inputtel-stories" class="badge ok as-toggle">11 stories</label>
         
         
       </div>
     </div>
     <div class="meta" title="./src/input-tel/input-tel.stories.tsx">components-inputtel · ./src/input-tel/input-tel.stories.tsx</div>
-    <div>US phone input that masks as you type and reports the masked value</div>
+    <div>US phone input with a +1 prefix that masks as you type</div>
     <div class="hint">InputTel is a US phone number field that masks as you type: the digits are
 laid out as `(555) 123-4567`, anything else is dropped and the caret stays
-next to the digit just edited. It is an `Input` of `type=&quot;tel&quot;` with no frame
-of its own; `onChange` receives the native event with the masked text already
-in `event.target.value`.</div>
-    <div class="kv"><span class="chip">summary: US phone input that masks as you type and reports the masked value</span><span class="chip">dataAttribute: {string} data-slot - Always set to &quot;input-tel&quot;</span><span class="chip">example: &lt;FieldText&gt;
+next to the digit just edited. It is an `Input` of `type=&quot;tel&quot;` inside an
+`InputGroup` frame with a `+1` prefix; `onChange` receives the native event
+with the masked text already in `event.target.value`.</div>
+    <div class="kv"><span class="chip">summary: US phone input with a +1 prefix that masks as you type</span><span class="chip">dataAttribute: {string} data-slot - Always set to &quot;input-tel&quot; on the frame</span><span class="chip">example: &lt;FieldText&gt;
   &lt;Label&gt;Phone number&lt;/Label&gt;
-  &lt;InputGroup.Root&gt;
-    &lt;InputGroup.Text&gt;+1&lt;/InputGroup.Text&gt;
-    &lt;InputTel name=&quot;phone&quot; autoComplete=&quot;tel-national&quot; /&gt;
-  &lt;/InputGroup.Root&gt;
+  &lt;InputTel name=&quot;phone&quot; autoComplete=&quot;tel-national&quot; placeholder=&quot;(555) 000-0000&quot; /&gt;
 &lt;/FieldText&gt;</span></div>
   </div>
 
@@ -7951,7 +7948,7 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button, Field, FieldText, InputContext, InputGroup, InputTel, Label } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Button, Field, FieldText, InputContext, InputTel, Label } from "@agentero/design-system";</code></pre>
               </div>
           
           
@@ -7960,10 +7957,10 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
                 <span class="ex-name">Default</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Phone field masking the digits as they are typed</div>
-              <div class="hint">An uncontrolled phone field. Typing the ten digits lays them out as
-`(555) 123-4567`, and every `onChange` call carries the masked text in
-`event.target.value`.</div>
+              <div>Phone field with a +1 prefix masking the digits as they are typed</div>
+              <div class="hint">An uncontrolled phone field with its `+1` prefix. Typing the ten digits lays
+them out as `(555) 123-4567`, and every `onChange` call carries the masked
+text in `event.target.value`; the prefix never enters the value.</div>
               <pre><code>const Default = () =&gt; &lt;InputTel
     aria-label=&quot;Phone number&quot;
     onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)} /&gt;;</code></pre>
@@ -8045,24 +8042,6 @@ national digits: `+1 (555) 123-4567` ends up as `(555) 123-4567`.</div>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">Inside Input Group</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Country prefix beside the masked input in an InputGroup</div>
-              <div class="hint">The usual US phone layout: an `InputGroup` frame with a `+1` prefix in front
-of the masked input. The prefix is decoration, so the value stays
-`(555) 123-4567`.</div>
-              <pre><code>const InsideInputGroup = () =&gt; &lt;InputGroup.Root&gt;
-    &lt;InputGroup.Text&gt;+1&lt;/InputGroup.Text&gt;
-    &lt;InputTel
-        aria-label=&quot;Phone number&quot;
-        onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)}
-        autoComplete=&quot;tel-national&quot;
-        placeholder=&quot;(555) 000-0000&quot; /&gt;
-&lt;/InputGroup.Root&gt;;</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
                 <span class="ex-name">Inside Field Text</span>
                 <span class="badge ok">story ok</span>
               </div>
@@ -8122,17 +8101,20 @@ the field, and the masked value still reaches a handler the field provides.</div
                 <span class="ex-name">Invalid</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Invalid phone field with its error message</div>
-              <div class="hint">`aria-invalid` paints the destructive border; point `aria-describedby` at
-the message so both are read together.</div>
-              <pre><code>const Invalid = () =&gt; &lt;div style={{ display: &#39;grid&#39;, gap: &#39;0.5rem&#39; }}&gt;
+              <div>Invalid field driving the frame&#39;s destructive border</div>
+              <div class="hint">`invalid` on the surrounding `FieldText` sets `aria-invalid` on the input,
+which paints the frame&#39;s destructive border, and `Field.Error` is announced
+with the input.</div>
+              <pre><code>const Invalid = () =&gt; &lt;div style={{ display: &#39;grid&#39;, gap: &#39;1.5rem&#39; }}&gt;
     &lt;InputTel
-        aria-label=&quot;Phone number&quot;
         onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)}
-        aria-invalid
-        aria-describedby=&quot;phone-error&quot;
-        defaultValue=&quot;(555) 12&quot; /&gt;
-    &lt;span id=&quot;phone-error&quot;&gt;Enter a 10-digit phone number.&lt;/span&gt;
+        aria-label=&quot;Valid phone number&quot;
+        defaultValue=&quot;(555) 123-4567&quot; /&gt;
+    &lt;FieldText invalid&gt;
+        &lt;Label&gt;Phone number&lt;/Label&gt;
+        &lt;InputTel defaultValue=&quot;(555) 12&quot; /&gt;
+        &lt;Field.Error errors={[{ message: &#39;Enter a 10-digit phone number.&#39; }]} /&gt;
+    &lt;/FieldText&gt;
 &lt;/div&gt;;</code></pre>
             </div>
             <div class="note ok">
@@ -8141,7 +8123,7 @@ the message so both are read together.</div>
                 <span class="badge ok">story ok</span>
               </div>
               <div>The three sizes side by side</div>
-              <div class="hint">The three sizes match Input&#39;s: the control is 32, 40 or 48px tall.</div>
+              <div class="hint">The three sizes match Input&#39;s: the frame is 32, 40 or 48px tall.</div>
               <pre><code>const AllSizes = () =&gt; &lt;div style={{ display: &#39;grid&#39;, gap: &#39;1rem&#39; }}&gt;
     &lt;InputTel
         onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)}
