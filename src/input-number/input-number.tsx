@@ -1,5 +1,7 @@
 'use client';
 
+import type { ChangeEvent } from 'react';
+
 import { NumericFormat } from 'react-number-format';
 
 import { Input, InputContext, InputProps, useInputContext } from '../input';
@@ -31,7 +33,8 @@ export type InputNumberProps = Omit<InputProps, 'type' | 'value' | 'defaultValue
 	/**
 	 * Keeps zeros typed in front of the number (`007`), which an identifier
 	 * such as an NPN or a ZIP code needs. Set it to `false` for an amount, so
-	 * `007` becomes `7` once the field loses focus. Defaults to `true`.
+	 * `007` becomes `7` once the field loses focus, and `onChange` fires with
+	 * the trimmed value. Defaults to `true`.
 	 */
 	allowLeadingZeros?: boolean;
 	/**
@@ -53,9 +56,10 @@ export type InputNumberProps = Omit<InputProps, 'type' | 'value' | 'defaultValue
 };
 
 /**
- * InputNumber is a text field that only takes digits and formats them as the
- * user types: a thousands separator when `thousandSeparator` is set, leading
- * zeros kept unless `allowLeadingZeros` is off, no sign, no decimal rounding.
+ * InputNumber is a text field that only takes digits and a decimal point and
+ * formats them as the user types: a thousands separator when
+ * `thousandSeparator` is set, leading zeros kept unless `allowLeadingZeros` is
+ * off, no sign, no decimal rounding.
  * Anything that is not a digit or the decimal point is ignored, and
  * `maxNumber` drops any edit that would exceed it. `onChange` fires with the
  * formatted text in `event.target.value` (`"1,234"`, not `1234`), which is
@@ -92,6 +96,7 @@ export const InputNumber = (props: InputNumberProps) => {
 		maxNumber,
 		thousandSeparator = false,
 		allowLeadingZeros = true,
+		onChange,
 		...rest
 	} = useInputContext(props);
 
@@ -103,8 +108,23 @@ export const InputNumber = (props: InputNumberProps) => {
 			thousandSeparator={thousandSeparator}
 			allowLeadingZeros={allowLeadingZeros}
 			allowNegative={false}
-			fixedDecimalScale={false}
-			isAllowed={({ floatValue }) => (maxNumber && floatValue ? floatValue <= maxNumber : true)}
+			onChange={onChange}
+			// On blur react-number-format drops leading zeros and clears a value
+			// with no digits, but reports it through `onValueChange` only and leaves
+			// the DOM stale until it re-renders. Write the value to the input and
+			// replay it as a change, so `onChange` and the `onBlur` that follows
+			// both see what the field shows.
+			onValueChange={({ formattedValue }, { event, source }) => {
+				if (source !== 'event' || event?.type !== 'blur') return;
+				const input = event.target as HTMLInputElement;
+				input.value = formattedValue;
+				onChange?.(
+					Object.assign(Object.create(event), { type: 'change' }) as ChangeEvent<HTMLInputElement>
+				);
+			}}
+			isAllowed={({ floatValue }) =>
+				maxNumber === undefined || floatValue === undefined || floatValue <= maxNumber
+			}
 		/>
 	);
 };

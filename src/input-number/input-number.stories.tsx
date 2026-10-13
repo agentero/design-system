@@ -12,9 +12,9 @@ import { Label } from '../label';
 import { InputNumber } from './input-number';
 
 /**
- * InputNumber is a text field that only takes digits and formats them as the
- * user types: thousands separators on request, leading zeros kept unless
- * turned off, no sign. `onChange` fires with the formatted text in
+ * InputNumber is a text field that only takes digits and a decimal point and
+ * formats them as the user types: thousands separators on request, leading
+ * zeros kept unless turned off, no sign. `onChange` fires with the formatted text in
  * `event.target.value`. It is an `Input` driven by `react-number-format`, so
  * it takes its label, messages and states from a surrounding `FieldText`.
  */
@@ -65,11 +65,11 @@ const lastValue = (onChange: unknown) =>
 const inputRef = createRef<HTMLInputElement>();
 
 /**
- * Only digits make it into the field: letters and a minus sign are ignored as
- * they are typed. `onChange` reports the text as it is shown, and the `ref`
+ * Only digits and a decimal point make it into the field: letters and a minus
+ * sign are ignored as they are typed. `onChange` reports the text as it is shown, and the `ref`
  * points at the `<input>` element.
  *
- * @summary Digits-only field that ignores letters and signs
+ * @summary Numeric field that ignores letters and signs
  */
 export const Default: Story = {
 	render: args => <InputNumber {...args} ref={inputRef} />,
@@ -154,7 +154,7 @@ export const MaxNumber: Story = {
 /**
  * Leading zeros are kept by default, as an NPN or a ZIP code needs. With
  * `allowLeadingZeros` off they are dropped once the field loses focus, which
- * is what an amount wants.
+ * is what an amount wants, and `onChange` reports the trimmed value.
  *
  * @summary Leading zeros kept by default, dropped on blur when turned off
  */
@@ -165,7 +165,7 @@ export const LeadingZeros: Story = {
 			<InputNumber {...args} aria-label="Amount" allowLeadingZeros={false} />
 		</div>
 	),
-	play: async ({ canvasElement }) => {
+	play: async ({ args, canvasElement }) => {
 		const canvas = within(canvasElement);
 		const zip = canvas.getByRole('textbox', { name: 'ZIP code' });
 		const amount = canvas.getByRole('textbox', { name: 'Amount' });
@@ -176,6 +176,7 @@ export const LeadingZeros: Story = {
 
 		await expect(zip).toHaveValue('007');
 		await expect(amount).toHaveValue('7');
+		await expect(lastValue(args.onChange)).toBe('7');
 	}
 };
 
