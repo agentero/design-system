@@ -12,7 +12,21 @@ import type { InputProps } from './input';
  * and `ref`. An `Input` with no provider above it reads `null` and uses only
  * its own props.
  */
-export const InputContext = createContext<Partial<InputProps> | null>(null);
+export type InputContextValue = Pick<
+	InputProps,
+	| 'id'
+	| 'aria-describedby'
+	| 'aria-invalid'
+	| 'required'
+	| 'disabled'
+	| 'readOnly'
+	| 'name'
+	| 'onChange'
+	| 'onBlur'
+	| 'ref'
+> & { value?: string | number };
+
+export const InputContext = createContext<InputContextValue | null>(null);
 
 /**
  * Merges the surrounding `InputContext`, if any, under the input's own props.
@@ -23,9 +37,13 @@ export const InputContext = createContext<Partial<InputProps> | null>(null);
  *
  * Generic over the props so a wrapper whose props narrow or widen the
  * input's (a `type` limited to a few values, a `value` that takes `null`)
- * gets its own type back, with the context's wiring merged in.
+ * gets its own type back, with the context's wiring merged in. The props must
+ * accept everything the context can carry; when they do not, `props` resolves
+ * to `never` and the call does not compile.
  */
-export const useInputContext = <P extends Pick<InputProps, 'id'>>(props: P): P => {
+export const useInputContext = <P extends Pick<InputProps, 'id'>>(
+	props: P & (InputContextValue extends Partial<P> ? unknown : never)
+): P => {
 	const context = use(InputContext);
 
 	if (process.env.NODE_ENV !== 'production' && context?.id && props.id && context.id !== props.id) {
@@ -34,5 +52,6 @@ export const useInputContext = <P extends Pick<InputProps, 'id'>>(props: P): P =
 		);
 	}
 
+	// Safe: the signature only accepts props that `InputContextValue` fits.
 	return useMergeProps(context as Partial<P> | null, props);
 };
