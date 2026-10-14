@@ -383,8 +383,10 @@ export const InsideFieldOverridden: Story = {
 	args: { 'aria-label': 'Lines written', 'aria-describedby': 'lobs-note', disabled: false },
 	render: args => (
 		<Field.Root disabled>
-			<Field.Label>Lines of business</Field.Label>
-			<Field.Description>The lines this agency writes.</Field.Description>
+			<Field.Content>
+				<Field.Label>Lines of business</Field.Label>
+				<Field.Description>The lines this agency writes.</Field.Description>
+			</Field.Content>
 			<p id="lobs-note">Ask the principal before changing them.</p>
 			<CheckboxGroup.Root {...args}>
 				{LOBS.map(({ value, label }) => (
