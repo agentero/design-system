@@ -99,7 +99,7 @@ const MultipleContext = createContext(false);
 
 // The root's `loading`, for `Content` to mark busy and for `Empty` to hold back. It stays
 // `undefined` for a root that never opted in.
-const LoadingContext = createContext<{ loading?: boolean }>({});
+const LoadingContext = createContext<boolean | undefined>(undefined);
 
 // How long a request runs before its label is announced. VoiceOver cuts off whatever it is saying
 // to echo the key just typed and, when the list opens, to read out its new expanded state; both
@@ -146,7 +146,8 @@ export type ComboboxRootProps<
 	 * renders next to the field, so it is in place before the list opens. On a search
 	 * against an API, pass it from the first render, as `false` while idle: a root
 	 * that leaves it out gets no live region. A list filtered in memory never
-	 * waits and leaves it out.
+	 * waits and leaves it out. While loading with no rows yet, the surface shows
+	 * whatever placeholder `Content` holds — `Empty` stays quiet.
 	 */
 	loading?: boolean;
 	/**
@@ -274,7 +275,7 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 
 	return (
 		<MultipleContext value={multiple}>
-			<LoadingContext value={{ loading }}>
+			<LoadingContext value={loading}>
 				<ComboboxPrimitive.Root
 					open={open}
 					defaultOpen={defaultOpen}
@@ -504,7 +505,7 @@ export const Content = ({
 	children,
 	...props
 }: ContentProps) => {
-	const { loading } = use(LoadingContext);
+	const loading = use(LoadingContext);
 
 	return (
 		<ComboboxPrimitive.Portal>
@@ -605,13 +606,15 @@ type EmptyProps = ComponentPropsWithRef<typeof ComboboxPrimitive.Empty>;
  * needs `items` on `Root` to know the list is empty, and it must stay mounted —
  * change its children rather than rendering it conditionally. While the root is
  * `loading` it shows nothing: the list is empty because the results have not
- * arrived yet, not because there are none.
+ * arrived yet, not because there are none. With no rows to show either, the
+ * surface would open as an empty frame, so render placeholder rows inside
+ * `Content` for the wait.
  *
  * @summary Message shown when no item matches the query
  * @dataAttribute {string} data-slot - Always set to "combobox-empty"
  */
 export const Empty = ({ className, children, ...props }: EmptyProps) => {
-	const { loading } = use(LoadingContext);
+	const loading = use(LoadingContext);
 
 	return (
 		<ComboboxPrimitive.Empty
