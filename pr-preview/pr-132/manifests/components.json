@@ -1685,7 +1685,8 @@
         ],
         "dataAttribute": [
           "{string} data-orientation - \"vertical\" | \"horizontal\"",
-          "{string} data-disabled - Present when the whole group is disabled"
+          "{string} data-disabled - Present when the whole group is disabled",
+          "{string} data-readonly - Present when the group is read-only"
         ]
       },
       "description": "`Root` owns the checked values; each `Item` is a `Checkbox` with its label.",
@@ -1694,7 +1695,7 @@
         "displayName": "CheckboxGroup.Root",
         "exportName": "CheckboxGroup",
         "filePath": "/home/runner/work/design-system/design-system/src/checkbox-group/index.ts",
-        "description": "Multi-select list of checkboxes that holds its checked values as a\n`string[]`. Renders `role=\"group\"`: name it with `aria-labelledby` or\n`aria-label`, or put it inside a `Field.Root`, which names, describes,\ninvalidates and disables it (the group's own props win).\n\nNot for options inside a `Command` or `Combobox` list, where a focusable\ncheckbox would nest inside the option: use the Combobox's multiple\nselection. There is no `required`: \"at least one\" belongs to the form layer.\n\nEvery native `<div>` attribute is forwarded to the group except\n`aria-invalid`, which goes to the checkboxes (`role=\"group\"` does not\nsupport it).",
+        "description": "Multi-select list of checkboxes that holds its checked values as a\n`string[]`. Renders `role=\"group\"`: name it with `aria-labelledby` or\n`aria-label`, or put it inside a `Field.Root`, which names, describes,\ninvalidates, disables and makes it read-only (the group's own props win).\n\nNot for options inside a `Command` or `Combobox` list, where a focusable\ncheckbox would nest inside the option: use the Combobox's multiple\nselection. There is no `required`: \"at least one\" belongs to the form layer.\n\nEvery native `<div>` attribute is forwarded to the group except\n`aria-invalid`, which goes to the checkboxes (`role=\"group\"` does not\nsupport it).",
         "jsDocTags": {
           "summary": [
             "Multi-select checkbox list holding its checked values as a string array"
@@ -1704,7 +1705,8 @@
           ],
           "dataAttribute": [
             "{string} data-orientation - \"vertical\" | \"horizontal\"",
-            "{string} data-disabled - Present when the whole group is disabled"
+            "{string} data-disabled - Present when the whole group is disabled",
+            "{string} data-readonly - Present when the group is read-only"
           ]
         },
         "props": {
@@ -1774,6 +1776,25 @@
               "name": "boolean"
             },
             "description": "Disables every item in the group.",
+            "defaultValue": null,
+            "parent": {
+              "name": "CheckboxGroupRootProps",
+              "fileName": "src/checkbox-group/checkbox-group.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/checkbox-group/checkbox-group.tsx"
+              }
+            ]
+          },
+          "readOnly": {
+            "name": "readOnly",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Keeps every item focusable but stops it from toggling; each checkbox gets `aria-readonly`.",
             "defaultValue": null,
             "parent": {
               "name": "CheckboxGroupRootProps",
@@ -1872,6 +1893,13 @@
           "snippet": "const Disabled = () => <CheckboxGroup.Root aria-label=\"Lines of business\" defaultValue={['home']} disabled>\n    {LOBS.map(({ value, label }) => (\n        <CheckboxGroup.Item key={value} value={value}>\n            {label}\n        </CheckboxGroup.Item>\n    ))}\n</CheckboxGroup.Root>;",
           "description": "",
           "summary": "Whole group disabled"
+        },
+        {
+          "id": "components-checkboxgroup--read-only",
+          "name": "Read Only",
+          "snippet": "const ReadOnly = () => <Field.Root readOnly>\n    <Field.Label>Lines of business</Field.Label>\n    <CheckboxGroup.Root aria-label={undefined} defaultValue={['home']} onValueChange={fn()}>\n        {LOBS.map(({ value, label }) => (\n            <CheckboxGroup.Item key={value} value={value}>\n                {label}\n            </CheckboxGroup.Item>\n        ))}\n    </CheckboxGroup.Root>\n</Field.Root>;",
+          "description": "Inside a read-only `Field.Root`, the items stay focusable but do not toggle,\nand each checkbox announces `aria-readonly` (a `group` cannot carry it).",
+          "summary": "Read-only through a surrounding Field"
         },
         {
           "id": "components-checkboxgroup--disabled-item",
@@ -2267,7 +2295,7 @@
         "displayName": "Combobox.Root",
         "exportName": "Combobox",
         "filePath": "/home/runner/work/design-system/design-system/src/combobox/index.ts",
-        "description": "Root of a combobox: a text input that filters a list of options and writes the\nchosen one back into itself. The list opens on focus, on the first keystroke\nor from the chevron of `Input`'s `select` variant.\n\nFor a search against an API, set `minInputLength` so the list stays shut until\nthe query is worth sending: a field that opens an empty list on focus reads as\nbroken. For a pick from a short fixed list with no typing at all, prefer a\nselect.\n\nPass the options as `items`. For a list that comes from the server, set\n`filter={null}`, hand the already-filtered rows to `filteredItems`, and request\nthem from `onInputValueChange`; `Status` then announces the wait.\n\nEvery Base UI root prop is accepted and forwarded — `items`, `filter`,\n`value`, `onValueChange` and so on. `open` stays the consumer's to control;\n`minInputLength` only refuses to open below the minimum.\n\nWith `multiple`, the value is an array and picking a row toggles it. The list\nstays open and keeps the typed query between picks, so several rows can be\nticked from one search; closing the list (Escape, a click outside) still resets\nthe query. Each row then shows whether it is selected — see `Item`. Nothing is\nwritten back into the input: render the selection next to the field.",
+        "description": "Root of a combobox: a text input that filters a list of options and writes the\nchosen one back into itself. The list opens on focus, on the first keystroke\nor from the chevron of `Input`'s `select` variant.\n\nFor a search against an API, set `minInputLength` so the list stays shut until\nthe query is worth sending: a field that opens an empty list on focus reads as\nbroken. For a pick from a short fixed list with no typing at all, prefer a\nselect.\n\nPass the options as `items`. For a list that comes from the server, set\n`filter={null}`, hand the already-filtered rows to `filteredItems`, request\nthem from `onInputValueChange`, and pass the request's state as `loading`:\nthe combobox announces the wait and marks the list busy on its own.\n\nEvery Base UI root prop is accepted and forwarded — `items`, `filter`,\n`value`, `onValueChange` and so on. `open` stays the consumer's to control;\n`minInputLength` only refuses to open below the minimum.\n\nWith `multiple`, the value is an array and picking a row toggles it. The list\nstays open and keeps the typed query between picks, so several rows can be\nticked from one search; closing the list (Escape, a click outside) still resets\nthe query. Each row then shows whether it is selected — see `Item`. Nothing is\nwritten back into the input: render the selection next to the field.",
         "jsDocTags": {
           "summary": [
             "Root provider for an input-triggered filterable list"
@@ -2478,13 +2506,13 @@
               }
             ]
           },
-          "required": {
-            "name": "required",
+          "readOnly": {
+            "name": "readOnly",
             "required": false,
             "type": {
               "name": "boolean"
             },
-            "description": "Whether the user must choose a value before submitting a form.",
+            "description": "Whether the user should be unable to choose a different option from the popup.",
             "defaultValue": {
               "value": "false"
             },
@@ -2499,13 +2527,13 @@
               }
             ]
           },
-          "readOnly": {
-            "name": "readOnly",
+          "required": {
+            "name": "required",
             "required": false,
             "type": {
               "name": "boolean"
             },
-            "description": "Whether the user should be unable to choose a different option from the popup.",
+            "description": "Whether the user must choose a value before submitting a form.",
             "defaultValue": {
               "value": "false"
             },
@@ -3050,6 +3078,46 @@
                 "fileName": "src/combobox/combobox.tsx"
               }
             ]
+          },
+          "loading": {
+            "name": "loading",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Whether the options are being fetched. Once the list has been open and\nloading for half a second, `loadingLabel` is announced once: sooner, a\nscreen reader would cut it off to echo the key just typed, and a faster\nanswer has no wait to announce. `Content` is marked `aria-busy`, and\n`Empty` shows nothing, so \"no results\" is not read out before the results\narrive. The announcement comes from a visually hidden live region the root\nrenders next to the field, so it is in place before the list opens. On a search\nagainst an API, pass it from the first render, as `false` while idle: a root\nthat leaves it out gets no live region. A list filtered in memory never\nwaits and leaves it out. While loading with no rows yet, the surface shows\nwhatever placeholder `Content` holds — `Empty` stays quiet.",
+            "defaultValue": null,
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "src/combobox/combobox.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/combobox/combobox.tsx"
+              }
+            ]
+          },
+          "loadingLabel": {
+            "name": "loadingLabel",
+            "required": false,
+            "type": {
+              "name": "string"
+            },
+            "description": "What a screen reader hears when `loading` turns `true`. Announced only; any\nloading visuals — placeholder rows, a spinner — are yours to render inside\n`Content`, hidden from assistive technology. Defaults to `'Loading…'`.",
+            "defaultValue": {
+              "value": "'Loading…'"
+            },
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "src/combobox/combobox.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/combobox/combobox.tsx"
+              }
+            ]
           }
         }
       },
@@ -3097,15 +3165,15 @@
         {
           "id": "components-combobox--async-search",
           "name": "Async Search",
-          "snippet": "const AsyncSearch = () => {\n    const [query, setQuery] = useState('');\n    // The rows read the deferred query: while the new one suspends, React keeps rendering the\n    // old rows instead of falling back to the placeholders.\n    const deferredQuery = useDeferredValue(query);\n    const isStale = query !== deferredQuery;\n\n    return (\n        // No `items` and `filter={null}`: the server did the filtering, the child renders what came\n        // back, and `isItemEqualToValue` keeps a re-fetched copy counting as the selected one.\n        <Combobox.Root\n            filter={null}\n            itemToStringLabel={(agency: Agency) => agency.name}\n            isItemEqualToValue={(a: Agency, b: Agency) => a.id === b.id}\n            onInputValueChange={(value, { reason }) => {\n                // Picking a row writes its label into the input; that is not a new search.\n                if (reason !== 'item-press') setQuery(value);\n            }}>\n            <Combobox.Input placeholder=\"Search agencies\" aria-label=\"Search agencies\" />\n            <Combobox.Content aria-busy={isStale || undefined}>\n                <Suspense fallback={<SkeletonRows />}>\n                    <AgencyItems query={deferredQuery} />\n                </Suspense>\n            </Combobox.Content>\n        </Combobox.Root>\n    );\n};",
-          "description": "Options fetched as you type, the way the apps load data: the rows are a component\nthat suspends on the request, so a `Suspense` boundary inside `Content` shows\nplaceholder rows until the first results land. The rows read a deferred copy of\nthe query, so a new search keeps the previous rows on screen while it loads and\n`Content` is marked busy until they are replaced; the placeholders never come\nback. Nothing tracks `loading` by hand, and reading the data by query is what\nmakes out-of-order responses harmless. With react-query, drop a\n`useSuspenseQuery` where `use()` is, or use `placeholderData: keepPreviousData`\nwith a plain `useQuery` for the same behaviour."
+          "snippet": "const AsyncSearch = () => {\n    const [query, setQuery] = useState('');\n    // The rows read the deferred query: while the new one suspends, React keeps rendering the\n    // old rows instead of falling back to the placeholders.\n    const deferredQuery = useDeferredValue(query);\n    const isStale = query !== deferredQuery;\n\n    return (\n        // No `items` and `filter={null}`: the server did the filtering, the child renders what came\n        // back, and `isItemEqualToValue` keeps a re-fetched copy counting as the selected one.\n        <Combobox.Root\n            filter={null}\n            itemToStringLabel={(agency: Agency) => agency.name}\n            isItemEqualToValue={(a: Agency, b: Agency) => a.id === b.id}\n            loading={isStale}\n            loadingLabel=\"Searching agencies…\"\n            onInputValueChange={(value, { reason }) => {\n                // Picking a row writes its label into the input; that is not a new search.\n                if (reason !== 'item-press') setQuery(value);\n            }}>\n            <Combobox.Input placeholder=\"Search agencies\" aria-label=\"Search agencies\" />\n            <Combobox.Content>\n                <Suspense fallback={<SkeletonRows />}>\n                    <AgencyItems query={deferredQuery} />\n                </Suspense>\n            </Combobox.Content>\n        </Combobox.Root>\n    );\n};",
+          "description": "Options fetched as you type, the way the apps load data: the rows are a component\nthat suspends on the request, so a `Suspense` boundary inside `Content` shows\nplaceholder rows until the first results land. The rows read a deferred copy of\nthe query, so a new search keeps the previous rows on screen while it loads, and\npassing that staleness as `loading` announces the wait and marks `Content` busy\nuntil they are replaced; the placeholders never come back. Nothing tracks a\nrequest by hand, and reading the data by query is what\nmakes out-of-order responses harmless. With react-query, drop a\n`useSuspenseQuery` where `use()` is, or use `placeholderData: keepPreviousData`\nwith a plain `useQuery` for the same behaviour."
         },
         {
-          "id": "components-combobox--async-search-with-status",
-          "name": "Async Search With Status",
-          "snippet": "const AsyncSearchWithStatus = () => {\n    const [results, setResults] = useState<Agency[]>([]);\n    const [isLoading, setIsLoading] = useState(false);\n    // Only the latest request may land; fast typing returns responses out of order.\n    const latestRequest = useRef(0);\n\n    const onInputValueChange = async (query: string) => {\n        const request = ++latestRequest.current;\n        if (query.trim().length < MIN_QUERY_LENGTH) {\n            setResults([]);\n            setIsLoading(false);\n            return;\n        }\n\n        // The previous rows stay through the wait, marked busy, rather than blinking out and back.\n        setIsLoading(true);\n        const agencies = await searchAgencies(query);\n        if (request !== latestRequest.current) return;\n\n        setResults(agencies);\n        setIsLoading(false);\n    };\n\n    return (\n        // `filter={null}` hands filtering to the server; `filteredItems` is what came back.\n        <Combobox.Root\n            items={results}\n            filteredItems={results}\n            filter={null}\n            minInputLength={MIN_QUERY_LENGTH}\n            itemToStringLabel={(agency: Agency) => agency.name}\n            isItemEqualToValue={(a: Agency, b: Agency) => a.id === b.id}\n            onInputValueChange={onInputValueChange}>\n            <Combobox.Input placeholder=\"Search agencies\" aria-label=\"Search agencies\" />\n            <Combobox.Content aria-busy={isLoading || undefined}>\n                {/* The rows show the wait; `Status` only announces it. */}\n                <Combobox.Status className=\"sr-only\">\n                    {isLoading ? 'Searching…' : undefined}\n                </Combobox.Status>\n                {isLoading && results.length === 0 && <SkeletonRows />}\n                <Combobox.Empty>{isLoading ? undefined : 'No agencies found'}</Combobox.Empty>\n                <Combobox.List>\n                    {(agency: Agency) => (\n                        <Combobox.Item key={agency.id} value={agency}>\n                            {agency.name}\n                        </Combobox.Item>\n                    )}\n                </Combobox.List>\n            </Combobox.Content>\n        </Combobox.Root>\n    );\n};",
-          "description": "The same search without Suspense, for a consumer that gets a `loading` flag from\nits data layer instead: `filter={null}`, the rows arrive through `filteredItems`,\n`Content` is marked busy and `Status` announces the wait. Placeholder rows show\nonly while there is nothing to show yet; after that, the previous rows stay\nuntil the new ones replace them. A request that is no longer the latest is\ndropped.\n\n`minInputLength` keeps the list shut until two characters are typed — focusing\nthe field opens nothing, and deleting back under the minimum closes it — and\nno request goes out for a shorter query either.",
-          "summary": "API search that waits for two characters, with loading status"
+          "id": "components-combobox--async-search-with-loading",
+          "name": "Async Search With Loading",
+          "snippet": "const AsyncSearchWithLoading = () => {\n    const [results, setResults] = useState<Agency[]>([]);\n    const [isLoading, setIsLoading] = useState(false);\n    // Only the latest request may land; fast typing returns responses out of order.\n    const latestRequest = useRef(0);\n\n    const onInputValueChange = async (query: string) => {\n        const request = ++latestRequest.current;\n        if (query.trim().length < MIN_QUERY_LENGTH) {\n            setResults([]);\n            setIsLoading(false);\n            return;\n        }\n\n        // The previous rows stay through the wait, marked busy, rather than blinking out and back.\n        setIsLoading(true);\n        const agencies = await searchAgencies(query);\n        if (request !== latestRequest.current) return;\n\n        setResults(agencies);\n        setIsLoading(false);\n    };\n\n    return (\n        // `filter={null}` hands filtering to the server; `filteredItems` is what came back.\n        <Combobox.Root\n            items={results}\n            filteredItems={results}\n            filter={null}\n            minInputLength={MIN_QUERY_LENGTH}\n            loading={isLoading}\n            loadingLabel=\"Searching agencies…\"\n            itemToStringLabel={(agency: Agency) => agency.name}\n            isItemEqualToValue={(a: Agency, b: Agency) => a.id === b.id}\n            onInputValueChange={onInputValueChange}>\n            <Combobox.Input placeholder=\"Search agencies\" aria-label=\"Search agencies\" />\n            <Combobox.Content>\n                {isLoading && results.length === 0 && <SkeletonRows />}\n                <Combobox.Empty>No agencies found</Combobox.Empty>\n                <Combobox.List>\n                    {(agency: Agency) => (\n                        <Combobox.Item key={agency.id} value={agency}>\n                            {agency.name}\n                        </Combobox.Item>\n                    )}\n                </Combobox.List>\n            </Combobox.Content>\n        </Combobox.Root>\n    );\n};",
+          "description": "The same search without Suspense, for a consumer that gets a `loading` flag from\nits data layer instead: `filter={null}`, the rows arrive through `filteredItems`,\nand the flag goes to `Root` as `loading`. That is all the wiring the wait needs:\n`Content` is marked busy, `loadingLabel` is announced once when the request\nstarts, and `Empty` holds back \"no results\" until the answer is in. Placeholder\nrows show only while there is nothing to show yet, hidden from assistive\ntechnology since the label already speaks for them; after that, the previous\nrows stay until the new ones replace them. A request that is no longer the\nlatest is dropped.\n\n`minInputLength` keeps the list shut until two characters are typed — focusing\nthe field opens nothing, and deleting back under the minimum closes it — and\nno request goes out for a shorter query either.",
+          "summary": "API search that waits for two characters and announces its loading state"
         },
         {
           "id": "components-combobox--inside-field-text",
@@ -6126,6 +6194,25 @@
               }
             ]
           },
+          "readOnly": {
+            "name": "readOnly",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Makes the control read-only through its context (focusable and copyable,\nnot editable, still submitted) and sets `data-readonly` on the root.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
           "required": {
             "name": "required",
             "required": false,
@@ -6146,25 +6233,6 @@
               {
                 "name": "TypeLiteral",
                 "fileName": "src/form-text/form-text.tsx"
-              }
-            ]
-          },
-          "readOnly": {
-            "name": "readOnly",
-            "required": false,
-            "type": {
-              "name": "boolean"
-            },
-            "description": "Makes the control read-only through its context (focusable and copyable,\nnot editable, still submitted) and sets `data-readonly` on the root.",
-            "defaultValue": null,
-            "parent": {
-              "name": "FieldRootProps",
-              "fileName": "src/field/field.tsx"
-            },
-            "declarations": [
-              {
-                "name": "TypeLiteral",
-                "fileName": "src/field/field.tsx"
               }
             ]
           },
@@ -7160,6 +7228,154 @@
         }
       ],
       "import": "import { Field, FieldText, InputSearch, Label } from \"@agentero/design-system\";"
+    },
+    "components-inputtel": {
+      "id": "components-inputtel",
+      "name": "InputTel",
+      "path": "./src/input-tel/input-tel.stories.tsx",
+      "jsDocTags": {
+        "summary": [
+          "US phone input with a +1 prefix that masks as you type"
+        ],
+        "dataAttribute": [
+          "{string} data-slot - Always set to \"input-tel\" on the frame"
+        ],
+        "example": [
+          "<FieldText>\n  <Label>Phone number</Label>\n  <InputTel name=\"phone\" autoComplete=\"tel-national\" placeholder=\"(555) 000-0000\" />\n</FieldText>"
+        ]
+      },
+      "description": "InputTel is a US phone number field that masks as you type: the digits are\nlaid out as `(555) 123-4567`, anything else is dropped and the caret stays\nnext to the digit just edited. It is an `Input` of `type=\"tel\"` inside an\n`InputGroup` frame with a `+1` prefix; `onChange` receives the native event\nwith the masked text already in `event.target.value`.",
+      "summary": "US phone input with a +1 prefix that masks as you type",
+      "reactComponentMeta": {
+        "displayName": "InputTel",
+        "exportName": "InputTel",
+        "filePath": "/home/runner/work/design-system/design-system/src/input-tel/input-tel.tsx",
+        "description": "InputTel is a US phone number field that masks as you type: the digits the\nuser enters are laid out as `(555) 123-4567` while typing, pasting or\ndeleting, anything that is not a digit is dropped, and the caret stays next\nto the digit just edited instead of jumping to the end. A leading `+1`\ncountry code, as pasted or filled in by the browser's autofill, is dropped\ntoo; past that, the eleventh digit and beyond are ignored. `onChange`\nreceives the native change event with the masked text already in\n`event.target.value`, so a controlled field, an uncontrolled one and one\nregistered with react-hook-form all store `(555) 123-4567`, never the bare\ndigits.\n\nIt is an [Input](?path=/docs/components-input--docs) of `type=\"tel\"` inside\nan [InputGroup](?path=/docs/components-inputgroup--docs) frame that always\nshows a `+1` prefix in front of the number. The prefix is part of the frame,\nnot of the value. `className` styles the frame. Every other prop goes to the\n`<input>`: the `ref`, `id`, `name`, `value`, `onChange`, `aria-*` and every\nother standard attribute, such as `placeholder`, `autoComplete` or\n`required`. Only `type` is not accepted. Inside a `FieldText` the input\ntakes its label, messages and states from the field as a plain `Input` does.\nThe invalid state comes from `aria-invalid`, and the frame paints the\ndestructive border.\n\nDo not use it for international numbers or extensions; the mask only knows\nthe ten-digit US format. For free-form text that happens to hold a number,\nuse `Input`.",
+        "jsDocTags": {
+          "summary": [
+            "US phone input with a +1 prefix that masks as you type"
+          ],
+          "dataAttribute": [
+            "{string} data-slot - Always set to \"input-tel\" on the frame"
+          ],
+          "example": [
+            "<FieldText>\n  <Label>Phone number</Label>\n  <InputTel name=\"phone\" autoComplete=\"tel-national\" placeholder=\"(555) 000-0000\" />\n</FieldText>"
+          ]
+        },
+        "props": {
+          "size": {
+            "name": "size",
+            "required": false,
+            "type": {
+              "name": "enum",
+              "raw": "\"sm\" | \"md\" | \"lg\"",
+              "value": [
+                {
+                  "value": "\"sm\""
+                },
+                {
+                  "value": "\"md\""
+                },
+                {
+                  "value": "\"lg\""
+                }
+              ]
+            },
+            "description": "Control height. Defaults to `'md'`.\n- `sm` (32px) — dense layouts where vertical space is tight.\n- `md` (40px) — standard form density.\n- `lg` (48px) — low-density forms and larger touch targets. Also raises\n  the text to `base` and the corner radius to `lg`.",
+            "defaultValue": null,
+            "parent": {
+              "name": "InputProps",
+              "fileName": "src/input/input.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input/input.tsx"
+              }
+            ]
+          }
+        }
+      },
+      "stories": [
+        {
+          "id": "components-inputtel--default",
+          "name": "Default",
+          "snippet": "const Default = () => <InputTel\n    aria-label=\"Phone number\"\n    onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)} />;",
+          "description": "An uncontrolled phone field with its `+1` prefix. Typing the ten digits lays\nthem out as `(555) 123-4567`, and every `onChange` call carries the masked\ntext in `event.target.value`; the prefix never enters the value.",
+          "summary": "Phone field with a +1 prefix masking the digits as they are typed"
+        },
+        {
+          "id": "components-inputtel--controlled",
+          "name": "Controlled",
+          "snippet": "const Controlled = () => {\n    const [phone, setPhone] = useState('');\n\n    return (\n        <InputTel\n            aria-label=\"Phone number\"\n            value={phone}\n            onChange={event => {\n                setPhone(event.target.value);\n                args.onChange?.(event);\n            }} />\n    );\n};",
+          "description": "A controlled phone field. The state that owns the value stores what\n`event.target.value` reports, which is already masked, and the input shows\nit back unchanged. A partial number carries the separator that comes before\nthe next digit, so six digits read `(555) 123-`.",
+          "summary": "Controlled phone field storing the masked value"
+        },
+        {
+          "id": "components-inputtel--caret-in-the-middle",
+          "name": "Caret In The Middle",
+          "snippet": "const CaretInTheMiddle = () => <InputTel\n    aria-label=\"Phone number\"\n    onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)} />;",
+          "description": "Editing in the middle of a full number: a digit typed after `(5` shifts the\nrest right, the eleventh digit falls off the end and the caret stays after\nthe digit just typed instead of jumping to the end.",
+          "summary": "Caret staying put when a digit is inserted mid-number"
+        },
+        {
+          "id": "components-inputtel--backspace-over-mask-characters",
+          "name": "Backspace Over Mask Characters",
+          "snippet": "const BackspaceOverMaskCharacters = () => <InputTel\n    aria-label=\"Phone number\"\n    onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)} />;",
+          "description": "Backspace over the mask's own characters: after `555` the field shows\n`(555) `, and deleting backwards trims the separators along with the digit\nunder the caret instead of leaving a dangling `) `.",
+          "summary": "Backspace trimming the separators the mask added"
+        },
+        {
+          "id": "components-inputtel--paste",
+          "name": "Paste",
+          "snippet": "const Paste = () => <InputTel\n    aria-label=\"Phone number\"\n    onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)} />;",
+          "description": "A pasted number in any format is reduced to its digits and masked, so\n`555-123-4567` from a clipboard ends up as `(555) 123-4567`.",
+          "summary": "Pasted number reduced to its digits and masked"
+        },
+        {
+          "id": "components-inputtel--paste-with-country-code",
+          "name": "Paste With Country Code",
+          "snippet": "const PasteWithCountryCode = () => <InputTel\n    aria-label=\"Phone number\"\n    onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)} />;",
+          "description": "A number that carries the `+1` country code, as copied from a signature or\nfilled in by the browser's autofill, loses the code and keeps its ten\nnational digits: `+1 (555) 123-4567` ends up as `(555) 123-4567`.",
+          "summary": "Pasted number with a +1 country code"
+        },
+        {
+          "id": "components-inputtel--inside-field-text",
+          "name": "Inside Field Text",
+          "snippet": "const InsideFieldText = () => (\n    <FieldText>\n        <Label>Phone number</Label>\n        <InputTel />\n        <Field.Description>We only call about your account.</Field.Description>\n    </FieldText>\n);",
+          "description": "Inside a `FieldText` the input takes its label, description and states from\nthe field, and the masked value still reaches a handler the field provides.",
+          "summary": "Label and description reaching the input through the field"
+        },
+        {
+          "id": "components-inputtel--with-react-hook-form",
+          "name": "With React Hook Form",
+          "snippet": "const WithReactHookForm = () => {\n    const { register, handleSubmit } = useForm<ContactValues>({\n        defaultValues: { phone: '' }\n    });\n\n    return (\n        <form\n            aria-label=\"Contact\"\n            noValidate\n            onSubmit={handleSubmit(values => onSubmit(values))}\n            style={{ display: 'grid', gap: '1rem' }}>\n            <InputTel aria-label=\"Phone number\" {...register('phone')} />\n            <Button type=\"submit\">Save</Button>\n        </form>\n    );\n};",
+          "description": "Registered with react-hook-form, the form receives the masked value: the\n`register` handler reads `event.target.value` like any other change.",
+          "summary": "Masked value reaching react-hook-form through register"
+        },
+        {
+          "id": "components-inputtel--disabled",
+          "name": "Disabled",
+          "snippet": "const Disabled = () => <InputTel\n    aria-label=\"Phone number\"\n    onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n    disabled\n    defaultValue=\"(555) 123-4567\" />;",
+          "description": "A disabled phone field keeps its masked value and takes no input.",
+          "summary": "Disabled phone field"
+        },
+        {
+          "id": "components-inputtel--invalid",
+          "name": "Invalid",
+          "snippet": "const Invalid = () => (\n    <FieldText invalid>\n        <Label>Phone number</Label>\n        <InputTel defaultValue=\"(555) 12\" />\n        <Field.Error errors={[{ message: 'Enter a 10-digit phone number.' }]} />\n    </FieldText>\n);",
+          "description": "`invalid` on the surrounding `FieldText` sets `aria-invalid` on the input,\nwhich paints the frame's destructive border, and `Field.Error` is announced\nwith the input.",
+          "summary": "Invalid field driving the frame's destructive border"
+        },
+        {
+          "id": "components-inputtel--all-sizes",
+          "name": "All Sizes",
+          "snippet": "const AllSizes = () => <div style={{ display: 'grid', gap: '1rem' }}>\n    <InputTel\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        size=\"sm\"\n        aria-label=\"Small\"\n        defaultValue=\"(555) 123-4567\" />\n    <InputTel\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        size=\"md\"\n        aria-label=\"Medium\"\n        defaultValue=\"(555) 123-4567\" />\n    <InputTel\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        size=\"lg\"\n        aria-label=\"Large\"\n        defaultValue=\"(555) 123-4567\" />\n</div>;",
+          "description": "The three sizes match Input's: the frame is 32, 40 or 48px tall.",
+          "summary": "The three sizes side by side"
+        }
+      ],
+      "import": "import { Button, Field, FieldText, InputContext, InputTel, Label } from \"@agentero/design-system\";"
     },
     "components-input": {
       "id": "components-input",
@@ -10127,6 +10343,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4947
+    "durationMs": 3395
   }
 }
