@@ -3094,8 +3094,10 @@ the selection with `FormData.getAll`.</div>
               <div class="hint">`aria-label` and `disabled={false}` on the group win over the field. Its own
 `aria-describedby` joins the field&#39;s messages instead of replacing them.</div>
               <pre><code>const InsideFieldOverridden = () =&gt; &lt;Field.Root disabled&gt;
-    &lt;Field.Label&gt;Lines of business&lt;/Field.Label&gt;
-    &lt;Field.Description&gt;The lines this agency writes.&lt;/Field.Description&gt;
+    &lt;Field.Content&gt;
+        &lt;Field.Label&gt;Lines of business&lt;/Field.Label&gt;
+        &lt;Field.Description&gt;The lines this agency writes.&lt;/Field.Description&gt;
+    &lt;/Field.Content&gt;
     &lt;p id=&quot;lobs-note&quot;&gt;Ask the principal before changing them.&lt;/p&gt;
     &lt;CheckboxGroup.Root
         aria-label=&quot;Lines written&quot;

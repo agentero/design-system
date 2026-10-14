@@ -1925,7 +1925,7 @@
         {
           "id": "components-checkboxgroup--inside-field-overridden",
           "name": "Inside Field Overridden",
-          "snippet": "const InsideFieldOverridden = () => <Field.Root disabled>\n    <Field.Label>Lines of business</Field.Label>\n    <Field.Description>The lines this agency writes.</Field.Description>\n    <p id=\"lobs-note\">Ask the principal before changing them.</p>\n    <CheckboxGroup.Root\n        aria-label=\"Lines written\"\n        defaultValue={['home']}\n        aria-describedby=\"lobs-note\"\n        disabled={false}>\n        {LOBS.map(({ value, label }) => (\n            <CheckboxGroup.Item key={value} value={value}>\n                {label}\n            </CheckboxGroup.Item>\n        ))}\n    </CheckboxGroup.Root>\n</Field.Root>;",
+          "snippet": "const InsideFieldOverridden = () => <Field.Root disabled>\n    <Field.Content>\n        <Field.Label>Lines of business</Field.Label>\n        <Field.Description>The lines this agency writes.</Field.Description>\n    </Field.Content>\n    <p id=\"lobs-note\">Ask the principal before changing them.</p>\n    <CheckboxGroup.Root\n        aria-label=\"Lines written\"\n        defaultValue={['home']}\n        aria-describedby=\"lobs-note\"\n        disabled={false}>\n        {LOBS.map(({ value, label }) => (\n            <CheckboxGroup.Item key={value} value={value}>\n                {label}\n            </CheckboxGroup.Item>\n        ))}\n    </CheckboxGroup.Root>\n</Field.Root>;",
           "description": "`aria-label` and `disabled={false}` on the group win over the field. Its own\n`aria-describedby` joins the field's messages instead of replacing them.",
           "summary": "Own props override the Field wiring"
         }
@@ -10127,6 +10127,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4857
+    "durationMs": 4947
   }
 }
