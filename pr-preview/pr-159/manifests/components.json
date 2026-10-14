@@ -2797,7 +2797,7 @@
             "type": {
               "name": "boolean"
             },
-            "description": "Whether the options are being fetched. Once the list has been open and\nloading for half a second, `loadingLabel` is announced once: sooner, a\nscreen reader would cut it off to echo the key just typed, and a faster\nanswer has no wait to announce. `Content` is marked `aria-busy`, and\n`Empty` shows nothing, so \"no results\" is not read out before the results\narrive. The announcement comes from a visually hidden live region the root\nrenders next to the field, so it is in place before the list opens. On a search\nagainst an API, pass it from the first render, as `false` while idle: a root\nthat leaves it out gets no live region. A list filtered in memory never\nwaits and leaves it out.",
+            "description": "Whether the options are being fetched. Once the list has been open and\nloading for half a second, `loadingLabel` is announced once: sooner, a\nscreen reader would cut it off to echo the key just typed, and a faster\nanswer has no wait to announce. `Content` is marked `aria-busy`, and\n`Empty` shows nothing, so \"no results\" is not read out before the results\narrive. The announcement comes from a visually hidden live region the root\nrenders next to the field, so it is in place before the list opens. On a search\nagainst an API, pass it from the first render, as `false` while idle: a root\nthat leaves it out gets no live region. A list filtered in memory never\nwaits and leaves it out. While loading with no rows yet, the surface shows\nwhatever placeholder `Content` holds — `Empty` stays quiet.",
             "defaultValue": null,
             "parent": {
               "name": "ComboboxRootProps",
@@ -9907,6 +9907,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4876
+    "durationMs": 4971
   }
 }
