@@ -97,6 +97,10 @@ const slots = comboboxRecipe();
 // a private store.
 const MultipleContext = createContext(false);
 
+// The root's `loading` and `loadingLabel`, for `Content` to announce and mark busy and for `Empty`
+// to hold back. `loading` stays `undefined` for a root that never opted in.
+const LoadingContext = createContext<{ loading?: boolean; label: string }>({ label: '' });
+
 export type ComboboxRootProps<
 	Value,
 	Multiple extends boolean | undefined,
@@ -109,6 +113,21 @@ export type ComboboxRootProps<
 	 * focus.
 	 */
 	minInputLength?: number;
+	/**
+	 * Whether the options are being fetched. While `true`, `Content` is marked
+	 * `aria-busy`, `loadingLabel` is announced once, and `Empty` shows nothing,
+	 * so "no results" is not read out before the results arrive. On a search
+	 * against an API, pass it from the first render, as `false` while idle: a root
+	 * that leaves it out gets no live region. A list filtered in memory never
+	 * waits and leaves it out.
+	 */
+	loading?: boolean;
+	/**
+	 * What a screen reader hears when `loading` turns `true`. Announced only; any
+	 * loading visuals — placeholder rows, a spinner — are yours to render inside
+	 * `Content`, hidden from assistive technology. Defaults to `'Loading…'`.
+	 */
+	loadingLabel?: string;
 };
 
 /**
@@ -122,8 +141,9 @@ export type ComboboxRootProps<
  * select.
  *
  * Pass the options as `items`. For a list that comes from the server, set
- * `filter={null}`, hand the already-filtered rows to `filteredItems`, and request
- * them from `onInputValueChange`; `Status` then announces the wait.
+ * `filter={null}`, hand the already-filtered rows to `filteredItems`, request
+ * them from `onInputValueChange`, and pass the request's state as `loading`:
+ * the combobox announces the wait and marks the list busy on its own.
  *
  * Every Base UI root prop is accepted and forwarded — `items`, `filter`,
  * `value`, `onValueChange` and so on. `open` stays the consumer's to control;
@@ -155,6 +175,8 @@ export type ComboboxRootProps<
  */
 export const Root = <Value, Multiple extends boolean | undefined = false, Item = Value>({
 	minInputLength = 0,
+	loading,
+	loadingLabel = 'Loading…',
 	open: openProp,
 	defaultOpen = false,
 	onOpenChange,
@@ -220,14 +242,16 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 
 	return (
 		<MultipleContext value={multiple}>
-			<ComboboxPrimitive.Root
-				open={open}
-				defaultOpen={defaultOpen}
-				onOpenChange={handleOpenChange}
-				onOpenChangeComplete={handleOpenChangeComplete}
-				onInputValueChange={handleInputValueChange}
-				{...props}
-			/>
+			<LoadingContext value={{ loading, label: loadingLabel }}>
+				<ComboboxPrimitive.Root
+					open={open}
+					defaultOpen={defaultOpen}
+					onOpenChange={handleOpenChange}
+					onOpenChangeComplete={handleOpenChangeComplete}
+					onInputValueChange={handleInputValueChange}
+					{...props}
+				/>
+			</LoadingContext>
 		</MultipleContext>
 	);
 };
@@ -421,6 +445,12 @@ type ContentProps = ComponentPropsWithRef<typeof ComboboxPrimitive.Popup> &
  * one sits under a focused input whose ring is already two near-black pixels, and
  * at 8 the two borders fight.
  *
+ * Under a root that passes `loading`, it carries the announcement: a polite live
+ * region, hidden from sight, that stays mounted and takes `loadingLabel` while
+ * `loading` is `true`, so the label is read once when the wait starts and not
+ * again until the next one. The surface is `aria-busy` for as long. An
+ * `aria-busy` passed here wins.
+ *
  * @summary Floating surface anchored to the input, holding the list
  * @dataAttribute {string} data-slot - Always set to "combobox-content"
  */
@@ -432,27 +462,42 @@ export const Content = ({
 	alignOffset,
 	anchor,
 	collisionPadding = 8,
+	children,
 	...props
-}: ContentProps) => (
-	<ComboboxPrimitive.Portal>
-		<ComboboxPrimitive.Positioner
-			side={side}
-			align={align}
-			sideOffset={sideOffset}
-			alignOffset={alignOffset}
-			anchor={anchor}
-			collisionPadding={collisionPadding}
-			// A Radix modal (`Modal`) sets `pointer-events: none` on the body and re-enables only its
-			// own layers; the surface portals to the body, so it re-enables itself the same way.
-			className="isolate z-(--z-index-top-layer) pointer-events-auto">
-			<ComboboxPrimitive.Popup
-				data-slot="combobox-content"
-				className={cn(slots.content(), className)}
-				{...props}
-			/>
-		</ComboboxPrimitive.Positioner>
-	</ComboboxPrimitive.Portal>
-);
+}: ContentProps) => {
+	const { loading, label } = use(LoadingContext);
+
+	return (
+		<ComboboxPrimitive.Portal>
+			<ComboboxPrimitive.Positioner
+				side={side}
+				align={align}
+				sideOffset={sideOffset}
+				alignOffset={alignOffset}
+				anchor={anchor}
+				collisionPadding={collisionPadding}
+				// A Radix modal (`Modal`) sets `pointer-events: none` on the body and re-enables only its
+				// own layers; the surface portals to the body, so it re-enables itself the same way.
+				className="isolate z-(--z-index-top-layer) pointer-events-auto">
+				<ComboboxPrimitive.Popup
+					data-slot="combobox-content"
+					aria-busy={loading || undefined}
+					className={cn(slots.content(), className)}
+					{...props}>
+					{loading !== undefined && (
+						// Mounted for as long as the surface is, with only its text swapped: a live region that
+						// appears already filled in is often skipped. Base UI's `Status` covers the surface
+						// opening mid-request, where it has to mount filled.
+						<ComboboxPrimitive.Status data-slot="combobox-loading" className="sr-only">
+							{loading ? label : null}
+						</ComboboxPrimitive.Status>
+					)}
+					{children}
+				</ComboboxPrimitive.Popup>
+			</ComboboxPrimitive.Positioner>
+		</ComboboxPrimitive.Portal>
+	);
+};
 Content.displayName = 'Combobox.Content';
 
 type ListProps = ComponentPropsWithRef<typeof ComboboxPrimitive.List>;
@@ -527,27 +572,35 @@ type EmptyProps = ComponentPropsWithRef<typeof ComboboxPrimitive.Empty>;
 /**
  * Shown in place of the list when nothing matches, and announced politely. It
  * needs `items` on `Root` to know the list is empty, and it must stay mounted —
- * change its children rather than rendering it conditionally.
+ * change its children rather than rendering it conditionally. While the root is
+ * `loading` it shows nothing: the list is empty because the results have not
+ * arrived yet, not because there are none.
  *
  * @summary Message shown when no item matches the query
  * @dataAttribute {string} data-slot - Always set to "combobox-empty"
  */
-export const Empty = ({ className, ...props }: EmptyProps) => (
-	<ComboboxPrimitive.Empty
-		data-slot="combobox-empty"
-		className={cn(slots.message(), className)}
-		{...props}
-	/>
-);
+export const Empty = ({ className, children, ...props }: EmptyProps) => {
+	const { loading } = use(LoadingContext);
+
+	return (
+		<ComboboxPrimitive.Empty
+			data-slot="combobox-empty"
+			className={cn(slots.message(), className)}
+			{...props}>
+			{loading ? null : children}
+		</ComboboxPrimitive.Empty>
+	);
+};
 Empty.displayName = 'Combobox.Empty';
 
 type StatusProps = ComponentPropsWithRef<typeof ComboboxPrimitive.Status>;
 
 /**
- * Announces the state of a list that is still loading. Use it for the wait on a
- * remote search: keep it mounted and swap its children. It does not mark the
- * surface busy on its own — pass `aria-busy` to `Content` while the request is in
- * flight, as Base UI's own examples do.
+ * A politely announced message about the list. For the wait on a remote search,
+ * pass `loading` to `Root` instead: it announces and marks the surface busy with
+ * nothing else wired. Reach for `Status` for any other message — a count of
+ * results, an error from the request — and keep it mounted, swapping its
+ * children: a live region that appears already filled in is often skipped.
  *
  * @summary Politely announced status message for an async list
  * @dataAttribute {string} data-slot - Always set to "combobox-status"
