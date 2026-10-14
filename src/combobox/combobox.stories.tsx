@@ -403,7 +403,7 @@ const searchAgencies = (query: string) =>
 	new Promise<Agency[]>(resolve => {
 		setTimeout(
 			() => resolve(ALL_AGENCIES.filter(a => a.name.toLowerCase().includes(query.toLowerCase()))),
-			300
+			800
 		);
 	});
 
@@ -526,7 +526,7 @@ export const AsyncSearch: Story = {
 			configure({ eventWrapper });
 		}
 		await waitFor(() => expect(content()).toHaveAttribute('aria-busy', 'true'));
-		await expect(body.getByText(/searching agencies/i)).toBeInTheDocument();
+		await waitFor(() => expect(body.getByText(/searching agencies/i)).toBeInTheDocument());
 		await expect(skeleton()).not.toBeInTheDocument();
 		await expect(body.getAllByRole('option')).toHaveLength(4);
 		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(2));
@@ -614,6 +614,11 @@ export const AsyncSearchWithLoading: Story = {
 		const body = within(document.body);
 		const input = canvas.getByRole('combobox', { name: /search agencies/i });
 
+		// The loading region is on the page, empty, before the list ever opens.
+		const region = canvasElement.querySelector('[data-slot="combobox-loading"]');
+		await expect(region).toBeInTheDocument();
+		await expect(region).toBeEmptyDOMElement();
+
 		// Under the minimum nothing opens: not on focus, not on the first character.
 		await userEvent.click(input);
 		await userEvent.type(input, 'a');
@@ -623,12 +628,12 @@ export const AsyncSearchWithLoading: Story = {
 		await userEvent.type(input, 'n');
 
 		// One live region speaks for the wait; the placeholder rows and `Empty` stay silent.
-		const announcement = await body.findByText(/searching agencies/i);
+		await waitFor(() => expect(region).toHaveTextContent(/searching agencies/i));
 		const content = document.body.querySelector('[data-slot="combobox-content"]');
 		await expect(content).toHaveAttribute('aria-busy', 'true');
 		const speaking = body.getAllByRole('status').filter(status => status.textContent?.trim());
 		await expect(speaking).toHaveLength(1);
-		await expect(speaking[0]).toContainElement(announcement);
+		await expect(speaking).toEqual([region]);
 		await expect(body.queryByText(/no agencies found/i)).not.toBeInTheDocument();
 		await expect(body.queryByRole('option')).not.toBeInTheDocument();
 		await waitFor(() => expect(body.getAllByRole('option').length).toBeGreaterThan(0));
@@ -641,12 +646,9 @@ export const AsyncSearchWithLoading: Story = {
 
 		// Narrowing the query keeps the previous rows, marked busy, until the new ones land.
 		const previous = body.getAllByRole('option').length;
-		// The region stays mounted between waits, so the label lands in it as a change to announce.
-		const region = announcement.closest('[role="status"]');
 		await userEvent.type(input, 'ch');
 		await expect(content).toHaveAttribute('aria-busy', 'true');
-		await expect(region).toBeInTheDocument();
-		await expect(region).toHaveTextContent(/searching agencies/i);
+		await waitFor(() => expect(region).toHaveTextContent(/searching agencies/i));
 		await expect(body.getAllByRole('option')).toHaveLength(previous);
 		await expect(
 			document.body.querySelector('[data-slot="combobox-skeleton"]')

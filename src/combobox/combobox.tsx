@@ -2,7 +2,7 @@
 
 // Stays: `@base-ui/react/combobox` is `export * as Combobox`, so its parts hang off one
 // export like cmdk's — without the directive they arrive `undefined` (see `command.tsx`).
-import { ComponentPropsWithRef, createContext, use, useRef, useState } from 'react';
+import { ComponentPropsWithRef, createContext, use, useEffect, useRef, useState } from 'react';
 
 import { Combobox as ComboboxPrimitive } from '@base-ui/react/combobox';
 import { tv } from 'tailwind-variants';
@@ -97,9 +97,32 @@ const slots = comboboxRecipe();
 // a private store.
 const MultipleContext = createContext(false);
 
-// The root's `loading` and `loadingLabel`, for `Content` to announce and mark busy and for `Empty`
-// to hold back. `loading` stays `undefined` for a root that never opted in.
-const LoadingContext = createContext<{ loading?: boolean; label: string }>({ label: '' });
+// The root's `loading`, for `Content` to mark busy and for `Empty` to hold back. It stays
+// `undefined` for a root that never opted in.
+const LoadingContext = createContext<{ loading?: boolean }>({});
+
+// How long a request runs before its label is announced. VoiceOver cuts off whatever it is saying
+// to echo the key just typed and, when the list opens, to read out its new expanded state; both
+// start about 100ms after the keystroke. A label that lands later queues behind them instead of
+// being dropped. A request that answers sooner has no wait worth announcing.
+const LOADING_ANNOUNCE_DELAY = 500;
+
+// The label for the live region: set once the list has been open and loading for the delay, and
+// cleared as soon as either stops.
+const useLoadingAnnouncement = (waiting: boolean, label: string) => {
+	const [due, setDue] = useState(false);
+
+	useEffect(() => {
+		if (!waiting) return;
+		const timeout = setTimeout(() => setDue(true), LOADING_ANNOUNCE_DELAY);
+		return () => {
+			clearTimeout(timeout);
+			setDue(false);
+		};
+	}, [waiting]);
+
+	return waiting && due ? label : null;
+};
 
 export type ComboboxRootProps<
 	Value,
@@ -114,9 +137,13 @@ export type ComboboxRootProps<
 	 */
 	minInputLength?: number;
 	/**
-	 * Whether the options are being fetched. While `true`, `Content` is marked
-	 * `aria-busy`, `loadingLabel` is announced once, and `Empty` shows nothing,
-	 * so "no results" is not read out before the results arrive. On a search
+	 * Whether the options are being fetched. Once the list has been open and
+	 * loading for half a second, `loadingLabel` is announced once: sooner, a
+	 * screen reader would cut it off to echo the key just typed, and a faster
+	 * answer has no wait to announce. `Content` is marked `aria-busy`, and
+	 * `Empty` shows nothing, so "no results" is not read out before the results
+	 * arrive. The announcement comes from a visually hidden live region the root
+	 * renders next to the field, so it is in place before the list opens. On a search
 	 * against an API, pass it from the first render, as `false` while idle: a root
 	 * that leaves it out gets no live region. A list filtered in memory never
 	 * waits and leaves it out.
@@ -182,6 +209,7 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 	onOpenChange,
 	onOpenChangeComplete,
 	onInputValueChange,
+	children,
 	...props
 }: ComboboxRootProps<Value, Multiple, Item>) => {
 	const multiple = Boolean(props.multiple);
@@ -239,18 +267,32 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 
 	// Without a minimum, Base UI keeps its own open state, as it always has.
 	const open = openProp ?? (minInputLength > 0 ? openState : undefined);
+	const announcement = useLoadingAnnouncement(
+		Boolean(loading) && (openProp ?? openState),
+		loadingLabel
+	);
 
 	return (
 		<MultipleContext value={multiple}>
-			<LoadingContext value={{ loading, label: loadingLabel }}>
+			<LoadingContext value={{ loading }}>
 				<ComboboxPrimitive.Root
 					open={open}
 					defaultOpen={defaultOpen}
 					onOpenChange={handleOpenChange}
 					onOpenChangeComplete={handleOpenChangeComplete}
 					onInputValueChange={handleInputValueChange}
-					{...props}
-				/>
+					{...props}>
+					{children}
+					{loading !== undefined && (
+						// Next to the field, not inside `Content`: the surface mounts on the keystroke that
+						// starts the request, and a live region that appears already filled in is skipped.
+						// This one is on the page before the list opens, so the label is always a text
+						// change. Base UI leaves live regions out of what it hides while the list is open.
+						<ComboboxPrimitive.Status data-slot="combobox-loading" className="sr-only">
+							{announcement}
+						</ComboboxPrimitive.Status>
+					)}
+				</ComboboxPrimitive.Root>
 			</LoadingContext>
 		</MultipleContext>
 	);
@@ -445,11 +487,8 @@ type ContentProps = ComponentPropsWithRef<typeof ComboboxPrimitive.Popup> &
  * one sits under a focused input whose ring is already two near-black pixels, and
  * at 8 the two borders fight.
  *
- * Under a root that passes `loading`, it carries the announcement: a polite live
- * region, hidden from sight, that stays mounted and takes `loadingLabel` while
- * `loading` is `true`, so the label is read once when the wait starts and not
- * again until the next one. The surface is `aria-busy` for as long. An
- * `aria-busy` passed here wins.
+ * Under a root that passes `loading`, the surface is `aria-busy` while `loading`
+ * is `true`; the root announces the wait. An `aria-busy` passed here wins.
  *
  * @summary Floating surface anchored to the input, holding the list
  * @dataAttribute {string} data-slot - Always set to "combobox-content"
@@ -465,7 +504,7 @@ export const Content = ({
 	children,
 	...props
 }: ContentProps) => {
-	const { loading, label } = use(LoadingContext);
+	const { loading } = use(LoadingContext);
 
 	return (
 		<ComboboxPrimitive.Portal>
@@ -484,14 +523,6 @@ export const Content = ({
 					aria-busy={loading || undefined}
 					className={cn(slots.content(), className)}
 					{...props}>
-					{loading !== undefined && (
-						// Mounted for as long as the surface is, with only its text swapped: a live region that
-						// appears already filled in is often skipped. Base UI's `Status` covers the surface
-						// opening mid-request, where it has to mount filled.
-						<ComboboxPrimitive.Status data-slot="combobox-loading" className="sr-only">
-							{loading ? label : null}
-						</ComboboxPrimitive.Status>
-					)}
 					{children}
 				</ComboboxPrimitive.Popup>
 			</ComboboxPrimitive.Positioner>
