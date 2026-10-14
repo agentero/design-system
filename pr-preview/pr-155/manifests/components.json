@@ -2007,7 +2007,7 @@
         "displayName": "Combobox.Root",
         "exportName": "Combobox",
         "filePath": "/home/runner/work/design-system/design-system/src/combobox/index.ts",
-        "description": "Root of a combobox: a text input that filters a list of options and writes the\nchosen one back into itself. The list opens on focus, on the first keystroke\nor from the chevron of `Input`'s `select` variant.\n\nFor a search against an API, set `minInputLength` so the list stays shut until\nthe query is worth sending: a field that opens an empty list on focus reads as\nbroken. For a pick from a short fixed list with no typing at all, prefer a\nselect.\n\nPass the options as `items`. For a list that comes from the server, set\n`filter={null}`, hand the already-filtered rows to `filteredItems`, and request\nthem from `onInputValueChange`; `Status` then announces the wait.\n\nEvery Base UI root prop is accepted and forwarded — `items`, `filter`,\n`value`, `onValueChange` and so on. `open` stays the consumer's to control;\n`minInputLength` only refuses to open below the minimum.\n\nWith `multiple`, the value is an array and picking a row toggles it. The list\nstays open and keeps the typed query between picks, so several rows can be\nticked from one search; closing the list (Escape, a click outside) still resets\nthe query. Each row then shows whether it is selected — see `Item`. Nothing is\nwritten back into the input: render the selection next to the field.",
+        "description": "Root of a combobox: a text input that filters a list of options and writes the\nchosen one back into itself. The list opens on focus, on the first keystroke\nor from the chevron of `Input`'s `select` variant.\n\nFor a search against an API, set `minInputLength` so the list stays shut until\nthe query is worth sending: a field that opens an empty list on focus reads as\nbroken. For a pick from a short fixed list with no typing at all, prefer a\nselect.\n\nPass the options as `items`. For a list that comes from the server, set\n`filter={null}`, hand the already-filtered rows to `filteredItems`, request\nthem from `onInputValueChange`, and pass the request's state as `loading`:\nthe combobox announces the wait and marks the list busy on its own.\n\nEvery Base UI root prop is accepted and forwarded — `items`, `filter`,\n`value`, `onValueChange` and so on. `open` stays the consumer's to control;\n`minInputLength` only refuses to open below the minimum.\n\nWith `multiple`, the value is an array and picking a row toggles it. The list\nstays open and keeps the typed query between picks, so several rows can be\nticked from one search; closing the list (Escape, a click outside) still resets\nthe query. Each row then shows whether it is selected — see `Item`. Nothing is\nwritten back into the input: render the selection next to the field.",
         "jsDocTags": {
           "summary": [
             "Root provider for an input-triggered filterable list"
@@ -2790,6 +2790,46 @@
                 "fileName": "src/combobox/combobox.tsx"
               }
             ]
+          },
+          "loading": {
+            "name": "loading",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Whether the options are being fetched. Once the list has been open and\nloading for half a second, `loadingLabel` is announced once: sooner, a\nscreen reader would cut it off to echo the key just typed, and a faster\nanswer has no wait to announce. `Content` is marked `aria-busy`, and\n`Empty` shows nothing, so \"no results\" is not read out before the results\narrive. The announcement comes from a visually hidden live region the root\nrenders next to the field, so it is in place before the list opens. On a search\nagainst an API, pass it from the first render, as `false` while idle: a root\nthat leaves it out gets no live region. A list filtered in memory never\nwaits and leaves it out. While loading with no rows yet, the surface shows\nwhatever placeholder `Content` holds — `Empty` stays quiet.",
+            "defaultValue": null,
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "src/combobox/combobox.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/combobox/combobox.tsx"
+              }
+            ]
+          },
+          "loadingLabel": {
+            "name": "loadingLabel",
+            "required": false,
+            "type": {
+              "name": "string"
+            },
+            "description": "What a screen reader hears when `loading` turns `true`. Announced only; any\nloading visuals — placeholder rows, a spinner — are yours to render inside\n`Content`, hidden from assistive technology. Defaults to `'Loading…'`.",
+            "defaultValue": {
+              "value": "'Loading…'"
+            },
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "src/combobox/combobox.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/combobox/combobox.tsx"
+              }
+            ]
           }
         }
       },
@@ -2837,15 +2877,15 @@
         {
           "id": "components-combobox--async-search",
           "name": "Async Search",
-          "snippet": "const AsyncSearch = () => {\n    const [query, setQuery] = useState('');\n    // The rows read the deferred query: while the new one suspends, React keeps rendering the\n    // old rows instead of falling back to the placeholders.\n    const deferredQuery = useDeferredValue(query);\n    const isStale = query !== deferredQuery;\n\n    return (\n        // No `items` and `filter={null}`: the server did the filtering, the child renders what came\n        // back, and `isItemEqualToValue` keeps a re-fetched copy counting as the selected one.\n        <Combobox.Root\n            filter={null}\n            itemToStringLabel={(agency: Agency) => agency.name}\n            isItemEqualToValue={(a: Agency, b: Agency) => a.id === b.id}\n            onInputValueChange={(value, { reason }) => {\n                // Picking a row writes its label into the input; that is not a new search.\n                if (reason !== 'item-press') setQuery(value);\n            }}>\n            <Combobox.Input placeholder=\"Search agencies\" aria-label=\"Search agencies\" />\n            <Combobox.Content aria-busy={isStale || undefined}>\n                <Suspense fallback={<SkeletonRows />}>\n                    <AgencyItems query={deferredQuery} />\n                </Suspense>\n            </Combobox.Content>\n        </Combobox.Root>\n    );\n};",
-          "description": "Options fetched as you type, the way the apps load data: the rows are a component\nthat suspends on the request, so a `Suspense` boundary inside `Content` shows\nplaceholder rows until the first results land. The rows read a deferred copy of\nthe query, so a new search keeps the previous rows on screen while it loads and\n`Content` is marked busy until they are replaced; the placeholders never come\nback. Nothing tracks `loading` by hand, and reading the data by query is what\nmakes out-of-order responses harmless. With react-query, drop a\n`useSuspenseQuery` where `use()` is, or use `placeholderData: keepPreviousData`\nwith a plain `useQuery` for the same behaviour."
+          "snippet": "const AsyncSearch = () => {\n    const [query, setQuery] = useState('');\n    // The rows read the deferred query: while the new one suspends, React keeps rendering the\n    // old rows instead of falling back to the placeholders.\n    const deferredQuery = useDeferredValue(query);\n    const isStale = query !== deferredQuery;\n\n    return (\n        // No `items` and `filter={null}`: the server did the filtering, the child renders what came\n        // back, and `isItemEqualToValue` keeps a re-fetched copy counting as the selected one.\n        <Combobox.Root\n            filter={null}\n            itemToStringLabel={(agency: Agency) => agency.name}\n            isItemEqualToValue={(a: Agency, b: Agency) => a.id === b.id}\n            loading={isStale}\n            loadingLabel=\"Searching agencies…\"\n            onInputValueChange={(value, { reason }) => {\n                // Picking a row writes its label into the input; that is not a new search.\n                if (reason !== 'item-press') setQuery(value);\n            }}>\n            <Combobox.Input placeholder=\"Search agencies\" aria-label=\"Search agencies\" />\n            <Combobox.Content>\n                <Suspense fallback={<SkeletonRows />}>\n                    <AgencyItems query={deferredQuery} />\n                </Suspense>\n            </Combobox.Content>\n        </Combobox.Root>\n    );\n};",
+          "description": "Options fetched as you type, the way the apps load data: the rows are a component\nthat suspends on the request, so a `Suspense` boundary inside `Content` shows\nplaceholder rows until the first results land. The rows read a deferred copy of\nthe query, so a new search keeps the previous rows on screen while it loads, and\npassing that staleness as `loading` announces the wait and marks `Content` busy\nuntil they are replaced; the placeholders never come back. Nothing tracks a\nrequest by hand, and reading the data by query is what\nmakes out-of-order responses harmless. With react-query, drop a\n`useSuspenseQuery` where `use()` is, or use `placeholderData: keepPreviousData`\nwith a plain `useQuery` for the same behaviour."
         },
         {
-          "id": "components-combobox--async-search-with-status",
-          "name": "Async Search With Status",
-          "snippet": "const AsyncSearchWithStatus = () => {\n    const [results, setResults] = useState<Agency[]>([]);\n    const [isLoading, setIsLoading] = useState(false);\n    // Only the latest request may land; fast typing returns responses out of order.\n    const latestRequest = useRef(0);\n\n    const onInputValueChange = async (query: string) => {\n        const request = ++latestRequest.current;\n        if (query.trim().length < MIN_QUERY_LENGTH) {\n            setResults([]);\n            setIsLoading(false);\n            return;\n        }\n\n        // The previous rows stay through the wait, marked busy, rather than blinking out and back.\n        setIsLoading(true);\n        const agencies = await searchAgencies(query);\n        if (request !== latestRequest.current) return;\n\n        setResults(agencies);\n        setIsLoading(false);\n    };\n\n    return (\n        // `filter={null}` hands filtering to the server; `filteredItems` is what came back.\n        <Combobox.Root\n            items={results}\n            filteredItems={results}\n            filter={null}\n            minInputLength={MIN_QUERY_LENGTH}\n            itemToStringLabel={(agency: Agency) => agency.name}\n            isItemEqualToValue={(a: Agency, b: Agency) => a.id === b.id}\n            onInputValueChange={onInputValueChange}>\n            <Combobox.Input placeholder=\"Search agencies\" aria-label=\"Search agencies\" />\n            <Combobox.Content aria-busy={isLoading || undefined}>\n                {/* The rows show the wait; `Status` only announces it. */}\n                <Combobox.Status className=\"sr-only\">\n                    {isLoading ? 'Searching…' : undefined}\n                </Combobox.Status>\n                {isLoading && results.length === 0 && <SkeletonRows />}\n                <Combobox.Empty>{isLoading ? undefined : 'No agencies found'}</Combobox.Empty>\n                <Combobox.List>\n                    {(agency: Agency) => (\n                        <Combobox.Item key={agency.id} value={agency}>\n                            {agency.name}\n                        </Combobox.Item>\n                    )}\n                </Combobox.List>\n            </Combobox.Content>\n        </Combobox.Root>\n    );\n};",
-          "description": "The same search without Suspense, for a consumer that gets a `loading` flag from\nits data layer instead: `filter={null}`, the rows arrive through `filteredItems`,\n`Content` is marked busy and `Status` announces the wait. Placeholder rows show\nonly while there is nothing to show yet; after that, the previous rows stay\nuntil the new ones replace them. A request that is no longer the latest is\ndropped.\n\n`minInputLength` keeps the list shut until two characters are typed — focusing\nthe field opens nothing, and deleting back under the minimum closes it — and\nno request goes out for a shorter query either.",
-          "summary": "API search that waits for two characters, with loading status"
+          "id": "components-combobox--async-search-with-loading",
+          "name": "Async Search With Loading",
+          "snippet": "const AsyncSearchWithLoading = () => {\n    const [results, setResults] = useState<Agency[]>([]);\n    const [isLoading, setIsLoading] = useState(false);\n    // Only the latest request may land; fast typing returns responses out of order.\n    const latestRequest = useRef(0);\n\n    const onInputValueChange = async (query: string) => {\n        const request = ++latestRequest.current;\n        if (query.trim().length < MIN_QUERY_LENGTH) {\n            setResults([]);\n            setIsLoading(false);\n            return;\n        }\n\n        // The previous rows stay through the wait, marked busy, rather than blinking out and back.\n        setIsLoading(true);\n        const agencies = await searchAgencies(query);\n        if (request !== latestRequest.current) return;\n\n        setResults(agencies);\n        setIsLoading(false);\n    };\n\n    return (\n        // `filter={null}` hands filtering to the server; `filteredItems` is what came back.\n        <Combobox.Root\n            items={results}\n            filteredItems={results}\n            filter={null}\n            minInputLength={MIN_QUERY_LENGTH}\n            loading={isLoading}\n            loadingLabel=\"Searching agencies…\"\n            itemToStringLabel={(agency: Agency) => agency.name}\n            isItemEqualToValue={(a: Agency, b: Agency) => a.id === b.id}\n            onInputValueChange={onInputValueChange}>\n            <Combobox.Input placeholder=\"Search agencies\" aria-label=\"Search agencies\" />\n            <Combobox.Content>\n                {isLoading && results.length === 0 && <SkeletonRows />}\n                <Combobox.Empty>No agencies found</Combobox.Empty>\n                <Combobox.List>\n                    {(agency: Agency) => (\n                        <Combobox.Item key={agency.id} value={agency}>\n                            {agency.name}\n                        </Combobox.Item>\n                    )}\n                </Combobox.List>\n            </Combobox.Content>\n        </Combobox.Root>\n    );\n};",
+          "description": "The same search without Suspense, for a consumer that gets a `loading` flag from\nits data layer instead: `filter={null}`, the rows arrive through `filteredItems`,\nand the flag goes to `Root` as `loading`. That is all the wiring the wait needs:\n`Content` is marked busy, `loadingLabel` is announced once when the request\nstarts, and `Empty` holds back \"no results\" until the answer is in. Placeholder\nrows show only while there is nothing to show yet, hidden from assistive\ntechnology since the label already speaks for them; after that, the previous\nrows stay until the new ones replace them. A request that is no longer the\nlatest is dropped.\n\n`minInputLength` keeps the list shut until two characters are typed — focusing\nthe field opens nothing, and deleting back under the minimum closes it — and\nno request goes out for a shorter query either.",
+          "summary": "API search that waits for two characters and announces its loading state"
         },
         {
           "id": "components-combobox--inside-field-text",
@@ -10015,6 +10055,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5411
+    "durationMs": 3156
   }
 }
