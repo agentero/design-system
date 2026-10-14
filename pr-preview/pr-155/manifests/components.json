@@ -7021,7 +7021,7 @@
         {
           "id": "components-inputtel--with-react-hook-form",
           "name": "With React Hook Form",
-          "snippet": "const WithReactHookForm = () => {\n    const { register, handleSubmit } = useForm<ContactValues>({\n        defaultValues: { phone: '' }\n    });\n\n    return (\n        <form\n            aria-label=\"Contact\"\n            noValidate\n            onSubmit={handleSubmit(values => {\n                submitted = values;\n            })}\n            style={{ display: 'grid', gap: '1rem' }}>\n            <InputTel aria-label=\"Phone number\" {...register('phone')} />\n            <Button type=\"submit\">Save</Button>\n        </form>\n    );\n};",
+          "snippet": "const WithReactHookForm = () => {\n    const { register, handleSubmit } = useForm<ContactValues>({\n        defaultValues: { phone: '' }\n    });\n\n    return (\n        <form\n            aria-label=\"Contact\"\n            noValidate\n            onSubmit={handleSubmit(values => onSubmit(values))}\n            style={{ display: 'grid', gap: '1rem' }}>\n            <InputTel aria-label=\"Phone number\" {...register('phone')} />\n            <Button type=\"submit\">Save</Button>\n        </form>\n    );\n};",
           "description": "Registered with react-hook-form, the form receives the masked value: the\n`register` handler reads `event.target.value` like any other change.",
           "summary": "Masked value reaching react-hook-form through register"
         },
@@ -10015,6 +10015,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 3133
+    "durationMs": 5411
   }
 }
