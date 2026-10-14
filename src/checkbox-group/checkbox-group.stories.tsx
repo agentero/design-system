@@ -164,6 +164,44 @@ export const Disabled: Story = {
 };
 
 /**
+ * Inside a read-only `Field.Root`, the items stay focusable but do not toggle,
+ * and each checkbox announces `aria-readonly` (a `group` cannot carry it).
+ *
+ * @summary Read-only through a surrounding Field
+ */
+export const ReadOnly: Story = {
+	args: { 'aria-label': undefined, onValueChange: fn() },
+	render: args => (
+		<Field.Root readOnly>
+			<Field.Label>Lines of business</Field.Label>
+			<CheckboxGroup.Root {...args}>
+				{LOBS.map(({ value, label }) => (
+					<CheckboxGroup.Item key={value} value={value}>
+						{label}
+					</CheckboxGroup.Item>
+				))}
+			</CheckboxGroup.Root>
+		</Field.Root>
+	),
+	play: async ({ args, canvasElement }) => {
+		const canvas = within(canvasElement);
+		const auto = canvas.getByRole('checkbox', { name: 'Auto' });
+
+		await expect(canvas.getByRole('group', { name: 'Lines of business' })).toHaveAttribute(
+			'data-readonly'
+		);
+		await expect(auto).toHaveAttribute('aria-readonly', 'true');
+		await expect(auto).toBeEnabled();
+
+		await userEvent.click(auto);
+		await userEvent.click(canvas.getByText('Home'));
+		await expect(auto).not.toBeChecked();
+		await expect(canvas.getByRole('checkbox', { name: 'Home' })).toBeChecked();
+		await expect(args.onValueChange).not.toHaveBeenCalled();
+	}
+};
+
+/**
  * `disabled` on one item leaves the rest interactive. A checked disabled item
  * stays in the value.
  *

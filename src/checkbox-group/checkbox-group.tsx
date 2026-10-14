@@ -11,12 +11,17 @@ import { useFieldContext } from '../field';
 /** Style recipe for CheckboxGroup. Slots: `root`, `item`, `label` (the clickable row), `control` (24px slot for the box), `text`. */
 export const checkboxGroupRecipe = tv({
 	slots: {
-		// Figma leaves 16px between the label block and the options, where the field's gap is 8.
-		root: 'flex [:is([data-slot=field-content],[data-slot=field-description])+&]:mt-2',
+		// Figma leaves 16px between the label block and the options, where the field's gap is 8;
+		// an error below gets the same 16px.
+		root: [
+			'flex [:is([data-slot=field-content],[data-slot=field-description])+&]:mt-2',
+			'[&:has(+[data-slot=field-error])]:mb-2'
+		],
 		item: 'group/checkbox-group-item flex',
 		label: [
 			'flex cursor-pointer items-start gap-3 text-sm text-text-input-normal select-none',
-			'group-data-disabled/checkbox-group-item:cursor-not-allowed'
+			'group-data-disabled/checkbox-group-item:cursor-not-allowed',
+			'in-data-readonly:cursor-default'
 		],
 		control: 'flex size-6 shrink-0 items-center justify-center',
 		// The checkbox dims itself when disabled; only the text needs it here.
@@ -38,8 +43,10 @@ export type CheckboxGroupVariants = VariantProps<typeof checkboxGroupRecipe>;
 type CheckboxGroupContextValue = {
 	value: string[];
 	toggle: (itemValue: string, checked: boolean) => void;
+	styles: ReturnType<typeof checkboxGroupRecipe>;
 	name?: string;
 	disabled?: boolean;
+	readOnly?: boolean;
 	invalid?: ComponentPropsWithRef<'button'>['aria-invalid'];
 };
 
@@ -57,6 +64,8 @@ export type CheckboxGroupRootProps = Omit<
 	onValueChange?: (value: string[]) => void;
 	/** Disables every item in the group. */
 	disabled?: boolean;
+	/** Keeps every item focusable but stops it from toggling; each checkbox gets `aria-readonly`. */
+	readOnly?: boolean;
 	/** `vertical` (default) stacks the items; `horizontal` lays them in a row that wraps. */
 	orientation?: CheckboxGroupVariants['orientation'];
 	/** Form field name shared by every item; each checked item submits `name=value`. */
@@ -67,7 +76,7 @@ export type CheckboxGroupRootProps = Omit<
  * Multi-select list of checkboxes that holds its checked values as a
  * `string[]`. Renders `role="group"`: name it with `aria-labelledby` or
  * `aria-label`, or put it inside a `Field.Root`, which names, describes,
- * invalidates and disables it (the group's own props win).
+ * invalidates, disables and makes it read-only (the group's own props win).
  *
  * Not for options inside a `Command` or `Combobox` list, where a focusable
  * checkbox would nest inside the option: use the Combobox's multiple
@@ -88,12 +97,14 @@ export type CheckboxGroupRootProps = Omit<
  *
  * @dataAttribute {string} data-orientation - "vertical" | "horizontal"
  * @dataAttribute {string} data-disabled - Present when the whole group is disabled
+ * @dataAttribute {string} data-readonly - Present when the group is read-only
  */
 export const Root = ({
 	value: valueProp,
 	defaultValue = [],
 	onValueChange,
 	disabled: disabledProp,
+	readOnly: readOnlyProp,
 	orientation = 'vertical',
 	name,
 	'aria-invalid': invalidProp,
@@ -105,8 +116,10 @@ export const Root = ({
 }: CheckboxGroupRootProps) => {
 	const field = useFieldContext();
 	const styles = checkboxGroupRecipe({ orientation });
-	const labelledBy = labelledByProp ?? (props['aria-label'] ? undefined : field?.labelId);
+	const labelledBy =
+		labelledByProp ?? (props['aria-label'] !== undefined ? undefined : field?.labelId);
 	const disabled = disabledProp ?? (field?.disabled || undefined);
+	const readOnly = readOnlyProp ?? (field?.readOnly || undefined);
 	const invalid = invalidProp ?? (field?.invalid || undefined);
 	const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue);
 	const value = valueProp ?? uncontrolledValue;
@@ -117,6 +130,8 @@ export const Root = ({
 	)['aria-describedby'];
 
 	const toggle = (itemValue: string, checked: boolean) => {
+		if (readOnly) return;
+
 		const next = checked
 			? [...value.filter(v => v !== itemValue), itemValue]
 			: value.filter(v => v !== itemValue);
@@ -126,16 +141,17 @@ export const Root = ({
 	};
 
 	return (
-		<CheckboxGroupContext value={{ value, toggle, name, disabled, invalid }}>
+		<CheckboxGroupContext value={{ value, toggle, styles, name, disabled, readOnly, invalid }}>
 			<div
+				{...props}
 				role="group"
 				data-slot="checkbox-group"
 				data-orientation={orientation}
 				data-disabled={disabled || undefined}
+				data-readonly={readOnly || undefined}
 				aria-labelledby={labelledBy}
 				aria-describedby={describedBy}
-				className={cn(styles.root(), className)}
-				{...props}>
+				className={cn(styles.root(), className)}>
 				{children}
 			</div>
 		</CheckboxGroupContext>
@@ -175,18 +191,18 @@ export const Item = ({
 
 	if (!context) throw new Error('CheckboxGroup.Item must be rendered inside CheckboxGroup.Root.');
 
-	const styles = checkboxGroupRecipe();
+	const { styles } = context;
 	const id = idProp ?? generatedId;
 	const checked = context.value.includes(value);
 	const isDisabled = context.disabled || disabled;
 
 	return (
 		<div
+			{...props}
 			data-slot="checkbox-group-item"
 			data-state={checked ? 'checked' : 'unchecked'}
 			data-disabled={isDisabled || undefined}
-			className={cn(styles.item(), className)}
-			{...props}>
+			className={cn(styles.item(), className)}>
 			{/* The label wraps the box's slot and the gap too, so the whole row toggles. */}
 			<label htmlFor={id} data-slot="checkbox-group-item-label" className={styles.label()}>
 				<span data-slot="checkbox-group-item-control" className={styles.control()}>
@@ -197,6 +213,7 @@ export const Item = ({
 						checked={checked}
 						onCheckedChange={checked => context.toggle(value, checked === true)}
 						disabled={isDisabled}
+						aria-readonly={context.readOnly}
 						aria-invalid={context.invalid}
 					/>
 				</span>
