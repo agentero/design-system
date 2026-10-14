@@ -55,10 +55,9 @@ describe('applyMask', () => {
 });
 
 describe('getCursorPosition', () => {
-	it('should place the cursor at the end when the previous value was empty', () => {
+	it('should place the cursor at the end when typing into an empty field', () => {
 		expect(
 			getCursorPosition({
-				phoneBeforeInput: '',
 				phoneAfterInput: '1',
 				cursorPositionAfterInput: '1'.length,
 				phoneAfterFormatted: '+1 '
@@ -66,10 +65,19 @@ describe('getCursorPosition', () => {
 		).toBe(3);
 	});
 
+	it('should place the cursor at the end when pasting a number with its country code', () => {
+		expect(
+			getCursorPosition({
+				phoneAfterInput: '+1 (555) 123-4567',
+				cursorPositionAfterInput: '+1 (555) 123-4567'.length,
+				phoneAfterFormatted: '(555) 123-4567'
+			})
+		).toBe('(555) 123-4567'.length);
+	});
+
 	it('should place the cursor after the added mask characters when typing at the end', () => {
 		expect(
 			getCursorPosition({
-				phoneBeforeInput: '+380 (9',
 				phoneAfterInput: '+380 (97',
 				cursorPositionAfterInput: '+380 (97'.length,
 				phoneAfterFormatted: '+380 (97) '
@@ -80,7 +88,6 @@ describe('getCursorPosition', () => {
 	it('should keep the cursor after the typed digits when typing in the middle', () => {
 		expect(
 			getCursorPosition({
-				phoneBeforeInput: '+1 (111) 111-',
 				phoneAfterInput: '+1 (111) 9111-',
 				cursorPositionAfterInput: '+1 (111) 9'.length,
 				phoneAfterFormatted: '+1 (111) 911-1'
@@ -89,7 +96,6 @@ describe('getCursorPosition', () => {
 
 		expect(
 			getCursorPosition({
-				phoneBeforeInput: '+1 (111) 111-1111',
 				phoneAfterInput: '+1 (119991) 111-1111',
 				cursorPositionAfterInput: '+1 (11999'.length,
 				phoneAfterFormatted: '+1 (119) 991-1111'
@@ -100,7 +106,6 @@ describe('getCursorPosition', () => {
 	it('should keep the cursor where a digit was removed', () => {
 		expect(
 			getCursorPosition({
-				phoneBeforeInput: '+1 (111) 111-1111',
 				phoneAfterInput: '+1 (11) 111-1111',
 				cursorPositionAfterInput: '+1 (11'.length,
 				phoneAfterFormatted: '+1 (111) 111-111'
@@ -109,7 +114,6 @@ describe('getCursorPosition', () => {
 
 		expect(
 			getCursorPosition({
-				phoneBeforeInput: '+1 (234) 567-8901',
 				phoneAfterInput: '+1 (24) 567-8901',
 				cursorPositionAfterInput: '+1 (2'.length,
 				phoneAfterFormatted: '+1 (245) 678-901'
@@ -120,7 +124,6 @@ describe('getCursorPosition', () => {
 	it('should keep the cursor after the typed digit when the phone is already full', () => {
 		expect(
 			getCursorPosition({
-				phoneBeforeInput: '+1 (111) 111-1111',
 				phoneAfterInput: '+1 (9111) 111-1111',
 				cursorPositionAfterInput: '+1 (9'.length,
 				phoneAfterFormatted: '+1 (911) 111-1111'
@@ -131,7 +134,6 @@ describe('getCursorPosition', () => {
 	it('should place the cursor at the end when a digit replaces the whole selection', () => {
 		expect(
 			getCursorPosition({
-				phoneBeforeInput: '+1 (111) 111-',
 				phoneAfterInput: '1',
 				cursorPositionAfterInput: '1'.length,
 				phoneAfterFormatted: '+1 '
@@ -142,7 +144,6 @@ describe('getCursorPosition', () => {
 	it('should move the cursor past the mask characters when typing before one', () => {
 		expect(
 			getCursorPosition({
-				phoneBeforeInput: '+1 (111) 111-111',
 				phoneAfterInput: '+1 9(111) 111-111',
 				cursorPositionAfterInput: '+1 9'.length,
 				phoneAfterFormatted: '+1 (911) 111-1111'
@@ -151,7 +152,6 @@ describe('getCursorPosition', () => {
 
 		expect(
 			getCursorPosition({
-				phoneBeforeInput: '+1 (111) 111-111',
 				phoneAfterInput: '+19 (111) 111-111',
 				cursorPositionAfterInput: '+19'.length,
 				phoneAfterFormatted: '+1 (911) 111-1111'
@@ -160,7 +160,6 @@ describe('getCursorPosition', () => {
 
 		expect(
 			getCursorPosition({
-				phoneBeforeInput: '+1 (111) 111-111',
 				phoneAfterInput: '+91 (111) 111-111',
 				cursorPositionAfterInput: '+9'.length,
 				phoneAfterFormatted: '+9 (111) 111-1111'
@@ -171,7 +170,6 @@ describe('getCursorPosition', () => {
 	it('should place the cursor after the plus sign when the prefix is removed', () => {
 		expect(
 			getCursorPosition({
-				phoneBeforeInput: '+1 (111) 111-111',
 				phoneAfterInput: '1 (111) 111-111',
 				cursorPositionAfterInput: 0,
 				phoneAfterFormatted: '+1 (111) 111-1111',
@@ -181,7 +179,6 @@ describe('getCursorPosition', () => {
 
 		expect(
 			getCursorPosition({
-				phoneBeforeInput: '+380',
 				phoneAfterInput: '380',
 				cursorPositionAfterInput: 0,
 				phoneAfterFormatted: '+380 ',
@@ -191,7 +188,6 @@ describe('getCursorPosition', () => {
 
 		expect(
 			getCursorPosition({
-				phoneBeforeInput: '+1 ',
 				phoneAfterInput: ' ',
 				cursorPositionAfterInput: 0,
 				phoneAfterFormatted: '+',
@@ -237,7 +233,6 @@ describe('US phone mask', () => {
 	it('should keep the caret after the digit typed at the end', () => {
 		expect(
 			getCursorPosition({
-				phoneBeforeInput: '(555',
 				phoneAfterInput: '(5551',
 				cursorPositionAfterInput: '(5551'.length,
 				phoneAfterFormatted: '(555) 1'
@@ -248,7 +243,6 @@ describe('US phone mask', () => {
 	it('should keep the caret after a digit typed in the middle', () => {
 		expect(
 			getCursorPosition({
-				phoneBeforeInput: '(555) 123-4567',
 				phoneAfterInput: '(5955) 123-4567',
 				cursorPositionAfterInput: 3,
 				phoneAfterFormatted: '(595) 512-3456'
@@ -259,7 +253,6 @@ describe('US phone mask', () => {
 	it('should leave the caret after the last digit when backspace trims the separators', () => {
 		expect(
 			getCursorPosition({
-				phoneBeforeInput: '(555) ',
 				phoneAfterInput: '(555)',
 				cursorPositionAfterInput: '(555)'.length,
 				phoneAfterFormatted: '(555',
@@ -271,7 +264,6 @@ describe('US phone mask', () => {
 	it('should jump over the separators to the next digit on a forward delete', () => {
 		expect(
 			getCursorPosition({
-				phoneBeforeInput: '(555) 123-4567',
 				phoneAfterInput: '(555) 23-4567',
 				cursorPositionAfterInput: 6,
 				phoneAfterFormatted: '(555) 234-567',

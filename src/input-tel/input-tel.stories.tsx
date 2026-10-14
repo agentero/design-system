@@ -223,7 +223,7 @@ export const InsideFieldText: Story = {
 
 type ContactValues = { phone: string };
 
-let submitted: ContactValues | undefined;
+const onSubmit = fn((values: ContactValues) => values);
 
 /**
  * Registered with react-hook-form, the form receives the masked value: the
@@ -232,6 +232,9 @@ let submitted: ContactValues | undefined;
  * @summary Masked value reaching react-hook-form through register
  */
 export const WithReactHookForm: Story = {
+	beforeEach: () => {
+		onSubmit.mockClear();
+	},
 	render: function Render(args) {
 		const { register, handleSubmit } = useForm<ContactValues>({
 			defaultValues: { phone: '' }
@@ -241,9 +244,7 @@ export const WithReactHookForm: Story = {
 			<form
 				aria-label="Contact"
 				noValidate
-				onSubmit={handleSubmit(values => {
-					submitted = values;
-				})}
+				onSubmit={handleSubmit(values => onSubmit(values))}
 				style={{ display: 'grid', gap: '1rem' }}>
 				<InputTel aria-label={args['aria-label']} {...register('phone')} />
 				<Button type="submit">Save</Button>
@@ -257,7 +258,7 @@ export const WithReactHookForm: Story = {
 		await userEvent.type(input, '5551234567');
 		await userEvent.click(canvas.getByRole('button', { name: 'Save' }));
 
-		await waitFor(() => expect(submitted?.phone).toBe('(555) 123-4567'));
+		await waitFor(() => expect(onSubmit).toHaveBeenCalledWith({ phone: '(555) 123-4567' }));
 	}
 };
 

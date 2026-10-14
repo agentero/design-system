@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEvent, FocusEvent, useMemo, useRef } from 'react';
+import { ChangeEvent, useMemo, useRef } from 'react';
 
 import { mergeRefs } from '../../lib';
 import { Input, InputContext, InputProps, useInputContext } from '../input';
@@ -55,17 +55,9 @@ export type InputTelProps = Omit<InputProps, 'type'>;
 export const InputTel = (props: InputTelProps) => {
 	// The context is merged here, once, and the inner Input is cut off from it:
 	// a handler the context provides must run after the mask, not before it.
-	const { className, onChange, onFocus, ref, ...rest } = useInputContext(props);
+	const { className, onChange, ref, ...rest } = useInputContext(props);
 	const inputRef = useRef<HTMLInputElement>(null);
-	const phoneBeforeInput = useRef('');
 	const mergedRef = useMemo(() => mergeRefs(inputRef, ref), [ref]);
-
-	// Read on focus rather than from props: react-hook-form's `register` and
-	// `reset` write the value straight into the DOM, behind React's back.
-	const handleFocus = (event: FocusEvent<HTMLInputElement>) => {
-		phoneBeforeInput.current = event.target.value;
-		onFocus?.(event);
-	};
 
 	const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const deletion = getDeletionType((event.nativeEvent as InputEvent).inputType);
@@ -80,27 +72,28 @@ export const InputTel = (props: InputTelProps) => {
 
 		const newCursorPosition = getCursorPosition({
 			cursorPositionAfterInput: selectionStart ?? 0,
-			phoneBeforeInput: phoneBeforeInput.current,
 			phoneAfterInput: userInput,
 			phoneAfterFormatted: maskedValue,
 			deletion
 		});
 
-		phoneBeforeInput.current = maskedValue;
 		event.target.value = maskedValue;
+
+		// The focus check keeps Safari from focusing the input on
+		// `setSelectionRange` when autofill changes it from outside.
+		const placeCaret = () => {
+			const input = inputRef.current;
+			if (!input || input !== document.activeElement) return;
+			input.setSelectionRange(newCursorPosition, newCursorPosition);
+		};
 
 		if (onChange) {
 			onChange(event);
 			// The caret has to move after the controlling state has re-rendered the
-			// masked value; a 0ms timeout misses keys pressed together. The focus
-			// check keeps Safari from focusing the input on `setSelectionRange`.
-			Promise.resolve().then(() => {
-				const input = inputRef.current;
-				if (!input || input !== document.activeElement) return;
-				input.setSelectionRange(newCursorPosition, newCursorPosition);
-			});
+			// masked value; a 0ms timeout misses keys pressed together.
+			Promise.resolve().then(placeCaret);
 		} else {
-			event.target.setSelectionRange(newCursorPosition, newCursorPosition);
+			placeCaret();
 		}
 	};
 
@@ -108,7 +101,7 @@ export const InputTel = (props: InputTelProps) => {
 		<InputGroup.Root data-slot="input-tel" className={className}>
 			<InputGroup.Text>+1</InputGroup.Text>
 			<InputContext value={null}>
-				<Input {...rest} type="tel" ref={mergedRef} onFocus={handleFocus} onChange={handleChange} />
+				<Input {...rest} type="tel" ref={mergedRef} onChange={handleChange} />
 			</InputContext>
 		</InputGroup.Root>
 	);

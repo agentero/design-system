@@ -75,7 +75,6 @@ export const isNumeric = (str?: string) => {
 };
 
 type GetCursorPositionProps = {
-	phoneBeforeInput: string;
 	phoneAfterInput: string;
 	phoneAfterFormatted: string;
 	cursorPositionAfterInput: number;
@@ -88,16 +87,11 @@ type GetCursorPositionProps = {
  * jumping to the end when the mask characters move around it.
  */
 export const getCursorPosition = ({
-	phoneBeforeInput,
 	phoneAfterInput,
 	phoneAfterFormatted,
 	cursorPositionAfterInput,
 	deletion
 }: GetCursorPositionProps) => {
-	if (!phoneBeforeInput) {
-		return phoneAfterFormatted.length;
-	}
-
 	let afterInputPointIndex: number | null = null;
 
 	// iterate from right to left and get first digit char
