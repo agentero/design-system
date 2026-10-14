@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.4s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>4.9s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -3048,9 +3048,13 @@ itemToStringValue?: (itemValue: unknown) =&gt; string
 limit?: number = -1
 
 /**
- * Whether the options are being fetched. While `true`, `Content` is marked
- * `aria-busy`, `loadingLabel` is announced once, and `Empty` shows nothing,
- * so &quot;no results&quot; is not read out before the results arrive. On a search
+ * Whether the options are being fetched. Once the list has been open and
+ * loading for half a second, `loadingLabel` is announced once: sooner, a
+ * screen reader would cut it off to echo the key just typed, and a faster
+ * answer has no wait to announce. `Content` is marked `aria-busy`, and
+ * `Empty` shows nothing, so &quot;no results&quot; is not read out before the results
+ * arrive. The announcement comes from a visually hidden live region the root
+ * renders next to the field, so it is in place before the list opens. On a search
  * against an API, pass it from the first render, as `false` while idle: a root
  * that leaves it out gets no live region. A list filtered in memory never
  * waits and leaves it out.
