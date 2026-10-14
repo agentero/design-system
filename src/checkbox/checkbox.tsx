@@ -10,7 +10,7 @@ import { IconCheck, IconMinus } from './icons';
 export const checkboxRecipe = tv({
 	slots: {
 		root: [
-			'group/checkbox box-border inline-flex size-4 shrink-0 appearance-none items-center justify-center rounded-sm',
+			'group/checkbox relative box-border inline-flex size-4 shrink-0 appearance-none items-center justify-center rounded-sm',
 			'border-[1.5px] border-solid border-border-checkbox-default bg-bg-input-normal',
 			'cursor-pointer transition-colors duration-150',
 			// Only an enabled box lifts with the shadow, and only a valid one darkens on hover, so
@@ -32,7 +32,10 @@ export const checkboxRecipe = tv({
 			'aria-invalid:disabled:data-[state=checked]:border-bg-checkbox-invalid-disabled aria-invalid:disabled:data-[state=checked]:bg-bg-checkbox-invalid-disabled',
 			'aria-invalid:disabled:data-[state=indeterminate]:border-bg-checkbox-invalid-disabled aria-invalid:disabled:data-[state=indeterminate]:bg-bg-checkbox-invalid-disabled'
 		],
-		indicator: 'flex items-center justify-center text-text-default-base-inverse-primary'
+		// Out of the flow so the glyph, wider than the box inside its border, never moves the box's
+		// baseline when it mounts; the -1.5px inset spans the border, where Figma draws it.
+		indicator:
+			'absolute -inset-[1.5px] flex items-center justify-center text-text-default-base-inverse-primary'
 	}
 });
 
