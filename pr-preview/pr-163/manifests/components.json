@@ -666,13 +666,13 @@
           "```tsx\nimport { Autocomplete } from '@agentero/design-system/autocomplete';\n\n<form onSubmit={() => runPrompt(prompt)}>\n  <Autocomplete.Root items={recentPrompts} value={prompt} onValueChange={setPrompt}>\n    <Autocomplete.Input aria-label=\"Describe your filters\" before={<IconEffects />} />\n    <Autocomplete.Content>\n      <Autocomplete.List>\n        {(recent: string) => (\n          <Autocomplete.Item key={recent} value={recent} onClick={() => runPrompt(recent)}>\n            {recent}\n          </Autocomplete.Item>\n        )}\n      </Autocomplete.List>\n    </Autocomplete.Content>\n  </Autocomplete.Root>\n</form>\n```"
         ]
       },
-      "description": "Root of an autocomplete: a text field whose value is the text itself, with a\nlist of suggestions below it. Nothing is selected. Leaving the field, closing\nthe list and pressing Escape all keep what was typed.\n\nUse it for a free-text field that suggests: a prompt with recent queries, a\nnumber field that offers what a lookup found. When the value must be one of\nthe options, use [Combobox](?path=/docs/components-combobox--docs) instead:\nit writes the picked option back and drops text that matches none.\n\nPass the suggestions as `items`. Base UI filters them against the text; set\n`filter={null}` when they are already the ones to show. With `items`, the\nlist opens only while it has a row to show, or an `Empty` message: a field\nwith nothing to suggest stays shut, and one whose suggestions arrive late (a\nlookup still running) opens when they do, if the user is still in the field.\n`autoHighlight` highlights the first row as the user types, and `'always'`\nhighlights it as soon as it renders, which suits a single suggestion.\n\nEvery Base UI root prop is accepted and forwarded: `value`, `defaultValue`,\n`onValueChange`, `items`, `filter`, `autoHighlight`, `openOnInputClick`,\n`submitOnItemClick` and so on. A controlled `open` is passed through as is,\nwithout the check for rows. Base UI empties the field on Escape while the\nlist is shut, as a native search input does; this root keeps the text\ninstead, and does not report that change. Inside a `Modal`, Escape on an open\nlist closes the list only, and the next one closes the dialog; the modal\nleaves an Escape from an expanded combobox to it.\n\nPicking a row and pressing Enter are told apart with Base UI's own events:\n\n- A pick, by pointer or by Enter on the highlighted row, fires the row's\n  `onClick` and then `onValueChange` with `eventDetails.reason` set to\n  `'item-press'`, carrying the row's text. Base UI stops that Enter, so the\n  form is not submitted as well. With `submitOnItemClick` the form that owns\n  this field's input is submitted once, right after the pick, also when\n  several autocompletes share the page.\n- Enter with no row highlighted closes the list and submits the owning form\n  once, through its default button when it has one. A form with no submit\n  button submits too, as a form with a single text field does.\n- A pick fills the field with the row's text. To keep the typed text, call\n  `eventDetails.cancel()` when the reason is `'item-press'`, or ignore that\n  change on a controlled `value`: the row's `onClick` can then write\n  elsewhere.",
+      "description": "Root of an autocomplete: a text field whose value is the text itself, with a\nlist of suggestions below it. Nothing is selected. Leaving the field, closing\nthe list and pressing Escape all keep what was typed.\n\nUse it for a free-text field that suggests: a prompt with recent queries, a\nnumber field that offers what a lookup found. When the value must be one of\nthe options, use [Combobox](?path=/docs/components-combobox--docs) instead:\nit writes the picked option back and drops text that matches none.\n\nPass the suggestions as `items`. Base UI filters them against the text; set\n`filter={null}` when they are already the ones to show. With `items`, the\nlist opens only while it has a row to show, or always when it holds an\n`Empty` message: a field with nothing to suggest stays shut, and one whose\nsuggestions arrive late (a lookup still running) opens when they do, if the\nuser is still in the field.\n`autoHighlight` highlights the first row as the user types, and `'always'`\nhighlights it as soon as it renders, which suits a single suggestion.\n\nEvery Base UI root prop is accepted and forwarded: `value`, `defaultValue`,\n`onValueChange`, `items`, `filter`, `autoHighlight`, `openOnInputClick`\nand so on, except two. The open state (`open`, `defaultOpen`,\n`onOpenChange`) is left out, since the root decides when the list shows.\n`submitOnItemClick` is left out too: to submit on a pick, run the submit\nfrom the row's `onClick` with the row's value. Base UI empties the field on Escape while the\nlist is shut, as a native search input does; this root keeps the text\ninstead, and does not report that change. Inside a `Modal`, Escape on an open\nlist closes the list only, and the next one closes the dialog; the modal\nleaves an Escape from an expanded combobox to it.\n\nPicking a row and pressing Enter are told apart with Base UI's own events:\n\n- A pick, by pointer or by Enter on the highlighted row, fires the row's\n  `onClick` and then `onValueChange` with `eventDetails.reason` set to\n  `'item-press'`, carrying the row's text. Base UI stops that Enter, so the\n  form is not submitted as well.\n- Enter with no row highlighted closes the list and submits the owning form\n  once, as the browser would: through its default button, and not while\n  that button is disabled. With no submit button the form submits only when\n  this is its one text field.\n- A pick fills the field with the row's text. To keep the typed text, call\n  `eventDetails.cancel()` when the reason is `'item-press'`, or ignore that\n  change on a controlled `value`: the row's `onClick` can then write\n  elsewhere.",
       "summary": "Free-text field with a list of suggestions below it",
       "reactComponentMeta": {
         "displayName": "Autocomplete.Root",
         "exportName": "Autocomplete",
         "filePath": "/home/runner/work/design-system/design-system/src/autocomplete/index.ts",
-        "description": "Root of an autocomplete: a text field whose value is the text itself, with a\nlist of suggestions below it. Nothing is selected. Leaving the field, closing\nthe list and pressing Escape all keep what was typed.\n\nUse it for a free-text field that suggests: a prompt with recent queries, a\nnumber field that offers what a lookup found. When the value must be one of\nthe options, use [Combobox](?path=/docs/components-combobox--docs) instead:\nit writes the picked option back and drops text that matches none.\n\nPass the suggestions as `items`. Base UI filters them against the text; set\n`filter={null}` when they are already the ones to show. With `items`, the\nlist opens only while it has a row to show, or an `Empty` message: a field\nwith nothing to suggest stays shut, and one whose suggestions arrive late (a\nlookup still running) opens when they do, if the user is still in the field.\n`autoHighlight` highlights the first row as the user types, and `'always'`\nhighlights it as soon as it renders, which suits a single suggestion.\n\nEvery Base UI root prop is accepted and forwarded: `value`, `defaultValue`,\n`onValueChange`, `items`, `filter`, `autoHighlight`, `openOnInputClick`,\n`submitOnItemClick` and so on. A controlled `open` is passed through as is,\nwithout the check for rows. Base UI empties the field on Escape while the\nlist is shut, as a native search input does; this root keeps the text\ninstead, and does not report that change. Inside a `Modal`, Escape on an open\nlist closes the list only, and the next one closes the dialog; the modal\nleaves an Escape from an expanded combobox to it.\n\nPicking a row and pressing Enter are told apart with Base UI's own events:\n\n- A pick, by pointer or by Enter on the highlighted row, fires the row's\n  `onClick` and then `onValueChange` with `eventDetails.reason` set to\n  `'item-press'`, carrying the row's text. Base UI stops that Enter, so the\n  form is not submitted as well. With `submitOnItemClick` the form that owns\n  this field's input is submitted once, right after the pick, also when\n  several autocompletes share the page.\n- Enter with no row highlighted closes the list and submits the owning form\n  once, through its default button when it has one. A form with no submit\n  button submits too, as a form with a single text field does.\n- A pick fills the field with the row's text. To keep the typed text, call\n  `eventDetails.cancel()` when the reason is `'item-press'`, or ignore that\n  change on a controlled `value`: the row's `onClick` can then write\n  elsewhere.",
+        "description": "Root of an autocomplete: a text field whose value is the text itself, with a\nlist of suggestions below it. Nothing is selected. Leaving the field, closing\nthe list and pressing Escape all keep what was typed.\n\nUse it for a free-text field that suggests: a prompt with recent queries, a\nnumber field that offers what a lookup found. When the value must be one of\nthe options, use [Combobox](?path=/docs/components-combobox--docs) instead:\nit writes the picked option back and drops text that matches none.\n\nPass the suggestions as `items`. Base UI filters them against the text; set\n`filter={null}` when they are already the ones to show. With `items`, the\nlist opens only while it has a row to show, or always when it holds an\n`Empty` message: a field with nothing to suggest stays shut, and one whose\nsuggestions arrive late (a lookup still running) opens when they do, if the\nuser is still in the field.\n`autoHighlight` highlights the first row as the user types, and `'always'`\nhighlights it as soon as it renders, which suits a single suggestion.\n\nEvery Base UI root prop is accepted and forwarded: `value`, `defaultValue`,\n`onValueChange`, `items`, `filter`, `autoHighlight`, `openOnInputClick`\nand so on, except two. The open state (`open`, `defaultOpen`,\n`onOpenChange`) is left out, since the root decides when the list shows.\n`submitOnItemClick` is left out too: to submit on a pick, run the submit\nfrom the row's `onClick` with the row's value. Base UI empties the field on Escape while the\nlist is shut, as a native search input does; this root keeps the text\ninstead, and does not report that change. Inside a `Modal`, Escape on an open\nlist closes the list only, and the next one closes the dialog; the modal\nleaves an Escape from an expanded combobox to it.\n\nPicking a row and pressing Enter are told apart with Base UI's own events:\n\n- A pick, by pointer or by Enter on the highlighted row, fires the row's\n  `onClick` and then `onValueChange` with `eventDetails.reason` set to\n  `'item-press'`, carrying the row's text. Base UI stops that Enter, so the\n  form is not submitted as well.\n- Enter with no row highlighted closes the list and submits the owning form\n  once, as the browser would: through its default button, and not while\n  that button is disabled. With no submit button the form submits only when\n  this is its one text field.\n- A pick fills the field with the row's text. To keep the typed text, call\n  `eventDetails.cancel()` when the reason is `'item-press'`, or ignore that\n  change on a controlled `value`: the row's `onClick` can then write\n  elsewhere.",
         "jsDocTags": {
           "summary": [
             "Free-text field with a list of suggestions below it"
@@ -685,63 +685,6 @@
           ]
         },
         "props": {
-          "form": {
-            "name": "form",
-            "required": false,
-            "type": {
-              "name": "string"
-            },
-            "description": "Identifies the form that owns the internal input.\nUseful when the autocomplete is rendered outside the form.",
-            "defaultValue": null,
-            "parent": {
-              "name": "AutocompleteRootProps",
-              "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
-            },
-            "declarations": [
-              {
-                "name": "AutocompleteRootProps",
-                "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
-              }
-            ]
-          },
-          "items": {
-            "name": "items",
-            "required": false,
-            "type": {
-              "name": "readonly string[] | readonly Group<string>[] | undefined"
-            },
-            "description": "The items to be displayed in the list.\nCan be either a flat array of items or an array of groups with items.\nNullish entries are not supported: remove them from the data before passing it.",
-            "defaultValue": null,
-            "parent": {
-              "name": "AutocompleteRootProps",
-              "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
-            },
-            "declarations": [
-              {
-                "name": "AutocompleteRootProps",
-                "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
-              }
-            ]
-          },
-          "filteredItems": {
-            "name": "filteredItems",
-            "required": false,
-            "type": {
-              "name": "readonly string[] | readonly Group<string>[] | undefined"
-            },
-            "description": "Filtered items to display in the list.\nWhen provided, the list uses these items instead of filtering the `items` prop internally.\nWhen `items` is also provided, this array must preserve its flat or grouped structure.\nNullish entries are not supported, as in `items`.\nUse when you want to control filtering logic externally with the `useFilter()` hook.",
-            "defaultValue": null,
-            "parent": {
-              "name": "AutocompleteRootProps",
-              "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
-            },
-            "declarations": [
-              {
-                "name": "AutocompleteRootProps",
-                "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
-              }
-            ]
-          },
           "filter": {
             "name": "filter",
             "required": false,
@@ -761,30 +704,34 @@
               }
             ]
           },
-          "mode": {
-            "name": "mode",
+          "form": {
+            "name": "form",
             "required": false,
             "type": {
-              "name": "enum",
-              "raw": "\"none\" | \"list\" | \"inline\" | \"both\"",
-              "value": [
-                {
-                  "value": "\"none\""
-                },
-                {
-                  "value": "\"list\""
-                },
-                {
-                  "value": "\"inline\""
-                },
-                {
-                  "value": "\"both\""
-                }
-              ]
+              "name": "string"
             },
-            "description": "Controls how the autocomplete behaves with respect to list filtering and inline autocompletion.\n- `list` (default): items are dynamically filtered based on the input value. The input value does not change based on the active item.\n- `both`: items are dynamically filtered based on the input value, which will temporarily change based on the active item (inline autocompletion).\n- `inline`: items are static (not filtered), and the input value will temporarily change based on the active item (inline autocompletion).\n- `none`: items are static (not filtered), and the input value will not change based on the active item.",
+            "description": "Identifies the form that owns the internal input.\nUseful when the autocomplete is rendered outside the form.",
+            "defaultValue": null,
+            "parent": {
+              "name": "AutocompleteRootProps",
+              "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "AutocompleteRootProps",
+                "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
+              }
+            ]
+          },
+          "defaultValue": {
+            "name": "defaultValue",
+            "required": false,
+            "type": {
+              "name": "string | number | readonly string[] | undefined"
+            },
+            "description": "The uncontrolled input value of the autocomplete when it's initially rendered.\n\nTo render a controlled autocomplete, use the `value` prop instead.",
             "defaultValue": {
-              "value": "'list'"
+              "value": "''"
             },
             "parent": {
               "name": "AutocompleteRootProps",
@@ -794,6 +741,143 @@
               {
                 "name": "AutocompleteRootProps",
                 "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
+              }
+            ]
+          },
+          "id": {
+            "name": "id",
+            "required": false,
+            "type": {
+              "name": "string"
+            },
+            "description": "The id of the component.",
+            "defaultValue": null,
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "ComboboxRootProps",
+                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+              }
+            ]
+          },
+          "children": {
+            "name": "children",
+            "required": false,
+            "type": {
+              "name": "ReactNode"
+            },
+            "description": "",
+            "defaultValue": null,
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "ComboboxRootProps",
+                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+              }
+            ]
+          },
+          "grid": {
+            "name": "grid",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Whether list items are presented in a grid layout.\nWhen enabled, arrow keys navigate across rows and columns inferred from DOM rows.",
+            "defaultValue": {
+              "value": "false"
+            },
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "ComboboxRootProps",
+                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+              }
+            ]
+          },
+          "value": {
+            "name": "value",
+            "required": false,
+            "type": {
+              "name": "string | number | readonly string[] | undefined"
+            },
+            "description": "The input value of the autocomplete. Use when controlled.",
+            "defaultValue": null,
+            "parent": {
+              "name": "AutocompleteRootProps",
+              "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "AutocompleteRootProps",
+                "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
+              }
+            ]
+          },
+          "onValueChange": {
+            "name": "onValueChange",
+            "required": false,
+            "type": {
+              "name": "(value: string, eventDetails: AutocompleteRootChangeEventDetails) => void"
+            },
+            "description": "Event handler called when the input value of the autocomplete changes.",
+            "defaultValue": null,
+            "parent": {
+              "name": "AutocompleteRootProps",
+              "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "AutocompleteRootProps",
+                "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
+              }
+            ]
+          },
+          "disabled": {
+            "name": "disabled",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Whether the component should ignore user interaction.",
+            "defaultValue": {
+              "value": "false"
+            },
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "ComboboxRootProps",
+                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+              }
+            ]
+          },
+          "name": {
+            "name": "name",
+            "required": false,
+            "type": {
+              "name": "string"
+            },
+            "description": "Identifies the field when a form is submitted.",
+            "defaultValue": null,
+            "parent": {
+              "name": "ComboboxRootProps",
+              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "ComboboxRootProps",
+                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
               }
             ]
           },
@@ -807,6 +891,25 @@
             "defaultValue": {
               "value": "false"
             },
+            "parent": {
+              "name": "AutocompleteRootProps",
+              "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "AutocompleteRootProps",
+                "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
+              }
+            ]
+          },
+          "itemToStringValue": {
+            "name": "itemToStringValue",
+            "required": false,
+            "type": {
+              "name": "(itemValue: string) => string"
+            },
+            "description": "When the item values are objects (`<Autocomplete.Item value={object}>`), this function converts the object value to a string representation for both display in the input and form submission.\nIf the shape of the object is `{ value, label }`, the label will be used automatically without needing to specify this prop.",
+            "defaultValue": null,
             "parent": {
               "name": "AutocompleteRootProps",
               "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
@@ -881,105 +984,6 @@
               }
             ]
           },
-          "defaultValue": {
-            "name": "defaultValue",
-            "required": false,
-            "type": {
-              "name": "string | number | readonly string[] | undefined"
-            },
-            "description": "The uncontrolled input value of the autocomplete when it's initially rendered.\n\nTo render a controlled autocomplete, use the `value` prop instead.",
-            "defaultValue": {
-              "value": "''"
-            },
-            "parent": {
-              "name": "AutocompleteRootProps",
-              "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
-            },
-            "declarations": [
-              {
-                "name": "AutocompleteRootProps",
-                "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
-              }
-            ]
-          },
-          "value": {
-            "name": "value",
-            "required": false,
-            "type": {
-              "name": "string | number | readonly string[] | undefined"
-            },
-            "description": "The input value of the autocomplete. Use when controlled.",
-            "defaultValue": null,
-            "parent": {
-              "name": "AutocompleteRootProps",
-              "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
-            },
-            "declarations": [
-              {
-                "name": "AutocompleteRootProps",
-                "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
-              }
-            ]
-          },
-          "onValueChange": {
-            "name": "onValueChange",
-            "required": false,
-            "type": {
-              "name": "(value: string, eventDetails: AutocompleteRootChangeEventDetails) => void"
-            },
-            "description": "Event handler called when the input value of the autocomplete changes.",
-            "defaultValue": null,
-            "parent": {
-              "name": "AutocompleteRootProps",
-              "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
-            },
-            "declarations": [
-              {
-                "name": "AutocompleteRootProps",
-                "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
-              }
-            ]
-          },
-          "submitOnItemClick": {
-            "name": "submitOnItemClick",
-            "required": false,
-            "type": {
-              "name": "boolean"
-            },
-            "description": "Whether clicking an item should submit the autocomplete's owning form.\nBy default, clicking an item via a pointer or <kbd>Enter</kbd> key does not submit the owning form.\nUseful when the autocomplete is used as a single-field form search input.",
-            "defaultValue": {
-              "value": "false"
-            },
-            "parent": {
-              "name": "AutocompleteRootProps",
-              "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
-            },
-            "declarations": [
-              {
-                "name": "AutocompleteRootProps",
-                "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
-              }
-            ]
-          },
-          "itemToStringValue": {
-            "name": "itemToStringValue",
-            "required": false,
-            "type": {
-              "name": "(itemValue: string) => string"
-            },
-            "description": "When the item values are objects (`<Autocomplete.Item value={object}>`), this function converts the object value to a string representation for both display in the input and form submission.\nIf the shape of the object is `{ value, label }`, the label will be used automatically without needing to specify this prop.",
-            "defaultValue": null,
-            "parent": {
-              "name": "AutocompleteRootProps",
-              "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
-            },
-            "declarations": [
-              {
-                "name": "AutocompleteRootProps",
-                "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
-              }
-            ]
-          },
           "actionsRef": {
             "name": "actionsRef",
             "required": false,
@@ -987,44 +991,6 @@
               "name": "RefObject<AutocompleteRootActions | null>"
             },
             "description": "A ref to imperative actions.\n- `unmount`: Manually unmounts the autocomplete.\nCall this after any externally controlled closing animation finishes.",
-            "defaultValue": null,
-            "parent": {
-              "name": "AutocompleteRootProps",
-              "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
-            },
-            "declarations": [
-              {
-                "name": "AutocompleteRootProps",
-                "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
-              }
-            ]
-          },
-          "onOpenChange": {
-            "name": "onOpenChange",
-            "required": false,
-            "type": {
-              "name": "(open: boolean, eventDetails: AutocompleteRootChangeEventDetails) => void"
-            },
-            "description": "Event handler called when the popup is opened or closed.",
-            "defaultValue": null,
-            "parent": {
-              "name": "AutocompleteRootProps",
-              "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
-            },
-            "declarations": [
-              {
-                "name": "AutocompleteRootProps",
-                "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
-              }
-            ]
-          },
-          "onItemHighlighted": {
-            "name": "onItemHighlighted",
-            "required": false,
-            "type": {
-              "name": "(highlightedValue: string | undefined, eventDetails: HighlightEventDetails) => void"
-            },
-            "description": "Callback fired when an item is highlighted or unhighlighted.\nReceives the highlighted item value (or `undefined` if no item is highlighted) and event details with a `reason` property describing why the highlight changed.\nThe `reason` can be:\n- `'keyboard'`: the highlight changed due to keyboard navigation.\n- `'pointer'`: the highlight changed due to pointer hovering.\n- `'none'`: the highlight changed programmatically.",
             "defaultValue": null,
             "parent": {
               "name": "AutocompleteRootProps",
@@ -1058,142 +1024,41 @@
               }
             ]
           },
-          "id": {
-            "name": "id",
+          "items": {
+            "name": "items",
             "required": false,
             "type": {
-              "name": "string"
+              "name": "readonly string[] | readonly Group<string>[] | undefined"
             },
-            "description": "The id of the component.",
+            "description": "The items to be displayed in the list.\nCan be either a flat array of items or an array of groups with items.\nNullish entries are not supported: remove them from the data before passing it.",
             "defaultValue": null,
             "parent": {
-              "name": "ComboboxRootProps",
-              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+              "name": "AutocompleteRootProps",
+              "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
             },
             "declarations": [
               {
-                "name": "ComboboxRootProps",
-                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+                "name": "AutocompleteRootProps",
+                "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
               }
             ]
           },
-          "children": {
-            "name": "children",
+          "filteredItems": {
+            "name": "filteredItems",
             "required": false,
             "type": {
-              "name": "ReactNode"
+              "name": "readonly string[] | readonly Group<string>[] | undefined"
             },
-            "description": "",
+            "description": "Filtered items to display in the list.\nWhen provided, the list uses these items instead of filtering the `items` prop internally.\nWhen `items` is also provided, this array must preserve its flat or grouped structure.\nNullish entries are not supported, as in `items`.\nUse when you want to control filtering logic externally with the `useFilter()` hook.",
             "defaultValue": null,
             "parent": {
-              "name": "ComboboxRootProps",
-              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+              "name": "AutocompleteRootProps",
+              "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
             },
             "declarations": [
               {
-                "name": "ComboboxRootProps",
-                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
-              }
-            ]
-          },
-          "grid": {
-            "name": "grid",
-            "required": false,
-            "type": {
-              "name": "boolean"
-            },
-            "description": "Whether list items are presented in a grid layout.\nWhen enabled, arrow keys navigate across rows and columns inferred from DOM rows.",
-            "defaultValue": {
-              "value": "false"
-            },
-            "parent": {
-              "name": "ComboboxRootProps",
-              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
-            },
-            "declarations": [
-              {
-                "name": "ComboboxRootProps",
-                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
-              }
-            ]
-          },
-          "disabled": {
-            "name": "disabled",
-            "required": false,
-            "type": {
-              "name": "boolean"
-            },
-            "description": "Whether the component should ignore user interaction.",
-            "defaultValue": {
-              "value": "false"
-            },
-            "parent": {
-              "name": "ComboboxRootProps",
-              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
-            },
-            "declarations": [
-              {
-                "name": "ComboboxRootProps",
-                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
-              }
-            ]
-          },
-          "defaultOpen": {
-            "name": "defaultOpen",
-            "required": false,
-            "type": {
-              "name": "boolean"
-            },
-            "description": "Whether the popup is initially open.\n\nTo render a controlled popup, use the `open` prop instead.",
-            "defaultValue": {
-              "value": "false"
-            },
-            "parent": {
-              "name": "ComboboxRootProps",
-              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
-            },
-            "declarations": [
-              {
-                "name": "ComboboxRootProps",
-                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
-              }
-            ]
-          },
-          "open": {
-            "name": "open",
-            "required": false,
-            "type": {
-              "name": "boolean"
-            },
-            "description": "Whether the popup is currently open. Use when controlled.",
-            "defaultValue": null,
-            "parent": {
-              "name": "ComboboxRootProps",
-              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
-            },
-            "declarations": [
-              {
-                "name": "ComboboxRootProps",
-                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
-              }
-            ]
-          },
-          "name": {
-            "name": "name",
-            "required": false,
-            "type": {
-              "name": "string"
-            },
-            "description": "Identifies the field when a form is submitted.",
-            "defaultValue": null,
-            "parent": {
-              "name": "ComboboxRootProps",
-              "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
-            },
-            "declarations": [
-              {
-                "name": "ComboboxRootProps",
-                "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+                "name": "AutocompleteRootProps",
+                "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
               }
             ]
           },
@@ -1276,6 +1141,25 @@
               {
                 "name": "ComboboxRootProps",
                 "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
+              }
+            ]
+          },
+          "onItemHighlighted": {
+            "name": "onItemHighlighted",
+            "required": false,
+            "type": {
+              "name": "(highlightedValue: string | undefined, eventDetails: HighlightEventDetails) => void"
+            },
+            "description": "Callback fired when an item is highlighted or unhighlighted.\nReceives the highlighted item value (or `undefined` if no item is highlighted) and event details with a `reason` property describing why the highlight changed.\nThe `reason` can be:\n- `'keyboard'`: the highlight changed due to keyboard navigation.\n- `'pointer'`: the highlight changed due to pointer hovering.\n- `'none'`: the highlight changed programmatically.",
+            "defaultValue": null,
+            "parent": {
+              "name": "AutocompleteRootProps",
+              "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "AutocompleteRootProps",
+                "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
               }
             ]
           },
@@ -1379,6 +1263,42 @@
                 "fileName": "node_modules/@base-ui/react/combobox/root/AriaCombobox.d.mts"
               }
             ]
+          },
+          "mode": {
+            "name": "mode",
+            "required": false,
+            "type": {
+              "name": "enum",
+              "raw": "\"none\" | \"list\" | \"inline\" | \"both\"",
+              "value": [
+                {
+                  "value": "\"none\""
+                },
+                {
+                  "value": "\"list\""
+                },
+                {
+                  "value": "\"inline\""
+                },
+                {
+                  "value": "\"both\""
+                }
+              ]
+            },
+            "description": "Controls how the autocomplete behaves with respect to list filtering and inline autocompletion.\n- `list` (default): items are dynamically filtered based on the input value. The input value does not change based on the active item.\n- `both`: items are dynamically filtered based on the input value, which will temporarily change based on the active item (inline autocompletion).\n- `inline`: items are static (not filtered), and the input value will temporarily change based on the active item (inline autocompletion).\n- `none`: items are static (not filtered), and the input value will not change based on the active item.",
+            "defaultValue": {
+              "value": "'list'"
+            },
+            "parent": {
+              "name": "AutocompleteRootProps",
+              "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
+            },
+            "declarations": [
+              {
+                "name": "AutocompleteRootProps",
+                "fileName": "node_modules/@base-ui/react/autocomplete/root/AutocompleteRoot.d.mts"
+              }
+            ]
           }
         }
       },
@@ -1412,18 +1332,11 @@
           "summary": "Item onClick and item-press for a pick, form submit for Enter"
         },
         {
-          "id": "components-autocomplete--submit-on-item-click",
-          "name": "Submit On Item Click",
-          "snippet": "const SubmitOnItemClick = ({ onPick, onSearch }) => {\n    const [outcome, setOutcome] = useState('');\n\n    return (\n        <form\n            aria-label=\"Carrier search\"\n            className=\"flex flex-col gap-3\"\n            onSubmit={event => {\n                event.preventDefault();\n                const query = String(new FormData(event.currentTarget).get('carrier'));\n                onSearch?.(query);\n                setOutcome(`Searched for ${query}`);\n            }}>\n            <div className=\"flex items-start gap-3\">\n                <div className=\"min-w-0 flex-1\">\n                    <Autocomplete.Root items={CARRIERS} submitOnItemClick>\n                        <Autocomplete.Input name=\"carrier\" placeholder=\"Carrier\" aria-label=\"Carrier\" />\n                        <Autocomplete.Content>\n                            <Autocomplete.List>\n                                {(carrier: string) => (\n                                    <Autocomplete.Item\n                                        key={carrier}\n                                        value={carrier}\n                                        onClick={() => onPick?.(carrier)}>\n                                        {carrier}\n                                    </Autocomplete.Item>\n                                )}\n                            </Autocomplete.List>\n                        </Autocomplete.Content>\n                    </Autocomplete.Root>\n                </div>\n                <Button type=\"submit\" variant=\"secondary\">\n                    Search\n                </Button>\n            </div>\n            <output className=\"text-sm text-text-default-base-secondary\">{outcome}</output>\n        </form>\n    );\n};",
-          "description": "With `submitOnItemClick`, a pick also submits the owning form, once, with\nthe picked text already in the field. The row's `onClick` still fires first,\nso a handler can still tell a pick from a plain Enter. This form has a submit\nbutton, and a plain Enter still submits it once.",
-          "summary": "A pick submits the owning form once, after the item events"
-        },
-        {
-          "id": "components-autocomplete--submit-on-item-click-with-several-forms",
-          "name": "Submit On Item Click With Several Forms",
-          "snippet": "const SubmitOnItemClickWithSeveralForms = () => {\n    const [carrierOutcome, setCarrierOutcome] = useState('');\n    const [stateOutcome, setStateOutcome] = useState('');\n\n    return (\n        <div className=\"flex flex-col gap-6\">\n            <form\n                aria-label=\"Carrier search\"\n                className=\"flex flex-col gap-3\"\n                onSubmit={event => {\n                    event.preventDefault();\n                    setCarrierOutcome(`Searched for ${new FormData(event.currentTarget).get('query')}`);\n                }}>\n                <Autocomplete.Root items={CARRIERS} submitOnItemClick>\n                    <Autocomplete.Input name=\"query\" placeholder=\"Carrier\" aria-label=\"Carrier\" />\n                    <Autocomplete.Content>\n                        <Autocomplete.List>\n                            {(carrier: string) => (\n                                <Autocomplete.Item key={carrier} value={carrier}>\n                                    {carrier}\n                                </Autocomplete.Item>\n                            )}\n                        </Autocomplete.List>\n                    </Autocomplete.Content>\n                </Autocomplete.Root>\n                <output className=\"text-sm text-text-default-base-secondary\">{carrierOutcome}</output>\n            </form>\n            <form\n                aria-label=\"State search\"\n                className=\"flex flex-col gap-3\"\n                onSubmit={event => {\n                    event.preventDefault();\n                    setStateOutcome(`Searched for ${new FormData(event.currentTarget).get('query')}`);\n                }}>\n                <Autocomplete.Root items={['California', 'Florida', 'Texas']} submitOnItemClick>\n                    <Autocomplete.Input name=\"query\" placeholder=\"State\" aria-label=\"State\" />\n                    <Autocomplete.Content>\n                        <Autocomplete.List>\n                            {(state: string) => (\n                                <Autocomplete.Item key={state} value={state}>\n                                    {state}\n                                </Autocomplete.Item>\n                            )}\n                        </Autocomplete.List>\n                    </Autocomplete.Content>\n                </Autocomplete.Root>\n                <output className=\"text-sm text-text-default-base-secondary\">{stateOutcome}</output>\n            </form>\n        </div>\n    );\n};",
-          "description": "Two forms on one page, each with its own autocomplete. A pick under\n`submitOnItemClick` submits the form that holds that field, never another\none on the page.",
-          "summary": "A pick submits its own form when several share a page"
+          "id": "components-autocomplete--disabled-submit-button",
+          "name": "Disabled Submit Button",
+          "snippet": "const DisabledSubmitButton = ({ onSearch }) => {\n    const [confirmed, setConfirmed] = useState(false);\n    const [outcome, setOutcome] = useState('');\n\n    return (\n        <form\n            aria-label=\"Carrier search\"\n            className=\"flex flex-col gap-3\"\n            onSubmit={event => {\n                event.preventDefault();\n                const query = String(new FormData(event.currentTarget).get('carrier'));\n                onSearch?.(query);\n                setOutcome(`Searched for ${query}`);\n            }}>\n            <div className=\"flex items-start gap-3\">\n                <div className=\"min-w-0 flex-1\">\n                    <Autocomplete.Root items={CARRIERS}>\n                        <Autocomplete.Input name=\"carrier\" placeholder=\"Carrier\" aria-label=\"Carrier\" />\n                        <Autocomplete.Content>\n                            <Autocomplete.List>\n                                {(carrier: string) => (\n                                    <Autocomplete.Item key={carrier} value={carrier}>\n                                        {carrier}\n                                    </Autocomplete.Item>\n                                )}\n                            </Autocomplete.List>\n                        </Autocomplete.Content>\n                    </Autocomplete.Root>\n                </div>\n                <Button type=\"submit\" variant=\"secondary\" disabled={!confirmed}>\n                    Search\n                </Button>\n            </div>\n            <div className=\"flex items-center gap-2\">\n                <Checkbox\n                    id=\"personal-lines\"\n                    checked={confirmed}\n                    onCheckedChange={checked => setConfirmed(checked === true)}\n                />\n                <Label htmlFor=\"personal-lines\">Personal lines only</Label>\n            </div>\n            <output className=\"text-sm text-text-default-base-secondary\">{outcome}</output>\n        </form>\n    );\n};",
+          "description": "Submission follows the form's submit button, as in the browser: while it is\ndisabled, Enter submits nothing. Here\nthe search waits for the scope to be confirmed.",
+          "summary": "Nothing submits while the form's submit button is disabled"
         },
         {
           "id": "components-autocomplete--with-before-and-after",
@@ -1436,7 +1349,7 @@
           "id": "components-autocomplete--with-empty-message",
           "name": "With Empty Message",
           "snippet": "const WithEmptyMessage = () => (\n    <Autocomplete.Root items={CARRIERS}>\n        <Autocomplete.Input placeholder=\"Carrier\" aria-label=\"Carrier\" />\n        <Autocomplete.Content>\n            <Autocomplete.Empty>\n                No known carrier matches. Your text is kept as typed.\n            </Autocomplete.Empty>\n            <Autocomplete.List>\n                {(carrier: string) => (\n                    <Autocomplete.Item key={carrier} value={carrier}>\n                        {carrier}\n                    </Autocomplete.Item>\n                )}\n            </Autocomplete.List>\n        </Autocomplete.Content>\n    </Autocomplete.Root>\n);",
-          "description": "With an `Empty` message, the list opens even when nothing matches, to say\nso. Without one, as in every other story, a field with nothing to suggest\nstays shut. Either way the text stays as typed.",
+          "description": "With an `Empty` message, the list opens even when nothing matches, to say\nso, from the first keystroke and again after Escape. Without one, as in\nevery other story, a field with nothing to suggest stays shut. Either way\nthe text stays as typed.",
           "summary": "Message shown in the list when no suggestion matches"
         },
         {
@@ -1475,7 +1388,7 @@
           "summary": "AI prompt with recent prompts, a spinner and a tag in the frame"
         }
       ],
-      "import": "import { Autocomplete, Button, Field, FieldText, Input, Label, Loading, Modal, Tag } from \"@agentero/design-system\";"
+      "import": "import {\n    Autocomplete,\n    Button,\n    Checkbox,\n    Field,\n    FieldText,\n    Input,\n    Label,\n    Loading,\n    Modal,\n    Tag,\n} from \"@agentero/design-system\";"
     },
     "components-avatargroup": {
       "id": "components-avatargroup",
@@ -10887,6 +10800,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 3923
+    "durationMs": 4982
   }
 }

@@ -588,13 +588,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">38 components ok</span><span class="filter-pill ok" aria-disabled="true">319 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">38 components ok</span><span class="filter-pill ok" aria-disabled="true">318 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>3.9s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>5.0s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -1462,9 +1462,9 @@ lower-weight token ramp and omit background + padding.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Autocomplete.Root</h2>
       <div class="badges">
-        <label for="c-2-components-autocomplete-props" class="badge ok as-toggle">34 prop types</label>
+        <label for="c-2-components-autocomplete-props" class="badge ok as-toggle">30 prop types</label>
         
-        <label for="c-2-components-autocomplete-stories" class="badge ok as-toggle">13 stories</label>
+        <label for="c-2-components-autocomplete-stories" class="badge ok as-toggle">12 stories</label>
         
         
       </div>
@@ -1482,16 +1482,19 @@ it writes the picked option back and drops text that matches none.
 
 Pass the suggestions as `items`. Base UI filters them against the text; set
 `filter={null}` when they are already the ones to show. With `items`, the
-list opens only while it has a row to show, or an `Empty` message: a field
-with nothing to suggest stays shut, and one whose suggestions arrive late (a
-lookup still running) opens when they do, if the user is still in the field.
+list opens only while it has a row to show, or always when it holds an
+`Empty` message: a field with nothing to suggest stays shut, and one whose
+suggestions arrive late (a lookup still running) opens when they do, if the
+user is still in the field.
 `autoHighlight` highlights the first row as the user types, and `&#39;always&#39;`
 highlights it as soon as it renders, which suits a single suggestion.
 
 Every Base UI root prop is accepted and forwarded: `value`, `defaultValue`,
-`onValueChange`, `items`, `filter`, `autoHighlight`, `openOnInputClick`,
-`submitOnItemClick` and so on. A controlled `open` is passed through as is,
-without the check for rows. Base UI empties the field on Escape while the
+`onValueChange`, `items`, `filter`, `autoHighlight`, `openOnInputClick`
+and so on, except two. The open state (`open`, `defaultOpen`,
+`onOpenChange`) is left out, since the root decides when the list shows.
+`submitOnItemClick` is left out too: to submit on a pick, run the submit
+from the row&#39;s `onClick` with the row&#39;s value. Base UI empties the field on Escape while the
 list is shut, as a native search input does; this root keeps the text
 instead, and does not report that change. Inside a `Modal`, Escape on an open
 list closes the list only, and the next one closes the dialog; the modal
@@ -1502,12 +1505,11 @@ Picking a row and pressing Enter are told apart with Base UI&#39;s own events:
 - A pick, by pointer or by Enter on the highlighted row, fires the row&#39;s
   `onClick` and then `onValueChange` with `eventDetails.reason` set to
   `&#39;item-press&#39;`, carrying the row&#39;s text. Base UI stops that Enter, so the
-  form is not submitted as well. With `submitOnItemClick` the form that owns
-  this field&#39;s input is submitted once, right after the pick, also when
-  several autocompletes share the page.
+  form is not submitted as well.
 - Enter with no row highlighted closes the list and submits the owning form
-  once, through its default button when it has one. A form with no submit
-  button submits too, as a form with a single text field does.
+  once, as the browser would: through its default button, and not while
+  that button is disabled. With no submit button the form submits only when
+  this is its one text field.
 - A pick fills the field with the row&#39;s text. To keep the typed text, call
   `eventDetails.cancel()` when the reason is `&#39;item-press&#39;`, or ignore that
   change on a controlled `value`: the row&#39;s `onClick` can then write
@@ -1548,7 +1550,7 @@ import { Autocomplete } from &#39;@agentero/design-system/autocomplete&#39;;
           <div class="note ok">
             <div class="row">
               <span class="ex-name">Prop types <small>(react-component-meta)</small></span>
-              <span class="badge ok">34 prop types</span>
+              <span class="badge ok">30 prop types</span>
             </div>
             <pre><code>Component: src/autocomplete/index.ts::Autocomplete</code></pre>
             <pre><code>Props:</code></pre>
@@ -1567,13 +1569,6 @@ actionsRef?: RefObject&lt;AutocompleteRootActions | null&gt;
 autoHighlight?: boolean | &quot;always&quot; | undefined = false
 
 children?: ReactNode
-
-/**
- * Whether the popup is initially open.
- * 
- * To render a controlled popup, use the `open` prop instead.
- */
-defaultOpen?: boolean = false
 
 /**
  * The uncontrolled input value of the autocomplete when it&#39;s initially rendered.
@@ -1707,11 +1702,6 @@ name?: string
 onItemHighlighted?: (highlightedValue: string | undefined, eventDetails: HighlightEventDetails) =&gt; void
 
 /**
- * Event handler called when the popup is opened or closed.
- */
-onOpenChange?: (open: boolean, eventDetails: AutocompleteRootChangeEventDetails) =&gt; void
-
-/**
  * Event handler called after any animations complete when the popup is opened or closed.
  */
 onOpenChangeComplete?: (open: boolean) =&gt; void
@@ -1720,11 +1710,6 @@ onOpenChangeComplete?: (open: boolean) =&gt; void
  * Event handler called when the input value of the autocomplete changes.
  */
 onValueChange?: (value: string, eventDetails: AutocompleteRootChangeEventDetails) =&gt; void
-
-/**
- * Whether the popup is currently open. Use when controlled.
- */
-open?: boolean
 
 /**
  * Whether the popup opens when clicking the input.
@@ -1740,13 +1725,6 @@ readOnly?: boolean = false
  * Whether the user must choose a value before submitting a form.
  */
 required?: boolean = false
-
-/**
- * Whether clicking an item should submit the autocomplete&#39;s owning form.
- * By default, clicking an item via a pointer or &lt;kbd&gt;Enter&lt;/kbd&gt; key does not submit the owning form.
- * Useful when the autocomplete is used as a single-field form search input.
- */
-submitOnItemClick?: boolean = false
 
 /**
  * The input value of the autocomplete. Use when controlled.
@@ -1768,7 +1746,18 @@ virtualized?: boolean = false</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Autocomplete, Button, Field, FieldText, Input, Label, Loading, Modal, Tag } from "@agentero/design-system";</code></pre>
+                <pre><code>import {
+    Autocomplete,
+    Button,
+    Checkbox,
+    Field,
+    FieldText,
+    Input,
+    Label,
+    Loading,
+    Modal,
+    Tag,
+} from "@agentero/design-system";</code></pre>
               </div>
           
           
@@ -1895,15 +1884,15 @@ fires once.</div>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">Submit On Item Click</span>
+                <span class="ex-name">Disabled Submit Button</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>A pick submits the owning form once, after the item events</div>
-              <div class="hint">With `submitOnItemClick`, a pick also submits the owning form, once, with
-the picked text already in the field. The row&#39;s `onClick` still fires first,
-so a handler can still tell a pick from a plain Enter. This form has a submit
-button, and a plain Enter still submits it once.</div>
-              <pre><code>const SubmitOnItemClick = ({ onPick, onSearch }) =&gt; {
+              <div>Nothing submits while the form&#39;s submit button is disabled</div>
+              <div class="hint">Submission follows the form&#39;s submit button, as in the browser: while it is
+disabled, Enter submits nothing. Here
+the search waits for the scope to be confirmed.</div>
+              <pre><code>const DisabledSubmitButton = ({ onSearch }) =&gt; {
+    const [confirmed, setConfirmed] = useState(false);
     const [outcome, setOutcome] = useState(&#39;&#39;);
 
     return (
@@ -1918,15 +1907,12 @@ button, and a plain Enter still submits it once.</div>
             }}&gt;
             &lt;div className=&quot;flex items-start gap-3&quot;&gt;
                 &lt;div className=&quot;min-w-0 flex-1&quot;&gt;
-                    &lt;Autocomplete.Root items={CARRIERS} submitOnItemClick&gt;
+                    &lt;Autocomplete.Root items={CARRIERS}&gt;
                         &lt;Autocomplete.Input name=&quot;carrier&quot; placeholder=&quot;Carrier&quot; aria-label=&quot;Carrier&quot; /&gt;
                         &lt;Autocomplete.Content&gt;
                             &lt;Autocomplete.List&gt;
                                 {(carrier: string) =&gt; (
-                                    &lt;Autocomplete.Item
-                                        key={carrier}
-                                        value={carrier}
-                                        onClick={() =&gt; onPick?.(carrier)}&gt;
+                                    &lt;Autocomplete.Item key={carrier} value={carrier}&gt;
                                         {carrier}
                                     &lt;/Autocomplete.Item&gt;
                                 )}
@@ -1934,73 +1920,20 @@ button, and a plain Enter still submits it once.</div>
                         &lt;/Autocomplete.Content&gt;
                     &lt;/Autocomplete.Root&gt;
                 &lt;/div&gt;
-                &lt;Button type=&quot;submit&quot; variant=&quot;secondary&quot;&gt;
+                &lt;Button type=&quot;submit&quot; variant=&quot;secondary&quot; disabled={!confirmed}&gt;
                     Search
                 &lt;/Button&gt;
             &lt;/div&gt;
+            &lt;div className=&quot;flex items-center gap-2&quot;&gt;
+                &lt;Checkbox
+                    id=&quot;personal-lines&quot;
+                    checked={confirmed}
+                    onCheckedChange={checked =&gt; setConfirmed(checked === true)}
+                /&gt;
+                &lt;Label htmlFor=&quot;personal-lines&quot;&gt;Personal lines only&lt;/Label&gt;
+            &lt;/div&gt;
             &lt;output className=&quot;text-sm text-text-default-base-secondary&quot;&gt;{outcome}&lt;/output&gt;
         &lt;/form&gt;
-    );
-};</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Submit On Item Click With Several Forms</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>A pick submits its own form when several share a page</div>
-              <div class="hint">Two forms on one page, each with its own autocomplete. A pick under
-`submitOnItemClick` submits the form that holds that field, never another
-one on the page.</div>
-              <pre><code>const SubmitOnItemClickWithSeveralForms = () =&gt; {
-    const [carrierOutcome, setCarrierOutcome] = useState(&#39;&#39;);
-    const [stateOutcome, setStateOutcome] = useState(&#39;&#39;);
-
-    return (
-        &lt;div className=&quot;flex flex-col gap-6&quot;&gt;
-            &lt;form
-                aria-label=&quot;Carrier search&quot;
-                className=&quot;flex flex-col gap-3&quot;
-                onSubmit={event =&gt; {
-                    event.preventDefault();
-                    setCarrierOutcome(`Searched for ${new FormData(event.currentTarget).get(&#39;query&#39;)}`);
-                }}&gt;
-                &lt;Autocomplete.Root items={CARRIERS} submitOnItemClick&gt;
-                    &lt;Autocomplete.Input name=&quot;query&quot; placeholder=&quot;Carrier&quot; aria-label=&quot;Carrier&quot; /&gt;
-                    &lt;Autocomplete.Content&gt;
-                        &lt;Autocomplete.List&gt;
-                            {(carrier: string) =&gt; (
-                                &lt;Autocomplete.Item key={carrier} value={carrier}&gt;
-                                    {carrier}
-                                &lt;/Autocomplete.Item&gt;
-                            )}
-                        &lt;/Autocomplete.List&gt;
-                    &lt;/Autocomplete.Content&gt;
-                &lt;/Autocomplete.Root&gt;
-                &lt;output className=&quot;text-sm text-text-default-base-secondary&quot;&gt;{carrierOutcome}&lt;/output&gt;
-            &lt;/form&gt;
-            &lt;form
-                aria-label=&quot;State search&quot;
-                className=&quot;flex flex-col gap-3&quot;
-                onSubmit={event =&gt; {
-                    event.preventDefault();
-                    setStateOutcome(`Searched for ${new FormData(event.currentTarget).get(&#39;query&#39;)}`);
-                }}&gt;
-                &lt;Autocomplete.Root items={[&#39;California&#39;, &#39;Florida&#39;, &#39;Texas&#39;]} submitOnItemClick&gt;
-                    &lt;Autocomplete.Input name=&quot;query&quot; placeholder=&quot;State&quot; aria-label=&quot;State&quot; /&gt;
-                    &lt;Autocomplete.Content&gt;
-                        &lt;Autocomplete.List&gt;
-                            {(state: string) =&gt; (
-                                &lt;Autocomplete.Item key={state} value={state}&gt;
-                                    {state}
-                                &lt;/Autocomplete.Item&gt;
-                            )}
-                        &lt;/Autocomplete.List&gt;
-                    &lt;/Autocomplete.Content&gt;
-                &lt;/Autocomplete.Root&gt;
-                &lt;output className=&quot;text-sm text-text-default-base-secondary&quot;&gt;{stateOutcome}&lt;/output&gt;
-            &lt;/form&gt;
-        &lt;/div&gt;
     );
 };</code></pre>
             </div>
@@ -2040,8 +1973,9 @@ from the whole frame.</div>
               </div>
               <div>Message shown in the list when no suggestion matches</div>
               <div class="hint">With an `Empty` message, the list opens even when nothing matches, to say
-so. Without one, as in every other story, a field with nothing to suggest
-stays shut. Either way the text stays as typed.</div>
+so, from the first keystroke and again after Escape. Without one, as in
+every other story, a field with nothing to suggest stays shut. Either way
+the text stays as typed.</div>
               <pre><code>const WithEmptyMessage = () =&gt; (
     &lt;Autocomplete.Root items={CARRIERS}&gt;
         &lt;Autocomplete.Input placeholder=&quot;Carrier&quot; aria-label=&quot;Carrier&quot; /&gt;
