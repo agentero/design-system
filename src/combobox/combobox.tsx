@@ -8,6 +8,7 @@ import { Combobox as ComboboxPrimitive } from '@base-ui/react/combobox';
 import { tv } from 'tailwind-variants';
 
 import { cn } from '../../lib';
+import { useFieldContext } from '../field';
 import { inputRecipe, InputSize } from '../input';
 import { InputGroup } from '../input-group';
 import { IconCancel, IconCheck, IconKeyboardArrowDown, IconSearch } from './icons';
