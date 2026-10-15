@@ -266,32 +266,98 @@ export const SelectWithClear: Story = {
 };
 
 /**
- * A `disabled` or `readOnly` input keeps its picked option but loses the clear
- * button, which would otherwise empty a field the user cannot edit. On a `select`
- * the chevron stays in its place.
+ * `disabled` and `readOnly` go on `Root`; inside a `FieldText` it takes them from
+ * the field. A disabled field keeps its value with no clear button and a disabled
+ * chevron. A read-only one has no clear button either, but its chevron still
+ * opens the list to browse it; picking a row leaves the value as it was.
  *
- * @summary Disabled field keeps its value without a clear button
+ * @summary Disabled and read-only fields keep their value
  */
-export const Disabled: Story = {
+export const DisabledAndReadOnly: Story = {
+	render: () => {
+		const options = (
+			<Combobox.Content>
+				<Combobox.List>
+					{(state: string) => (
+						<Combobox.Item key={state} value={state}>
+							{state}
+						</Combobox.Item>
+					)}
+				</Combobox.List>
+			</Combobox.Content>
+		);
+		return (
+			<div className="flex flex-col gap-4">
+				<Combobox.Root items={STATES} defaultValue="Florida" disabled>
+					<Combobox.Input variant="select" showClear aria-label="Disabled state" />
+					{options}
+				</Combobox.Root>
+				<FieldText readOnly>
+					<Label>Read-only state</Label>
+					<Combobox.Root items={STATES} defaultValue="Texas">
+						<Combobox.Input variant="select" showClear />
+						{options}
+					</Combobox.Root>
+				</FieldText>
+			</div>
+		);
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const body = within(document.body);
+		const [disabledTrigger, readOnlyTrigger] = canvas.getAllByRole('button', {
+			name: 'Show options'
+		});
+
+		await expect(canvas.queryByRole('button', { name: /clear/i })).not.toBeInTheDocument();
+
+		await expect(canvas.getByRole('combobox', { name: 'Disabled state' })).toHaveValue('Florida');
+		// With no clear button to stand in for it, the chevron stays in place.
+		await expect(disabledTrigger).toBeVisible();
+		await expect(readOnlyTrigger).toBeVisible();
+		await expect(disabledTrigger).toBeDisabled();
+
+		const readOnly = canvas.getByRole('combobox', { name: 'Read-only state' });
+		await userEvent.click(readOnlyTrigger!);
+		await waitFor(() => expect(body.getByRole('listbox')).toBeInTheDocument());
+		await userEvent.click(body.getByRole('option', { name: 'Florida' }));
+		await expect(readOnly).toHaveValue('Texas');
+	}
+};
+
+/**
+ * Regression check, kept out of the manifest: `disabled` passed to the input
+ * alone, not to `Root`, still hides the clear button and disables the chevron,
+ * so the list cannot open to change the value.
+ *
+ * @summary Chevron disabled when only the input is disabled
+ */
+export const DisabledOnInput: Story = {
+	tags: ['!manifest'],
 	render: () => (
-		<div className="flex flex-col gap-4">
-			<Combobox.Root items={STATES} defaultValue="Florida">
-				<Combobox.Input disabled aria-label="Search state" />
-			</Combobox.Root>
-			<Combobox.Root items={STATES} defaultValue="Texas">
-				<Combobox.Input variant="select" showClear readOnly aria-label="State" />
-			</Combobox.Root>
-		</div>
+		<Combobox.Root items={STATES} defaultValue="Florida">
+			<Combobox.Input variant="select" showClear disabled aria-label="State" />
+			<Combobox.Content>
+				<Combobox.List>
+					{(state: string) => (
+						<Combobox.Item key={state} value={state}>
+							{state}
+						</Combobox.Item>
+					)}
+				</Combobox.List>
+			</Combobox.Content>
+		</Combobox.Root>
 	),
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
+		const trigger = canvas.getByRole('button', { name: 'Show options' });
 
-		await expect(canvas.getByRole('combobox', { name: 'Search state' })).toHaveValue('Florida');
-		await expect(canvas.getByRole('combobox', { name: 'State' })).toHaveValue('Texas');
 		await expect(canvas.queryByRole('button', { name: /clear/i })).not.toBeInTheDocument();
-		await expect(
-			canvasElement.querySelector<HTMLElement>('[data-slot="combobox-trigger"]')
-		).toBeVisible();
+		await expect(trigger).toBeVisible();
+		await expect(trigger).toBeDisabled();
+		await userEvent.click(trigger);
+		await expect(within(document.body).queryByRole('listbox')).not.toBeInTheDocument();
+		await expect(canvas.getByRole('combobox', { name: 'State' })).toHaveValue('Florida');
 	}
 };
 
