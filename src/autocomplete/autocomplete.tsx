@@ -7,16 +7,18 @@ import {
 	createContext,
 	KeyboardEvent,
 	ReactNode,
+	RefObject,
 	use,
 	useLayoutEffect,
 	useMemo,
 	useRef,
 	useState
 } from 'react';
+import { flushSync } from 'react-dom';
 
 import { Autocomplete as AutocompletePrimitive } from '@base-ui/react/autocomplete';
 
-import { cn } from '../../lib';
+import { cn, mergeRefs } from '../../lib';
 import {
 	Content as ComboboxContent,
 	Empty as ComboboxEmpty,
@@ -34,6 +36,8 @@ type GateContextValue = {
 	dismiss: () => void;
 	/** Lets an `Empty` open the list when nothing matches; returns its unregister. */
 	registerEmpty: () => () => void;
+	/** The visible input, for `submitOnItemClick` to find its form. */
+	inputRef: RefObject<HTMLInputElement | null>;
 };
 
 const GateContext = createContext<GateContextValue | null>(null);
@@ -78,8 +82,9 @@ const RowsProbe = ({ onChange }: { onChange: (hasRows: boolean) => void }) => {
  * - A pick, by pointer or by Enter on the highlighted row, fires the row's
  *   `onClick` and then `onValueChange` with `eventDetails.reason` set to
  *   `'item-press'`, carrying the row's text. Base UI stops that Enter, so the
- *   form is not submitted as well. With `submitOnItemClick` the owning form is
- *   submitted once, right after the pick.
+ *   form is not submitted as well. With `submitOnItemClick` the form that owns
+ *   this field's input is submitted once, right after the pick, also when
+ *   several autocompletes share the page.
  * - Enter with no row highlighted closes the list and submits the owning form
  *   once, through its default button when it has one. A form with no submit
  *   button submits too, as a form with a single text field does.
@@ -118,6 +123,7 @@ export const Root = <Item,>({
 	open: openProp,
 	defaultOpen = false,
 	onOpenChange,
+	submitOnItemClick = false,
 	children,
 	...props
 }: AutocompleteRootProps<Item>) => {
@@ -150,10 +156,19 @@ export const Root = <Item,>({
 		}
 		onValueChange?.(nextValue, eventDetails);
 		if (valueProp === undefined && !eventDetails.isCanceled) setValueState(nextValue);
+		if (submitOnItemClick && eventDetails.reason === 'item-press') {
+			// After the pick has rendered, so the form reads the picked text.
+			queueMicrotask(() => {
+				flushSync(() => {});
+				const form = inputRef.current?.form;
+				if (form) submitForm(form);
+			});
+		}
 	};
 
 	const shown = useRef(open);
 	shown.current = open;
+	const inputRef = useRef<HTMLInputElement>(null);
 
 	// Stable, so an `Empty` registers once rather than on every render of the root.
 	const gate = useMemo<GateContextValue>(
@@ -166,7 +181,8 @@ export const Root = <Item,>({
 			registerEmpty: () => {
 				setEmptyCount(count => count + 1);
 				return () => setEmptyCount(count => count - 1);
-			}
+			},
+			inputRef
 		}),
 		[]
 	);
@@ -178,7 +194,11 @@ export const Root = <Item,>({
 				value={value}
 				onValueChange={handleValueChange}
 				open={open}
-				onOpenChange={handleOpenChange}>
+				onOpenChange={handleOpenChange}
+				// Base UI's own submit finds the form through a ref that every Base UI field outside a
+				// Base UI `Field` shares, so with several on a page it submits the last one mounted.
+				// The root submits the form of its own input instead.
+				submitOnItemClick={false}>
 				{children}
 				{counted && openProp === undefined && <RowsProbe onChange={setHasRows} />}
 			</AutocompletePrimitive.Root>
@@ -211,6 +231,12 @@ const isSubmitButton = (element: Element): element is HTMLButtonElement | HTMLIn
 	(element instanceof HTMLButtonElement || element instanceof HTMLInputElement) &&
 	element.type === 'submit';
 
+// Submits as the browser would on Enter: through the form's default button, if it has one.
+const submitForm = (form: HTMLFormElement) => {
+	const defaultButton = Array.from(form.elements).find(isSubmitButton);
+	form.requestSubmit(defaultButton?.disabled ? undefined : defaultButton);
+};
+
 // Base UI lets Enter through to the form when no row is highlighted, and stops it when one is.
 // The browser then submits only a form with a single text field or a submit button, and Base UI
 // renders a hidden text input of its own next to this one, so a prompt form with no button would
@@ -223,8 +249,7 @@ const submitOnEnter = (event: KeyboardEvent<HTMLDivElement>) => {
 	if (!input.form) return;
 
 	event.preventDefault();
-	const defaultButton = Array.from(input.form.elements).find(isSubmitButton);
-	input.form.requestSubmit(defaultButton?.disabled ? undefined : defaultButton);
+	submitForm(input.form);
 };
 
 /**
@@ -254,8 +279,13 @@ const submitOnEnter = (event: KeyboardEvent<HTMLDivElement>) => {
  * @dataAttribute {string} data-slot - Always set to "autocomplete-input"
  */
 export const Input = ({ before, after, ...props }: InputProps) => {
-	const { className, size = 'md', onBlur, ...rest } = useBaseInputContext(props);
+	const { className, size = 'md', onBlur, ref, ...rest } = useBaseInputContext(props);
 	const gate = use(GateContext);
+	const rootInputRef = gate?.inputRef;
+	const mergedRef = useMemo(
+		() => (rootInputRef ? mergeRefs(rootInputRef, ref) : ref),
+		[rootInputRef, ref]
+	);
 	const bare = !hasContent(before) && !hasContent(after);
 
 	return (
@@ -279,6 +309,7 @@ export const Input = ({ before, after, ...props }: InputProps) => {
 					gate?.dismiss();
 				}}
 				{...rest}
+				ref={mergedRef}
 			/>
 			{hasContent(after) && (
 				<InputGroup.Addon data-slot="autocomplete-after">{after}</InputGroup.Addon>

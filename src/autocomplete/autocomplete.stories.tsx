@@ -1,16 +1,9 @@
-import {
-	ChangeEvent,
-	ComponentPropsWithRef,
-	FormEvent,
-	SVGProps,
-	useEffect,
-	useState
-} from 'react';
+import { SVGProps, useEffect, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, userEvent, waitFor, within } from 'storybook/test';
+import { expect, fn, mocked, userEvent, waitFor, within } from 'storybook/test';
 
-import { Autocomplete } from '.';
+import { Autocomplete, type AutocompleteRootProps } from '.';
 import { Button } from '../button';
 import { Field } from '../field';
 import { FieldText } from '../field-text';
@@ -26,9 +19,18 @@ import { Tag } from '../tag';
  * field, closing the list or pressing Escape keeps whatever was typed. Built on
  * Base UI's Autocomplete, styled as the Combobox.
  */
+// What the stories hand to their own code, on top of the root's props: spies the play functions
+// assert on and the Actions panel lists.
+type StoryArgs = AutocompleteRootProps<string> & {
+	/** Runs the search or the prompt, from a pick or from the form's submit. */
+	onSearch?: (query: string) => void;
+	/** Fires when a suggestion row is picked, from its `onClick`. */
+	onPick?: (value: string) => void;
+};
+
 // Annotated rather than `satisfies`: `Root`'s inferred props reach into Base UI's internal
 // `AriaCombobox` module, which stock tsc cannot name from here (TS2742).
-const meta: Meta<typeof Autocomplete.Root> = {
+const meta: Meta<StoryArgs> = {
 	title: 'Components/Autocomplete',
 	component: Autocomplete.Root,
 	tags: ['autodocs'],
@@ -79,18 +81,6 @@ const expectListAlignedWithField = (canvasElement: HTMLElement) => {
 const waitForListClosed = () =>
 	waitFor(() => expect(within(document.body).queryByRole('listbox')).not.toBeInTheDocument());
 
-const CarrierList = () => (
-	<Autocomplete.Content>
-		<Autocomplete.List>
-			{(carrier: string) => (
-				<Autocomplete.Item key={carrier} value={carrier}>
-					{carrier}
-				</Autocomplete.Item>
-			)}
-		</Autocomplete.List>
-	</Autocomplete.Content>
-);
-
 /**
  * Suggestions from memory, filtered by Base UI against the text. Typing opens
  * the list; picking a row writes its text into the field. Any other text is
@@ -102,7 +92,15 @@ export const Default: Story = {
 	render: () => (
 		<Autocomplete.Root items={CARRIERS}>
 			<Autocomplete.Input placeholder="Carrier" aria-label="Carrier" />
-			<CarrierList />
+			<Autocomplete.Content>
+				<Autocomplete.List>
+					{(carrier: string) => (
+						<Autocomplete.Item key={carrier} value={carrier}>
+							{carrier}
+						</Autocomplete.Item>
+					)}
+				</Autocomplete.List>
+			</Autocomplete.Content>
 		</Autocomplete.Root>
 	),
 	play: async ({ canvasElement }) => {
@@ -136,7 +134,15 @@ export const KeepsTextOnBlur: Story = {
 		<div className="flex flex-col gap-4">
 			<Autocomplete.Root items={CARRIERS}>
 				<Autocomplete.Input placeholder="Carrier" aria-label="Carrier" />
-				<CarrierList />
+				<Autocomplete.Content>
+					<Autocomplete.List>
+						{(carrier: string) => (
+							<Autocomplete.Item key={carrier} value={carrier}>
+								{carrier}
+							</Autocomplete.Item>
+						)}
+					</Autocomplete.List>
+				</Autocomplete.Content>
 			</Autocomplete.Root>
 			<Button variant="secondary">Next</Button>
 		</div>
@@ -174,7 +180,15 @@ export const KeepsTextOnEscape: Story = {
 	render: () => (
 		<Autocomplete.Root items={CARRIERS}>
 			<Autocomplete.Input placeholder="Carrier" aria-label="Carrier" />
-			<CarrierList />
+			<Autocomplete.Content>
+				<Autocomplete.List>
+					{(carrier: string) => (
+						<Autocomplete.Item key={carrier} value={carrier}>
+							{carrier}
+						</Autocomplete.Item>
+					)}
+				</Autocomplete.List>
+			</Autocomplete.Content>
 		</Autocomplete.Root>
 	),
 	play: async ({ canvasElement }) => {
@@ -195,57 +209,6 @@ export const KeepsTextOnEscape: Story = {
 	}
 };
 
-const PickOrSubmitDemo = ({ submitOnItemClick = false }: { submitOnItemClick?: boolean }) => {
-	const [log, setLog] = useState<string[]>([]);
-	const record = (entry: string) => setLog(entries => [...entries, entry]);
-
-	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
-		const query = new FormData(event.currentTarget).get('carrier');
-		record(`submit: ${String(query)}`);
-	};
-
-	return (
-		<form onSubmit={handleSubmit} className="flex flex-col gap-4">
-			<Autocomplete.Root
-				items={CARRIERS}
-				submitOnItemClick={submitOnItemClick}
-				onValueChange={(value, eventDetails) => {
-					if (eventDetails.reason === 'item-press') record(`item-press: ${value}`);
-				}}>
-				<Autocomplete.Input name="carrier" placeholder="Carrier" aria-label="Carrier" />
-				<Autocomplete.Content>
-					<Autocomplete.List>
-						{(carrier: string) => (
-							<Autocomplete.Item
-								key={carrier}
-								value={carrier}
-								onClick={() => record(`click: ${carrier}`)}>
-								{carrier}
-							</Autocomplete.Item>
-						)}
-					</Autocomplete.List>
-				</Autocomplete.Content>
-			</Autocomplete.Root>
-			{submitOnItemClick && (
-				<Button type="submit" variant="secondary" className="self-start">
-					Search
-				</Button>
-			)}
-			<ol aria-label="Events" className="text-sm text-text-default-base-secondary">
-				{log.map((entry, index) => (
-					<li key={index}>{entry}</li>
-				))}
-			</ol>
-		</form>
-	);
-};
-
-const events = (canvasElement: HTMLElement) =>
-	within(within(canvasElement).getByRole('list', { name: 'Events' }))
-		.queryAllByRole('listitem')
-		.map(item => item.textContent);
-
 /**
  * Telling a pick from a plain Enter, with Base UI's own events. A pick, by
  * click or by Enter on the highlighted row, fires the row's `onClick`, then
@@ -256,18 +219,62 @@ const events = (canvasElement: HTMLElement) =>
  * @summary Item onClick and item-press for a pick, form submit for Enter
  */
 export const PickOrSubmit: Story = {
-	render: () => <PickOrSubmitDemo />,
-	play: async ({ canvasElement }) => {
+	args: { onValueChange: fn(), onPick: fn(), onSearch: fn() },
+	render: ({ onValueChange, onPick, onSearch }) => {
+		const [outcome, setOutcome] = useState('');
+
+		return (
+			<form
+				aria-label="Carrier search"
+				className="flex flex-col gap-3"
+				onSubmit={event => {
+					event.preventDefault();
+					const query = String(new FormData(event.currentTarget).get('carrier'));
+					onSearch?.(query);
+					setOutcome(`Searched for ${query}`);
+				}}>
+				<Autocomplete.Root items={CARRIERS} onValueChange={onValueChange}>
+					<Autocomplete.Input name="carrier" placeholder="Carrier" aria-label="Carrier" />
+					<Autocomplete.Content>
+						<Autocomplete.List>
+							{(carrier: string) => (
+								<Autocomplete.Item
+									key={carrier}
+									value={carrier}
+									onClick={() => {
+										onPick?.(carrier);
+										setOutcome(`Picked ${carrier}`);
+									}}>
+									{carrier}
+								</Autocomplete.Item>
+							)}
+						</Autocomplete.List>
+					</Autocomplete.Content>
+				</Autocomplete.Root>
+				<output className="text-sm text-text-default-base-secondary">{outcome}</output>
+			</form>
+		);
+	},
+	play: async ({ args, canvasElement }) => {
 		const canvas = within(canvasElement);
 		const body = within(document.body);
 		const input = canvas.getByRole('combobox', { name: 'Carrier' });
+		const itemPress = (value: string) =>
+			expect(args.onValueChange).toHaveBeenLastCalledWith(
+				value,
+				expect.objectContaining({ reason: 'item-press' })
+			);
 
-		// Click on a row.
+		// Click on a row: the row's onClick, then item-press, and no submit.
 		await userEvent.type(input, 'hip');
 		await userEvent.click(await body.findByRole('option', { name: 'Hippo' }));
-		await waitFor(() =>
-			expect(events(canvasElement)).toEqual(['click: Hippo', 'item-press: Hippo'])
+		await waitFor(() => expect(args.onPick).toHaveBeenCalledTimes(1));
+		await expect(args.onPick).toHaveBeenLastCalledWith('Hippo');
+		await itemPress('Hippo');
+		await expect(mocked(args.onPick!).mock.invocationCallOrder[0]).toBeLessThan(
+			mocked(args.onValueChange!).mock.invocationCallOrder.at(-1)!
 		);
+		await expect(canvas.getByText('Picked Hippo')).toBeVisible();
 		await expect(input).toHaveValue('Hippo');
 		await waitForListClosed();
 
@@ -281,12 +288,10 @@ export const PickOrSubmit: Story = {
 		);
 		await userEvent.keyboard('{Enter}');
 		await waitFor(() => expect(input).toHaveValue('Travelers'));
-		await expect(events(canvasElement)).toEqual([
-			'click: Hippo',
-			'item-press: Hippo',
-			'click: Travelers',
-			'item-press: Travelers'
-		]);
+		await expect(args.onPick).toHaveBeenCalledTimes(2);
+		await expect(args.onPick).toHaveBeenNthCalledWith(2, 'Travelers');
+		await itemPress('Travelers');
+		await expect(args.onSearch).not.toHaveBeenCalled();
 		await waitForListClosed();
 
 		// Enter with the list open and nothing highlighted: one submit with the typed text.
@@ -294,15 +299,17 @@ export const PickOrSubmit: Story = {
 		await userEvent.type(input, 'Trav');
 		await body.findByRole('option', { name: 'Travelers' });
 		await userEvent.keyboard('{Enter}');
-		await waitFor(() => expect(events(canvasElement)).toHaveLength(5));
-		await expect(events(canvasElement).at(-1)).toBe('submit: Trav');
+		await waitFor(() => expect(args.onSearch).toHaveBeenCalledTimes(1));
+		await expect(args.onSearch).toHaveBeenNthCalledWith(1, 'Trav');
+		await expect(canvas.getByText('Searched for Trav')).toBeVisible();
 		await waitForListClosed();
 		await expect(input).toHaveValue('Trav');
 
-		// Enter on a shut list submits too.
+		// Enter on a shut list submits too, once.
 		await userEvent.keyboard('{Enter}');
-		await waitFor(() => expect(events(canvasElement)).toHaveLength(6));
-		await expect(events(canvasElement).at(-1)).toBe('submit: Trav');
+		await waitFor(() => expect(args.onSearch).toHaveBeenCalledTimes(2));
+		await expect(args.onSearch).toHaveBeenNthCalledWith(2, 'Trav');
+		await expect(args.onPick).toHaveBeenCalledTimes(2);
 	}
 };
 
@@ -315,31 +322,158 @@ export const PickOrSubmit: Story = {
  * @summary A pick submits the owning form once, after the item events
  */
 export const SubmitOnItemClick: Story = {
-	render: () => <PickOrSubmitDemo submitOnItemClick />,
-	play: async ({ canvasElement }) => {
+	args: { onPick: fn(), onSearch: fn() },
+	render: ({ onPick, onSearch }) => {
+		const [outcome, setOutcome] = useState('');
+
+		return (
+			<form
+				aria-label="Carrier search"
+				className="flex flex-col gap-3"
+				onSubmit={event => {
+					event.preventDefault();
+					const query = String(new FormData(event.currentTarget).get('carrier'));
+					onSearch?.(query);
+					setOutcome(`Searched for ${query}`);
+				}}>
+				<div className="flex items-start gap-3">
+					<div className="min-w-0 flex-1">
+						<Autocomplete.Root items={CARRIERS} submitOnItemClick>
+							<Autocomplete.Input name="carrier" placeholder="Carrier" aria-label="Carrier" />
+							<Autocomplete.Content>
+								<Autocomplete.List>
+									{(carrier: string) => (
+										<Autocomplete.Item
+											key={carrier}
+											value={carrier}
+											onClick={() => onPick?.(carrier)}>
+											{carrier}
+										</Autocomplete.Item>
+									)}
+								</Autocomplete.List>
+							</Autocomplete.Content>
+						</Autocomplete.Root>
+					</div>
+					<Button type="submit" variant="secondary">
+						Search
+					</Button>
+				</div>
+				<output className="text-sm text-text-default-base-secondary">{outcome}</output>
+			</form>
+		);
+	},
+	play: async ({ args, canvasElement }) => {
 		const canvas = within(canvasElement);
 		const body = within(document.body);
 		const input = canvas.getByRole('combobox', { name: 'Carrier' });
 
+		// A click on a row submits, once, after the row's onClick.
 		await userEvent.type(input, 'clear');
-		await body.findByRole('option', { name: 'Clearcover' });
-		await userEvent.keyboard('{ArrowDown}{Enter}');
-		await waitFor(() =>
-			expect(events(canvasElement)).toEqual([
-				'click: Clearcover',
-				'item-press: Clearcover',
-				'submit: Clearcover'
-			])
+		await userEvent.click(await body.findByRole('option', { name: 'Clearcover' }));
+		await waitFor(() => expect(args.onSearch).toHaveBeenCalledTimes(1));
+		await expect(args.onSearch).toHaveBeenNthCalledWith(1, 'Clearcover');
+		await expect(args.onPick).toHaveBeenCalledTimes(1);
+		await expect(mocked(args.onPick!).mock.invocationCallOrder[0]).toBeLessThan(
+			mocked(args.onSearch!).mock.invocationCallOrder[0]!
 		);
+		await expect(canvas.getByText('Searched for Clearcover')).toBeVisible();
 		await waitForListClosed();
 
-		await userEvent.type(input, ' Auto');
+		// Enter on the highlighted row does the same.
+		await userEvent.clear(input);
+		await userEvent.type(input, 'hip');
+		await body.findByRole('option', { name: 'Hippo' });
+		await userEvent.keyboard('{ArrowDown}{Enter}');
+		await waitFor(() => expect(args.onSearch).toHaveBeenCalledTimes(2));
+		await expect(args.onSearch).toHaveBeenNthCalledWith(2, 'Hippo');
+		await waitForListClosed();
+
+		// A plain Enter submits once more, through the form's button, and nothing else lands.
+		await userEvent.type(input, ' Home');
 		await userEvent.keyboard('{Enter}');
-		await waitFor(() => expect(events(canvasElement)).toHaveLength(4));
-		await expect(events(canvasElement).at(-1)).toBe('submit: Clearcover Auto');
-		// Nothing else lands after a moment: one submit per Enter.
+		await waitFor(() => expect(args.onSearch).toHaveBeenCalledTimes(3));
+		await expect(args.onSearch).toHaveBeenNthCalledWith(3, 'Hippo Home');
 		await new Promise(resolve => setTimeout(resolve, 100));
-		await expect(events(canvasElement)).toHaveLength(4);
+		await expect(args.onSearch).toHaveBeenCalledTimes(3);
+		await expect(args.onPick).toHaveBeenCalledTimes(2);
+	}
+};
+
+/**
+ * Two forms on one page, each with its own autocomplete. A pick under
+ * `submitOnItemClick` submits the form that holds that field, never another
+ * one on the page.
+ *
+ * @summary A pick submits its own form when several share a page
+ */
+export const SubmitOnItemClickWithSeveralForms: Story = {
+	render: () => {
+		const [carrierOutcome, setCarrierOutcome] = useState('');
+		const [stateOutcome, setStateOutcome] = useState('');
+
+		return (
+			<div className="flex flex-col gap-6">
+				<form
+					aria-label="Carrier search"
+					className="flex flex-col gap-3"
+					onSubmit={event => {
+						event.preventDefault();
+						setCarrierOutcome(`Searched for ${new FormData(event.currentTarget).get('query')}`);
+					}}>
+					<Autocomplete.Root items={CARRIERS} submitOnItemClick>
+						<Autocomplete.Input name="query" placeholder="Carrier" aria-label="Carrier" />
+						<Autocomplete.Content>
+							<Autocomplete.List>
+								{(carrier: string) => (
+									<Autocomplete.Item key={carrier} value={carrier}>
+										{carrier}
+									</Autocomplete.Item>
+								)}
+							</Autocomplete.List>
+						</Autocomplete.Content>
+					</Autocomplete.Root>
+					<output className="text-sm text-text-default-base-secondary">{carrierOutcome}</output>
+				</form>
+				<form
+					aria-label="State search"
+					className="flex flex-col gap-3"
+					onSubmit={event => {
+						event.preventDefault();
+						setStateOutcome(`Searched for ${new FormData(event.currentTarget).get('query')}`);
+					}}>
+					<Autocomplete.Root items={['California', 'Florida', 'Texas']} submitOnItemClick>
+						<Autocomplete.Input name="query" placeholder="State" aria-label="State" />
+						<Autocomplete.Content>
+							<Autocomplete.List>
+								{(state: string) => (
+									<Autocomplete.Item key={state} value={state}>
+										{state}
+									</Autocomplete.Item>
+								)}
+							</Autocomplete.List>
+						</Autocomplete.Content>
+					</Autocomplete.Root>
+					<output className="text-sm text-text-default-base-secondary">{stateOutcome}</output>
+				</form>
+			</div>
+		);
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const body = within(document.body);
+		const carrierForm = within(canvas.getByRole('form', { name: 'Carrier search' }));
+		const stateForm = within(canvas.getByRole('form', { name: 'State search' }));
+
+		await userEvent.type(carrierForm.getByRole('combobox', { name: 'Carrier' }), 'lem');
+		await userEvent.click(await body.findByRole('option', { name: 'Lemonade' }));
+		await expect(await carrierForm.findByText('Searched for Lemonade')).toBeVisible();
+		await expect(stateForm.queryByText(/Searched for/)).not.toBeInTheDocument();
+		await waitForListClosed();
+
+		await userEvent.type(stateForm.getByRole('combobox', { name: 'State' }), 'tex');
+		await userEvent.click(await body.findByRole('option', { name: 'Texas' }));
+		await expect(await stateForm.findByText('Searched for Texas')).toBeVisible();
+		await expect(carrierForm.getByText('Searched for Lemonade')).toBeVisible();
 	}
 };
 
@@ -359,7 +493,15 @@ export const WithBeforeAndAfter: Story = {
 				before={<IconSearch aria-hidden="true" />}
 				after={<Tag color="informative">Beta</Tag>}
 			/>
-			<CarrierList />
+			<Autocomplete.Content>
+				<Autocomplete.List>
+					{(carrier: string) => (
+						<Autocomplete.Item key={carrier} value={carrier}>
+							{carrier}
+						</Autocomplete.Item>
+					)}
+				</Autocomplete.List>
+			</Autocomplete.Content>
 		</Autocomplete.Root>
 	),
 	play: async ({ canvasElement }) => {
@@ -434,7 +576,15 @@ export const InsideFieldText: Story = {
 			<Label>Carrier</Label>
 			<Autocomplete.Root items={CARRIERS}>
 				<Autocomplete.Input placeholder="Type a carrier" />
-				<CarrierList />
+				<Autocomplete.Content>
+					<Autocomplete.List>
+						{(carrier: string) => (
+							<Autocomplete.Item key={carrier} value={carrier}>
+								{carrier}
+							</Autocomplete.Item>
+						)}
+					</Autocomplete.List>
+				</Autocomplete.Content>
 			</Autocomplete.Root>
 			<Field.Error errors={[{ message: 'Enter the carrier name' }]} />
 			<Field.Description>The carrier that wrote the policy.</Field.Description>
@@ -468,23 +618,11 @@ const AGENCIES: Record<string, string> = {
 	'98-7654321': 'Harbor Point Agency'
 };
 
+// Stands in for a masking library such as react-number-format.
 const formatFein = (value: string) => {
 	const digits = value.replace(/\D/g, '').slice(0, 9);
 	return digits.length > 2 ? `${digits.slice(0, 2)}-${digits.slice(2)}` : digits;
 };
-
-// A stand-in for a masked input such as react-number-format's: it formats the text before the
-// change reaches Base UI, which then reads the masked value from the event.
-const FeinInput = ({ onChange, ...props }: ComponentPropsWithRef<'input'>) => (
-	<input
-		{...props}
-		inputMode="numeric"
-		onChange={(event: ChangeEvent<HTMLInputElement>) => {
-			event.target.value = formatFein(event.target.value);
-			onChange?.(event);
-		}}
-	/>
-);
 
 // The lookup answers a moment after the last keystroke, as a request would.
 const useAgencyLookup = (fein: string) => {
@@ -499,59 +637,6 @@ const useAgencyLookup = (fein: string) => {
 	return agency;
 };
 
-const LookupDemo = ({ locked = false }: { locked?: boolean }) => {
-	const [fein, setFein] = useState(locked ? '12-3456789' : '');
-	const [name, setName] = useState('');
-	const agency = useAgencyLookup(locked ? '' : fein);
-
-	return (
-		<div className="flex flex-col gap-4">
-			<FieldText disabled={locked}>
-				<Label>FEIN</Label>
-				<Autocomplete.Root
-					items={agency ? [agency] : []}
-					filter={null}
-					autoHighlight="always"
-					value={fein}
-					onValueChange={(value, eventDetails) => {
-						// A pick fills the agency name, not this field.
-						if (eventDetails.reason === 'item-press') return;
-						setFein(value);
-					}}>
-					<Autocomplete.Input
-						placeholder="XX-XXXXXXX"
-						render={inputProps => <FeinInput {...inputProps} />}
-					/>
-					<Autocomplete.Content>
-						<Autocomplete.List>
-							{(agencyName: string) => (
-								<Autocomplete.Item
-									key={agencyName}
-									value={agencyName}
-									onClick={() => setName(agencyName)}>
-									<div className="flex min-w-0 flex-col">
-										<span className="truncate">{agencyName}</span>
-										<span className="truncate text-xs text-text-default-base-tertiary">
-											Use this as agency name
-										</span>
-									</div>
-								</Autocomplete.Item>
-							)}
-						</Autocomplete.List>
-					</Autocomplete.Content>
-				</Autocomplete.Root>
-				<Field.Description>
-					The Federal Employer Identification Number of the agency.
-				</Field.Description>
-			</FieldText>
-			<FieldText>
-				<Label>Agency name</Label>
-				<Input value={name} onChange={event => setName(event.target.value)} />
-			</FieldText>
-		</div>
-	);
-};
-
 /**
  * A lookup: the typed number is the value, and what a lookup finds for it is
  * offered as a single suggestion that starts highlighted (`autoHighlight="always"`).
@@ -564,7 +649,67 @@ const LookupDemo = ({ locked = false }: { locked?: boolean }) => {
  * @summary Single highlighted lookup result that fills another field
  */
 export const Lookup: Story = {
-	render: () => <LookupDemo />,
+	render: () => {
+		const [fein, setFein] = useState('');
+		const [name, setName] = useState('');
+		const agency = useAgencyLookup(fein);
+
+		return (
+			<div className="flex flex-col gap-4">
+				<FieldText>
+					<Label>FEIN</Label>
+					<Autocomplete.Root
+						items={agency ? [agency] : []}
+						filter={null}
+						autoHighlight="always"
+						value={fein}
+						onValueChange={(value, eventDetails) => {
+							// A pick fills the agency name, not this field.
+							if (eventDetails.reason === 'item-press') return;
+							setFein(value);
+						}}>
+						<Autocomplete.Input
+							placeholder="XX-XXXXXXX"
+							render={inputProps => (
+								<input
+									{...inputProps}
+									inputMode="numeric"
+									onChange={event => {
+										event.target.value = formatFein(event.target.value);
+										inputProps.onChange?.(event);
+									}}
+								/>
+							)}
+						/>
+						<Autocomplete.Content>
+							<Autocomplete.List>
+								{(agencyName: string) => (
+									<Autocomplete.Item
+										key={agencyName}
+										value={agencyName}
+										onClick={() => setName(agencyName)}>
+										<div className="flex min-w-0 flex-col">
+											<span className="truncate">{agencyName}</span>
+											<span className="truncate text-xs text-text-default-base-tertiary">
+												Use this as agency name
+											</span>
+										</div>
+									</Autocomplete.Item>
+								)}
+							</Autocomplete.List>
+						</Autocomplete.Content>
+					</Autocomplete.Root>
+					<Field.Description>
+						The Federal Employer Identification Number of the agency.
+					</Field.Description>
+				</FieldText>
+				<FieldText>
+					<Label>Agency name</Label>
+					<Input value={name} onChange={event => setName(event.target.value)} />
+				</FieldText>
+			</div>
+		);
+	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 		const body = within(document.body);
@@ -629,12 +774,28 @@ export const Lookup: Story = {
 
 /**
  * A locked lookup: the field is disabled, so the list never opens, even with a
- * number that a lookup would answer.
+ * suggestion ready for the number in it.
  *
  * @summary Disabled lookup field that never opens its list
  */
 export const LookupLocked: Story = {
-	render: () => <LookupDemo locked />,
+	render: () => (
+		<FieldText disabled>
+			<Label>FEIN</Label>
+			<Autocomplete.Root items={['Sunrise Insurance Group']} defaultValue="12-3456789">
+				<Autocomplete.Input placeholder="XX-XXXXXXX" />
+				<Autocomplete.Content>
+					<Autocomplete.List>
+						{(agencyName: string) => (
+							<Autocomplete.Item key={agencyName} value={agencyName}>
+								{agencyName}
+							</Autocomplete.Item>
+						)}
+					</Autocomplete.List>
+				</Autocomplete.Content>
+			</Autocomplete.Root>
+		</FieldText>
+	),
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 		const input = canvas.getByRole('combobox', { name: 'FEIN' });
@@ -656,19 +817,75 @@ export const LookupLocked: Story = {
  * @summary Lookup inside a Modal, dismissed by Escape or a click outside
  */
 export const LookupInsideModal: Story = {
-	render: () => (
-		<Modal.Root>
-			<Modal.Trigger asChild>
-				<Button variant="secondary">Add agency</Button>
-			</Modal.Trigger>
-			<Modal.Content>
-				<Modal.Title>Add agency</Modal.Title>
-				<Modal.Body>
-					<LookupDemo />
-				</Modal.Body>
-			</Modal.Content>
-		</Modal.Root>
-	),
+	render: () => {
+		const [fein, setFein] = useState('');
+		const [name, setName] = useState('');
+		const agency = useAgencyLookup(fein);
+
+		return (
+			<Modal.Root>
+				<Modal.Trigger asChild>
+					<Button variant="secondary">Add agency</Button>
+				</Modal.Trigger>
+				<Modal.Content>
+					<Modal.Title>Add agency</Modal.Title>
+					<Modal.Body className="flex flex-col gap-4">
+						<FieldText>
+							<Label>FEIN</Label>
+							<Autocomplete.Root
+								items={agency ? [agency] : []}
+								filter={null}
+								autoHighlight="always"
+								value={fein}
+								onValueChange={(value, eventDetails) => {
+									// A pick fills the agency name, not this field.
+									if (eventDetails.reason === 'item-press') return;
+									setFein(value);
+								}}>
+								<Autocomplete.Input
+									placeholder="XX-XXXXXXX"
+									render={inputProps => (
+										<input
+											{...inputProps}
+											inputMode="numeric"
+											onChange={event => {
+												event.target.value = formatFein(event.target.value);
+												inputProps.onChange?.(event);
+											}}
+										/>
+									)}
+								/>
+								<Autocomplete.Content>
+									<Autocomplete.List>
+										{(agencyName: string) => (
+											<Autocomplete.Item
+												key={agencyName}
+												value={agencyName}
+												onClick={() => setName(agencyName)}>
+												<div className="flex min-w-0 flex-col">
+													<span className="truncate">{agencyName}</span>
+													<span className="truncate text-xs text-text-default-base-tertiary">
+														Use this as agency name
+													</span>
+												</div>
+											</Autocomplete.Item>
+										)}
+									</Autocomplete.List>
+								</Autocomplete.Content>
+							</Autocomplete.Root>
+							<Field.Description>
+								The Federal Employer Identification Number of the agency.
+							</Field.Description>
+						</FieldText>
+						<FieldText>
+							<Label>Agency name</Label>
+							<Input value={name} onChange={event => setName(event.target.value)} />
+						</FieldText>
+					</Modal.Body>
+				</Modal.Content>
+			</Modal.Root>
+		);
+	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 		const body = within(document.body);
@@ -715,88 +932,6 @@ export const LookupInsideModal: Story = {
 	}
 };
 
-const PROMPT_EXAMPLE = 'Producers licensed in Texas with an expired E&O';
-
-const PromptDemo = () => {
-	const [prompt, setPrompt] = useState('');
-	const [recents, setRecents] = useState(['Agencies onboarded last week', 'Expired licenses']);
-	const [pending, setPending] = useState(false);
-	const [lastRun, setLastRun] = useState('');
-
-	const run = (query: string, source: string) => {
-		const trimmed = query.trim();
-		if (!trimmed || pending) return;
-		setPending(true);
-		setTimeout(() => {
-			setPending(false);
-			setLastRun(`${trimmed} (${source})`);
-			setRecents(entries => [trimmed, ...entries.filter(entry => entry !== trimmed)]);
-			setPrompt('');
-		}, 200);
-	};
-
-	const trimmed = prompt.trim();
-	const suggestions = trimmed ? [trimmed] : recents;
-
-	return (
-		<form
-			aria-label="AI filter"
-			className="flex flex-col gap-4"
-			onSubmit={event => {
-				event.preventDefault();
-				run(prompt, 'enter');
-			}}>
-			<Autocomplete.Root
-				items={suggestions}
-				filter={null}
-				openOnInputClick
-				value={prompt}
-				onValueChange={setPrompt}>
-				<Autocomplete.Input
-					aria-label="Describe your filters"
-					readOnly={pending}
-					className="read-only:cursor-wait"
-					before={
-						pending ? (
-							<Loading size="sm" aria-label="Translating filters" />
-						) : (
-							<IconStar aria-hidden="true" />
-						)
-					}
-					after={<Tag color="informative">Beta</Tag>}
-					render={inputProps => (
-						<span data-slot="ai-filter-prompt" className="relative flex min-w-0 flex-1">
-							{!prompt && (
-								<span
-									aria-hidden="true"
-									className="pointer-events-none absolute inset-0 flex items-center truncate text-sm text-text-input-placeholder">
-									{PROMPT_EXAMPLE}
-								</span>
-							)}
-							<input {...inputProps} />
-						</span>
-					)}
-				/>
-				<Autocomplete.Content>
-					<Autocomplete.List aria-label="AI filter suggestions">
-						{(query: string) => (
-							<Autocomplete.Item key={query} value={query} onClick={() => run(query, 'suggestion')}>
-								<span className="truncate">
-									<span className="text-text-default-base-tertiary">AI Filter </span>
-									{query}
-								</span>
-							</Autocomplete.Item>
-						)}
-					</Autocomplete.List>
-				</Autocomplete.Content>
-			</Autocomplete.Root>
-			<p className="text-sm text-text-default-base-secondary">
-				Last run: <output aria-label="Last run">{lastRun}</output>
-			</p>
-		</form>
-	);
-};
-
 /**
  * A prompt field like the AI filter: an icon that turns into a spinner while
  * the prompt runs and a Beta tag, both inside the frame, and an example
@@ -808,35 +943,121 @@ const PromptDemo = () => {
  * @summary AI prompt with recent prompts, a spinner and a tag in the frame
  */
 export const Prompt: Story = {
-	render: () => <PromptDemo />,
-	play: async ({ canvasElement }) => {
+	args: { onSearch: fn() },
+	render: ({ onSearch }) => {
+		const [prompt, setPrompt] = useState('');
+		const [recents, setRecents] = useState(['Agencies onboarded last week', 'Expired licenses']);
+		const [pending, setPending] = useState(false);
+		const [applied, setApplied] = useState('');
+
+		const run = (query: string) => {
+			const trimmed = query.trim();
+			if (!trimmed || pending) return;
+			onSearch?.(trimmed);
+			setPending(true);
+			// Stands in for the request that translates the prompt into filters.
+			setTimeout(() => {
+				setPending(false);
+				setApplied(trimmed);
+				setRecents(entries => [trimmed, ...entries.filter(entry => entry !== trimmed)]);
+				setPrompt('');
+			}, 200);
+		};
+
+		const trimmed = prompt.trim();
+
+		return (
+			<form
+				aria-label="AI filter"
+				className="flex flex-col gap-3"
+				onSubmit={event => {
+					event.preventDefault();
+					run(prompt);
+				}}>
+				<Autocomplete.Root
+					items={trimmed ? [trimmed] : recents}
+					filter={null}
+					openOnInputClick
+					value={prompt}
+					onValueChange={setPrompt}>
+					<Autocomplete.Input
+						aria-label="Describe your filters"
+						readOnly={pending}
+						className="read-only:cursor-wait"
+						before={
+							pending ? (
+								<Loading size="sm" aria-label="Translating filters" />
+							) : (
+								<IconStar aria-hidden="true" />
+							)
+						}
+						after={<Tag color="informative">Beta</Tag>}
+						render={inputProps => (
+							<span className="relative flex min-w-0 flex-1">
+								{!prompt && (
+									<span
+										aria-hidden="true"
+										className="pointer-events-none absolute inset-0 flex items-center truncate text-sm text-text-input-placeholder">
+										Producers licensed in Texas with an expired E&O
+									</span>
+								)}
+								<input {...inputProps} />
+							</span>
+						)}
+					/>
+					<Autocomplete.Content>
+						<Autocomplete.List aria-label="AI filter suggestions">
+							{(query: string) => (
+								<Autocomplete.Item key={query} value={query} onClick={() => run(query)}>
+									<span className="truncate">
+										<span className="text-text-default-base-tertiary">AI Filter </span>
+										{query}
+									</span>
+								</Autocomplete.Item>
+							)}
+						</Autocomplete.List>
+					</Autocomplete.Content>
+				</Autocomplete.Root>
+				<output className="text-sm text-text-default-base-secondary">
+					{applied && `Filtered by "${applied}"`}
+				</output>
+			</form>
+		);
+	},
+	play: async ({ args, canvasElement }) => {
 		const canvas = within(canvasElement);
 		const body = within(document.body);
 		const input = canvas.getByRole('combobox', { name: 'Describe your filters' });
-		const lastRun = canvas.getByRole('status', { name: 'Last run' });
 
-		await expect(canvas.getByText(PROMPT_EXAMPLE)).toHaveAttribute('aria-hidden', 'true');
+		await expect(
+			canvas.getByText('Producers licensed in Texas with an expired E&O')
+		).toHaveAttribute('aria-hidden', 'true');
 
-		// A click opens the recent prompts.
+		// A click opens the recent prompts; picking one runs it.
 		await userEvent.click(input);
 		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(2));
 		await waitFor(() => expectListAlignedWithField(canvasElement));
 		await userEvent.click(body.getByRole('option', { name: /Expired licenses/ }));
+		await expect(args.onSearch).toHaveBeenCalledTimes(1);
+		await expect(args.onSearch).toHaveBeenNthCalledWith(1, 'Expired licenses');
 		await expect(canvas.getByRole('status', { name: 'Translating filters' })).toBeInTheDocument();
 		await expect(input).toHaveAttribute('readonly');
-		await waitFor(() => expect(lastRun).toHaveTextContent('Expired licenses (suggestion)'));
+		await expect(await canvas.findByText('Filtered by "Expired licenses"')).toBeVisible();
 		await expect(input).toHaveValue('');
 
-		// Typing offers to run the text; Enter with nothing highlighted runs it through the form.
+		// Typing offers to run the text; Enter with nothing highlighted runs it once, through the form.
 		await userEvent.type(input, 'Producers in Ohio');
 		await body.findByRole('option', { name: /Producers in Ohio/ });
 		await userEvent.keyboard('{Enter}');
-		await waitFor(() => expect(lastRun).toHaveTextContent('Producers in Ohio (enter)'));
+		await expect(await canvas.findByText('Filtered by "Producers in Ohio"')).toBeVisible();
+		await expect(args.onSearch).toHaveBeenCalledTimes(2);
+		await expect(args.onSearch).toHaveBeenNthCalledWith(2, 'Producers in Ohio');
 
 		// A click outside keeps an unsent prompt.
 		await userEvent.type(input, 'Agencies in Utah');
-		await userEvent.click(canvas.getByText(/Last run:/));
+		await userEvent.click(canvas.getByText('Filtered by "Producers in Ohio"'));
 		await waitForListClosed();
 		await expect(input).toHaveValue('Agencies in Utah');
+		await expect(args.onSearch).toHaveBeenCalledTimes(2);
 	}
 };
