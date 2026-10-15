@@ -6673,6 +6673,284 @@
       ],
       "import": "import {\n    Button,\n    Divider,\n    DropdownMenu,\n    Field,\n    FieldText,\n    IconKeyboardArrowDown,\n    IconSearch,\n    Input,\n    InputGroup,\n    Label,\n    Tag,\n} from \"@agentero/design-system\";"
     },
+    "components-inputnumber": {
+      "id": "components-inputnumber",
+      "name": "InputNumber",
+      "path": "./src/input-number/input-number.stories.tsx",
+      "jsDocTags": {
+        "summary": [
+          "Numeric input formatting as you type, built on react-number-format"
+        ],
+        "dataAttribute": [
+          "{string} data-slot - Always set to \"input-number\""
+        ],
+        "example": [
+          "<FieldText>\n  <Label>Annual premium</Label>\n  <InputNumber name=\"premium\" thousandSeparator allowLeadingZeros={false} />\n</FieldText>"
+        ]
+      },
+      "description": "InputNumber is a text field that only takes digits and a decimal point and\nformats them as the user types: thousands separators on request, leading\nzeros kept unless turned off, no sign. `onChange` fires with the formatted text in\n`event.target.value`. It is an `Input` driven by `react-number-format`, so\nit takes its label, messages and states from a surrounding `FieldText`.",
+      "summary": "Numeric input formatting as you type, built on react-number-format",
+      "reactComponentMeta": {
+        "displayName": "InputNumber",
+        "exportName": "InputNumber",
+        "filePath": "/home/runner/work/design-system/design-system/src/input-number/input-number.tsx",
+        "description": "InputNumber is a text field that only takes digits and a decimal point and\nformats them as the user types: a thousands separator when\n`thousandSeparator` is set, leading zeros kept unless `allowLeadingZeros` is\noff, no sign, no decimal rounding.\nAnything that is not a digit or the decimal point is ignored, and\n`maxNumber` drops any edit that would exceed it. `onChange` fires with the\nformatted text in `event.target.value` (`\"1,234\"`, not `1234`), which is\nwhat a form library stores; parse it where the number is consumed.\n\nIt is an [Input](?path=/docs/components-input--docs) driven by\n`react-number-format`, so it keeps the caret in place while it reformats\nand takes its wiring from a surrounding `FieldText` as a plain `Input`\ndoes. Every standard `<input>` attribute is accepted and forwarded, such as\n`placeholder`, `required`, `maxLength` or `aria-invalid`; `type` is limited\nto `text`, `tel` and `password`, and `value` and `defaultValue` also take a\nnumber or `null`. The invalid state comes from `aria-invalid`, which paints\nthe destructive border. Place it inside an\n[InputGroup](?path=/docs/components-inputgroup--docs) to show a currency or\nunit affix.\n\nDo not use it for a phone number, which is formatted by `InputTel`, nor for\nfree text with some digits in it, which is a plain `Input`. It is not a\n`type=\"number\"` input on purpose: that one drops leading zeros and cannot\nshow separators, which identifiers and amounts both need.\n\nIt renders from `value`, not from the DOM, so bind it to a form through a\ncontrolled value (react-hook-form's `Controller` or `useController`), not\nthrough `register`: a value `register` writes into the `<input>`, such as a\ndefault or a `reset`, is wiped on the next render.",
+        "jsDocTags": {
+          "summary": [
+            "Numeric input formatting as you type, built on react-number-format"
+          ],
+          "dataAttribute": [
+            "{string} data-slot - Always set to \"input-number\""
+          ],
+          "example": [
+            "<FieldText>\n  <Label>Annual premium</Label>\n  <InputNumber name=\"premium\" thousandSeparator allowLeadingZeros={false} />\n</FieldText>"
+          ]
+        },
+        "props": {
+          "size": {
+            "name": "size",
+            "required": false,
+            "type": {
+              "name": "enum",
+              "raw": "\"sm\" | \"md\" | \"lg\"",
+              "value": [
+                {
+                  "value": "\"sm\""
+                },
+                {
+                  "value": "\"md\""
+                },
+                {
+                  "value": "\"lg\""
+                }
+              ]
+            },
+            "description": "Control height. Defaults to `'md'`.\n- `sm` (32px) — dense layouts where vertical space is tight.\n- `md` (40px) — standard form density.\n- `lg` (48px) — low-density forms and larger touch targets. Also raises\n  the text to `base` and the corner radius to `lg`.",
+            "defaultValue": null,
+            "parent": {
+              "name": "InputProps",
+              "fileName": "src/input/input.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input/input.tsx"
+              }
+            ]
+          },
+          "maxNumber": {
+            "name": "maxNumber",
+            "required": false,
+            "type": {
+              "name": "number"
+            },
+            "description": "Highest value the field accepts. A keystroke or paste that would take\nthe number above it is dropped before it reaches the field, so `onChange`\nis not called for it. No limit by default.",
+            "defaultValue": null,
+            "parent": {
+              "name": "InputNumberProps",
+              "fileName": "src/input-number/input-number.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input-number/input-number.tsx"
+              }
+            ]
+          },
+          "thousandSeparator": {
+            "name": "thousandSeparator",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Groups the integer part in thousands with a comma as the user types\n(`1,234,567`). The separators are part of `event.target.value`. Defaults\nto `false`.",
+            "defaultValue": {
+              "value": "false"
+            },
+            "parent": {
+              "name": "InputNumberProps",
+              "fileName": "src/input-number/input-number.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input-number/input-number.tsx"
+              }
+            ]
+          },
+          "allowLeadingZeros": {
+            "name": "allowLeadingZeros",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Keeps zeros typed in front of the number (`007`), which an identifier\nsuch as an NPN or a ZIP code needs. Set it to `false` for an amount, so\n`007` becomes `7` once the field loses focus, and `onChange` fires with\nthe trimmed value. Defaults to `true`.",
+            "defaultValue": {
+              "value": "true"
+            },
+            "parent": {
+              "name": "InputNumberProps",
+              "fileName": "src/input-number/input-number.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input-number/input-number.tsx"
+              }
+            ]
+          },
+          "type": {
+            "name": "type",
+            "required": false,
+            "type": {
+              "name": "enum",
+              "raw": "\"text\" | \"tel\" | \"password\"",
+              "value": [
+                {
+                  "value": "\"text\""
+                },
+                {
+                  "value": "\"tel\""
+                },
+                {
+                  "value": "\"password\""
+                }
+              ]
+            },
+            "description": "The underlying `<input>` type. Defaults to `'text'`.\n- `text` — the general case.\n- `tel` — brings up the numeric keypad on phones, for codes and\n  identifiers that are digits only.\n- `password` — masks the digits, for a PIN.",
+            "defaultValue": null,
+            "parent": {
+              "name": "InputNumberProps",
+              "fileName": "src/input-number/input-number.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input-number/input-number.tsx"
+              }
+            ]
+          },
+          "value": {
+            "name": "value",
+            "required": false,
+            "type": {
+              "name": "string | number | null | undefined"
+            },
+            "description": "The number to show, as a number or as a string of digits. It is displayed\nformatted according to `thousandSeparator`. `null` and `''` both clear the\nfield.",
+            "defaultValue": null,
+            "parent": {
+              "name": "InputNumberProps",
+              "fileName": "src/input-number/input-number.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input-number/input-number.tsx"
+              }
+            ]
+          },
+          "defaultValue": {
+            "name": "defaultValue",
+            "required": false,
+            "type": {
+              "name": "string | number | null | undefined"
+            },
+            "description": "Initial value of an uncontrolled field, in the same forms as `value`.",
+            "defaultValue": null,
+            "parent": {
+              "name": "InputNumberProps",
+              "fileName": "src/input-number/input-number.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input-number/input-number.tsx"
+              }
+            ]
+          }
+        }
+      },
+      "stories": [
+        {
+          "id": "components-inputnumber--default",
+          "name": "Default",
+          "snippet": "const Default = () => <InputNumber\n    aria-label=\"Premium\"\n    onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n    ref={inputRef} />;",
+          "description": "Only digits and a decimal point make it into the field: letters and a minus\nsign are ignored as they are typed. `onChange` reports the text as it is shown, and the `ref`\npoints at the `<input>` element.",
+          "summary": "Numeric field that ignores letters and signs"
+        },
+        {
+          "id": "components-inputnumber--type-tel",
+          "name": "Type Tel",
+          "snippet": "const TypeTel = () => <InputNumber\n    aria-label=\"NPN\"\n    onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n    type=\"tel\" />;",
+          "description": "`type=\"tel\"` brings up the numeric keypad on phones. The field still\nformats and filters the same way; only the underlying input type changes.",
+          "summary": "Numeric keypad on phones through the tel input type"
+        },
+        {
+          "id": "components-inputnumber--thousand-separator",
+          "name": "Thousand Separator",
+          "snippet": "const ThousandSeparator = () => <InputNumber\n    aria-label=\"Premium\"\n    onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n    thousandSeparator />;",
+          "description": "With `thousandSeparator` the integer part is grouped with commas as the\nuser types, and the commas are part of what `onChange` reports.",
+          "summary": "Thousands grouped with commas as the user types"
+        },
+        {
+          "id": "components-inputnumber--max-number",
+          "name": "Max Number",
+          "snippet": "const MaxNumber = () => <InputNumber\n    aria-label=\"Commission rate\"\n    onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n    maxNumber={100} />;",
+          "description": "`maxNumber` caps the value: a keystroke that would push the number above\nit is dropped, so the field keeps its previous value and `onChange` is not\ncalled for it.",
+          "summary": "Keystrokes that would exceed a maximum are dropped"
+        },
+        {
+          "id": "components-inputnumber--leading-zeros",
+          "name": "Leading Zeros",
+          "snippet": "const LeadingZeros = () => <div style={{ display: 'grid', gap: '1rem' }}>\n    <InputNumber\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        aria-label=\"ZIP code\" />\n    <InputNumber\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        aria-label=\"Amount\"\n        allowLeadingZeros={false} />\n</div>;",
+          "description": "Leading zeros are kept by default, as an NPN or a ZIP code needs. With\n`allowLeadingZeros` off they are dropped once the field loses focus, which\nis what an amount wants, and `onChange` reports the trimmed value.",
+          "summary": "Leading zeros kept by default, dropped on blur when turned off"
+        },
+        {
+          "id": "components-inputnumber--controlled",
+          "name": "Controlled",
+          "snippet": "const Controlled = () => {\n    const [premium, setPremium] = useState<number | string>(1234);\n\n    return (\n        <InputNumber\n            aria-label=\"Premium\"\n            thousandSeparator\n            value={premium}\n            onChange={event => {\n                setPremium(event.target.value);\n                args.onChange?.(event);\n            }} />\n    );\n};",
+          "description": "A controlled field takes `value` as a number and shows it formatted. The\nstate keeps what `onChange` reports, so it holds the formatted text.",
+          "summary": "Controlled field showing a numeric value formatted"
+        },
+        {
+          "id": "components-inputnumber--inside-input-group",
+          "name": "Inside Input Group",
+          "snippet": "const InsideInputGroup = () => <InputGroup.Root>\n    <InputGroup.Text>$</InputGroup.Text>\n    <InputNumber\n        aria-label=\"Premium\"\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        thousandSeparator\n        allowLeadingZeros={false}\n        placeholder=\"0\" />\n</InputGroup.Root>;",
+          "description": "Inside an `InputGroup` the field sits behind a currency affix and the\nframe takes its focus, disabled and invalid states from the input.",
+          "summary": "Amount with a currency prefix inside an input group"
+        },
+        {
+          "id": "components-inputnumber--inside-field-text",
+          "name": "Inside Field Text",
+          "snippet": "const InsideFieldText = () => (\n    <div style={{ display: 'grid', gap: '1.5rem' }}>\n        <FieldText required>\n            <Label>NPN</Label>\n            <InputNumber type=\"tel\" />\n            <Field.Description>The 7 to 10 digit National Producer Number.</Field.Description>\n        </FieldText>\n        <FieldText invalid>\n            <Label>Years in business</Label>\n            <InputNumber defaultValue={150} />\n            <Field.Error errors={[{ message: 'Enter at most 100 years.' }]} />\n        </FieldText>\n        <FieldText disabled>\n            <Label>Agency code</Label>\n            <InputNumber defaultValue=\"00412\" />\n        </FieldText>\n    </div>\n);",
+          "description": "Inside a `FieldText` the input takes its label, description and states from\nthe field. `invalid` on the field sets `aria-invalid`, which paints the\ndestructive border, and `disabled` reaches the input the same way.",
+          "summary": "Label, messages and states reaching the input from a FieldText"
+        },
+        {
+          "id": "components-inputnumber--disabled",
+          "name": "Disabled",
+          "snippet": "const Disabled = () => <InputNumber\n    aria-label=\"Premium\"\n    onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n    disabled\n    thousandSeparator\n    defaultValue={12500} />;",
+          "description": "A disabled field keeps its formatted value and takes no input.",
+          "summary": "Disabled field with a formatted value"
+        },
+        {
+          "id": "components-inputnumber--invalid",
+          "name": "Invalid",
+          "snippet": "const Invalid = () => <InputNumber\n    aria-label=\"Premium\"\n    onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n    aria-invalid\n    defaultValue={0} />;",
+          "description": "`aria-invalid` paints the destructive border, the same way it does on a\nplain `Input`.",
+          "summary": "Invalid state driven by aria-invalid"
+        },
+        {
+          "id": "components-inputnumber--all-sizes",
+          "name": "All Sizes",
+          "snippet": "const AllSizes = () => <div style={{ display: 'grid', gap: '1rem' }}>\n    <InputNumber\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        thousandSeparator\n        defaultValue={1234}\n        size=\"sm\"\n        aria-label=\"Small\" />\n    <InputNumber\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        thousandSeparator\n        defaultValue={1234}\n        size=\"md\"\n        aria-label=\"Medium\" />\n    <InputNumber\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        thousandSeparator\n        defaultValue={1234}\n        size=\"lg\"\n        aria-label=\"Large\" />\n</div>;",
+          "description": "The three sizes match Input's: 32, 40 or 48px tall.",
+          "summary": "The three sizes side by side"
+        }
+      ],
+      "import": "import { Controller, Field, FieldText, InputContext, InputGroup, InputNumber, Label } from \"@agentero/design-system\";"
+    },
     "components-inputpassword": {
       "id": "components-inputpassword",
       "name": "InputPassword",
@@ -10223,6 +10501,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5479
+    "durationMs": 4090
   }
 }
