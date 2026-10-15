@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>3.1s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>3.5s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -1496,9 +1496,10 @@ and so on, except two. The open state (`open`, `defaultOpen`,
 `submitOnItemClick` is left out too: to submit on a pick, run the submit
 from the row&#39;s `onClick` with the row&#39;s value. Base UI empties the field on Escape while the
 list is shut, as a native search input does; this root keeps the text
-instead, and does not report that change. Inside a `Modal` or `Popover`,
-Escape on an open list closes the list only, and the next one closes the
-layer.
+instead, and does not report that change. Escape while the list waits for
+late suggestions drops the wait, so they no longer open it. Inside a `Modal`
+or `Popover`, Escape on an open list closes the list only, and the next one
+closes the layer.
 
 Picking a row and pressing Enter are told apart with Base UI&#39;s own events:
 
@@ -1507,8 +1508,8 @@ Picking a row and pressing Enter are told apart with Base UI&#39;s own events:
   `&#39;item-press&#39;`, carrying the row&#39;s text. Base UI stops that Enter, so the
   form is not submitted as well.
 - Enter with no row highlighted closes the list and submits the owning form
-  once, as the browser would: through its default button, and not while
-  that button is disabled. With no submit button the form submits only when
+  once, as the browser would: by clicking its default button, so the
+  button&#39;s `onClick` runs, and not while that button is disabled. With no submit button the form submits only when
   this is its one text field.
 - A pick fills the field with the row&#39;s text. To keep the typed text, call
   `eventDetails.cancel()` when the reason is `&#39;item-press&#39;`, or ignore that
@@ -1889,9 +1890,10 @@ fires once.</div>
               </div>
               <div>Nothing submits while the form&#39;s submit button is disabled</div>
               <div class="hint">Submission follows the form&#39;s submit button, as in the browser: while it is
-disabled, Enter submits nothing. Here
+disabled, Enter submits nothing, and once enabled Enter clicks it, so its
+`onClick` runs as well as the form&#39;s `onSubmit`. Here
 the search waits for the scope to be confirmed.</div>
-              <pre><code>const DisabledSubmitButton = ({ onSearch }) =&gt; {
+              <pre><code>const DisabledSubmitButton = ({ onSearch, onSubmitClick }) =&gt; {
     const [confirmed, setConfirmed] = useState(false);
     const [outcome, setOutcome] = useState(&#39;&#39;);
 
@@ -1920,7 +1922,7 @@ the search waits for the scope to be confirmed.</div>
                         &lt;/Autocomplete.Content&gt;
                     &lt;/Autocomplete.Root&gt;
                 &lt;/div&gt;
-                &lt;Button type=&quot;submit&quot; variant=&quot;secondary&quot; disabled={!confirmed}&gt;
+                &lt;Button type=&quot;submit&quot; variant=&quot;secondary&quot; disabled={!confirmed} onClick={onSubmitClick}&gt;
                     Search
                 &lt;/Button&gt;
             &lt;/div&gt;
@@ -2132,8 +2134,9 @@ suggestion ready for the number in it.</div>
               <div>Lookup inside a Modal, dismissed by Escape or a click outside</div>
               <div class="hint">The lookup inside a `Modal`. A click on the field keeps the list open, a
 pick fills the other field without closing the dialog, and Escape or a click
-outside close the list, keeping the number. Escape on the shut field then
-closes the dialog.</div>
+outside close the list, keeping the number. Escape before the lookup answers
+drops the wait, so the late result does not open the list, and the dialog
+stays. Escape on the shut field then closes the dialog.</div>
               <pre><code>const LookupInsideModal = () =&gt; {
     const [fein, setFein] = useState(&#39;&#39;);
     const [name, setName] = useState(&#39;&#39;);
