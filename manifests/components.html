@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.0s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>3.9s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -3497,8 +3497,8 @@ rest of the page from assistive technology, label included, and a
                 &lt;/Combobox.List&gt;
             &lt;/Combobox.Content&gt;
         &lt;/Combobox.Root&gt;
-        &lt;Field.Error errors={[{ message: &#39;Pick an agency from the list&#39; }]} /&gt;
         &lt;Field.Description&gt;The agency this agent will be added to.&lt;/Field.Description&gt;
+        &lt;Field.Error errors={[{ message: &#39;Pick an agency from the list&#39; }]} /&gt;
     &lt;/FieldText&gt;
 );</code></pre>
             </div>
@@ -5469,8 +5469,8 @@ absent when there is none.</div>
     <div class="kv"><span class="chip">summary: Wraps a label, control, description and error into one field</span><span class="chip">example: &lt;Field.Root invalid={!!error} required&gt;
   &lt;Field.Label&gt;Email&lt;/Field.Label&gt;
   &lt;Input type=&quot;email&quot; /&gt;
-  &lt;Field.Error errors={[error]} /&gt;
   &lt;Field.Description&gt;We only use this for policy documents.&lt;/Field.Description&gt;
+  &lt;Field.Error errors={[error]} /&gt;
 &lt;/Field.Root&gt;</span></div>
   </div>
 
@@ -5723,15 +5723,15 @@ either, the control carries no `aria-describedby` at all.</div>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">Error Before Description</span>
+                <span class="ex-name">Description Before Error</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Error announced before the description, whenever it appears</div>
-              <div class="hint">The error sits right under the control and is announced before the
-description, even when it appears after the description is on screen and
+              <div>Description announced before the error, whenever it appears</div>
+              <div class="hint">The description sits right under the control and is announced before the
+error, even when it appears after the error is on screen and the error
 carries an `id` of its own.</div>
-              <pre><code>const ErrorBeforeDescription = () =&gt; {
-    const [error, setError] = useState&lt;string&gt;();
+              <pre><code>const DescriptionBeforeError = () =&gt; {
+    const [showHint, setShowHint] = useState(false);
 
     return (
         &lt;div className=&quot;flex flex-col items-start gap-4&quot;&gt;
@@ -5740,13 +5740,15 @@ carries an `id` of its own.</div>
                 disabled={false}
                 readOnly={false}
                 required={false}
-                invalid={!!error}&gt;
+                invalid&gt;
                 &lt;Label&gt;Tax ID&lt;/Label&gt;
                 &lt;DemoInput inputMode=&quot;numeric&quot; /&gt;
-                &lt;Field.Error id=&quot;tax-id-error&quot;&gt;{error}&lt;/Field.Error&gt;
-                &lt;Field.Description&gt;Nine digits, with or without the dash.&lt;/Field.Description&gt;
+                {showHint &amp;&amp; (
+                    &lt;Field.Description&gt;Nine digits, with or without the dash.&lt;/Field.Description&gt;
+                )}
+                &lt;Field.Error id=&quot;tax-id-error&quot;&gt;Enter the tax ID.&lt;/Field.Error&gt;
             &lt;/Field.Root&gt;
-            &lt;button type=&quot;button&quot; onClick={() =&gt; setError(&#39;Enter the tax ID.&#39;)}&gt;Validate
+            &lt;button type=&quot;button&quot; onClick={() =&gt; setShowHint(true)}&gt;Show hint
                                 &lt;/button&gt;
         &lt;/div&gt;
     );
@@ -6002,8 +6004,8 @@ and `name`, and `FieldContext` with the errors, as the last story shows.</div>
     <div class="kv"><span class="chip">summary: Field for a single-line text control, wiring the Input inside it</span><span class="chip">example: &lt;FieldText invalid={!!error} required&gt;
   &lt;Label&gt;Email&lt;/Label&gt;
   &lt;Input type=&quot;email&quot; /&gt;
-  &lt;Field.Error errors={[error]} /&gt;
   &lt;Field.Description&gt;We only use this for policy documents.&lt;/Field.Description&gt;
+  &lt;Field.Error errors={[error]} /&gt;
 &lt;/FieldText&gt;</span></div>
   </div>
 
@@ -6485,7 +6487,7 @@ control?: Control&lt;FieldValues, any, unknown&gt;
 controlId?: string
 
 /**
- * Helper text shown under the control, below the error when there is one,
+ * Helper text shown under the control, above the error when there is one,
  * and announced through its `aria-describedby`. Use it for guidance the
  * user needs before typing; put details worth a click in `tooltip` instead.
  */
@@ -6705,14 +6707,13 @@ not mark the field required: that stays an explicit `required` prop.</div>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">Error And Description</span>
+                <span class="ex-name">Description And Error</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Error under the input, above the helper text</div>
-              <div class="hint">The error sits right under the input and the description stays below it, so
-the message lands next to the value it is about. Screen readers announce
-them in the same order.</div>
-              <pre><code>const ErrorAndDescription = () =&gt; {
+              <div>Helper text under the input, above the error</div>
+              <div class="hint">The description sits right under the input and the error appears below it.
+Screen readers announce them in the same order.</div>
+              <pre><code>const DescriptionAndError = () =&gt; {
     const methods = useForm&lt;TaxValues&gt;({ defaultValues: { taxId: &#39;&#39; } });
 
     return (
