@@ -2717,7 +2717,7 @@
         "displayName": "Checkbox",
         "exportName": "Checkbox",
         "filePath": "/home/runner/work/design-system/design-system/src/checkbox/checkbox.tsx",
-        "description": "Base control for a boolean the user confirms later: one item of a\nmulti-select, a terms tick, a row picked for a bulk action. Supports the\nmixed state for a parent that summarises a partially selected group.\nKeeps the legacy 16px surface, glyphs and state colours during adoption.\n\nHeadless like [Input](?path=/docs/components-input--docs): pair it with\n[Label](?path=/docs/components-label--docs) and `htmlFor`, or give it an\n`aria-label`. There is no `status` prop — set `aria-invalid`.\n\nUse [Switch](?path=/docs/components-switch--docs) when the change applies\nimmediately, and [CheckList](?path=/docs/components-check-list--docs) for a\nread-only list of ticked items.",
+        "description": "Base control for a boolean the user confirms later: one item of a\nmulti-select, a terms tick, a row picked for a bulk action. Supports the\nmixed state for a parent that summarises a partially selected group.\nDrawn to the Portal UI library's Base Checkbox: a 16px box with a 1.5px\nborder, filled slate when checked or mixed.\n\nHeadless like [Input](?path=/docs/components-input--docs): pair it with\n[Label](?path=/docs/components-label--docs) and `htmlFor`, or give it an\n`aria-label`. There is no `status` prop — set `aria-invalid`.\n\nUse [Switch](?path=/docs/components-switch--docs) when the change applies\nimmediately, and [CheckList](?path=/docs/components-check-list--docs) for a\nread-only list of ticked items.",
         "jsDocTags": {
           "summary": [
             "Base checkbox control, with mixed state, unaware of form libraries"
@@ -3004,11 +3004,11 @@
           "summary": "Mixed checkbox inside another selected group"
         },
         {
-          "id": "components-checkbox--legacy-states",
-          "name": "Legacy States",
-          "snippet": "const LegacyStates = () => (\n    <div className=\"flex flex-col gap-6\">\n        {[false, true].map(invalid => (\n            <div key={String(invalid)} className=\"flex flex-col gap-4\">\n                {[false, true].map(disabled => (\n                    <div key={String(disabled)} className=\"flex items-center gap-6\">\n                        {([false, true, 'indeterminate'] as const).map(checked => (\n                            <Checkbox\n                                key={String(checked)}\n                                aria-label={`${invalid ? 'Invalid' : 'Valid'} ${disabled ? 'disabled' : 'enabled'} ${checked}`}\n                                checked={checked}\n                                disabled={disabled}\n                                aria-invalid={invalid}\n                            />\n                        ))}\n                    </div>\n                ))}\n            </div>\n        ))}\n    </div>\n);",
-          "description": "Preserves the legacy palette and 16px footprint for every value and validation state.",
-          "summary": "Legacy checkbox colours across all interaction states"
+          "id": "components-checkbox--all-states",
+          "name": "All States",
+          "snippet": "const AllStates = () => (\n    <div className=\"flex flex-col gap-6\">\n        {[false, true].map(invalid => (\n            <div key={String(invalid)} className=\"flex flex-col gap-4\">\n                {[false, true].map(disabled => (\n                    <div key={String(disabled)} className=\"flex items-center gap-6\">\n                        {([false, true, 'indeterminate'] as const).map(checked => (\n                            <Checkbox\n                                key={String(checked)}\n                                aria-label={`${invalid ? 'Invalid' : 'Valid'} ${disabled ? 'disabled' : 'enabled'} ${checked}`}\n                                checked={checked}\n                                disabled={disabled}\n                                aria-invalid={invalid}\n                            />\n                        ))}\n                    </div>\n                ))}\n            </div>\n        ))}\n    </div>\n);",
+          "description": "Every value, enabled and disabled, valid and invalid, as the Portal UI\nlibrary's Base Checkbox draws them: a 16px box with a 1.5px border.",
+          "summary": "Checkbox colours across all value and validation states"
         }
       ],
       "import": "import { Checkbox, Label } from \"@agentero/design-system\";"
@@ -11554,6 +11554,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5245
+    "durationMs": 5697
   }
 }
