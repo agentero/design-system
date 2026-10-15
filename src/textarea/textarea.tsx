@@ -47,13 +47,9 @@ export const textAreaRecipe = tv({
  */
 export const textAreaCounterRecipe = tv({
 	base: [
-		// Anchored to the textarea's own box, so a width or flex class on the
-		// textarea moves the count with it; without anchor positioning the wrapper
-		// becomes the box instead.
 		'pointer-events-none absolute right-3 bottom-2',
 		'supports-[anchor-name:--a]:right-[calc(anchor(right)+0.75rem)]',
 		'supports-[anchor-name:--a]:bottom-[calc(anchor(bottom)+0.5rem)]',
-		// Opaque, so text scrolled behind it never shows through.
 		'rounded-sm bg-bg-input-normal px-1 text-xs leading-normal font-normal tabular-nums',
 		'text-text-input-placeholder',
 		'peer-disabled:bg-bg-input-disable peer-disabled:text-text-input-disable',
@@ -130,15 +126,13 @@ export const TextArea = (props: TextAreaProps) => {
 	const counter = maxLength !== undefined;
 	const controlled = rest.value != null;
 
-	// Only an uncontrolled count reads the DOM: typing notifies through `input`,
-	// a native form reset through the form's `reset` (which fires before the
-	// values are restored), and any other rewrite is read on the next render.
 	const subscribe = useCallback(
 		(onChange: () => void) => {
 			const textarea = textareaRef.current;
 			const form = textarea?.form;
 			if (!counter || controlled || !textarea) return () => {};
 
+			// `reset` fires before the form restores the values.
 			const onReset = () => setTimeout(onChange);
 			textarea.addEventListener('input', onChange);
 			form?.addEventListener('reset', onReset);
