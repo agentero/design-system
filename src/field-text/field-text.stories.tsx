@@ -5,7 +5,7 @@ import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { FieldText } from '.';
 import { Field, FieldContext, FieldErrorLike } from '../field';
-import { Input, InputContext, InputProps } from '../input';
+import { Input, InputContext, type InputContextValue } from '../input';
 import { Label } from '../label';
 
 /**
@@ -219,7 +219,7 @@ const ContextExtension = ({
 	errors,
 	children
 }: {
-	inputProps: Partial<InputProps>;
+	inputProps: InputContextValue;
 	errors?: FieldErrorLike[];
 	children: ReactNode;
 }) => {
