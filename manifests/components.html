@@ -588,13 +588,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">40 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/335 story errors</a></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">41 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/349 story errors</a></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.1s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>6.1s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -3606,6 +3606,404 @@ library&#39;s Base Checkbox draws them: a 16px box with a 1.5px border.</div>
   no-story-error
   no-doc-error"
   role="listitem"
+  aria-label="CheckboxGroup.Root">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> CheckboxGroup.Root</h2>
+      <div class="badges">
+        <label for="c-7-components-checkboxgroup-props" class="badge ok as-toggle">7 prop types</label>
+        
+        <label for="c-7-components-checkboxgroup-stories" class="badge ok as-toggle">14 stories</label>
+        
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/checkbox-group/checkbox-group.stories.tsx">components-checkboxgroup · ./src/checkbox-group/checkbox-group.stories.tsx</div>
+    <div>Multi-select checkbox list holding its checked values as a string array</div>
+    <div class="hint">`Root` owns the checked values; each `Item` is a `Checkbox` with its label.</div>
+    <div class="kv"><span class="chip">summary: Multi-select checkbox list holding its checked values as a string array</span><span class="chip">example: &lt;span id=&quot;lobs&quot;&gt;Lines of business&lt;/span&gt;
+&lt;CheckboxGroup.Root aria-labelledby=&quot;lobs&quot; defaultValue={[&#39;home&#39;]} onValueChange={setLobs}&gt;
+  &lt;CheckboxGroup.Item value=&quot;home&quot;&gt;Home&lt;/CheckboxGroup.Item&gt;
+  &lt;CheckboxGroup.Item value=&quot;auto&quot;&gt;Auto&lt;/CheckboxGroup.Item&gt;
+&lt;/CheckboxGroup.Root&gt;</span><span class="chip">dataAttribute: {string} data-orientation - &quot;vertical&quot; | &quot;horizontal&quot;</span><span class="chip">dataAttribute: {string} data-disabled - Present when the whole group is disabled</span><span class="chip">dataAttribute: {string} data-readonly - Present when the group is read-only</span></div>
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-7-components-checkboxgroup-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+  <input id="c-7-components-checkboxgroup-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-component-meta)</small></span>
+              <span class="badge ok">7 prop types</span>
+            </div>
+            <pre><code>Component: src/checkbox-group/index.ts::CheckboxGroup</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>/**
+ * Initial list of checked item values for an uncontrolled group.
+ */
+defaultValue?: string[] = []
+
+/**
+ * Disables every item in the group.
+ */
+disabled?: boolean
+
+/**
+ * Form field name shared by every item; each checked item submits `name=value`.
+ */
+name?: string
+
+/**
+ * Fires with the next list of checked values, in the order the items were checked.
+ */
+onValueChange?: (value: string[]) =&gt; void
+
+/**
+ * `vertical` (default) stacks the items; `horizontal` lays them in a row that wraps.
+ */
+orientation?: &quot;horizontal&quot; | &quot;vertical&quot; = &#39;vertical&#39;
+
+/**
+ * Keeps every item focusable but stops it from toggling; each checkbox gets `aria-readonly`.
+ */
+readOnly?: boolean
+
+/**
+ * Controlled list of checked item values.
+ */
+value?: string[]</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { CheckboxGroup, Field } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Uncontrolled group with one item checked</div>
+              
+              <pre><code>const Default = () =&gt; &lt;CheckboxGroup.Root
+    aria-label=&quot;Lines of business&quot;
+    defaultValue={[&#39;home&#39;]}
+    onValueChange={fn()}&gt;
+    {LOBS.map(({ value, label }) =&gt; (
+        &lt;CheckboxGroup.Item key={value} value={value}&gt;
+            {label}
+        &lt;/CheckboxGroup.Item&gt;
+    ))}
+&lt;/CheckboxGroup.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Keyboard</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Keyboard navigation and toggling</div>
+              <div class="hint">Tab moves between items and Space toggles the focused one, as with
+standalone checkboxes.</div>
+              <pre><code>const Keyboard = () =&gt; &lt;CheckboxGroup.Root aria-label=&quot;Lines of business&quot; defaultValue={[]}&gt;
+    {LOBS.map(({ value, label }) =&gt; (
+        &lt;CheckboxGroup.Item key={value} value={value}&gt;
+            {label}
+        &lt;/CheckboxGroup.Item&gt;
+    ))}
+&lt;/CheckboxGroup.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Labelled By Heading</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Group named by a visible heading</div>
+              
+              <pre><code>const LabelledByHeading = () =&gt; &lt;div className=&quot;flex flex-col gap-2&quot;&gt;
+    &lt;span
+        id=&quot;lobs-heading&quot;
+        className=&quot;text-sm font-semibold text-text-input-normal&quot;&gt;Lines of business
+                    &lt;/span&gt;
+    &lt;CheckboxGroup.Root
+        aria-label={undefined}
+        defaultValue={[&#39;home&#39;]}
+        aria-labelledby=&quot;lobs-heading&quot;&gt;
+        {LOBS.map(({ value, label }) =&gt; (
+            &lt;CheckboxGroup.Item key={value} value={value}&gt;
+                {label}
+            &lt;/CheckboxGroup.Item&gt;
+        ))}
+    &lt;/CheckboxGroup.Root&gt;
+&lt;/div&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Controlled</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Controlled group with a select-all parent</div>
+              
+              <pre><code>const Controlled = () =&gt; {
+    const [selected, setSelected] = useState&lt;string[]&gt;([&#39;home&#39;]);
+    const allValues = LOBS.map(({ value }) =&gt; value);
+
+    return (
+        &lt;div className=&quot;flex flex-col gap-3&quot;&gt;
+            &lt;button
+                type=&quot;button&quot;
+                className=&quot;w-fit text-sm underline&quot;
+                onClick={() =&gt; setSelected(selected.length === allValues.length ? [] : allValues)}&gt;
+                {selected.length === allValues.length ? &#39;Unselect all&#39; : &#39;Select all&#39;}
+            &lt;/button&gt;
+            &lt;CheckboxGroup.Root
+                aria-label=&quot;Lines of business&quot;
+                value={selected}
+                onValueChange={setSelected}&gt;
+                {LOBS.map(({ value, label }) =&gt; (
+                    &lt;CheckboxGroup.Item key={value} value={value}&gt;
+                        {label}
+                    &lt;/CheckboxGroup.Item&gt;
+                ))}
+            &lt;/CheckboxGroup.Root&gt;
+            &lt;output className=&quot;text-sm&quot;&gt;{selected.join(&#39;, &#39;) || &#39;None&#39;}&lt;/output&gt;
+        &lt;/div&gt;
+    );
+};</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Disabled</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Whole group disabled</div>
+              
+              <pre><code>const Disabled = () =&gt; &lt;CheckboxGroup.Root aria-label=&quot;Lines of business&quot; defaultValue={[&#39;home&#39;]} disabled&gt;
+    {LOBS.map(({ value, label }) =&gt; (
+        &lt;CheckboxGroup.Item key={value} value={value}&gt;
+            {label}
+        &lt;/CheckboxGroup.Item&gt;
+    ))}
+&lt;/CheckboxGroup.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Read Only</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Read-only through a surrounding Field</div>
+              <div class="hint">Inside a read-only `Field.Root`, the items stay focusable but do not toggle,
+and each checkbox announces `aria-readonly` (a `group` cannot carry it).</div>
+              <pre><code>const ReadOnly = () =&gt; &lt;Field.Root readOnly&gt;
+    &lt;Field.Label&gt;Lines of business&lt;/Field.Label&gt;
+    &lt;CheckboxGroup.Root aria-label={undefined} defaultValue={[&#39;home&#39;]} onValueChange={fn()}&gt;
+        {LOBS.map(({ value, label }) =&gt; (
+            &lt;CheckboxGroup.Item key={value} value={value}&gt;
+                {label}
+            &lt;/CheckboxGroup.Item&gt;
+        ))}
+    &lt;/CheckboxGroup.Root&gt;
+&lt;/Field.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Disabled Item</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>One item disabled</div>
+              <div class="hint">`disabled` on one item leaves the rest interactive. A checked disabled item
+stays in the value.</div>
+              <pre><code>const DisabledItem = () =&gt; &lt;CheckboxGroup.Root
+    aria-label=&quot;Lines of business&quot;
+    defaultValue={[&#39;auto&#39;]}
+    onValueChange={fn()}&gt;
+    &lt;CheckboxGroup.Item value=&quot;home&quot;&gt;Home&lt;/CheckboxGroup.Item&gt;
+    &lt;CheckboxGroup.Item value=&quot;auto&quot; disabled&gt;Auto (required by your appointment)
+                    &lt;/CheckboxGroup.Item&gt;
+    &lt;CheckboxGroup.Item value=&quot;renters&quot;&gt;Renters&lt;/CheckboxGroup.Item&gt;
+&lt;/CheckboxGroup.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Invalid</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Failed validation, forwarded to the items</div>
+              <div class="hint">`aria-invalid` on the root reaches every checkbox, not the group element.</div>
+              <pre><code>const Invalid = () =&gt; &lt;div className=&quot;flex flex-col gap-2&quot;&gt;
+    &lt;CheckboxGroup.Root
+        aria-label=&quot;Lines of business&quot;
+        defaultValue={[]}
+        aria-invalid
+        aria-describedby=&quot;lobs-error&quot;&gt;
+        {LOBS.map(({ value, label }) =&gt; (
+            &lt;CheckboxGroup.Item key={value} value={value}&gt;
+                {label}
+            &lt;/CheckboxGroup.Item&gt;
+        ))}
+    &lt;/CheckboxGroup.Root&gt;
+    &lt;p id=&quot;lobs-error&quot; className=&quot;text-sm text-text-input-destructive&quot;&gt;Select at least one line of business.
+                    &lt;/p&gt;
+&lt;/div&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">In Form</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Native form submission</div>
+              <div class="hint">With `name`, each checked item submits `name=value`, so a native form reads
+the selection with `FormData.getAll`.</div>
+              <pre><code>const InForm = () =&gt; {
+    const [submitted, setSubmitted] = useState&lt;string[] | null&gt;(null);
+
+    return (
+        &lt;form
+            className=&quot;flex flex-col gap-3&quot;
+            onSubmit={event =&gt; {
+                event.preventDefault();
+                setSubmitted(new FormData(event.currentTarget).getAll(&#39;lobs&#39;) as string[]);
+            }}&gt;
+            &lt;CheckboxGroup.Root aria-label=&quot;Lines of business&quot; name=&quot;lobs&quot; defaultValue={[&#39;home&#39;]}&gt;
+                {LOBS.map(({ value, label }) =&gt; (
+                    &lt;CheckboxGroup.Item key={value} value={value}&gt;
+                        {label}
+                    &lt;/CheckboxGroup.Item&gt;
+                ))}
+            &lt;/CheckboxGroup.Root&gt;
+            &lt;button type=&quot;submit&quot; className=&quot;w-fit text-sm underline&quot;&gt;
+                Submit
+            &lt;/button&gt;
+            {submitted &amp;&amp; &lt;output className=&quot;text-sm&quot;&gt;{submitted.join(&#39;, &#39;)}&lt;/output&gt;}
+        &lt;/form&gt;
+    );
+};</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Long Label</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Wrapping label keeps the box on the first line</div>
+              <div class="hint">A long label wraps under itself and the box stays level with its first line.</div>
+              <pre><code>const LongLabel = () =&gt; &lt;div className=&quot;w-60&quot;&gt;
+    &lt;CheckboxGroup.Root aria-label=&quot;Lines of business&quot; defaultValue={[&#39;home&#39;]}&gt;
+        &lt;CheckboxGroup.Item value=&quot;home&quot;&gt;Homeowners, including dwelling fire and condo unit owners policies
+                            &lt;/CheckboxGroup.Item&gt;
+        &lt;CheckboxGroup.Item value=&quot;auto&quot;&gt;Auto&lt;/CheckboxGroup.Item&gt;
+    &lt;/CheckboxGroup.Root&gt;
+&lt;/div&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Horizontal</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Items in a row</div>
+              <div class="hint">Items laid in a row, 24px apart, wrapping when the row runs out of room.</div>
+              <pre><code>const Horizontal = () =&gt; &lt;CheckboxGroup.Root
+    aria-label=&quot;Lines of business&quot;
+    defaultValue={[&#39;home&#39;]}
+    orientation=&quot;horizontal&quot;&gt;
+    {LOBS.map(({ value, label }) =&gt; (
+        &lt;CheckboxGroup.Item key={value} value={value}&gt;
+            {label}
+        &lt;/CheckboxGroup.Item&gt;
+    ))}
+&lt;/CheckboxGroup.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Item Id</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Item id reaches the checkbox</div>
+              
+              <pre><code>const ItemId = () =&gt; &lt;CheckboxGroup.Root aria-label=&quot;Lines of business&quot; defaultValue={[&#39;home&#39;]}&gt;
+    &lt;CheckboxGroup.Item id=&quot;lob-home&quot; value=&quot;home&quot;&gt;Home
+                    &lt;/CheckboxGroup.Item&gt;
+    &lt;CheckboxGroup.Item value=&quot;auto&quot;&gt;Auto&lt;/CheckboxGroup.Item&gt;
+&lt;/CheckboxGroup.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Inside Field</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Wired to a surrounding Field</div>
+              <div class="hint">Inside a `Field.Root`, label, messages, `invalid` and `disabled` reach the group with nothing wired by hand.</div>
+              <pre><code>const InsideField = () =&gt; &lt;Field.Root invalid&gt;
+    &lt;Field.Content&gt;
+        &lt;Field.Label&gt;Lines of business&lt;/Field.Label&gt;
+        &lt;Field.Description&gt;The lines this agency writes.&lt;/Field.Description&gt;
+    &lt;/Field.Content&gt;
+    &lt;CheckboxGroup.Root aria-label={undefined} defaultValue={[]}&gt;
+        {LOBS.map(({ value, label }) =&gt; (
+            &lt;CheckboxGroup.Item key={value} value={value}&gt;
+                {label}
+            &lt;/CheckboxGroup.Item&gt;
+        ))}
+    &lt;/CheckboxGroup.Root&gt;
+    &lt;Field.Error errors={[{ message: &#39;Select at least one line of business&#39; }]} /&gt;
+&lt;/Field.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Inside Field Overridden</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Own props override the Field wiring</div>
+              <div class="hint">`aria-label` and `disabled={false}` on the group win over the field. Its own
+`aria-describedby` joins the field&#39;s messages instead of replacing them.</div>
+              <pre><code>const InsideFieldOverridden = () =&gt; &lt;Field.Root disabled&gt;
+    &lt;Field.Content&gt;
+        &lt;Field.Label&gt;Lines of business&lt;/Field.Label&gt;
+        &lt;Field.Description&gt;The lines this agency writes.&lt;/Field.Description&gt;
+    &lt;/Field.Content&gt;
+    &lt;p id=&quot;lobs-note&quot;&gt;Ask the principal before changing them.&lt;/p&gt;
+    &lt;CheckboxGroup.Root
+        aria-label=&quot;Lines written&quot;
+        defaultValue={[&#39;home&#39;]}
+        aria-describedby=&quot;lobs-note&quot;
+        disabled={false}&gt;
+        {LOBS.map(({ value, label }) =&gt; (
+            &lt;CheckboxGroup.Item key={value} value={value}&gt;
+                {label}
+            &lt;/CheckboxGroup.Item&gt;
+        ))}
+    &lt;/CheckboxGroup.Root&gt;
+&lt;/Field.Root&gt;;</code></pre>
+            </div>
+        </div>
+    
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
   aria-label="CheckList.Root">
   <div class="head">
     <div class="title">
@@ -3613,7 +4011,7 @@ library&#39;s Base Checkbox draws them: a 16px box with a 1.5px border.</div>
       <div class="badges">
         
         
-        <label for="c-7-components-checklist-stories" class="badge ok as-toggle">2 stories</label>
+        <label for="c-8-components-checklist-stories" class="badge ok as-toggle">2 stories</label>
         
         
       </div>
@@ -3634,7 +4032,7 @@ import { CheckList } from &#39;@agentero/design-system/check-list&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-7-components-checklist-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-8-components-checklist-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
   
@@ -3711,9 +4109,9 @@ import { CheckList } from &#39;@agentero/design-system/check-list&#39;;
     <div class="title">
       <h2><span class="status-dot dot-err"></span> Combobox.Root</h2>
       <div class="badges">
-        <label for="c-8-components-combobox-props" class="badge ok as-toggle">41 prop types</label>
+        <label for="c-9-components-combobox-props" class="badge ok as-toggle">41 prop types</label>
         
-        <label for="c-8-components-combobox-stories" class="badge err as-toggle">1/13 story errors</label>
+        <label for="c-9-components-combobox-stories" class="badge err as-toggle">1/13 story errors</label>
         
         
       </div>
@@ -3743,10 +4141,10 @@ import { Combobox } from &#39;@agentero/design-system/combobox&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-8-components-combobox-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-9-components-combobox-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-8-components-combobox-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-9-components-combobox-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -4492,9 +4890,9 @@ close, so Base UI lets the first Escape through and it closes the modal.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Command.Root</h2>
       <div class="badges">
-        <label for="c-9-components-command-props" class="badge ok as-toggle">10 prop types</label>
+        <label for="c-10-components-command-props" class="badge ok as-toggle">10 prop types</label>
         
-        <label for="c-9-components-command-stories" class="badge ok as-toggle">8 stories</label>
+        <label for="c-10-components-command-stories" class="badge ok as-toggle">8 stories</label>
         
         
       </div>
@@ -4529,10 +4927,10 @@ import { Command } from &#39;@agentero/design-system/command&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-9-components-command-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-10-components-command-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-9-components-command-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-10-components-command-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -4788,9 +5186,9 @@ offering to create an agency appears only when the search text matches no existi
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> DataTable.Root</h2>
       <div class="badges">
-        <label for="c-10-components-datatable-props" class="badge ok as-toggle">88 prop types</label>
+        <label for="c-11-components-datatable-props" class="badge ok as-toggle">88 prop types</label>
         
-        <label for="c-10-components-datatable-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-11-components-datatable-stories" class="badge ok as-toggle">4 stories</label>
         
         
       </div>
@@ -4833,10 +5231,10 @@ const columns = [
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-10-components-datatable-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-11-components-datatable-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-10-components-datatable-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-11-components-datatable-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -5414,9 +5812,9 @@ in flight.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> DebouncedInputSearch</h2>
       <div class="badges">
-        <label for="c-11-components-debouncedinputsearch-props" class="badge ok as-toggle">5 prop types</label>
+        <label for="c-12-components-debouncedinputsearch-props" class="badge ok as-toggle">5 prop types</label>
         
-        <label for="c-11-components-debouncedinputsearch-stories" class="badge ok as-toggle">3 stories</label>
+        <label for="c-12-components-debouncedinputsearch-stories" class="badge ok as-toggle">3 stories</label>
         
         
       </div>
@@ -5439,10 +5837,10 @@ changed from outside.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-11-components-debouncedinputsearch-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-12-components-debouncedinputsearch-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-11-components-debouncedinputsearch-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-12-components-debouncedinputsearch-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -5608,9 +6006,9 @@ query replaces the text.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Divider</h2>
       <div class="badges">
-        <label for="c-12-components-divider-props" class="badge ok as-toggle">4 prop types</label>
+        <label for="c-13-components-divider-props" class="badge ok as-toggle">4 prop types</label>
         
-        <label for="c-12-components-divider-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-13-components-divider-stories" class="badge ok as-toggle">10 stories</label>
         
         
       </div>
@@ -5633,10 +6031,10 @@ When omitted, Divider renders a single line.</span><span class="chip">example: &
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-12-components-divider-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-13-components-divider-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-12-components-divider-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-13-components-divider-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -5939,9 +6337,9 @@ related controls or inline links without visual weight.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> DropdownMenu.Root</h2>
       <div class="badges">
-        <label for="c-13-components-dropdownmenu-props" class="badge ok as-toggle">6 prop types</label>
+        <label for="c-14-components-dropdownmenu-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-13-components-dropdownmenu-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-14-components-dropdownmenu-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -6000,10 +6398,10 @@ import { DropdownMenu } from &#39;@agentero/design-system/dropdown-menu&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-13-components-dropdownmenu-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-14-components-dropdownmenu-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-13-components-dropdownmenu-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-14-components-dropdownmenu-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -6406,9 +6804,9 @@ actions outright unless the user needs to see them and understand why.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Field.Root</h2>
       <div class="badges">
-        <label for="c-14-components-field-props" class="badge ok as-toggle">6 prop types</label>
+        <label for="c-15-components-field-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-14-components-field-stories" class="badge ok as-toggle">17 stories</label>
+        <label for="c-15-components-field-stories" class="badge ok as-toggle">17 stories</label>
         
         
       </div>
@@ -6440,10 +6838,10 @@ absent when there is none.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-14-components-field-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-15-components-field-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-14-components-field-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-15-components-field-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -6946,9 +7344,9 @@ form library. `InputContext` extends the same way with `value`, `onChange`,
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> FieldText</h2>
       <div class="badges">
-        <label for="c-15-components-fieldtext-props" class="badge ok as-toggle">6 prop types</label>
+        <label for="c-16-components-fieldtext-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-15-components-fieldtext-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-16-components-fieldtext-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -6975,10 +7373,10 @@ and `name`, and `FieldContext` with the errors, as the last story shows.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-15-components-fieldtext-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-16-components-fieldtext-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-15-components-fieldtext-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-16-components-fieldtext-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -7216,9 +7614,9 @@ The input&#39;s own `onChange` still runs, chained after the provider&#39;s.</di
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Form.Root</h2>
       <div class="badges">
-        <label for="c-16-components-form-props" class="badge ok as-toggle">3 prop types</label>
+        <label for="c-17-components-form-props" class="badge ok as-toggle">3 prop types</label>
         
-        <label for="c-16-components-form-stories" class="badge ok as-toggle">2 stories</label>
+        <label for="c-17-components-form-stories" class="badge ok as-toggle">2 stories</label>
         
         
       </div>
@@ -7247,10 +7645,10 @@ keep a single copy, since the provider and the fields share one context.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-16-components-form-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-17-components-form-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-16-components-form-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-17-components-form-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -7385,9 +7783,9 @@ Validation is react-hook-form&#39;s alone.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> FormText</h2>
       <div class="badges">
-        <label for="c-17-components-formtext-props" class="badge ok as-toggle">15 prop types</label>
+        <label for="c-18-components-formtext-props" class="badge ok as-toggle">15 prop types</label>
         
-        <label for="c-17-components-formtext-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-18-components-formtext-stories" class="badge ok as-toggle">10 stories</label>
         
         
       </div>
@@ -7417,10 +7815,10 @@ with the `FieldText`, `Label`, `Input` and `Field.*` primitives directly.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-17-components-formtext-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-18-components-formtext-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-17-components-formtext-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-18-components-formtext-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -7882,9 +8280,9 @@ hand.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> HoverCard.Root</h2>
       <div class="badges">
-        <label for="c-18-components-hovercard-props" class="badge ok as-toggle">6 prop types</label>
+        <label for="c-19-components-hovercard-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-18-components-hovercard-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-19-components-hovercard-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -7916,10 +8314,10 @@ import { HoverCard } from &#39;@agentero/design-system/hover-card&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-18-components-hovercard-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-19-components-hovercard-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-18-components-hovercard-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-19-components-hovercard-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -8166,9 +8564,9 @@ trigger-dense UIs where an instant preview reads as more responsive.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Input</h2>
       <div class="badges">
-        <label for="c-19-components-input-props" class="badge ok as-toggle">1 prop type</label>
+        <label for="c-20-components-input-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-19-components-input-stories" class="badge ok as-toggle">9 stories</label>
+        <label for="c-20-components-input-stories" class="badge ok as-toggle">9 stories</label>
         
         
       </div>
@@ -8191,10 +8589,10 @@ what assistive technology announces.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-19-components-input-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-20-components-input-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-19-components-input-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-20-components-input-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -8368,7 +8766,7 @@ they cannot change.</div>
       <div class="badges">
         
         
-        <label for="c-20-components-inputgroup-stories" class="badge ok as-toggle">12 stories</label>
+        <label for="c-21-components-inputgroup-stories" class="badge ok as-toggle">12 stories</label>
         
         
       </div>
@@ -8391,7 +8789,7 @@ hands its state to the frame through `:has()`, so focus, `disabled`,
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-20-components-inputgroup-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-21-components-inputgroup-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
   
@@ -8675,9 +9073,9 @@ button&#39;s start corners with the frame.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> InputNumber</h2>
       <div class="badges">
-        <label for="c-21-components-inputnumber-props" class="badge ok as-toggle">7 prop types</label>
+        <label for="c-22-components-inputnumber-props" class="badge ok as-toggle">7 prop types</label>
         
-        <label for="c-21-components-inputnumber-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-22-components-inputnumber-stories" class="badge ok as-toggle">11 stories</label>
         
         
       </div>
@@ -8698,10 +9096,10 @@ it takes its label, messages and states from a surrounding `FieldText`.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-21-components-inputnumber-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-22-components-inputnumber-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-21-components-inputnumber-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-22-components-inputnumber-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -8996,9 +9394,9 @@ plain `Input`.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> InputPassword</h2>
       <div class="badges">
-        <label for="c-22-components-inputpassword-props" class="badge ok as-toggle">1 prop type</label>
+        <label for="c-23-components-inputpassword-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-22-components-inputpassword-stories" class="badge ok as-toggle">5 stories</label>
+        <label for="c-23-components-inputpassword-stories" class="badge ok as-toggle">5 stories</label>
         
         
       </div>
@@ -9019,10 +9417,10 @@ rendered while the input is disabled.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-22-components-inputpassword-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-23-components-inputpassword-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-22-components-inputpassword-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-23-components-inputpassword-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -9164,9 +9562,9 @@ the field through the frame. A disabled field removes the toggle too.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> InputSearch</h2>
       <div class="badges">
-        <label for="c-23-components-inputsearch-props" class="badge ok as-toggle">3 prop types</label>
+        <label for="c-24-components-inputsearch-props" class="badge ok as-toggle">3 prop types</label>
         
-        <label for="c-23-components-inputsearch-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-24-components-inputsearch-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -9189,10 +9587,10 @@ once there is text. It is an `Input` of `type=&quot;search&quot;` inside an
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-23-components-inputsearch-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-24-components-inputsearch-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-23-components-inputsearch-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-24-components-inputsearch-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -9394,9 +9792,9 @@ several search fields does not read &quot;Clear search&quot; twice.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> InputTel</h2>
       <div class="badges">
-        <label for="c-24-components-inputtel-props" class="badge ok as-toggle">1 prop type</label>
+        <label for="c-25-components-inputtel-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-24-components-inputtel-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-25-components-inputtel-stories" class="badge ok as-toggle">11 stories</label>
         
         
       </div>
@@ -9417,10 +9815,10 @@ with the masked text already in `event.target.value`.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-24-components-inputtel-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-25-components-inputtel-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-24-components-inputtel-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-25-components-inputtel-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -9658,9 +10056,9 @@ with the input.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Label</h2>
       <div class="badges">
-        <label for="c-25-components-label-props" class="badge ok as-toggle">3 prop types</label>
+        <label for="c-26-components-label-props" class="badge ok as-toggle">3 prop types</label>
         
-        <label for="c-25-components-label-stories" class="badge ok as-toggle">5 stories</label>
+        <label for="c-26-components-label-stories" class="badge ok as-toggle">5 stories</label>
         
         
       </div>
@@ -9680,10 +10078,10 @@ still has to carry `required` / `aria-required`.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-25-components-label-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-26-components-label-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-25-components-label-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-26-components-label-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -9807,9 +10205,9 @@ field&#39;s control with no `htmlFor`. An explicit `htmlFor` still wins.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Loading</h2>
       <div class="badges">
-        <label for="c-26-components-loading-props" class="badge ok as-toggle">1 prop type</label>
+        <label for="c-27-components-loading-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-26-components-loading-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-27-components-loading-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -9826,10 +10224,10 @@ parent font size via `em`-based size variants (`sm`, `md`, `lg`).</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-26-components-loading-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-27-components-loading-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-26-components-loading-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-27-components-loading-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -9980,9 +10378,9 @@ against the dark background.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Modal.Root</h2>
       <div class="badges">
-        <label for="c-27-components-modal-props" class="badge ok as-toggle">5 prop types</label>
+        <label for="c-28-components-modal-props" class="badge ok as-toggle">5 prop types</label>
         
-        <label for="c-27-components-modal-stories" class="badge ok as-toggle">6 stories</label>
+        <label for="c-28-components-modal-stories" class="badge ok as-toggle">6 stories</label>
         
         
       </div>
@@ -10028,10 +10426,10 @@ import { Modal } from &#39;@agentero/design-system/modal&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-27-components-modal-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-28-components-modal-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-27-components-modal-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-28-components-modal-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -10251,9 +10649,9 @@ announced as an `alertdialog`. Only the footer actions close it.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Pagination</h2>
       <div class="badges">
-        <label for="c-28-components-pagination-props" class="badge ok as-toggle">5 prop types</label>
+        <label for="c-29-components-pagination-props" class="badge ok as-toggle">5 prop types</label>
         
-        <label for="c-28-components-pagination-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-29-components-pagination-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -10283,10 +10681,10 @@ const [page, setPage] = useState(1);
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-28-components-pagination-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-29-components-pagination-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-28-components-pagination-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-29-components-pagination-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -10441,9 +10839,9 @@ entries summary follow along.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Popover.Root</h2>
       <div class="badges">
-        <label for="c-29-components-popover-props" class="badge ok as-toggle">5 prop types</label>
+        <label for="c-30-components-popover-props" class="badge ok as-toggle">5 prop types</label>
         
-        <label for="c-29-components-popover-stories" class="badge ok as-toggle">5 stories</label>
+        <label for="c-30-components-popover-stories" class="badge ok as-toggle">5 stories</label>
         
         
       </div>
@@ -10472,10 +10870,10 @@ import { Popover } from &#39;@agentero/design-system/popover&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-29-components-popover-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-30-components-popover-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-29-components-popover-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-30-components-popover-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -10674,9 +11072,9 @@ focus returning to its trigger once the modal closes.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Progress</h2>
       <div class="badges">
-        <label for="c-30-components-progress-props" class="badge ok as-toggle">4 prop types</label>
+        <label for="c-31-components-progress-props" class="badge ok as-toggle">4 prop types</label>
         
-        <label for="c-30-components-progress-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-31-components-progress-stories" class="badge ok as-toggle">4 stories</label>
         
         
       </div>
@@ -10695,10 +11093,10 @@ with `currentColor`, so recolor it with a plain text class — e.g.
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-30-components-progress-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-31-components-progress-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-30-components-progress-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-31-components-progress-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -10817,7 +11215,7 @@ percentage: number</code></pre>
       <div class="badges">
         
         
-        <label for="c-31-components-skeleton-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-32-components-skeleton-stories" class="badge ok as-toggle">4 stories</label>
         
         
       </div>
@@ -10834,7 +11232,7 @@ shape it with Tailwind classes to mirror the content it stands in for.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-31-components-skeleton-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-32-components-skeleton-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
   
@@ -10930,9 +11328,9 @@ shape it with Tailwind classes to mirror the content it stands in for.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Switch</h2>
       <div class="badges">
-        <label for="c-32-components-switch-props" class="badge ok as-toggle">8 prop types</label>
+        <label for="c-33-components-switch-props" class="badge ok as-toggle">8 prop types</label>
         
-        <label for="c-32-components-switch-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-33-components-switch-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -10948,10 +11346,10 @@ a Checkbox for a single boolean that applies instantly, and pair it with a
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-32-components-switch-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-33-components-switch-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-32-components-switch-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-33-components-switch-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -11132,9 +11530,9 @@ size?: &quot;sm&quot; | &quot;md&quot;</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Table.Root</h2>
       <div class="badges">
-        <label for="c-33-components-table-props" class="badge ok as-toggle">6 prop types</label>
+        <label for="c-34-components-table-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-33-components-table-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-34-components-table-stories" class="badge ok as-toggle">10 stories</label>
         
         
       </div>
@@ -11165,10 +11563,10 @@ import { Table } from &#39;@agentero/design-system/table&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-33-components-table-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-34-components-table-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-33-components-table-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-34-components-table-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -11386,9 +11784,9 @@ keeps its padding.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tabs.Root</h2>
       <div class="badges">
-        <label for="c-34-components-tabs-props" class="badge ok as-toggle">9 prop types</label>
+        <label for="c-35-components-tabs-props" class="badge ok as-toggle">9 prop types</label>
         
-        <label for="c-34-components-tabs-stories" class="badge ok as-toggle">8 stories</label>
+        <label for="c-35-components-tabs-stories" class="badge ok as-toggle">8 stories</label>
         
         
       </div>
@@ -11419,10 +11817,10 @@ import { Tabs } from &#39;@agentero/design-system/tabs&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-34-components-tabs-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-35-components-tabs-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-34-components-tabs-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-35-components-tabs-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -11643,9 +12041,9 @@ tablist role is announced.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tag</h2>
       <div class="badges">
-        <label for="c-35-components-tag-props" class="badge ok as-toggle">8 prop types</label>
+        <label for="c-36-components-tag-props" class="badge ok as-toggle">8 prop types</label>
         
-        <label for="c-35-components-tag-stories" class="badge ok as-toggle">12 stories</label>
+        <label for="c-36-components-tag-stories" class="badge ok as-toggle">12 stories</label>
         
         
       </div>
@@ -11664,10 +12062,10 @@ it an interactive link or button, which adds the pointer cursor and hover fill.<
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-35-components-tag-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-36-components-tag-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-35-components-tag-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-36-components-tag-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -12092,9 +12490,9 @@ leading + trailing icons, and icon-only.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> TextArea</h2>
       <div class="badges">
-        <label for="c-36-components-textarea-props" class="badge ok as-toggle">1 prop type</label>
+        <label for="c-37-components-textarea-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-36-components-textarea-stories" class="badge ok as-toggle">6 stories</label>
+        <label for="c-37-components-textarea-stories" class="badge ok as-toggle">6 stories</label>
         
         
       </div>
@@ -12111,10 +12509,10 @@ states. It wires nothing on its own: `id`, `aria-invalid` and
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-36-components-textarea-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-37-components-textarea-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-36-components-textarea-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-37-components-textarea-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -12246,9 +12644,9 @@ size and the minimum height shows three rows.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Toast</h2>
       <div class="badges">
-        <label for="c-37-components-toast-props" class="badge ok as-toggle">11 prop types</label>
+        <label for="c-38-components-toast-props" class="badge ok as-toggle">11 prop types</label>
         
-        <label for="c-37-components-toast-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-38-components-toast-stories" class="badge ok as-toggle">11 stories</label>
         
         
       </div>
@@ -12267,10 +12665,10 @@ common feedback patterns.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-37-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-38-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-37-components-toast-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-38-components-toast-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -12699,9 +13097,9 @@ action (e.g., a sync icon for a sync-in-progress toast).</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tooltip</h2>
       <div class="badges">
-        <label for="c-38-components-tooltip-props" class="badge ok as-toggle">12 prop types</label>
+        <label for="c-39-components-tooltip-props" class="badge ok as-toggle">12 prop types</label>
         
-        <label for="c-38-components-tooltip-stories" class="badge ok as-toggle">5 stories</label>
+        <label for="c-39-components-tooltip-stories" class="badge ok as-toggle">5 stories</label>
         
         
       </div>
@@ -12720,10 +13118,10 @@ on hover or focus.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-38-components-tooltip-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-39-components-tooltip-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-38-components-tooltip-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-39-components-tooltip-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -12895,9 +13293,9 @@ sideOffset?: number = 4</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> ValidationList</h2>
       <div class="badges">
-        <label for="c-39-components-validationlist-props" class="badge ok as-toggle">2 prop types</label>
+        <label for="c-40-components-validationlist-props" class="badge ok as-toggle">2 prop types</label>
         
-        <label for="c-39-components-validationlist-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-40-components-validationlist-stories" class="badge ok as-toggle">4 stories</label>
         
         
       </div>
@@ -12918,10 +13316,10 @@ your form validation; it does not own the input or block submission.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-39-components-validationlist-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-40-components-validationlist-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-39-components-validationlist-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-40-components-validationlist-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
