@@ -1,5 +1,7 @@
+import { useRef, useState } from 'react';
+
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { TextArea } from './textarea';
 
@@ -166,5 +168,181 @@ export const ReadOnly: Story = {
 
 		await expect(textarea).toHaveAttribute('readonly');
 		await expect(textarea).not.toBeDisabled();
+	}
+};
+
+/**
+ * `maxLength` caps the value and shows the count inside the box, bottom
+ * right. The count is part of the control's description, so a screen reader
+ * hears "0 of 140 characters" with the field instead of on every keystroke.
+ *
+ * @summary Character count inside the box, driven by maxLength
+ */
+export const WithCounter: Story = {
+	args: { maxLength: 140 },
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const textarea = canvas.getByRole('textbox', { name: 'Notes' });
+		const counter = canvasElement.querySelector('[data-slot=textarea-counter]')!;
+
+		await expect(textarea).toHaveAccessibleDescription('0 of 140 characters');
+		await expect(counter).toHaveTextContent('0/140');
+
+		await userEvent.type(textarea, 'Roof replaced in 2024.');
+
+		await expect(counter).toHaveTextContent('22/140');
+		await expect(textarea).toHaveAccessibleDescription('22 of 140 characters');
+
+		const box = textarea.getBoundingClientRect();
+		const count = counter.getBoundingClientRect();
+		await expect(box.right - count.right).toBe(16);
+		await expect(box.bottom - count.bottom).toBe(8);
+		await expect(getComputedStyle(textarea).paddingBottom).toBe('28px');
+	}
+};
+
+/**
+ * A controlled value counts too, and one longer than `maxLength` — set by
+ * code, since typing stops at the cap — turns the count destructive.
+ *
+ * @summary Controlled count, destructive past the limit
+ */
+export const CounterOverLimit: Story = {
+	args: {
+		maxLength: 10,
+		value: 'Twelve chars',
+		onChange: () => {},
+		'aria-invalid': true
+	},
+	play: async ({ canvasElement }) => {
+		const counter = canvasElement.querySelector('[data-slot=textarea-counter]')!;
+
+		await expect(counter).toHaveTextContent('12/10');
+		await expect(counter).toHaveAttribute('data-over');
+	}
+};
+
+const ResetForm = () => {
+	const textareaRef = useRef<HTMLTextAreaElement>(null);
+	const [, setResets] = useState(0);
+
+	return (
+		<div className="flex flex-col items-start gap-2">
+			<TextArea ref={textareaRef} aria-label="Notes" maxLength={100} defaultValue="hello" />
+			<button
+				type="button"
+				onClick={() => {
+					textareaRef.current!.value = 'bye';
+					setResets(count => count + 1);
+				}}>
+				Reset
+			</button>
+		</div>
+	);
+};
+
+/**
+ * A form that rewrites an uncontrolled value, as a react-hook-form `reset`
+ * does, fires no input event; the count reads the `<textarea>` again when the
+ * form re-renders.
+ *
+ * @summary Uncontrolled count follows a value rewritten by the form
+ */
+export const CounterAfterReset: Story = {
+	render: () => <ResetForm />,
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const counter = canvasElement.querySelector('[data-slot=textarea-counter]')!;
+
+		await expect(counter).toHaveTextContent('5/100');
+		await userEvent.click(canvas.getByRole('button', { name: 'Reset' }));
+		await expect(counter).toHaveTextContent('3/100');
+	}
+};
+
+/**
+ * A native form reset restores the default value without an input event; the
+ * count listens to the form's `reset` and follows.
+ *
+ * @summary Uncontrolled count follows a native form reset
+ */
+export const CounterAfterNativeReset: Story = {
+	render: () => (
+		<form className="flex flex-col items-start gap-2">
+			<TextArea aria-label="Notes" maxLength={100} defaultValue="hello" />
+			<button type="reset">Reset</button>
+		</form>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const counter = canvasElement.querySelector('[data-slot=textarea-counter]')!;
+
+		await userEvent.type(canvas.getByRole('textbox', { name: 'Notes' }), ' there');
+		await expect(counter).toHaveTextContent('11/100');
+		await userEvent.click(canvas.getByRole('button', { name: 'Reset' }));
+		await waitFor(() => expect(counter).toHaveTextContent('5/100'));
+	}
+};
+
+/**
+ * Without a count the wrapper is `display: contents`, so the `<textarea>`
+ * lays out as a direct child of its container: a width or a flex item class
+ * in `className` works as on a bare `<textarea>`.
+ *
+ * @summary Without maxLength the wrapper leaves layout to the textarea
+ */
+export const LayoutWithoutCounter: Story = {
+	render: () => (
+		<div className="flex w-96 items-start gap-4">
+			<TextArea aria-label="Notes" className="w-auto flex-1" />
+			<button type="button">Clear</button>
+		</div>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const textarea = canvas.getByRole('textbox', { name: 'Notes' });
+		const button = canvas.getByRole('button', { name: 'Clear' });
+
+		await expect(getComputedStyle(textarea.parentElement!).display).toBe('contents');
+		await expect(textarea.getBoundingClientRect().right + 16).toBeCloseTo(
+			button.getBoundingClientRect().left,
+			0
+		);
+	}
+};
+
+const ToggleLimit = () => {
+	const [limited, setLimited] = useState(false);
+
+	return (
+		<div className="flex flex-col items-start gap-2">
+			<TextArea aria-label="Notes" maxLength={limited ? 100 : undefined} />
+			<button type="button" onClick={() => setLimited(value => !value)}>
+				Toggle limit
+			</button>
+		</div>
+	);
+};
+
+/**
+ * The `<textarea>` keeps its place in the tree whether or not there is a
+ * count, so adding or removing `maxLength` keeps what the user typed.
+ *
+ * @summary Adding a limit keeps the same control and its text
+ */
+export const ToggleMaxLength: Story = {
+	render: () => <ToggleLimit />,
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const textarea = canvas.getByRole('textbox', { name: 'Notes' });
+
+		await userEvent.type(textarea, 'Draft');
+		await userEvent.click(canvas.getByRole('button', { name: 'Toggle limit' }));
+
+		await expect(canvas.getByRole('textbox', { name: 'Notes' })).toBe(textarea);
+		await expect(textarea).toHaveValue('Draft');
+		await expect(canvasElement.querySelector('[data-slot=textarea-counter]')).toHaveTextContent(
+			'5/100'
+		);
 	}
 };
