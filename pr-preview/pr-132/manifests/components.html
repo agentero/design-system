@@ -588,13 +588,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">40 components ok</span><span class="filter-pill ok" aria-disabled="true">333 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">41 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/349 story errors</a></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.2s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>5.2s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -1457,14 +1457,869 @@ lower-weight token ramp and omit background + padding.</div>
   no-story-error
   no-doc-error"
   role="listitem"
+  aria-label="Autocomplete.Root">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Autocomplete.Root</h2>
+      <div class="badges">
+        <label for="c-2-components-autocomplete-props" class="badge ok as-toggle">30 prop types</label>
+        
+        <label for="c-2-components-autocomplete-stories" class="badge ok as-toggle">12 stories</label>
+        
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/autocomplete/autocomplete.stories.tsx">components-autocomplete · ./src/autocomplete/autocomplete.stories.tsx</div>
+    <div>Free-text field with a list of suggestions below it</div>
+    <div class="hint">Root of an autocomplete: a text field whose value is the text itself, with a
+list of suggestions below it. Nothing is selected. Leaving the field, closing
+the list and pressing Escape all keep what was typed.
+
+Use it for a free-text field that suggests: a prompt with recent queries, a
+number field that offers what a lookup found. When the value must be one of
+the options, use [Combobox](?path=/docs/components-combobox--docs) instead:
+it writes the picked option back and drops text that matches none.
+
+Pass the suggestions as `items`. Base UI filters them against the text; set
+`filter={null}` when they are already the ones to show. With `items`, the
+list opens only while it has a row to show, or always when it holds an
+`Empty` message: a field with nothing to suggest stays shut, and one whose
+suggestions arrive late (a lookup still running) opens when they do, if the
+user is still in the field.
+`autoHighlight` highlights the first row as the user types, and `&#39;always&#39;`
+highlights it as soon as it renders, which suits a single suggestion.
+
+Every Base UI root prop is accepted and forwarded: `value`, `defaultValue`,
+`onValueChange`, `items`, `filter`, `autoHighlight`, `openOnInputClick`
+and so on, except two. The open state (`open`, `defaultOpen`,
+`onOpenChange`) is left out, since the root decides when the list shows.
+`submitOnItemClick` is left out too: to submit on a pick, run the submit
+from the row&#39;s `onClick` with the row&#39;s value. Base UI empties the field on Escape while the
+list is shut, as a native search input does; this root keeps the text
+instead, and does not report that change. Escape while the list waits for
+late suggestions drops the wait, so they no longer open it. Inside a `Modal`
+or `Popover`, Escape on an open list closes the list only, and the next one
+closes the layer.
+
+Picking a row and pressing Enter are told apart with Base UI&#39;s own events:
+
+- A pick, by pointer or by Enter on the highlighted row, fires the row&#39;s
+  `onClick` and then `onValueChange` with `eventDetails.reason` set to
+  `&#39;item-press&#39;`, carrying the row&#39;s text. Base UI stops that Enter, so the
+  form is not submitted as well.
+- Enter with no row highlighted closes the list and submits the owning form
+  once, as the browser would: by clicking its default button, so the
+  button&#39;s `onClick` runs, and not while that button is disabled. With no submit button the form submits only when
+  this is its one text field.
+- A pick fills the field with the row&#39;s text. To keep the typed text, call
+  `eventDetails.cancel()` when the reason is `&#39;item-press&#39;`, or ignore that
+  change on a controlled `value`: the row&#39;s `onClick` can then write
+  elsewhere.</div>
+    <div class="kv"><span class="chip">summary: Free-text field with a list of suggestions below it</span><span class="chip">see: {@link https://base-ui.com/react/components/autocomplete Base UI Autocomplete}</span><span class="chip">example: ```tsx
+import { Autocomplete } from &#39;@agentero/design-system/autocomplete&#39;;
+
+&lt;form onSubmit={() =&gt; runPrompt(prompt)}&gt;
+  &lt;Autocomplete.Root items={recentPrompts} value={prompt} onValueChange={setPrompt}&gt;
+    &lt;Autocomplete.Input aria-label=&quot;Describe your filters&quot; before={&lt;IconEffects /&gt;} /&gt;
+    &lt;Autocomplete.Content&gt;
+      &lt;Autocomplete.List&gt;
+        {(recent: string) =&gt; (
+          &lt;Autocomplete.Item key={recent} value={recent} onClick={() =&gt; runPrompt(recent)}&gt;
+            {recent}
+          &lt;/Autocomplete.Item&gt;
+        )}
+      &lt;/Autocomplete.List&gt;
+    &lt;/Autocomplete.Content&gt;
+  &lt;/Autocomplete.Root&gt;
+&lt;/form&gt;
+```</span></div>
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-2-components-autocomplete-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+  <input id="c-2-components-autocomplete-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-component-meta)</small></span>
+              <span class="badge ok">30 prop types</span>
+            </div>
+            <pre><code>Component: src/autocomplete/index.ts::Autocomplete</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>/**
+ * A ref to imperative actions.
+ * - `unmount`: Manually unmounts the autocomplete.
+ * Call this after any externally controlled closing animation finishes.
+ */
+actionsRef?: RefObject&lt;AutocompleteRootActions | null&gt;
+
+/**
+ * Whether the first matching item is highlighted automatically.
+ * - `true`: highlight after the user types and keep the highlight while the query changes.
+ * - `&#39;always&#39;`: always highlight the first item.
+ */
+autoHighlight?: boolean | &quot;always&quot; | undefined = false
+
+children?: ReactNode
+
+/**
+ * The uncontrolled input value of the autocomplete when it&#39;s initially rendered.
+ * 
+ * To render a controlled autocomplete, use the `value` prop instead.
+ */
+defaultValue?: string | number | readonly string[] | undefined = &#39;&#39;
+
+/**
+ * Whether the component should ignore user interaction.
+ */
+disabled?: boolean = false
+
+/**
+ * Filter function used to match items against the input query.
+ */
+filter?: ((item: string, query: string, itemToString?: ((item: string) =&gt; string) | undefined) =&gt; boolean) | null | undefined
+
+/**
+ * Filtered items to display in the list.
+ * When provided, the list uses these items instead of filtering the `items` prop internally.
+ * When `items` is also provided, this array must preserve its flat or grouped structure.
+ * Nullish entries are not supported, as in `items`.
+ * Use when you want to control filtering logic externally with the `useFilter()` hook.
+ */
+filteredItems?: readonly string[] | readonly Group&lt;string&gt;[] | undefined
+
+/**
+ * Identifies the form that owns the internal input.
+ * Useful when the autocomplete is rendered outside the form.
+ */
+form?: string
+
+/**
+ * Whether list items are presented in a grid layout.
+ * When enabled, arrow keys navigate across rows and columns inferred from DOM rows.
+ */
+grid?: boolean = false
+
+/**
+ * Whether moving the pointer over items should highlight them.
+ * Disabling this prop allows CSS `:hover` to be differentiated from the `:focus` (`data-highlighted`) state.
+ */
+highlightItemOnHover?: boolean = true
+
+/**
+ * The id of the component.
+ */
+id?: string
+
+/**
+ * Whether the list is rendered inline without using the component&#39;s own popup.
+ * 
+ * Specify `open` unconditionally in conjunction with this prop so the list is considered
+ * visible: `&lt;Autocomplete.Root inline open&gt;`
+ */
+inline?: boolean = false
+
+/**
+ * A ref to the hidden input element.
+ */
+inputRef?: Ref&lt;HTMLInputElement&gt; | undefined
+
+/**
+ * The items to be displayed in the list.
+ * Can be either a flat array of items or an array of groups with items.
+ * Nullish entries are not supported: remove them from the data before passing it.
+ */
+items?: readonly string[] | readonly Group&lt;string&gt;[] | undefined
+
+/**
+ * When the item values are objects (`&lt;Autocomplete.Item value={object}&gt;`), this function converts the object value to a string representation for both display in the input and form submission.
+ * If the shape of the object is `{ value, label }`, the label will be used automatically without needing to specify this prop.
+ */
+itemToStringValue?: (itemValue: string) =&gt; string
+
+/**
+ * Whether the highlighted item should be preserved when the pointer leaves the list.
+ */
+keepHighlight?: boolean = false
+
+/**
+ * The maximum number of items to display in the list.
+ */
+limit?: number = -1
+
+/**
+ * The locale to use for string comparison.
+ * Defaults to the user&#39;s runtime locale.
+ */
+locale?: LocalesArgument
+
+/**
+ * Whether to loop keyboard focus back to the input when the end of the list is reached while using the arrow keys. The first item can then be reached by pressing &lt;kbd&gt;ArrowDown&lt;/kbd&gt; again from the input, or the last item can be reached by pressing &lt;kbd&gt;ArrowUp&lt;/kbd&gt; from the input.
+ * The input is always included in the focus loop per [ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/).
+ * When disabled, focus does not move when on the last element and the user presses &lt;kbd&gt;ArrowDown&lt;/kbd&gt;, or when on the first element and the user presses &lt;kbd&gt;ArrowUp&lt;/kbd&gt;.
+ */
+loopFocus?: boolean = true
+
+/**
+ * Determines if the popup enters a modal state when open.
+ * - `true`: user interaction is limited to the popup: document page scroll is locked and pointer interactions on outside elements are disabled.
+ * - `false`: user interaction with the rest of the document is allowed.
+ * 
+ * On touch devices, a `true` modal blocks outside taps but leaves the page scrollable unless the popup spans nearly the full viewport width, matching native iOS behavior.
+ */
+modal?: boolean = false
+
+/**
+ * Controls how the autocomplete behaves with respect to list filtering and inline autocompletion.
+ * - `list` (default): items are dynamically filtered based on the input value. The input value does not change based on the active item.
+ * - `both`: items are dynamically filtered based on the input value, which will temporarily change based on the active item (inline autocompletion).
+ * - `inline`: items are static (not filtered), and the input value will temporarily change based on the active item (inline autocompletion).
+ * - `none`: items are static (not filtered), and the input value will not change based on the active item.
+ */
+mode?: &quot;none&quot; | &quot;list&quot; | &quot;inline&quot; | &quot;both&quot; = &#39;list&#39;
+
+/**
+ * Identifies the field when a form is submitted.
+ */
+name?: string
+
+/**
+ * Callback fired when an item is highlighted or unhighlighted.
+ * Receives the highlighted item value (or `undefined` if no item is highlighted) and event details with a `reason` property describing why the highlight changed.
+ * The `reason` can be:
+ * - `&#39;keyboard&#39;`: the highlight changed due to keyboard navigation.
+ * - `&#39;pointer&#39;`: the highlight changed due to pointer hovering.
+ * - `&#39;none&#39;`: the highlight changed programmatically.
+ */
+onItemHighlighted?: (highlightedValue: string | undefined, eventDetails: HighlightEventDetails) =&gt; void
+
+/**
+ * Event handler called after any animations complete when the popup is opened or closed.
+ */
+onOpenChangeComplete?: (open: boolean) =&gt; void
+
+/**
+ * Event handler called when the input value of the autocomplete changes.
+ */
+onValueChange?: (value: string, eventDetails: AutocompleteRootChangeEventDetails) =&gt; void
+
+/**
+ * Whether the popup opens when clicking the input.
+ */
+openOnInputClick?: boolean = false
+
+/**
+ * Whether the user should be unable to choose a different option from the popup.
+ */
+readOnly?: boolean = false
+
+/**
+ * Whether the user must choose a value before submitting a form.
+ */
+required?: boolean = false
+
+/**
+ * The input value of the autocomplete. Use when controlled.
+ */
+value?: string | number | readonly string[] | undefined
+
+/**
+ * Whether the items are being externally virtualized.
+ */
+virtualized?: boolean = false</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import {
+    Autocomplete,
+    Button,
+    Checkbox,
+    Field,
+    FieldText,
+    Input,
+    Label,
+    Loading,
+    Modal,
+    Tag,
+} from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Free-text field filtering an in-memory list of suggestions</div>
+              <div class="hint">Suggestions from memory, filtered by Base UI against the text. Typing opens
+the list; picking a row writes its text into the field. Any other text is
+just as valid a value.</div>
+              <pre><code>const Default = () =&gt; (
+    &lt;Autocomplete.Root items={CARRIERS}&gt;
+        &lt;Autocomplete.Input placeholder=&quot;Carrier&quot; aria-label=&quot;Carrier&quot; /&gt;
+        &lt;Autocomplete.Content&gt;
+            &lt;Autocomplete.List&gt;
+                {(carrier: string) =&gt; (
+                    &lt;Autocomplete.Item key={carrier} value={carrier}&gt;
+                        {carrier}
+                    &lt;/Autocomplete.Item&gt;
+                )}
+            &lt;/Autocomplete.List&gt;
+        &lt;/Autocomplete.Content&gt;
+    &lt;/Autocomplete.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Keeps Text On Blur</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Blurring the field keeps the typed text</div>
+              <div class="hint">Leaving the field keeps the text, whether it matches a suggestion or not.
+A Combobox would empty it here, since its value must be an option.</div>
+              <pre><code>const KeepsTextOnBlur = () =&gt; (
+    &lt;div className=&quot;flex flex-col gap-4&quot;&gt;
+        &lt;Autocomplete.Root items={CARRIERS}&gt;
+            &lt;Autocomplete.Input placeholder=&quot;Carrier&quot; aria-label=&quot;Carrier&quot; /&gt;
+            &lt;Autocomplete.Content&gt;
+                &lt;Autocomplete.List&gt;
+                    {(carrier: string) =&gt; (
+                        &lt;Autocomplete.Item key={carrier} value={carrier}&gt;
+                            {carrier}
+                        &lt;/Autocomplete.Item&gt;
+                    )}
+                &lt;/Autocomplete.List&gt;
+            &lt;/Autocomplete.Content&gt;
+        &lt;/Autocomplete.Root&gt;
+        &lt;Button variant=&quot;secondary&quot;&gt;Next&lt;/Button&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Keeps Text On Escape</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Escape closes the list and never empties the field</div>
+              <div class="hint">Escape closes the list and keeps the text. A second Escape, on a shut list,
+keeps it as well: Base UI would empty the field there, as a native search
+input does, and this field&#39;s text is its value.</div>
+              <pre><code>const KeepsTextOnEscape = () =&gt; (
+    &lt;Autocomplete.Root items={CARRIERS}&gt;
+        &lt;Autocomplete.Input placeholder=&quot;Carrier&quot; aria-label=&quot;Carrier&quot; /&gt;
+        &lt;Autocomplete.Content&gt;
+            &lt;Autocomplete.List&gt;
+                {(carrier: string) =&gt; (
+                    &lt;Autocomplete.Item key={carrier} value={carrier}&gt;
+                        {carrier}
+                    &lt;/Autocomplete.Item&gt;
+                )}
+            &lt;/Autocomplete.List&gt;
+        &lt;/Autocomplete.Content&gt;
+    &lt;/Autocomplete.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Pick Or Submit</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Item onClick and item-press for a pick, form submit for Enter</div>
+              <div class="hint">Telling a pick from a plain Enter, with Base UI&#39;s own events. A pick, by
+click or by Enter on the highlighted row, fires the row&#39;s `onClick`, then
+`onValueChange` with the reason `&#39;item-press&#39;`, and does not submit the form.
+Enter with no row highlighted submits the form with the typed text. Each
+fires once.</div>
+              <pre><code>const PickOrSubmit = ({ onValueChange, onPick, onSearch }) =&gt; {
+    const [outcome, setOutcome] = useState(&#39;&#39;);
+
+    return (
+        &lt;form
+            aria-label=&quot;Carrier search&quot;
+            className=&quot;flex flex-col gap-3&quot;
+            onSubmit={event =&gt; {
+                event.preventDefault();
+                const query = String(new FormData(event.currentTarget).get(&#39;carrier&#39;));
+                onSearch?.(query);
+                setOutcome(`Searched for ${query}`);
+            }}&gt;
+            &lt;Autocomplete.Root items={CARRIERS} onValueChange={onValueChange}&gt;
+                &lt;Autocomplete.Input name=&quot;carrier&quot; placeholder=&quot;Carrier&quot; aria-label=&quot;Carrier&quot; /&gt;
+                &lt;Autocomplete.Content&gt;
+                    &lt;Autocomplete.List&gt;
+                        {(carrier: string) =&gt; (
+                            &lt;Autocomplete.Item
+                                key={carrier}
+                                value={carrier}
+                                onClick={() =&gt; {
+                                    onPick?.(carrier);
+                                    setOutcome(`Picked ${carrier}`);
+                                }}&gt;
+                                {carrier}
+                            &lt;/Autocomplete.Item&gt;
+                        )}
+                    &lt;/Autocomplete.List&gt;
+                &lt;/Autocomplete.Content&gt;
+            &lt;/Autocomplete.Root&gt;
+            &lt;output className=&quot;text-sm text-text-default-base-secondary&quot;&gt;{outcome}&lt;/output&gt;
+        &lt;/form&gt;
+    );
+};</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Disabled Submit Button</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Nothing submits while the form&#39;s submit button is disabled</div>
+              <div class="hint">Submission follows the form&#39;s submit button, as in the browser: while it is
+disabled, Enter submits nothing, and once enabled Enter clicks it, so its
+`onClick` runs as well as the form&#39;s `onSubmit`. Here
+the search waits for the scope to be confirmed.</div>
+              <pre><code>const DisabledSubmitButton = ({ onSearch, onSubmitClick }) =&gt; {
+    const [confirmed, setConfirmed] = useState(false);
+    const [outcome, setOutcome] = useState(&#39;&#39;);
+
+    return (
+        &lt;form
+            aria-label=&quot;Carrier search&quot;
+            className=&quot;flex flex-col gap-3&quot;
+            onSubmit={event =&gt; {
+                event.preventDefault();
+                const query = String(new FormData(event.currentTarget).get(&#39;carrier&#39;));
+                onSearch?.(query);
+                setOutcome(`Searched for ${query}`);
+            }}&gt;
+            &lt;div className=&quot;flex items-start gap-3&quot;&gt;
+                &lt;div className=&quot;min-w-0 flex-1&quot;&gt;
+                    &lt;Autocomplete.Root items={CARRIERS}&gt;
+                        &lt;Autocomplete.Input name=&quot;carrier&quot; placeholder=&quot;Carrier&quot; aria-label=&quot;Carrier&quot; /&gt;
+                        &lt;Autocomplete.Content&gt;
+                            &lt;Autocomplete.List&gt;
+                                {(carrier: string) =&gt; (
+                                    &lt;Autocomplete.Item key={carrier} value={carrier}&gt;
+                                        {carrier}
+                                    &lt;/Autocomplete.Item&gt;
+                                )}
+                            &lt;/Autocomplete.List&gt;
+                        &lt;/Autocomplete.Content&gt;
+                    &lt;/Autocomplete.Root&gt;
+                &lt;/div&gt;
+                &lt;Button type=&quot;submit&quot; variant=&quot;secondary&quot; disabled={!confirmed} onClick={onSubmitClick}&gt;
+                    Search
+                &lt;/Button&gt;
+            &lt;/div&gt;
+            &lt;div className=&quot;flex items-center gap-2&quot;&gt;
+                &lt;Checkbox
+                    id=&quot;personal-lines&quot;
+                    checked={confirmed}
+                    onCheckedChange={checked =&gt; setConfirmed(checked === true)}
+                /&gt;
+                &lt;Label htmlFor=&quot;personal-lines&quot;&gt;Personal lines only&lt;/Label&gt;
+            &lt;/div&gt;
+            &lt;output className=&quot;text-sm text-text-default-base-secondary&quot;&gt;{outcome}&lt;/output&gt;
+        &lt;/form&gt;
+    );
+};</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Before And After</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Icon before and tag after the input, inside the same frame</div>
+              <div class="hint">`before` and `after` place content inside the field&#39;s frame, each wrapped in
+an `InputGroup.Addon`: an icon in front, a tag after. The list still hangs
+from the whole frame.</div>
+              <pre><code>const WithBeforeAndAfter = () =&gt; (
+    &lt;Autocomplete.Root items={CARRIERS}&gt;
+        &lt;Autocomplete.Input
+            placeholder=&quot;Carrier&quot;
+            aria-label=&quot;Carrier&quot;
+            before={&lt;IconSearch aria-hidden=&quot;true&quot; /&gt;}
+            after={&lt;Tag color=&quot;informative&quot;&gt;Beta&lt;/Tag&gt;}
+        /&gt;
+        &lt;Autocomplete.Content&gt;
+            &lt;Autocomplete.List&gt;
+                {(carrier: string) =&gt; (
+                    &lt;Autocomplete.Item key={carrier} value={carrier}&gt;
+                        {carrier}
+                    &lt;/Autocomplete.Item&gt;
+                )}
+            &lt;/Autocomplete.List&gt;
+        &lt;/Autocomplete.Content&gt;
+    &lt;/Autocomplete.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Empty Message</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Message shown in the list when no suggestion matches</div>
+              <div class="hint">With an `Empty` message, the list opens even when nothing matches, to say
+so, from the first keystroke and again after Escape. Without one, as in
+every other story, a field with nothing to suggest stays shut. Either way
+the text stays as typed.</div>
+              <pre><code>const WithEmptyMessage = () =&gt; (
+    &lt;Autocomplete.Root items={CARRIERS}&gt;
+        &lt;Autocomplete.Input placeholder=&quot;Carrier&quot; aria-label=&quot;Carrier&quot; /&gt;
+        &lt;Autocomplete.Content&gt;
+            &lt;Autocomplete.Empty&gt;
+                No known carrier matches. Your text is kept as typed.
+            &lt;/Autocomplete.Empty&gt;
+            &lt;Autocomplete.List&gt;
+                {(carrier: string) =&gt; (
+                    &lt;Autocomplete.Item key={carrier} value={carrier}&gt;
+                        {carrier}
+                    &lt;/Autocomplete.Item&gt;
+                )}
+            &lt;/Autocomplete.List&gt;
+        &lt;/Autocomplete.Content&gt;
+    &lt;/Autocomplete.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Inside Field Text</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Label, description and error wired from the surrounding FieldText</div>
+              <div class="hint">Inside a `FieldText` the input takes the label, the description and the
+error with nothing wired by hand, and points `aria-labelledby` at the label
+so the name survives the list opening.</div>
+              <pre><code>const InsideFieldText = () =&gt; (
+    &lt;FieldText invalid required&gt;
+        &lt;Label&gt;Carrier&lt;/Label&gt;
+        &lt;Autocomplete.Root items={CARRIERS}&gt;
+            &lt;Autocomplete.Input placeholder=&quot;Type a carrier&quot; /&gt;
+            &lt;Autocomplete.Content&gt;
+                &lt;Autocomplete.List&gt;
+                    {(carrier: string) =&gt; (
+                        &lt;Autocomplete.Item key={carrier} value={carrier}&gt;
+                            {carrier}
+                        &lt;/Autocomplete.Item&gt;
+                    )}
+                &lt;/Autocomplete.List&gt;
+            &lt;/Autocomplete.Content&gt;
+        &lt;/Autocomplete.Root&gt;
+        &lt;Field.Description&gt;The carrier that wrote the policy.&lt;/Field.Description&gt;
+        &lt;Field.Error errors={[{ message: &#39;Enter the carrier name&#39; }]} /&gt;
+    &lt;/FieldText&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Lookup</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Single highlighted lookup result that fills another field</div>
+              <div class="hint">A lookup: the typed number is the value, and what a lookup finds for it is
+offered as a single suggestion that starts highlighted (`autoHighlight=&quot;always&quot;`).
+Picking it, by click or Enter, fills another field from the row&#39;s `onClick`;
+the controlled `value` ignores the `&#39;item-press&#39;` change, so the number stays
+as typed. With no lookup result the list shows nothing. Tab closes the list
+and moves to the next field without picking. The input is a
+masked one, swapped in through `render`.</div>
+              <pre><code>const Lookup = () =&gt; {
+    const [fein, setFein] = useState(&#39;&#39;);
+    const [name, setName] = useState(&#39;&#39;);
+    const agency = useAgencyLookup(fein);
+
+    return (
+        &lt;div className=&quot;flex flex-col gap-4&quot;&gt;
+            &lt;FieldText&gt;
+                &lt;Label&gt;FEIN&lt;/Label&gt;
+                &lt;Autocomplete.Root
+                    items={agency ? [agency] : []}
+                    filter={null}
+                    autoHighlight=&quot;always&quot;
+                    value={fein}
+                    onValueChange={(value, eventDetails) =&gt; {
+                        // A pick fills the agency name, not this field.
+                        if (eventDetails.reason === &#39;item-press&#39;) return;
+                        setFein(value);
+                    }}&gt;
+                    &lt;Autocomplete.Input
+                        placeholder=&quot;XX-XXXXXXX&quot;
+                        render={inputProps =&gt; (
+                            &lt;input
+                                {...inputProps}
+                                inputMode=&quot;numeric&quot;
+                                onChange={event =&gt; {
+                                    event.target.value = formatFein(event.target.value);
+                                    inputProps.onChange?.(event);
+                                }}
+                            /&gt;
+                        )}
+                    /&gt;
+                    &lt;Autocomplete.Content&gt;
+                        &lt;Autocomplete.List&gt;
+                            {(agencyName: string) =&gt; (
+                                &lt;Autocomplete.Item
+                                    key={agencyName}
+                                    value={agencyName}
+                                    onClick={() =&gt; setName(agencyName)}&gt;
+                                    &lt;div className=&quot;flex min-w-0 flex-col&quot;&gt;
+                                        &lt;span className=&quot;truncate&quot;&gt;{agencyName}&lt;/span&gt;
+                                        &lt;span className=&quot;truncate text-xs text-text-default-base-tertiary&quot;&gt;
+                                            Use this as agency name
+                                        &lt;/span&gt;
+                                    &lt;/div&gt;
+                                &lt;/Autocomplete.Item&gt;
+                            )}
+                        &lt;/Autocomplete.List&gt;
+                    &lt;/Autocomplete.Content&gt;
+                &lt;/Autocomplete.Root&gt;
+                &lt;Field.Description&gt;
+                    The Federal Employer Identification Number of the agency.
+                &lt;/Field.Description&gt;
+            &lt;/FieldText&gt;
+            &lt;FieldText&gt;
+                &lt;Label&gt;Agency name&lt;/Label&gt;
+                &lt;Input value={name} onChange={event =&gt; setName(event.target.value)} /&gt;
+            &lt;/FieldText&gt;
+        &lt;/div&gt;
+    );
+};</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Lookup Locked</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Disabled lookup field that never opens its list</div>
+              <div class="hint">A locked lookup: the field is disabled, so the list never opens, even with a
+suggestion ready for the number in it.</div>
+              <pre><code>const LookupLocked = () =&gt; (
+    &lt;FieldText disabled&gt;
+        &lt;Label&gt;FEIN&lt;/Label&gt;
+        &lt;Autocomplete.Root items={[&#39;Sunrise Insurance Group&#39;]} defaultValue=&quot;12-3456789&quot;&gt;
+            &lt;Autocomplete.Input placeholder=&quot;XX-XXXXXXX&quot; /&gt;
+            &lt;Autocomplete.Content&gt;
+                &lt;Autocomplete.List&gt;
+                    {(agencyName: string) =&gt; (
+                        &lt;Autocomplete.Item key={agencyName} value={agencyName}&gt;
+                            {agencyName}
+                        &lt;/Autocomplete.Item&gt;
+                    )}
+                &lt;/Autocomplete.List&gt;
+            &lt;/Autocomplete.Content&gt;
+        &lt;/Autocomplete.Root&gt;
+    &lt;/FieldText&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Lookup Inside Modal</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Lookup inside a Modal, dismissed by Escape or a click outside</div>
+              <div class="hint">The lookup inside a `Modal`. A click on the field keeps the list open, a
+pick fills the other field without closing the dialog, and Escape or a click
+outside close the list, keeping the number. Escape before the lookup answers
+drops the wait, so the late result does not open the list, and the dialog
+stays. Escape on the shut field then closes the dialog.</div>
+              <pre><code>const LookupInsideModal = () =&gt; {
+    const [fein, setFein] = useState(&#39;&#39;);
+    const [name, setName] = useState(&#39;&#39;);
+    const agency = useAgencyLookup(fein);
+
+    return (
+        &lt;Modal.Root&gt;
+            &lt;Modal.Trigger asChild&gt;
+                &lt;Button variant=&quot;secondary&quot;&gt;Add agency&lt;/Button&gt;
+            &lt;/Modal.Trigger&gt;
+            &lt;Modal.Content&gt;
+                &lt;Modal.Title&gt;Add agency&lt;/Modal.Title&gt;
+                &lt;Modal.Body className=&quot;flex flex-col gap-4&quot;&gt;
+                    &lt;FieldText&gt;
+                        &lt;Label&gt;FEIN&lt;/Label&gt;
+                        &lt;Autocomplete.Root
+                            items={agency ? [agency] : []}
+                            filter={null}
+                            autoHighlight=&quot;always&quot;
+                            value={fein}
+                            onValueChange={(value, eventDetails) =&gt; {
+                                // A pick fills the agency name, not this field.
+                                if (eventDetails.reason === &#39;item-press&#39;) return;
+                                setFein(value);
+                            }}&gt;
+                            &lt;Autocomplete.Input
+                                placeholder=&quot;XX-XXXXXXX&quot;
+                                render={inputProps =&gt; (
+                                    &lt;input
+                                        {...inputProps}
+                                        inputMode=&quot;numeric&quot;
+                                        onChange={event =&gt; {
+                                            event.target.value = formatFein(event.target.value);
+                                            inputProps.onChange?.(event);
+                                        }}
+                                    /&gt;
+                                )}
+                            /&gt;
+                            &lt;Autocomplete.Content&gt;
+                                &lt;Autocomplete.List&gt;
+                                    {(agencyName: string) =&gt; (
+                                        &lt;Autocomplete.Item
+                                            key={agencyName}
+                                            value={agencyName}
+                                            onClick={() =&gt; setName(agencyName)}&gt;
+                                            &lt;div className=&quot;flex min-w-0 flex-col&quot;&gt;
+                                                &lt;span className=&quot;truncate&quot;&gt;{agencyName}&lt;/span&gt;
+                                                &lt;span className=&quot;truncate text-xs text-text-default-base-tertiary&quot;&gt;
+                                                    Use this as agency name
+                                                &lt;/span&gt;
+                                            &lt;/div&gt;
+                                        &lt;/Autocomplete.Item&gt;
+                                    )}
+                                &lt;/Autocomplete.List&gt;
+                            &lt;/Autocomplete.Content&gt;
+                        &lt;/Autocomplete.Root&gt;
+                        &lt;Field.Description&gt;
+                            The Federal Employer Identification Number of the agency.
+                        &lt;/Field.Description&gt;
+                    &lt;/FieldText&gt;
+                    &lt;FieldText&gt;
+                        &lt;Label&gt;Agency name&lt;/Label&gt;
+                        &lt;Input value={name} onChange={event =&gt; setName(event.target.value)} /&gt;
+                    &lt;/FieldText&gt;
+                &lt;/Modal.Body&gt;
+            &lt;/Modal.Content&gt;
+        &lt;/Modal.Root&gt;
+    );
+};</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Prompt</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>AI prompt with recent prompts, a spinner and a tag in the frame</div>
+              <div class="hint">A prompt field like the AI filter: an icon that turns into a spinner while
+the prompt runs and a Beta tag, both inside the frame, and an example
+overlaid on the empty input through `render`. The suggestion is &quot;run what
+you typed&quot; or, with nothing typed, the recent prompts. A pick runs it from
+the row&#39;s `onClick`; Enter with no row highlighted runs the typed text from
+the form&#39;s submit.</div>
+              <pre><code>const Prompt = ({ onSearch }) =&gt; {
+    const [prompt, setPrompt] = useState(&#39;&#39;);
+    const [recents, setRecents] = useState([&#39;Agencies onboarded last week&#39;, &#39;Expired licenses&#39;]);
+    const [pending, setPending] = useState(false);
+    const [applied, setApplied] = useState(&#39;&#39;);
+
+    const run = (query: string) =&gt; {
+        const trimmed = query.trim();
+        if (!trimmed || pending) return;
+        onSearch?.(trimmed);
+        setPending(true);
+        // Stands in for the request that translates the prompt into filters.
+        setTimeout(() =&gt; {
+            setPending(false);
+            setApplied(trimmed);
+            setRecents(entries =&gt; [trimmed, ...entries.filter(entry =&gt; entry !== trimmed)]);
+            setPrompt(&#39;&#39;);
+        }, 200);
+    };
+
+    const trimmed = prompt.trim();
+
+    return (
+        &lt;form
+            aria-label=&quot;AI filter&quot;
+            className=&quot;flex flex-col gap-3&quot;
+            onSubmit={event =&gt; {
+                event.preventDefault();
+                run(prompt);
+            }}&gt;
+            &lt;Autocomplete.Root
+                items={trimmed ? [trimmed] : recents}
+                filter={null}
+                openOnInputClick
+                value={prompt}
+                onValueChange={setPrompt}&gt;
+                &lt;Autocomplete.Input
+                    aria-label=&quot;Describe your filters&quot;
+                    readOnly={pending}
+                    className=&quot;read-only:cursor-wait&quot;
+                    before={
+                        pending ? (
+                            &lt;Loading size=&quot;sm&quot; aria-label=&quot;Translating filters&quot; /&gt;
+                        ) : (
+                            &lt;IconStar aria-hidden=&quot;true&quot; /&gt;
+                        )
+                    }
+                    after={&lt;Tag color=&quot;informative&quot;&gt;Beta&lt;/Tag&gt;}
+                    render={inputProps =&gt; (
+                        &lt;span className=&quot;relative flex min-w-0 flex-1&quot;&gt;
+                            {!prompt &amp;&amp; (
+                                &lt;span
+                                    aria-hidden=&quot;true&quot;
+                                    className=&quot;pointer-events-none absolute inset-0 flex items-center truncate text-sm text-text-input-placeholder&quot;&gt;
+                                    Producers licensed in Texas with an expired E&amp;O
+                                &lt;/span&gt;
+                            )}
+                            &lt;input {...inputProps} /&gt;
+                        &lt;/span&gt;
+                    )}
+                /&gt;
+                &lt;Autocomplete.Content&gt;
+                    &lt;Autocomplete.List aria-label=&quot;AI filter suggestions&quot;&gt;
+                        {(query: string) =&gt; (
+                            &lt;Autocomplete.Item key={query} value={query} onClick={() =&gt; run(query)}&gt;
+                                &lt;span className=&quot;truncate&quot;&gt;
+                                    &lt;span className=&quot;text-text-default-base-tertiary&quot;&gt;AI Filter &lt;/span&gt;
+                                    {query}
+                                &lt;/span&gt;
+                            &lt;/Autocomplete.Item&gt;
+                        )}
+                    &lt;/Autocomplete.List&gt;
+                &lt;/Autocomplete.Content&gt;
+            &lt;/Autocomplete.Root&gt;
+            &lt;output className=&quot;text-sm text-text-default-base-secondary&quot;&gt;
+                {applied &amp;&amp; `Filtered by &quot;${applied}&quot;`}
+            &lt;/output&gt;
+        &lt;/form&gt;
+    );
+};</code></pre>
+            </div>
+        </div>
+    
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
   aria-label="Avatar">
   <div class="head">
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Avatar</h2>
       <div class="badges">
-        <label for="c-2-components-avatar-props" class="badge ok as-toggle">8 prop types</label>
+        <label for="c-3-components-avatar-props" class="badge ok as-toggle">8 prop types</label>
         
-        <label for="c-2-components-avatar-stories" class="badge ok as-toggle">22 stories</label>
+        <label for="c-3-components-avatar-stories" class="badge ok as-toggle">22 stories</label>
         
         
       </div>
@@ -1482,10 +2337,10 @@ to `4xl` (128px).</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-2-components-avatar-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-3-components-avatar-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-2-components-avatar-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-3-components-avatar-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -1909,9 +2764,9 @@ pillow shape render correctly with real imagery.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> AvatarGroup</h2>
       <div class="badges">
-        <label for="c-3-components-avatargroup-props" class="badge ok as-toggle">4 prop types</label>
+        <label for="c-4-components-avatargroup-props" class="badge ok as-toggle">4 prop types</label>
         
-        <label for="c-3-components-avatargroup-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-4-components-avatargroup-stories" class="badge ok as-toggle">4 stories</label>
         
         
       </div>
@@ -1932,10 +2787,10 @@ the surface color so they read as separate.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-3-components-avatargroup-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-4-components-avatargroup-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-3-components-avatargroup-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-4-components-avatargroup-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -2049,9 +2904,9 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Button</h2>
       <div class="badges">
-        <label for="c-4-components-button-props" class="badge ok as-toggle">12 prop types</label>
+        <label for="c-5-components-button-props" class="badge ok as-toggle">12 prop types</label>
         
-        <label for="c-4-components-button-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-5-components-button-stories" class="badge ok as-toggle">10 stories</label>
         
         
       </div>
@@ -2078,10 +2933,10 @@ without Button binding to any particular framework.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-4-components-button-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-5-components-button-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-4-components-button-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-5-components-button-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -2454,9 +3309,9 @@ router. In app code, swap the plain `&lt;a&gt;` below for your framework&#39;s L
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Checkbox</h2>
       <div class="badges">
-        <label for="c-5-components-checkbox-props" class="badge ok as-toggle">9 prop types</label>
+        <label for="c-6-components-checkbox-props" class="badge ok as-toggle">9 prop types</label>
         
-        <label for="c-5-components-checkbox-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-6-components-checkbox-stories" class="badge ok as-toggle">11 stories</label>
         
         
       </div>
@@ -2473,10 +3328,10 @@ prop — set `aria-invalid` and the destructive treatment follows.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-5-components-checkbox-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-6-components-checkbox-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-5-components-checkbox-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-6-components-checkbox-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -2755,9 +3610,9 @@ governs a partially selected group.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> CheckboxGroup.Root</h2>
       <div class="badges">
-        <label for="c-6-components-checkboxgroup-props" class="badge ok as-toggle">7 prop types</label>
+        <label for="c-7-components-checkboxgroup-props" class="badge ok as-toggle">7 prop types</label>
         
-        <label for="c-6-components-checkboxgroup-stories" class="badge ok as-toggle">14 stories</label>
+        <label for="c-7-components-checkboxgroup-stories" class="badge ok as-toggle">14 stories</label>
         
         
       </div>
@@ -2775,10 +3630,10 @@ governs a partially selected group.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-6-components-checkboxgroup-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-7-components-checkboxgroup-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-6-components-checkboxgroup-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-7-components-checkboxgroup-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -3155,7 +4010,7 @@ the selection with `FormData.getAll`.</div>
       <div class="badges">
         
         
-        <label for="c-7-components-checklist-stories" class="badge ok as-toggle">2 stories</label>
+        <label for="c-8-components-checklist-stories" class="badge ok as-toggle">2 stories</label>
         
         
       </div>
@@ -3176,7 +4031,7 @@ import { CheckList } from &#39;@agentero/design-system/check-list&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-7-components-checklist-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-8-components-checklist-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
   
@@ -3245,17 +4100,17 @@ import { CheckList } from &#39;@agentero/design-system/check-list&#39;;
   class="card 
   no-error 
   no-info 
-  no-story-error
+  has-story-error
   no-doc-error"
   role="listitem"
   aria-label="Combobox.Root">
   <div class="head">
     <div class="title">
-      <h2><span class="status-dot dot-ok"></span> Combobox.Root</h2>
+      <h2><span class="status-dot dot-err"></span> Combobox.Root</h2>
       <div class="badges">
-        <label for="c-8-components-combobox-props" class="badge ok as-toggle">41 prop types</label>
+        <label for="c-9-components-combobox-props" class="badge ok as-toggle">41 prop types</label>
         
-        <label for="c-8-components-combobox-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-9-components-combobox-stories" class="badge err as-toggle">1/13 story errors</label>
         
         
       </div>
@@ -3285,10 +4140,10 @@ import { Combobox } from &#39;@agentero/design-system/combobox&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-8-components-combobox-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-9-components-combobox-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-8-components-combobox-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-9-components-combobox-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -3571,13 +4426,30 @@ virtualized?: boolean = false</code></pre>
     
         <div class="panel panel-stories">
           
+            <div class="note err">
+              <div class="row">
+                <span class="ex-name">Inside Popover With Value</span>
+                <span class="badge err">story error</span>
+              </div>
+              
+              
+              
+              <pre><code>Expected render to be an arrow function or function expression
+  844 |  */
+  845 | export const InsidePopoverWithValue: Story = {
+&gt; 846 | 	render: InsidePopover.render,
+      | 	           ^^^^^^^^^^^^^^^^^^^^
+  847 | 	play: async ({ canvasElement }) =&gt; {
+  848 | 		const body = within(document.body);
+  849 | 		const trigger = within(canvasElement).getByRole(&#39;button&#39;, { name: /filter by state/i });</code></pre>
+            </div>
           
           
           <div class="note ok">
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button, Combobox, Field, FieldText, Label, Modal, Skeleton, Tag } from "@agentero/design-system";
+                <pre><code>import { Button, Combobox, Field, FieldText, Label, Modal, Popover, Skeleton, Tag } from "@agentero/design-system";
 import { Suspense } from "react";</code></pre>
               </div>
           
@@ -3895,8 +4767,8 @@ rest of the page from assistive technology, label included, and a
                 &lt;/Combobox.List&gt;
             &lt;/Combobox.Content&gt;
         &lt;/Combobox.Root&gt;
-        &lt;Field.Error errors={[{ message: &#39;Pick an agency from the list&#39; }]} /&gt;
         &lt;Field.Description&gt;The agency this agent will be added to.&lt;/Field.Description&gt;
+        &lt;Field.Error errors={[{ message: &#39;Pick an agency from the list&#39; }]} /&gt;
     &lt;/FieldText&gt;
 );</code></pre>
             </div>
@@ -3908,7 +4780,8 @@ rest of the page from assistive technology, label included, and a
               
               <div class="hint">Inside a `Modal`, which is a Radix Dialog. The surface portals to the body, so
 this checks that the dialog&#39;s modal layer neither blocks pointer events on the
-list nor treats a click in it as a click outside and closes.</div>
+list nor treats a click in it as a click outside and closes. With a value
+picked, Escape closes the list, then clears the value, then closes the modal.</div>
               <pre><code>const InsideModal = () =&gt; (
     &lt;Modal.Root&gt;
         &lt;Modal.Trigger asChild&gt;
@@ -3921,6 +4794,70 @@ list nor treats a click in it as a click outside and closes.</div>
                     &lt;Combobox.Input placeholder=&quot;Search states&quot; aria-label=&quot;Search states&quot; /&gt;
                     &lt;Combobox.Content&gt;
                         &lt;Combobox.Empty&gt;No matches found&lt;/Combobox.Empty&gt;
+                        &lt;Combobox.List&gt;
+                            {(state: string) =&gt; (
+                                &lt;Combobox.Item key={state} value={state}&gt;
+                                    {state}
+                                &lt;/Combobox.Item&gt;
+                            )}
+                        &lt;/Combobox.List&gt;
+                    &lt;/Combobox.Content&gt;
+                &lt;/Combobox.Root&gt;
+            &lt;/Modal.Body&gt;
+        &lt;/Modal.Content&gt;
+    &lt;/Modal.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Inside Popover</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Inside a `Popover`. Escape on the open list closes the list only, and the next
+Escape closes the popover.</div>
+              <pre><code>const InsidePopover = () =&gt; (
+    &lt;Popover.Root&gt;
+        &lt;Popover.Trigger asChild&gt;
+            &lt;Button variant=&quot;secondary&quot;&gt;Filter by state&lt;/Button&gt;
+        &lt;/Popover.Trigger&gt;
+        &lt;Popover.Content aria-label=&quot;Filter by state&quot;&gt;
+            &lt;Combobox.Root items={STATES}&gt;
+                &lt;Combobox.Input placeholder=&quot;Search states&quot; aria-label=&quot;Search states&quot; /&gt;
+                &lt;Combobox.Content&gt;
+                    &lt;Combobox.Empty&gt;No matches found&lt;/Combobox.Empty&gt;
+                    &lt;Combobox.List&gt;
+                        {(state: string) =&gt; (
+                            &lt;Combobox.Item key={state} value={state}&gt;
+                                {state}
+                            &lt;/Combobox.Item&gt;
+                        )}
+                    &lt;/Combobox.List&gt;
+                &lt;/Combobox.Content&gt;
+            &lt;/Combobox.Root&gt;
+        &lt;/Popover.Content&gt;
+    &lt;/Popover.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Inside Modal Without Empty</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Inside a `Modal`, with no `Empty`. When nothing matches there is no list to
+close, so Base UI lets the first Escape through and it closes the modal.</div>
+              <pre><code>const InsideModalWithoutEmpty = () =&gt; (
+    &lt;Modal.Root&gt;
+        &lt;Modal.Trigger asChild&gt;
+            &lt;Button variant=&quot;secondary&quot;&gt;Assign agency&lt;/Button&gt;
+        &lt;/Modal.Trigger&gt;
+        &lt;Modal.Content&gt;
+            &lt;Modal.Title&gt;Assign agency&lt;/Modal.Title&gt;
+            &lt;Modal.Body&gt;
+                &lt;Combobox.Root items={STATES}&gt;
+                    &lt;Combobox.Input placeholder=&quot;Search states&quot; aria-label=&quot;Search states&quot; /&gt;
+                    &lt;Combobox.Content&gt;
                         &lt;Combobox.List&gt;
                             {(state: string) =&gt; (
                                 &lt;Combobox.Item key={state} value={state}&gt;
@@ -3952,9 +4889,9 @@ list nor treats a click in it as a click outside and closes.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Command.Root</h2>
       <div class="badges">
-        <label for="c-9-components-command-props" class="badge ok as-toggle">10 prop types</label>
+        <label for="c-10-components-command-props" class="badge ok as-toggle">10 prop types</label>
         
-        <label for="c-9-components-command-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-10-components-command-stories" class="badge ok as-toggle">8 stories</label>
         
         
       </div>
@@ -3989,10 +4926,10 @@ import { Command } from &#39;@agentero/design-system/command&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-9-components-command-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-10-components-command-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-9-components-command-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-10-components-command-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -4063,7 +5000,7 @@ vimBindings?: boolean</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Command } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Button, Command, Popover } from "@agentero/design-system";</code></pre>
               </div>
           
           
@@ -4206,6 +5143,31 @@ offering to create an agency appears only when the search text matches no existi
     &lt;/Command.List&gt;
 &lt;/Command.Root&gt;;</code></pre>
             </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Inside Popover</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Inside a `Popover`. cmdk&#39;s list is always on screen, so Escape closes the popover.</div>
+              <pre><code>const InsidePopover = () =&gt; (
+    &lt;Popover.Root&gt;
+        &lt;Popover.Trigger asChild&gt;
+            &lt;Button variant=&quot;secondary&quot;&gt;Open commands&lt;/Button&gt;
+        &lt;/Popover.Trigger&gt;
+        &lt;Popover.Content aria-label=&quot;Commands&quot; className=&quot;p-0&quot;&gt;
+            &lt;Command.Root label=&quot;Search commands&quot;&gt;
+                &lt;Command.Input placeholder=&quot;Search...&quot; /&gt;
+                &lt;Command.List&gt;
+                    {OPTIONS.map(option =&gt; (
+                        &lt;Command.Item key={option}&gt;{option}&lt;/Command.Item&gt;
+                    ))}
+                &lt;/Command.List&gt;
+            &lt;/Command.Root&gt;
+        &lt;/Popover.Content&gt;
+    &lt;/Popover.Root&gt;
+);</code></pre>
+            </div>
         </div>
     
     
@@ -4223,9 +5185,9 @@ offering to create an agency appears only when the search text matches no existi
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> DataTable.Root</h2>
       <div class="badges">
-        <label for="c-10-components-datatable-props" class="badge ok as-toggle">88 prop types</label>
+        <label for="c-11-components-datatable-props" class="badge ok as-toggle">88 prop types</label>
         
-        <label for="c-10-components-datatable-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-11-components-datatable-stories" class="badge ok as-toggle">4 stories</label>
         
         
       </div>
@@ -4268,10 +5230,10 @@ const columns = [
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-10-components-datatable-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-11-components-datatable-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-10-components-datatable-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-11-components-datatable-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -4849,9 +5811,9 @@ in flight.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> DebouncedInputSearch</h2>
       <div class="badges">
-        <label for="c-11-components-debouncedinputsearch-props" class="badge ok as-toggle">5 prop types</label>
+        <label for="c-12-components-debouncedinputsearch-props" class="badge ok as-toggle">5 prop types</label>
         
-        <label for="c-11-components-debouncedinputsearch-stories" class="badge ok as-toggle">3 stories</label>
+        <label for="c-12-components-debouncedinputsearch-stories" class="badge ok as-toggle">3 stories</label>
         
         
       </div>
@@ -4874,10 +5836,10 @@ changed from outside.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-11-components-debouncedinputsearch-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-12-components-debouncedinputsearch-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-11-components-debouncedinputsearch-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-12-components-debouncedinputsearch-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -5043,9 +6005,9 @@ query replaces the text.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Divider</h2>
       <div class="badges">
-        <label for="c-12-components-divider-props" class="badge ok as-toggle">4 prop types</label>
+        <label for="c-13-components-divider-props" class="badge ok as-toggle">4 prop types</label>
         
-        <label for="c-12-components-divider-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-13-components-divider-stories" class="badge ok as-toggle">10 stories</label>
         
         
       </div>
@@ -5068,10 +6030,10 @@ When omitted, Divider renders a single line.</span><span class="chip">example: &
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-12-components-divider-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-13-components-divider-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-12-components-divider-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-13-components-divider-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -5374,9 +6336,9 @@ related controls or inline links without visual weight.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> DropdownMenu.Root</h2>
       <div class="badges">
-        <label for="c-13-components-dropdownmenu-props" class="badge ok as-toggle">6 prop types</label>
+        <label for="c-14-components-dropdownmenu-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-13-components-dropdownmenu-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-14-components-dropdownmenu-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -5435,10 +6397,10 @@ import { DropdownMenu } from &#39;@agentero/design-system/dropdown-menu&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-13-components-dropdownmenu-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-14-components-dropdownmenu-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-13-components-dropdownmenu-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-14-components-dropdownmenu-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -5841,9 +6803,9 @@ actions outright unless the user needs to see them and understand why.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Field.Root</h2>
       <div class="badges">
-        <label for="c-14-components-field-props" class="badge ok as-toggle">6 prop types</label>
+        <label for="c-15-components-field-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-14-components-field-stories" class="badge ok as-toggle">17 stories</label>
+        <label for="c-15-components-field-stories" class="badge ok as-toggle">17 stories</label>
         
         
       </div>
@@ -5867,18 +6829,18 @@ absent when there is none.</div>
     <div class="kv"><span class="chip">summary: Wraps a label, control, description and error into one field</span><span class="chip">example: &lt;Field.Root invalid={!!error} required&gt;
   &lt;Field.Label&gt;Email&lt;/Field.Label&gt;
   &lt;Input type=&quot;email&quot; /&gt;
-  &lt;Field.Error errors={[error]} /&gt;
   &lt;Field.Description&gt;We only use this for policy documents.&lt;/Field.Description&gt;
+  &lt;Field.Error errors={[error]} /&gt;
 &lt;/Field.Root&gt;</span></div>
   </div>
 
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-14-components-field-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-15-components-field-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-14-components-field-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-15-components-field-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -6121,15 +7083,15 @@ either, the control carries no `aria-describedby` at all.</div>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">Error Before Description</span>
+                <span class="ex-name">Description Before Error</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Error announced before the description, whenever it appears</div>
-              <div class="hint">The error sits right under the control and is announced before the
-description, even when it appears after the description is on screen and
+              <div>Description announced before the error, whenever it appears</div>
+              <div class="hint">The description sits right under the control and is announced before the
+error, even when it appears after the error is on screen and the error
 carries an `id` of its own.</div>
-              <pre><code>const ErrorBeforeDescription = () =&gt; {
-    const [error, setError] = useState&lt;string&gt;();
+              <pre><code>const DescriptionBeforeError = () =&gt; {
+    const [showHint, setShowHint] = useState(false);
 
     return (
         &lt;div className=&quot;flex flex-col items-start gap-4&quot;&gt;
@@ -6138,13 +7100,15 @@ carries an `id` of its own.</div>
                 disabled={false}
                 readOnly={false}
                 required={false}
-                invalid={!!error}&gt;
+                invalid&gt;
                 &lt;Label&gt;Tax ID&lt;/Label&gt;
                 &lt;DemoInput inputMode=&quot;numeric&quot; /&gt;
-                &lt;Field.Error id=&quot;tax-id-error&quot;&gt;{error}&lt;/Field.Error&gt;
-                &lt;Field.Description&gt;Nine digits, with or without the dash.&lt;/Field.Description&gt;
+                {showHint &amp;&amp; (
+                    &lt;Field.Description&gt;Nine digits, with or without the dash.&lt;/Field.Description&gt;
+                )}
+                &lt;Field.Error id=&quot;tax-id-error&quot;&gt;Enter the tax ID.&lt;/Field.Error&gt;
             &lt;/Field.Root&gt;
-            &lt;button type=&quot;button&quot; onClick={() =&gt; setError(&#39;Enter the tax ID.&#39;)}&gt;Validate
+            &lt;button type=&quot;button&quot; onClick={() =&gt; setShowHint(true)}&gt;Show hint
                                 &lt;/button&gt;
         &lt;/div&gt;
     );
@@ -6379,9 +7343,9 @@ form library. `InputContext` extends the same way with `value`, `onChange`,
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> FieldText</h2>
       <div class="badges">
-        <label for="c-15-components-fieldtext-props" class="badge ok as-toggle">6 prop types</label>
+        <label for="c-16-components-fieldtext-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-15-components-fieldtext-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-16-components-fieldtext-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -6400,18 +7364,18 @@ and `name`, and `FieldContext` with the errors, as the last story shows.</div>
     <div class="kv"><span class="chip">summary: Field for a single-line text control, wiring the Input inside it</span><span class="chip">example: &lt;FieldText invalid={!!error} required&gt;
   &lt;Label&gt;Email&lt;/Label&gt;
   &lt;Input type=&quot;email&quot; /&gt;
-  &lt;Field.Error errors={[error]} /&gt;
   &lt;Field.Description&gt;We only use this for policy documents.&lt;/Field.Description&gt;
+  &lt;Field.Error errors={[error]} /&gt;
 &lt;/FieldText&gt;</span></div>
   </div>
 
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-15-components-fieldtext-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-16-components-fieldtext-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-15-components-fieldtext-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-16-components-fieldtext-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -6649,9 +7613,9 @@ The input&#39;s own `onChange` still runs, chained after the provider&#39;s.</di
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Form.Root</h2>
       <div class="badges">
-        <label for="c-16-components-form-props" class="badge ok as-toggle">3 prop types</label>
+        <label for="c-17-components-form-props" class="badge ok as-toggle">3 prop types</label>
         
-        <label for="c-16-components-form-stories" class="badge ok as-toggle">2 stories</label>
+        <label for="c-17-components-form-stories" class="badge ok as-toggle">2 stories</label>
         
         
       </div>
@@ -6680,10 +7644,10 @@ keep a single copy, since the provider and the fields share one context.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-16-components-form-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-17-components-form-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-16-components-form-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-17-components-form-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -6818,9 +7782,9 @@ Validation is react-hook-form&#39;s alone.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> FormText</h2>
       <div class="badges">
-        <label for="c-17-components-formtext-props" class="badge ok as-toggle">15 prop types</label>
+        <label for="c-18-components-formtext-props" class="badge ok as-toggle">15 prop types</label>
         
-        <label for="c-17-components-formtext-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-18-components-formtext-stories" class="badge ok as-toggle">10 stories</label>
         
         
       </div>
@@ -6850,10 +7814,10 @@ with the `FieldText`, `Label`, `Input` and `Field.*` primitives directly.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-17-components-formtext-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-18-components-formtext-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-17-components-formtext-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-18-components-formtext-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -6883,7 +7847,7 @@ control?: Control&lt;FieldValues, any, unknown&gt;
 controlId?: string
 
 /**
- * Helper text shown under the control, below the error when there is one,
+ * Helper text shown under the control, above the error when there is one,
  * and announced through its `aria-describedby`. Use it for guidance the
  * user needs before typing; put details worth a click in `tooltip` instead.
  */
@@ -7103,14 +8067,13 @@ not mark the field required: that stays an explicit `required` prop.</div>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">Error And Description</span>
+                <span class="ex-name">Description And Error</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Error under the input, above the helper text</div>
-              <div class="hint">The error sits right under the input and the description stays below it, so
-the message lands next to the value it is about. Screen readers announce
-them in the same order.</div>
-              <pre><code>const ErrorAndDescription = () =&gt; {
+              <div>Helper text under the input, above the error</div>
+              <div class="hint">The description sits right under the input and the error appears below it.
+Screen readers announce them in the same order.</div>
+              <pre><code>const DescriptionAndError = () =&gt; {
     const methods = useForm&lt;TaxValues&gt;({ defaultValues: { taxId: &#39;&#39; } });
 
     return (
@@ -7316,9 +8279,9 @@ hand.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> HoverCard.Root</h2>
       <div class="badges">
-        <label for="c-18-components-hovercard-props" class="badge ok as-toggle">6 prop types</label>
+        <label for="c-19-components-hovercard-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-18-components-hovercard-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-19-components-hovercard-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -7350,10 +8313,10 @@ import { HoverCard } from &#39;@agentero/design-system/hover-card&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-18-components-hovercard-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-19-components-hovercard-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-18-components-hovercard-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-19-components-hovercard-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -7600,9 +8563,9 @@ trigger-dense UIs where an instant preview reads as more responsive.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Input</h2>
       <div class="badges">
-        <label for="c-19-components-input-props" class="badge ok as-toggle">1 prop type</label>
+        <label for="c-20-components-input-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-19-components-input-stories" class="badge ok as-toggle">9 stories</label>
+        <label for="c-20-components-input-stories" class="badge ok as-toggle">9 stories</label>
         
         
       </div>
@@ -7625,10 +8588,10 @@ what assistive technology announces.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-19-components-input-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-20-components-input-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-19-components-input-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-20-components-input-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -7802,7 +8765,7 @@ they cannot change.</div>
       <div class="badges">
         
         
-        <label for="c-20-components-inputgroup-stories" class="badge ok as-toggle">12 stories</label>
+        <label for="c-21-components-inputgroup-stories" class="badge ok as-toggle">12 stories</label>
         
         
       </div>
@@ -7825,7 +8788,7 @@ hands its state to the frame through `:has()`, so focus, `disabled`,
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-20-components-inputgroup-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-21-components-inputgroup-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
   
@@ -8109,9 +9072,9 @@ button&#39;s start corners with the frame.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> InputNumber</h2>
       <div class="badges">
-        <label for="c-21-components-inputnumber-props" class="badge ok as-toggle">7 prop types</label>
+        <label for="c-22-components-inputnumber-props" class="badge ok as-toggle">7 prop types</label>
         
-        <label for="c-21-components-inputnumber-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-22-components-inputnumber-stories" class="badge ok as-toggle">11 stories</label>
         
         
       </div>
@@ -8132,10 +9095,10 @@ it takes its label, messages and states from a surrounding `FieldText`.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-21-components-inputnumber-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-22-components-inputnumber-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-21-components-inputnumber-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-22-components-inputnumber-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -8430,9 +9393,9 @@ plain `Input`.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> InputPassword</h2>
       <div class="badges">
-        <label for="c-22-components-inputpassword-props" class="badge ok as-toggle">1 prop type</label>
+        <label for="c-23-components-inputpassword-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-22-components-inputpassword-stories" class="badge ok as-toggle">5 stories</label>
+        <label for="c-23-components-inputpassword-stories" class="badge ok as-toggle">5 stories</label>
         
         
       </div>
@@ -8453,10 +9416,10 @@ rendered while the input is disabled.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-22-components-inputpassword-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-23-components-inputpassword-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-22-components-inputpassword-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-23-components-inputpassword-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -8598,9 +9561,9 @@ the field through the frame. A disabled field removes the toggle too.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> InputSearch</h2>
       <div class="badges">
-        <label for="c-23-components-inputsearch-props" class="badge ok as-toggle">3 prop types</label>
+        <label for="c-24-components-inputsearch-props" class="badge ok as-toggle">3 prop types</label>
         
-        <label for="c-23-components-inputsearch-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-24-components-inputsearch-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -8623,10 +9586,10 @@ once there is text. It is an `Input` of `type=&quot;search&quot;` inside an
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-23-components-inputsearch-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-24-components-inputsearch-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-23-components-inputsearch-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-24-components-inputsearch-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -8828,9 +9791,9 @@ several search fields does not read &quot;Clear search&quot; twice.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> InputTel</h2>
       <div class="badges">
-        <label for="c-24-components-inputtel-props" class="badge ok as-toggle">1 prop type</label>
+        <label for="c-25-components-inputtel-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-24-components-inputtel-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-25-components-inputtel-stories" class="badge ok as-toggle">11 stories</label>
         
         
       </div>
@@ -8851,10 +9814,10 @@ with the masked text already in `event.target.value`.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-24-components-inputtel-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-25-components-inputtel-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-24-components-inputtel-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-25-components-inputtel-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -9092,9 +10055,9 @@ with the input.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Label</h2>
       <div class="badges">
-        <label for="c-25-components-label-props" class="badge ok as-toggle">3 prop types</label>
+        <label for="c-26-components-label-props" class="badge ok as-toggle">3 prop types</label>
         
-        <label for="c-25-components-label-stories" class="badge ok as-toggle">5 stories</label>
+        <label for="c-26-components-label-stories" class="badge ok as-toggle">5 stories</label>
         
         
       </div>
@@ -9114,10 +10077,10 @@ still has to carry `required` / `aria-required`.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-25-components-label-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-26-components-label-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-25-components-label-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-26-components-label-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -9241,9 +10204,9 @@ field&#39;s control with no `htmlFor`. An explicit `htmlFor` still wins.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Loading</h2>
       <div class="badges">
-        <label for="c-26-components-loading-props" class="badge ok as-toggle">1 prop type</label>
+        <label for="c-27-components-loading-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-26-components-loading-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-27-components-loading-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -9260,10 +10223,10 @@ parent font size via `em`-based size variants (`sm`, `md`, `lg`).</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-26-components-loading-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-27-components-loading-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-26-components-loading-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-27-components-loading-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -9414,9 +10377,9 @@ against the dark background.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Modal.Root</h2>
       <div class="badges">
-        <label for="c-27-components-modal-props" class="badge ok as-toggle">5 prop types</label>
+        <label for="c-28-components-modal-props" class="badge ok as-toggle">5 prop types</label>
         
-        <label for="c-27-components-modal-stories" class="badge ok as-toggle">6 stories</label>
+        <label for="c-28-components-modal-stories" class="badge ok as-toggle">6 stories</label>
         
         
       </div>
@@ -9462,10 +10425,10 @@ import { Modal } from &#39;@agentero/design-system/modal&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-27-components-modal-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-28-components-modal-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-27-components-modal-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-28-components-modal-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -9685,9 +10648,9 @@ announced as an `alertdialog`. Only the footer actions close it.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Pagination</h2>
       <div class="badges">
-        <label for="c-28-components-pagination-props" class="badge ok as-toggle">5 prop types</label>
+        <label for="c-29-components-pagination-props" class="badge ok as-toggle">5 prop types</label>
         
-        <label for="c-28-components-pagination-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-29-components-pagination-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -9717,10 +10680,10 @@ const [page, setPage] = useState(1);
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-28-components-pagination-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-29-components-pagination-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-28-components-pagination-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-29-components-pagination-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -9875,9 +10838,9 @@ entries summary follow along.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Popover.Root</h2>
       <div class="badges">
-        <label for="c-29-components-popover-props" class="badge ok as-toggle">5 prop types</label>
+        <label for="c-30-components-popover-props" class="badge ok as-toggle">5 prop types</label>
         
-        <label for="c-29-components-popover-stories" class="badge ok as-toggle">5 stories</label>
+        <label for="c-30-components-popover-stories" class="badge ok as-toggle">5 stories</label>
         
         
       </div>
@@ -9906,10 +10869,10 @@ import { Popover } from &#39;@agentero/design-system/popover&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-29-components-popover-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-30-components-popover-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-29-components-popover-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-30-components-popover-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -10108,9 +11071,9 @@ focus returning to its trigger once the modal closes.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Progress</h2>
       <div class="badges">
-        <label for="c-30-components-progress-props" class="badge ok as-toggle">4 prop types</label>
+        <label for="c-31-components-progress-props" class="badge ok as-toggle">4 prop types</label>
         
-        <label for="c-30-components-progress-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-31-components-progress-stories" class="badge ok as-toggle">4 stories</label>
         
         
       </div>
@@ -10129,10 +11092,10 @@ with `currentColor`, so recolor it with a plain text class — e.g.
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-30-components-progress-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-31-components-progress-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-30-components-progress-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-31-components-progress-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -10251,7 +11214,7 @@ percentage: number</code></pre>
       <div class="badges">
         
         
-        <label for="c-31-components-skeleton-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-32-components-skeleton-stories" class="badge ok as-toggle">4 stories</label>
         
         
       </div>
@@ -10268,7 +11231,7 @@ shape it with Tailwind classes to mirror the content it stands in for.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-31-components-skeleton-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-32-components-skeleton-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
   
@@ -10364,9 +11327,9 @@ shape it with Tailwind classes to mirror the content it stands in for.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Switch</h2>
       <div class="badges">
-        <label for="c-32-components-switch-props" class="badge ok as-toggle">8 prop types</label>
+        <label for="c-33-components-switch-props" class="badge ok as-toggle">8 prop types</label>
         
-        <label for="c-32-components-switch-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-33-components-switch-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -10382,10 +11345,10 @@ a Checkbox for a single boolean that applies instantly, and pair it with a
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-32-components-switch-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-33-components-switch-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-32-components-switch-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-33-components-switch-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -10566,9 +11529,9 @@ size?: &quot;sm&quot; | &quot;md&quot;</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Table.Root</h2>
       <div class="badges">
-        <label for="c-33-components-table-props" class="badge ok as-toggle">6 prop types</label>
+        <label for="c-34-components-table-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-33-components-table-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-34-components-table-stories" class="badge ok as-toggle">10 stories</label>
         
         
       </div>
@@ -10599,10 +11562,10 @@ import { Table } from &#39;@agentero/design-system/table&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-33-components-table-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-34-components-table-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-33-components-table-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-34-components-table-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -10820,9 +11783,9 @@ keeps its padding.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tabs.Root</h2>
       <div class="badges">
-        <label for="c-34-components-tabs-props" class="badge ok as-toggle">9 prop types</label>
+        <label for="c-35-components-tabs-props" class="badge ok as-toggle">9 prop types</label>
         
-        <label for="c-34-components-tabs-stories" class="badge ok as-toggle">8 stories</label>
+        <label for="c-35-components-tabs-stories" class="badge ok as-toggle">8 stories</label>
         
         
       </div>
@@ -10853,10 +11816,10 @@ import { Tabs } from &#39;@agentero/design-system/tabs&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-34-components-tabs-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-35-components-tabs-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-34-components-tabs-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-35-components-tabs-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -11077,9 +12040,9 @@ tablist role is announced.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tag</h2>
       <div class="badges">
-        <label for="c-35-components-tag-props" class="badge ok as-toggle">8 prop types</label>
+        <label for="c-36-components-tag-props" class="badge ok as-toggle">8 prop types</label>
         
-        <label for="c-35-components-tag-stories" class="badge ok as-toggle">12 stories</label>
+        <label for="c-36-components-tag-stories" class="badge ok as-toggle">12 stories</label>
         
         
       </div>
@@ -11098,10 +12061,10 @@ it an interactive link or button, which adds the pointer cursor and hover fill.<
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-35-components-tag-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-36-components-tag-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-35-components-tag-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-36-components-tag-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -11526,9 +12489,9 @@ leading + trailing icons, and icon-only.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> TextArea</h2>
       <div class="badges">
-        <label for="c-36-components-textarea-props" class="badge ok as-toggle">1 prop type</label>
+        <label for="c-37-components-textarea-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-36-components-textarea-stories" class="badge ok as-toggle">6 stories</label>
+        <label for="c-37-components-textarea-stories" class="badge ok as-toggle">6 stories</label>
         
         
       </div>
@@ -11545,10 +12508,10 @@ states. It wires nothing on its own: `id`, `aria-invalid` and
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-36-components-textarea-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-37-components-textarea-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-36-components-textarea-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-37-components-textarea-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -11680,9 +12643,9 @@ size and the minimum height shows three rows.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Toast</h2>
       <div class="badges">
-        <label for="c-37-components-toast-props" class="badge ok as-toggle">11 prop types</label>
+        <label for="c-38-components-toast-props" class="badge ok as-toggle">11 prop types</label>
         
-        <label for="c-37-components-toast-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-38-components-toast-stories" class="badge ok as-toggle">11 stories</label>
         
         
       </div>
@@ -11701,10 +12664,10 @@ common feedback patterns.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-37-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-38-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-37-components-toast-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-38-components-toast-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -12133,9 +13096,9 @@ action (e.g., a sync icon for a sync-in-progress toast).</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tooltip</h2>
       <div class="badges">
-        <label for="c-38-components-tooltip-props" class="badge ok as-toggle">12 prop types</label>
+        <label for="c-39-components-tooltip-props" class="badge ok as-toggle">12 prop types</label>
         
-        <label for="c-38-components-tooltip-stories" class="badge ok as-toggle">5 stories</label>
+        <label for="c-39-components-tooltip-stories" class="badge ok as-toggle">5 stories</label>
         
         
       </div>
@@ -12154,10 +13117,10 @@ on hover or focus.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-38-components-tooltip-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-39-components-tooltip-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-38-components-tooltip-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-39-components-tooltip-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -12329,9 +13292,9 @@ sideOffset?: number = 4</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> ValidationList</h2>
       <div class="badges">
-        <label for="c-39-components-validationlist-props" class="badge ok as-toggle">2 prop types</label>
+        <label for="c-40-components-validationlist-props" class="badge ok as-toggle">2 prop types</label>
         
-        <label for="c-39-components-validationlist-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-40-components-validationlist-stories" class="badge ok as-toggle">4 stories</label>
         
         
       </div>
@@ -12352,10 +13315,10 @@ your form validation; it does not own the input or block submission.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-39-components-validationlist-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-40-components-validationlist-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-39-components-validationlist-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-40-components-validationlist-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
