@@ -2411,6 +2411,294 @@
       ],
       "import": "import { CheckList } from \"@agentero/design-system\";"
     },
+    "components-checkboxgroup": {
+      "id": "components-checkboxgroup",
+      "name": "CheckboxGroup.Root",
+      "path": "./src/checkbox-group/checkbox-group.stories.tsx",
+      "jsDocTags": {
+        "summary": [
+          "Multi-select checkbox list holding its checked values as a string array"
+        ],
+        "example": [
+          "<span id=\"lobs\">Lines of business</span>\n<CheckboxGroup.Root aria-labelledby=\"lobs\" defaultValue={['home']} onValueChange={setLobs}>\n  <CheckboxGroup.Item value=\"home\">Home</CheckboxGroup.Item>\n  <CheckboxGroup.Item value=\"auto\">Auto</CheckboxGroup.Item>\n</CheckboxGroup.Root>"
+        ],
+        "dataAttribute": [
+          "{string} data-orientation - \"vertical\" | \"horizontal\"",
+          "{string} data-disabled - Present when the whole group is disabled",
+          "{string} data-readonly - Present when the group is read-only"
+        ]
+      },
+      "description": "`Root` owns the checked values; each `Item` is a `Checkbox` with its label.",
+      "summary": "Multi-select checkbox list holding its checked values as a string array",
+      "reactComponentMeta": {
+        "displayName": "CheckboxGroup.Root",
+        "exportName": "CheckboxGroup",
+        "filePath": "/home/runner/work/design-system/design-system/src/checkbox-group/index.ts",
+        "description": "Multi-select list of checkboxes that holds its checked values as a\n`string[]`. Renders `role=\"group\"`: name it with `aria-labelledby` or\n`aria-label`, or put it inside a `Field.Root`, which names, describes,\ninvalidates, disables and makes it read-only (the group's own props win).\n\nNot for options inside a `Command` or `Combobox` list, where a focusable\ncheckbox would nest inside the option: use the Combobox's multiple\nselection. There is no `required`: \"at least one\" belongs to the form layer.\n\nEvery native `<div>` attribute is forwarded to the group except\n`aria-invalid`, which goes to the checkboxes (`role=\"group\"` does not\nsupport it).",
+        "jsDocTags": {
+          "summary": [
+            "Multi-select checkbox list holding its checked values as a string array"
+          ],
+          "example": [
+            "<span id=\"lobs\">Lines of business</span>\n<CheckboxGroup.Root aria-labelledby=\"lobs\" defaultValue={['home']} onValueChange={setLobs}>\n  <CheckboxGroup.Item value=\"home\">Home</CheckboxGroup.Item>\n  <CheckboxGroup.Item value=\"auto\">Auto</CheckboxGroup.Item>\n</CheckboxGroup.Root>"
+          ],
+          "dataAttribute": [
+            "{string} data-orientation - \"vertical\" | \"horizontal\"",
+            "{string} data-disabled - Present when the whole group is disabled",
+            "{string} data-readonly - Present when the group is read-only"
+          ]
+        },
+        "props": {
+          "value": {
+            "name": "value",
+            "required": false,
+            "type": {
+              "name": "string[]"
+            },
+            "description": "Controlled list of checked item values.",
+            "defaultValue": null,
+            "parent": {
+              "name": "CheckboxGroupRootProps",
+              "fileName": "src/checkbox-group/checkbox-group.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/checkbox-group/checkbox-group.tsx"
+              }
+            ]
+          },
+          "defaultValue": {
+            "name": "defaultValue",
+            "required": false,
+            "type": {
+              "name": "string[]"
+            },
+            "description": "Initial list of checked item values for an uncontrolled group.",
+            "defaultValue": {
+              "value": "[]"
+            },
+            "parent": {
+              "name": "CheckboxGroupRootProps",
+              "fileName": "src/checkbox-group/checkbox-group.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/checkbox-group/checkbox-group.tsx"
+              }
+            ]
+          },
+          "onValueChange": {
+            "name": "onValueChange",
+            "required": false,
+            "type": {
+              "name": "(value: string[]) => void"
+            },
+            "description": "Fires with the next list of checked values, in the order the items were checked.",
+            "defaultValue": null,
+            "parent": {
+              "name": "CheckboxGroupRootProps",
+              "fileName": "src/checkbox-group/checkbox-group.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/checkbox-group/checkbox-group.tsx"
+              }
+            ]
+          },
+          "disabled": {
+            "name": "disabled",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Disables every item in the group.",
+            "defaultValue": null,
+            "parent": {
+              "name": "CheckboxGroupRootProps",
+              "fileName": "src/checkbox-group/checkbox-group.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/checkbox-group/checkbox-group.tsx"
+              }
+            ]
+          },
+          "readOnly": {
+            "name": "readOnly",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Keeps every item focusable but stops it from toggling; each checkbox gets `aria-readonly`.",
+            "defaultValue": null,
+            "parent": {
+              "name": "CheckboxGroupRootProps",
+              "fileName": "src/checkbox-group/checkbox-group.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/checkbox-group/checkbox-group.tsx"
+              }
+            ]
+          },
+          "orientation": {
+            "name": "orientation",
+            "required": false,
+            "type": {
+              "name": "enum",
+              "raw": "\"horizontal\" | \"vertical\"",
+              "value": [
+                {
+                  "value": "\"horizontal\""
+                },
+                {
+                  "value": "\"vertical\""
+                }
+              ]
+            },
+            "description": "`vertical` (default) stacks the items; `horizontal` lays them in a row that wraps.",
+            "defaultValue": {
+              "value": "'vertical'"
+            },
+            "parent": {
+              "name": "CheckboxGroupRootProps",
+              "fileName": "src/checkbox-group/checkbox-group.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/checkbox-group/checkbox-group.tsx"
+              }
+            ]
+          },
+          "name": {
+            "name": "name",
+            "required": false,
+            "type": {
+              "name": "string"
+            },
+            "description": "Form field name shared by every item; each checked item submits `name=value`.",
+            "defaultValue": null,
+            "parent": {
+              "name": "CheckboxGroupRootProps",
+              "fileName": "src/checkbox-group/checkbox-group.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/checkbox-group/checkbox-group.tsx"
+              }
+            ]
+          }
+        }
+      },
+      "stories": [
+        {
+          "id": "components-checkboxgroup--default",
+          "name": "Default",
+          "snippet": "const Default = () => <CheckboxGroup.Root\n    aria-label=\"Lines of business\"\n    defaultValue={['home']}\n    onValueChange={fn()}>\n    {LOBS.map(({ value, label }) => (\n        <CheckboxGroup.Item key={value} value={value}>\n            {label}\n        </CheckboxGroup.Item>\n    ))}\n</CheckboxGroup.Root>;",
+          "description": "",
+          "summary": "Uncontrolled group with one item checked"
+        },
+        {
+          "id": "components-checkboxgroup--keyboard",
+          "name": "Keyboard",
+          "snippet": "const Keyboard = () => <CheckboxGroup.Root aria-label=\"Lines of business\" defaultValue={[]}>\n    {LOBS.map(({ value, label }) => (\n        <CheckboxGroup.Item key={value} value={value}>\n            {label}\n        </CheckboxGroup.Item>\n    ))}\n</CheckboxGroup.Root>;",
+          "description": "Tab moves between items and Space toggles the focused one, as with\nstandalone checkboxes.",
+          "summary": "Keyboard navigation and toggling"
+        },
+        {
+          "id": "components-checkboxgroup--labelled-by-heading",
+          "name": "Labelled By Heading",
+          "snippet": "const LabelledByHeading = () => <div className=\"flex flex-col gap-2\">\n    <span\n        id=\"lobs-heading\"\n        className=\"text-sm font-semibold text-text-input-normal\">Lines of business\n                    </span>\n    <CheckboxGroup.Root\n        aria-label={undefined}\n        defaultValue={['home']}\n        aria-labelledby=\"lobs-heading\">\n        {LOBS.map(({ value, label }) => (\n            <CheckboxGroup.Item key={value} value={value}>\n                {label}\n            </CheckboxGroup.Item>\n        ))}\n    </CheckboxGroup.Root>\n</div>;",
+          "description": "",
+          "summary": "Group named by a visible heading"
+        },
+        {
+          "id": "components-checkboxgroup--controlled",
+          "name": "Controlled",
+          "snippet": "const Controlled = () => {\n    const [selected, setSelected] = useState<string[]>(['home']);\n    const allValues = LOBS.map(({ value }) => value);\n\n    return (\n        <div className=\"flex flex-col gap-3\">\n            <button\n                type=\"button\"\n                className=\"w-fit text-sm underline\"\n                onClick={() => setSelected(selected.length === allValues.length ? [] : allValues)}>\n                {selected.length === allValues.length ? 'Unselect all' : 'Select all'}\n            </button>\n            <CheckboxGroup.Root\n                aria-label=\"Lines of business\"\n                value={selected}\n                onValueChange={setSelected}>\n                {LOBS.map(({ value, label }) => (\n                    <CheckboxGroup.Item key={value} value={value}>\n                        {label}\n                    </CheckboxGroup.Item>\n                ))}\n            </CheckboxGroup.Root>\n            <output className=\"text-sm\">{selected.join(', ') || 'None'}</output>\n        </div>\n    );\n};",
+          "description": "",
+          "summary": "Controlled group with a select-all parent"
+        },
+        {
+          "id": "components-checkboxgroup--disabled",
+          "name": "Disabled",
+          "snippet": "const Disabled = () => <CheckboxGroup.Root aria-label=\"Lines of business\" defaultValue={['home']} disabled>\n    {LOBS.map(({ value, label }) => (\n        <CheckboxGroup.Item key={value} value={value}>\n            {label}\n        </CheckboxGroup.Item>\n    ))}\n</CheckboxGroup.Root>;",
+          "description": "",
+          "summary": "Whole group disabled"
+        },
+        {
+          "id": "components-checkboxgroup--read-only",
+          "name": "Read Only",
+          "snippet": "const ReadOnly = () => <Field.Root readOnly>\n    <Field.Label>Lines of business</Field.Label>\n    <CheckboxGroup.Root aria-label={undefined} defaultValue={['home']} onValueChange={fn()}>\n        {LOBS.map(({ value, label }) => (\n            <CheckboxGroup.Item key={value} value={value}>\n                {label}\n            </CheckboxGroup.Item>\n        ))}\n    </CheckboxGroup.Root>\n</Field.Root>;",
+          "description": "Inside a read-only `Field.Root`, the items stay focusable but do not toggle,\nand each checkbox announces `aria-readonly` (a `group` cannot carry it).",
+          "summary": "Read-only through a surrounding Field"
+        },
+        {
+          "id": "components-checkboxgroup--disabled-item",
+          "name": "Disabled Item",
+          "snippet": "const DisabledItem = () => <CheckboxGroup.Root\n    aria-label=\"Lines of business\"\n    defaultValue={['auto']}\n    onValueChange={fn()}>\n    <CheckboxGroup.Item value=\"home\">Home</CheckboxGroup.Item>\n    <CheckboxGroup.Item value=\"auto\" disabled>Auto (required by your appointment)\n                    </CheckboxGroup.Item>\n    <CheckboxGroup.Item value=\"renters\">Renters</CheckboxGroup.Item>\n</CheckboxGroup.Root>;",
+          "description": "`disabled` on one item leaves the rest interactive. A checked disabled item\nstays in the value.",
+          "summary": "One item disabled"
+        },
+        {
+          "id": "components-checkboxgroup--invalid",
+          "name": "Invalid",
+          "snippet": "const Invalid = () => <div className=\"flex flex-col gap-2\">\n    <CheckboxGroup.Root\n        aria-label=\"Lines of business\"\n        defaultValue={[]}\n        aria-invalid\n        aria-describedby=\"lobs-error\">\n        {LOBS.map(({ value, label }) => (\n            <CheckboxGroup.Item key={value} value={value}>\n                {label}\n            </CheckboxGroup.Item>\n        ))}\n    </CheckboxGroup.Root>\n    <p id=\"lobs-error\" className=\"text-sm text-text-input-destructive\">Select at least one line of business.\n                    </p>\n</div>;",
+          "description": "`aria-invalid` on the root reaches every checkbox, not the group element.",
+          "summary": "Failed validation, forwarded to the items"
+        },
+        {
+          "id": "components-checkboxgroup--in-form",
+          "name": "In Form",
+          "snippet": "const InForm = () => {\n    const [submitted, setSubmitted] = useState<string[] | null>(null);\n\n    return (\n        <form\n            className=\"flex flex-col gap-3\"\n            onSubmit={event => {\n                event.preventDefault();\n                setSubmitted(new FormData(event.currentTarget).getAll('lobs') as string[]);\n            }}>\n            <CheckboxGroup.Root aria-label=\"Lines of business\" name=\"lobs\" defaultValue={['home']}>\n                {LOBS.map(({ value, label }) => (\n                    <CheckboxGroup.Item key={value} value={value}>\n                        {label}\n                    </CheckboxGroup.Item>\n                ))}\n            </CheckboxGroup.Root>\n            <button type=\"submit\" className=\"w-fit text-sm underline\">\n                Submit\n            </button>\n            {submitted && <output className=\"text-sm\">{submitted.join(', ')}</output>}\n        </form>\n    );\n};",
+          "description": "With `name`, each checked item submits `name=value`, so a native form reads\nthe selection with `FormData.getAll`.",
+          "summary": "Native form submission"
+        },
+        {
+          "id": "components-checkboxgroup--long-label",
+          "name": "Long Label",
+          "snippet": "const LongLabel = () => <div className=\"w-60\">\n    <CheckboxGroup.Root aria-label=\"Lines of business\" defaultValue={['home']}>\n        <CheckboxGroup.Item value=\"home\">Homeowners, including dwelling fire and condo unit owners policies\n                            </CheckboxGroup.Item>\n        <CheckboxGroup.Item value=\"auto\">Auto</CheckboxGroup.Item>\n    </CheckboxGroup.Root>\n</div>;",
+          "description": "A long label wraps under itself and the box stays level with its first line.",
+          "summary": "Wrapping label keeps the box on the first line"
+        },
+        {
+          "id": "components-checkboxgroup--horizontal",
+          "name": "Horizontal",
+          "snippet": "const Horizontal = () => <CheckboxGroup.Root\n    aria-label=\"Lines of business\"\n    defaultValue={['home']}\n    orientation=\"horizontal\">\n    {LOBS.map(({ value, label }) => (\n        <CheckboxGroup.Item key={value} value={value}>\n            {label}\n        </CheckboxGroup.Item>\n    ))}\n</CheckboxGroup.Root>;",
+          "description": "Items laid in a row, 24px apart, wrapping when the row runs out of room.",
+          "summary": "Items in a row"
+        },
+        {
+          "id": "components-checkboxgroup--item-id",
+          "name": "Item Id",
+          "snippet": "const ItemId = () => <CheckboxGroup.Root aria-label=\"Lines of business\" defaultValue={['home']}>\n    <CheckboxGroup.Item id=\"lob-home\" value=\"home\">Home\n                    </CheckboxGroup.Item>\n    <CheckboxGroup.Item value=\"auto\">Auto</CheckboxGroup.Item>\n</CheckboxGroup.Root>;",
+          "description": "",
+          "summary": "Item id reaches the checkbox"
+        },
+        {
+          "id": "components-checkboxgroup--inside-field",
+          "name": "Inside Field",
+          "snippet": "const InsideField = () => <Field.Root invalid>\n    <Field.Content>\n        <Field.Label>Lines of business</Field.Label>\n        <Field.Description>The lines this agency writes.</Field.Description>\n    </Field.Content>\n    <CheckboxGroup.Root aria-label={undefined} defaultValue={[]}>\n        {LOBS.map(({ value, label }) => (\n            <CheckboxGroup.Item key={value} value={value}>\n                {label}\n            </CheckboxGroup.Item>\n        ))}\n    </CheckboxGroup.Root>\n    <Field.Error errors={[{ message: 'Select at least one line of business' }]} />\n</Field.Root>;",
+          "description": "Inside a `Field.Root`, label, messages, `invalid` and `disabled` reach the group with nothing wired by hand.",
+          "summary": "Wired to a surrounding Field"
+        },
+        {
+          "id": "components-checkboxgroup--inside-field-overridden",
+          "name": "Inside Field Overridden",
+          "snippet": "const InsideFieldOverridden = () => <Field.Root disabled>\n    <Field.Content>\n        <Field.Label>Lines of business</Field.Label>\n        <Field.Description>The lines this agency writes.</Field.Description>\n    </Field.Content>\n    <p id=\"lobs-note\">Ask the principal before changing them.</p>\n    <CheckboxGroup.Root\n        aria-label=\"Lines written\"\n        defaultValue={['home']}\n        aria-describedby=\"lobs-note\"\n        disabled={false}>\n        {LOBS.map(({ value, label }) => (\n            <CheckboxGroup.Item key={value} value={value}>\n                {label}\n            </CheckboxGroup.Item>\n        ))}\n    </CheckboxGroup.Root>\n</Field.Root>;",
+          "description": "`aria-label` and `disabled={false}` on the group win over the field. Its own\n`aria-describedby` joins the field's messages instead of replacing them.",
+          "summary": "Own props override the Field wiring"
+        }
+      ],
+      "import": "import { CheckboxGroup, Field } from \"@agentero/design-system\";"
+    },
     "components-checkbox": {
       "id": "components-checkbox",
       "name": "Checkbox",
@@ -2429,7 +2717,7 @@
         "displayName": "Checkbox",
         "exportName": "Checkbox",
         "filePath": "/home/runner/work/design-system/design-system/src/checkbox/checkbox.tsx",
-        "description": "Base control for a boolean the user confirms later: one item of a\nmulti-select, a terms tick, a row picked for a bulk action. Supports the\nmixed state for a parent that summarises a partially selected group.\nKeeps the legacy 16px surface, glyphs and state colours during adoption.\n\nHeadless like [Input](?path=/docs/components-input--docs): pair it with\n[Label](?path=/docs/components-label--docs) and `htmlFor`, or give it an\n`aria-label`. There is no `status` prop — set `aria-invalid`.\n\nUse [Switch](?path=/docs/components-switch--docs) when the change applies\nimmediately, and [CheckList](?path=/docs/components-check-list--docs) for a\nread-only list of ticked items.",
+        "description": "Base control for a boolean the user confirms later: one item of a\nmulti-select, a terms tick, a row picked for a bulk action. Supports the\nmixed state for a parent that summarises a partially selected group.\nDrawn to the Portal UI library's Base Checkbox: a 16px box with a 1.5px\nborder, filled slate when checked or mixed.\n\nHeadless like [Input](?path=/docs/components-input--docs): pair it with\n[Label](?path=/docs/components-label--docs) and `htmlFor`, or give it an\n`aria-label`. There is no `status` prop — set `aria-invalid`.\n\nUse [Switch](?path=/docs/components-switch--docs) when the change applies\nimmediately, and [CheckList](?path=/docs/components-check-list--docs) for a\nread-only list of ticked items.",
         "jsDocTags": {
           "summary": [
             "Base checkbox control, with mixed state, unaware of form libraries"
@@ -2716,11 +3004,11 @@
           "summary": "Mixed checkbox inside another selected group"
         },
         {
-          "id": "components-checkbox--legacy-states",
-          "name": "Legacy States",
-          "snippet": "const LegacyStates = () => (\n    <div className=\"flex flex-col gap-6\">\n        {[false, true].map(invalid => (\n            <div key={String(invalid)} className=\"flex flex-col gap-4\">\n                {[false, true].map(disabled => (\n                    <div key={String(disabled)} className=\"flex items-center gap-6\">\n                        {([false, true, 'indeterminate'] as const).map(checked => (\n                            <Checkbox\n                                key={String(checked)}\n                                aria-label={`${invalid ? 'Invalid' : 'Valid'} ${disabled ? 'disabled' : 'enabled'} ${checked}`}\n                                checked={checked}\n                                disabled={disabled}\n                                aria-invalid={invalid}\n                            />\n                        ))}\n                    </div>\n                ))}\n            </div>\n        ))}\n    </div>\n);",
-          "description": "Preserves the legacy palette and 16px footprint for every value and validation state.",
-          "summary": "Legacy checkbox colours across all interaction states"
+          "id": "components-checkbox--all-states",
+          "name": "All States",
+          "snippet": "const AllStates = () => (\n    <div className=\"flex flex-col gap-6\">\n        {[false, true].map(invalid => (\n            <div key={String(invalid)} className=\"flex flex-col gap-4\">\n                {[false, true].map(disabled => (\n                    <div key={String(disabled)} className=\"flex items-center gap-6\">\n                        {([false, true, 'indeterminate'] as const).map(checked => (\n                            <Checkbox\n                                key={String(checked)}\n                                aria-label={`${invalid ? 'Invalid' : 'Valid'} ${disabled ? 'disabled' : 'enabled'} ${checked}`}\n                                checked={checked}\n                                disabled={disabled}\n                                aria-invalid={invalid}\n                            />\n                        ))}\n                    </div>\n                ))}\n            </div>\n        ))}\n    </div>\n);",
+          "description": "Every value, enabled and disabled, valid and invalid, as the Portal UI\nlibrary's Base Checkbox draws them: a 16px box with a 1.5px border.",
+          "summary": "Checkbox colours across all value and validation states"
         }
       ],
       "import": "import { Checkbox, Label } from \"@agentero/design-system\";"
@@ -11273,6 +11561,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5470
+    "durationMs": 4086
   }
 }
