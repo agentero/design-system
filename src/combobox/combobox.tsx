@@ -356,7 +356,8 @@ type InputProps = Omit<ComponentPropsWithRef<typeof ComboboxPrimitive.Input>, 's
  * every variant: text typed without a pick is not a value, and closing the
  * list drops it, as Escape does. Pressing it empties the text and drops the
  * picked option. It is out of the tab order; from the keyboard, selecting the
- * text and deleting it drops the option too. On a `select`, the clear button
+ * text and deleting it drops the option too. A `disabled` or `readOnly` input
+ * has none, as there is nothing to clear. On a `select`, the clear button
  * takes the chevron's place once an option is picked; the list still opens
  * from the input. Name it with `clearLabel`, and the chevron with
  * `triggerLabel`, when a page has more than one combobox.
@@ -382,6 +383,9 @@ export const Input = ({
 }: InputProps) => {
 	const { className, size = 'md', ...rest } = useBaseInputContext(props);
 	const multiple = use(MultipleContext);
+	// Base UI's `Clear` reads `disabled` and `readOnly` from `Root`, not from the input, so a locked
+	// input would still be clearable; with nothing to do there, it is not drawn.
+	const clearable = showClear && !multiple && !rest.disabled && !rest.readOnly;
 
 	return (
 		// Base UI's part, so the list anchors to the whole frame — icon and buttons included —
@@ -402,7 +406,7 @@ export const Input = ({
 				className={cn(inputRecipe({ size }), className)}
 				{...rest}
 			/>
-			{showClear && !multiple && (
+			{clearable && (
 				<ComboboxPrimitive.Clear
 					data-slot="combobox-clear"
 					aria-label={clearLabel}
@@ -414,7 +418,7 @@ export const Input = ({
 				<ComboboxPrimitive.Trigger
 					data-slot="combobox-trigger"
 					aria-label={triggerLabel}
-					className={cn(slots.action(), slots.trigger(), showClear && slots.triggerReplaced())}>
+					className={cn(slots.action(), slots.trigger(), clearable && slots.triggerReplaced())}>
 					<IconKeyboardArrowDown />
 				</ComboboxPrimitive.Trigger>
 			)}
