@@ -27,6 +27,8 @@ type StoryArgs = AutocompleteRootProps<string> & {
 	onSearch?: (query: string) => void;
 	/** Fires when a suggestion row is picked, from its `onClick`. */
 	onPick?: (value: string) => void;
+	/** Fires from the submit button's `onClick`, which Enter in the field runs too. */
+	onSubmitClick?: () => void;
 };
 
 // Annotated rather than `satisfies`: `Root`'s inferred props reach into Base UI's internal
@@ -316,14 +318,15 @@ export const PickOrSubmit: Story = {
 
 /**
  * Submission follows the form's submit button, as in the browser: while it is
- * disabled, Enter submits nothing. Here
+ * disabled, Enter submits nothing, and once enabled Enter clicks it, so its
+ * `onClick` runs as well as the form's `onSubmit`. Here
  * the search waits for the scope to be confirmed.
  *
  * @summary Nothing submits while the form's submit button is disabled
  */
 export const DisabledSubmitButton: Story = {
-	args: { onSearch: fn() },
-	render: ({ onSearch }) => {
+	args: { onSearch: fn(), onSubmitClick: fn() },
+	render: ({ onSearch, onSubmitClick }) => {
 		const [confirmed, setConfirmed] = useState(false);
 		const [outcome, setOutcome] = useState('');
 
@@ -352,7 +355,7 @@ export const DisabledSubmitButton: Story = {
 							</Autocomplete.Content>
 						</Autocomplete.Root>
 					</div>
-					<Button type="submit" variant="secondary" disabled={!confirmed}>
+					<Button type="submit" variant="secondary" disabled={!confirmed} onClick={onSubmitClick}>
 						Search
 					</Button>
 				</div>
@@ -381,13 +384,15 @@ export const DisabledSubmitButton: Story = {
 		await userEvent.keyboard('{Enter}');
 		await new Promise(resolve => setTimeout(resolve, 100));
 		await expect(args.onSearch).not.toHaveBeenCalled();
+		await expect(args.onSubmitClick).not.toHaveBeenCalled();
 
-		// Once the button is enabled, Enter submits.
+		// Once the button is enabled, Enter clicks it: its `onClick` runs and the form submits.
 		await userEvent.click(canvas.getByRole('checkbox', { name: 'Personal lines only' }));
 		await userEvent.click(input);
 		await userEvent.keyboard('{Enter}');
 		await waitFor(() => expect(args.onSearch).toHaveBeenCalledTimes(1));
 		await expect(args.onSearch).toHaveBeenLastCalledWith('Trav');
+		await expect(args.onSubmitClick).toHaveBeenCalledTimes(1);
 	}
 };
 
@@ -779,8 +784,9 @@ export const LookupLocked: Story = {
 /**
  * The lookup inside a `Modal`. A click on the field keeps the list open, a
  * pick fills the other field without closing the dialog, and Escape or a click
- * outside close the list, keeping the number. Escape on the shut field then
- * closes the dialog.
+ * outside close the list, keeping the number. Escape before the lookup answers
+ * drops the wait, so the late result does not open the list, and the dialog
+ * stays. Escape on the shut field then closes the dialog.
  *
  * @summary Lookup inside a Modal, dismissed by Escape or a click outside
  */
@@ -863,7 +869,14 @@ export const LookupInsideModal: Story = {
 		const input = within(dialog).getByRole('combobox', { name: 'FEIN' });
 		const name = within(dialog).getByRole('textbox', { name: 'Agency name' });
 
+		// The lookup answers 150ms after the last keystroke. An Escape before that drops the wait.
 		await userEvent.type(input, '987654321');
+		await userEvent.keyboard('{Escape}');
+		await new Promise(resolve => setTimeout(resolve, 300));
+		await expect(body.queryByRole('listbox')).not.toBeInTheDocument();
+		await expect(dialog).toHaveAttribute('data-state', 'open');
+
+		await userEvent.keyboard('{ArrowDown}');
 		await body.findByRole('option', { name: /Harbor Point Agency/ });
 
 		// A click on the field itself keeps the list open.

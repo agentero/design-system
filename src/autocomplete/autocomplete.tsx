@@ -80,9 +80,10 @@ const RowsProbe = ({ onChange }: { onChange: (hasRows: boolean) => void }) => {
  * `submitOnItemClick` is left out too: to submit on a pick, run the submit
  * from the row's `onClick` with the row's value. Base UI empties the field on Escape while the
  * list is shut, as a native search input does; this root keeps the text
- * instead, and does not report that change. Inside a `Modal` or `Popover`,
- * Escape on an open list closes the list only, and the next one closes the
- * layer.
+ * instead, and does not report that change. Escape while the list waits for
+ * late suggestions drops the wait, so they no longer open it. Inside a `Modal`
+ * or `Popover`, Escape on an open list closes the list only, and the next one
+ * closes the layer.
  *
  * Picking a row and pressing Enter are told apart with Base UI's own events:
  *
@@ -91,8 +92,8 @@ const RowsProbe = ({ onChange }: { onChange: (hasRows: boolean) => void }) => {
  *   `'item-press'`, carrying the row's text. Base UI stops that Enter, so the
  *   form is not submitted as well.
  * - Enter with no row highlighted closes the list and submits the owning form
- *   once, as the browser would: through its default button, and not while
- *   that button is disabled. With no submit button the form submits only when
+ *   once, as the browser would: by clicking its default button, so the
+ *   button's `onClick` runs, and not while that button is disabled. With no submit button the form submits only when
  *   this is its one text field.
  * - A pick fills the field with the row's text. To keep the typed text, call
  *   `eventDetails.cancel()` when the reason is `'item-press'`, or ignore that
@@ -152,10 +153,17 @@ export const Root = <Item,>({
 
 	const handleValueChange: typeof onValueChange = (nextValue, eventDetails) => {
 		// Escape on a shut list empties the field in Base UI. The text is the value here, so the
-		// field keeps it and, with nothing undone, lets the Escape on to a surrounding Modal or Popover.
+		// field keeps it. A list held back for want of rows is dropped instead, so late rows do not
+		// open it, and the Escape stops here. With nothing held it undid nothing, and goes on to a
+		// surrounding Modal or Popover. Base UI stops it only after a pick, so both are set here.
 		if (eventDetails.reason === 'escape-key') {
 			eventDetails.cancel();
-			eventDetails.allowPropagation();
+			if (requested) {
+				setRequested(false);
+				eventDetails.event.stopPropagation();
+			} else {
+				eventDetails.allowPropagation();
+			}
 			return;
 		}
 		onValueChange?.(nextValue, eventDetails);
@@ -235,12 +243,13 @@ const isBlockingField = (element: Element) =>
 	BLOCKING_TYPES.has(element.type) &&
 	!(element.tabIndex === -1 && element.getAttribute('aria-hidden') === 'true');
 
-// Submits as the browser does on Enter: through the form's default button, and not at all while
-// that button is disabled. With no button, only a form whose one text field this is.
+// Submits as the browser does on Enter: by clicking the form's default button, so its `onClick`
+// runs, which does nothing while it is disabled. With no button, only a form whose one text field
+// this is.
 const submitForm = (form: HTMLFormElement) => {
 	const defaultButton = Array.from(form.elements).find(isSubmitButton);
 	if (defaultButton) {
-		if (!defaultButton.disabled) form.requestSubmit(defaultButton);
+		defaultButton.click();
 		return;
 	}
 	if (Array.from(form.elements).filter(isBlockingField).length <= 1) form.requestSubmit();
@@ -268,6 +277,8 @@ const submitOnEnter = (event: KeyboardEvent<HTMLDivElement>) => {
  * It wears the same styling as `Input` and takes the same wiring from
  * `InputContext`, so inside a `FieldText` the label, the hint and the error
  * point at it with nothing passed by hand. Its own props win over the context.
+ * A `value`, `defaultValue` or `onChange` in the context is ignored: the text
+ * is the root's, so bind it through `Root`'s `value` and `onValueChange`.
  * Inside a field it also names itself with `aria-labelledby` pointing at the
  * label: while the list is open, Base UI hides everything but the input and
  * the list from assistive technology, and a `<label for>` alone stops naming
@@ -348,7 +359,10 @@ export const Content = (props: ContentProps) => {
 	const hasEmpty = Children.toArray(props.children).some(
 		child => isValidElement(child) && child.type === Empty
 	);
-	useLayoutEffect(() => setHasEmpty?.(hasEmpty), [setHasEmpty, hasEmpty]);
+	useLayoutEffect(() => {
+		setHasEmpty?.(hasEmpty);
+		return () => setHasEmpty?.(false);
+	}, [setHasEmpty, hasEmpty]);
 
 	return <ComboboxContent data-slot="autocomplete-content" {...props} />;
 };
