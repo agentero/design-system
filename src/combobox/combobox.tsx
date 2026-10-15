@@ -7,12 +7,12 @@ import { ComponentPropsWithRef, createContext, use, useEffect, useRef, useState 
 import { Combobox as ComboboxPrimitive } from '@base-ui/react/combobox';
 import { tv } from 'tailwind-variants';
 
-import { cn, useMergeProps } from '../../lib';
-import { useFieldContext } from '../field';
+import { cn } from '../../lib';
 import { InputContext, inputRecipe, InputSize } from '../input';
 import { InputGroup } from '../input-group';
 import { InputSearch, InputSearchProps } from '../input-search';
 import { IconCancel, IconCheck, IconKeyboardArrowDown, IconSearch } from './icons';
+import { useBaseInputContext } from './input-context';
 
 /**
  * Style recipe for Combobox. Slots: `action` and `trigger` (the clear and
@@ -329,26 +329,6 @@ type InputProps = Omit<ComponentPropsWithRef<typeof ComboboxPrimitive.Input>, 's
 	triggerLabel?: string;
 };
 
-// `Root` owns the text through `inputValue`; a form adapter's copies would fight it.
-const ROOT_OWNED_KEYS = new Set(['value', 'defaultValue', 'onChange']);
-
-const useComboboxInputContext = (props: InputProps) => {
-	const context = use(InputContext);
-	const field = useFieldContext();
-	const wiring = context
-		? Object.fromEntries(Object.entries(context).filter(([key]) => !ROOT_OWNED_KEYS.has(key)))
-		: null;
-
-	// The field's `<label for>` is not enough here: while the list is open, Base UI hides
-	// everything but the input and the list from assistive technology, label included, and
-	// Chrome then drops it from the name. A direct `aria-labelledby` reference survives that.
-	// Only as a default: a name the consumer gave, either way, wins.
-	const named = 'aria-label' in props || 'aria-labelledby' in props;
-	const labelledBy = !named && field ? { 'aria-labelledby': field.labelId } : null;
-
-	return useMergeProps({ ...wiring, ...labelledBy } as Partial<InputProps> | null, props);
-};
-
 /**
  * The text field, which doubles as the trigger: focusing or typing opens the
  * list. It wears the same styling as `Input` and takes the same wiring from
@@ -403,7 +383,7 @@ export const Input = ({
 	triggerLabel = 'Show options',
 	...props
 }: InputProps) => {
-	const { className, size = 'md', ...rest } = useComboboxInputContext(props);
+	const { className, size = 'md', ...rest } = useBaseInputContext(props);
 	const multiple = use(MultipleContext);
 
 	// The search field with a clear button is InputSearch: Base UI's props reach its
