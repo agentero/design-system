@@ -1,7 +1,7 @@
 import { Suspense, use, useDeferredValue, useRef, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { configure, expect, getConfig, userEvent, waitFor, within } from 'storybook/test';
+import { configure, expect, fn, getConfig, userEvent, waitFor, within } from 'storybook/test';
 
 import { Combobox } from '.';
 import { Button } from '../button';
@@ -343,14 +343,17 @@ export const ReadOnly: Story = {
 /**
  * Regression check, kept out of the manifest: `disabled` passed to the input
  * alone, not to `Root`, still hides the clear button and disables the chevron,
- * so the list cannot open to change the value.
+ * and a press on the frame does not open the list, so the value cannot change.
  *
  * @summary Chevron disabled when only the input is disabled
  */
 export const DisabledOnInput: Story = {
 	tags: ['!manifest'],
-	render: () => (
-		<Combobox.Root items={STATES} defaultValue="Florida">
+	// Base UI calls `onOpenChange` inside the press handler, so the spy reports an opening
+	// at once, where the listbox would only mount a few frames later.
+	args: { onOpenChange: fn() },
+	render: args => (
+		<Combobox.Root items={STATES} defaultValue="Florida" onOpenChange={args.onOpenChange}>
 			<Combobox.Input variant="select" showClear disabled aria-label="State" />
 			<Combobox.Content>
 				<Combobox.List>
@@ -363,7 +366,7 @@ export const DisabledOnInput: Story = {
 			</Combobox.Content>
 		</Combobox.Root>
 	),
-	play: async ({ canvasElement }) => {
+	play: async ({ args, canvasElement }) => {
 		const canvas = within(canvasElement);
 		const trigger = canvas.getByRole('button', { name: 'Show options' });
 
@@ -371,7 +374,8 @@ export const DisabledOnInput: Story = {
 		await expect(trigger).toBeVisible();
 		await expect(trigger).toBeDisabled();
 		await userEvent.click(trigger);
-		await expect(within(document.body).queryByRole('listbox')).not.toBeInTheDocument();
+		await userEvent.click(canvasElement.querySelector('[data-slot="combobox-field"]')!);
+		await expect(args.onOpenChange).not.toHaveBeenCalled();
 		await expect(canvas.getByRole('combobox', { name: 'State' })).toHaveValue('Florida');
 	}
 };

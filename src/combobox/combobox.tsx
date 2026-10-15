@@ -410,6 +410,9 @@ export const Input = ({
 		<ComboboxPrimitive.InputGroup
 			render={<InputGroup.Root />}
 			data-slot="combobox-field"
+			// Base UI opens the list on a press on the frame unless `Root` is disabled; with
+			// `disabled` on the input alone, a click on the padding would still open it.
+			onMouseDown={rest.disabled ? event => event.preventBaseUIHandler() : undefined}
 			// Alone in the frame, the text keeps a plain `Input`'s inset rather than the group's.
 			className={variant === 'plain' ? 'px-4' : undefined}>
 			{variant === 'search' && (
