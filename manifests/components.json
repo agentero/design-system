@@ -6779,6 +6779,174 @@
       ],
       "import": "import { Field, FieldText, InputPassword, Label } from \"@agentero/design-system\";"
     },
+    "components-debouncedinputsearch": {
+      "id": "components-debouncedinputsearch",
+      "name": "DebouncedInputSearch",
+      "path": "./src/input-search/debounced-input-search.stories.tsx",
+      "jsDocTags": {
+        "summary": [
+          "Search input that reports the query once the user pauses typing"
+        ],
+        "dataAttribute": [
+          "{string} data-slot - Always set to \"input-search\" on the frame"
+        ],
+        "example": [
+          "<DebouncedInputSearch\n  aria-label=\"Search agencies\"\n  value={filters.query}\n  onChange={event => setFilters({ ...filters, query: event.target.value })}\n  isLoading={isFetching}\n/>"
+        ]
+      },
+      "description": "DebouncedInputSearch is an `InputSearch` for filters that are expensive to\nrun. Keystrokes show up at once, but `onChange` fires only once the user\npauses for 300ms, with the last change event. It is always controlled:\n`value` and `onChange` are required, and the field follows a `value`\nchanged from outside.",
+      "summary": "Search input that reports the query once the user pauses typing",
+      "reactComponentMeta": {
+        "displayName": "DebouncedInputSearch",
+        "exportName": "DebouncedInputSearch",
+        "filePath": "/home/runner/work/design-system/design-system/src/input-search/debounced-input-search.tsx",
+        "description": "DebouncedInputSearch is an [InputSearch](?path=/docs/components-inputsearch--docs)\nfor filters that are expensive to run: a table query, a request to the\nserver. Keystrokes show up in the field at once, but `onChange` fires only\nonce the user pauses for `DEBOUNCE_TIME` (300ms), with the last change\nevent, so the page runs one search per pause instead of one per key. It is\nalways controlled: `value` and `onChange` are required, the page owns the\nquery, and the field follows a `value` changed from outside while the user\nis not typing.\n\nEvery other prop goes to the InputSearch and from there to the `<input>`:\nthe `ref`, `size`, `isLoading`, `placeholder`, `aria-*` and every other\nstandard attribute. Only `type` is not accepted. `className` styles the\nframe.\n\nDo not use it where every keystroke matters, such as filtering a short list\nalready in memory; that is a plain\n[InputSearch](?path=/docs/components-inputsearch--docs). To pick a value from\nthe results, use [Combobox](?path=/docs/components-combobox--docs).",
+        "jsDocTags": {
+          "summary": [
+            "Search input that reports the query once the user pauses typing"
+          ],
+          "dataAttribute": [
+            "{string} data-slot - Always set to \"input-search\" on the frame"
+          ],
+          "example": [
+            "<DebouncedInputSearch\n  aria-label=\"Search agencies\"\n  value={filters.query}\n  onChange={event => setFilters({ ...filters, query: event.target.value })}\n  isLoading={isFetching}\n/>"
+          ]
+        },
+        "props": {
+          "size": {
+            "name": "size",
+            "required": false,
+            "type": {
+              "name": "enum",
+              "raw": "\"sm\" | \"md\" | \"lg\"",
+              "value": [
+                {
+                  "value": "\"sm\""
+                },
+                {
+                  "value": "\"md\""
+                },
+                {
+                  "value": "\"lg\""
+                }
+              ]
+            },
+            "description": "Control height. Defaults to `'md'`.\n- `sm` (32px) — dense layouts where vertical space is tight.\n- `md` (40px) — standard form density.\n- `lg` (48px) — low-density forms and larger touch targets. Also raises\n  the text to `base` and the corner radius to `lg`.",
+            "defaultValue": null,
+            "parent": {
+              "name": "InputProps",
+              "fileName": "src/input/input.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input/input.tsx"
+              }
+            ]
+          },
+          "clearLabel": {
+            "name": "clearLabel",
+            "required": false,
+            "type": {
+              "name": "string"
+            },
+            "description": "Accessible name of the clear button. Defaults to `'Clear search'`; name it\nafter what is searched (`'Clear agency search'`) when a page carries\nseveral search fields.",
+            "defaultValue": null,
+            "parent": {
+              "name": "InputSearchProps",
+              "fileName": "src/input-search/input-search.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input-search/input-search.tsx"
+              }
+            ]
+          },
+          "isLoading": {
+            "name": "isLoading",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Shows a spinner at the end of the frame, in place of the clear button,\nwhile the results for the current text are on their way. Defaults to\n`false`.",
+            "defaultValue": null,
+            "parent": {
+              "name": "InputSearchProps",
+              "fileName": "src/input-search/input-search.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input-search/input-search.tsx"
+              }
+            ]
+          },
+          "value": {
+            "name": "value",
+            "required": true,
+            "type": {
+              "name": "string"
+            },
+            "description": "The query the page is filtering by. The field shows it, and follows it\nwhen it changes from outside (a reset button, a saved filter, navigation),\nunless the user is in the middle of typing: then what they typed stays,\nand `onChange` reports it once they pause.",
+            "defaultValue": null,
+            "parent": {
+              "name": "DebouncedInputSearchProps",
+              "fileName": "src/input-search/debounced-input-search.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input-search/debounced-input-search.tsx"
+              }
+            ]
+          },
+          "onChange": {
+            "name": "onChange",
+            "required": true,
+            "type": {
+              "name": "ChangeEventHandler<HTMLInputElement>"
+            },
+            "description": "Fires once the user has stopped typing for `DEBOUNCE_TIME` milliseconds,\nwith the change event of the last keystroke; clearing the field goes\nthrough the same delay. A pending call fires at once when the user\npresses Enter, and is dropped when the field unmounts, so a page that is\nnavigating away is not sent back. Read the text from `event.target.value`, which is\nwhat the field shows at that moment. `event.currentTarget` is no longer\nset by then, since the event is delivered after the browser's dispatch.",
+            "defaultValue": null,
+            "parent": {
+              "name": "DebouncedInputSearchProps",
+              "fileName": "src/input-search/debounced-input-search.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input-search/debounced-input-search.tsx"
+              }
+            ]
+          }
+        }
+      },
+      "stories": [
+        {
+          "id": "components-debouncedinputsearch--default",
+          "name": "Default",
+          "snippet": "const Default = () => {\n    const [query, setQuery] = useState(args.value);\n\n    return (\n        <div style={{ display: 'grid', gap: '1rem' }}>\n            <DebouncedInputSearch\n                aria-label=\"Search agencies\"\n                value={query}\n                onChange={event => {\n                    setQuery(event.target.value);\n                    args.onChange(event);\n                }} />\n            <output>Filtering by: {query}</output>\n        </div>\n    );\n};",
+          "description": "A page filtering by a query it owns, shown below the field. Typing shows up\nin the field at once; `onChange` arrives once the user pauses, with the\nwhole text in `event.target.value`, and only then does the query below\nchange. Clearing the field goes through the same delay.",
+          "summary": "Controlled query reported once the user stops typing"
+        },
+        {
+          "id": "components-debouncedinputsearch--external-value",
+          "name": "External Value",
+          "snippet": "const ExternalValue = () => {\n    const [query, setQuery] = useState('Acme');\n\n    return (\n        <div style={{ display: 'grid', gap: '1rem' }}>\n            <DebouncedInputSearch\n                aria-label=\"Search agencies\"\n                value={query}\n                onChange={event => {\n                    setQuery(event.target.value);\n                    args.onChange(event);\n                }} />\n            <Button variant=\"secondary\" size=\"sm\" onClick={() => setQuery('Travelers')}>Apply saved search\n                                </Button>\n            <output>Filtering by: {query}</output>\n        </div>\n    );\n};",
+          "description": "The field follows `value` when the page changes it from outside, here a\nsaved search applied with a button: nothing is being typed, so the new\nquery replaces the text.",
+          "summary": "Field following a value changed from outside while idle"
+        },
+        {
+          "id": "components-debouncedinputsearch--submit-on-enter",
+          "name": "Submit On Enter",
+          "snippet": "const SubmitOnEnter = () => {\n    const [query, setQuery] = useState(args.value);\n\n    return (\n        <div style={{ display: 'grid', gap: '1rem' }}>\n            <DebouncedInputSearch\n                aria-label=\"Search agencies\"\n                value={query}\n                onChange={event => {\n                    setQuery(event.target.value);\n                    args.onChange(event);\n                }} />\n            <output>Filtering by: {query}</output>\n        </div>\n    );\n};",
+          "description": "Pressing Enter reports the text at once instead of waiting for the pause.",
+          "summary": "Enter reports the pending query without waiting"
+        }
+      ],
+      "import": "import { Button, DebouncedInputSearch } from \"@agentero/design-system\";"
+    },
     "components-inputsearch": {
       "id": "components-inputsearch",
       "name": "InputSearch",
@@ -10055,6 +10223,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4211
+    "durationMs": 3455
   }
 }
