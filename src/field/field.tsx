@@ -101,7 +101,7 @@ export const fieldRecipe = tv({
 const slots = fieldRecipe();
 
 const messageRank = (kind?: FieldMessageKind) =>
-	kind === 'error' ? 0 : kind === 'description' ? 1 : 2;
+	kind === 'description' ? 0 : kind === 'error' ? 1 : 2;
 
 export type FieldVariants = VariantProps<typeof fieldRecipe>;
 
@@ -177,8 +177,8 @@ export type FieldRootProps = ComponentPropsWithRef<'div'> & {
  * <Field.Root invalid={!!error} required>
  *   <Field.Label>Email</Field.Label>
  *   <Input type="email" />
- *   <Field.Error errors={[error]} />
  *   <Field.Description>We only use this for policy documents.</Field.Description>
+ *   <Field.Error errors={[error]} />
  * </Field.Root>
  */
 export const Root = ({
@@ -211,7 +211,7 @@ export const Root = ({
 		return () => setMessages(registered => registered.filter(message => message.id !== id));
 	}, []);
 
-	// The error reads before the description, as it sits above it, whatever the
+	// The description reads before the error, as it sits above it, whatever the
 	// order they mounted in.
 	const describedBy =
 		[...messages]
@@ -359,9 +359,9 @@ const toMessages = (error: FieldErrorLike): string[] => {
 
 /**
  * Validation feedback for the field, announced as an alert when it appears.
- * Place it right after the control, before `Field.Description`: the control's
- * `aria-describedby` reads the error first as well. Renders nothing without a
- * message, so it can stay mounted unconditionally;
+ * Place it after `Field.Description`: the control's `aria-describedby` reads
+ * the description first as well. Renders nothing without a message, so it can
+ * stay mounted unconditionally;
  * set `invalid` on `Field.Root` alongside it. Takes `children` or an `errors`
  * array, and a form adapter can supply `errors` through `FieldContext` so a
  * bare `<Field.Error />` renders them. One per field: it takes the field's
