@@ -6,6 +6,7 @@ import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { type VariantProps, tv } from 'tailwind-variants';
 
 import { cn } from '../../lib';
+import { isFromExpandedCombobox } from '../../lib/expanded-combobox';
 import { Button } from '../button';
 import { IconClose } from './icons';
 
@@ -145,6 +146,9 @@ type ContentProps = ComponentProps<typeof DialogPrimitive.Content> & {
  * `variant="alert"` turns off every implicit way out — `Escape`, the overlay
  * click, and the X button in `Modal.Title` — leaving only the footer actions.
  *
+ * An Escape pressed in a `Combobox` inside it while its list is open closes
+ * only that list; the next Escape closes the modal.
+ *
  * @summary Centered modal surface over a dimmed overlay
  */
 export const Content = ({
@@ -169,7 +173,7 @@ export const Content = ({
 					className={cn(styles.content(), className)}
 					onEscapeKeyDown={event => {
 						onEscapeKeyDown?.(event);
-						if (isAlert) event.preventDefault();
+						if (isAlert || isFromExpandedCombobox(event)) event.preventDefault();
 					}}
 					onPointerDownOutside={event => {
 						onPointerDownOutside?.(event);

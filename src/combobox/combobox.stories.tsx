@@ -9,6 +9,7 @@ import { Field } from '../field';
 import { FieldText } from '../field-text';
 import { Label } from '../label';
 import { Modal } from '../modal';
+import { Popover } from '../popover';
 import { Skeleton } from '../skeleton';
 import { Tag } from '../tag';
 
@@ -775,5 +776,59 @@ export const InsideModal: Story = {
 		// The dialog must survive the click on the portalled list — still open, not exiting.
 		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
 		await expect(dialog).toHaveAttribute('data-state', 'open');
+
+		// Escape on the open list closes the list only; the next one closes the dialog.
+		await userEvent.keyboard('{ArrowDown}');
+		await body.findByRole('listbox');
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+		await expect(dialog).toHaveAttribute('data-state', 'open');
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(dialog).toHaveAttribute('data-state', 'closed'));
+	}
+};
+
+/**
+ * Inside a `Popover`. Escape on the open list closes the list only, and the next
+ * Escape closes the popover.
+ */
+export const InsidePopover: Story = {
+	render: () => (
+		<Popover.Root>
+			<Popover.Trigger asChild>
+				<Button variant="secondary">Filter by state</Button>
+			</Popover.Trigger>
+			<Popover.Content aria-label="Filter by state">
+				<Combobox.Root items={STATES}>
+					<Combobox.Input placeholder="Search states" aria-label="Search states" />
+					<Combobox.Content>
+						<Combobox.Empty>No matches found</Combobox.Empty>
+						<Combobox.List>
+							{(state: string) => (
+								<Combobox.Item key={state} value={state}>
+									{state}
+								</Combobox.Item>
+							)}
+						</Combobox.List>
+					</Combobox.Content>
+				</Combobox.Root>
+			</Popover.Content>
+		</Popover.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const body = within(document.body);
+		const trigger = within(canvasElement).getByRole('button', { name: /filter by state/i });
+
+		await userEvent.click(trigger);
+		const input = await body.findByRole('combobox', { name: /search states/i });
+		await userEvent.click(input);
+		await body.findByRole('listbox');
+
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+		await expect(trigger).toHaveAttribute('data-state', 'open');
+
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(trigger).toHaveAttribute('data-state', 'closed'));
 	}
 };
