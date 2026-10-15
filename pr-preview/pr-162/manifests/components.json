@@ -2890,20 +2890,34 @@
         {
           "id": "components-combobox--inside-field-text",
           "name": "Inside Field Text",
-          "snippet": "const InsideFieldText = () => (\n    <FieldText invalid required>\n        <Label>Agency</Label>\n        <Combobox.Root items={STATES}>\n            <Combobox.Input placeholder=\"Search agencies\" />\n            <Combobox.Content>\n                <Combobox.Empty>No matches found</Combobox.Empty>\n                <Combobox.List>\n                    {(state: string) => (\n                        <Combobox.Item key={state} value={state}>\n                            {state}\n                        </Combobox.Item>\n                    )}\n                </Combobox.List>\n            </Combobox.Content>\n        </Combobox.Root>\n        <Field.Error errors={[{ message: 'Pick an agency from the list' }]} />\n        <Field.Description>The agency this agent will be added to.</Field.Description>\n    </FieldText>\n);",
+          "snippet": "const InsideFieldText = () => (\n    <FieldText invalid required>\n        <Label>Agency</Label>\n        <Combobox.Root items={STATES}>\n            <Combobox.Input placeholder=\"Search agencies\" />\n            <Combobox.Content>\n                <Combobox.Empty>No matches found</Combobox.Empty>\n                <Combobox.List>\n                    {(state: string) => (\n                        <Combobox.Item key={state} value={state}>\n                            {state}\n                        </Combobox.Item>\n                    )}\n                </Combobox.List>\n            </Combobox.Content>\n        </Combobox.Root>\n        <Field.Description>The agency this agent will be added to.</Field.Description>\n        <Field.Error errors={[{ message: 'Pick an agency from the list' }]} />\n    </FieldText>\n);",
           "description": "Dropped into a `FieldText`, the input takes the label, the description and\nthe error from the field with nothing wired by hand: `Combobox.Input` reads the\nsame `InputContext` the plain `Input` does. It also points `aria-labelledby`\nat the label, so the name survives the list opening: Base UI then hides the\nrest of the page from assistive technology, label included, and a\n`<label for>` alone would stop naming the input."
         },
         {
           "id": "components-combobox--inside-modal",
           "name": "Inside Modal",
           "snippet": "const InsideModal = () => (\n    <Modal.Root>\n        <Modal.Trigger asChild>\n            <Button variant=\"secondary\">Assign agency</Button>\n        </Modal.Trigger>\n        <Modal.Content>\n            <Modal.Title>Assign agency</Modal.Title>\n            <Modal.Body>\n                <Combobox.Root items={STATES}>\n                    <Combobox.Input placeholder=\"Search states\" aria-label=\"Search states\" />\n                    <Combobox.Content>\n                        <Combobox.Empty>No matches found</Combobox.Empty>\n                        <Combobox.List>\n                            {(state: string) => (\n                                <Combobox.Item key={state} value={state}>\n                                    {state}\n                                </Combobox.Item>\n                            )}\n                        </Combobox.List>\n                    </Combobox.Content>\n                </Combobox.Root>\n            </Modal.Body>\n        </Modal.Content>\n    </Modal.Root>\n);",
-          "description": "Inside a `Modal`, which is a Radix Dialog. The surface portals to the body, so\nthis checks that the dialog's modal layer neither blocks pointer events on the\nlist nor treats a click in it as a click outside and closes."
+          "description": "Inside a `Modal`, which is a Radix Dialog. The surface portals to the body, so\nthis checks that the dialog's modal layer neither blocks pointer events on the\nlist nor treats a click in it as a click outside and closes. With a value\npicked, Escape closes the list, then clears the value, then closes the modal."
         },
         {
           "id": "components-combobox--inside-popover",
           "name": "Inside Popover",
           "snippet": "const InsidePopover = () => (\n    <Popover.Root>\n        <Popover.Trigger asChild>\n            <Button variant=\"secondary\">Filter by state</Button>\n        </Popover.Trigger>\n        <Popover.Content aria-label=\"Filter by state\">\n            <Combobox.Root items={STATES}>\n                <Combobox.Input placeholder=\"Search states\" aria-label=\"Search states\" />\n                <Combobox.Content>\n                    <Combobox.Empty>No matches found</Combobox.Empty>\n                    <Combobox.List>\n                        {(state: string) => (\n                            <Combobox.Item key={state} value={state}>\n                                {state}\n                            </Combobox.Item>\n                        )}\n                    </Combobox.List>\n                </Combobox.Content>\n            </Combobox.Root>\n        </Popover.Content>\n    </Popover.Root>\n);",
           "description": "Inside a `Popover`. Escape on the open list closes the list only, and the next\nEscape closes the popover."
+        },
+        {
+          "id": "components-combobox--inside-popover-with-value",
+          "name": "Inside Popover With Value",
+          "error": {
+            "name": "SyntaxError",
+            "message": "Expected render to be an arrow function or function expression\n  844 |  */\n  845 | export const InsidePopoverWithValue: Story = {\n> 846 | \trender: InsidePopover.render,\n      | \t           ^^^^^^^^^^^^^^^^^^^^\n  847 | \tplay: async ({ canvasElement }) => {\n  848 | \t\tconst body = within(document.body);\n  849 | \t\tconst trigger = within(canvasElement).getByRole('button', { name: /filter by state/i });"
+          }
+        },
+        {
+          "id": "components-combobox--inside-modal-without-empty",
+          "name": "Inside Modal Without Empty",
+          "snippet": "const InsideModalWithoutEmpty = () => (\n    <Modal.Root>\n        <Modal.Trigger asChild>\n            <Button variant=\"secondary\">Assign agency</Button>\n        </Modal.Trigger>\n        <Modal.Content>\n            <Modal.Title>Assign agency</Modal.Title>\n            <Modal.Body>\n                <Combobox.Root items={STATES}>\n                    <Combobox.Input placeholder=\"Search states\" aria-label=\"Search states\" />\n                    <Combobox.Content>\n                        <Combobox.List>\n                            {(state: string) => (\n                                <Combobox.Item key={state} value={state}>\n                                    {state}\n                                </Combobox.Item>\n                            )}\n                        </Combobox.List>\n                    </Combobox.Content>\n                </Combobox.Root>\n            </Modal.Body>\n        </Modal.Content>\n    </Modal.Root>\n);",
+          "description": "Inside a `Modal`, with no `Empty`. When nothing matches there is no list to\nclose, so Base UI lets the first Escape through and it closes the modal."
         }
       ],
       "import": "import { Button, Combobox, Field, FieldText, Label, Modal, Popover, Skeleton, Tag } from \"@agentero/design-system\";\nimport { Suspense } from \"react\";"
@@ -3145,9 +3159,15 @@
           "name": "Reading State",
           "snippet": "const ReadingState = () => <Command.Root label=\"Search agencies\">\n    <Command.Input placeholder=\"Search agencies...\" />\n    <Command.List>\n        <Command.Item>Pinnacle Shield Insurance</Command.Item>\n        <Command.Item>Horizon Risk Solutions</Command.Item>\n        <CreateItem />\n    </Command.List>\n</Command.Root>;",
           "description": "`useCommandState` reads the surrounding `Root` from a component inside it. Here the row\noffering to create an agency appears only when the search text matches no existing one."
+        },
+        {
+          "id": "components-command--inside-popover",
+          "name": "Inside Popover",
+          "snippet": "const InsidePopover = () => (\n    <Popover.Root>\n        <Popover.Trigger asChild>\n            <Button variant=\"secondary\">Open commands</Button>\n        </Popover.Trigger>\n        <Popover.Content aria-label=\"Commands\" className=\"p-0\">\n            <Command.Root label=\"Search commands\">\n                <Command.Input placeholder=\"Search...\" />\n                <Command.List>\n                    {OPTIONS.map(option => (\n                        <Command.Item key={option}>{option}</Command.Item>\n                    ))}\n                </Command.List>\n            </Command.Root>\n        </Popover.Content>\n    </Popover.Root>\n);",
+          "description": "Inside a `Popover`. cmdk's list is always on screen, so Escape closes the popover."
         }
       ],
-      "import": "import { Command } from \"@agentero/design-system\";"
+      "import": "import { Button, Command, Popover } from \"@agentero/design-system\";"
     },
     "components-datatable": {
       "id": "components-datatable",
@@ -5341,7 +5361,7 @@
           "Field for a single-line text control, wiring the Input inside it"
         ],
         "example": [
-          "<FieldText invalid={!!error} required>\n  <Label>Email</Label>\n  <Input type=\"email\" />\n  <Field.Error errors={[error]} />\n  <Field.Description>We only use this for policy documents.</Field.Description>\n</FieldText>"
+          "<FieldText invalid={!!error} required>\n  <Label>Email</Label>\n  <Input type=\"email\" />\n  <Field.Description>We only use this for policy documents.</Field.Description>\n  <Field.Error errors={[error]} />\n</FieldText>"
         ]
       },
       "description": "FieldText is a `Field.Root` for a single-line text control. It provides\n`InputContext`, so the `Input` inside associates itself with the label and\nthe messages and takes `invalid`, `required`, `disabled` and `readOnly` from\nthe field — no `id`, `htmlFor`, `aria-describedby` or `aria-invalid` written\nby hand.\n\nIt knows nothing about form libraries, and its contexts compose: a provider\nnested inside it can extend `InputContext` with `value`, `onChange`, `onBlur`\nand `name`, and `FieldContext` with the errors, as the last story shows.",
@@ -5356,7 +5376,7 @@
             "Field for a single-line text control, wiring the Input inside it"
           ],
           "example": [
-            "<FieldText invalid={!!error} required>\n  <Label>Email</Label>\n  <Input type=\"email\" />\n  <Field.Error errors={[error]} />\n  <Field.Description>We only use this for policy documents.</Field.Description>\n</FieldText>"
+            "<FieldText invalid={!!error} required>\n  <Label>Email</Label>\n  <Input type=\"email\" />\n  <Field.Description>We only use this for policy documents.</Field.Description>\n  <Field.Error errors={[error]} />\n</FieldText>"
           ]
         },
         "props": {
@@ -5550,7 +5570,7 @@
           "Wraps a label, control, description and error into one field"
         ],
         "example": [
-          "<Field.Root invalid={!!error} required>\n  <Field.Label>Email</Field.Label>\n  <Input type=\"email\" />\n  <Field.Error errors={[error]} />\n  <Field.Description>We only use this for policy documents.</Field.Description>\n</Field.Root>"
+          "<Field.Root invalid={!!error} required>\n  <Field.Label>Email</Field.Label>\n  <Input type=\"email\" />\n  <Field.Description>We only use this for policy documents.</Field.Description>\n  <Field.Error errors={[error]} />\n</Field.Root>"
         ]
       },
       "description": "Field lays out a single form field — label, control, helper text and error —\nand wires the accessibility relationships between them. `Field.Root`\ngenerates the ids and shares them through context: `Label` reads\n`LabelContext`, `Field.Description` and `Field.Error` read `FieldContext`,\nand a `Field<X>` such as `FieldText` provides the control's context. Nobody\npasses an `id` by hand.\n\nPresentational and form-library agnostic: pass `invalid` and the error\nmessages from whatever validates the form. Spacing between fields belongs to\n`Field.Group`, never to a margin on the field itself.\n\n`Field.Description` and `Field.Error` register themselves with the root, so\nthe control's `aria-describedby` lists exactly the messages on screen and is\nabsent when there is none.",
@@ -5565,7 +5585,7 @@
             "Wraps a label, control, description and error into one field"
           ],
           "example": [
-            "<Field.Root invalid={!!error} required>\n  <Field.Label>Email</Field.Label>\n  <Input type=\"email\" />\n  <Field.Error errors={[error]} />\n  <Field.Description>We only use this for policy documents.</Field.Description>\n</Field.Root>"
+            "<Field.Root invalid={!!error} required>\n  <Field.Label>Email</Field.Label>\n  <Input type=\"email\" />\n  <Field.Description>We only use this for policy documents.</Field.Description>\n  <Field.Error errors={[error]} />\n</Field.Root>"
           ]
         },
         "props": {
@@ -5765,11 +5785,11 @@
           "summary": "Error stays mounted and renders nothing while valid"
         },
         {
-          "id": "components-field--error-before-description",
-          "name": "Error Before Description",
-          "snippet": "const ErrorBeforeDescription = () => {\n    const [error, setError] = useState<string>();\n\n    return (\n        <div className=\"flex flex-col items-start gap-4\">\n            <Field.Root\n                orientation=\"vertical\"\n                disabled={false}\n                readOnly={false}\n                required={false}\n                invalid={!!error}>\n                <Label>Tax ID</Label>\n                <DemoInput inputMode=\"numeric\" />\n                <Field.Error id=\"tax-id-error\">{error}</Field.Error>\n                <Field.Description>Nine digits, with or without the dash.</Field.Description>\n            </Field.Root>\n            <button type=\"button\" onClick={() => setError('Enter the tax ID.')}>Validate\n                                </button>\n        </div>\n    );\n};",
-          "description": "The error sits right under the control and is announced before the\ndescription, even when it appears after the description is on screen and\ncarries an `id` of its own.",
-          "summary": "Error announced before the description, whenever it appears"
+          "id": "components-field--description-before-error",
+          "name": "Description Before Error",
+          "snippet": "const DescriptionBeforeError = () => {\n    const [showHint, setShowHint] = useState(false);\n\n    return (\n        <div className=\"flex flex-col items-start gap-4\">\n            <Field.Root\n                orientation=\"vertical\"\n                disabled={false}\n                readOnly={false}\n                required={false}\n                invalid>\n                <Label>Tax ID</Label>\n                <DemoInput inputMode=\"numeric\" />\n                {showHint && (\n                    <Field.Description>Nine digits, with or without the dash.</Field.Description>\n                )}\n                <Field.Error id=\"tax-id-error\">Enter the tax ID.</Field.Error>\n            </Field.Root>\n            <button type=\"button\" onClick={() => setShowHint(true)}>Show hint\n                                </button>\n        </div>\n    );\n};",
+          "description": "The description sits right under the control and is announced before the\nerror, even when it appears after the error is on screen and the error\ncarries an `id` of its own.",
+          "summary": "Description announced before the error, whenever it appears"
         },
         {
           "id": "components-field--disabled",
@@ -5848,7 +5868,7 @@
         "displayName": "FormText",
         "exportName": "FormText",
         "filePath": "/home/runner/work/design-system/design-system/src/form-text/index.ts",
-        "description": "A complete text field bound to one react-hook-form value: label, `Input`,\nvalidation error and helper text, laid out in the standard order and wired\nthrough `useController`. It renders inside a `Form.Root`, which provides the\nform, and needs only a `name`, which on a typed form must point at a string\n(`FormTextPath`). The `required`, `invalid` and error states\nreach the label, the input's `aria-*` attributes and the message with no\nids written by hand.\n\nUse it for the common case: a labelled single-line input in a form. When\nthe layout is different — an input with addons, another control, a\nmessage rendered elsewhere — compose the primitives yourself:\n`useController` with [FieldText](?path=/docs/components-fieldtext--docs),\n`Label`, `Input`, `Field.Description` and `Field.Error`. `FormText` adds no\nbehaviour of its own over that composition.\n\nErrors come from `useController`'s per-field state, never from\n`formState.errors`, so the message stays fresh under the React Compiler.\nWith `criteriaMode: 'all'` on the form the error carries every rule that\nfailed and `Field.Error` lists them all. An error on an array or object path\n(`error.root`) is not this field's: render a `Field.Error` for it where the\ngroup lives.",
+        "description": "A complete text field bound to one react-hook-form value: label, `Input`,\nhelper text and validation error, laid out in the standard order and wired\nthrough `useController`. It renders inside a `Form.Root`, which provides the\nform, and needs only a `name`, which on a typed form must point at a string\n(`FormTextPath`). The `required`, `invalid` and error states\nreach the label, the input's `aria-*` attributes and the message with no\nids written by hand.\n\nUse it for the common case: a labelled single-line input in a form. When\nthe layout is different — an input with addons, another control, a\nmessage rendered elsewhere — compose the primitives yourself:\n`useController` with [FieldText](?path=/docs/components-fieldtext--docs),\n`Label`, `Input`, `Field.Description` and `Field.Error`. `FormText` adds no\nbehaviour of its own over that composition.\n\nErrors come from `useController`'s per-field state, never from\n`formState.errors`, so the message stays fresh under the React Compiler.\nWith `criteriaMode: 'all'` on the form the error carries every rule that\nfailed and `Field.Error` lists them all. An error on an array or object path\n(`error.root`) is not this field's: render a `Field.Error` for it where the\ngroup lives.",
         "jsDocTags": {
           "summary": [
             "Label, Input, description and error bound to one react-hook-form field"
@@ -6074,7 +6094,7 @@
             "type": {
               "name": "ReactNode"
             },
-            "description": "Helper text shown under the control, below the error when there is one,\nand announced through its `aria-describedby`. Use it for guidance the\nuser needs before typing; put details worth a click in `tooltip` instead.",
+            "description": "Helper text shown under the control, above the error when there is one,\nand announced through its `aria-describedby`. Use it for guidance the\nuser needs before typing; put details worth a click in `tooltip` instead.",
             "defaultValue": null,
             "parent": {
               "name": "FormTextProps",
@@ -6210,11 +6230,11 @@
           "summary": "Nested path with validation rules, typed through the generic"
         },
         {
-          "id": "components-formtext--error-and-description",
-          "name": "Error And Description",
-          "snippet": "const ErrorAndDescription = () => {\n    const methods = useForm<TaxValues>({ defaultValues: { taxId: '' } });\n\n    return (\n        <Form.Root\n            methods={methods}\n            onSubmit={onSubmit}\n            aria-label=\"Tax details\"\n            className=\"flex flex-col items-start gap-7\">\n            <FormText\n                name=\"taxId\"\n                label=\"Tax ID\"\n                description=\"Nine digits, with or without the dash.\"\n                rules={{ required: 'Enter the tax ID.' }}\n                inputProps={{ inputMode: 'numeric', autoComplete: 'off' }}\n            />\n            <Button type=\"submit\">Save</Button>\n        </Form.Root>\n    );\n};",
-          "description": "The error sits right under the input and the description stays below it, so\nthe message lands next to the value it is about. Screen readers announce\nthem in the same order.",
-          "summary": "Error under the input, above the helper text"
+          "id": "components-formtext--description-and-error",
+          "name": "Description And Error",
+          "snippet": "const DescriptionAndError = () => {\n    const methods = useForm<TaxValues>({ defaultValues: { taxId: '' } });\n\n    return (\n        <Form.Root\n            methods={methods}\n            onSubmit={onSubmit}\n            aria-label=\"Tax details\"\n            className=\"flex flex-col items-start gap-7\">\n            <FormText\n                name=\"taxId\"\n                label=\"Tax ID\"\n                description=\"Nine digits, with or without the dash.\"\n                rules={{ required: 'Enter the tax ID.' }}\n                inputProps={{ inputMode: 'numeric', autoComplete: 'off' }}\n            />\n            <Button type=\"submit\">Save</Button>\n        </Form.Root>\n    );\n};",
+          "description": "The description sits right under the input and the error appears below it.\nScreen readers announce them in the same order.",
+          "summary": "Helper text under the input, above the error"
         },
         {
           "id": "components-formtext--all-errors",
@@ -6679,6 +6699,284 @@
       ],
       "import": "import {\n    Button,\n    Divider,\n    DropdownMenu,\n    Field,\n    FieldText,\n    IconKeyboardArrowDown,\n    IconSearch,\n    Input,\n    InputGroup,\n    Label,\n    Tag,\n} from \"@agentero/design-system\";"
     },
+    "components-inputnumber": {
+      "id": "components-inputnumber",
+      "name": "InputNumber",
+      "path": "./src/input-number/input-number.stories.tsx",
+      "jsDocTags": {
+        "summary": [
+          "Numeric input formatting as you type, built on react-number-format"
+        ],
+        "dataAttribute": [
+          "{string} data-slot - Always set to \"input-number\""
+        ],
+        "example": [
+          "<FieldText>\n  <Label>Annual premium</Label>\n  <InputNumber name=\"premium\" thousandSeparator allowLeadingZeros={false} />\n</FieldText>"
+        ]
+      },
+      "description": "InputNumber is a text field that only takes digits and a decimal point and\nformats them as the user types: thousands separators on request, leading\nzeros kept unless turned off, no sign. `onChange` fires with the formatted text in\n`event.target.value`. It is an `Input` driven by `react-number-format`, so\nit takes its label, messages and states from a surrounding `FieldText`.",
+      "summary": "Numeric input formatting as you type, built on react-number-format",
+      "reactComponentMeta": {
+        "displayName": "InputNumber",
+        "exportName": "InputNumber",
+        "filePath": "/home/runner/work/design-system/design-system/src/input-number/input-number.tsx",
+        "description": "InputNumber is a text field that only takes digits and a decimal point and\nformats them as the user types: a thousands separator when\n`thousandSeparator` is set, leading zeros kept unless `allowLeadingZeros` is\noff, no sign, no decimal rounding.\nAnything that is not a digit or the decimal point is ignored, and\n`maxNumber` drops any edit that would exceed it. `onChange` fires with the\nformatted text in `event.target.value` (`\"1,234\"`, not `1234`), which is\nwhat a form library stores; parse it where the number is consumed.\n\nIt is an [Input](?path=/docs/components-input--docs) driven by\n`react-number-format`, so it keeps the caret in place while it reformats\nand takes its wiring from a surrounding `FieldText` as a plain `Input`\ndoes. Every standard `<input>` attribute is accepted and forwarded, such as\n`placeholder`, `required`, `maxLength` or `aria-invalid`; `type` is limited\nto `text`, `tel` and `password`, and `value` and `defaultValue` also take a\nnumber or `null`. The invalid state comes from `aria-invalid`, which paints\nthe destructive border. Place it inside an\n[InputGroup](?path=/docs/components-inputgroup--docs) to show a currency or\nunit affix.\n\nDo not use it for a phone number, which is formatted by `InputTel`, nor for\nfree text with some digits in it, which is a plain `Input`. It is not a\n`type=\"number\"` input on purpose: that one drops leading zeros and cannot\nshow separators, which identifiers and amounts both need.\n\nIt renders from `value`, not from the DOM, so bind it to a form through a\ncontrolled value (react-hook-form's `Controller` or `useController`), not\nthrough `register`: a value `register` writes into the `<input>`, such as a\ndefault or a `reset`, is wiped on the next render.",
+        "jsDocTags": {
+          "summary": [
+            "Numeric input formatting as you type, built on react-number-format"
+          ],
+          "dataAttribute": [
+            "{string} data-slot - Always set to \"input-number\""
+          ],
+          "example": [
+            "<FieldText>\n  <Label>Annual premium</Label>\n  <InputNumber name=\"premium\" thousandSeparator allowLeadingZeros={false} />\n</FieldText>"
+          ]
+        },
+        "props": {
+          "size": {
+            "name": "size",
+            "required": false,
+            "type": {
+              "name": "enum",
+              "raw": "\"sm\" | \"md\" | \"lg\"",
+              "value": [
+                {
+                  "value": "\"sm\""
+                },
+                {
+                  "value": "\"md\""
+                },
+                {
+                  "value": "\"lg\""
+                }
+              ]
+            },
+            "description": "Control height. Defaults to `'md'`.\n- `sm` (32px) — dense layouts where vertical space is tight.\n- `md` (40px) — standard form density.\n- `lg` (48px) — low-density forms and larger touch targets. Also raises\n  the text to `base` and the corner radius to `lg`.",
+            "defaultValue": null,
+            "parent": {
+              "name": "InputProps",
+              "fileName": "src/input/input.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input/input.tsx"
+              }
+            ]
+          },
+          "maxNumber": {
+            "name": "maxNumber",
+            "required": false,
+            "type": {
+              "name": "number"
+            },
+            "description": "Highest value the field accepts. A keystroke or paste that would take\nthe number above it is dropped before it reaches the field, so `onChange`\nis not called for it. No limit by default.",
+            "defaultValue": null,
+            "parent": {
+              "name": "InputNumberProps",
+              "fileName": "src/input-number/input-number.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input-number/input-number.tsx"
+              }
+            ]
+          },
+          "thousandSeparator": {
+            "name": "thousandSeparator",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Groups the integer part in thousands with a comma as the user types\n(`1,234,567`). The separators are part of `event.target.value`. Defaults\nto `false`.",
+            "defaultValue": {
+              "value": "false"
+            },
+            "parent": {
+              "name": "InputNumberProps",
+              "fileName": "src/input-number/input-number.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input-number/input-number.tsx"
+              }
+            ]
+          },
+          "allowLeadingZeros": {
+            "name": "allowLeadingZeros",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Keeps zeros typed in front of the number (`007`), which an identifier\nsuch as an NPN or a ZIP code needs. Set it to `false` for an amount, so\n`007` becomes `7` once the field loses focus, and `onChange` fires with\nthe trimmed value. Defaults to `true`.",
+            "defaultValue": {
+              "value": "true"
+            },
+            "parent": {
+              "name": "InputNumberProps",
+              "fileName": "src/input-number/input-number.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input-number/input-number.tsx"
+              }
+            ]
+          },
+          "type": {
+            "name": "type",
+            "required": false,
+            "type": {
+              "name": "enum",
+              "raw": "\"text\" | \"tel\" | \"password\"",
+              "value": [
+                {
+                  "value": "\"text\""
+                },
+                {
+                  "value": "\"tel\""
+                },
+                {
+                  "value": "\"password\""
+                }
+              ]
+            },
+            "description": "The underlying `<input>` type. Defaults to `'text'`.\n- `text` — the general case.\n- `tel` — brings up the numeric keypad on phones, for codes and\n  identifiers that are digits only.\n- `password` — masks the digits, for a PIN.",
+            "defaultValue": null,
+            "parent": {
+              "name": "InputNumberProps",
+              "fileName": "src/input-number/input-number.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input-number/input-number.tsx"
+              }
+            ]
+          },
+          "value": {
+            "name": "value",
+            "required": false,
+            "type": {
+              "name": "string | number | null | undefined"
+            },
+            "description": "The number to show, as a number or as a string of digits. It is displayed\nformatted according to `thousandSeparator`. `null` and `''` both clear the\nfield.",
+            "defaultValue": null,
+            "parent": {
+              "name": "InputNumberProps",
+              "fileName": "src/input-number/input-number.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input-number/input-number.tsx"
+              }
+            ]
+          },
+          "defaultValue": {
+            "name": "defaultValue",
+            "required": false,
+            "type": {
+              "name": "string | number | null | undefined"
+            },
+            "description": "Initial value of an uncontrolled field, in the same forms as `value`.",
+            "defaultValue": null,
+            "parent": {
+              "name": "InputNumberProps",
+              "fileName": "src/input-number/input-number.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input-number/input-number.tsx"
+              }
+            ]
+          }
+        }
+      },
+      "stories": [
+        {
+          "id": "components-inputnumber--default",
+          "name": "Default",
+          "snippet": "const Default = () => <InputNumber\n    aria-label=\"Premium\"\n    onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n    ref={inputRef} />;",
+          "description": "Only digits and a decimal point make it into the field: letters and a minus\nsign are ignored as they are typed. `onChange` reports the text as it is shown, and the `ref`\npoints at the `<input>` element.",
+          "summary": "Numeric field that ignores letters and signs"
+        },
+        {
+          "id": "components-inputnumber--type-tel",
+          "name": "Type Tel",
+          "snippet": "const TypeTel = () => <InputNumber\n    aria-label=\"NPN\"\n    onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n    type=\"tel\" />;",
+          "description": "`type=\"tel\"` brings up the numeric keypad on phones. The field still\nformats and filters the same way; only the underlying input type changes.",
+          "summary": "Numeric keypad on phones through the tel input type"
+        },
+        {
+          "id": "components-inputnumber--thousand-separator",
+          "name": "Thousand Separator",
+          "snippet": "const ThousandSeparator = () => <InputNumber\n    aria-label=\"Premium\"\n    onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n    thousandSeparator />;",
+          "description": "With `thousandSeparator` the integer part is grouped with commas as the\nuser types, and the commas are part of what `onChange` reports.",
+          "summary": "Thousands grouped with commas as the user types"
+        },
+        {
+          "id": "components-inputnumber--max-number",
+          "name": "Max Number",
+          "snippet": "const MaxNumber = () => <InputNumber\n    aria-label=\"Commission rate\"\n    onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n    maxNumber={100} />;",
+          "description": "`maxNumber` caps the value: a keystroke that would push the number above\nit is dropped, so the field keeps its previous value and `onChange` is not\ncalled for it.",
+          "summary": "Keystrokes that would exceed a maximum are dropped"
+        },
+        {
+          "id": "components-inputnumber--leading-zeros",
+          "name": "Leading Zeros",
+          "snippet": "const LeadingZeros = () => <div style={{ display: 'grid', gap: '1rem' }}>\n    <InputNumber\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        aria-label=\"ZIP code\" />\n    <InputNumber\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        aria-label=\"Amount\"\n        allowLeadingZeros={false} />\n</div>;",
+          "description": "Leading zeros are kept by default, as an NPN or a ZIP code needs. With\n`allowLeadingZeros` off they are dropped once the field loses focus, which\nis what an amount wants, and `onChange` reports the trimmed value.",
+          "summary": "Leading zeros kept by default, dropped on blur when turned off"
+        },
+        {
+          "id": "components-inputnumber--controlled",
+          "name": "Controlled",
+          "snippet": "const Controlled = () => {\n    const [premium, setPremium] = useState<number | string>(1234);\n\n    return (\n        <InputNumber\n            aria-label=\"Premium\"\n            thousandSeparator\n            value={premium}\n            onChange={event => {\n                setPremium(event.target.value);\n                args.onChange?.(event);\n            }} />\n    );\n};",
+          "description": "A controlled field takes `value` as a number and shows it formatted. The\nstate keeps what `onChange` reports, so it holds the formatted text.",
+          "summary": "Controlled field showing a numeric value formatted"
+        },
+        {
+          "id": "components-inputnumber--inside-input-group",
+          "name": "Inside Input Group",
+          "snippet": "const InsideInputGroup = () => <InputGroup.Root>\n    <InputGroup.Text>$</InputGroup.Text>\n    <InputNumber\n        aria-label=\"Premium\"\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        thousandSeparator\n        allowLeadingZeros={false}\n        placeholder=\"0\" />\n</InputGroup.Root>;",
+          "description": "Inside an `InputGroup` the field sits behind a currency affix and the\nframe takes its focus, disabled and invalid states from the input.",
+          "summary": "Amount with a currency prefix inside an input group"
+        },
+        {
+          "id": "components-inputnumber--inside-field-text",
+          "name": "Inside Field Text",
+          "snippet": "const InsideFieldText = () => (\n    <div style={{ display: 'grid', gap: '1.5rem' }}>\n        <FieldText required>\n            <Label>NPN</Label>\n            <InputNumber type=\"tel\" />\n            <Field.Description>The 7 to 10 digit National Producer Number.</Field.Description>\n        </FieldText>\n        <FieldText invalid>\n            <Label>Years in business</Label>\n            <InputNumber defaultValue={150} />\n            <Field.Error errors={[{ message: 'Enter at most 100 years.' }]} />\n        </FieldText>\n        <FieldText disabled>\n            <Label>Agency code</Label>\n            <InputNumber defaultValue=\"00412\" />\n        </FieldText>\n    </div>\n);",
+          "description": "Inside a `FieldText` the input takes its label, description and states from\nthe field. `invalid` on the field sets `aria-invalid`, which paints the\ndestructive border, and `disabled` reaches the input the same way.",
+          "summary": "Label, messages and states reaching the input from a FieldText"
+        },
+        {
+          "id": "components-inputnumber--disabled",
+          "name": "Disabled",
+          "snippet": "const Disabled = () => <InputNumber\n    aria-label=\"Premium\"\n    onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n    disabled\n    thousandSeparator\n    defaultValue={12500} />;",
+          "description": "A disabled field keeps its formatted value and takes no input.",
+          "summary": "Disabled field with a formatted value"
+        },
+        {
+          "id": "components-inputnumber--invalid",
+          "name": "Invalid",
+          "snippet": "const Invalid = () => <InputNumber\n    aria-label=\"Premium\"\n    onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n    aria-invalid\n    defaultValue={0} />;",
+          "description": "`aria-invalid` paints the destructive border, the same way it does on a\nplain `Input`.",
+          "summary": "Invalid state driven by aria-invalid"
+        },
+        {
+          "id": "components-inputnumber--all-sizes",
+          "name": "All Sizes",
+          "snippet": "const AllSizes = () => <div style={{ display: 'grid', gap: '1rem' }}>\n    <InputNumber\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        thousandSeparator\n        defaultValue={1234}\n        size=\"sm\"\n        aria-label=\"Small\" />\n    <InputNumber\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        thousandSeparator\n        defaultValue={1234}\n        size=\"md\"\n        aria-label=\"Medium\" />\n    <InputNumber\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        thousandSeparator\n        defaultValue={1234}\n        size=\"lg\"\n        aria-label=\"Large\" />\n</div>;",
+          "description": "The three sizes match Input's: 32, 40 or 48px tall.",
+          "summary": "The three sizes side by side"
+        }
+      ],
+      "import": "import { Controller, Field, FieldText, InputContext, InputGroup, InputNumber, Label } from \"@agentero/design-system\";"
+    },
     "components-inputpassword": {
       "id": "components-inputpassword",
       "name": "InputPassword",
@@ -6784,6 +7082,174 @@
         }
       ],
       "import": "import { Field, FieldText, InputPassword, Label } from \"@agentero/design-system\";"
+    },
+    "components-debouncedinputsearch": {
+      "id": "components-debouncedinputsearch",
+      "name": "DebouncedInputSearch",
+      "path": "./src/input-search/debounced-input-search.stories.tsx",
+      "jsDocTags": {
+        "summary": [
+          "Search input that reports the query once the user pauses typing"
+        ],
+        "dataAttribute": [
+          "{string} data-slot - Always set to \"input-search\" on the frame"
+        ],
+        "example": [
+          "<DebouncedInputSearch\n  aria-label=\"Search agencies\"\n  value={filters.query}\n  onChange={event => setFilters({ ...filters, query: event.target.value })}\n  isLoading={isFetching}\n/>"
+        ]
+      },
+      "description": "DebouncedInputSearch is an `InputSearch` for filters that are expensive to\nrun. Keystrokes show up at once, but `onChange` fires only once the user\npauses for 300ms, with the last change event. It is always controlled:\n`value` and `onChange` are required, and the field follows a `value`\nchanged from outside.",
+      "summary": "Search input that reports the query once the user pauses typing",
+      "reactComponentMeta": {
+        "displayName": "DebouncedInputSearch",
+        "exportName": "DebouncedInputSearch",
+        "filePath": "/home/runner/work/design-system/design-system/src/input-search/debounced-input-search.tsx",
+        "description": "DebouncedInputSearch is an [InputSearch](?path=/docs/components-inputsearch--docs)\nfor filters that are expensive to run: a table query, a request to the\nserver. Keystrokes show up in the field at once, but `onChange` fires only\nonce the user pauses for `DEBOUNCE_TIME` (300ms), with the last change\nevent, so the page runs one search per pause instead of one per key. It is\nalways controlled: `value` and `onChange` are required, the page owns the\nquery, and the field follows a `value` changed from outside while the user\nis not typing.\n\nEvery other prop goes to the InputSearch and from there to the `<input>`:\nthe `ref`, `size`, `isLoading`, `placeholder`, `aria-*` and every other\nstandard attribute. Only `type` is not accepted. `className` styles the\nframe.\n\nDo not use it where every keystroke matters, such as filtering a short list\nalready in memory; that is a plain\n[InputSearch](?path=/docs/components-inputsearch--docs). To pick a value from\nthe results, use [Combobox](?path=/docs/components-combobox--docs).",
+        "jsDocTags": {
+          "summary": [
+            "Search input that reports the query once the user pauses typing"
+          ],
+          "dataAttribute": [
+            "{string} data-slot - Always set to \"input-search\" on the frame"
+          ],
+          "example": [
+            "<DebouncedInputSearch\n  aria-label=\"Search agencies\"\n  value={filters.query}\n  onChange={event => setFilters({ ...filters, query: event.target.value })}\n  isLoading={isFetching}\n/>"
+          ]
+        },
+        "props": {
+          "size": {
+            "name": "size",
+            "required": false,
+            "type": {
+              "name": "enum",
+              "raw": "\"sm\" | \"md\" | \"lg\"",
+              "value": [
+                {
+                  "value": "\"sm\""
+                },
+                {
+                  "value": "\"md\""
+                },
+                {
+                  "value": "\"lg\""
+                }
+              ]
+            },
+            "description": "Control height. Defaults to `'md'`.\n- `sm` (32px) — dense layouts where vertical space is tight.\n- `md` (40px) — standard form density.\n- `lg` (48px) — low-density forms and larger touch targets. Also raises\n  the text to `base` and the corner radius to `lg`.",
+            "defaultValue": null,
+            "parent": {
+              "name": "InputProps",
+              "fileName": "src/input/input.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input/input.tsx"
+              }
+            ]
+          },
+          "clearLabel": {
+            "name": "clearLabel",
+            "required": false,
+            "type": {
+              "name": "string"
+            },
+            "description": "Accessible name of the clear button. Defaults to `'Clear search'`; name it\nafter what is searched (`'Clear agency search'`) when a page carries\nseveral search fields.",
+            "defaultValue": null,
+            "parent": {
+              "name": "InputSearchProps",
+              "fileName": "src/input-search/input-search.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input-search/input-search.tsx"
+              }
+            ]
+          },
+          "isLoading": {
+            "name": "isLoading",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Shows a spinner at the end of the frame, in place of the clear button,\nwhile the results for the current text are on their way. Defaults to\n`false`.",
+            "defaultValue": null,
+            "parent": {
+              "name": "InputSearchProps",
+              "fileName": "src/input-search/input-search.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input-search/input-search.tsx"
+              }
+            ]
+          },
+          "value": {
+            "name": "value",
+            "required": true,
+            "type": {
+              "name": "string"
+            },
+            "description": "The query the page is filtering by. The field shows it, and follows it\nwhen it changes from outside (a reset button, a saved filter, navigation),\nunless the user is in the middle of typing: then what they typed stays,\nand `onChange` reports it once they pause.",
+            "defaultValue": null,
+            "parent": {
+              "name": "DebouncedInputSearchProps",
+              "fileName": "src/input-search/debounced-input-search.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input-search/debounced-input-search.tsx"
+              }
+            ]
+          },
+          "onChange": {
+            "name": "onChange",
+            "required": true,
+            "type": {
+              "name": "ChangeEventHandler<HTMLInputElement>"
+            },
+            "description": "Fires once the user has stopped typing for `DEBOUNCE_TIME` milliseconds,\nwith the change event of the last keystroke; clearing the field goes\nthrough the same delay. A pending call fires at once when the user\npresses Enter, and is dropped when the field unmounts, so a page that is\nnavigating away is not sent back. Read the text from `event.target.value`, which is\nwhat the field shows at that moment. `event.currentTarget` is no longer\nset by then, since the event is delivered after the browser's dispatch.",
+            "defaultValue": null,
+            "parent": {
+              "name": "DebouncedInputSearchProps",
+              "fileName": "src/input-search/debounced-input-search.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/input-search/debounced-input-search.tsx"
+              }
+            ]
+          }
+        }
+      },
+      "stories": [
+        {
+          "id": "components-debouncedinputsearch--default",
+          "name": "Default",
+          "snippet": "const Default = () => {\n    const [query, setQuery] = useState(args.value);\n\n    return (\n        <div style={{ display: 'grid', gap: '1rem' }}>\n            <DebouncedInputSearch\n                aria-label=\"Search agencies\"\n                value={query}\n                onChange={event => {\n                    setQuery(event.target.value);\n                    args.onChange(event);\n                }} />\n            <output>Filtering by: {query}</output>\n        </div>\n    );\n};",
+          "description": "A page filtering by a query it owns, shown below the field. Typing shows up\nin the field at once; `onChange` arrives once the user pauses, with the\nwhole text in `event.target.value`, and only then does the query below\nchange. Clearing the field goes through the same delay.",
+          "summary": "Controlled query reported once the user stops typing"
+        },
+        {
+          "id": "components-debouncedinputsearch--external-value",
+          "name": "External Value",
+          "snippet": "const ExternalValue = () => {\n    const [query, setQuery] = useState('Acme');\n\n    return (\n        <div style={{ display: 'grid', gap: '1rem' }}>\n            <DebouncedInputSearch\n                aria-label=\"Search agencies\"\n                value={query}\n                onChange={event => {\n                    setQuery(event.target.value);\n                    args.onChange(event);\n                }} />\n            <Button variant=\"secondary\" size=\"sm\" onClick={() => setQuery('Travelers')}>Apply saved search\n                                </Button>\n            <output>Filtering by: {query}</output>\n        </div>\n    );\n};",
+          "description": "The field follows `value` when the page changes it from outside, here a\nsaved search applied with a button: nothing is being typed, so the new\nquery replaces the text.",
+          "summary": "Field following a value changed from outside while idle"
+        },
+        {
+          "id": "components-debouncedinputsearch--submit-on-enter",
+          "name": "Submit On Enter",
+          "snippet": "const SubmitOnEnter = () => {\n    const [query, setQuery] = useState(args.value);\n\n    return (\n        <div style={{ display: 'grid', gap: '1rem' }}>\n            <DebouncedInputSearch\n                aria-label=\"Search agencies\"\n                value={query}\n                onChange={event => {\n                    setQuery(event.target.value);\n                    args.onChange(event);\n                }} />\n            <output>Filtering by: {query}</output>\n        </div>\n    );\n};",
+          "description": "Pressing Enter reports the text at once instead of waiting for the pause.",
+          "summary": "Enter reports the pending query without waiting"
+        }
+      ],
+      "import": "import { Button, DebouncedInputSearch } from \"@agentero/design-system\";"
     },
     "components-inputsearch": {
       "id": "components-inputsearch",
@@ -10061,6 +10527,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4132
+    "durationMs": 4749
   }
 }
