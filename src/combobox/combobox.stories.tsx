@@ -61,8 +61,8 @@ const expectListAlignedWithField = (canvasElement: HTMLElement) => {
 /**
  * The common case: options are already in memory and Base UI filters them against
  * what you type. Selecting a row fills the input and closes the list. The field is
- * a search out of the box — a magnifier in front, a clear button once there is
- * text — and the list hangs from the whole field. Clearing drops the picked option.
+ * a search out of the box — a magnifier in front, a clear button once something is
+ * picked — and the list hangs from the whole field. Clearing drops the picked option.
  *
  * @summary Search field with a magnifier and clear button over an in-memory list
  */
@@ -105,8 +105,9 @@ export const Default: Story = {
 		await userEvent.type(input, 'co');
 		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(2));
 
-		// The clear button follows the text, so it is there before anything is picked.
-		await expect(canvas.getByRole('button', { name: /clear/i })).toBeInTheDocument();
+		// Typed text is not a value: nothing to clear until a row is picked, so Tab cannot land on
+		// a button that closing the list would then remove.
+		await expect(canvas.queryByRole('button', { name: /clear/i })).not.toBeInTheDocument();
 
 		await userEvent.click(body.getByRole('option', { name: 'Colorado' }));
 		await waitFor(() => expect(input).toHaveValue('Colorado'));
