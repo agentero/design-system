@@ -1,0 +1,1 @@
+import{t as e}from"./iframe-CbCI6-VD.js";e();
