@@ -5,7 +5,7 @@ import { ComponentProps } from 'react';
 import * as PopoverPrimitive from '@radix-ui/react-popover';
 import { tv } from 'tailwind-variants';
 
-import { isFromExpandedCombobox } from '../../lib/expanded-combobox';
+import { deferEscapeToCombobox } from '../../lib/combobox-escape';
 
 type RootProps = ComponentProps<typeof PopoverPrimitive.Root>;
 
@@ -82,7 +82,8 @@ type ContentProps = ComponentProps<typeof PopoverPrimitive.Content>;
 
 // Self-portals to the body and animates on open/close following `side`. Defaults `sideOffset` to 8,
 // matching `DropdownMenu` and `HoverCard` so every trigger-anchored surface sits at the same distance.
-// An Escape from an expanded combobox inside it closes only that list; the next one closes the popover.
+// An Escape from a combobox inside it goes to the field first (open list, then picked value); only the
+// one the field lets through closes the popover and reaches `onEscapeKeyDown`.
 export const Content = ({ className, sideOffset = 8, onEscapeKeyDown, ...props }: ContentProps) => (
 	<PopoverPrimitive.Portal>
 		<PopoverPrimitive.Content
@@ -90,8 +91,7 @@ export const Content = ({ className, sideOffset = 8, onEscapeKeyDown, ...props }
 			sideOffset={sideOffset}
 			className={popoverRecipe({ className })}
 			onEscapeKeyDown={event => {
-				onEscapeKeyDown?.(event);
-				if (isFromExpandedCombobox(event)) event.preventDefault();
+				if (!deferEscapeToCombobox(event)) onEscapeKeyDown?.(event);
 			}}
 			{...props}
 		/>
