@@ -5,6 +5,7 @@ import { expect, fn, mocked, userEvent, waitFor, within } from 'storybook/test';
 
 import { Autocomplete, type AutocompleteRootProps } from '.';
 import { Button } from '../button';
+import { Checkbox } from '../checkbox';
 import { Field } from '../field';
 import { FieldText } from '../field-text';
 import { Input } from '../input';
@@ -314,16 +315,16 @@ export const PickOrSubmit: Story = {
 };
 
 /**
- * With `submitOnItemClick`, a pick also submits the owning form, once, with
- * the picked text already in the field. The row's `onClick` still fires first,
- * so a handler can still tell a pick from a plain Enter. This form has a submit
- * button, and a plain Enter still submits it once.
+ * Submission follows the form's submit button, as in the browser: while it is
+ * disabled, Enter submits nothing. Here
+ * the search waits for the scope to be confirmed.
  *
- * @summary A pick submits the owning form once, after the item events
+ * @summary Nothing submits while the form's submit button is disabled
  */
-export const SubmitOnItemClick: Story = {
-	args: { onPick: fn(), onSearch: fn() },
-	render: ({ onPick, onSearch }) => {
+export const DisabledSubmitButton: Story = {
+	args: { onSearch: fn() },
+	render: ({ onSearch }) => {
+		const [confirmed, setConfirmed] = useState(false);
 		const [outcome, setOutcome] = useState('');
 
 		return (
@@ -338,15 +339,12 @@ export const SubmitOnItemClick: Story = {
 				}}>
 				<div className="flex items-start gap-3">
 					<div className="min-w-0 flex-1">
-						<Autocomplete.Root items={CARRIERS} submitOnItemClick>
+						<Autocomplete.Root items={CARRIERS}>
 							<Autocomplete.Input name="carrier" placeholder="Carrier" aria-label="Carrier" />
 							<Autocomplete.Content>
 								<Autocomplete.List>
 									{(carrier: string) => (
-										<Autocomplete.Item
-											key={carrier}
-											value={carrier}
-											onClick={() => onPick?.(carrier)}>
+										<Autocomplete.Item key={carrier} value={carrier}>
 											{carrier}
 										</Autocomplete.Item>
 									)}
@@ -354,9 +352,17 @@ export const SubmitOnItemClick: Story = {
 							</Autocomplete.Content>
 						</Autocomplete.Root>
 					</div>
-					<Button type="submit" variant="secondary">
+					<Button type="submit" variant="secondary" disabled={!confirmed}>
 						Search
 					</Button>
+				</div>
+				<div className="flex items-center gap-2">
+					<Checkbox
+						id="personal-lines"
+						checked={confirmed}
+						onCheckedChange={checked => setConfirmed(checked === true)}
+					/>
+					<Label htmlFor="personal-lines">Personal lines only</Label>
 				</div>
 				<output className="text-sm text-text-default-base-secondary">{outcome}</output>
 			</form>
@@ -367,113 +373,68 @@ export const SubmitOnItemClick: Story = {
 		const body = within(document.body);
 		const input = canvas.getByRole('combobox', { name: 'Carrier' });
 
-		// A click on a row submits, once, after the row's onClick.
-		await userEvent.type(input, 'clear');
-		await userEvent.click(await body.findByRole('option', { name: 'Clearcover' }));
-		await waitFor(() => expect(args.onSearch).toHaveBeenCalledTimes(1));
-		await expect(args.onSearch).toHaveBeenNthCalledWith(1, 'Clearcover');
-		await expect(args.onPick).toHaveBeenCalledTimes(1);
-		await expect(mocked(args.onPick!).mock.invocationCallOrder[0]).toBeLessThan(
-			mocked(args.onSearch!).mock.invocationCallOrder[0]!
-		);
-		await expect(canvas.getByText('Searched for Clearcover')).toBeVisible();
-		await waitForListClosed();
-
-		// Enter on the highlighted row does the same.
-		await userEvent.clear(input);
-		await userEvent.type(input, 'hip');
-		await body.findByRole('option', { name: 'Hippo' });
-		await userEvent.keyboard('{ArrowDown}{Enter}');
-		await waitFor(() => expect(args.onSearch).toHaveBeenCalledTimes(2));
-		await expect(args.onSearch).toHaveBeenNthCalledWith(2, 'Hippo');
-		await waitForListClosed();
-
-		// A plain Enter submits once more, through the form's button, and nothing else lands.
-		await userEvent.type(input, ' Home');
+		// Enter with nothing highlighted, on an open list and on a shut one: no submit.
+		await userEvent.type(input, 'Trav');
+		await body.findByRole('option', { name: 'Travelers' });
 		await userEvent.keyboard('{Enter}');
-		await waitFor(() => expect(args.onSearch).toHaveBeenCalledTimes(3));
-		await expect(args.onSearch).toHaveBeenNthCalledWith(3, 'Hippo Home');
+		await waitForListClosed();
+		await userEvent.keyboard('{Enter}');
 		await new Promise(resolve => setTimeout(resolve, 100));
-		await expect(args.onSearch).toHaveBeenCalledTimes(3);
-		await expect(args.onPick).toHaveBeenCalledTimes(2);
+		await expect(args.onSearch).not.toHaveBeenCalled();
+
+		// Once the button is enabled, Enter submits.
+		await userEvent.click(canvas.getByRole('checkbox', { name: 'Personal lines only' }));
+		await userEvent.click(input);
+		await userEvent.keyboard('{Enter}');
+		await waitFor(() => expect(args.onSearch).toHaveBeenCalledTimes(1));
+		await expect(args.onSearch).toHaveBeenLastCalledWith('Trav');
 	}
 };
 
 /**
- * Two forms on one page, each with its own autocomplete. A pick under
- * `submitOnItemClick` submits the form that holds that field, never another
- * one on the page.
+ * In a form with several text fields and no submit button, Enter in the field
+ * submits nothing, as in any other input of that form. The form submits from
+ * its own controls.
  *
- * @summary A pick submits its own form when several share a page
+ * @summary Enter does not submit a form with several fields and no button
  */
-export const SubmitOnItemClickWithSeveralForms: Story = {
-	render: () => {
-		const [carrierOutcome, setCarrierOutcome] = useState('');
-		const [stateOutcome, setStateOutcome] = useState('');
+export const SeveralFieldsWithoutButton: Story = {
+	tags: ['!manifest'],
+	args: { onSearch: fn() },
+	render: ({ onSearch }) => (
+		<form
+			aria-label="Agency search"
+			className="flex flex-col gap-3"
+			onSubmit={event => {
+				event.preventDefault();
+				onSearch?.(String(new FormData(event.currentTarget).get('carrier')));
+			}}>
+			<Autocomplete.Root items={CARRIERS}>
+				<Autocomplete.Input name="carrier" placeholder="Carrier" aria-label="Carrier" />
+				<Autocomplete.Content>
+					<Autocomplete.List>
+						{(carrier: string) => (
+							<Autocomplete.Item key={carrier} value={carrier}>
+								{carrier}
+							</Autocomplete.Item>
+						)}
+					</Autocomplete.List>
+				</Autocomplete.Content>
+			</Autocomplete.Root>
+			<Input name="agency" placeholder="Agency" aria-label="Agency" />
+		</form>
+	),
+	play: async ({ args, canvasElement }) => {
+		const input = within(canvasElement).getByRole('combobox', { name: 'Carrier' });
 
-		return (
-			<div className="flex flex-col gap-6">
-				<form
-					aria-label="Carrier search"
-					className="flex flex-col gap-3"
-					onSubmit={event => {
-						event.preventDefault();
-						setCarrierOutcome(`Searched for ${new FormData(event.currentTarget).get('query')}`);
-					}}>
-					<Autocomplete.Root items={CARRIERS} submitOnItemClick>
-						<Autocomplete.Input name="query" placeholder="Carrier" aria-label="Carrier" />
-						<Autocomplete.Content>
-							<Autocomplete.List>
-								{(carrier: string) => (
-									<Autocomplete.Item key={carrier} value={carrier}>
-										{carrier}
-									</Autocomplete.Item>
-								)}
-							</Autocomplete.List>
-						</Autocomplete.Content>
-					</Autocomplete.Root>
-					<output className="text-sm text-text-default-base-secondary">{carrierOutcome}</output>
-				</form>
-				<form
-					aria-label="State search"
-					className="flex flex-col gap-3"
-					onSubmit={event => {
-						event.preventDefault();
-						setStateOutcome(`Searched for ${new FormData(event.currentTarget).get('query')}`);
-					}}>
-					<Autocomplete.Root items={['California', 'Florida', 'Texas']} submitOnItemClick>
-						<Autocomplete.Input name="query" placeholder="State" aria-label="State" />
-						<Autocomplete.Content>
-							<Autocomplete.List>
-								{(state: string) => (
-									<Autocomplete.Item key={state} value={state}>
-										{state}
-									</Autocomplete.Item>
-								)}
-							</Autocomplete.List>
-						</Autocomplete.Content>
-					</Autocomplete.Root>
-					<output className="text-sm text-text-default-base-secondary">{stateOutcome}</output>
-				</form>
-			</div>
-		);
-	},
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-		const body = within(document.body);
-		const carrierForm = within(canvas.getByRole('form', { name: 'Carrier search' }));
-		const stateForm = within(canvas.getByRole('form', { name: 'State search' }));
-
-		await userEvent.type(carrierForm.getByRole('combobox', { name: 'Carrier' }), 'lem');
-		await userEvent.click(await body.findByRole('option', { name: 'Lemonade' }));
-		await expect(await carrierForm.findByText('Searched for Lemonade')).toBeVisible();
-		await expect(stateForm.queryByText(/Searched for/)).not.toBeInTheDocument();
+		// With the list open, Base UI marks the rest of the page `aria-hidden`; still not one field.
+		await userEvent.type(input, 'Trav');
+		await within(document.body).findByRole('option', { name: 'Travelers' });
+		await userEvent.keyboard('{Enter}');
 		await waitForListClosed();
-
-		await userEvent.type(stateForm.getByRole('combobox', { name: 'State' }), 'tex');
-		await userEvent.click(await body.findByRole('option', { name: 'Texas' }));
-		await expect(await stateForm.findByText('Searched for Texas')).toBeVisible();
-		await expect(carrierForm.getByText('Searched for Lemonade')).toBeVisible();
+		await userEvent.keyboard('{Enter}');
+		await new Promise(resolve => setTimeout(resolve, 100));
+		await expect(args.onSearch).not.toHaveBeenCalled();
 	}
 };
 
@@ -526,8 +487,9 @@ export const WithBeforeAndAfter: Story = {
 
 /**
  * With an `Empty` message, the list opens even when nothing matches, to say
- * so. Without one, as in every other story, a field with nothing to suggest
- * stays shut. Either way the text stays as typed.
+ * so, from the first keystroke and again after Escape. Without one, as in
+ * every other story, a field with nothing to suggest stays shut. Either way
+ * the text stays as typed.
  *
  * @summary Message shown in the list when no suggestion matches
  */
@@ -554,12 +516,18 @@ export const WithEmptyMessage: Story = {
 		const body = within(document.body);
 		const input = canvas.getByRole('combobox', { name: 'Carrier' });
 
-		await userEvent.type(input, 'Acme Mutual');
+		// The first keystroke already matches nothing.
+		await userEvent.type(input, 'Zurich');
 		await expect(await body.findByText(/No known carrier matches/)).toBeVisible();
 		await expect(body.queryByRole('option')).not.toBeInTheDocument();
 		await userEvent.keyboard('{Escape}');
 		await waitFor(() => expect(surface()).not.toBeInTheDocument());
-		await expect(input).toHaveValue('Acme Mutual');
+		await expect(input).toHaveValue('Zurich');
+
+		// Typing on after Escape opens it again.
+		await userEvent.type(input, ' Mutual');
+		await expect(await body.findByText(/No known carrier matches/)).toBeVisible();
+		await expect(input).toHaveValue('Zurich Mutual');
 	}
 };
 

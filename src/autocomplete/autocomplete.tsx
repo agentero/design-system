@@ -3,22 +3,22 @@
 // Stays: `@base-ui/react/autocomplete` is `export * as Autocomplete`, so its parts hang off one
 // export like cmdk's; without the directive they arrive `undefined` (see `command.tsx`).
 import {
+	Children,
 	ComponentPropsWithRef,
 	createContext,
+	isValidElement,
 	KeyboardEvent,
 	ReactNode,
-	RefObject,
 	use,
 	useLayoutEffect,
 	useMemo,
 	useRef,
 	useState
 } from 'react';
-import { flushSync } from 'react-dom';
 
 import { Autocomplete as AutocompletePrimitive } from '@base-ui/react/autocomplete';
 
-import { cn, mergeRefs } from '../../lib';
+import { cn } from '../../lib';
 import {
 	Content as ComboboxContent,
 	Empty as ComboboxEmpty,
@@ -29,18 +29,22 @@ import { useBaseInputContext } from '../combobox/input-context';
 import { inputRecipe, InputSize } from '../input';
 import { InputGroup } from '../input-group';
 
-export type AutocompleteRootProps<Item> = AutocompletePrimitive.Root.Props<Item>;
+// The root decides when the list shows, so its open state is not the consumer's to drive. A
+// submit on a pick runs from the row's `onClick`: Base UI's own finds the form through a ref that
+// every Base UI field outside a Base UI `Field` shares, and submits the wrong one.
+export type AutocompleteRootProps<Item> = Omit<
+	AutocompletePrimitive.Root.Props<Item>,
+	'open' | 'defaultOpen' | 'onOpenChange' | 'submitOnItemClick'
+>;
 
-type GateContextValue = {
-	/** Drops an open request the root is holding back, when the input loses focus. */
+type RootContextValue = {
+	/** Set by `Content` when it holds an `Empty`, which may then show with no rows. */
+	setHasEmpty: (hasEmpty: boolean) => void;
+	/** Drops an open request held back for want of rows, when the input loses focus. */
 	dismiss: () => void;
-	/** Lets an `Empty` open the list when nothing matches; returns its unregister. */
-	registerEmpty: () => () => void;
-	/** The visible input, for `submitOnItemClick` to find its form. */
-	inputRef: RefObject<HTMLInputElement | null>;
 };
 
-const GateContext = createContext<GateContextValue | null>(null);
+const RootContext = createContext<RootContextValue | null>(null);
 
 // Reports whether Base UI's filtered list has a row. It has to sit inside the primitive root,
 // whose context holds the filtered items.
@@ -62,16 +66,19 @@ const RowsProbe = ({ onChange }: { onChange: (hasRows: boolean) => void }) => {
  *
  * Pass the suggestions as `items`. Base UI filters them against the text; set
  * `filter={null}` when they are already the ones to show. With `items`, the
- * list opens only while it has a row to show, or an `Empty` message: a field
- * with nothing to suggest stays shut, and one whose suggestions arrive late (a
- * lookup still running) opens when they do, if the user is still in the field.
+ * list opens only while it has a row to show, or always when it holds an
+ * `Empty` message: a field with nothing to suggest stays shut, and one whose
+ * suggestions arrive late (a lookup still running) opens when they do, if the
+ * user is still in the field.
  * `autoHighlight` highlights the first row as the user types, and `'always'`
  * highlights it as soon as it renders, which suits a single suggestion.
  *
  * Every Base UI root prop is accepted and forwarded: `value`, `defaultValue`,
- * `onValueChange`, `items`, `filter`, `autoHighlight`, `openOnInputClick`,
- * `submitOnItemClick` and so on. A controlled `open` is passed through as is,
- * without the check for rows. Base UI empties the field on Escape while the
+ * `onValueChange`, `items`, `filter`, `autoHighlight`, `openOnInputClick`
+ * and so on, except two. The open state (`open`, `defaultOpen`,
+ * `onOpenChange`) is left out, since the root decides when the list shows.
+ * `submitOnItemClick` is left out too: to submit on a pick, run the submit
+ * from the row's `onClick` with the row's value. Base UI empties the field on Escape while the
  * list is shut, as a native search input does; this root keeps the text
  * instead, and does not report that change. Inside a `Modal`, Escape on an open
  * list closes the list only, and the next one closes the dialog; the modal
@@ -82,12 +89,11 @@ const RowsProbe = ({ onChange }: { onChange: (hasRows: boolean) => void }) => {
  * - A pick, by pointer or by Enter on the highlighted row, fires the row's
  *   `onClick` and then `onValueChange` with `eventDetails.reason` set to
  *   `'item-press'`, carrying the row's text. Base UI stops that Enter, so the
- *   form is not submitted as well. With `submitOnItemClick` the form that owns
- *   this field's input is submitted once, right after the pick, also when
- *   several autocompletes share the page.
+ *   form is not submitted as well.
  * - Enter with no row highlighted closes the list and submits the owning form
- *   once, through its default button when it has one. A form with no submit
- *   button submits too, as a form with a single text field does.
+ *   once, as the browser would: through its default button, and not while
+ *   that button is disabled. With no submit button the form submits only when
+ *   this is its one text field.
  * - A pick fills the field with the row's text. To keep the typed text, call
  *   `eventDetails.cancel()` when the reason is `'item-press'`, or ignore that
  *   change on a controlled `value`: the row's `onClick` can then write
@@ -120,10 +126,6 @@ export const Root = <Item,>({
 	value: valueProp,
 	defaultValue = '',
 	onValueChange,
-	open: openProp,
-	defaultOpen = false,
-	onOpenChange,
-	submitOnItemClick = false,
 	children,
 	...props
 }: AutocompleteRootProps<Item>) => {
@@ -132,77 +134,54 @@ export const Root = <Item,>({
 	const [valueState, setValueState] = useState(defaultValue);
 	const value = valueProp ?? valueState;
 
-	// What the user asked for (typing, ArrowDown, a click under `openOnInputClick`), held apart
-	// from what is shown: Base UI opens an empty list, and while it is open it hides the rest of
-	// the page from assistive technology. With `items`, the list only shows once it has a row, or
-	// an `Empty` to show instead; a lookup that answers late then opens the list it was asked for.
-	const [requested, setRequested] = useState(defaultOpen);
+	// Base UI opens the list with no rows too, and while it is open it hides the rest of the page
+	// from assistive technology. So the root holds what the user asked for (typing, ArrowDown)
+	// apart from what shows: with `items` and no `Empty`, the list shows only while it has a row,
+	// and a lookup that answers late opens the list it was asked for.
+	const [requested, setRequested] = useState(false);
 	const [hasRows, setHasRows] = useState(false);
-	const [emptyCount, setEmptyCount] = useState(0);
+	const [hasEmpty, setHasEmpty] = useState(false);
 	const counted = props.items !== undefined || props.filteredItems !== undefined;
-	const open = openProp ?? (requested && (!counted || hasRows || emptyCount > 0));
+	const open = requested && (!counted || hasRows || hasEmpty);
 
-	const handleOpenChange: typeof onOpenChange = (nextOpen, eventDetails) => {
-		onOpenChange?.(nextOpen, eventDetails);
-		if (!eventDetails.isCanceled) setRequested(nextOpen);
-	};
+	// Base UI only reports a close for a list it shows; `dismiss` reads this to drop one held back.
+	const shown = useRef(open);
+	useLayoutEffect(() => {
+		shown.current = open;
+	}, [open]);
 
 	const handleValueChange: typeof onValueChange = (nextValue, eventDetails) => {
 		// Escape on a shut list empties the field in Base UI. The text is the value here.
 		if (eventDetails.reason === 'escape-key') {
 			eventDetails.cancel();
-			setRequested(false);
 			return;
 		}
 		onValueChange?.(nextValue, eventDetails);
 		if (valueProp === undefined && !eventDetails.isCanceled) setValueState(nextValue);
-		if (submitOnItemClick && eventDetails.reason === 'item-press') {
-			// After the pick has rendered, so the form reads the picked text.
-			queueMicrotask(() => {
-				flushSync(() => {});
-				const form = inputRef.current?.form;
-				if (form) submitForm(form);
-			});
-		}
 	};
 
-	const shown = useRef(open);
-	shown.current = open;
-	const inputRef = useRef<HTMLInputElement>(null);
-
-	// Stable, so an `Empty` registers once rather than on every render of the root.
-	const gate = useMemo<GateContextValue>(
+	const context = useMemo<RootContextValue>(
 		() => ({
-			// Base UI only reports a close for a list it shows; one held back has to be dropped
-			// here, or it would open once the user has moved on.
+			setHasEmpty,
 			dismiss: () => {
 				if (!shown.current) setRequested(false);
-			},
-			registerEmpty: () => {
-				setEmptyCount(count => count + 1);
-				return () => setEmptyCount(count => count - 1);
-			},
-			inputRef
+			}
 		}),
 		[]
 	);
 
 	return (
-		<GateContext value={gate}>
+		<RootContext value={context}>
 			<AutocompletePrimitive.Root
-				{...(props as AutocompleteRootProps<unknown>)}
+				{...(props as AutocompletePrimitive.Root.Props<unknown>)}
 				value={value}
 				onValueChange={handleValueChange}
 				open={open}
-				onOpenChange={handleOpenChange}
-				// Base UI's own submit finds the form through a ref that every Base UI field outside a
-				// Base UI `Field` shares, so with several on a page it submits the last one mounted.
-				// The root submits the form of its own input instead.
-				submitOnItemClick={false}>
+				onOpenChange={setRequested}>
 				{children}
-				{counted && openProp === undefined && <RowsProbe onChange={setHasRows} />}
+				{counted && <RowsProbe onChange={setHasRows} />}
 			</AutocompletePrimitive.Root>
-		</GateContext>
+		</RootContext>
 	);
 };
 Root.displayName = 'Autocomplete.Root';
@@ -231,17 +210,44 @@ const isSubmitButton = (element: Element): element is HTMLButtonElement | HTMLIn
 	(element instanceof HTMLButtonElement || element instanceof HTMLInputElement) &&
 	element.type === 'submit';
 
-// Submits as the browser would on Enter: through the form's default button, if it has one.
+// The input types HTML counts as "fields that block implicit submission".
+const BLOCKING_TYPES = new Set([
+	'text',
+	'search',
+	'url',
+	'tel',
+	'email',
+	'password',
+	'date',
+	'month',
+	'week',
+	'time',
+	'datetime-local',
+	'number'
+]);
+
+// Base UI's hidden input is `aria-hidden` and out of the tab order. `aria-hidden` alone would not
+// tell it apart: while a list is open, Base UI sets it on the rest of the page too.
+const isBlockingField = (element: Element) =>
+	element instanceof HTMLInputElement &&
+	BLOCKING_TYPES.has(element.type) &&
+	!(element.tabIndex === -1 && element.getAttribute('aria-hidden') === 'true');
+
+// Submits as the browser does on Enter: through the form's default button, and not at all while
+// that button is disabled. With no button, only a form whose one text field this is.
 const submitForm = (form: HTMLFormElement) => {
 	const defaultButton = Array.from(form.elements).find(isSubmitButton);
-	form.requestSubmit(defaultButton?.disabled ? undefined : defaultButton);
+	if (defaultButton) {
+		if (!defaultButton.disabled) form.requestSubmit(defaultButton);
+		return;
+	}
+	if (Array.from(form.elements).filter(isBlockingField).length <= 1) form.requestSubmit();
 };
 
 // Base UI lets Enter through to the form when no row is highlighted, and stops it when one is.
-// The browser then submits only a form with a single text field or a submit button, and Base UI
-// renders a hidden text input of its own next to this one, so a prompt form with no button would
-// never submit. This submits it as the browser would, through the form's default button if it has
-// one; the native submission is prevented so a form with a button does not submit twice.
+// Base UI also renders a hidden text input of its own next to this one, which the browser counts,
+// so a prompt form with no button would never submit. This submits as the browser would without
+// that input; the native submission is prevented so a form with a button does not submit twice.
 const submitOnEnter = (event: KeyboardEvent<HTMLDivElement>) => {
 	const input = event.target;
 	if (event.key !== 'Enter' || event.defaultPrevented || event.nativeEvent.isComposing) return;
@@ -279,13 +285,8 @@ const submitOnEnter = (event: KeyboardEvent<HTMLDivElement>) => {
  * @dataAttribute {string} data-slot - Always set to "autocomplete-input"
  */
 export const Input = ({ before, after, ...props }: InputProps) => {
-	const { className, size = 'md', onBlur, ref, ...rest } = useBaseInputContext(props);
-	const gate = use(GateContext);
-	const rootInputRef = gate?.inputRef;
-	const mergedRef = useMemo(
-		() => (rootInputRef ? mergeRefs(rootInputRef, ref) : ref),
-		[rootInputRef, ref]
-	);
+	const { className, size = 'md', onBlur, ...rest } = useBaseInputContext(props);
+	const root = use(RootContext);
 	const bare = !hasContent(before) && !hasContent(after);
 
 	return (
@@ -306,10 +307,9 @@ export const Input = ({ before, after, ...props }: InputProps) => {
 				className={cn(inputRecipe({ size }), className)}
 				onBlur={event => {
 					onBlur?.(event);
-					gate?.dismiss();
+					root?.dismiss();
 				}}
 				{...rest}
-				ref={mergedRef}
 			/>
 			{hasContent(after) && (
 				<InputGroup.Addon data-slot="autocomplete-after">{after}</InputGroup.Addon>
@@ -329,8 +329,8 @@ type ContentProps = ComponentPropsWithRef<typeof ComboboxContent>;
  * wide as the field's frame, and caps its height to the space available. It
  * works inside a `Modal`.
  *
- * Under a root with `items`, it opens only while the list has a row or an
- * `Empty` message to show; see `Root`.
+ * Under a root with `items`, it opens only while the list has a row, unless
+ * it holds an `Empty` message as a direct child; see `Root`.
  *
  * Accepts the positioning props `side`, `align`, `sideOffset`, `alignOffset`,
  * `anchor` and `collisionPadding`, with the same defaults as Combobox: below
@@ -339,9 +339,17 @@ type ContentProps = ComponentPropsWithRef<typeof ComboboxContent>;
  * @summary Floating surface under the field, holding the suggestions
  * @dataAttribute {string} data-slot - Always set to "autocomplete-content"
  */
-export const Content = (props: ContentProps) => (
-	<ComboboxContent data-slot="autocomplete-content" {...props} />
-);
+export const Content = (props: ContentProps) => {
+	const setHasEmpty = use(RootContext)?.setHasEmpty;
+	// Read from the children rather than registered by `Empty`: the surface portals, and renders
+	// nothing while the list is shut, so an `Empty` inside it could not ask for the list to open.
+	const hasEmpty = Children.toArray(props.children).some(
+		child => isValidElement(child) && child.type === Empty
+	);
+	useLayoutEffect(() => setHasEmpty?.(hasEmpty), [setHasEmpty, hasEmpty]);
+
+	return <ComboboxContent data-slot="autocomplete-content" {...props} />;
+};
 Content.displayName = 'Autocomplete.Content';
 
 type ListProps = ComponentPropsWithRef<typeof ComboboxList>;
@@ -385,17 +393,14 @@ type EmptyProps = ComponentPropsWithRef<typeof ComboboxEmpty>;
 /**
  * Shown in place of the rows when no suggestion matches the text, and
  * announced politely. It needs `items` on `Root` to know the list is empty,
- * and it must stay mounted: change its children rather than rendering it
- * conditionally. Leave it out when a field with nothing to suggest should show
- * nothing at all.
+ * and it must be a direct child of `Content`, which reads it there.
+ * Leave it out when a field with nothing to suggest should show nothing at
+ * all.
  *
  * @summary Message shown when no suggestion matches the text
  * @dataAttribute {string} data-slot - Always set to "autocomplete-empty"
  */
-export const Empty = (props: EmptyProps) => {
-	const gate = use(GateContext);
-	useLayoutEffect(() => gate?.registerEmpty(), [gate]);
-
-	return <ComboboxEmpty data-slot="autocomplete-empty" {...props} />;
-};
+export const Empty = (props: EmptyProps) => (
+	<ComboboxEmpty data-slot="autocomplete-empty" {...props} />
+);
 Empty.displayName = 'Autocomplete.Empty';
