@@ -3,6 +3,9 @@ import { useRef, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
+import { Button } from '../button';
+import { InputGroup } from '../input-group';
+import { Label } from '../label';
 import { TextArea } from './textarea';
 
 /**
@@ -124,7 +127,9 @@ export const Invalid: Story = {
 	render: args => (
 		<div style={{ display: 'grid', gap: '0.25rem' }}>
 			<TextArea {...args} />
-			<span id="reason-error">Tell us why you are cancelling.</span>
+			<span id="reason-error" className="text-sm text-text-input-destructive">
+				Tell us why you are cancelling.
+			</span>
 		</div>
 	),
 	play: async ({ canvasElement }) => {
@@ -195,7 +200,7 @@ export const WithCounter: Story = {
 
 		const box = textarea.getBoundingClientRect();
 		const count = counter.getBoundingClientRect();
-		await expect(box.right - count.right).toBe(16);
+		await expect(box.right - count.right).toBe(12);
 		await expect(box.bottom - count.bottom).toBe(8);
 		await expect(getComputedStyle(textarea).paddingBottom).toBe('28px');
 	}
@@ -229,14 +234,15 @@ const ResetForm = () => {
 	return (
 		<div className="flex flex-col items-start gap-2">
 			<TextArea ref={textareaRef} aria-label="Notes" maxLength={100} defaultValue="hello" />
-			<button
-				type="button"
+			<Button
+				variant="secondary"
+				size="sm"
 				onClick={() => {
 					textareaRef.current!.value = 'bye';
 					setResets(count => count + 1);
 				}}>
 				Reset
-			</button>
+			</Button>
 		</div>
 	);
 };
@@ -270,7 +276,9 @@ export const CounterAfterNativeReset: Story = {
 	render: () => (
 		<form className="flex flex-col items-start gap-2">
 			<TextArea aria-label="Notes" maxLength={100} defaultValue="hello" />
-			<button type="reset">Reset</button>
+			<Button type="reset" variant="secondary" size="sm">
+				Reset
+			</Button>
 		</form>
 	),
 	play: async ({ canvasElement }) => {
@@ -295,7 +303,9 @@ export const LayoutWithoutCounter: Story = {
 	render: () => (
 		<div className="flex w-96 items-start gap-4">
 			<TextArea aria-label="Notes" className="w-auto flex-1" />
-			<button type="button">Clear</button>
+			<Button variant="secondary" size="sm">
+				Clear
+			</Button>
 		</div>
 	),
 	play: async ({ canvasElement }) => {
@@ -317,9 +327,9 @@ const ToggleLimit = () => {
 	return (
 		<div className="flex flex-col items-start gap-2">
 			<TextArea aria-label="Notes" maxLength={limited ? 100 : undefined} />
-			<button type="button" onClick={() => setLimited(value => !value)}>
+			<Button variant="secondary" size="sm" onClick={() => setLimited(value => !value)}>
 				Toggle limit
-			</button>
+			</Button>
 		</div>
 	);
 };
@@ -344,5 +354,52 @@ export const ToggleMaxLength: Story = {
 		await expect(canvasElement.querySelector('[data-slot=textarea-counter]')).toHaveTextContent(
 			'5/100'
 		);
+	}
+};
+
+/**
+ * The count is anchored to the `<textarea>`, so a width set through
+ * `className` keeps it in the box's corner, and it never joins the name of a
+ * `<label>` wrapped around the control.
+ *
+ * @summary Count stays in the corner of a narrower box and out of the label's name
+ */
+export const CounterNarrowInLabel: Story = {
+	render: () => (
+		<Label className="flex-col items-start font-normal">
+			Notes
+			<TextArea className="w-64" maxLength={100} defaultValue="hello" />
+		</Label>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const textarea = canvas.getByRole('textbox', { name: 'Notes' });
+		const counter = canvasElement.querySelector('[data-slot=textarea-counter]')!;
+		const box = textarea.getBoundingClientRect();
+		const count = counter.getBoundingClientRect();
+
+		await expect(box.width).toBe(256);
+		await expect(box.right - count.right).toBe(12);
+		await expect(box.bottom - count.bottom).toBe(8);
+		await expect(textarea).toHaveAccessibleDescription('5 of 100 characters');
+	}
+};
+
+/**
+ * Inside an `InputGroup` the count keeps its room: the group strips the
+ * textarea's own padding, but not the space reserved under the text.
+ *
+ * @summary Count inside an InputGroup keeps the text clear of it
+ */
+export const CounterInInputGroup: Story = {
+	render: () => (
+		<InputGroup.Root>
+			<TextArea aria-label="Notes" maxLength={100} defaultValue="hello" />
+		</InputGroup.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const textarea = within(canvasElement).getByRole('textbox', { name: 'Notes' });
+
+		await expect(getComputedStyle(textarea).paddingBottom).toBe('28px');
 	}
 };

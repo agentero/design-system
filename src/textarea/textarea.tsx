@@ -47,8 +47,16 @@ export const textAreaRecipe = tv({
  */
 export const textAreaCounterRecipe = tv({
 	base: [
-		'pointer-events-none absolute right-4 bottom-2 text-xs leading-normal tabular-nums',
-		'text-text-input-placeholder peer-disabled:text-text-input-disable',
+		// Anchored to the textarea's own box, so a width or flex class on the
+		// textarea moves the count with it; without anchor positioning the wrapper
+		// becomes the box instead.
+		'pointer-events-none absolute right-3 bottom-2',
+		'supports-[anchor-name:--a]:right-[calc(anchor(right)+0.75rem)]',
+		'supports-[anchor-name:--a]:bottom-[calc(anchor(bottom)+0.5rem)]',
+		// Opaque, so text scrolled behind it never shows through.
+		'rounded-sm bg-bg-input-normal px-1 text-xs leading-normal font-normal tabular-nums',
+		'text-text-input-placeholder',
+		'peer-disabled:bg-bg-input-disable peer-disabled:text-text-input-disable',
 		'data-over:text-text-input-destructive'
 	]
 });
@@ -87,11 +95,12 @@ const describedByWith = (describedBy: string | undefined, id: string) =>
  * height when three rows are not enough.
  *
  * With `maxLength` it also counts: a `12/500` in the box's bottom-right
- * corner, joined to the control's `aria-describedby` rather than announced on
- * every keystroke. The `<textarea>` always sits in a `data-slot="textarea-root"`
- * wrapper, which only takes part in layout when there is a count: then it fills
- * its container, so size a counted control from its parent. `className` and
- * every other prop go to the `<textarea>`. The count follows `value` when the
+ * corner, anchored to the `<textarea>` itself, and announced through its
+ * `aria-describedby` rather than on every keystroke. `className` and every
+ * other prop go to the `<textarea>`, which stays the layout box with or
+ * without a count: the `data-slot="textarea-root"` wrapper around it is
+ * `display: contents` (in a browser without anchor positioning, a counted
+ * wrapper fills its container instead). The count follows `value` when the
  * text area is controlled; uncontrolled, it follows typing, a native form
  * reset and any rewrite followed by a render. A form library that writes the
  * value without rendering (react-hook-form's `setValue` on a registered field)
@@ -112,24 +121,34 @@ export const TextArea = (props: TextAreaProps) => {
 		'aria-describedby': describedBy,
 		...rest
 	} = useTextAreaContext(props);
-	const counterId = useId();
+	const id = useId();
+	const counterId = `${id}-count`;
+	const anchorName = `--textarea-${id.replace(/[^\w-]/g, '')}`;
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 	const mergedRef = useMemo(() => mergeRefs(textareaRef, ref), [ref]);
 
-	// The DOM is the source of an uncontrolled count: typing notifies through
-	// `input`, a native form reset through the form's `reset` (which fires before
-	// the values are restored), and any other rewrite is read on the next render.
-	const subscribe = useCallback((onChange: () => void) => {
-		const textarea = textareaRef.current;
-		const form = textarea?.form;
-		const onReset = () => setTimeout(onChange);
-		textarea?.addEventListener('input', onChange);
-		form?.addEventListener('reset', onReset);
-		return () => {
-			textarea?.removeEventListener('input', onChange);
-			form?.removeEventListener('reset', onReset);
-		};
-	}, []);
+	const counter = maxLength !== undefined;
+	const controlled = rest.value != null;
+
+	// Only an uncontrolled count reads the DOM: typing notifies through `input`,
+	// a native form reset through the form's `reset` (which fires before the
+	// values are restored), and any other rewrite is read on the next render.
+	const subscribe = useCallback(
+		(onChange: () => void) => {
+			const textarea = textareaRef.current;
+			const form = textarea?.form;
+			if (!counter || controlled || !textarea) return () => {};
+
+			const onReset = () => setTimeout(onChange);
+			textarea.addEventListener('input', onChange);
+			form?.addEventListener('reset', onReset);
+			return () => {
+				textarea.removeEventListener('input', onChange);
+				form?.removeEventListener('reset', onReset);
+			};
+		},
+		[counter, controlled]
+	);
 	const initialLength = String(rest.defaultValue ?? '').length;
 	const domLength = useSyncExternalStore(
 		subscribe,
@@ -137,11 +156,14 @@ export const TextArea = (props: TextAreaProps) => {
 		() => initialLength
 	);
 
-	const counter = maxLength !== undefined;
-	const length = rest.value != null ? String(rest.value).length : domLength;
+	const length = controlled ? String(rest.value).length : domLength;
 
 	return (
-		<div data-slot="textarea-root" className={counter ? 'relative w-full' : 'contents'}>
+		<span
+			data-slot="textarea-root"
+			className={
+				counter ? 'relative block w-full supports-[anchor-name:--a]:contents' : 'contents'
+			}>
 			<textarea
 				ref={mergedRef}
 				data-slot="textarea"
@@ -150,22 +172,25 @@ export const TextArea = (props: TextAreaProps) => {
 				maxLength={maxLength}
 				aria-describedby={counter ? describedByWith(describedBy, counterId) : describedBy}
 				{...rest}
+				style={counter ? { anchorName, ...rest.style } : rest.style}
 			/>
 			{counter && (
-				<p
-					id={counterId}
-					data-slot="textarea-counter"
-					data-over={length > maxLength || undefined}
-					className={textAreaCounterRecipe()}>
-					<span aria-hidden>
+				<>
+					<span
+						aria-hidden
+						data-slot="textarea-counter"
+						data-over={length > maxLength || undefined}
+						className={textAreaCounterRecipe()}
+						style={{ positionAnchor: anchorName }}>
 						{length}/{maxLength}
 					</span>
-					<span className="sr-only">
+					{/* Hidden, so it reaches the description but never the name of a wrapping label. */}
+					<span id={counterId} hidden>
 						{length} of {maxLength} characters
 					</span>
-				</p>
+				</>
 			)}
-		</div>
+		</span>
 	);
 };
 

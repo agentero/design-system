@@ -202,7 +202,7 @@ export const OwnPropsWin: Story = {
 				<TextArea size="lg" className="max-h-60" aria-describedby="message-hint" />
 				<Field.Description>Sent to the agent as written.</Field.Description>
 			</FieldTextArea>
-			<p id="message-hint" className="text-sm">
+			<p id="message-hint" className="text-sm text-text-input-placeholder">
 				Markdown is not rendered.
 			</p>
 		</div>
