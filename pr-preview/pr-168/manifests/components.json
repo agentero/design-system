@@ -10906,29 +10906,6 @@
           ]
         },
         "props": {
-          "maxLength": {
-            "name": "maxLength",
-            "required": false,
-            "type": {
-              "name": "number"
-            },
-            "description": "Caps the value natively and shows the count inside the box, bottom right\n(`12/500`), announced with the control as \"12 of 500 characters\".",
-            "defaultValue": null,
-            "parent": {
-              "name": "TextareaHTMLAttributes",
-              "fileName": "node_modules/@types/react/index.d.ts"
-            },
-            "declarations": [
-              {
-                "name": "TextareaHTMLAttributes",
-                "fileName": "node_modules/@types/react/index.d.ts"
-              },
-              {
-                "name": "TypeLiteral",
-                "fileName": "src/textarea/textarea.tsx"
-              }
-            ]
-          },
           "size": {
             "name": "size",
             "required": false,
@@ -11835,6 +11812,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5532
+    "durationMs": 3811
   }
 }
