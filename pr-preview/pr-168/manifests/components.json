@@ -6783,7 +6783,7 @@
         {
           "id": "components-fieldtextarea--own-props-win",
           "name": "Own Props Win",
-          "snippet": "const OwnPropsWin = () => <div className=\"flex flex-col gap-2\">\n    <FieldTextArea\n        orientation=\"vertical\"\n        invalid={false}\n        disabled={false}\n        readOnly={false}\n        required={false}>\n        <Label>Message</Label>\n        <TextArea size=\"lg\" className=\"max-h-60\" aria-describedby=\"message-hint\" />\n        <Field.Description>Sent to the agent as written.</Field.Description>\n    </FieldTextArea>\n    <p id=\"message-hint\" className=\"text-sm\">Markdown is not rendered.\n                    </p>\n</div>;",
+          "snippet": "const OwnPropsWin = () => <div className=\"flex flex-col gap-2\">\n    <FieldTextArea\n        orientation=\"vertical\"\n        invalid={false}\n        disabled={false}\n        readOnly={false}\n        required={false}>\n        <Label>Message</Label>\n        <TextArea size=\"lg\" className=\"max-h-60\" aria-describedby=\"message-hint\" />\n        <Field.Description>Sent to the agent as written.</Field.Description>\n    </FieldTextArea>\n    <p id=\"message-hint\" className=\"text-sm text-text-input-placeholder\">Markdown is not rendered.\n                    </p>\n</div>;",
           "description": "The context is a default, never an override: an extra `aria-describedby` is\nconcatenated with the field's ids, `className` is merged and `size` passes\nthrough untouched.",
           "summary": "TextArea's own props merge with, and win over, the field's context"
         },
@@ -10896,7 +10896,7 @@
         "displayName": "TextArea",
         "exportName": "TextArea",
         "filePath": "/home/runner/work/design-system/design-system/src/textarea/textarea.tsx",
-        "description": "TextArea is the design system's multi-line text control: Input's skin, states\nand sizes on a `<textarea>`, so the native resize handle and scrollbar keep\nworking. Pair it with [Label](?path=/docs/components-label--docs) the way you\npair an Input.\n\nWhen a container provides `TextAreaContext`, the text area takes its wiring\n(`id`, `aria-describedby`, `aria-invalid`, `required`, `disabled`,\n`readOnly`) from it, and its own props win; `FieldTextArea` is one such\ncontainer. Standalone, `id`, `aria-describedby` and `aria-invalid` are the\nfield owner's job. The invalid state has no prop of its own: `aria-invalid`\ndrives the destructive border, the same as Input. Every `<textarea>` attribute\nis accepted and forwarded, so `placeholder`, `required`, `disabled`,\n`readOnly` and the rest work as in plain HTML; `rows` raises the resting\nheight when three rows are not enough.\n\nWith `maxLength` it also counts: a `12/500` in the box's bottom-right\ncorner, joined to the control's `aria-describedby` rather than announced on\nevery keystroke. The `<textarea>` always sits in a `data-slot=\"textarea-root\"`\nwrapper, which only takes part in layout when there is a count: then it fills\nits container, so size a counted control from its parent. `className` and\nevery other prop go to the `<textarea>`. The count follows `value` when the\ntext area is controlled; uncontrolled, it follows typing, a native form\nreset and any rewrite followed by a render. A form library that writes the\nvalue without rendering (react-hook-form's `setValue` on a registered field)\nneeds the value controlled for the count to follow.",
+        "description": "TextArea is the design system's multi-line text control: Input's skin, states\nand sizes on a `<textarea>`, so the native resize handle and scrollbar keep\nworking. Pair it with [Label](?path=/docs/components-label--docs) the way you\npair an Input.\n\nWhen a container provides `TextAreaContext`, the text area takes its wiring\n(`id`, `aria-describedby`, `aria-invalid`, `required`, `disabled`,\n`readOnly`) from it, and its own props win; `FieldTextArea` is one such\ncontainer. Standalone, `id`, `aria-describedby` and `aria-invalid` are the\nfield owner's job. The invalid state has no prop of its own: `aria-invalid`\ndrives the destructive border, the same as Input. Every `<textarea>` attribute\nis accepted and forwarded, so `placeholder`, `required`, `disabled`,\n`readOnly` and the rest work as in plain HTML; `rows` raises the resting\nheight when three rows are not enough.\n\nWith `maxLength` it also counts: a `12/500` in the box's bottom-right\ncorner, anchored to the `<textarea>` itself, and announced through its\n`aria-describedby` rather than on every keystroke. `className` and every\nother prop go to the `<textarea>`, which stays the layout box with or\nwithout a count: the `data-slot=\"textarea-root\"` wrapper around it is\n`display: contents` (in a browser without anchor positioning, a counted\nwrapper fills its container instead). The count follows `value` when the\ntext area is controlled; uncontrolled, it follows typing, a native form\nreset and any rewrite followed by a render. A form library that writes the\nvalue without rendering (react-hook-form's `setValue` on a registered field)\nneeds the value controlled for the count to follow.",
         "jsDocTags": {
           "summary": [
             "Base multi-line text control sharing Input's skin, states and sizes"
@@ -10964,7 +10964,7 @@
         {
           "id": "components-textarea--invalid",
           "name": "Invalid",
-          "snippet": "const Invalid = () => <div style={{ display: 'grid', gap: '0.25rem' }}>\n    <TextArea\n        placeholder=\"Anything the underwriter should know\"\n        aria-label=\"Reason\"\n        aria-invalid\n        aria-describedby=\"reason-error\"\n        defaultValue=\"n/a\" />\n    <span id=\"reason-error\">Tell us why you are cancelling.</span>\n</div>;",
+          "snippet": "const Invalid = () => <div style={{ display: 'grid', gap: '0.25rem' }}>\n    <TextArea\n        placeholder=\"Anything the underwriter should know\"\n        aria-label=\"Reason\"\n        aria-invalid\n        aria-describedby=\"reason-error\"\n        defaultValue=\"n/a\" />\n    <span id=\"reason-error\" className=\"text-sm text-text-input-destructive\">Tell us why you are cancelling.\n                    </span>\n</div>;",
           "description": "The invalid treatment comes purely from `aria-invalid`; point\n`aria-describedby` at the message so it is read with the control.",
           "summary": "Invalid state driven by aria-invalid"
         },
@@ -11006,14 +11006,14 @@
         {
           "id": "components-textarea--counter-after-native-reset",
           "name": "Counter After Native Reset",
-          "snippet": "const CounterAfterNativeReset = () => (\n    <form className=\"flex flex-col items-start gap-2\">\n        <TextArea aria-label=\"Notes\" maxLength={100} defaultValue=\"hello\" />\n        <button type=\"reset\">Reset</button>\n    </form>\n);",
+          "snippet": "const CounterAfterNativeReset = () => (\n    <form className=\"flex flex-col items-start gap-2\">\n        <TextArea aria-label=\"Notes\" maxLength={100} defaultValue=\"hello\" />\n        <Button type=\"reset\" variant=\"secondary\" size=\"sm\">\n            Reset\n        </Button>\n    </form>\n);",
           "description": "A native form reset restores the default value without an input event; the\ncount listens to the form's `reset` and follows.",
           "summary": "Uncontrolled count follows a native form reset"
         },
         {
           "id": "components-textarea--layout-without-counter",
           "name": "Layout Without Counter",
-          "snippet": "const LayoutWithoutCounter = () => (\n    <div className=\"flex w-96 items-start gap-4\">\n        <TextArea aria-label=\"Notes\" className=\"w-auto flex-1\" />\n        <button type=\"button\">Clear</button>\n    </div>\n);",
+          "snippet": "const LayoutWithoutCounter = () => (\n    <div className=\"flex w-96 items-start gap-4\">\n        <TextArea aria-label=\"Notes\" className=\"w-auto flex-1\" />\n        <Button variant=\"secondary\" size=\"sm\">\n            Clear\n        </Button>\n    </div>\n);",
           "description": "Without a count the wrapper is `display: contents`, so the `<textarea>`\nlays out as a direct child of its container: a width or a flex item class\nin `className` works as on a bare `<textarea>`.",
           "summary": "Without maxLength the wrapper leaves layout to the textarea"
         },
@@ -11023,9 +11023,23 @@
           "snippet": "const ToggleMaxLength = () => <ToggleLimit />;",
           "description": "The `<textarea>` keeps its place in the tree whether or not there is a\ncount, so adding or removing `maxLength` keeps what the user typed.",
           "summary": "Adding a limit keeps the same control and its text"
+        },
+        {
+          "id": "components-textarea--counter-narrow-in-label",
+          "name": "Counter Narrow In Label",
+          "snippet": "const CounterNarrowInLabel = () => (\n    <Label className=\"flex-col items-start font-normal\">\n        Notes\n        <TextArea className=\"w-64\" maxLength={100} defaultValue=\"hello\" />\n    </Label>\n);",
+          "description": "The count is anchored to the `<textarea>`, so a width set through\n`className` keeps it in the box's corner, and it never joins the name of a\n`<label>` wrapped around the control.",
+          "summary": "Count stays in the corner of a narrower box and out of the label's name"
+        },
+        {
+          "id": "components-textarea--counter-in-input-group",
+          "name": "Counter In Input Group",
+          "snippet": "const CounterInInputGroup = () => (\n    <InputGroup.Root>\n        <TextArea aria-label=\"Notes\" maxLength={100} defaultValue=\"hello\" />\n    </InputGroup.Root>\n);",
+          "description": "Inside an `InputGroup` the count keeps its room: the group strips the\ntextarea's own padding, but not the space reserved under the text.",
+          "summary": "Count inside an InputGroup keeps the text clear of it"
         }
       ],
-      "import": "import { TextArea } from \"@agentero/design-system\";"
+      "import": "import { Button, InputGroup, Label, TextArea } from \"@agentero/design-system\";"
     },
     "components-toast": {
       "id": "components-toast",
@@ -11812,6 +11826,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 3811
+    "durationMs": 5652
   }
 }
