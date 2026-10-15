@@ -2,6 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { Command, useCommandState } from '.';
+import { Button } from '../button';
+import { Popover } from '../popover';
 
 /**
  * Command is a filterable list built on `cmdk`. Type to narrow the options,
@@ -334,5 +336,37 @@ export const ReadingState: Story = {
 		const create = await canvas.findByRole('option', { name: 'Create agency "Summit"' });
 		await userEvent.click(create);
 		await expect(handleCreate).toHaveBeenCalledWith('Summit');
+	}
+};
+
+/** Inside a `Popover`. cmdk's list is always on screen, so Escape closes the popover. */
+export const InsidePopover: Story = {
+	render: () => (
+		<Popover.Root>
+			<Popover.Trigger asChild>
+				<Button variant="secondary">Open commands</Button>
+			</Popover.Trigger>
+			<Popover.Content aria-label="Commands" className="p-0">
+				<Command.Root label="Search commands">
+					<Command.Input placeholder="Search..." />
+					<Command.List>
+						{OPTIONS.map(option => (
+							<Command.Item key={option}>{option}</Command.Item>
+						))}
+					</Command.List>
+				</Command.Root>
+			</Popover.Content>
+		</Popover.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const body = within(document.body);
+		const trigger = within(canvasElement).getByRole('button', { name: /open commands/i });
+
+		await userEvent.click(trigger);
+		const input = await body.findByRole('combobox', { name: /search commands/i });
+		await waitFor(() => expect(input).toHaveFocus());
+
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(trigger).toHaveAttribute('data-state', 'closed'));
 	}
 };
