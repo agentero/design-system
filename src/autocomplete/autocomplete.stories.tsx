@@ -559,8 +559,8 @@ export const InsideFieldText: Story = {
 					</Autocomplete.List>
 				</Autocomplete.Content>
 			</Autocomplete.Root>
-			<Field.Error errors={[{ message: 'Enter the carrier name' }]} />
 			<Field.Description>The carrier that wrote the policy.</Field.Description>
+			<Field.Error errors={[{ message: 'Enter the carrier name' }]} />
 		</FieldText>
 	),
 	play: async ({ canvasElement }) => {
@@ -570,7 +570,7 @@ export const InsideFieldText: Story = {
 		await expect(input).toBeRequired();
 		await expect(input).toHaveAttribute('aria-invalid', 'true');
 		await expect(input).toHaveAccessibleDescription(
-			'Enter the carrier name The carrier that wrote the policy.'
+			'The carrier that wrote the policy. Enter the carrier name'
 		);
 
 		const label = canvas.getByText('Carrier').closest('label');
