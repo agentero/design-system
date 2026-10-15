@@ -9,6 +9,7 @@ import { Field } from '../field';
 import { FieldText } from '../field-text';
 import { Label } from '../label';
 import { Modal } from '../modal';
+import { Popover } from '../popover';
 import { Skeleton } from '../skeleton';
 import { Tag } from '../tag';
 
@@ -730,7 +731,8 @@ export const InsideFieldText: Story = {
 /**
  * Inside a `Modal`, which is a Radix Dialog. The surface portals to the body, so
  * this checks that the dialog's modal layer neither blocks pointer events on the
- * list nor treats a click in it as a click outside and closes.
+ * list nor treats a click in it as a click outside and closes. With a value
+ * picked, Escape closes the list, then clears the value, then closes the modal.
  */
 export const InsideModal: Story = {
 	render: () => (
@@ -775,5 +777,138 @@ export const InsideModal: Story = {
 		// The dialog must survive the click on the portalled list — still open, not exiting.
 		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
 		await expect(dialog).toHaveAttribute('data-state', 'open');
+
+		// With a value picked, each Escape undoes one thing: the list, then the value, then the dialog.
+		await userEvent.keyboard('{ArrowDown}');
+		await body.findByRole('listbox');
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+		await expect(input).toHaveValue('Florida');
+		await expect(dialog).toHaveAttribute('data-state', 'open');
+		await userEvent.keyboard('{Escape}');
+		await expect(input).toHaveValue('');
+		await expect(dialog).toHaveAttribute('data-state', 'open');
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(dialog).toHaveAttribute('data-state', 'closed'));
+	}
+};
+
+/**
+ * Inside a `Popover`. Escape on the open list closes the list only, and the next
+ * Escape closes the popover.
+ */
+export const InsidePopover: Story = {
+	render: () => (
+		<Popover.Root>
+			<Popover.Trigger asChild>
+				<Button variant="secondary">Filter by state</Button>
+			</Popover.Trigger>
+			<Popover.Content aria-label="Filter by state">
+				<Combobox.Root items={STATES}>
+					<Combobox.Input placeholder="Search states" aria-label="Search states" />
+					<Combobox.Content>
+						<Combobox.Empty>No matches found</Combobox.Empty>
+						<Combobox.List>
+							{(state: string) => (
+								<Combobox.Item key={state} value={state}>
+									{state}
+								</Combobox.Item>
+							)}
+						</Combobox.List>
+					</Combobox.Content>
+				</Combobox.Root>
+			</Popover.Content>
+		</Popover.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const body = within(document.body);
+		const trigger = within(canvasElement).getByRole('button', { name: /filter by state/i });
+
+		await userEvent.click(trigger);
+		const input = await body.findByRole('combobox', { name: /search states/i });
+		await userEvent.click(input);
+		await body.findByRole('listbox');
+
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+		await expect(trigger).toHaveAttribute('data-state', 'open');
+
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(trigger).toHaveAttribute('data-state', 'closed'));
+	}
+};
+
+/**
+ * Inside a `Popover`, with a value picked. Base UI clears the value on an Escape
+ * from the closed list, so it takes three: the list, the value, then the popover.
+ */
+export const InsidePopoverWithValue: Story = {
+	render: InsidePopover.render,
+	play: async ({ canvasElement }) => {
+		const body = within(document.body);
+		const trigger = within(canvasElement).getByRole('button', { name: /filter by state/i });
+
+		await userEvent.click(trigger);
+		const input = await body.findByRole('combobox', { name: /search states/i });
+		await userEvent.click(input);
+		await userEvent.click(await body.findByRole('option', { name: 'Texas' }));
+		await waitFor(() => expect(input).toHaveValue('Texas'));
+
+		await userEvent.keyboard('{ArrowDown}');
+		await body.findByRole('listbox');
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+		await expect(input).toHaveValue('Texas');
+
+		await userEvent.keyboard('{Escape}');
+		await expect(input).toHaveValue('');
+		await expect(trigger).toHaveAttribute('data-state', 'open');
+
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(trigger).toHaveAttribute('data-state', 'closed'));
+	}
+};
+
+/**
+ * Inside a `Modal`, with no `Empty`. When nothing matches there is no list to
+ * close, so Base UI lets the first Escape through and it closes the modal.
+ */
+export const InsideModalWithoutEmpty: Story = {
+	render: () => (
+		<Modal.Root>
+			<Modal.Trigger asChild>
+				<Button variant="secondary">Assign agency</Button>
+			</Modal.Trigger>
+			<Modal.Content>
+				<Modal.Title>Assign agency</Modal.Title>
+				<Modal.Body>
+					<Combobox.Root items={STATES}>
+						<Combobox.Input placeholder="Search states" aria-label="Search states" />
+						<Combobox.Content>
+							<Combobox.List>
+								{(state: string) => (
+									<Combobox.Item key={state} value={state}>
+										{state}
+									</Combobox.Item>
+								)}
+							</Combobox.List>
+						</Combobox.Content>
+					</Combobox.Root>
+				</Modal.Body>
+			</Modal.Content>
+		</Modal.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const body = within(document.body);
+
+		await userEvent.click(within(canvasElement).getByRole('button', { name: /assign agency/i }));
+		const dialog = await body.findByRole('dialog', { name: /assign agency/i });
+		const input = within(dialog).getByRole('combobox', { name: /search states/i });
+
+		await userEvent.type(input, 'zzz');
+		await expect(body.queryByRole('option')).not.toBeInTheDocument();
+
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(dialog).toHaveAttribute('data-state', 'closed'));
 	}
 };
