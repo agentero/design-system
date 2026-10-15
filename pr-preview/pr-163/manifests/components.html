@@ -588,13 +588,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">38 components ok</span><span class="filter-pill ok" aria-disabled="true">318 stories ok</span></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">38 components ok</span><span class="filter-pill ok" aria-disabled="true">319 stories ok</span></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.6s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>3.9s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -1464,17 +1464,54 @@ lower-weight token ramp and omit background + padding.</div>
       <div class="badges">
         <label for="c-2-components-autocomplete-props" class="badge ok as-toggle">34 prop types</label>
         
-        <label for="c-2-components-autocomplete-stories" class="badge ok as-toggle">12 stories</label>
+        <label for="c-2-components-autocomplete-stories" class="badge ok as-toggle">13 stories</label>
         
         
       </div>
     </div>
     <div class="meta" title="./src/autocomplete/autocomplete.stories.tsx">components-autocomplete · ./src/autocomplete/autocomplete.stories.tsx</div>
     <div>Free-text field with a list of suggestions below it</div>
-    <div class="hint">Autocomplete is a free-text field with suggestions below it. The text is the
-value: picking a suggestion writes its text into the field, and leaving the
-field, closing the list or pressing Escape keeps whatever was typed. Built on
-Base UI&#39;s Autocomplete, styled as the Combobox.</div>
+    <div class="hint">Root of an autocomplete: a text field whose value is the text itself, with a
+list of suggestions below it. Nothing is selected. Leaving the field, closing
+the list and pressing Escape all keep what was typed.
+
+Use it for a free-text field that suggests: a prompt with recent queries, a
+number field that offers what a lookup found. When the value must be one of
+the options, use [Combobox](?path=/docs/components-combobox--docs) instead:
+it writes the picked option back and drops text that matches none.
+
+Pass the suggestions as `items`. Base UI filters them against the text; set
+`filter={null}` when they are already the ones to show. With `items`, the
+list opens only while it has a row to show, or an `Empty` message: a field
+with nothing to suggest stays shut, and one whose suggestions arrive late (a
+lookup still running) opens when they do, if the user is still in the field.
+`autoHighlight` highlights the first row as the user types, and `&#39;always&#39;`
+highlights it as soon as it renders, which suits a single suggestion.
+
+Every Base UI root prop is accepted and forwarded: `value`, `defaultValue`,
+`onValueChange`, `items`, `filter`, `autoHighlight`, `openOnInputClick`,
+`submitOnItemClick` and so on. A controlled `open` is passed through as is,
+without the check for rows. Base UI empties the field on Escape while the
+list is shut, as a native search input does; this root keeps the text
+instead, and does not report that change. Inside a `Modal`, Escape on an open
+list closes the list only, and the next one closes the dialog; the modal
+leaves an Escape from an expanded combobox to it.
+
+Picking a row and pressing Enter are told apart with Base UI&#39;s own events:
+
+- A pick, by pointer or by Enter on the highlighted row, fires the row&#39;s
+  `onClick` and then `onValueChange` with `eventDetails.reason` set to
+  `&#39;item-press&#39;`, carrying the row&#39;s text. Base UI stops that Enter, so the
+  form is not submitted as well. With `submitOnItemClick` the form that owns
+  this field&#39;s input is submitted once, right after the pick, also when
+  several autocompletes share the page.
+- Enter with no row highlighted closes the list and submits the owning form
+  once, through its default button when it has one. A form with no submit
+  button submits too, as a form with a single text field does.
+- A pick fills the field with the row&#39;s text. To keep the typed text, call
+  `eventDetails.cancel()` when the reason is `&#39;item-press&#39;`, or ignore that
+  change on a controlled `value`: the row&#39;s `onClick` can then write
+  elsewhere.</div>
     <div class="kv"><span class="chip">summary: Free-text field with a list of suggestions below it</span><span class="chip">see: {@link https://base-ui.com/react/components/autocomplete Base UI Autocomplete}</span><span class="chip">example: ```tsx
 import { Autocomplete } from &#39;@agentero/design-system/autocomplete&#39;;
 
@@ -1747,7 +1784,15 @@ just as valid a value.</div>
               <pre><code>const Default = () =&gt; (
     &lt;Autocomplete.Root items={CARRIERS}&gt;
         &lt;Autocomplete.Input placeholder=&quot;Carrier&quot; aria-label=&quot;Carrier&quot; /&gt;
-        &lt;CarrierList /&gt;
+        &lt;Autocomplete.Content&gt;
+            &lt;Autocomplete.List&gt;
+                {(carrier: string) =&gt; (
+                    &lt;Autocomplete.Item key={carrier} value={carrier}&gt;
+                        {carrier}
+                    &lt;/Autocomplete.Item&gt;
+                )}
+            &lt;/Autocomplete.List&gt;
+        &lt;/Autocomplete.Content&gt;
     &lt;/Autocomplete.Root&gt;
 );</code></pre>
             </div>
@@ -1763,7 +1808,15 @@ A Combobox would empty it here, since its value must be an option.</div>
     &lt;div className=&quot;flex flex-col gap-4&quot;&gt;
         &lt;Autocomplete.Root items={CARRIERS}&gt;
             &lt;Autocomplete.Input placeholder=&quot;Carrier&quot; aria-label=&quot;Carrier&quot; /&gt;
-            &lt;CarrierList /&gt;
+            &lt;Autocomplete.Content&gt;
+                &lt;Autocomplete.List&gt;
+                    {(carrier: string) =&gt; (
+                        &lt;Autocomplete.Item key={carrier} value={carrier}&gt;
+                            {carrier}
+                        &lt;/Autocomplete.Item&gt;
+                    )}
+                &lt;/Autocomplete.List&gt;
+            &lt;/Autocomplete.Content&gt;
         &lt;/Autocomplete.Root&gt;
         &lt;Button variant=&quot;secondary&quot;&gt;Next&lt;/Button&gt;
     &lt;/div&gt;
@@ -1781,7 +1834,15 @@ input does, and this field&#39;s text is its value.</div>
               <pre><code>const KeepsTextOnEscape = () =&gt; (
     &lt;Autocomplete.Root items={CARRIERS}&gt;
         &lt;Autocomplete.Input placeholder=&quot;Carrier&quot; aria-label=&quot;Carrier&quot; /&gt;
-        &lt;CarrierList /&gt;
+        &lt;Autocomplete.Content&gt;
+            &lt;Autocomplete.List&gt;
+                {(carrier: string) =&gt; (
+                    &lt;Autocomplete.Item key={carrier} value={carrier}&gt;
+                        {carrier}
+                    &lt;/Autocomplete.Item&gt;
+                )}
+            &lt;/Autocomplete.List&gt;
+        &lt;/Autocomplete.Content&gt;
     &lt;/Autocomplete.Root&gt;
 );</code></pre>
             </div>
@@ -1796,7 +1857,41 @@ click or by Enter on the highlighted row, fires the row&#39;s `onClick`, then
 `onValueChange` with the reason `&#39;item-press&#39;`, and does not submit the form.
 Enter with no row highlighted submits the form with the typed text. Each
 fires once.</div>
-              <pre><code>const PickOrSubmit = () =&gt; &lt;PickOrSubmitDemo /&gt;;</code></pre>
+              <pre><code>const PickOrSubmit = ({ onValueChange, onPick, onSearch }) =&gt; {
+    const [outcome, setOutcome] = useState(&#39;&#39;);
+
+    return (
+        &lt;form
+            aria-label=&quot;Carrier search&quot;
+            className=&quot;flex flex-col gap-3&quot;
+            onSubmit={event =&gt; {
+                event.preventDefault();
+                const query = String(new FormData(event.currentTarget).get(&#39;carrier&#39;));
+                onSearch?.(query);
+                setOutcome(`Searched for ${query}`);
+            }}&gt;
+            &lt;Autocomplete.Root items={CARRIERS} onValueChange={onValueChange}&gt;
+                &lt;Autocomplete.Input name=&quot;carrier&quot; placeholder=&quot;Carrier&quot; aria-label=&quot;Carrier&quot; /&gt;
+                &lt;Autocomplete.Content&gt;
+                    &lt;Autocomplete.List&gt;
+                        {(carrier: string) =&gt; (
+                            &lt;Autocomplete.Item
+                                key={carrier}
+                                value={carrier}
+                                onClick={() =&gt; {
+                                    onPick?.(carrier);
+                                    setOutcome(`Picked ${carrier}`);
+                                }}&gt;
+                                {carrier}
+                            &lt;/Autocomplete.Item&gt;
+                        )}
+                    &lt;/Autocomplete.List&gt;
+                &lt;/Autocomplete.Content&gt;
+            &lt;/Autocomplete.Root&gt;
+            &lt;output className=&quot;text-sm text-text-default-base-secondary&quot;&gt;{outcome}&lt;/output&gt;
+        &lt;/form&gt;
+    );
+};</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -1808,7 +1903,106 @@ fires once.</div>
 the picked text already in the field. The row&#39;s `onClick` still fires first,
 so a handler can still tell a pick from a plain Enter. This form has a submit
 button, and a plain Enter still submits it once.</div>
-              <pre><code>const SubmitOnItemClick = () =&gt; &lt;PickOrSubmitDemo submitOnItemClick /&gt;;</code></pre>
+              <pre><code>const SubmitOnItemClick = ({ onPick, onSearch }) =&gt; {
+    const [outcome, setOutcome] = useState(&#39;&#39;);
+
+    return (
+        &lt;form
+            aria-label=&quot;Carrier search&quot;
+            className=&quot;flex flex-col gap-3&quot;
+            onSubmit={event =&gt; {
+                event.preventDefault();
+                const query = String(new FormData(event.currentTarget).get(&#39;carrier&#39;));
+                onSearch?.(query);
+                setOutcome(`Searched for ${query}`);
+            }}&gt;
+            &lt;div className=&quot;flex items-start gap-3&quot;&gt;
+                &lt;div className=&quot;min-w-0 flex-1&quot;&gt;
+                    &lt;Autocomplete.Root items={CARRIERS} submitOnItemClick&gt;
+                        &lt;Autocomplete.Input name=&quot;carrier&quot; placeholder=&quot;Carrier&quot; aria-label=&quot;Carrier&quot; /&gt;
+                        &lt;Autocomplete.Content&gt;
+                            &lt;Autocomplete.List&gt;
+                                {(carrier: string) =&gt; (
+                                    &lt;Autocomplete.Item
+                                        key={carrier}
+                                        value={carrier}
+                                        onClick={() =&gt; onPick?.(carrier)}&gt;
+                                        {carrier}
+                                    &lt;/Autocomplete.Item&gt;
+                                )}
+                            &lt;/Autocomplete.List&gt;
+                        &lt;/Autocomplete.Content&gt;
+                    &lt;/Autocomplete.Root&gt;
+                &lt;/div&gt;
+                &lt;Button type=&quot;submit&quot; variant=&quot;secondary&quot;&gt;
+                    Search
+                &lt;/Button&gt;
+            &lt;/div&gt;
+            &lt;output className=&quot;text-sm text-text-default-base-secondary&quot;&gt;{outcome}&lt;/output&gt;
+        &lt;/form&gt;
+    );
+};</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Submit On Item Click With Several Forms</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>A pick submits its own form when several share a page</div>
+              <div class="hint">Two forms on one page, each with its own autocomplete. A pick under
+`submitOnItemClick` submits the form that holds that field, never another
+one on the page.</div>
+              <pre><code>const SubmitOnItemClickWithSeveralForms = () =&gt; {
+    const [carrierOutcome, setCarrierOutcome] = useState(&#39;&#39;);
+    const [stateOutcome, setStateOutcome] = useState(&#39;&#39;);
+
+    return (
+        &lt;div className=&quot;flex flex-col gap-6&quot;&gt;
+            &lt;form
+                aria-label=&quot;Carrier search&quot;
+                className=&quot;flex flex-col gap-3&quot;
+                onSubmit={event =&gt; {
+                    event.preventDefault();
+                    setCarrierOutcome(`Searched for ${new FormData(event.currentTarget).get(&#39;query&#39;)}`);
+                }}&gt;
+                &lt;Autocomplete.Root items={CARRIERS} submitOnItemClick&gt;
+                    &lt;Autocomplete.Input name=&quot;query&quot; placeholder=&quot;Carrier&quot; aria-label=&quot;Carrier&quot; /&gt;
+                    &lt;Autocomplete.Content&gt;
+                        &lt;Autocomplete.List&gt;
+                            {(carrier: string) =&gt; (
+                                &lt;Autocomplete.Item key={carrier} value={carrier}&gt;
+                                    {carrier}
+                                &lt;/Autocomplete.Item&gt;
+                            )}
+                        &lt;/Autocomplete.List&gt;
+                    &lt;/Autocomplete.Content&gt;
+                &lt;/Autocomplete.Root&gt;
+                &lt;output className=&quot;text-sm text-text-default-base-secondary&quot;&gt;{carrierOutcome}&lt;/output&gt;
+            &lt;/form&gt;
+            &lt;form
+                aria-label=&quot;State search&quot;
+                className=&quot;flex flex-col gap-3&quot;
+                onSubmit={event =&gt; {
+                    event.preventDefault();
+                    setStateOutcome(`Searched for ${new FormData(event.currentTarget).get(&#39;query&#39;)}`);
+                }}&gt;
+                &lt;Autocomplete.Root items={[&#39;California&#39;, &#39;Florida&#39;, &#39;Texas&#39;]} submitOnItemClick&gt;
+                    &lt;Autocomplete.Input name=&quot;query&quot; placeholder=&quot;State&quot; aria-label=&quot;State&quot; /&gt;
+                    &lt;Autocomplete.Content&gt;
+                        &lt;Autocomplete.List&gt;
+                            {(state: string) =&gt; (
+                                &lt;Autocomplete.Item key={state} value={state}&gt;
+                                    {state}
+                                &lt;/Autocomplete.Item&gt;
+                            )}
+                        &lt;/Autocomplete.List&gt;
+                    &lt;/Autocomplete.Content&gt;
+                &lt;/Autocomplete.Root&gt;
+                &lt;output className=&quot;text-sm text-text-default-base-secondary&quot;&gt;{stateOutcome}&lt;/output&gt;
+            &lt;/form&gt;
+        &lt;/div&gt;
+    );
+};</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -1827,7 +2021,15 @@ from the whole frame.</div>
             before={&lt;IconSearch aria-hidden=&quot;true&quot; /&gt;}
             after={&lt;Tag color=&quot;informative&quot;&gt;Beta&lt;/Tag&gt;}
         /&gt;
-        &lt;CarrierList /&gt;
+        &lt;Autocomplete.Content&gt;
+            &lt;Autocomplete.List&gt;
+                {(carrier: string) =&gt; (
+                    &lt;Autocomplete.Item key={carrier} value={carrier}&gt;
+                        {carrier}
+                    &lt;/Autocomplete.Item&gt;
+                )}
+            &lt;/Autocomplete.List&gt;
+        &lt;/Autocomplete.Content&gt;
     &lt;/Autocomplete.Root&gt;
 );</code></pre>
             </div>
@@ -1872,7 +2074,15 @@ so the name survives the list opening.</div>
         &lt;Label&gt;Carrier&lt;/Label&gt;
         &lt;Autocomplete.Root items={CARRIERS}&gt;
             &lt;Autocomplete.Input placeholder=&quot;Type a carrier&quot; /&gt;
-            &lt;CarrierList /&gt;
+            &lt;Autocomplete.Content&gt;
+                &lt;Autocomplete.List&gt;
+                    {(carrier: string) =&gt; (
+                        &lt;Autocomplete.Item key={carrier} value={carrier}&gt;
+                            {carrier}
+                        &lt;/Autocomplete.Item&gt;
+                    )}
+                &lt;/Autocomplete.List&gt;
+            &lt;/Autocomplete.Content&gt;
         &lt;/Autocomplete.Root&gt;
         &lt;Field.Error errors={[{ message: &#39;Enter the carrier name&#39; }]} /&gt;
         &lt;Field.Description&gt;The carrier that wrote the policy.&lt;/Field.Description&gt;
@@ -1892,7 +2102,67 @@ the controlled `value` ignores the `&#39;item-press&#39;` change, so the number 
 as typed. With no lookup result the list shows nothing. Tab closes the list
 and moves to the next field without picking. The input is a
 masked one, swapped in through `render`.</div>
-              <pre><code>const Lookup = () =&gt; &lt;LookupDemo /&gt;;</code></pre>
+              <pre><code>const Lookup = () =&gt; {
+    const [fein, setFein] = useState(&#39;&#39;);
+    const [name, setName] = useState(&#39;&#39;);
+    const agency = useAgencyLookup(fein);
+
+    return (
+        &lt;div className=&quot;flex flex-col gap-4&quot;&gt;
+            &lt;FieldText&gt;
+                &lt;Label&gt;FEIN&lt;/Label&gt;
+                &lt;Autocomplete.Root
+                    items={agency ? [agency] : []}
+                    filter={null}
+                    autoHighlight=&quot;always&quot;
+                    value={fein}
+                    onValueChange={(value, eventDetails) =&gt; {
+                        // A pick fills the agency name, not this field.
+                        if (eventDetails.reason === &#39;item-press&#39;) return;
+                        setFein(value);
+                    }}&gt;
+                    &lt;Autocomplete.Input
+                        placeholder=&quot;XX-XXXXXXX&quot;
+                        render={inputProps =&gt; (
+                            &lt;input
+                                {...inputProps}
+                                inputMode=&quot;numeric&quot;
+                                onChange={event =&gt; {
+                                    event.target.value = formatFein(event.target.value);
+                                    inputProps.onChange?.(event);
+                                }}
+                            /&gt;
+                        )}
+                    /&gt;
+                    &lt;Autocomplete.Content&gt;
+                        &lt;Autocomplete.List&gt;
+                            {(agencyName: string) =&gt; (
+                                &lt;Autocomplete.Item
+                                    key={agencyName}
+                                    value={agencyName}
+                                    onClick={() =&gt; setName(agencyName)}&gt;
+                                    &lt;div className=&quot;flex min-w-0 flex-col&quot;&gt;
+                                        &lt;span className=&quot;truncate&quot;&gt;{agencyName}&lt;/span&gt;
+                                        &lt;span className=&quot;truncate text-xs text-text-default-base-tertiary&quot;&gt;
+                                            Use this as agency name
+                                        &lt;/span&gt;
+                                    &lt;/div&gt;
+                                &lt;/Autocomplete.Item&gt;
+                            )}
+                        &lt;/Autocomplete.List&gt;
+                    &lt;/Autocomplete.Content&gt;
+                &lt;/Autocomplete.Root&gt;
+                &lt;Field.Description&gt;
+                    The Federal Employer Identification Number of the agency.
+                &lt;/Field.Description&gt;
+            &lt;/FieldText&gt;
+            &lt;FieldText&gt;
+                &lt;Label&gt;Agency name&lt;/Label&gt;
+                &lt;Input value={name} onChange={event =&gt; setName(event.target.value)} /&gt;
+            &lt;/FieldText&gt;
+        &lt;/div&gt;
+    );
+};</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -1901,8 +2171,24 @@ masked one, swapped in through `render`.</div>
               </div>
               <div>Disabled lookup field that never opens its list</div>
               <div class="hint">A locked lookup: the field is disabled, so the list never opens, even with a
-number that a lookup would answer.</div>
-              <pre><code>const LookupLocked = () =&gt; &lt;LookupDemo locked /&gt;;</code></pre>
+suggestion ready for the number in it.</div>
+              <pre><code>const LookupLocked = () =&gt; (
+    &lt;FieldText disabled&gt;
+        &lt;Label&gt;FEIN&lt;/Label&gt;
+        &lt;Autocomplete.Root items={[&#39;Sunrise Insurance Group&#39;]} defaultValue=&quot;12-3456789&quot;&gt;
+            &lt;Autocomplete.Input placeholder=&quot;XX-XXXXXXX&quot; /&gt;
+            &lt;Autocomplete.Content&gt;
+                &lt;Autocomplete.List&gt;
+                    {(agencyName: string) =&gt; (
+                        &lt;Autocomplete.Item key={agencyName} value={agencyName}&gt;
+                            {agencyName}
+                        &lt;/Autocomplete.Item&gt;
+                    )}
+                &lt;/Autocomplete.List&gt;
+            &lt;/Autocomplete.Content&gt;
+        &lt;/Autocomplete.Root&gt;
+    &lt;/FieldText&gt;
+);</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -1914,19 +2200,75 @@ number that a lookup would answer.</div>
 pick fills the other field without closing the dialog, and Escape or a click
 outside close the list, keeping the number. Escape on the shut field then
 closes the dialog.</div>
-              <pre><code>const LookupInsideModal = () =&gt; (
-    &lt;Modal.Root&gt;
-        &lt;Modal.Trigger asChild&gt;
-            &lt;Button variant=&quot;secondary&quot;&gt;Add agency&lt;/Button&gt;
-        &lt;/Modal.Trigger&gt;
-        &lt;Modal.Content&gt;
-            &lt;Modal.Title&gt;Add agency&lt;/Modal.Title&gt;
-            &lt;Modal.Body&gt;
-                &lt;LookupDemo /&gt;
-            &lt;/Modal.Body&gt;
-        &lt;/Modal.Content&gt;
-    &lt;/Modal.Root&gt;
-);</code></pre>
+              <pre><code>const LookupInsideModal = () =&gt; {
+    const [fein, setFein] = useState(&#39;&#39;);
+    const [name, setName] = useState(&#39;&#39;);
+    const agency = useAgencyLookup(fein);
+
+    return (
+        &lt;Modal.Root&gt;
+            &lt;Modal.Trigger asChild&gt;
+                &lt;Button variant=&quot;secondary&quot;&gt;Add agency&lt;/Button&gt;
+            &lt;/Modal.Trigger&gt;
+            &lt;Modal.Content&gt;
+                &lt;Modal.Title&gt;Add agency&lt;/Modal.Title&gt;
+                &lt;Modal.Body className=&quot;flex flex-col gap-4&quot;&gt;
+                    &lt;FieldText&gt;
+                        &lt;Label&gt;FEIN&lt;/Label&gt;
+                        &lt;Autocomplete.Root
+                            items={agency ? [agency] : []}
+                            filter={null}
+                            autoHighlight=&quot;always&quot;
+                            value={fein}
+                            onValueChange={(value, eventDetails) =&gt; {
+                                // A pick fills the agency name, not this field.
+                                if (eventDetails.reason === &#39;item-press&#39;) return;
+                                setFein(value);
+                            }}&gt;
+                            &lt;Autocomplete.Input
+                                placeholder=&quot;XX-XXXXXXX&quot;
+                                render={inputProps =&gt; (
+                                    &lt;input
+                                        {...inputProps}
+                                        inputMode=&quot;numeric&quot;
+                                        onChange={event =&gt; {
+                                            event.target.value = formatFein(event.target.value);
+                                            inputProps.onChange?.(event);
+                                        }}
+                                    /&gt;
+                                )}
+                            /&gt;
+                            &lt;Autocomplete.Content&gt;
+                                &lt;Autocomplete.List&gt;
+                                    {(agencyName: string) =&gt; (
+                                        &lt;Autocomplete.Item
+                                            key={agencyName}
+                                            value={agencyName}
+                                            onClick={() =&gt; setName(agencyName)}&gt;
+                                            &lt;div className=&quot;flex min-w-0 flex-col&quot;&gt;
+                                                &lt;span className=&quot;truncate&quot;&gt;{agencyName}&lt;/span&gt;
+                                                &lt;span className=&quot;truncate text-xs text-text-default-base-tertiary&quot;&gt;
+                                                    Use this as agency name
+                                                &lt;/span&gt;
+                                            &lt;/div&gt;
+                                        &lt;/Autocomplete.Item&gt;
+                                    )}
+                                &lt;/Autocomplete.List&gt;
+                            &lt;/Autocomplete.Content&gt;
+                        &lt;/Autocomplete.Root&gt;
+                        &lt;Field.Description&gt;
+                            The Federal Employer Identification Number of the agency.
+                        &lt;/Field.Description&gt;
+                    &lt;/FieldText&gt;
+                    &lt;FieldText&gt;
+                        &lt;Label&gt;Agency name&lt;/Label&gt;
+                        &lt;Input value={name} onChange={event =&gt; setName(event.target.value)} /&gt;
+                    &lt;/FieldText&gt;
+                &lt;/Modal.Body&gt;
+            &lt;/Modal.Content&gt;
+        &lt;/Modal.Root&gt;
+    );
+};</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -1940,7 +2282,86 @@ overlaid on the empty input through `render`. The suggestion is &quot;run what
 you typed&quot; or, with nothing typed, the recent prompts. A pick runs it from
 the row&#39;s `onClick`; Enter with no row highlighted runs the typed text from
 the form&#39;s submit.</div>
-              <pre><code>const Prompt = () =&gt; &lt;PromptDemo /&gt;;</code></pre>
+              <pre><code>const Prompt = ({ onSearch }) =&gt; {
+    const [prompt, setPrompt] = useState(&#39;&#39;);
+    const [recents, setRecents] = useState([&#39;Agencies onboarded last week&#39;, &#39;Expired licenses&#39;]);
+    const [pending, setPending] = useState(false);
+    const [applied, setApplied] = useState(&#39;&#39;);
+
+    const run = (query: string) =&gt; {
+        const trimmed = query.trim();
+        if (!trimmed || pending) return;
+        onSearch?.(trimmed);
+        setPending(true);
+        // Stands in for the request that translates the prompt into filters.
+        setTimeout(() =&gt; {
+            setPending(false);
+            setApplied(trimmed);
+            setRecents(entries =&gt; [trimmed, ...entries.filter(entry =&gt; entry !== trimmed)]);
+            setPrompt(&#39;&#39;);
+        }, 200);
+    };
+
+    const trimmed = prompt.trim();
+
+    return (
+        &lt;form
+            aria-label=&quot;AI filter&quot;
+            className=&quot;flex flex-col gap-3&quot;
+            onSubmit={event =&gt; {
+                event.preventDefault();
+                run(prompt);
+            }}&gt;
+            &lt;Autocomplete.Root
+                items={trimmed ? [trimmed] : recents}
+                filter={null}
+                openOnInputClick
+                value={prompt}
+                onValueChange={setPrompt}&gt;
+                &lt;Autocomplete.Input
+                    aria-label=&quot;Describe your filters&quot;
+                    readOnly={pending}
+                    className=&quot;read-only:cursor-wait&quot;
+                    before={
+                        pending ? (
+                            &lt;Loading size=&quot;sm&quot; aria-label=&quot;Translating filters&quot; /&gt;
+                        ) : (
+                            &lt;IconStar aria-hidden=&quot;true&quot; /&gt;
+                        )
+                    }
+                    after={&lt;Tag color=&quot;informative&quot;&gt;Beta&lt;/Tag&gt;}
+                    render={inputProps =&gt; (
+                        &lt;span className=&quot;relative flex min-w-0 flex-1&quot;&gt;
+                            {!prompt &amp;&amp; (
+                                &lt;span
+                                    aria-hidden=&quot;true&quot;
+                                    className=&quot;pointer-events-none absolute inset-0 flex items-center truncate text-sm text-text-input-placeholder&quot;&gt;
+                                    Producers licensed in Texas with an expired E&amp;O
+                                &lt;/span&gt;
+                            )}
+                            &lt;input {...inputProps} /&gt;
+                        &lt;/span&gt;
+                    )}
+                /&gt;
+                &lt;Autocomplete.Content&gt;
+                    &lt;Autocomplete.List aria-label=&quot;AI filter suggestions&quot;&gt;
+                        {(query: string) =&gt; (
+                            &lt;Autocomplete.Item key={query} value={query} onClick={() =&gt; run(query)}&gt;
+                                &lt;span className=&quot;truncate&quot;&gt;
+                                    &lt;span className=&quot;text-text-default-base-tertiary&quot;&gt;AI Filter &lt;/span&gt;
+                                    {query}
+                                &lt;/span&gt;
+                            &lt;/Autocomplete.Item&gt;
+                        )}
+                    &lt;/Autocomplete.List&gt;
+                &lt;/Autocomplete.Content&gt;
+            &lt;/Autocomplete.Root&gt;
+            &lt;output className=&quot;text-sm text-text-default-base-secondary&quot;&gt;
+                {applied &amp;&amp; `Filtered by &quot;${applied}&quot;`}
+            &lt;/output&gt;
+        &lt;/form&gt;
+    );
+};</code></pre>
             </div>
         </div>
     
