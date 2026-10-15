@@ -1355,7 +1355,7 @@
         {
           "id": "components-autocomplete--inside-field-text",
           "name": "Inside Field Text",
-          "snippet": "const InsideFieldText = () => (\n    <FieldText invalid required>\n        <Label>Carrier</Label>\n        <Autocomplete.Root items={CARRIERS}>\n            <Autocomplete.Input placeholder=\"Type a carrier\" />\n            <Autocomplete.Content>\n                <Autocomplete.List>\n                    {(carrier: string) => (\n                        <Autocomplete.Item key={carrier} value={carrier}>\n                            {carrier}\n                        </Autocomplete.Item>\n                    )}\n                </Autocomplete.List>\n            </Autocomplete.Content>\n        </Autocomplete.Root>\n        <Field.Error errors={[{ message: 'Enter the carrier name' }]} />\n        <Field.Description>The carrier that wrote the policy.</Field.Description>\n    </FieldText>\n);",
+          "snippet": "const InsideFieldText = () => (\n    <FieldText invalid required>\n        <Label>Carrier</Label>\n        <Autocomplete.Root items={CARRIERS}>\n            <Autocomplete.Input placeholder=\"Type a carrier\" />\n            <Autocomplete.Content>\n                <Autocomplete.List>\n                    {(carrier: string) => (\n                        <Autocomplete.Item key={carrier} value={carrier}>\n                            {carrier}\n                        </Autocomplete.Item>\n                    )}\n                </Autocomplete.List>\n            </Autocomplete.Content>\n        </Autocomplete.Root>\n        <Field.Description>The carrier that wrote the policy.</Field.Description>\n        <Field.Error errors={[{ message: 'Enter the carrier name' }]} />\n    </FieldText>\n);",
           "description": "Inside a `FieldText` the input takes the label, the description and the\nerror with nothing wired by hand, and points `aria-labelledby` at the label\nso the name survives the list opening.",
           "summary": "Label, description and error wired from the surrounding FieldText"
         },
@@ -11266,6 +11266,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5857
+    "durationMs": 4388
   }
 }
