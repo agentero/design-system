@@ -266,16 +266,16 @@ export const SelectWithClear: Story = {
 };
 
 /**
- * `disabled` and `readOnly` go on `Root`; inside a `FieldText` it takes them from
- * the field. A disabled field keeps its value with no clear button and a disabled
- * chevron. A read-only one has no clear button either, but its chevron still
- * opens the list to browse it; picking a row leaves the value as it was.
+ * `disabled` goes on `Root`, or on the surrounding `FieldText`. The field keeps
+ * its value, shows no clear button, and its chevron is disabled, so the list
+ * cannot open.
  *
- * @summary Disabled and read-only fields keep their value
+ * @summary Disabled field that keeps its value
  */
-export const DisabledAndReadOnly: Story = {
-	render: () => {
-		const options = (
+export const Disabled: Story = {
+	render: () => (
+		<Combobox.Root items={STATES} defaultValue="Florida" disabled>
+			<Combobox.Input variant="select" showClear aria-label="State" />
 			<Combobox.Content>
 				<Combobox.List>
 					{(state: string) => (
@@ -285,43 +285,58 @@ export const DisabledAndReadOnly: Story = {
 					)}
 				</Combobox.List>
 			</Combobox.Content>
-		);
-		return (
-			<div className="flex flex-col gap-4">
-				<Combobox.Root items={STATES} defaultValue="Florida" disabled>
-					<Combobox.Input variant="select" showClear aria-label="Disabled state" />
-					{options}
-				</Combobox.Root>
-				<FieldText readOnly>
-					<Label>Read-only state</Label>
-					<Combobox.Root items={STATES} defaultValue="Texas">
-						<Combobox.Input variant="select" showClear />
-						{options}
-					</Combobox.Root>
-				</FieldText>
-			</div>
-		);
-	},
+		</Combobox.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const trigger = canvas.getByRole('button', { name: 'Show options' });
+
+		await expect(canvas.getByRole('combobox', { name: 'State' })).toHaveValue('Florida');
+		await expect(canvas.queryByRole('button', { name: /clear/i })).not.toBeInTheDocument();
+		// With no clear button to stand in for it, the chevron stays in place.
+		await expect(trigger).toBeVisible();
+		await expect(trigger).toBeDisabled();
+	}
+};
+
+/**
+ * `readOnly` goes on `Root`, or on the surrounding `FieldText` as here. It locks
+ * the value, not the list: there is no clear button, but the chevron still
+ * opens the list to browse it, and picking a row leaves the value as it was.
+ *
+ * @summary Read-only field whose list can be browsed but not picked from
+ */
+export const ReadOnly: Story = {
+	render: () => (
+		<FieldText readOnly>
+			<Label>State</Label>
+			<Combobox.Root items={STATES} defaultValue="Texas">
+				<Combobox.Input variant="select" showClear />
+				<Combobox.Content>
+					<Combobox.List>
+						{(state: string) => (
+							<Combobox.Item key={state} value={state}>
+								{state}
+							</Combobox.Item>
+						)}
+					</Combobox.List>
+				</Combobox.Content>
+			</Combobox.Root>
+		</FieldText>
+	),
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 		const body = within(document.body);
-		const [disabledTrigger, readOnlyTrigger] = canvas.getAllByRole('button', {
-			name: 'Show options'
-		});
+		const input = canvas.getByRole('combobox', { name: 'State' });
+		const trigger = canvas.getByRole('button', { name: 'Show options' });
 
 		await expect(canvas.queryByRole('button', { name: /clear/i })).not.toBeInTheDocument();
+		await expect(trigger).toBeVisible();
 
-		await expect(canvas.getByRole('combobox', { name: 'Disabled state' })).toHaveValue('Florida');
-		// With no clear button to stand in for it, the chevron stays in place.
-		await expect(disabledTrigger).toBeVisible();
-		await expect(readOnlyTrigger).toBeVisible();
-		await expect(disabledTrigger).toBeDisabled();
-
-		const readOnly = canvas.getByRole('combobox', { name: 'Read-only state' });
-		await userEvent.click(readOnlyTrigger!);
+		await userEvent.click(trigger);
 		await waitFor(() => expect(body.getByRole('listbox')).toBeInTheDocument());
 		await userEvent.click(body.getByRole('option', { name: 'Florida' }));
-		await expect(readOnly).toHaveValue('Texas');
+		await expect(input).toHaveValue('Texas');
 	}
 };
 
