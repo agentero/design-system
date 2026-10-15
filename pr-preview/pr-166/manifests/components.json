@@ -3890,11 +3890,18 @@
           "summary": "Select field with a clear button added through showClear"
         },
         {
-          "id": "components-combobox--disabled-and-read-only",
-          "name": "Disabled And Read Only",
-          "snippet": "const DisabledAndReadOnly = () => {\n    const options = (\n        <Combobox.Content>\n            <Combobox.List>\n                {(state: string) => (\n                    <Combobox.Item key={state} value={state}>\n                        {state}\n                    </Combobox.Item>\n                )}\n            </Combobox.List>\n        </Combobox.Content>\n    );\n    return (\n        <div className=\"flex flex-col gap-4\">\n            <Combobox.Root items={STATES} defaultValue=\"Florida\" disabled>\n                <Combobox.Input variant=\"select\" showClear aria-label=\"Disabled state\" />\n                {options}\n            </Combobox.Root>\n            <FieldText readOnly>\n                <Label>Read-only state</Label>\n                <Combobox.Root items={STATES} defaultValue=\"Texas\">\n                    <Combobox.Input variant=\"select\" showClear />\n                    {options}\n                </Combobox.Root>\n            </FieldText>\n        </div>\n    );\n};",
-          "description": "`disabled` and `readOnly` go on `Root`; inside a `FieldText` it takes them from\nthe field. A disabled field keeps its value with no clear button and a disabled\nchevron. A read-only one has no clear button either, but its chevron still\nopens the list to browse it; picking a row leaves the value as it was.",
-          "summary": "Disabled and read-only fields keep their value"
+          "id": "components-combobox--disabled",
+          "name": "Disabled",
+          "snippet": "const Disabled = () => (\n    <Combobox.Root items={STATES} defaultValue=\"Florida\" disabled>\n        <Combobox.Input variant=\"select\" showClear aria-label=\"State\" />\n        <Combobox.Content>\n            <Combobox.List>\n                {(state: string) => (\n                    <Combobox.Item key={state} value={state}>\n                        {state}\n                    </Combobox.Item>\n                )}\n            </Combobox.List>\n        </Combobox.Content>\n    </Combobox.Root>\n);",
+          "description": "`disabled` goes on `Root`, or on the surrounding `FieldText`. The field keeps\nits value, shows no clear button, and its chevron is disabled, so the list\ncannot open.",
+          "summary": "Disabled field that keeps its value"
+        },
+        {
+          "id": "components-combobox--read-only",
+          "name": "Read Only",
+          "snippet": "const ReadOnly = () => (\n    <FieldText readOnly>\n        <Label>State</Label>\n        <Combobox.Root items={STATES} defaultValue=\"Texas\">\n            <Combobox.Input variant=\"select\" showClear />\n            <Combobox.Content>\n                <Combobox.List>\n                    {(state: string) => (\n                        <Combobox.Item key={state} value={state}>\n                            {state}\n                        </Combobox.Item>\n                    )}\n                </Combobox.List>\n            </Combobox.Content>\n        </Combobox.Root>\n    </FieldText>\n);",
+          "description": "`readOnly` goes on `Root`, or on the surrounding `FieldText` as here. It locks\nthe value, not the list: there is no clear button, but the chevron still\nopens the list to browse it, and picking a row leaves the value as it was.",
+          "summary": "Read-only field whose list can be browsed but not picked from"
         },
         {
           "id": "components-combobox--no-matches",
@@ -3944,7 +3951,7 @@
           "name": "Inside Popover With Value",
           "error": {
             "name": "SyntaxError",
-            "message": "Expected render to be an arrow function or function expression\n  939 |  */\n  940 | export const InsidePopoverWithValue: Story = {\n> 941 | \trender: InsidePopover.render,\n      | \t           ^^^^^^^^^^^^^^^^^^^^\n  942 | \tplay: async ({ canvasElement }) => {\n  943 | \t\tconst body = within(document.body);\n  944 | \t\tconst trigger = within(canvasElement).getByRole('button', { name: /filter by state/i });"
+            "message": "Expected render to be an arrow function or function expression\n  954 |  */\n  955 | export const InsidePopoverWithValue: Story = {\n> 956 | \trender: InsidePopover.render,\n      | \t           ^^^^^^^^^^^^^^^^^^^^\n  957 | \tplay: async ({ canvasElement }) => {\n  958 | \t\tconst body = within(document.body);\n  959 | \t\tconst trigger = within(canvasElement).getByRole('button', { name: /filter by state/i });"
           }
         },
         {
@@ -11561,6 +11568,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5581
+    "durationMs": 5611
   }
 }

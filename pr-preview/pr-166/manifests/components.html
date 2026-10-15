@@ -588,7 +588,7 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">41 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/350 story errors</a></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">41 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/351 story errors</a></div>
   </div>
 </header>
 <main>
@@ -4111,7 +4111,7 @@ import { CheckList } from &#39;@agentero/design-system/check-list&#39;;
       <div class="badges">
         <label for="c-9-components-combobox-props" class="badge ok as-toggle">41 prop types</label>
         
-        <label for="c-9-components-combobox-stories" class="badge err as-toggle">1/14 story errors</label>
+        <label for="c-9-components-combobox-stories" class="badge err as-toggle">1/15 story errors</label>
         
         
       </div>
@@ -4436,13 +4436,13 @@ virtualized?: boolean = false</code></pre>
               
               
               <pre><code>Expected render to be an arrow function or function expression
-  939 |  */
-  940 | export const InsidePopoverWithValue: Story = {
-&gt; 941 | 	render: InsidePopover.render,
+  954 |  */
+  955 | export const InsidePopoverWithValue: Story = {
+&gt; 956 | 	render: InsidePopover.render,
       | 	           ^^^^^^^^^^^^^^^^^^^^
-  942 | 	play: async ({ canvasElement }) =&gt; {
-  943 | 		const body = within(document.body);
-  944 | 		const trigger = within(canvasElement).getByRole(&#39;button&#39;, { name: /filter by state/i });</code></pre>
+  957 | 	play: async ({ canvasElement }) =&gt; {
+  958 | 		const body = within(document.body);
+  959 | 		const trigger = within(canvasElement).getByRole(&#39;button&#39;, { name: /filter by state/i });</code></pre>
             </div>
           
           
@@ -4560,16 +4560,16 @@ brings the chevron back. Passing `false` drops it from `search`.</div>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">Disabled And Read Only</span>
+                <span class="ex-name">Disabled</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Disabled and read-only fields keep their value</div>
-              <div class="hint">`disabled` and `readOnly` go on `Root`; inside a `FieldText` it takes them from
-the field. A disabled field keeps its value with no clear button and a disabled
-chevron. A read-only one has no clear button either, but its chevron still
-opens the list to browse it; picking a row leaves the value as it was.</div>
-              <pre><code>const DisabledAndReadOnly = () =&gt; {
-    const options = (
+              <div>Disabled field that keeps its value</div>
+              <div class="hint">`disabled` goes on `Root`, or on the surrounding `FieldText`. The field keeps
+its value, shows no clear button, and its chevron is disabled, so the list
+cannot open.</div>
+              <pre><code>const Disabled = () =&gt; (
+    &lt;Combobox.Root items={STATES} defaultValue=&quot;Florida&quot; disabled&gt;
+        &lt;Combobox.Input variant=&quot;select&quot; showClear aria-label=&quot;State&quot; /&gt;
         &lt;Combobox.Content&gt;
             &lt;Combobox.List&gt;
                 {(state: string) =&gt; (
@@ -4579,23 +4579,35 @@ opens the list to browse it; picking a row leaves the value as it was.</div>
                 )}
             &lt;/Combobox.List&gt;
         &lt;/Combobox.Content&gt;
-    );
-    return (
-        &lt;div className=&quot;flex flex-col gap-4&quot;&gt;
-            &lt;Combobox.Root items={STATES} defaultValue=&quot;Florida&quot; disabled&gt;
-                &lt;Combobox.Input variant=&quot;select&quot; showClear aria-label=&quot;Disabled state&quot; /&gt;
-                {options}
-            &lt;/Combobox.Root&gt;
-            &lt;FieldText readOnly&gt;
-                &lt;Label&gt;Read-only state&lt;/Label&gt;
-                &lt;Combobox.Root items={STATES} defaultValue=&quot;Texas&quot;&gt;
-                    &lt;Combobox.Input variant=&quot;select&quot; showClear /&gt;
-                    {options}
-                &lt;/Combobox.Root&gt;
-            &lt;/FieldText&gt;
-        &lt;/div&gt;
-    );
-};</code></pre>
+    &lt;/Combobox.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Read Only</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Read-only field whose list can be browsed but not picked from</div>
+              <div class="hint">`readOnly` goes on `Root`, or on the surrounding `FieldText` as here. It locks
+the value, not the list: there is no clear button, but the chevron still
+opens the list to browse it, and picking a row leaves the value as it was.</div>
+              <pre><code>const ReadOnly = () =&gt; (
+    &lt;FieldText readOnly&gt;
+        &lt;Label&gt;State&lt;/Label&gt;
+        &lt;Combobox.Root items={STATES} defaultValue=&quot;Texas&quot;&gt;
+            &lt;Combobox.Input variant=&quot;select&quot; showClear /&gt;
+            &lt;Combobox.Content&gt;
+                &lt;Combobox.List&gt;
+                    {(state: string) =&gt; (
+                        &lt;Combobox.Item key={state} value={state}&gt;
+                            {state}
+                        &lt;/Combobox.Item&gt;
+                    )}
+                &lt;/Combobox.List&gt;
+            &lt;/Combobox.Content&gt;
+        &lt;/Combobox.Root&gt;
+    &lt;/FieldText&gt;
+);</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
