@@ -80,9 +80,9 @@ const RowsProbe = ({ onChange }: { onChange: (hasRows: boolean) => void }) => {
  * `submitOnItemClick` is left out too: to submit on a pick, run the submit
  * from the row's `onClick` with the row's value. Base UI empties the field on Escape while the
  * list is shut, as a native search input does; this root keeps the text
- * instead, and does not report that change. Inside a `Modal`, Escape on an open
- * list closes the list only, and the next one closes the dialog; the modal
- * leaves an Escape from an expanded combobox to it.
+ * instead, and does not report that change. Inside a `Modal` or `Popover`,
+ * Escape on an open list closes the list only, and the next one closes the
+ * layer.
  *
  * Picking a row and pressing Enter are told apart with Base UI's own events:
  *
@@ -151,9 +151,11 @@ export const Root = <Item,>({
 	}, [open]);
 
 	const handleValueChange: typeof onValueChange = (nextValue, eventDetails) => {
-		// Escape on a shut list empties the field in Base UI. The text is the value here.
+		// Escape on a shut list empties the field in Base UI. The text is the value here, so the
+		// field keeps it and, with nothing undone, lets the Escape on to a surrounding Modal or Popover.
 		if (eventDetails.reason === 'escape-key') {
 			eventDetails.cancel();
+			eventDetails.allowPropagation();
 			return;
 		}
 		onValueChange?.(nextValue, eventDetails);
