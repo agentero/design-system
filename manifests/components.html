@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.6s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>4.1s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -3566,12 +3566,13 @@ governs a partially selected group.</div>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">Legacy States</span>
+                <span class="ex-name">All States</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Legacy checkbox colours across all interaction states</div>
-              <div class="hint">Preserves the legacy palette and 16px footprint for every value and validation state.</div>
-              <pre><code>const LegacyStates = () =&gt; (
+              <div>Checkbox colours across all value and validation states</div>
+              <div class="hint">Every value, enabled and disabled, valid and invalid, as the Portal UI
+library&#39;s Base Checkbox draws them: a 16px box with a 1.5px border.</div>
+              <pre><code>const AllStates = () =&gt; (
     &lt;div className=&quot;flex flex-col gap-6&quot;&gt;
         {[false, true].map(invalid =&gt; (
             &lt;div key={String(invalid)} className=&quot;flex flex-col gap-4&quot;&gt;
