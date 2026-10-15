@@ -38,7 +38,7 @@ export const fieldRecipe = tv({
 		root: 'group/field flex w-full gap-2',
 		content: [
 			'flex flex-col gap-2 leading-snug',
-			'[&>:is([data-slot=label],[data-slot=field-label])+[data-slot=field-description]]:-mt-1.5'
+			'[&>:is([data-slot=label],[data-slot=field-label])+[data-slot=field-description]]:-mt-2'
 		],
 		label: 'flex flex-wrap items-center gap-1',
 		labelTooltip: [
