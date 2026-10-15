@@ -340,26 +340,28 @@ export const NoError: Story = {
 };
 
 /**
- * The error sits right under the control and is announced before the
- * description, even when it appears after the description is on screen and
+ * The description sits right under the control and is announced before the
+ * error, even when it appears after the error is on screen and the error
  * carries an `id` of its own.
  *
- * @summary Error announced before the description, whenever it appears
+ * @summary Description announced before the error, whenever it appears
  */
-export const ErrorBeforeDescription: Story = {
+export const DescriptionBeforeError: Story = {
 	render: args => {
-		const [error, setError] = useState<string>();
+		const [showHint, setShowHint] = useState(false);
 
 		return (
 			<div className="flex flex-col items-start gap-4">
-				<Field.Root {...args} invalid={!!error}>
+				<Field.Root {...args} invalid>
 					<Label>Tax ID</Label>
 					<DemoInput inputMode="numeric" />
-					<Field.Error id="tax-id-error">{error}</Field.Error>
-					<Field.Description>Nine digits, with or without the dash.</Field.Description>
+					{showHint && (
+						<Field.Description>Nine digits, with or without the dash.</Field.Description>
+					)}
+					<Field.Error id="tax-id-error">Enter the tax ID.</Field.Error>
 				</Field.Root>
-				<button type="button" onClick={() => setError('Enter the tax ID.')}>
-					Validate
+				<button type="button" onClick={() => setShowHint(true)}>
+					Show hint
 				</button>
 			</div>
 		);
@@ -369,13 +371,14 @@ export const ErrorBeforeDescription: Story = {
 
 		const input = canvas.getByRole('textbox', { name: 'Tax ID' });
 
-		await expect(input).toHaveAccessibleDescription('Nine digits, with or without the dash.');
+		await expect(canvas.getByRole('alert')).toHaveAttribute('id', 'tax-id-error');
+		await expect(input).toHaveAccessibleDescription('Enter the tax ID.');
 
-		await userEvent.click(canvas.getByRole('button', { name: 'Validate' }));
+		await userEvent.click(canvas.getByRole('button', { name: 'Show hint' }));
 
-		await expect(await canvas.findByRole('alert')).toHaveAttribute('id', 'tax-id-error');
+		await expect(await canvas.findByText('Nine digits, with or without the dash.')).toBeVisible();
 		await expect(input).toHaveAccessibleDescription(
-			'Enter the tax ID. Nine digits, with or without the dash.'
+			'Nine digits, with or without the dash. Enter the tax ID.'
 		);
 	}
 };

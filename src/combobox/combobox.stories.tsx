@@ -696,8 +696,8 @@ export const InsideFieldText: Story = {
 					</Combobox.List>
 				</Combobox.Content>
 			</Combobox.Root>
-			<Field.Error errors={[{ message: 'Pick an agency from the list' }]} />
 			<Field.Description>The agency this agent will be added to.</Field.Description>
+			<Field.Error errors={[{ message: 'Pick an agency from the list' }]} />
 		</FieldText>
 	),
 	play: async ({ canvasElement }) => {
@@ -708,7 +708,7 @@ export const InsideFieldText: Story = {
 		await expect(input).toBeRequired();
 		await expect(input).toHaveAttribute('aria-invalid', 'true');
 		await expect(input).toHaveAccessibleDescription(
-			'Pick an agency from the list The agency this agent will be added to.'
+			'The agency this agent will be added to. Pick an agency from the list'
 		);
 
 		// Named through a direct reference to the label as well as its `for`. The JS matcher
