@@ -40,11 +40,18 @@ export const textAreaRecipe = tv({
 	}
 });
 
-const counterClassName = [
-	'pointer-events-none absolute right-4 bottom-2 text-xs leading-normal tabular-nums',
-	'text-text-input-placeholder peer-disabled:text-text-input-disable',
-	'data-over:text-text-input-destructive'
-];
+/**
+ * The count `TextArea` draws inside its box when it has `maxLength`.
+ *
+ * @summary tailwind-variants recipe backing the TextArea character count
+ */
+export const textAreaCounterRecipe = tv({
+	base: [
+		'pointer-events-none absolute right-4 bottom-2 text-xs leading-normal tabular-nums',
+		'text-text-input-placeholder peer-disabled:text-text-input-disable',
+		'data-over:text-text-input-destructive'
+	]
+});
 
 export type TextAreaVariants = VariantProps<typeof textAreaRecipe>;
 
@@ -58,11 +65,6 @@ export type TextAreaProps = ComponentPropsWithRef<'textarea'> & {
 	 * the text to `base` and the radius to `lg`).
 	 */
 	size?: TextAreaSize;
-	/**
-	 * Caps the value natively and shows the count inside the box, bottom right
-	 * (`12/500`), announced with the control as "12 of 500 characters".
-	 */
-	maxLength?: number;
 };
 
 const describedByWith = (describedBy: string | undefined, id: string) =>
@@ -154,7 +156,7 @@ export const TextArea = (props: TextAreaProps) => {
 					id={counterId}
 					data-slot="textarea-counter"
 					data-over={length > maxLength || undefined}
-					className={cn(counterClassName)}>
+					className={textAreaCounterRecipe()}>
 					<span aria-hidden>
 						{length}/{maxLength}
 					</span>
