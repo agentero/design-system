@@ -3034,7 +3034,7 @@
         "displayName": "Combobox.Root",
         "exportName": "Combobox",
         "filePath": "/home/runner/work/design-system/design-system/src/combobox/index.ts",
-        "description": "Root of a combobox: a text input that filters a list of options and writes the\nchosen one back into itself. The list opens on focus, on the first keystroke\nor from the chevron of `Input`'s `select` variant.\n\nFor a search against an API, set `minInputLength` so the list stays shut until\nthe query is worth sending: a field that opens an empty list on focus reads as\nbroken. For a pick from a short fixed list with no typing at all, prefer a\nselect.\n\nPass the options as `items`. For a list that comes from the server, set\n`filter={null}`, hand the already-filtered rows to `filteredItems`, request\nthem from `onInputValueChange`, and pass the request's state as `loading`:\nthe combobox announces the wait and marks the list busy on its own.\n\nEvery Base UI root prop is accepted and forwarded — `items`, `filter`,\n`value`, `onValueChange` and so on. `open` stays the consumer's to control;\n`minInputLength` only refuses to open below the minimum.\n\nWith `multiple`, the value is an array and picking a row toggles it. The list\nstays open and keeps the typed query between picks, so several rows can be\nticked from one search; closing the list (Escape, a click outside) still resets\nthe query. Each row then shows whether it is selected — see `Item`. Nothing is\nwritten back into the input: render the selection next to the field.",
+        "description": "Root of a combobox: a text input that filters a list of options and writes the\nchosen one back into itself. The list opens on focus, on the first keystroke\nor from the chevron of `Input`'s `select` variant.\n\nFor a search against an API, set `minInputLength` so the list stays shut until\nthe query is worth sending: a field that opens an empty list on focus reads as\nbroken. For a pick from a short fixed list with no typing at all, prefer a\nselect.\n\nPass the options as `items`. For a list that comes from the server, set\n`filter={null}`, hand the already-filtered rows to `filteredItems`, request\nthem from `onInputValueChange`, and pass the request's state as `loading`:\nthe combobox announces the wait and marks the list busy on its own.\n\nEvery Base UI root prop is accepted and forwarded — `items`, `filter`,\n`value`, `onValueChange` and so on. `open` stays the consumer's to control;\n`minInputLength` only refuses to open below the minimum.\n\n`disabled` and `readOnly` belong here, not on `Input`: the input, the clear\nbutton and the chevron all read them from the root. `disabled` locks the\nwhole field; `readOnly` locks the value but still lets the list open and be\nbrowsed. Inside a `FieldText` both default to the field's.\n\nWith `multiple`, the value is an array and picking a row toggles it. The list\nstays open and keeps the typed query between picks, so several rows can be\nticked from one search; closing the list (Escape, a click outside) still resets\nthe query. Each row then shows whether it is selected — see `Item`. Nothing is\nwritten back into the input: render the selection next to the field.",
         "jsDocTags": {
           "summary": [
             "Root provider for an input-triggered filterable list"
@@ -3865,7 +3865,7 @@
           "id": "components-combobox--default",
           "name": "Default",
           "snippet": "const Default = () => (\n    <Combobox.Root items={STATES}>\n        <Combobox.Input placeholder=\"Search states\" aria-label=\"Search states\" />\n        <Combobox.Content>\n            <Combobox.Empty>No matches found</Combobox.Empty>\n            <Combobox.List>\n                {(state: string) => (\n                    <Combobox.Item key={state} value={state}>\n                        {state}\n                    </Combobox.Item>\n                )}\n            </Combobox.List>\n        </Combobox.Content>\n    </Combobox.Root>\n);",
-          "description": "The common case: options are already in memory and Base UI filters them against\nwhat you type. Selecting a row fills the input and closes the list. The field is\na search out of the box — a magnifier in front, a clear button once there is\ntext — and the list hangs from the whole field. Clearing drops the picked option.",
+          "description": "The common case: options are already in memory and Base UI filters them against\nwhat you type. Selecting a row fills the input and closes the list. The field is\na search out of the box — a magnifier in front, a clear button once something is\npicked — and the list hangs from the whole field. Clearing drops the picked option.",
           "summary": "Search field with a magnifier and clear button over an in-memory list"
         },
         {
@@ -3888,6 +3888,20 @@
           "snippet": "const SelectWithClear = () => (\n    <Combobox.Root items={STATES} defaultValue=\"Florida\">\n        <Combobox.Input variant=\"select\" showClear placeholder=\"Choose a state\" aria-label=\"State\" />\n        <Combobox.Content>\n            <Combobox.Empty>No matches found</Combobox.Empty>\n            <Combobox.List>\n                {(state: string) => (\n                    <Combobox.Item key={state} value={state}>\n                        {state}\n                    </Combobox.Item>\n                )}\n            </Combobox.List>\n        </Combobox.Content>\n    </Combobox.Root>\n);",
           "description": "`showClear` overrides the variant's default: here it adds the clear button to a\n`select`, so a picked option can be removed without selecting the text and\ndeleting it. While there is a value it takes the chevron's place; clearing\nbrings the chevron back. Passing `false` drops it from `search`.",
           "summary": "Select field with a clear button added through showClear"
+        },
+        {
+          "id": "components-combobox--disabled",
+          "name": "Disabled",
+          "snippet": "const Disabled = () => (\n    <Combobox.Root items={STATES} defaultValue=\"Florida\" disabled>\n        <Combobox.Input variant=\"select\" showClear aria-label=\"State\" />\n        <Combobox.Content>\n            <Combobox.List>\n                {(state: string) => (\n                    <Combobox.Item key={state} value={state}>\n                        {state}\n                    </Combobox.Item>\n                )}\n            </Combobox.List>\n        </Combobox.Content>\n    </Combobox.Root>\n);",
+          "description": "`disabled` goes on `Root`, or on the surrounding `FieldText`. The field keeps\nits value, shows no clear button, and its chevron is disabled, so the list\ncannot open.",
+          "summary": "Disabled field that keeps its value"
+        },
+        {
+          "id": "components-combobox--read-only",
+          "name": "Read Only",
+          "snippet": "const ReadOnly = () => (\n    <FieldText readOnly>\n        <Label>State</Label>\n        <Combobox.Root items={STATES} defaultValue=\"Texas\">\n            <Combobox.Input variant=\"select\" showClear />\n            <Combobox.Content>\n                <Combobox.List>\n                    {(state: string) => (\n                        <Combobox.Item key={state} value={state}>\n                            {state}\n                        </Combobox.Item>\n                    )}\n                </Combobox.List>\n            </Combobox.Content>\n        </Combobox.Root>\n    </FieldText>\n);",
+          "description": "`readOnly` goes on `Root`, or on the surrounding `FieldText` as here. It locks\nthe value, not the list: there is no clear button, but the chevron still\nopens the list to browse it, and picking a row leaves the value as it was.",
+          "summary": "Read-only field whose list can be browsed but not picked from"
         },
         {
           "id": "components-combobox--no-matches",
@@ -3937,7 +3951,7 @@
           "name": "Inside Popover With Value",
           "error": {
             "name": "SyntaxError",
-            "message": "Expected render to be an arrow function or function expression\n  844 |  */\n  845 | export const InsidePopoverWithValue: Story = {\n> 846 | \trender: InsidePopover.render,\n      | \t           ^^^^^^^^^^^^^^^^^^^^\n  847 | \tplay: async ({ canvasElement }) => {\n  848 | \t\tconst body = within(document.body);\n  849 | \t\tconst trigger = within(canvasElement).getByRole('button', { name: /filter by state/i });"
+            "message": "Expected render to be an arrow function or function expression\n  958 |  */\n  959 | export const InsidePopoverWithValue: Story = {\n> 960 | \trender: InsidePopover.render,\n      | \t           ^^^^^^^^^^^^^^^^^^^^\n  961 | \tplay: async ({ canvasElement }) => {\n  962 | \t\tconst body = within(document.body);\n  963 | \t\tconst trigger = within(canvasElement).getByRole('button', { name: /filter by state/i });"
           }
         },
         {
@@ -8299,7 +8313,7 @@
         "displayName": "InputSearch",
         "exportName": "InputSearch",
         "filePath": "/home/runner/work/design-system/design-system/src/input-search/input-search.tsx",
-        "description": "InputSearch is a search field: a magnifier in front of the text and, once\nthere is text, a clear button after it, named \"Clear search\" unless\n`clearLabel` says otherwise. The clear button empties the field\nand puts focus back in it, and it reports the change through `onChange` like\na keystroke would: a real change event whose `event.target.value` is `''`,\nso a controlled field, an uncontrolled one and one registered with\nreact-hook-form all clear the same way. While `isLoading` is set, a spinner\ntakes the clear button's place. The clear button is not rendered while the\ninput is disabled, whether `disabled` comes from the prop, from a\nsurrounding `FieldText` or from a `<fieldset disabled>`.\n\nIt is an [Input](?path=/docs/components-input--docs) of `type=\"search\"`\ninside an [InputGroup](?path=/docs/components-inputgroup--docs) frame, so\nit is announced as a search box. `className` styles the frame. Every other\nprop goes to the `<input>`: the `ref`, `id`, `name`, `value`, `onChange`,\n`aria-*` and every other standard attribute. Only `type` is not accepted.\n`placeholder` defaults to `'Search'`. Inside a `FieldText` the input takes\nits label, messages and states from the field as a plain `Input` does. The\ninvalid state comes from `aria-invalid`, and the frame paints the\ndestructive border.\n\nDo not use it to pick a value from a list; that is\n[Combobox](?path=/docs/components-combobox--docs), whose `search` field is\ndrawn by InputSearch. For a filter that should\nrun only once the user pauses typing, use `DebouncedInputSearch`.",
+        "description": "InputSearch is a search field: a magnifier in front of the text and, once\nthere is text, a clear button after it, named \"Clear search\" unless\n`clearLabel` says otherwise. The clear button empties the field\nand puts focus back in it, and it reports the change through `onChange` like\na keystroke would: a real change event whose `event.target.value` is `''`,\nso a controlled field, an uncontrolled one and one registered with\nreact-hook-form all clear the same way. While `isLoading` is set, a spinner\ntakes the clear button's place. The clear button is not rendered while the\ninput is disabled, whether `disabled` comes from the prop, from a\nsurrounding `FieldText` or from a `<fieldset disabled>`.\n\nIt is an [Input](?path=/docs/components-input--docs) of `type=\"search\"`\ninside an [InputGroup](?path=/docs/components-inputgroup--docs) frame, so\nit is announced as a search box. `className` styles the frame. Every other\nprop goes to the `<input>`: the `ref`, `id`, `name`, `value`, `onChange`,\n`aria-*` and every other standard attribute. Only `type` is not accepted.\n`placeholder` defaults to `'Search'`. Inside a `FieldText` the input takes\nits label, messages and states from the field as a plain `Input` does. The\ninvalid state comes from `aria-invalid`, and the frame paints the\ndestructive border.\n\nDo not use it to pick a value from a list; that is\n[Combobox](?path=/docs/components-combobox--docs), whose `search` field\nlooks the same but clears only a picked option. For a filter that should\nrun only once the user pauses typing, use `DebouncedInputSearch`.",
         "jsDocTags": {
           "summary": [
             "Search input with a leading icon, a clear button and a loading slot"
@@ -11554,6 +11568,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 6072
+    "durationMs": 5311
   }
 }
