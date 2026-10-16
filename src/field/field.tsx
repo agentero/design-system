@@ -55,7 +55,7 @@ export const fieldRecipe = tv({
 			'[&>a]:underline [&>a]:underline-offset-4'
 		],
 		error: [
-			'text-sm font-normal text-text-input-destructive',
+			'text-sm leading-normal font-normal text-text-input-destructive',
 			'[&>ul]:ml-4 [&>ul]:flex [&>ul]:list-disc [&>ul]:flex-col [&>ul]:gap-1'
 		]
 	},

@@ -221,27 +221,167 @@ export const OwnPropsWin: Story = {
 };
 
 /**
- * With `maxLength` the text area counts inside its box, and the count joins
- * the field's description in what the control announces.
+ * Figma's empty state with a count: the description on the left and the count
+ * on the right, 16px apart under the box. Beside a count a long description
+ * keeps to one line and truncates; a screen reader still hears all of it, with
+ * the count.
  *
- * @summary Field with a character count inside the box
+ * @summary Count beside a truncated description, under the box
  */
 export const WithCounter: Story = {
 	render: args => (
 		<FieldTextArea {...args}>
-			<Label>Reason</Label>
-			<TextArea maxLength={500} defaultValue="Moving to another state." />
-			<Field.Description>Shared with the carrier along with the request.</Field.Description>
+			<Label optional>Notes</Label>
+			<TextArea maxLength={500} placeholder="Placeholder" />
+			<Field.Description>
+				Shared with the carrier along with the request, and kept on the policy file for audits.
+			</Field.Description>
 		</FieldTextArea>
 	),
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
-		const textarea = canvas.getByRole('textbox', { name: 'Reason' });
+		const textarea = canvas.getByRole('textbox', { name: /Notes/ });
+		const counter = canvasElement.querySelector('[data-slot=textarea-counter]')!;
+		const description = canvas.getByText(/Shared with the carrier/);
+		const box = textarea.getBoundingClientRect();
+		const count = counter.getBoundingClientRect();
+		const help = description.getBoundingClientRect();
 
+		await expect(counter).toHaveTextContent('0/500');
 		await expect(textarea).toHaveAccessibleDescription(
-			'Shared with the carrier along with the request. 24 of 500 characters'
+			'Shared with the carrier along with the request, and kept on the policy file for audits. 0 of 500 characters'
 		);
-		await expect(canvas.getByText('24/500')).toBeInTheDocument();
+		await expect(help.top - box.bottom).toBe(8);
+		await expect(count.top).toBe(help.top);
+		await expect(Math.round(count.right)).toBe(Math.round(box.right));
+		await expect(count.left - help.right).toBe(16);
+		await expect(help.height).toBe(21);
+		await expect(getComputedStyle(description).textOverflow).toBe('ellipsis');
+	}
+};
+
+/**
+ * Past the limit, as in Figma: the user keeps typing, the characters over the
+ * limit and the count read destructive, and the form's validation shows its
+ * error where the description goes.
+ *
+ * @summary Over the limit: extra characters, count and error in red
+ */
+export const OverLimit: Story = {
+	args: { invalid: true },
+	render: args => (
+		<FieldTextArea {...args}>
+			<Label>Notes</Label>
+			<TextArea
+				maxLength={40}
+				defaultValue="Roof replaced in 2024 after hail damage, garage added."
+			/>
+			<Field.Error errors={[{ message: 'Keep it brief' }]} />
+		</FieldTextArea>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const textarea = canvas.getByRole('textbox', { name: 'Notes' });
+		const counter = canvasElement.querySelector('[data-slot=textarea-counter]')!;
+		const overText = canvasElement.querySelector('[data-slot=textarea-overflow] span')!;
+		const alert = canvas.getByRole('alert');
+
+		await expect(counter).toHaveTextContent('54/40');
+		await expect(overText.textContent).toBe((textarea as HTMLTextAreaElement).value.slice(40));
+		await expect(getComputedStyle(overText).color).toBe(getComputedStyle(alert).color);
+
+		await userEvent.type(textarea, ' More text.');
+		await expect(counter).toHaveTextContent('65/40');
+	}
+};
+
+/**
+ * A horizontal field keeps its row, label beside the box, and the count sits
+ * under the box rather than beside it.
+ *
+ * @summary Horizontal field: count under the box, label beside it
+ */
+export const HorizontalWithCounter: Story = {
+	// Runs as a test only: a layout edge case, not a Figma state.
+	tags: ['!dev', '!autodocs', '!manifest'],
+	args: { orientation: 'horizontal' },
+	render: args => (
+		<FieldTextArea {...args}>
+			<Label>Reason</Label>
+			<TextArea maxLength={500} />
+		</FieldTextArea>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const root = canvasElement.querySelector('[data-slot=field]')!;
+		const label = canvas.getByText('Reason').closest('label')!.getBoundingClientRect();
+		const box = canvas.getByRole('textbox', { name: 'Reason' }).getBoundingClientRect();
+		const count = canvasElement
+			.querySelector('[data-slot=textarea-counter]')!
+			.getBoundingClientRect();
+
+		await expect(getComputedStyle(root).display).toBe('flex');
+		await expect(box.left).toBeGreaterThan(label.right);
+		await expect(count.top - box.bottom).toBe(8);
+		await expect(Math.round(count.right)).toBe(Math.round(box.right));
+	}
+};
+
+/**
+ * A `Field.Content` holding the box and its messages gets the same row as a
+ * vertical field: description left, count right.
+ *
+ * @summary Count beside the description inside a Field.Content
+ */
+export const ContentWithCounter: Story = {
+	// Runs as a test only: a layout edge case, not a Figma state.
+	tags: ['!dev', '!autodocs', '!manifest'],
+	args: { orientation: 'horizontal' },
+	render: args => (
+		<FieldTextArea {...args}>
+			<Label>Reason</Label>
+			<Field.Content className="flex-1">
+				<TextArea maxLength={500} />
+				<Field.Description>Shared with the carrier.</Field.Description>
+			</Field.Content>
+		</FieldTextArea>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const box = canvas.getByRole('textbox', { name: 'Reason' }).getBoundingClientRect();
+		const help = canvas.getByText('Shared with the carrier.').getBoundingClientRect();
+		const count = canvasElement
+			.querySelector('[data-slot=textarea-counter]')!
+			.getBoundingClientRect();
+
+		await expect(count.top).toBe(help.top);
+		await expect(help.top - box.bottom).toBe(8);
+		await expect(Math.round(count.right)).toBe(Math.round(box.right));
+	}
+};
+
+/**
+ * An invalid field shows its error where the description goes, and the count
+ * beside it turns destructive too, as in Figma.
+ *
+ * @summary Error and destructive count share the row under the box
+ */
+export const InvalidWithCounter: Story = {
+	args: { invalid: true, required: true },
+	render: args => (
+		<FieldTextArea {...args}>
+			<Label>Reason</Label>
+			<TextArea maxLength={500} />
+			<Field.Error errors={[{ message: 'This field is required' }]} />
+		</FieldTextArea>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const counter = canvasElement.querySelector('[data-slot=textarea-counter]')!;
+		const alert = canvas.getByRole('alert');
+
+		await expect(counter.getBoundingClientRect().top).toBe(alert.getBoundingClientRect().top);
+		await expect(getComputedStyle(counter).color).toBe(getComputedStyle(alert).color);
 	}
 };
 

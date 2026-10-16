@@ -4,6 +4,7 @@ import {
 	ComponentPropsWithRef,
 	useCallback,
 	useId,
+	useLayoutEffect,
 	useMemo,
 	useRef,
 	useSyncExternalStore
@@ -29,10 +30,6 @@ export const textAreaRecipe = tv({
 			sm: 'h-auto min-h-19 py-1',
 			md: 'h-auto min-h-21 py-2',
 			lg: 'h-auto min-h-24 py-2.75'
-		},
-		// Without the scroll padding, typing leaves the caret's line under the count.
-		counter: {
-			true: 'peer pb-7 scroll-pb-7'
 		}
 	},
 	defaultVariants: {
@@ -41,21 +38,59 @@ export const textAreaRecipe = tv({
 });
 
 /**
- * The count `TextArea` draws inside its box when it has `maxLength`.
+ * The count `TextArea` shows under its box when it has `maxLength`,
+ * right-aligned like the helper text's row in Figma.
  *
  * @summary tailwind-variants recipe backing the TextArea character count
  */
 export const textAreaCounterRecipe = tv({
 	base: [
-		'pointer-events-none absolute right-3 bottom-2',
-		'supports-[anchor-name:--a]:right-[calc(anchor(right)+0.75rem)]',
-		'supports-[anchor-name:--a]:bottom-[calc(anchor(bottom)+0.5rem)]',
-		'rounded-sm bg-bg-input-normal px-1 text-xs leading-normal font-normal tabular-nums',
-		'text-text-input-placeholder',
-		'peer-disabled:bg-bg-input-disable peer-disabled:text-text-input-disable',
+		'mt-2 flex justify-end',
+		'text-sm leading-normal tabular-nums text-text-input-placeholder',
+		'group-has-[textarea:disabled]/textarea:text-text-input-disable',
+		'group-has-[textarea[aria-invalid=true]]/textarea:text-text-input-destructive',
 		'data-over:text-text-input-destructive'
 	]
 });
+
+/**
+ * The layer a `TextArea` lays over itself once the value passes `maxLength`:
+ * the same text, transparent up to the limit and destructive after it, so the
+ * characters over the limit read red inside the box.
+ *
+ * @summary tailwind-variants recipe backing the TextArea over-limit highlight
+ */
+export const textAreaOverflowRecipe = tv({
+	slots: {
+		// Hidden until it has been measured, so a server render never shows it misplaced.
+		root: 'pointer-events-none invisible absolute box-border overflow-hidden border-0 text-transparent',
+		over: 'text-text-input-destructive'
+	}
+});
+
+// The layer must wrap and scroll exactly like the textarea it covers.
+const MIRRORED = [
+	'paddingTop',
+	'paddingRight',
+	'paddingBottom',
+	'paddingLeft',
+	'direction',
+	'textAlign',
+	'textTransform',
+	'fontFamily',
+	'fontSize',
+	'fontStyle',
+	'fontVariant',
+	'fontWeight',
+	'lineHeight',
+	'letterSpacing',
+	'wordSpacing',
+	'textIndent',
+	'tabSize',
+	'whiteSpace',
+	'overflowWrap',
+	'wordBreak'
+] as const;
 
 export type TextAreaVariants = VariantProps<typeof textAreaRecipe>;
 
@@ -86,21 +121,28 @@ const describedByWith = (describedBy: string | undefined, id: string) =>
  * container. Standalone, `id`, `aria-describedby` and `aria-invalid` are the
  * field owner's job. The invalid state has no prop of its own: `aria-invalid`
  * drives the destructive border, the same as Input. Every `<textarea>` attribute
- * is accepted and forwarded, so `placeholder`, `required`, `disabled`,
+ * except `maxLength` is forwarded, so `placeholder`, `required`, `disabled`,
  * `readOnly` and the rest work as in plain HTML; `rows` raises the resting
  * height when three rows are not enough.
  *
- * With `maxLength` it also counts: a `12/500` in the box's bottom-right
- * corner, anchored to the `<textarea>` itself, and announced through its
- * `aria-describedby` rather than on every keystroke. `className` and every
- * other prop go to the `<textarea>`, which stays the layout box with or
- * without a count: the `data-slot="textarea-root"` wrapper around it is
- * `display: contents` (in a browser without anchor positioning, a counted
- * wrapper fills its container instead). The count follows `value` when the
- * text area is controlled; uncontrolled, it follows typing, a native form
- * reset and any rewrite followed by a render. A form library that writes the
- * value without rendering (react-hook-form's `setValue` on a registered field)
- * needs the value controlled for the count to follow.
+ * `maxLength` is a soft limit and is not forwarded, since the native attribute
+ * would stop typing. It shows a `12/500` count under the box, right-aligned and
+ * announced through the textarea's `aria-describedby` rather than on every
+ * keystroke. Past the limit the user keeps typing: the extra characters and
+ * the count turn destructive, and rejecting a longer value is the form's
+ * validation. The count is destructive when the field is invalid too. The box
+ * and its count are stacked in a `data-slot="textarea-root"` wrapper that
+ * fills its container, so size a counted TextArea from its container rather
+ * than through `className`; `FieldTextArea` lays the count beside the
+ * description or error instead.
+ * Without `maxLength` the wrapper is `display: contents`, and `className` and
+ * every other prop always go to the `<textarea>`.
+ *
+ * The count follows `value` when the text area is controlled; uncontrolled, it
+ * follows typing, a native form reset and any rewrite followed by a render. A
+ * form library that writes the value without rendering (react-hook-form's
+ * `setValue` on a registered field) needs the value controlled for the count
+ * to follow.
  *
  * @summary Base multi-line text control sharing Input's skin, states and sizes
  *
@@ -117,9 +159,7 @@ export const TextArea = (props: TextAreaProps) => {
 		'aria-describedby': describedBy,
 		...rest
 	} = useTextAreaContext(props);
-	const id = useId();
-	const counterId = `${id}-count`;
-	const anchorName = `--textarea-${id.replace(/[^\w-]/g, '')}`;
+	const counterId = `${useId()}-count`;
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 	const mergedRef = useMemo(() => mergeRefs(textareaRef, ref), [ref]);
 
@@ -143,44 +183,112 @@ export const TextArea = (props: TextAreaProps) => {
 		},
 		[counter, controlled]
 	);
-	const initialLength = String(rest.defaultValue ?? '').length;
-	const domLength = useSyncExternalStore(
+	const initialValue = String(rest.defaultValue ?? '');
+	const domValue = useSyncExternalStore(
 		subscribe,
-		() => textareaRef.current?.value.length ?? initialLength,
-		() => initialLength
+		() => textareaRef.current?.value ?? initialValue,
+		() => initialValue
 	);
 
-	const length = controlled ? String(rest.value).length : domLength;
+	const value = controlled ? String(rest.value) : domValue;
+	const length = value.length;
+	const over = counter && length > maxLength;
+	const overflowRef = useRef<HTMLSpanElement>(null);
+	// Copies the textarea's layout onto the layer, reading every style before
+	// writing any, so it wraps and scrolls exactly like the text it covers.
+	const syncOverflow = useCallback(() => {
+		const textarea = textareaRef.current;
+		const layer = overflowRef.current;
+		if (!textarea || !layer) return;
+
+		const style = getComputedStyle(textarea);
+		const values = MIRRORED.map(property => style[property]);
+		// The layer covers the textarea's client area, wherever its scrollbars sit.
+		const { offsetTop, offsetLeft, clientTop, clientLeft, clientWidth, clientHeight } = textarea;
+		const { scrollTop, scrollLeft } = textarea;
+
+		MIRRORED.forEach((property, index) => (layer.style[property] = values[index] ?? ''));
+		layer.style.top = `${offsetTop + clientTop}px`;
+		layer.style.left = `${offsetLeft + clientLeft}px`;
+		layer.style.width = `${clientWidth}px`;
+		layer.style.height = `${clientHeight}px`;
+		layer.style.visibility = 'visible';
+		layer.scrollTop = scrollTop;
+		layer.scrollLeft = scrollLeft;
+	}, []);
+
+	// A class, size or value change can move the text, so every render re-syncs.
+	useLayoutEffect(() => {
+		if (over) syncOverflow();
+	});
+
+	useLayoutEffect(() => {
+		const textarea = textareaRef.current;
+		if (!over || !textarea) return;
+
+		const onScroll = () => {
+			const layer = overflowRef.current;
+			if (!layer) return;
+			layer.scrollTop = textarea.scrollTop;
+			layer.scrollLeft = textarea.scrollLeft;
+		};
+		const observer = new ResizeObserver(syncOverflow);
+		observer.observe(textarea);
+		if (textarea.parentElement) observer.observe(textarea.parentElement);
+		textarea.addEventListener('scroll', onScroll);
+		document.fonts?.addEventListener('loadingdone', syncOverflow);
+		return () => {
+			observer.disconnect();
+			textarea.removeEventListener('scroll', onScroll);
+			document.fonts?.removeEventListener('loadingdone', syncOverflow);
+		};
+	}, [over, syncOverflow]);
+
+	// Splits on a whole character, so an emoji across the limit is never cut in two.
+	const highSurrogate = /[\uD800-\uDBFF]/.test(value.charAt((maxLength ?? 0) - 1));
+	const split = (maxLength ?? 0) - (highSurrogate ? 1 : 0);
+	const overflowStyles = textAreaOverflowRecipe();
 
 	return (
 		<span
 			data-slot="textarea-root"
-			className={
-				counter ? 'relative block w-full supports-[anchor-name:--a]:contents' : 'contents'
-			}>
-			<textarea
-				ref={mergedRef}
-				data-slot="textarea"
-				data-size={size}
-				className={cn(textAreaRecipe({ size, counter }), className)}
-				maxLength={maxLength}
-				aria-describedby={counter ? describedByWith(describedBy, counterId) : describedBy}
-				{...rest}
-				style={counter ? { anchorName, ...rest.style } : rest.style}
-			/>
+			className={cn('group/textarea', counter ? 'flex w-full flex-col' : 'contents')}>
+			<span data-slot="textarea-box" className={counter ? 'relative block' : 'contents'}>
+				<textarea
+					ref={mergedRef}
+					data-slot="textarea"
+					data-size={size}
+					className={cn(textAreaRecipe({ size }), className)}
+					aria-describedby={counter ? describedByWith(describedBy, counterId) : describedBy}
+					{...rest}
+				/>
+				{over && (
+					<span
+						ref={overflowRef}
+						aria-hidden
+						data-slot="textarea-overflow"
+						className={overflowStyles.root()}>
+						{value.slice(0, split)}
+						<span className={overflowStyles.over()}>{value.slice(split)}</span>
+						{/* Keeps a trailing line break as tall as the textarea's. */}
+						{'\u200b'}
+					</span>
+				)}
+			</span>
 			{counter && (
 				<>
 					<span
 						aria-hidden
 						data-slot="textarea-counter"
 						data-over={length > maxLength || undefined}
-						className={textAreaCounterRecipe()}
-						style={{ positionAnchor: anchorName }}>
+						className={textAreaCounterRecipe()}>
 						{length}/{maxLength}
 					</span>
 					{/* Hidden, so it reaches the description but never the name of a wrapping label. */}
 					<span id={counterId} hidden>
-						{length} of {maxLength} characters
+						{length > maxLength
+							? `${length - maxLength} characters over the limit of ${maxLength}`
+							: `${length} of ${maxLength} characters`}
 					</span>
 				</>
 			)}

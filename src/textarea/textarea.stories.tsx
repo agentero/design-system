@@ -4,9 +4,25 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { Button } from '../button';
-import { InputGroup } from '../input-group';
 import { Label } from '../label';
 import { TextArea } from './textarea';
+
+const layerMatches = (textarea: HTMLElement) => {
+	const layer = textarea.parentElement!.querySelector<HTMLElement>(
+		'[data-slot=textarea-overflow]'
+	)!;
+	const box = textarea.getBoundingClientRect();
+	const over = layer.getBoundingClientRect();
+	// The layer covers the textarea's client area, inside its border and scrollbars.
+	return {
+		layer,
+		sameOrigin:
+			over.top === box.top + textarea.clientTop &&
+			over.left === box.left + textarea.clientLeft &&
+			over.width === textarea.clientWidth &&
+			over.height === textarea.clientHeight
+	};
+};
 
 /**
  * TextArea is the base multi-line text control, with Input's skin, sizes and
@@ -177,11 +193,11 @@ export const ReadOnly: Story = {
 };
 
 /**
- * `maxLength` caps the value and shows the count inside the box, bottom
- * right. The count is part of the control's description, so a screen reader
- * hears "0 of 140 characters" with the field instead of on every keystroke.
+ * `maxLength` shows the count under the box, right-aligned, 8px below it. The
+ * count is part of the control's description, so a screen reader hears
+ * "0 of 140 characters" with the field instead of on every keystroke.
  *
- * @summary Character count inside the box, driven by maxLength
+ * @summary Character count under the box, driven by maxLength
  */
 export const WithCounter: Story = {
 	args: { maxLength: 140 },
@@ -200,30 +216,163 @@ export const WithCounter: Story = {
 
 		const box = textarea.getBoundingClientRect();
 		const count = counter.getBoundingClientRect();
-		await expect(box.right - count.right).toBe(12);
-		await expect(box.bottom - count.bottom).toBe(8);
-		await expect(getComputedStyle(textarea).paddingBottom).toBe('28px');
+		await expect(count.top - box.bottom).toBe(8);
+		await expect(Math.round(count.right)).toBe(Math.round(box.right));
 	}
 };
 
 /**
- * A controlled value counts too, and one longer than `maxLength` — set by
- * code, since typing stops at the cap — turns the count destructive.
+ * The limit is soft: typing goes past it, the characters over the limit and
+ * the count turn destructive, and the description says by how much, so the
+ * form's validation can reject it.
  *
- * @summary Controlled count, destructive past the limit
+ * @summary Typing past the limit turns the count destructive
  */
 export const CounterOverLimit: Story = {
-	args: {
-		maxLength: 10,
-		value: 'Twelve chars',
-		onChange: () => {},
-		'aria-invalid': true
-	},
+	args: { maxLength: 10 },
 	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const textarea = canvas.getByRole('textbox', { name: 'Notes' });
 		const counter = canvasElement.querySelector('[data-slot=textarea-counter]')!;
+		const muted = getComputedStyle(counter).color;
 
+		await userEvent.type(textarea, 'Twelve chars');
+
+		await expect(textarea).toHaveValue('Twelve chars');
+		await expect(textarea).not.toHaveAttribute('maxlength');
 		await expect(counter).toHaveTextContent('12/10');
 		await expect(counter).toHaveAttribute('data-over');
+		await expect(getComputedStyle(counter).color).not.toBe(muted);
+		await expect(textarea).toHaveAccessibleDescription('2 characters over the limit of 10');
+
+		// The characters past the limit read destructive inside the box.
+		const layer = canvasElement.querySelector('[data-slot=textarea-overflow]')!;
+		const overText = layer.querySelector('span')!;
+		await expect(overText).toHaveTextContent('rs');
+		await expect(getComputedStyle(overText).color).toBe(getComputedStyle(counter).color);
+		await expect(layerMatches(textarea).sameOrigin).toBe(true);
+
+		await userEvent.keyboard('{Backspace}{Backspace}');
+		await expect(canvasElement.querySelector('[data-slot=textarea-overflow]')).toBeNull();
+		await expect(counter).not.toHaveAttribute('data-over');
+	}
+};
+
+/**
+ * The count never joins the name of a `<label>` wrapped around the control.
+ *
+ * @summary Count kept out of a wrapping label's name
+ */
+export const CounterInLabel: Story = {
+	// Runs as a test only: an edge case, not a state consumers need to see.
+	tags: ['!dev', '!autodocs', '!manifest'],
+	render: () => (
+		<Label className="flex-col items-stretch font-normal">
+			Notes
+			<TextArea maxLength={100} defaultValue="hello" />
+		</Label>
+	),
+	play: async ({ canvasElement }) => {
+		const textarea = within(canvasElement).getByRole('textbox', { name: 'Notes' });
+
+		await expect(textarea).toHaveAccessibleDescription('5 of 100 characters');
+	}
+};
+
+/**
+ * The red layer follows the textarea it covers whatever styles it: a margin
+ * or `box-content` from `className`, right-to-left text, a long unwrapped line scrolled
+ * sideways, and an emoji right on the limit, which is never cut in two.
+ *
+ * @summary Over-limit highlight follows margins, direction, sideways scroll and emoji
+ */
+export const OverflowFollowsTextarea: Story = {
+	// Runs as a test only: an edge case, not a state consumers need to see.
+	tags: ['!dev', '!autodocs', '!manifest'],
+	render: () => (
+		<div className="flex flex-col gap-4">
+			<TextArea aria-label="Margin" className="mt-4" maxLength={5} defaultValue="Twelve chars" />
+			<TextArea
+				aria-label="Content box"
+				className="box-content"
+				maxLength={5}
+				defaultValue="Twelve chars"
+			/>
+			<TextArea aria-label="Right to left" dir="rtl" maxLength={5} defaultValue="שלום עולם טוב" />
+			<TextArea
+				aria-label="Unwrapped"
+				wrap="off"
+				maxLength={5}
+				defaultValue={Array(6).fill('A long line that does not wrap '.repeat(6)).join('\n')}
+			/>
+			<TextArea aria-label="Emoji" maxLength={3} defaultValue="ab😀cd" />
+		</div>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const textbox = (name: string) => canvas.getByRole('textbox', { name }) as HTMLTextAreaElement;
+
+		await expect(layerMatches(textbox('Margin')).sameOrigin).toBe(true);
+		await expect(layerMatches(textbox('Content box')).sameOrigin).toBe(true);
+		await expect(getComputedStyle(layerMatches(textbox('Margin')).layer).visibility).toBe(
+			'visible'
+		);
+
+		const rtl = layerMatches(textbox('Right to left'));
+		await expect(getComputedStyle(rtl.layer).direction).toBe('rtl');
+
+		const unwrapped = textbox('Unwrapped');
+		await expect(layerMatches(unwrapped).sameOrigin).toBe(true);
+		unwrapped.scrollLeft = 120;
+		unwrapped.scrollTop = unwrapped.scrollHeight;
+		unwrapped.dispatchEvent(new Event('scroll'));
+		await waitFor(() => {
+			const { layer } = layerMatches(unwrapped);
+			expect(layer.scrollLeft).toBe(unwrapped.scrollLeft);
+			expect(layer.scrollTop).toBe(unwrapped.scrollTop);
+		});
+
+		const emoji = layerMatches(textbox('Emoji')).layer;
+		await expect(emoji.querySelector('span')!.textContent).toBe('😀cd');
+	}
+};
+
+const ControlledCounter = () => {
+	const [value, setValue] = useState('Twelve');
+
+	return (
+		<TextArea
+			aria-label="Notes"
+			maxLength={10}
+			value={value}
+			onChange={event => setValue(event.target.value)}
+		/>
+	);
+};
+
+/**
+ * A controlled value drives the count and the highlight too, past the limit
+ * and back under it.
+ *
+ * @summary Controlled count and highlight past the limit
+ */
+export const CounterControlled: Story = {
+	// Runs as a test only: covers the controlled path of the count.
+	tags: ['!dev', '!autodocs', '!manifest'],
+	render: () => <ControlledCounter />,
+	play: async ({ canvasElement }) => {
+		const textarea = within(canvasElement).getByRole('textbox', { name: 'Notes' });
+		const counter = canvasElement.querySelector('[data-slot=textarea-counter]')!;
+
+		await expect(counter).toHaveTextContent('6/10');
+		await userEvent.type(textarea, ' chars!');
+		await expect(counter).toHaveTextContent('13/10');
+		await expect(
+			canvasElement.querySelector('[data-slot=textarea-overflow] span')!.textContent
+		).toBe('rs!');
+		await userEvent.keyboard('{Backspace}{Backspace}{Backspace}');
+		await expect(counter).toHaveTextContent('10/10');
+		await expect(canvasElement.querySelector('[data-slot=textarea-overflow]')).toBeNull();
 	}
 };
 
@@ -248,47 +397,37 @@ const ResetForm = () => {
 };
 
 /**
- * A form that rewrites an uncontrolled value, as a react-hook-form `reset`
- * does, fires no input event; the count reads the `<textarea>` again when the
- * form re-renders.
+ * The uncontrolled count follows a value the form rewrites without an input
+ * event: a re-render after a react-hook-form-style reset, and a native reset.
  *
- * @summary Uncontrolled count follows a value rewritten by the form
+ * @summary Uncontrolled count follows form resets
  */
-export const CounterAfterReset: Story = {
-	render: () => <ResetForm />,
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-		const counter = canvasElement.querySelector('[data-slot=textarea-counter]')!;
-
-		await expect(counter).toHaveTextContent('5/100');
-		await userEvent.click(canvas.getByRole('button', { name: 'Reset' }));
-		await expect(counter).toHaveTextContent('3/100');
-	}
-};
-
-/**
- * A native form reset restores the default value without an input event; the
- * count listens to the form's `reset` and follows.
- *
- * @summary Uncontrolled count follows a native form reset
- */
-export const CounterAfterNativeReset: Story = {
+export const CounterFollowsResets: Story = {
+	// Runs as a test only: it covers how the count is read, not a visual state.
+	tags: ['!dev', '!autodocs', '!manifest'],
 	render: () => (
-		<form className="flex flex-col items-start gap-2">
-			<TextArea aria-label="Notes" maxLength={100} defaultValue="hello" />
-			<Button type="reset" variant="secondary" size="sm">
-				Reset
-			</Button>
-		</form>
+		<div className="flex flex-col gap-6">
+			<ResetForm />
+			<form className="flex flex-col items-start gap-2">
+				<TextArea aria-label="Native" maxLength={100} defaultValue="hello" />
+				<Button type="reset" variant="secondary" size="sm">
+					Native reset
+				</Button>
+			</form>
+		</div>
 	),
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
-		const counter = canvasElement.querySelector('[data-slot=textarea-counter]')!;
+		const [rerendered, native] = canvasElement.querySelectorAll('[data-slot=textarea-counter]');
 
-		await userEvent.type(canvas.getByRole('textbox', { name: 'Notes' }), ' there');
-		await expect(counter).toHaveTextContent('11/100');
+		await expect(rerendered).toHaveTextContent('5/100');
 		await userEvent.click(canvas.getByRole('button', { name: 'Reset' }));
-		await waitFor(() => expect(counter).toHaveTextContent('5/100'));
+		await expect(rerendered).toHaveTextContent('3/100');
+
+		await userEvent.type(canvas.getByRole('textbox', { name: 'Native' }), ' there');
+		await expect(native).toHaveTextContent('11/100');
+		await userEvent.click(canvas.getByRole('button', { name: 'Native reset' }));
+		await waitFor(() => expect(native).toHaveTextContent('5/100'));
 	}
 };
 
@@ -300,6 +439,8 @@ export const CounterAfterNativeReset: Story = {
  * @summary Without maxLength the wrapper leaves layout to the textarea
  */
 export const LayoutWithoutCounter: Story = {
+	// Runs as a test only: an edge case, not a state consumers need to see.
+	tags: ['!dev', '!autodocs', '!manifest'],
 	render: () => (
 		<div className="flex w-96 items-start gap-4">
 			<TextArea aria-label="Notes" className="w-auto flex-1" />
@@ -341,6 +482,8 @@ const ToggleLimit = () => {
  * @summary Adding a limit keeps the same control and its text
  */
 export const ToggleMaxLength: Story = {
+	// Runs as a test only: an edge case, not a state consumers need to see.
+	tags: ['!dev', '!autodocs', '!manifest'],
 	render: () => <ToggleLimit />,
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -354,52 +497,5 @@ export const ToggleMaxLength: Story = {
 		await expect(canvasElement.querySelector('[data-slot=textarea-counter]')).toHaveTextContent(
 			'5/100'
 		);
-	}
-};
-
-/**
- * The count is anchored to the `<textarea>`, so a width set through
- * `className` keeps it in the box's corner, and it never joins the name of a
- * `<label>` wrapped around the control.
- *
- * @summary Count stays in the corner of a narrower box and out of the label's name
- */
-export const CounterNarrowInLabel: Story = {
-	render: () => (
-		<Label className="flex-col items-start font-normal">
-			Notes
-			<TextArea className="w-64" maxLength={100} defaultValue="hello" />
-		</Label>
-	),
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-		const textarea = canvas.getByRole('textbox', { name: 'Notes' });
-		const counter = canvasElement.querySelector('[data-slot=textarea-counter]')!;
-		const box = textarea.getBoundingClientRect();
-		const count = counter.getBoundingClientRect();
-
-		await expect(box.width).toBe(256);
-		await expect(box.right - count.right).toBe(12);
-		await expect(box.bottom - count.bottom).toBe(8);
-		await expect(textarea).toHaveAccessibleDescription('5 of 100 characters');
-	}
-};
-
-/**
- * Inside an `InputGroup` the count keeps its room: the group strips the
- * textarea's own padding, but not the space reserved under the text.
- *
- * @summary Count inside an InputGroup keeps the text clear of it
- */
-export const CounterInInputGroup: Story = {
-	render: () => (
-		<InputGroup.Root>
-			<TextArea aria-label="Notes" maxLength={100} defaultValue="hello" />
-		</InputGroup.Root>
-	),
-	play: async ({ canvasElement }) => {
-		const textarea = within(canvasElement).getByRole('textbox', { name: 'Notes' });
-
-		await expect(getComputedStyle(textarea).paddingBottom).toBe('28px');
 	}
 };
