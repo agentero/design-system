@@ -197,7 +197,9 @@ export type ComboboxRootProps<
  *
  * The first row is highlighted as soon as the list shows one, so Enter picks
  * it without the arrow keys; pass `autoHighlight={false}` to start with
- * nothing highlighted. See `Input` for what Enter does in a form.
+ * nothing highlighted. The highlight follows `items` (and `filteredItems`):
+ * rows rendered without them, by a child that loads its own data, are only
+ * highlighted once the query changes. See `Input` for what Enter does in a form.
  *
  * With `multiple`, the value is an array and picking a row toggles it. The list
  * stays open and keeps the typed query between picks, so several rows can be
