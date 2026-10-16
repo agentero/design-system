@@ -61,8 +61,8 @@ const expectListAlignedWithField = (canvasElement: HTMLElement) => {
 /**
  * The common case: options are already in memory and Base UI filters them against
  * what you type. Selecting a row fills the input and closes the list. The field is
- * a search out of the box — a magnifier in front, a clear button once there is
- * text — and the list hangs from the whole field. Clearing drops the picked option.
+ * a search out of the box — a magnifier in front, a clear button once something is
+ * picked — and the list hangs from the whole field. Clearing drops the picked option.
  *
  * @summary Search field with a magnifier and clear button over an in-memory list
  */
@@ -105,8 +105,7 @@ export const Default: Story = {
 		await userEvent.type(input, 'co');
 		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(2));
 
-		// The clear button follows the text, so it is there before anything is picked.
-		await expect(canvas.getByRole('button', { name: /clear/i })).toBeInTheDocument();
+		await expect(canvas.queryByRole('button', { name: /clear/i })).not.toBeInTheDocument();
 
 		await userEvent.click(body.getByRole('option', { name: 'Colorado' }));
 		await waitFor(() => expect(input).toHaveValue('Colorado'));
@@ -263,6 +262,36 @@ export const SelectWithClear: Story = {
 		// No value: the clear button is gone and the chevron is back.
 		await expect(canvas.queryByRole('button', { name: /clear/i })).not.toBeInTheDocument();
 		await expect(trigger).toBeVisible();
+	}
+};
+
+/**
+ * A `disabled` or `readOnly` input keeps its picked option but loses the clear
+ * button, which would otherwise empty a field the user cannot edit. On a `select`
+ * the chevron stays in its place.
+ *
+ * @summary Disabled field keeps its value without a clear button
+ */
+export const Disabled: Story = {
+	render: () => (
+		<div className="flex flex-col gap-4">
+			<Combobox.Root items={STATES} defaultValue="Florida">
+				<Combobox.Input disabled aria-label="Search state" />
+			</Combobox.Root>
+			<Combobox.Root items={STATES} defaultValue="Texas">
+				<Combobox.Input variant="select" showClear readOnly aria-label="State" />
+			</Combobox.Root>
+		</div>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		await expect(canvas.getByRole('combobox', { name: 'Search state' })).toHaveValue('Florida');
+		await expect(canvas.getByRole('combobox', { name: 'State' })).toHaveValue('Texas');
+		await expect(canvas.queryByRole('button', { name: /clear/i })).not.toBeInTheDocument();
+		await expect(
+			canvasElement.querySelector<HTMLElement>('[data-slot="combobox-trigger"]')
+		).toBeVisible();
 	}
 };
 

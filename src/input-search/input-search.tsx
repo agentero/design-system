@@ -74,8 +74,8 @@ export type InputSearchProps = Omit<InputProps, 'type'> & {
  * destructive border.
  *
  * Do not use it to pick a value from a list; that is
- * [Combobox](?path=/docs/components-combobox--docs), whose `search` field is
- * drawn by InputSearch. For a filter that should
+ * [Combobox](?path=/docs/components-combobox--docs), whose `search` field
+ * looks the same but clears only a picked option. For a filter that should
  * run only once the user pauses typing, use `DebouncedInputSearch`.
  *
  * @summary Search input with a leading icon, a clear button and a loading slot
