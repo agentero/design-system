@@ -588,13 +588,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">41 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/353 story errors</a></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">41 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/352 story errors</a></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>5.3s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>4.5s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -4111,7 +4111,7 @@ import { CheckList } from &#39;@agentero/design-system/check-list&#39;;
       <div class="badges">
         <label for="c-9-components-combobox-props" class="badge ok as-toggle">41 prop types</label>
         
-        <label for="c-9-components-combobox-stories" class="badge err as-toggle">1/17 story errors</label>
+        <label for="c-9-components-combobox-stories" class="badge err as-toggle">1/16 story errors</label>
         
         
       </div>
@@ -4436,13 +4436,13 @@ virtualized?: boolean = false</code></pre>
               
               
               <pre><code>Expected render to be an arrow function or function expression
-  1085 |  */
-  1086 | export const InsidePopoverWithValue: Story = {
-&gt; 1087 | 	render: InsidePopover.render,
-       | 	           ^^^^^^^^^^^^^^^^^^^^
-  1088 | 	play: async ({ canvasElement }) =&gt; {
-  1089 | 		const body = within(document.body);
-  1090 | 		const trigger = within(canvasElement).getByRole(&#39;button&#39;, { name: /filter by state/i });</code></pre>
+  966 |  */
+  967 | export const InsidePopoverWithValue: Story = {
+&gt; 968 | 	render: InsidePopover.render,
+      | 	           ^^^^^^^^^^^^^^^^^^^^
+  969 | 	play: async ({ canvasElement }) =&gt; {
+  970 | 		const body = within(document.body);
+  971 | 		const trigger = within(canvasElement).getByRole(&#39;button&#39;, { name: /filter by state/i });</code></pre>
             </div>
           
           
@@ -4450,8 +4450,7 @@ virtualized?: boolean = false</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button, Combobox, Field, FieldText, Label, Modal, Popover, Skeleton, Tag } from "@agentero/design-system";
-import { Suspense } from "react";</code></pre>
+                <pre><code>import { Button, Combobox, Field, FieldText, Label, Modal, Popover, Skeleton, Tag } from "@agentero/design-system";</code></pre>
               </div>
           
           
@@ -4677,59 +4676,13 @@ here as tags.</div>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">Async Search</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              
-              <div class="hint">Options fetched as you type, the way the apps load data: the rows are a component
-that suspends on the request, so a `Suspense` boundary inside `Content` shows
-placeholder rows until the first results land. The rows read a deferred copy of
-the query, so a new search keeps the previous rows on screen while it loads, and
-passing that staleness as `loading` announces the wait and marks `Content` busy
-until they are replaced; the placeholders never come back. Nothing tracks a
-request by hand, and reading the data by query is what
-makes out-of-order responses harmless. With react-query, drop a
-`useSuspenseQuery` where `use()` is, or use `placeholderData: keepPreviousData`
-with a plain `useQuery` for the same behaviour.</div>
-              <pre><code>const AsyncSearch = () =&gt; {
-    const [query, setQuery] = useState(&#39;&#39;);
-    // The rows read the deferred query: while the new one suspends, React keeps rendering the
-    // old rows instead of falling back to the placeholders.
-    const deferredQuery = useDeferredValue(query);
-    const isStale = query !== deferredQuery;
-
-    return (
-        // No `items` and `filter={null}`: the server did the filtering, the child renders what came
-        // back, and `isItemEqualToValue` keeps a re-fetched copy counting as the selected one.
-        &lt;Combobox.Root
-            filter={null}
-            itemToStringLabel={(agency: Agency) =&gt; agency.name}
-            isItemEqualToValue={(a: Agency, b: Agency) =&gt; a.id === b.id}
-            loading={isStale}
-            loadingLabel=&quot;Searching agencies…&quot;
-            onInputValueChange={(value, { reason }) =&gt; {
-                // Picking a row writes its label into the input; that is not a new search.
-                if (reason !== &#39;item-press&#39;) setQuery(value);
-            }}&gt;
-            &lt;Combobox.Input placeholder=&quot;Search agencies&quot; aria-label=&quot;Search agencies&quot; /&gt;
-            &lt;Combobox.Content&gt;
-                &lt;Suspense fallback={&lt;SkeletonRows /&gt;}&gt;
-                    &lt;AgencyItems query={deferredQuery} /&gt;
-                &lt;/Suspense&gt;
-            &lt;/Combobox.Content&gt;
-        &lt;/Combobox.Root&gt;
-    );
-};</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
                 <span class="ex-name">Async Search With Loading</span>
                 <span class="badge ok">story ok</span>
               </div>
               <div>API search that waits for two characters and announces its loading state</div>
-              <div class="hint">The same search without Suspense, for a consumer that gets a `loading` flag from
-its data layer instead: `filter={null}`, the rows arrive through `filteredItems`,
-and the flag goes to `Root` as `loading`. That is all the wiring the wait needs:
+              <div class="hint">Options fetched from an API as you type: `filter={null}`, the rows arrive
+through `items` and `filteredItems`, and the data layer&#39;s `loading` flag goes
+to `Root`. That is all the wiring the wait needs:
 `Content` is marked busy, `loadingLabel` is announced once when the request
 starts, and `Empty` holds back &quot;no results&quot; until the answer is in. Placeholder
 rows show only while there is nothing to show yet, hidden from assistive
