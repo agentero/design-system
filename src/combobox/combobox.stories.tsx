@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { SubmitEvent, useRef, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
@@ -670,45 +670,66 @@ export const AsyncSearchWithLoading: Story = {
 	}
 };
 
-const onSubmit = fn();
+// Counts the form's submits and reads the picked state from its data, so a story shows when Enter
+// reaches the form and what it sent.
+const useSubmissions = () => {
+	const [submissions, setSubmissions] = useState<{ count: number; state: string }>();
+
+	const onSubmit = (event: SubmitEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		const state = String(new FormData(event.currentTarget).get('state') ?? '');
+		setSubmissions(previous => ({ count: (previous?.count ?? 0) + 1, state }));
+	};
+
+	const status = submissions
+		? `Submitted ${submissions.count}× — state: ${submissions.state || 'none'}`
+		: 'Not submitted';
+
+	return { onSubmit, status };
+};
 
 /**
  * Inside a form, Enter in an open list picks the highlighted row instead of
  * submitting. The first row is highlighted as soon as the list shows one, so
  * typing a search and pressing Enter picks the top match. With no match, Enter
- * does nothing. Once the list is closed, Enter submits the form as in any input.
+ * does nothing. Once the list is closed, Enter submits the form as in any input,
+ * with no value if none was picked: mark the root `required` to block that.
  *
  * @summary Enter picks the highlighted row while the list is open, submits once closed
  */
 export const InsideForm: Story = {
-	render: () => (
-		<form
-			className="flex flex-col items-start gap-4"
-			onSubmit={event => {
-				event.preventDefault();
-				onSubmit();
-			}}>
-			<Combobox.Root items={STATES}>
-				<Combobox.Input placeholder="Search states" aria-label="State" />
-				<Combobox.Content>
-					<Combobox.Empty>No matches found</Combobox.Empty>
-					<Combobox.List>
-						{(state: string) => (
-							<Combobox.Item key={state} value={state}>
-								{state}
-							</Combobox.Item>
-						)}
-					</Combobox.List>
-				</Combobox.Content>
-			</Combobox.Root>
-			<Button type="submit">Save</Button>
-		</form>
-	),
+	render: () => {
+		const { onSubmit, status } = useSubmissions();
+
+		return (
+			<form className="flex flex-col items-start gap-4" onSubmit={onSubmit}>
+				<Combobox.Root items={STATES} name="state">
+					<Combobox.Input placeholder="Search states" aria-label="State" />
+					<Combobox.Content>
+						<Combobox.Empty>No matches found</Combobox.Empty>
+						<Combobox.List>
+							{(state: string) => (
+								<Combobox.Item key={state} value={state}>
+									{state}
+								</Combobox.Item>
+							)}
+						</Combobox.List>
+					</Combobox.Content>
+				</Combobox.Root>
+				<div className="flex items-center gap-4">
+					<Button type="submit">Save</Button>
+					<p role="status" className="text-sm text-text-default-base-secondary">
+						{status}
+					</p>
+				</div>
+			</form>
+		);
+	},
 	play: async ({ canvasElement }) => {
-		onSubmit.mockClear();
 		const canvas = within(canvasElement);
 		const body = within(document.body);
 		const input = canvas.getByRole('combobox', { name: 'State' });
+		const status = canvas.getByRole('status');
 
 		await userEvent.click(input);
 		await waitFor(() =>
@@ -722,19 +743,19 @@ export const InsideForm: Story = {
 
 		await userEvent.keyboard('{Enter}');
 		await waitFor(() => expect(input).toHaveValue('Colorado'));
-		await expect(onSubmit).not.toHaveBeenCalled();
+		await expect(status).toHaveTextContent('Not submitted');
 		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
 
 		// With the list closed, Enter is the form's again.
 		await userEvent.keyboard('{Enter}');
-		await expect(onSubmit).toHaveBeenCalledTimes(1);
+		await expect(status).toHaveTextContent('Submitted 1× — state: Colorado');
 
 		// Nothing to pick: Enter leaves the query and the list as they are.
 		await userEvent.clear(input);
 		await userEvent.type(input, 'zz');
 		await waitFor(() => expect(body.getByText('No matches found')).toBeVisible());
 		await userEvent.keyboard('{Enter}');
-		await expect(onSubmit).toHaveBeenCalledTimes(1);
+		await expect(status).toHaveTextContent('Submitted 1× — state: Colorado');
 		await expect(input).toHaveValue('zz');
 		await expect(input).toHaveAttribute('aria-expanded', 'true');
 
@@ -742,8 +763,6 @@ export const InsideForm: Story = {
 		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
 	}
 };
-
-const onSubmitOnEnter = fn();
 
 /**
  * `autoHighlight={false}` on the root and `submitOnEnter` on the input bring
@@ -754,41 +773,46 @@ const onSubmitOnEnter = fn();
  * @summary Enter submits the form when no row is highlighted
  */
 export const SubmitOnEnter: Story = {
-	render: () => (
-		<form
-			className="flex flex-col items-start gap-4"
-			onSubmit={event => {
-				event.preventDefault();
-				onSubmitOnEnter();
-			}}>
-			<Combobox.Root items={STATES} autoHighlight={false}>
-				<Combobox.Input submitOnEnter placeholder="Search states" aria-label="State" />
-				<Combobox.Content>
-					<Combobox.Empty>No matches found</Combobox.Empty>
-					<Combobox.List>
-						{(state: string) => (
-							<Combobox.Item key={state} value={state}>
-								{state}
-							</Combobox.Item>
-						)}
-					</Combobox.List>
-				</Combobox.Content>
-			</Combobox.Root>
-			<Button type="submit">Save</Button>
-		</form>
-	),
+	render: () => {
+		const { onSubmit, status } = useSubmissions();
+
+		return (
+			<form className="flex flex-col items-start gap-4" onSubmit={onSubmit}>
+				<Combobox.Root items={STATES} name="state" autoHighlight={false}>
+					<Combobox.Input submitOnEnter placeholder="Search states" aria-label="State" />
+					<Combobox.Content>
+						<Combobox.Empty>No matches found</Combobox.Empty>
+						<Combobox.List>
+							{(state: string) => (
+								<Combobox.Item key={state} value={state}>
+									{state}
+								</Combobox.Item>
+							)}
+						</Combobox.List>
+					</Combobox.Content>
+				</Combobox.Root>
+				<div className="flex items-center gap-4">
+					<Button type="submit">Save</Button>
+					<p role="status" className="text-sm text-text-default-base-secondary">
+						{status}
+					</p>
+				</div>
+			</form>
+		);
+	},
 	play: async ({ canvasElement }) => {
-		onSubmitOnEnter.mockClear();
 		const canvas = within(canvasElement);
 		const body = within(document.body);
 		const input = canvas.getByRole('combobox', { name: 'State' });
+		const status = canvas.getByRole('status');
 
 		await userEvent.click(input);
 		await userEvent.type(input, 'co');
 		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(2));
 
+		// The typed query is not a value: the form goes out with no state.
 		await userEvent.keyboard('{Enter}');
-		await expect(onSubmitOnEnter).toHaveBeenCalledTimes(1);
+		await expect(status).toHaveTextContent('Submitted 1× — state: none');
 		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
 		await expect(input).not.toHaveValue('Colorado');
 	}
