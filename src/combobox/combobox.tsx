@@ -343,6 +343,13 @@ type InputProps = Omit<ComponentPropsWithRef<typeof ComboboxPrimitive.Input>, 's
 	clearLabel?: string;
 	/** Accessible name for the chevron of the `select` variant. Defaults to `'Show options'`. */
 	triggerLabel?: string;
+	/**
+	 * Whether Enter, pressed while the list is open and no row is highlighted,
+	 * closes the list and submits the surrounding form, as in a plain input.
+	 * Defaults to `false`: Enter picks the first row, and does nothing while
+	 * the list is loading or empty.
+	 */
+	submitOnEnter?: boolean;
 };
 
 /**
@@ -386,6 +393,13 @@ type InputProps = Omit<ComponentPropsWithRef<typeof ComboboxPrimitive.Input>, 's
  * typed". The selection is rendered outside the field, with its own way to
  * remove each entry.
  *
+ * The typed text is a query, never the value, so while the list is open Enter
+ * does not submit a surrounding form. It picks the highlighted row or, when
+ * none is, the first one, without the arrow keys; while `Root` is `loading`, or
+ * with no row to pick, it does nothing. With the list closed, Enter submits as
+ * in any input. `submitOnEnter` restores Base UI's default: with no row
+ * highlighted, Enter closes the list and submits the form.
+ *
  * Every native input attribute is accepted and forwarded to the `<input>` —
  * `placeholder`, `autoComplete` — and so is `className`. Pass `disabled` and
  * `readOnly` to `Root` instead; on the input alone, `disabled` still hides the
@@ -400,11 +414,31 @@ export const Input = ({
 	showClear = variant === 'search',
 	clearLabel = 'Clear',
 	triggerLabel = 'Show options',
+	submitOnEnter = false,
 	...props
 }: InputProps) => {
-	const { className, size = 'md', ...rest } = useBaseInputContext(props);
+	const { className, size = 'md', onKeyDown, ...rest } = useBaseInputContext(props);
 	const multiple = use(MultipleContext);
+	const loading = use(LoadingContext);
 	const clearable = showClear && !multiple;
+
+	// With no row highlighted, Base UI closes the list and lets Enter through to the form, as a
+	// plain input would. Here the text is only a query, so Enter picks the first row the way Base
+	// UI picks a highlighted one, by clicking it; with no row, or rows still loading, it does nothing.
+	const handleKeyDown: InputProps['onKeyDown'] = event => {
+		onKeyDown?.(event);
+		const input = event.currentTarget;
+		if (submitOnEnter || event.key !== 'Enter' || event.defaultPrevented) return;
+		if (event.nativeEvent.isComposing || input.getAttribute('aria-expanded') !== 'true') return;
+
+		const list = document.getElementById(input.getAttribute('aria-controls') ?? '');
+		if (list?.querySelector('[data-highlighted]')) return;
+
+		event.preventDefault();
+		event.preventBaseUIHandler();
+		if (loading) return;
+		list?.querySelector<HTMLElement>('[role="option"]:not([data-disabled])')?.click();
+	};
 
 	return (
 		// Base UI's part, so the list anchors to the whole frame — icon and buttons included —
@@ -427,6 +461,7 @@ export const Input = ({
 				data-size={size}
 				className={cn(inputRecipe({ size }), className)}
 				{...rest}
+				onKeyDown={handleKeyDown}
 			/>
 			{clearable && (
 				<ComboboxPrimitive.Clear
