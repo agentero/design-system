@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.5s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>5.7s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -4436,13 +4436,13 @@ virtualized?: boolean = false</code></pre>
               
               
               <pre><code>Expected render to be an arrow function or function expression
-  966 |  */
-  967 | export const InsidePopoverWithValue: Story = {
-&gt; 968 | 	render: InsidePopover.render,
+  990 |  */
+  991 | export const InsidePopoverWithValue: Story = {
+&gt; 992 | 	render: InsidePopover.render,
       | 	           ^^^^^^^^^^^^^^^^^^^^
-  969 | 	play: async ({ canvasElement }) =&gt; {
-  970 | 		const body = within(document.body);
-  971 | 		const trigger = within(canvasElement).getByRole(&#39;button&#39;, { name: /filter by state/i });</code></pre>
+  993 | 	play: async ({ canvasElement }) =&gt; {
+  994 | 		const body = within(document.body);
+  995 | 		const trigger = within(canvasElement).getByRole(&#39;button&#39;, { name: /filter by state/i });</code></pre>
             </div>
           
           
@@ -4753,30 +4753,35 @@ no request goes out for a shorter query either.</div>
               <div class="hint">Inside a form, Enter in an open list picks the highlighted row instead of
 submitting. The first row is highlighted as soon as the list shows one, so
 typing a search and pressing Enter picks the top match. With no match, Enter
-does nothing. Once the list is closed, Enter submits the form as in any input.</div>
-              <pre><code>const InsideForm = () =&gt; (
-    &lt;form
-        className=&quot;flex flex-col items-start gap-4&quot;
-        onSubmit={event =&gt; {
-            event.preventDefault();
-            onSubmit();
-        }}&gt;
-        &lt;Combobox.Root items={STATES}&gt;
-            &lt;Combobox.Input placeholder=&quot;Search states&quot; aria-label=&quot;State&quot; /&gt;
-            &lt;Combobox.Content&gt;
-                &lt;Combobox.Empty&gt;No matches found&lt;/Combobox.Empty&gt;
-                &lt;Combobox.List&gt;
-                    {(state: string) =&gt; (
-                        &lt;Combobox.Item key={state} value={state}&gt;
-                            {state}
-                        &lt;/Combobox.Item&gt;
-                    )}
-                &lt;/Combobox.List&gt;
-            &lt;/Combobox.Content&gt;
-        &lt;/Combobox.Root&gt;
-        &lt;Button type=&quot;submit&quot;&gt;Save&lt;/Button&gt;
-    &lt;/form&gt;
-);</code></pre>
+does nothing. Once the list is closed, Enter submits the form as in any input,
+with no value if none was picked: mark the root `required` to block that.</div>
+              <pre><code>const InsideForm = () =&gt; {
+    const { onSubmit, status } = useSubmissions();
+
+    return (
+        &lt;form className=&quot;flex flex-col items-start gap-4&quot; onSubmit={onSubmit}&gt;
+            &lt;Combobox.Root items={STATES} name=&quot;state&quot;&gt;
+                &lt;Combobox.Input placeholder=&quot;Search states&quot; aria-label=&quot;State&quot; /&gt;
+                &lt;Combobox.Content&gt;
+                    &lt;Combobox.Empty&gt;No matches found&lt;/Combobox.Empty&gt;
+                    &lt;Combobox.List&gt;
+                        {(state: string) =&gt; (
+                            &lt;Combobox.Item key={state} value={state}&gt;
+                                {state}
+                            &lt;/Combobox.Item&gt;
+                        )}
+                    &lt;/Combobox.List&gt;
+                &lt;/Combobox.Content&gt;
+            &lt;/Combobox.Root&gt;
+            &lt;div className=&quot;flex items-center gap-4&quot;&gt;
+                &lt;Button type=&quot;submit&quot;&gt;Save&lt;/Button&gt;
+                &lt;p role=&quot;status&quot; className=&quot;text-sm text-text-default-base-secondary&quot;&gt;
+                    {status}
+                &lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/form&gt;
+    );
+};</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -4788,29 +4793,33 @@ does nothing. Once the list is closed, Enter submits the form as in any input.</
 back Base UI&#39;s defaults: nothing is highlighted until the arrow keys or the
 pointer move onto a row, and with no row highlighted, Enter closes the list,
 drops the typed query and submits the form. A highlighted row is still picked.</div>
-              <pre><code>const SubmitOnEnter = () =&gt; (
-    &lt;form
-        className=&quot;flex flex-col items-start gap-4&quot;
-        onSubmit={event =&gt; {
-            event.preventDefault();
-            onSubmitOnEnter();
-        }}&gt;
-        &lt;Combobox.Root items={STATES} autoHighlight={false}&gt;
-            &lt;Combobox.Input submitOnEnter placeholder=&quot;Search states&quot; aria-label=&quot;State&quot; /&gt;
-            &lt;Combobox.Content&gt;
-                &lt;Combobox.Empty&gt;No matches found&lt;/Combobox.Empty&gt;
-                &lt;Combobox.List&gt;
-                    {(state: string) =&gt; (
-                        &lt;Combobox.Item key={state} value={state}&gt;
-                            {state}
-                        &lt;/Combobox.Item&gt;
-                    )}
-                &lt;/Combobox.List&gt;
-            &lt;/Combobox.Content&gt;
-        &lt;/Combobox.Root&gt;
-        &lt;Button type=&quot;submit&quot;&gt;Save&lt;/Button&gt;
-    &lt;/form&gt;
-);</code></pre>
+              <pre><code>const SubmitOnEnter = () =&gt; {
+    const { onSubmit, status } = useSubmissions();
+
+    return (
+        &lt;form className=&quot;flex flex-col items-start gap-4&quot; onSubmit={onSubmit}&gt;
+            &lt;Combobox.Root items={STATES} name=&quot;state&quot; autoHighlight={false}&gt;
+                &lt;Combobox.Input submitOnEnter placeholder=&quot;Search states&quot; aria-label=&quot;State&quot; /&gt;
+                &lt;Combobox.Content&gt;
+                    &lt;Combobox.Empty&gt;No matches found&lt;/Combobox.Empty&gt;
+                    &lt;Combobox.List&gt;
+                        {(state: string) =&gt; (
+                            &lt;Combobox.Item key={state} value={state}&gt;
+                                {state}
+                            &lt;/Combobox.Item&gt;
+                        )}
+                    &lt;/Combobox.List&gt;
+                &lt;/Combobox.Content&gt;
+            &lt;/Combobox.Root&gt;
+            &lt;div className=&quot;flex items-center gap-4&quot;&gt;
+                &lt;Button type=&quot;submit&quot;&gt;Save&lt;/Button&gt;
+                &lt;p role=&quot;status&quot; className=&quot;text-sm text-text-default-base-secondary&quot;&gt;
+                    {status}
+                &lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/form&gt;
+    );
+};</code></pre>
             </div>
             <div class="note ok">
               <div class="row">

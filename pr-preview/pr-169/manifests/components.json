@@ -3925,14 +3925,14 @@
         {
           "id": "components-combobox--inside-form",
           "name": "Inside Form",
-          "snippet": "const InsideForm = () => (\n    <form\n        className=\"flex flex-col items-start gap-4\"\n        onSubmit={event => {\n            event.preventDefault();\n            onSubmit();\n        }}>\n        <Combobox.Root items={STATES}>\n            <Combobox.Input placeholder=\"Search states\" aria-label=\"State\" />\n            <Combobox.Content>\n                <Combobox.Empty>No matches found</Combobox.Empty>\n                <Combobox.List>\n                    {(state: string) => (\n                        <Combobox.Item key={state} value={state}>\n                            {state}\n                        </Combobox.Item>\n                    )}\n                </Combobox.List>\n            </Combobox.Content>\n        </Combobox.Root>\n        <Button type=\"submit\">Save</Button>\n    </form>\n);",
-          "description": "Inside a form, Enter in an open list picks the highlighted row instead of\nsubmitting. The first row is highlighted as soon as the list shows one, so\ntyping a search and pressing Enter picks the top match. With no match, Enter\ndoes nothing. Once the list is closed, Enter submits the form as in any input.",
+          "snippet": "const InsideForm = () => {\n    const { onSubmit, status } = useSubmissions();\n\n    return (\n        <form className=\"flex flex-col items-start gap-4\" onSubmit={onSubmit}>\n            <Combobox.Root items={STATES} name=\"state\">\n                <Combobox.Input placeholder=\"Search states\" aria-label=\"State\" />\n                <Combobox.Content>\n                    <Combobox.Empty>No matches found</Combobox.Empty>\n                    <Combobox.List>\n                        {(state: string) => (\n                            <Combobox.Item key={state} value={state}>\n                                {state}\n                            </Combobox.Item>\n                        )}\n                    </Combobox.List>\n                </Combobox.Content>\n            </Combobox.Root>\n            <div className=\"flex items-center gap-4\">\n                <Button type=\"submit\">Save</Button>\n                <p role=\"status\" className=\"text-sm text-text-default-base-secondary\">\n                    {status}\n                </p>\n            </div>\n        </form>\n    );\n};",
+          "description": "Inside a form, Enter in an open list picks the highlighted row instead of\nsubmitting. The first row is highlighted as soon as the list shows one, so\ntyping a search and pressing Enter picks the top match. With no match, Enter\ndoes nothing. Once the list is closed, Enter submits the form as in any input,\nwith no value if none was picked: mark the root `required` to block that.",
           "summary": "Enter picks the highlighted row while the list is open, submits once closed"
         },
         {
           "id": "components-combobox--submit-on-enter",
           "name": "Submit On Enter",
-          "snippet": "const SubmitOnEnter = () => (\n    <form\n        className=\"flex flex-col items-start gap-4\"\n        onSubmit={event => {\n            event.preventDefault();\n            onSubmitOnEnter();\n        }}>\n        <Combobox.Root items={STATES} autoHighlight={false}>\n            <Combobox.Input submitOnEnter placeholder=\"Search states\" aria-label=\"State\" />\n            <Combobox.Content>\n                <Combobox.Empty>No matches found</Combobox.Empty>\n                <Combobox.List>\n                    {(state: string) => (\n                        <Combobox.Item key={state} value={state}>\n                            {state}\n                        </Combobox.Item>\n                    )}\n                </Combobox.List>\n            </Combobox.Content>\n        </Combobox.Root>\n        <Button type=\"submit\">Save</Button>\n    </form>\n);",
+          "snippet": "const SubmitOnEnter = () => {\n    const { onSubmit, status } = useSubmissions();\n\n    return (\n        <form className=\"flex flex-col items-start gap-4\" onSubmit={onSubmit}>\n            <Combobox.Root items={STATES} name=\"state\" autoHighlight={false}>\n                <Combobox.Input submitOnEnter placeholder=\"Search states\" aria-label=\"State\" />\n                <Combobox.Content>\n                    <Combobox.Empty>No matches found</Combobox.Empty>\n                    <Combobox.List>\n                        {(state: string) => (\n                            <Combobox.Item key={state} value={state}>\n                                {state}\n                            </Combobox.Item>\n                        )}\n                    </Combobox.List>\n                </Combobox.Content>\n            </Combobox.Root>\n            <div className=\"flex items-center gap-4\">\n                <Button type=\"submit\">Save</Button>\n                <p role=\"status\" className=\"text-sm text-text-default-base-secondary\">\n                    {status}\n                </p>\n            </div>\n        </form>\n    );\n};",
           "description": "`autoHighlight={false}` on the root and `submitOnEnter` on the input bring\nback Base UI's defaults: nothing is highlighted until the arrow keys or the\npointer move onto a row, and with no row highlighted, Enter closes the list,\ndrops the typed query and submits the form. A highlighted row is still picked.",
           "summary": "Enter submits the form when no row is highlighted"
         },
@@ -3959,7 +3959,7 @@
           "name": "Inside Popover With Value",
           "error": {
             "name": "SyntaxError",
-            "message": "Expected render to be an arrow function or function expression\n  966 |  */\n  967 | export const InsidePopoverWithValue: Story = {\n> 968 | \trender: InsidePopover.render,\n      | \t           ^^^^^^^^^^^^^^^^^^^^\n  969 | \tplay: async ({ canvasElement }) => {\n  970 | \t\tconst body = within(document.body);\n  971 | \t\tconst trigger = within(canvasElement).getByRole('button', { name: /filter by state/i });"
+            "message": "Expected render to be an arrow function or function expression\n  990 |  */\n  991 | export const InsidePopoverWithValue: Story = {\n> 992 | \trender: InsidePopover.render,\n      | \t           ^^^^^^^^^^^^^^^^^^^^\n  993 | \tplay: async ({ canvasElement }) => {\n  994 | \t\tconst body = within(document.body);\n  995 | \t\tconst trigger = within(canvasElement).getByRole('button', { name: /filter by state/i });"
           }
         },
         {
@@ -11576,6 +11576,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4533
+    "durationMs": 5656
   }
 }
