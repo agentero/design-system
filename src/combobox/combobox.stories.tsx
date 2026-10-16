@@ -466,8 +466,9 @@ export const MultipleSelection: Story = {
 		await expect(indicator).not.toHaveAttribute('data-selected');
 		await expect(colorado).toHaveAttribute('aria-selected', 'false');
 
-		// Keyboard: arrow onto a row and press Enter. The list stays open and the query stays put.
-		await userEvent.keyboard('{ArrowDown}{Enter}');
+		// Keyboard: the first row is highlighted already, so Enter picks it. The list stays open and
+		// the query stays put.
+		await userEvent.keyboard('{Enter}');
 		await waitFor(() => expect(colorado).toHaveAttribute('aria-selected', 'true'));
 		await expect(indicator).toHaveAttribute('data-selected');
 		await expect(input).toHaveValue('co');
@@ -753,6 +754,8 @@ export const AsyncSearchWithLoading: Story = {
 		await expect(body.queryByRole('option')).not.toBeInTheDocument();
 		await waitFor(() => expect(body.getAllByRole('option').length).toBeGreaterThan(0));
 		await expect(content).not.toHaveAttribute('aria-busy');
+		// Rows that arrive after the query are highlighted too, so Enter picks the first.
+		await waitFor(() => expect(body.getAllByRole('option')[0]).toHaveAttribute('data-highlighted'));
 		await expect(body.queryByText(/searching agencies/i)).not.toBeInTheDocument();
 
 		await expect(
@@ -768,10 +771,6 @@ export const AsyncSearchWithLoading: Story = {
 		await expect(
 			document.body.querySelector('[data-slot="combobox-skeleton"]')
 		).not.toBeInTheDocument();
-		// Enter waits for the answer: the rows on screen belong to the previous query.
-		await userEvent.keyboard('{Enter}');
-		await expect(input).toHaveValue('anch');
-		await expect(input).toHaveAttribute('aria-expanded', 'true');
 		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(1));
 		await expect(content).not.toHaveAttribute('aria-busy');
 
@@ -793,12 +792,12 @@ export const AsyncSearchWithLoading: Story = {
 const onSubmit = fn();
 
 /**
- * Inside a form, Enter in an open list picks a row instead of submitting: the
- * highlighted one, or the first one when the user typed and never touched the
- * arrow keys. With no match, it does nothing. Once the list is closed, Enter
- * submits the form as in any input.
+ * Inside a form, Enter in an open list picks the highlighted row instead of
+ * submitting. The first row is highlighted as soon as the list shows one, so
+ * typing a search and pressing Enter picks the top match. With no match, Enter
+ * does nothing. Once the list is closed, Enter submits the form as in any input.
  *
- * @summary Enter picks the first row while the list is open, submits once closed
+ * @summary Enter picks the highlighted row while the list is open, submits once closed
  */
 export const InsideForm: Story = {
 	render: () => (
@@ -831,9 +830,14 @@ export const InsideForm: Story = {
 		const input = canvas.getByRole('combobox', { name: 'State' });
 
 		await userEvent.click(input);
+		await waitFor(() =>
+			expect(body.getByRole('option', { name: 'California' })).toHaveAttribute('data-highlighted')
+		);
 		await userEvent.type(input, 'co');
 		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(2));
-		await expect(document.body.querySelector('[data-highlighted]')).not.toBeInTheDocument();
+		await expect(body.getByRole('option', { name: 'Colorado' })).toHaveAttribute(
+			'data-highlighted'
+		);
 
 		await userEvent.keyboard('{Enter}');
 		await waitFor(() => expect(input).toHaveValue('Colorado'));
@@ -861,9 +865,10 @@ export const InsideForm: Story = {
 const onSubmitOnEnter = fn();
 
 /**
- * `submitOnEnter` on the input brings back Base UI's default: with no row
- * highlighted, Enter closes the list, drops the typed query and submits the form.
- * A highlighted row is still picked.
+ * `autoHighlight={false}` on the root and `submitOnEnter` on the input bring
+ * back Base UI's defaults: nothing is highlighted until the arrow keys or the
+ * pointer move onto a row, and with no row highlighted, Enter closes the list,
+ * drops the typed query and submits the form. A highlighted row is still picked.
  *
  * @summary Enter submits the form when no row is highlighted
  */
@@ -875,7 +880,7 @@ export const SubmitOnEnter: Story = {
 				event.preventDefault();
 				onSubmitOnEnter();
 			}}>
-			<Combobox.Root items={STATES}>
+			<Combobox.Root items={STATES} autoHighlight={false}>
 				<Combobox.Input submitOnEnter placeholder="Search states" aria-label="State" />
 				<Combobox.Content>
 					<Combobox.Empty>No matches found</Combobox.Empty>
