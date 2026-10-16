@@ -4436,13 +4436,13 @@ virtualized?: boolean = false</code></pre>
               
               
               <pre><code>Expected render to be an arrow function or function expression
-  1080 |  */
-  1081 | export const InsidePopoverWithValue: Story = {
-&gt; 1082 | 	render: InsidePopover.render,
+  1085 |  */
+  1086 | export const InsidePopoverWithValue: Story = {
+&gt; 1087 | 	render: InsidePopover.render,
        | 	           ^^^^^^^^^^^^^^^^^^^^
-  1083 | 	play: async ({ canvasElement }) =&gt; {
-  1084 | 		const body = within(document.body);
-  1085 | 		const trigger = within(canvasElement).getByRole(&#39;button&#39;, { name: /filter by state/i });</code></pre>
+  1088 | 	play: async ({ canvasElement }) =&gt; {
+  1089 | 		const body = within(document.body);
+  1090 | 		const trigger = within(canvasElement).getByRole(&#39;button&#39;, { name: /filter by state/i });</code></pre>
             </div>
           
           
@@ -4796,11 +4796,11 @@ no request goes out for a shorter query either.</div>
                 <span class="ex-name">Inside Form</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Enter picks the first row while the list is open, submits once closed</div>
-              <div class="hint">Inside a form, Enter in an open list picks a row instead of submitting: the
-highlighted one, or the first one when the user typed and never touched the
-arrow keys. With no match, it does nothing. Once the list is closed, Enter
-submits the form as in any input.</div>
+              <div>Enter picks the highlighted row while the list is open, submits once closed</div>
+              <div class="hint">Inside a form, Enter in an open list picks the highlighted row instead of
+submitting. The first row is highlighted as soon as the list shows one, so
+typing a search and pressing Enter picks the top match. With no match, Enter
+does nothing. Once the list is closed, Enter submits the form as in any input.</div>
               <pre><code>const InsideForm = () =&gt; (
     &lt;form
         className=&quot;flex flex-col items-start gap-4&quot;
@@ -4831,9 +4831,10 @@ submits the form as in any input.</div>
                 <span class="badge ok">story ok</span>
               </div>
               <div>Enter submits the form when no row is highlighted</div>
-              <div class="hint">`submitOnEnter` on the input brings back Base UI&#39;s default: with no row
-highlighted, Enter closes the list, drops the typed query and submits the form.
-A highlighted row is still picked.</div>
+              <div class="hint">`autoHighlight={false}` on the root and `submitOnEnter` on the input bring
+back Base UI&#39;s defaults: nothing is highlighted until the arrow keys or the
+pointer move onto a row, and with no row highlighted, Enter closes the list,
+drops the typed query and submits the form. A highlighted row is still picked.</div>
               <pre><code>const SubmitOnEnter = () =&gt; (
     &lt;form
         className=&quot;flex flex-col items-start gap-4&quot;
@@ -4841,7 +4842,7 @@ A highlighted row is still picked.</div>
             event.preventDefault();
             onSubmitOnEnter();
         }}&gt;
-        &lt;Combobox.Root items={STATES}&gt;
+        &lt;Combobox.Root items={STATES} autoHighlight={false}&gt;
             &lt;Combobox.Input submitOnEnter placeholder=&quot;Search states&quot; aria-label=&quot;State&quot; /&gt;
             &lt;Combobox.Content&gt;
                 &lt;Combobox.Empty&gt;No matches found&lt;/Combobox.Empty&gt;
