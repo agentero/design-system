@@ -588,13 +588,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">42 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/365 story errors</a></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">42 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/363 story errors</a></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>5.8s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>5.7s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -4111,7 +4111,7 @@ import { CheckList } from &#39;@agentero/design-system/check-list&#39;;
       <div class="badges">
         <label for="c-9-components-combobox-props" class="badge ok as-toggle">41 prop types</label>
         
-        <label for="c-9-components-combobox-stories" class="badge err as-toggle">1/13 story errors</label>
+        <label for="c-9-components-combobox-stories" class="badge err as-toggle">1/15 story errors</label>
         
         
       </div>
@@ -4436,13 +4436,13 @@ virtualized?: boolean = false</code></pre>
               
               
               <pre><code>Expected render to be an arrow function or function expression
-  844 |  */
-  845 | export const InsidePopoverWithValue: Story = {
-&gt; 846 | 	render: InsidePopover.render,
+  958 |  */
+  959 | export const InsidePopoverWithValue: Story = {
+&gt; 960 | 	render: InsidePopover.render,
       | 	           ^^^^^^^^^^^^^^^^^^^^
-  847 | 	play: async ({ canvasElement }) =&gt; {
-  848 | 		const body = within(document.body);
-  849 | 		const trigger = within(canvasElement).getByRole(&#39;button&#39;, { name: /filter by state/i });</code></pre>
+  961 | 	play: async ({ canvasElement }) =&gt; {
+  962 | 		const body = within(document.body);
+  963 | 		const trigger = within(canvasElement).getByRole(&#39;button&#39;, { name: /filter by state/i });</code></pre>
             </div>
           
           
@@ -4463,8 +4463,8 @@ import { Suspense } from "react";</code></pre>
               <div>Search field with a magnifier and clear button over an in-memory list</div>
               <div class="hint">The common case: options are already in memory and Base UI filters them against
 what you type. Selecting a row fills the input and closes the list. The field is
-a search out of the box — a magnifier in front, a clear button once there is
-text — and the list hangs from the whole field. Clearing drops the picked option.</div>
+a search out of the box — a magnifier in front, a clear button once something is
+picked — and the list hangs from the whole field. Clearing drops the picked option.</div>
               <pre><code>const Default = () =&gt; (
     &lt;Combobox.Root items={STATES}&gt;
         &lt;Combobox.Input placeholder=&quot;Search states&quot; aria-label=&quot;Search states&quot; /&gt;
@@ -4556,6 +4556,57 @@ brings the chevron back. Passing `false` drops it from `search`.</div>
             &lt;/Combobox.List&gt;
         &lt;/Combobox.Content&gt;
     &lt;/Combobox.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Disabled</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Disabled field that keeps its value</div>
+              <div class="hint">`disabled` goes on `Root`, or on the surrounding `FieldText`. The field keeps
+its value, shows no clear button, and its chevron is disabled, so the list
+cannot open.</div>
+              <pre><code>const Disabled = () =&gt; (
+    &lt;Combobox.Root items={STATES} defaultValue=&quot;Florida&quot; disabled&gt;
+        &lt;Combobox.Input variant=&quot;select&quot; showClear aria-label=&quot;State&quot; /&gt;
+        &lt;Combobox.Content&gt;
+            &lt;Combobox.List&gt;
+                {(state: string) =&gt; (
+                    &lt;Combobox.Item key={state} value={state}&gt;
+                        {state}
+                    &lt;/Combobox.Item&gt;
+                )}
+            &lt;/Combobox.List&gt;
+        &lt;/Combobox.Content&gt;
+    &lt;/Combobox.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Read Only</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Read-only field whose list can be browsed but not picked from</div>
+              <div class="hint">`readOnly` goes on `Root`, or on the surrounding `FieldText` as here. It locks
+the value, not the list: there is no clear button, but the chevron still
+opens the list to browse it, and picking a row leaves the value as it was.</div>
+              <pre><code>const ReadOnly = () =&gt; (
+    &lt;FieldText readOnly&gt;
+        &lt;Label&gt;State&lt;/Label&gt;
+        &lt;Combobox.Root items={STATES} defaultValue=&quot;Texas&quot;&gt;
+            &lt;Combobox.Input variant=&quot;select&quot; showClear /&gt;
+            &lt;Combobox.Content&gt;
+                &lt;Combobox.List&gt;
+                    {(state: string) =&gt; (
+                        &lt;Combobox.Item key={state} value={state}&gt;
+                            {state}
+                        &lt;/Combobox.Item&gt;
+                    )}
+                &lt;/Combobox.List&gt;
+            &lt;/Combobox.Content&gt;
+        &lt;/Combobox.Root&gt;
+    &lt;/FieldText&gt;
 );</code></pre>
             </div>
             <div class="note ok">
@@ -7616,7 +7667,7 @@ The input&#39;s own `onChange` still runs, chained after the provider&#39;s.</di
       <div class="badges">
         <label for="c-17-components-fieldtextarea-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-17-components-fieldtextarea-stories" class="badge ok as-toggle">8 stories</label>
+        <label for="c-17-components-fieldtextarea-stories" class="badge ok as-toggle">10 stories</label>
         
         
       </div>
@@ -7839,18 +7890,57 @@ through untouched.</div>
                 <span class="ex-name">With Counter</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Field with a character count inside the box</div>
-              <div class="hint">With `maxLength` the text area counts inside its box, and the count joins
-the field&#39;s description in what the control announces.</div>
+              <div>Count beside a truncated description, under the box</div>
+              <div class="hint">Figma&#39;s empty state with a count: the description on the left and the count
+on the right, 16px apart under the box. Beside a count a long description
+keeps to one line and truncates; a screen reader still hears all of it, with
+the count.</div>
               <pre><code>const WithCounter = () =&gt; &lt;FieldTextArea
     orientation=&quot;vertical&quot;
     invalid={false}
     disabled={false}
     readOnly={false}
     required={false}&gt;
+    &lt;Label optional&gt;Notes&lt;/Label&gt;
+    &lt;TextArea maxLength={500} placeholder=&quot;Placeholder&quot; /&gt;
+    &lt;Field.Description&gt;Shared with the carrier along with the request, and kept on the policy file for audits.
+                    &lt;/Field.Description&gt;
+&lt;/FieldTextArea&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Over Limit</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Over the limit: extra characters, count and error in red</div>
+              <div class="hint">Past the limit, as in Figma: the user keeps typing, the characters over the
+limit and the count read destructive, and the form&#39;s validation shows its
+error where the description goes.</div>
+              <pre><code>const OverLimit = () =&gt; &lt;FieldTextArea
+    orientation=&quot;vertical&quot;
+    invalid
+    disabled={false}
+    readOnly={false}
+    required={false}&gt;
+    &lt;Label&gt;Notes&lt;/Label&gt;
+    &lt;TextArea
+        maxLength={40}
+        defaultValue=&quot;Roof replaced in 2024 after hail damage, garage added.&quot; /&gt;
+    &lt;Field.Error errors={[{ message: &#39;Keep it brief&#39; }]} /&gt;
+&lt;/FieldTextArea&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Invalid With Counter</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Error and destructive count share the row under the box</div>
+              <div class="hint">An invalid field shows its error where the description goes, and the count
+beside it turns destructive too, as in Figma.</div>
+              <pre><code>const InvalidWithCounter = () =&gt; &lt;FieldTextArea orientation=&quot;vertical&quot; invalid disabled={false} readOnly={false} required&gt;
     &lt;Label&gt;Reason&lt;/Label&gt;
-    &lt;TextArea maxLength={500} defaultValue=&quot;Moving to another state.&quot; /&gt;
-    &lt;Field.Description&gt;Shared with the carrier along with the request.&lt;/Field.Description&gt;
+    &lt;TextArea maxLength={500} /&gt;
+    &lt;Field.Error errors={[{ message: &#39;This field is required&#39; }]} /&gt;
 &lt;/FieldTextArea&gt;;</code></pre>
             </div>
             <div class="note ok">
@@ -12784,7 +12874,7 @@ leading + trailing icons, and icon-only.</div>
       <div class="badges">
         <label for="c-38-components-textarea-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-38-components-textarea-stories" class="badge ok as-toggle">14 stories</label>
+        <label for="c-38-components-textarea-stories" class="badge ok as-toggle">8 stories</label>
         
         
       </div>
@@ -12835,7 +12925,7 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button, InputGroup, Label, TextArea } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Button, Label, TextArea } from "@agentero/design-system";</code></pre>
               </div>
           
           
@@ -12925,10 +13015,10 @@ size and the minimum height shows three rows.</div>
                 <span class="ex-name">With Counter</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Character count inside the box, driven by maxLength</div>
-              <div class="hint">`maxLength` caps the value and shows the count inside the box, bottom
-right. The count is part of the control&#39;s description, so a screen reader
-hears &quot;0 of 140 characters&quot; with the field instead of on every keystroke.</div>
+              <div>Character count under the box, driven by maxLength</div>
+              <div class="hint">`maxLength` shows the count under the box, right-aligned, 8px below it. The
+count is part of the control&#39;s description, so a screen reader hears
+&quot;0 of 140 characters&quot; with the field instead of on every keystroke.</div>
               <pre><code>const WithCounter = () =&gt; &lt;TextArea
     placeholder=&quot;Anything the underwriter should know&quot;
     aria-label=&quot;Notes&quot;
@@ -12939,102 +13029,14 @@ hears &quot;0 of 140 characters&quot; with the field instead of on every keystro
                 <span class="ex-name">Counter Over Limit</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Controlled count, destructive past the limit</div>
-              <div class="hint">A controlled value counts too, and one longer than `maxLength` — set by
-code, since typing stops at the cap — turns the count destructive.</div>
+              <div>Typing past the limit turns the count destructive</div>
+              <div class="hint">The limit is soft: typing goes past it, the characters over the limit and
+the count turn destructive, and the description says by how much, so the
+form&#39;s validation can reject it.</div>
               <pre><code>const CounterOverLimit = () =&gt; &lt;TextArea
     placeholder=&quot;Anything the underwriter should know&quot;
     aria-label=&quot;Notes&quot;
-    maxLength={10}
-    value=&quot;Twelve chars&quot;
-    onChange={() =&gt; {}}
-    aria-invalid /&gt;;</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Counter After Reset</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Uncontrolled count follows a value rewritten by the form</div>
-              <div class="hint">A form that rewrites an uncontrolled value, as a react-hook-form `reset`
-does, fires no input event; the count reads the `&lt;textarea&gt;` again when the
-form re-renders.</div>
-              <pre><code>const CounterAfterReset = () =&gt; &lt;ResetForm /&gt;;</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Counter After Native Reset</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Uncontrolled count follows a native form reset</div>
-              <div class="hint">A native form reset restores the default value without an input event; the
-count listens to the form&#39;s `reset` and follows.</div>
-              <pre><code>const CounterAfterNativeReset = () =&gt; (
-    &lt;form className=&quot;flex flex-col items-start gap-2&quot;&gt;
-        &lt;TextArea aria-label=&quot;Notes&quot; maxLength={100} defaultValue=&quot;hello&quot; /&gt;
-        &lt;Button type=&quot;reset&quot; variant=&quot;secondary&quot; size=&quot;sm&quot;&gt;
-            Reset
-        &lt;/Button&gt;
-    &lt;/form&gt;
-);</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Layout Without Counter</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Without maxLength the wrapper leaves layout to the textarea</div>
-              <div class="hint">Without a count the wrapper is `display: contents`, so the `&lt;textarea&gt;`
-lays out as a direct child of its container: a width or a flex item class
-in `className` works as on a bare `&lt;textarea&gt;`.</div>
-              <pre><code>const LayoutWithoutCounter = () =&gt; (
-    &lt;div className=&quot;flex w-96 items-start gap-4&quot;&gt;
-        &lt;TextArea aria-label=&quot;Notes&quot; className=&quot;w-auto flex-1&quot; /&gt;
-        &lt;Button variant=&quot;secondary&quot; size=&quot;sm&quot;&gt;
-            Clear
-        &lt;/Button&gt;
-    &lt;/div&gt;
-);</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Toggle Max Length</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Adding a limit keeps the same control and its text</div>
-              <div class="hint">The `&lt;textarea&gt;` keeps its place in the tree whether or not there is a
-count, so adding or removing `maxLength` keeps what the user typed.</div>
-              <pre><code>const ToggleMaxLength = () =&gt; &lt;ToggleLimit /&gt;;</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Counter Narrow In Label</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Count stays in the corner of a narrower box and out of the label&#39;s name</div>
-              <div class="hint">The count is anchored to the `&lt;textarea&gt;`, so a width set through
-`className` keeps it in the box&#39;s corner, and it never joins the name of a
-`&lt;label&gt;` wrapped around the control.</div>
-              <pre><code>const CounterNarrowInLabel = () =&gt; (
-    &lt;Label className=&quot;flex-col items-start font-normal&quot;&gt;
-        Notes
-        &lt;TextArea className=&quot;w-64&quot; maxLength={100} defaultValue=&quot;hello&quot; /&gt;
-    &lt;/Label&gt;
-);</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Counter In Input Group</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Count inside an InputGroup keeps the text clear of it</div>
-              <div class="hint">Inside an `InputGroup` the count keeps its room: the group strips the
-textarea&#39;s own padding, but not the space reserved under the text.</div>
-              <pre><code>const CounterInInputGroup = () =&gt; (
-    &lt;InputGroup.Root&gt;
-        &lt;TextArea aria-label=&quot;Notes&quot; maxLength={100} defaultValue=&quot;hello&quot; /&gt;
-    &lt;/InputGroup.Root&gt;
-);</code></pre>
+    maxLength={10} /&gt;;</code></pre>
             </div>
         </div>
     
