@@ -50,6 +50,8 @@ export const comboboxRecipe = tv({
 			// Not Base UI's `--transform-origin`: with `align="start"` it puts the origin on the left
 			// corner, and this surface is as wide as the input, so it has to grow from the edge it hangs from.
 			'data-[side=bottom]:origin-top data-[side=top]:origin-bottom',
+			// With no row and no `Empty` to show, the border alone would read as a stray line.
+			'[&:not(:has(>:not(:empty)))]:hidden',
 			// The legacy Datalist's own timing — a 100ms fade over a 0.95 scale — driven off Base UI's
 			// start/end attributes rather than the shared dropdown keyframes, whose 0.9 scale and
 			// translate read as a slow start on a surface this wide.

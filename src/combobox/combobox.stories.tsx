@@ -1021,6 +1021,7 @@ export const InsideModalWithoutEmpty: Story = {
 
 		await userEvent.type(input, 'zzz');
 		await expect(body.queryByRole('option')).not.toBeInTheDocument();
+		await expect(document.querySelector('[data-slot="combobox-content"]')).not.toBeVisible();
 
 		await userEvent.keyboard('{Escape}');
 		await waitFor(() => expect(dialog).toHaveAttribute('data-state', 'closed'));
