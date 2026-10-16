@@ -283,7 +283,7 @@ export const OverLimit: Story = {
 		const canvas = within(canvasElement);
 		const textarea = canvas.getByRole('textbox', { name: 'Notes' });
 		const counter = canvasElement.querySelector('[data-slot=textarea-counter]')!;
-		const overText = canvasElement.querySelector('[data-slot=textarea-overflow] span')!;
+		const overText = canvasElement.querySelector('[data-slot=textarea-overflow] [data-over]')!;
 		const alert = canvas.getByRole('alert');
 
 		await expect(counter).toHaveTextContent('54/40');

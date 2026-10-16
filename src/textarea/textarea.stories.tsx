@@ -247,14 +247,19 @@ export const CounterOverLimit: Story = {
 
 		// The characters past the limit read destructive inside the box.
 		const layer = canvasElement.querySelector('[data-slot=textarea-overflow]')!;
-		const overText = layer.querySelector('span')!;
+		const overText = layer.querySelector('[data-over]')!;
 		await expect(overText).toHaveTextContent('rs');
 		await expect(getComputedStyle(overText).color).toBe(getComputedStyle(counter).color);
 		await expect(layerMatches(textarea).sameOrigin).toBe(true);
 
+		// The layer paints the text, so the textarea's own text never shows through.
+		await expect(getComputedStyle(textarea).color).toBe('rgba(0, 0, 0, 0)');
+		await expect(getComputedStyle(textarea).caretColor).not.toBe('rgba(0, 0, 0, 0)');
+
 		await userEvent.keyboard('{Backspace}{Backspace}');
 		await expect(canvasElement.querySelector('[data-slot=textarea-overflow]')).toBeNull();
 		await expect(counter).not.toHaveAttribute('data-over');
+		await expect(getComputedStyle(textarea).color).not.toBe('rgba(0, 0, 0, 0)');
 	}
 };
 
@@ -333,7 +338,7 @@ export const OverflowFollowsTextarea: Story = {
 		});
 
 		const emoji = layerMatches(textbox('Emoji')).layer;
-		await expect(emoji.querySelector('span')!.textContent).toBe('😀cd');
+		await expect(emoji.querySelector('[data-over]')!.textContent).toBe('😀cd');
 	}
 };
 
@@ -368,7 +373,7 @@ export const CounterControlled: Story = {
 		await userEvent.type(textarea, ' chars!');
 		await expect(counter).toHaveTextContent('13/10');
 		await expect(
-			canvasElement.querySelector('[data-slot=textarea-overflow] span')!.textContent
+			canvasElement.querySelector('[data-slot=textarea-overflow] [data-over]')!.textContent
 		).toBe('rs!');
 		await userEvent.keyboard('{Backspace}{Backspace}{Backspace}');
 		await expect(counter).toHaveTextContent('10/10');

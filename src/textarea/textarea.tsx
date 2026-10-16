@@ -55,15 +55,21 @@ export const textAreaCounterRecipe = tv({
 
 /**
  * The layer a `TextArea` lays over itself once the value passes `maxLength`:
- * the same text, transparent up to the limit and destructive after it, so the
- * characters over the limit read red inside the box.
+ * it paints the whole text, the characters over the limit in red, while the
+ * textarea's own text turns transparent and keeps the caret and selection. The
+ * textarea never shows through, so scrolling, which the layer follows a frame
+ * late, cannot flash the red characters dark.
  *
  * @summary tailwind-variants recipe backing the TextArea over-limit highlight
  */
 export const textAreaOverflowRecipe = tv({
 	slots: {
 		// Hidden until it has been measured, so a server render never shows it misplaced.
-		root: 'pointer-events-none invisible absolute box-border overflow-hidden border-0 text-transparent',
+		root: 'pointer-events-none invisible absolute box-border overflow-hidden border-0 data-ready:visible',
+		within: [
+			'text-text-input-normal',
+			'group-has-[textarea:disabled]/textarea:text-text-input-disable'
+		],
 		over: 'text-text-input-destructive'
 	}
 });
@@ -212,7 +218,7 @@ export const TextArea = (props: TextAreaProps) => {
 		layer.style.left = `${offsetLeft + clientLeft}px`;
 		layer.style.width = `${clientWidth}px`;
 		layer.style.height = `${clientHeight}px`;
-		layer.style.visibility = 'visible';
+		layer.dataset.ready = '';
 		layer.scrollTop = scrollTop;
 		layer.scrollLeft = scrollLeft;
 	}, []);
@@ -258,7 +264,17 @@ export const TextArea = (props: TextAreaProps) => {
 					ref={mergedRef}
 					data-slot="textarea"
 					data-size={size}
-					className={cn(textAreaRecipe({ size }), className)}
+					className={cn(
+						textAreaRecipe({ size }),
+						// While the layer paints the text, the textarea keeps only its caret and
+						// selection, and its colour never fades, so the swap is instant.
+						counter && 'transition-[box-shadow,outline-color,outline-offset,outline-width]',
+						'group-has-[[data-slot=textarea-overflow][data-ready]]/textarea:text-transparent',
+						'group-has-[[data-slot=textarea-overflow][data-ready]]/textarea:caret-text-input-normal',
+						'group-has-[[data-slot=textarea-overflow][data-ready]]/textarea:selection:text-transparent',
+						'group-has-[[data-slot=textarea-overflow][data-ready]]/textarea:selection:bg-[Highlight]',
+						className
+					)}
 					aria-describedby={counter ? describedByWith(describedBy, counterId) : describedBy}
 					{...rest}
 				/>
@@ -268,8 +284,10 @@ export const TextArea = (props: TextAreaProps) => {
 						aria-hidden
 						data-slot="textarea-overflow"
 						className={overflowStyles.root()}>
-						{value.slice(0, split)}
-						<span className={overflowStyles.over()}>{value.slice(split)}</span>
+						<span className={overflowStyles.within()}>{value.slice(0, split)}</span>
+						<span data-over className={overflowStyles.over()}>
+							{value.slice(split)}
+						</span>
 						{/* Keeps a trailing line break as tall as the textarea's. */}
 						{'\u200b'}
 					</span>
