@@ -8,15 +8,16 @@ import { Combobox as ComboboxPrimitive } from '@base-ui/react/combobox';
 import { tv } from 'tailwind-variants';
 
 import { cn } from '../../lib';
-import { InputContext, inputRecipe, InputSize } from '../input';
+import { useFieldContext } from '../field';
+import { inputRecipe, InputSize } from '../input';
 import { InputGroup } from '../input-group';
-import { InputSearch, InputSearchProps } from '../input-search';
 import { IconCancel, IconCheck, IconKeyboardArrowDown, IconSearch } from './icons';
 import { useBaseInputContext } from './input-context';
 
 /**
  * Style recipe for Combobox. Slots: `action` and `trigger` (the clear and
  * chevron buttons inside the input's frame, which is `InputGroup`'s),
+ * `clear` (hides the clear button while the input is disabled or read-only),
  * `triggerReplaced` (hides the chevron once the clear button has a value to
  * clear), `content`,
  * `list`, `item`, `indicator` and `message`. The surface carries its
@@ -38,13 +39,19 @@ export const comboboxRecipe = tv({
 			'transition-[rotate] duration-100 data-popup-open:rotate-180 motion-reduce:transition-none',
 		// With a clear button beside it, the chevron gives way to it once there is a value, as in
 		// Base UI's own example. Base UI marks the frame `data-placeholder` while there is none.
-		triggerReplaced: '[[data-slot=combobox-field]:not([data-placeholder])_&]:hidden',
+		// A disabled or read-only input matches `:read-only` whichever part locked it — `Root`, a
+		// `FieldText`, the input itself or a `<fieldset>` — and has nothing to clear.
+		clear: 'group-has-[input:read-only]/input-group:hidden',
+		triggerReplaced:
+			'[[data-slot=combobox-field]:not([data-placeholder]):not(:has(input:read-only))_&]:hidden',
 		content: [
 			'w-(--anchor-width) max-h-(--available-height) overflow-hidden rounded-md',
 			'border border-border-default-base-primary bg-bg-default-base-primary shadow-lg',
 			// Not Base UI's `--transform-origin`: with `align="start"` it puts the origin on the left
 			// corner, and this surface is as wide as the input, so it has to grow from the edge it hangs from.
 			'data-[side=bottom]:origin-top data-[side=top]:origin-bottom',
+			// With no row and no `Empty` to show, the border alone would read as a stray line.
+			'[&:not(:has(>:not(:empty)))]:hidden',
 			// The legacy Datalist's own timing — a 100ms fade over a 0.95 scale — driven off Base UI's
 			// start/end attributes rather than the shared dropdown keyframes, whose 0.9 scale and
 			// translate read as a slow start on a surface this wide.
@@ -177,6 +184,11 @@ export type ComboboxRootProps<
  * `value`, `onValueChange` and so on. `open` stays the consumer's to control;
  * `minInputLength` only refuses to open below the minimum.
  *
+ * `disabled` and `readOnly` belong here, not on `Input`: the input, the clear
+ * button and the chevron all read them from the root. `disabled` locks the
+ * whole field; `readOnly` locks the value but still lets the list open and be
+ * browsed. Inside a `FieldText` both default to the field's.
+ *
  * With `multiple`, the value is an array and picking a row toggles it. The list
  * stays open and keeps the typed query between picks, so several rows can be
  * ticked from one search; closing the list (Escape, a click outside) still resets
@@ -213,7 +225,10 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 	children,
 	...props
 }: ComboboxRootProps<Value, Multiple, Item>) => {
+	const field = useFieldContext();
 	const multiple = Boolean(props.multiple);
+	const disabled = props.disabled ?? field?.disabled;
+	const readOnly = props.readOnly ?? field?.readOnly;
 	const [openState, setOpenState] = useState(defaultOpen);
 	// A ref, not state: Base UI reports the new text before it asks to open on that same
 	// keystroke, so the check has to see it before React re-renders.
@@ -282,7 +297,9 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 					onOpenChange={handleOpenChange}
 					onOpenChangeComplete={handleOpenChangeComplete}
 					onInputValueChange={handleInputValueChange}
-					{...props}>
+					{...props}
+					disabled={disabled}
+					readOnly={readOnly}>
 					{children}
 					{loading !== undefined && (
 						// Next to the field, not inside `Content`: the surface mounts on the keystroke that
@@ -312,8 +329,7 @@ type InputProps = Omit<ComponentPropsWithRef<typeof ComboboxPrimitive.Input>, 's
 	 */
 	variant?: 'search' | 'plain' | 'select';
 	/**
-	 * Whether a clear button follows the input: on `search` once there is text,
-	 * on the others once an option is picked.
+	 * Whether a clear button follows the input once an option is picked.
 	 * Defaults to `true` for `search` and `false` for `plain` and `select`; pass
 	 * it to override the variant. On a `select` it replaces the chevron while
 	 * there is a value. Ignored under a `multiple` root, which never
@@ -354,12 +370,14 @@ type InputProps = Omit<ComponentPropsWithRef<typeof ComboboxPrimitive.Input>, 's
  *   the user may want to browse before typing.
  *
  * Only `search` carries a clear button by default; `showClear` adds it to the
- * other two or drops it from `search`. The `search` field is an
- * [InputSearch](?path=/docs/components-inputsearch--docs): its clear button
- * shows as soon as there is text, typed or picked, and pressing it empties the
- * text, which drops the picked option and closes the list. On a `select`, the
- * clear button takes the chevron's place once an option is picked; the list
- * still opens from the input. Name it with `clearLabel`, and the chevron with
+ * other two or drops it from `search`. It shows once an option is picked, on
+ * every variant: text typed without a pick is not a value, and closing the
+ * list drops it, as Escape does. Pressing it empties the text and drops the
+ * picked option. It is out of the tab order; from the keyboard, selecting the
+ * text and deleting it drops the option too. A `disabled` or `readOnly` field
+ * has none, as there is nothing to clear. On a `select`, the clear button
+ * takes the chevron's place once an option is picked; the list still opens
+ * from the input. Name it with `clearLabel`, and the chevron with
  * `triggerLabel`, when a page has more than one combobox.
  *
  * Under a `multiple` root there is neither: the list stays open between picks,
@@ -369,9 +387,10 @@ type InputProps = Omit<ComponentPropsWithRef<typeof ComboboxPrimitive.Input>, 's
  * remove each entry.
  *
  * Every native input attribute is accepted and forwarded to the `<input>` —
- * `placeholder`, `disabled`, `autoComplete`. `className` styles the `<input>`
- * too, except on the `search` field with a clear button, where it styles the
- * frame, as on InputSearch.
+ * `placeholder`, `autoComplete` — and so is `className`. Pass `disabled` and
+ * `readOnly` to `Root` instead; on the input alone, `disabled` still hides the
+ * clear button and disables the chevron, but `readOnly` leaves the chevron free
+ * to change the value.
  *
  * @summary Search, plain or select field that opens and filters the list
  * @dataAttribute {string} data-slot - Always set to "combobox-input"
@@ -385,32 +404,7 @@ export const Input = ({
 }: InputProps) => {
 	const { className, size = 'md', ...rest } = useBaseInputContext(props);
 	const multiple = use(MultipleContext);
-
-	// The search field with a clear button is InputSearch: Base UI's props reach its
-	// `<input>` through `render`, and emptying the text — which its clear button does
-	// through a real change event — is what makes Base UI drop a single selection.
-	// The null context keeps InputSearch's own `Input` from merging the field's wiring
-	// a second time; it was merged above.
-	if (variant === 'search' && showClear && !multiple) {
-		return (
-			<ComboboxPrimitive.InputGroup render={<div />} data-slot="combobox-field">
-				<InputContext value={null}>
-					<ComboboxPrimitive.Input
-						data-slot="combobox-input"
-						className={className}
-						{...rest}
-						render={inputProps => (
-							<InputSearch
-								{...(inputProps as InputSearchProps)}
-								size={size}
-								clearLabel={clearLabel}
-							/>
-						)}
-					/>
-				</InputContext>
-			</ComboboxPrimitive.InputGroup>
-		);
-	}
+	const clearable = showClear && !multiple;
 
 	return (
 		// Base UI's part, so the list anchors to the whole frame — icon and buttons included —
@@ -418,6 +412,9 @@ export const Input = ({
 		<ComboboxPrimitive.InputGroup
 			render={<InputGroup.Root />}
 			data-slot="combobox-field"
+			// Base UI opens the list on a press on the frame unless `Root` is disabled; with
+			// `disabled` on the input alone, a click on the padding would still open it.
+			onMouseDown={rest.disabled ? event => event.preventBaseUIHandler() : undefined}
 			// Alone in the frame, the text keeps a plain `Input`'s inset rather than the group's.
 			className={variant === 'plain' ? 'px-4' : undefined}>
 			{variant === 'search' && (
@@ -431,11 +428,11 @@ export const Input = ({
 				className={cn(inputRecipe({ size }), className)}
 				{...rest}
 			/>
-			{showClear && !multiple && (
+			{clearable && (
 				<ComboboxPrimitive.Clear
 					data-slot="combobox-clear"
 					aria-label={clearLabel}
-					className={slots.action()}>
+					className={cn(slots.action(), slots.clear())}>
 					<IconCancel />
 				</ComboboxPrimitive.Clear>
 			)}
@@ -443,7 +440,10 @@ export const Input = ({
 				<ComboboxPrimitive.Trigger
 					data-slot="combobox-trigger"
 					aria-label={triggerLabel}
-					className={cn(slots.action(), slots.trigger(), showClear && slots.triggerReplaced())}>
+					// `disabled` belongs on `Root`, where Base UI's `Trigger` reads it; passed to the input
+					// alone, the chevron would still open the list and change the value.
+					disabled={rest.disabled}
+					className={cn(slots.action(), slots.trigger(), clearable && slots.triggerReplaced())}>
 					<IconKeyboardArrowDown />
 				</ComboboxPrimitive.Trigger>
 			)}
