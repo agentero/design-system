@@ -1,7 +1,7 @@
-import { Suspense, use, useDeferredValue, useRef, useState } from 'react';
+import { SubmitEvent, useRef, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { configure, expect, fn, getConfig, userEvent, waitFor, within } from 'storybook/test';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { Combobox } from '.';
 import { Button } from '../button';
@@ -466,8 +466,9 @@ export const MultipleSelection: Story = {
 		await expect(indicator).not.toHaveAttribute('data-selected');
 		await expect(colorado).toHaveAttribute('aria-selected', 'false');
 
-		// Keyboard: arrow onto a row and press Enter. The list stays open and the query stays put.
-		await userEvent.keyboard('{ArrowDown}{Enter}');
+		// Keyboard: the first row is highlighted already, so Enter picks it. The list stays open and
+		// the query stays put.
+		await userEvent.keyboard('{Enter}');
 		await waitFor(() => expect(colorado).toHaveAttribute('aria-selected', 'true'));
 		await expect(indicator).toHaveAttribute('data-selected');
 		await expect(input).toHaveValue('co');
@@ -534,132 +535,13 @@ const SkeletonRows = () => (
 	</div>
 );
 
-// Stand-in for react-query: one promise per query, reused across renders so `use()` can suspend
-// on it. Keyed by query, a late response for an older query settles into an entry nobody renders
-// any more — the same guard against out-of-order responses that a query key gives the apps.
-const agencyRequests = new Map<string, Promise<Agency[]>>();
-const loadAgencies = (query: string) => {
-	let request = agencyRequests.get(query);
-	if (!request) {
-		request = searchAgencies(query);
-		agencyRequests.set(query, request);
-	}
-	return request;
-};
-
-// `Combobox.Empty` needs `items` on `Root`, which this pattern never has: the rows are the
-// suspended child's, so the empty message is its as well.
-const AgencyItems = ({ query }: { query: string }) => {
-	const agencies = use(loadAgencies(query));
-
-	if (agencies.length === 0) {
-		return (
-			<div className="mx-2 my-px px-3 py-2 text-sm text-text-default-base-tertiary">
-				No agencies found
-			</div>
-		);
-	}
-
-	return (
-		<Combobox.List>
-			{agencies.map(agency => (
-				<Combobox.Item key={agency.id} value={agency}>
-					{agency.name}
-				</Combobox.Item>
-			))}
-		</Combobox.List>
-	);
-};
-
-/**
- * Options fetched as you type, the way the apps load data: the rows are a component
- * that suspends on the request, so a `Suspense` boundary inside `Content` shows
- * placeholder rows until the first results land. The rows read a deferred copy of
- * the query, so a new search keeps the previous rows on screen while it loads, and
- * passing that staleness as `loading` announces the wait and marks `Content` busy
- * until they are replaced; the placeholders never come back. Nothing tracks a
- * request by hand, and reading the data by query is what
- * makes out-of-order responses harmless. With react-query, drop a
- * `useSuspenseQuery` where `use()` is, or use `placeholderData: keepPreviousData`
- * with a plain `useQuery` for the same behaviour.
- */
-export const AsyncSearch: Story = {
-	render: () => {
-		const [query, setQuery] = useState('');
-		// The rows read the deferred query: while the new one suspends, React keeps rendering the
-		// old rows instead of falling back to the placeholders.
-		const deferredQuery = useDeferredValue(query);
-		const isStale = query !== deferredQuery;
-
-		return (
-			// No `items` and `filter={null}`: the server did the filtering, the child renders what came
-			// back, and `isItemEqualToValue` keeps a re-fetched copy counting as the selected one.
-			<Combobox.Root
-				filter={null}
-				itemToStringLabel={(agency: Agency) => agency.name}
-				isItemEqualToValue={(a: Agency, b: Agency) => a.id === b.id}
-				loading={isStale}
-				loadingLabel="Searching agencies…"
-				onInputValueChange={(value, { reason }) => {
-					// Picking a row writes its label into the input; that is not a new search.
-					if (reason !== 'item-press') setQuery(value);
-				}}>
-				<Combobox.Input placeholder="Search agencies" aria-label="Search agencies" />
-				<Combobox.Content>
-					<Suspense fallback={<SkeletonRows />}>
-						<AgencyItems query={deferredQuery} />
-					</Suspense>
-				</Combobox.Content>
-			</Combobox.Root>
-		);
-	},
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-		const body = within(document.body);
-		const input = canvas.getByRole('combobox', { name: /search agencies/i });
-		const skeleton = () => document.body.querySelector('[data-slot="combobox-skeleton"]');
-		const content = () => document.body.querySelector('[data-slot="combobox-content"]');
-
-		// Focus opens the surface and the first request goes out for the empty query: no
-		// `minInputLength` here — see `AsyncSearchWithLoading` for a search that waits for one.
-		await userEvent.click(input);
-
-		// Placeholder rows on the first load, and no options yet.
-		await waitFor(() => expect(skeleton()).toBeInTheDocument());
-		await expect(body.queryByRole('option')).not.toBeInTheDocument();
-		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(4));
-		await expect(content()).not.toHaveAttribute('aria-busy');
-
-		// A new search keeps the previous rows, marked busy, until its own land. Storybook wraps each
-		// event in an `act()` it does not await, and a deferred render that suspends inside one is
-		// never retried; typing outside it lets React schedule the retry the way it does in the app.
-		const { eventWrapper } = getConfig();
-		configure({ eventWrapper: event => event() });
-		try {
-			await userEvent.type(input, 'b');
-		} finally {
-			configure({ eventWrapper });
-		}
-		await waitFor(() => expect(content()).toHaveAttribute('aria-busy', 'true'));
-		await waitFor(() => expect(body.getByText(/searching agencies/i)).toBeInTheDocument());
-		await expect(skeleton()).not.toBeInTheDocument();
-		await expect(body.getAllByRole('option')).toHaveLength(4);
-		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(2));
-		await expect(content()).not.toHaveAttribute('aria-busy');
-		await expect(skeleton()).not.toBeInTheDocument();
-
-		await userEvent.keyboard('{Escape}');
-		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
-	}
-};
-
 // What the apps wait for before asking the API.
 const MIN_QUERY_LENGTH = 2;
 
 /**
- * The same search without Suspense, for a consumer that gets a `loading` flag from
- * its data layer instead: `filter={null}`, the rows arrive through `filteredItems`,
- * and the flag goes to `Root` as `loading`. That is all the wiring the wait needs:
+ * Options fetched from an API as you type: `filter={null}`, the rows arrive
+ * through `items` and `filteredItems`, and the data layer's `loading` flag goes
+ * to `Root`. That is all the wiring the wait needs:
  * `Content` is marked busy, `loadingLabel` is announced once when the request
  * starts, and `Empty` holds back "no results" until the answer is in. Placeholder
  * rows show only while there is nothing to show yet, hidden from assistive
@@ -753,6 +635,8 @@ export const AsyncSearchWithLoading: Story = {
 		await expect(body.queryByRole('option')).not.toBeInTheDocument();
 		await waitFor(() => expect(body.getAllByRole('option').length).toBeGreaterThan(0));
 		await expect(content).not.toHaveAttribute('aria-busy');
+		// Rows that arrive after the query are highlighted too, so Enter picks the first.
+		await waitFor(() => expect(body.getAllByRole('option')[0]).toHaveAttribute('data-highlighted'));
 		await expect(body.queryByText(/searching agencies/i)).not.toBeInTheDocument();
 
 		await expect(
@@ -768,6 +652,11 @@ export const AsyncSearchWithLoading: Story = {
 		await expect(
 			document.body.querySelector('[data-slot="combobox-skeleton"]')
 		).not.toBeInTheDocument();
+		// The highlighted row answers the previous query, so Enter waits for the new one.
+		await expect(body.getAllByRole('option')[0]).toHaveAttribute('data-highlighted');
+		await userEvent.keyboard('{Enter}');
+		await expect(input).toHaveValue('anch');
+		await expect(input).toHaveAttribute('aria-expanded', 'true');
 		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(1));
 		await expect(content).not.toHaveAttribute('aria-busy');
 
@@ -783,6 +672,158 @@ export const AsyncSearchWithLoading: Story = {
 		await waitFor(() => expect(input).toHaveValue('Anchor Brokers'));
 		await userEvent.keyboard('{Escape}');
 		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+	}
+};
+
+// Counts the form's submits and reads the picked state from its data, so a story shows when Enter
+// reaches the form and what it sent.
+const useSubmissions = () => {
+	const [submissions, setSubmissions] = useState<{ count: number; state: string }>();
+
+	const onSubmit = (event: SubmitEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		const state = String(new FormData(event.currentTarget).get('state') ?? '');
+		setSubmissions(previous => ({ count: (previous?.count ?? 0) + 1, state }));
+	};
+
+	const status = submissions
+		? `Submitted ${submissions.count}× — state: ${submissions.state || 'none'}`
+		: 'Not submitted';
+
+	return { onSubmit, status };
+};
+
+/**
+ * Inside a form, Enter in an open list picks the highlighted row instead of
+ * submitting. The first row is highlighted as soon as the list shows one, so
+ * typing a search and pressing Enter picks the top match. With no match, Enter
+ * does nothing. Once the list is closed, Enter submits the form as in any input,
+ * with no value if none was picked: mark the root `required` to block that.
+ *
+ * @summary Enter picks the highlighted row while the list is open, submits once closed
+ */
+export const InsideForm: Story = {
+	render: () => {
+		const { onSubmit, status } = useSubmissions();
+
+		return (
+			<form className="flex flex-col items-start gap-4" onSubmit={onSubmit}>
+				<Combobox.Root items={STATES} name="state">
+					<Combobox.Input placeholder="Search states" aria-label="State" />
+					<Combobox.Content>
+						<Combobox.Empty>No matches found</Combobox.Empty>
+						<Combobox.List>
+							{(state: string) => (
+								<Combobox.Item key={state} value={state}>
+									{state}
+								</Combobox.Item>
+							)}
+						</Combobox.List>
+					</Combobox.Content>
+				</Combobox.Root>
+				<div className="flex items-center gap-4">
+					<Button type="submit">Save</Button>
+					<p role="status" className="text-sm text-text-default-base-secondary">
+						{status}
+					</p>
+				</div>
+			</form>
+		);
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const body = within(document.body);
+		const input = canvas.getByRole('combobox', { name: 'State' });
+		const status = canvas.getByRole('status');
+
+		await userEvent.click(input);
+		await waitFor(() =>
+			expect(body.getByRole('option', { name: 'California' })).toHaveAttribute('data-highlighted')
+		);
+		await userEvent.type(input, 'co');
+		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(2));
+		await expect(body.getByRole('option', { name: 'Colorado' })).toHaveAttribute(
+			'data-highlighted'
+		);
+
+		await userEvent.keyboard('{Enter}');
+		await waitFor(() => expect(input).toHaveValue('Colorado'));
+		await expect(status).toHaveTextContent('Not submitted');
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+
+		// With the list closed, Enter is the form's again.
+		await userEvent.keyboard('{Enter}');
+		await expect(status).toHaveTextContent('Submitted 1× — state: Colorado');
+
+		// Nothing to pick: Enter leaves the query and the list as they are.
+		await userEvent.clear(input);
+		await userEvent.type(input, 'zz');
+		await waitFor(() => expect(body.getByText('No matches found')).toBeVisible());
+		await userEvent.keyboard('{Enter}');
+		await expect(status).toHaveTextContent('Submitted 1× — state: Colorado');
+		await expect(input).toHaveValue('zz');
+		await expect(input).toHaveAttribute('aria-expanded', 'true');
+
+		// A modifier leaves Enter to the form, as Base UI does with a row highlighted.
+		await userEvent.keyboard('{Meta>}{Enter}{/Meta}');
+		await expect(status).toHaveTextContent(/Submitted 2×/);
+
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+	}
+};
+
+/**
+ * `autoHighlight={false}` on the root and `submitOnEnter` on the input bring
+ * back Base UI's defaults: nothing is highlighted until the arrow keys or the
+ * pointer move onto a row, and with no row highlighted, Enter closes the list,
+ * drops the typed query and submits the form. A highlighted row is still picked.
+ *
+ * @summary Enter submits the form when no row is highlighted
+ */
+export const SubmitOnEnter: Story = {
+	render: () => {
+		const { onSubmit, status } = useSubmissions();
+
+		return (
+			<form className="flex flex-col items-start gap-4" onSubmit={onSubmit}>
+				<Combobox.Root items={STATES} name="state" autoHighlight={false}>
+					<Combobox.Input submitOnEnter placeholder="Search states" aria-label="State" />
+					<Combobox.Content>
+						<Combobox.Empty>No matches found</Combobox.Empty>
+						<Combobox.List>
+							{(state: string) => (
+								<Combobox.Item key={state} value={state}>
+									{state}
+								</Combobox.Item>
+							)}
+						</Combobox.List>
+					</Combobox.Content>
+				</Combobox.Root>
+				<div className="flex items-center gap-4">
+					<Button type="submit">Save</Button>
+					<p role="status" className="text-sm text-text-default-base-secondary">
+						{status}
+					</p>
+				</div>
+			</form>
+		);
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const body = within(document.body);
+		const input = canvas.getByRole('combobox', { name: 'State' });
+		const status = canvas.getByRole('status');
+
+		await userEvent.click(input);
+		await userEvent.type(input, 'co');
+		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(2));
+
+		// The typed query is not a value: the form goes out with no state.
+		await userEvent.keyboard('{Enter}');
+		await expect(status).toHaveTextContent('Submitted 1× — state: none');
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+		await expect(input).not.toHaveValue('Colorado');
 	}
 };
 
