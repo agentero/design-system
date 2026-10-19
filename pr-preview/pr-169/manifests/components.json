@@ -3959,7 +3959,7 @@
           "name": "Inside Popover With Value",
           "error": {
             "name": "SyntaxError",
-            "message": "Expected render to be an arrow function or function expression\n  990 |  */\n  991 | export const InsidePopoverWithValue: Story = {\n> 992 | \trender: InsidePopover.render,\n      | \t           ^^^^^^^^^^^^^^^^^^^^\n  993 | \tplay: async ({ canvasElement }) => {\n  994 | \t\tconst body = within(document.body);\n  995 | \t\tconst trigger = within(canvasElement).getByRole('button', { name: /filter by state/i });"
+            "message": "Expected render to be an arrow function or function expression\n   999 |  */\n  1000 | export const InsidePopoverWithValue: Story = {\n> 1001 | \trender: InsidePopover.render,\n       | \t           ^^^^^^^^^^^^^^^^^^^^\n  1002 | \tplay: async ({ canvasElement }) => {\n  1003 | \t\tconst body = within(document.body);\n  1004 | \t\tconst trigger = within(canvasElement).getByRole('button', { name: /filter by state/i });"
           }
         },
         {
@@ -11576,6 +11576,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5656
+    "durationMs": 5597
   }
 }
