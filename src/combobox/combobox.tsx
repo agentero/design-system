@@ -360,7 +360,8 @@ type InputProps = Omit<ComponentPropsWithRef<typeof ComboboxPrimitive.Input>, 's
 	/**
 	 * Whether Enter, pressed while the list is open and no row is highlighted,
 	 * closes the list and submits the surrounding form, as in a plain input.
-	 * Defaults to `false`: Enter then does nothing.
+	 * Defaults to `false`: Enter then does nothing, and neither does it while
+	 * `Root` is `loading`.
 	 */
 	submitOnEnter?: boolean;
 };
@@ -409,9 +410,13 @@ type InputProps = Omit<ComponentPropsWithRef<typeof ComboboxPrimitive.Input>, 's
  * The typed text is a query, never the value, so while the list is open Enter
  * does not submit a surrounding form: it picks the highlighted row — the first
  * one, unless the user moved the highlight — and with none highlighted, as
- * while the list is empty, it does nothing. With the list closed, Enter
- * submits as in any input. `submitOnEnter` restores Base UI's default: with no
- * row highlighted, Enter closes the list and submits the form.
+ * while the list is empty, it does nothing. While `Root` is `loading` it does
+ * nothing either: the rows on screen answer the previous query, and the top
+ * match for the one just typed has not arrived. A click still picks any row.
+ * With the list closed, Enter submits as in any input, and with a modifier
+ * held — Cmd+Enter — it is always the form's. `submitOnEnter` restores Base
+ * UI's default: with no row highlighted, Enter closes the list and submits
+ * the form.
  *
  * Every native input attribute is accepted and forwarded to the `<input>` —
  * `placeholder`, `autoComplete` — and so is `className`. Pass `disabled` and
@@ -432,18 +437,23 @@ export const Input = ({
 }: InputProps) => {
 	const { className, size = 'md', onKeyDown, ...rest } = useBaseInputContext(props);
 	const multiple = use(MultipleContext);
+	const loading = use(LoadingContext);
 	const clearable = showClear && !multiple;
 
 	// With no row highlighted, Base UI closes the list and lets Enter through to the form, as a
 	// plain input would. Here the text is only a query, never the value, so Enter does nothing.
+	// While loading, the highlighted row is the previous query's top match, so it is not picked.
+	// A modifier is left alone, as Base UI does, so Cmd+Enter still reaches the form.
 	const handleKeyDown: InputProps['onKeyDown'] = event => {
 		onKeyDown?.(event);
 		const input = event.currentTarget;
 		if (submitOnEnter || event.key !== 'Enter' || event.defaultPrevented) return;
+		if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
 		if (event.nativeEvent.isComposing || input.getAttribute('aria-expanded') !== 'true') return;
 
-		const list = document.getElementById(input.getAttribute('aria-controls') ?? '');
-		if (list?.querySelector('[data-highlighted]')) return;
+		// The list's own document: the global one misses it when the field renders in an iframe.
+		const list = input.ownerDocument.getElementById(input.getAttribute('aria-controls') ?? '');
+		if (!loading && list?.querySelector('[data-highlighted]')) return;
 
 		event.preventDefault();
 		event.preventBaseUIHandler();

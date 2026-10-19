@@ -652,6 +652,11 @@ export const AsyncSearchWithLoading: Story = {
 		await expect(
 			document.body.querySelector('[data-slot="combobox-skeleton"]')
 		).not.toBeInTheDocument();
+		// The highlighted row answers the previous query, so Enter waits for the new one.
+		await expect(body.getAllByRole('option')[0]).toHaveAttribute('data-highlighted');
+		await userEvent.keyboard('{Enter}');
+		await expect(input).toHaveValue('anch');
+		await expect(input).toHaveAttribute('aria-expanded', 'true');
 		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(1));
 		await expect(content).not.toHaveAttribute('aria-busy');
 
@@ -758,6 +763,10 @@ export const InsideForm: Story = {
 		await expect(status).toHaveTextContent('Submitted 1× — state: Colorado');
 		await expect(input).toHaveValue('zz');
 		await expect(input).toHaveAttribute('aria-expanded', 'true');
+
+		// A modifier leaves Enter to the form, as Base UI does with a row highlighted.
+		await userEvent.keyboard('{Meta>}{Enter}{/Meta}');
+		await expect(status).toHaveTextContent(/Submitted 2×/);
 
 		await userEvent.keyboard('{Escape}');
 		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
