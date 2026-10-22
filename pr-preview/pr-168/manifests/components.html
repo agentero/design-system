@@ -588,13 +588,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">42 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/363 story errors</a></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">42 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/365 story errors</a></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>5.9s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>5.4s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -4111,7 +4111,7 @@ import { CheckList } from &#39;@agentero/design-system/check-list&#39;;
       <div class="badges">
         <label for="c-9-components-combobox-props" class="badge ok as-toggle">41 prop types</label>
         
-        <label for="c-9-components-combobox-stories" class="badge err as-toggle">1/15 story errors</label>
+        <label for="c-9-components-combobox-stories" class="badge err as-toggle">1/16 story errors</label>
         
         
       </div>
@@ -4436,13 +4436,13 @@ virtualized?: boolean = false</code></pre>
               
               
               <pre><code>Expected render to be an arrow function or function expression
-  958 |  */
-  959 | export const InsidePopoverWithValue: Story = {
-&gt; 960 | 	render: InsidePopover.render,
-      | 	           ^^^^^^^^^^^^^^^^^^^^
-  961 | 	play: async ({ canvasElement }) =&gt; {
-  962 | 		const body = within(document.body);
-  963 | 		const trigger = within(canvasElement).getByRole(&#39;button&#39;, { name: /filter by state/i });</code></pre>
+   999 |  */
+  1000 | export const InsidePopoverWithValue: Story = {
+&gt; 1001 | 	render: InsidePopover.render,
+       | 	           ^^^^^^^^^^^^^^^^^^^^
+  1002 | 	play: async ({ canvasElement }) =&gt; {
+  1003 | 		const body = within(document.body);
+  1004 | 		const trigger = within(canvasElement).getByRole(&#39;button&#39;, { name: /filter by state/i });</code></pre>
             </div>
           
           
@@ -4450,8 +4450,7 @@ virtualized?: boolean = false</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button, Combobox, Field, FieldText, Label, Modal, Popover, Skeleton, Tag } from "@agentero/design-system";
-import { Suspense } from "react";</code></pre>
+                <pre><code>import { Button, Combobox, Field, FieldText, Label, Modal, Popover, Skeleton, Tag } from "@agentero/design-system";</code></pre>
               </div>
           
           
@@ -4677,59 +4676,13 @@ here as tags.</div>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">Async Search</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              
-              <div class="hint">Options fetched as you type, the way the apps load data: the rows are a component
-that suspends on the request, so a `Suspense` boundary inside `Content` shows
-placeholder rows until the first results land. The rows read a deferred copy of
-the query, so a new search keeps the previous rows on screen while it loads, and
-passing that staleness as `loading` announces the wait and marks `Content` busy
-until they are replaced; the placeholders never come back. Nothing tracks a
-request by hand, and reading the data by query is what
-makes out-of-order responses harmless. With react-query, drop a
-`useSuspenseQuery` where `use()` is, or use `placeholderData: keepPreviousData`
-with a plain `useQuery` for the same behaviour.</div>
-              <pre><code>const AsyncSearch = () =&gt; {
-    const [query, setQuery] = useState(&#39;&#39;);
-    // The rows read the deferred query: while the new one suspends, React keeps rendering the
-    // old rows instead of falling back to the placeholders.
-    const deferredQuery = useDeferredValue(query);
-    const isStale = query !== deferredQuery;
-
-    return (
-        // No `items` and `filter={null}`: the server did the filtering, the child renders what came
-        // back, and `isItemEqualToValue` keeps a re-fetched copy counting as the selected one.
-        &lt;Combobox.Root
-            filter={null}
-            itemToStringLabel={(agency: Agency) =&gt; agency.name}
-            isItemEqualToValue={(a: Agency, b: Agency) =&gt; a.id === b.id}
-            loading={isStale}
-            loadingLabel=&quot;Searching agencies…&quot;
-            onInputValueChange={(value, { reason }) =&gt; {
-                // Picking a row writes its label into the input; that is not a new search.
-                if (reason !== &#39;item-press&#39;) setQuery(value);
-            }}&gt;
-            &lt;Combobox.Input placeholder=&quot;Search agencies&quot; aria-label=&quot;Search agencies&quot; /&gt;
-            &lt;Combobox.Content&gt;
-                &lt;Suspense fallback={&lt;SkeletonRows /&gt;}&gt;
-                    &lt;AgencyItems query={deferredQuery} /&gt;
-                &lt;/Suspense&gt;
-            &lt;/Combobox.Content&gt;
-        &lt;/Combobox.Root&gt;
-    );
-};</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
                 <span class="ex-name">Async Search With Loading</span>
                 <span class="badge ok">story ok</span>
               </div>
               <div>API search that waits for two characters and announces its loading state</div>
-              <div class="hint">The same search without Suspense, for a consumer that gets a `loading` flag from
-its data layer instead: `filter={null}`, the rows arrive through `filteredItems`,
-and the flag goes to `Root` as `loading`. That is all the wiring the wait needs:
+              <div class="hint">Options fetched from an API as you type: `filter={null}`, the rows arrive
+through `items` and `filteredItems`, and the data layer&#39;s `loading` flag goes
+to `Root`. That is all the wiring the wait needs:
 `Content` is marked busy, `loadingLabel` is announced once when the request
 starts, and `Empty` holds back &quot;no results&quot; until the answer is in. Placeholder
 rows show only while there is nothing to show yet, hidden from assistive
@@ -4788,6 +4741,83 @@ no request goes out for a shorter query either.</div>
                 &lt;/Combobox.List&gt;
             &lt;/Combobox.Content&gt;
         &lt;/Combobox.Root&gt;
+    );
+};</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Inside Form</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Enter picks the highlighted row while the list is open, submits once closed</div>
+              <div class="hint">Inside a form, Enter in an open list picks the highlighted row instead of
+submitting. The first row is highlighted as soon as the list shows one, so
+typing a search and pressing Enter picks the top match. With no match, Enter
+does nothing. Once the list is closed, Enter submits the form as in any input,
+with no value if none was picked: mark the root `required` to block that.</div>
+              <pre><code>const InsideForm = () =&gt; {
+    const { onSubmit, status } = useSubmissions();
+
+    return (
+        &lt;form className=&quot;flex flex-col items-start gap-4&quot; onSubmit={onSubmit}&gt;
+            &lt;Combobox.Root items={STATES} name=&quot;state&quot;&gt;
+                &lt;Combobox.Input placeholder=&quot;Search states&quot; aria-label=&quot;State&quot; /&gt;
+                &lt;Combobox.Content&gt;
+                    &lt;Combobox.Empty&gt;No matches found&lt;/Combobox.Empty&gt;
+                    &lt;Combobox.List&gt;
+                        {(state: string) =&gt; (
+                            &lt;Combobox.Item key={state} value={state}&gt;
+                                {state}
+                            &lt;/Combobox.Item&gt;
+                        )}
+                    &lt;/Combobox.List&gt;
+                &lt;/Combobox.Content&gt;
+            &lt;/Combobox.Root&gt;
+            &lt;div className=&quot;flex items-center gap-4&quot;&gt;
+                &lt;Button type=&quot;submit&quot;&gt;Save&lt;/Button&gt;
+                &lt;p role=&quot;status&quot; className=&quot;text-sm text-text-default-base-secondary&quot;&gt;
+                    {status}
+                &lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/form&gt;
+    );
+};</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Submit On Enter</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Enter submits the form when no row is highlighted</div>
+              <div class="hint">`autoHighlight={false}` on the root and `submitOnEnter` on the input bring
+back Base UI&#39;s defaults: nothing is highlighted until the arrow keys or the
+pointer move onto a row, and with no row highlighted, Enter closes the list,
+drops the typed query and submits the form. A highlighted row is still picked.</div>
+              <pre><code>const SubmitOnEnter = () =&gt; {
+    const { onSubmit, status } = useSubmissions();
+
+    return (
+        &lt;form className=&quot;flex flex-col items-start gap-4&quot; onSubmit={onSubmit}&gt;
+            &lt;Combobox.Root items={STATES} name=&quot;state&quot; autoHighlight={false}&gt;
+                &lt;Combobox.Input submitOnEnter placeholder=&quot;Search states&quot; aria-label=&quot;State&quot; /&gt;
+                &lt;Combobox.Content&gt;
+                    &lt;Combobox.Empty&gt;No matches found&lt;/Combobox.Empty&gt;
+                    &lt;Combobox.List&gt;
+                        {(state: string) =&gt; (
+                            &lt;Combobox.Item key={state} value={state}&gt;
+                                {state}
+                            &lt;/Combobox.Item&gt;
+                        )}
+                    &lt;/Combobox.List&gt;
+                &lt;/Combobox.Content&gt;
+            &lt;/Combobox.Root&gt;
+            &lt;div className=&quot;flex items-center gap-4&quot;&gt;
+                &lt;Button type=&quot;submit&quot;&gt;Save&lt;/Button&gt;
+                &lt;p role=&quot;status&quot; className=&quot;text-sm text-text-default-base-secondary&quot;&gt;
+                    {status}
+                &lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/form&gt;
     );
 };</code></pre>
             </div>
@@ -7890,11 +7920,9 @@ through untouched.</div>
                 <span class="ex-name">With Counter</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Count beside a truncated description, under the box</div>
-              <div class="hint">Figma&#39;s empty state with a count: the description on the left and the count
-on the right, 16px apart under the box. Beside a count a long description
-keeps to one line and truncates; a screen reader still hears all of it, with
-the count.</div>
+              <div>Count inside the box, description under it</div>
+              <div class="hint">With a count, the count sits inside the box and the description keeps the
+row under it, wrapping as in any field. A screen reader hears both.</div>
               <pre><code>const WithCounter = () =&gt; &lt;FieldTextArea
     orientation=&quot;vertical&quot;
     invalid={false}
@@ -7934,9 +7962,9 @@ error where the description goes.</div>
                 <span class="ex-name">Invalid With Counter</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Error and destructive count share the row under the box</div>
-              <div class="hint">An invalid field shows its error where the description goes, and the count
-beside it turns destructive too, as in Figma.</div>
+              <div>Destructive border and count, error under the box</div>
+              <div class="hint">An invalid field turns the box&#39;s border and the count inside it
+destructive, and shows its error under the box.</div>
               <pre><code>const InvalidWithCounter = () =&gt; &lt;FieldTextArea orientation=&quot;vertical&quot; invalid disabled={false} readOnly={false} required&gt;
     &lt;Label&gt;Reason&lt;/Label&gt;
     &lt;TextArea maxLength={500} /&gt;
@@ -12874,7 +12902,7 @@ leading + trailing icons, and icon-only.</div>
       <div class="badges">
         <label for="c-38-components-textarea-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-38-components-textarea-stories" class="badge ok as-toggle">8 stories</label>
+        <label for="c-38-components-textarea-stories" class="badge ok as-toggle">9 stories</label>
         
         
       </div>
@@ -13015,14 +13043,27 @@ size and the minimum height shows three rows.</div>
                 <span class="ex-name">With Counter</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Character count under the box, driven by maxLength</div>
-              <div class="hint">`maxLength` shows the count under the box, right-aligned, 8px below it. The
-count is part of the control&#39;s description, so a screen reader hears
-&quot;0 of 140 characters&quot; with the field instead of on every keystroke.</div>
+              <div>Character count inside the box, driven by maxLength</div>
+              <div class="hint">`maxLength` shows the count inside the box, on its last row and aligned with
+the text. The count is part of the control&#39;s description, so a screen reader
+hears &quot;0 of 140 characters&quot; with the field instead of on every keystroke.</div>
               <pre><code>const WithCounter = () =&gt; &lt;TextArea
     placeholder=&quot;Anything the underwriter should know&quot;
     aria-label=&quot;Notes&quot;
     maxLength={140} /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Counter Grows With Text</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Counted box grows with its text</div>
+              <div class="hint">A counted TextArea grows a line at a time as the text reaches its last row,
+instead of scrolling, and has no resize handle.</div>
+              <pre><code>const CounterGrowsWithText = () =&gt; &lt;TextArea
+    placeholder=&quot;Anything the underwriter should know&quot;
+    aria-label=&quot;Notes&quot;
+    maxLength={500} /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
