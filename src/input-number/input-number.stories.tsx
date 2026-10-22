@@ -15,8 +15,9 @@ import { InputNumber } from './input-number';
  * InputNumber is a text field that only takes digits and a decimal point and
  * formats them as the user types: thousands separators on request, leading
  * zeros kept unless turned off, no sign. `onChange` fires with the formatted text in
- * `event.target.value`. It is an `Input` driven by `react-number-format`, so
- * it takes its label, messages and states from a surrounding `FieldText`.
+ * `event.target.value`. On mobile devices it shows a decimal keypad for an
+ * amount and a numeric one for an identifier. It is an `Input` driven by
+ * `react-number-format`, so it takes its label, messages and states from a surrounding `FieldText`.
  */
 const meta = {
 	title: 'Components/InputNumber',
@@ -86,10 +87,11 @@ export const Default: Story = {
 };
 
 /**
- * `type="tel"` brings up the numeric keypad on phones. The field still
- * formats and filters the same way; only the underlying input type changes.
+ * `type="tel"` renders a `tel` input, for codes and identifiers that are
+ * digits only. The field still formats and filters the same way, and the
+ * keypad on mobile devices follows `inputMode`, not the type.
  *
- * @summary Numeric keypad on phones through the tel input type
+ * @summary Digits-only identifier on a tel input type
  */
 export const TypeTel: Story = {
 	args: {
@@ -124,6 +126,40 @@ export const ThousandSeparator: Story = {
 
 		await expect(input).toHaveValue('1,234,567');
 		await expect(lastValue(args.onChange)).toBe('1,234,567');
+	}
+};
+
+/**
+ * The keypad on mobile devices follows the field. An amount, marked by
+ * `thousandSeparator`, gets `inputMode="decimal"` so the user can type cents;
+ * an identifier gets `inputMode="numeric"`, digits only. An `inputMode`
+ * passed in wins over the choice.
+ *
+ * @summary Decimal keypad for amounts, numeric keypad for identifiers
+ */
+export const Keypad: Story = {
+	render: args => (
+		<div style={{ display: 'grid', gap: '1rem' }}>
+			<InputNumber {...args} aria-label="Annual premium" thousandSeparator />
+			<InputNumber {...args} aria-label="NPN" />
+			<InputNumber {...args} aria-label="Policy count" thousandSeparator inputMode="numeric" />
+		</div>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		await expect(canvas.getByRole('textbox', { name: 'Annual premium' })).toHaveAttribute(
+			'inputmode',
+			'decimal'
+		);
+		await expect(canvas.getByRole('textbox', { name: 'NPN' })).toHaveAttribute(
+			'inputmode',
+			'numeric'
+		);
+		await expect(canvas.getByRole('textbox', { name: 'Policy count' })).toHaveAttribute(
+			'inputmode',
+			'numeric'
+		);
 	}
 };
 
