@@ -38,10 +38,11 @@ export type InputNumberProps = Omit<InputProps, 'type' | 'value' | 'defaultValue
 	 */
 	allowLeadingZeros?: boolean;
 	/**
-	 * The underlying `<input>` type. Defaults to `'text'`.
+	 * The underlying `<input>` type. Defaults to `'text'`. The keypad on mobile
+	 * devices follows `inputMode`, not the type.
 	 * - `text` — the general case.
-	 * - `tel` — brings up the numeric keypad on phones, for codes and
-	 *   identifiers that are digits only.
+	 * - `tel` — behaves as `text`. It does not bring up a digits-only keypad;
+	 *   pass `inputMode="numeric"` for that.
 	 * - `password` — masks the digits, for a PIN.
 	 */
 	type?: 'password' | 'tel' | 'text';
@@ -64,6 +65,11 @@ export type InputNumberProps = Omit<InputProps, 'type' | 'value' | 'defaultValue
  * `maxNumber` drops any edit that would exceed it. `onChange` fires with the
  * formatted text in `event.target.value` (`"1,234"`, not `1234`), which is
  * what a form library stores; parse it where the number is consumed.
+ *
+ * On mobile devices it brings up a keypad with a decimal key
+ * (`inputMode="decimal"`), since the field takes a decimal point. Pass
+ * `inputMode="numeric"` for a digits-only keypad, as an identifier such as an
+ * NPN or a ZIP code wants.
  *
  * It is an [Input](?path=/docs/components-input--docs) driven by
  * `react-number-format`, so it keeps the caret in place while it reformats
@@ -108,6 +114,7 @@ export const InputNumber = (props: InputNumberProps) => {
 	return (
 		<NumericFormat
 			{...rest}
+			inputMode={rest.inputMode ?? 'decimal'}
 			customInput={BareInput}
 			getInputRef={ref}
 			thousandSeparator={thousandSeparator}

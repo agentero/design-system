@@ -15,8 +15,9 @@ import { InputNumber } from './input-number';
  * InputNumber is a text field that only takes digits and a decimal point and
  * formats them as the user types: thousands separators on request, leading
  * zeros kept unless turned off, no sign. `onChange` fires with the formatted text in
- * `event.target.value`. It is an `Input` driven by `react-number-format`, so
- * it takes its label, messages and states from a surrounding `FieldText`.
+ * `event.target.value`. On mobile devices it shows a keypad with a decimal
+ * key. It is an `Input` driven by
+ * `react-number-format`, so it takes its label, messages and states from a surrounding `FieldText`.
  */
 const meta = {
 	title: 'Components/InputNumber',
@@ -86,10 +87,11 @@ export const Default: Story = {
 };
 
 /**
- * `type="tel"` brings up the numeric keypad on phones. The field still
- * formats and filters the same way; only the underlying input type changes.
+ * `type="tel"` renders a `tel` input that behaves as a `text` one: the field
+ * formats and filters the same way, and the keypad on mobile devices still
+ * follows `inputMode`.
  *
- * @summary Numeric keypad on phones through the tel input type
+ * @summary tel input type, same behaviour as text
  */
 export const TypeTel: Story = {
 	args: {
@@ -128,6 +130,61 @@ export const ThousandSeparator: Story = {
 };
 
 /**
+ * The field brings up a keypad with a decimal key on mobile devices, since it
+ * takes a decimal point. An identifier passes `inputMode="numeric"` for a
+ * digits-only keypad.
+ *
+ * @summary Decimal keypad by default, numeric keypad when passed
+ */
+export const Keypad: Story = {
+	render: () => (
+		<div style={{ display: 'grid', gap: '1.5rem' }}>
+			<FieldText>
+				<Label>Commission rate</Label>
+				<InputNumber />
+				<Field.Description>Decimal keypad, so the user can type 12.5.</Field.Description>
+			</FieldText>
+			<FieldText>
+				<Label>NPN</Label>
+				<InputNumber inputMode="numeric" />
+				<Field.Description>Numeric keypad, digits only.</Field.Description>
+			</FieldText>
+		</div>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		await expect(canvas.getByRole('textbox', { name: 'Commission rate' })).toHaveAttribute(
+			'inputmode',
+			'decimal'
+		);
+		await expect(canvas.getByRole('textbox', { name: 'NPN' })).toHaveAttribute(
+			'inputmode',
+			'numeric'
+		);
+	}
+};
+
+/**
+ * Regression check, kept out of the manifest: a wrapper that forwards an unset
+ * `inputMode` still gets the decimal keypad.
+ *
+ * @summary Forwarded undefined inputMode keeps the decimal keypad
+ */
+export const UndefinedInputMode: Story = {
+	tags: ['!manifest'],
+	render: args => <InputNumber {...args} inputMode={undefined} />,
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		await expect(canvas.getByRole('textbox', { name: 'Premium' })).toHaveAttribute(
+			'inputmode',
+			'decimal'
+		);
+	}
+};
+
+/**
  * `maxNumber` caps the value: a keystroke that would push the number above
  * it is dropped, so the field keeps its previous value and `onChange` is not
  * called for it.
@@ -160,9 +217,17 @@ export const MaxNumber: Story = {
  */
 export const LeadingZeros: Story = {
 	render: args => (
-		<div style={{ display: 'grid', gap: '1rem' }}>
-			<InputNumber {...args} aria-label="ZIP code" />
-			<InputNumber {...args} aria-label="Amount" allowLeadingZeros={false} />
+		<div style={{ display: 'grid', gap: '1.5rem' }}>
+			<FieldText>
+				<Label>ZIP code</Label>
+				<InputNumber onChange={args.onChange} />
+				<Field.Description>Keeps leading zeros: 007 stays 007.</Field.Description>
+			</FieldText>
+			<FieldText>
+				<Label>Amount</Label>
+				<InputNumber onChange={args.onChange} allowLeadingZeros={false} />
+				<Field.Description>Drops leading zeros on blur: 007 becomes 7.</Field.Description>
+			</FieldText>
 		</div>
 	),
 	play: async ({ args, canvasElement }) => {
