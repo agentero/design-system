@@ -588,13 +588,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">41 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/352 story errors</a></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">41 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/353 story errors</a></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>5.7s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>5.3s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -9156,7 +9156,7 @@ button&#39;s start corners with the frame.</div>
       <div class="badges">
         <label for="c-22-components-inputnumber-props" class="badge ok as-toggle">7 prop types</label>
         
-        <label for="c-22-components-inputnumber-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-22-components-inputnumber-stories" class="badge ok as-toggle">12 stories</label>
         
         
       </div>
@@ -9166,11 +9166,12 @@ button&#39;s start corners with the frame.</div>
     <div class="hint">InputNumber is a text field that only takes digits and a decimal point and
 formats them as the user types: thousands separators on request, leading
 zeros kept unless turned off, no sign. `onChange` fires with the formatted text in
-`event.target.value`. It is an `Input` driven by `react-number-format`, so
-it takes its label, messages and states from a surrounding `FieldText`.</div>
+`event.target.value`. On mobile devices it shows a keypad with a decimal
+key. It is an `Input` driven by
+`react-number-format`, so it takes its label, messages and states from a surrounding `FieldText`.</div>
     <div class="kv"><span class="chip">summary: Numeric input formatting as you type, built on react-number-format</span><span class="chip">dataAttribute: {string} data-slot - Always set to &quot;input-number&quot;</span><span class="chip">example: &lt;FieldText&gt;
   &lt;Label&gt;Annual premium&lt;/Label&gt;
-  &lt;InputNumber name=&quot;premium&quot; thousandSeparator allowLeadingZeros={false} /&gt;
+  &lt;InputNumber name=&quot;premium&quot; thousandSeparator /&gt;
 &lt;/FieldText&gt;</span></div>
   </div>
 
@@ -9196,11 +9197,13 @@ it takes its label, messages and states from a surrounding `FieldText`.</div>
             <pre><code>Props:</code></pre>
             <pre><code>/**
  * Keeps zeros typed in front of the number (`007`), which an identifier
- * such as an NPN or a ZIP code needs. Set it to `false` for an amount, so
- * `007` becomes `7` once the field loses focus, and `onChange` fires with
- * the trimmed value. Defaults to `true`.
+ * such as an NPN or a ZIP code needs. When it is off, `007` becomes `7` once
+ * the field loses focus, and `onChange` fires with the trimmed value, which
+ * is what an amount wants. Defaults to `true`, or to `false` when
+ * `thousandSeparator` is set, so an amount never shows grouped zeros such
+ * as `0,001,234`.
  */
-allowLeadingZeros?: boolean = true
+allowLeadingZeros?: boolean = !thousandSeparator
 
 /**
  * Initial value of an uncontrolled field, in the same forms as `value`.
@@ -9231,10 +9234,11 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;
 thousandSeparator?: boolean = false
 
 /**
- * The underlying `&lt;input&gt;` type. Defaults to `&#39;text&#39;`.
+ * The underlying `&lt;input&gt;` type. Defaults to `&#39;text&#39;`. The keypad on mobile
+ * devices follows `inputMode`, not the type.
  * - `text` — the general case.
- * - `tel` — brings up the numeric keypad on phones, for codes and
- *   identifiers that are digits only.
+ * - `tel` — behaves as `text`. It does not bring up a digits-only keypad;
+ *   pass `inputMode=&quot;numeric&quot;` for that.
  * - `password` — masks the digits, for a PIN.
  */
 type?: &quot;text&quot; | &quot;tel&quot; | &quot;password&quot;
@@ -9279,9 +9283,10 @@ points at the `&lt;input&gt;` element.</div>
                 <span class="ex-name">Type Tel</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Numeric keypad on phones through the tel input type</div>
-              <div class="hint">`type=&quot;tel&quot;` brings up the numeric keypad on phones. The field still
-formats and filters the same way; only the underlying input type changes.</div>
+              <div>tel input type, same behaviour as text</div>
+              <div class="hint">`type=&quot;tel&quot;` renders a `tel` input that behaves as a `text` one: the field
+formats and filters the same way, and the keypad on mobile devices still
+follows `inputMode`.</div>
               <pre><code>const TypeTel = () =&gt; &lt;InputNumber
     aria-label=&quot;NPN&quot;
     onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)}
@@ -9302,6 +9307,30 @@ user types, and the commas are part of what `onChange` reports.</div>
             </div>
             <div class="note ok">
               <div class="row">
+                <span class="ex-name">Keypad</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Decimal keypad by default, numeric keypad when passed</div>
+              <div class="hint">The field brings up a keypad with a decimal key on mobile devices, since it
+takes a decimal point. An identifier passes `inputMode=&quot;numeric&quot;` for a
+digits-only keypad.</div>
+              <pre><code>const Keypad = () =&gt; (
+    &lt;div style={{ display: &#39;grid&#39;, gap: &#39;1.5rem&#39; }}&gt;
+        &lt;FieldText&gt;
+            &lt;Label&gt;Commission rate&lt;/Label&gt;
+            &lt;InputNumber /&gt;
+            &lt;Field.Description&gt;Decimal keypad, so the user can type 12.5.&lt;/Field.Description&gt;
+        &lt;/FieldText&gt;
+        &lt;FieldText&gt;
+            &lt;Label&gt;NPN&lt;/Label&gt;
+            &lt;InputNumber inputMode=&quot;numeric&quot; /&gt;
+            &lt;Field.Description&gt;Numeric keypad, digits only.&lt;/Field.Description&gt;
+        &lt;/FieldText&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
                 <span class="ex-name">Max Number</span>
                 <span class="badge ok">story ok</span>
               </div>
@@ -9319,18 +9348,26 @@ called for it.</div>
                 <span class="ex-name">Leading Zeros</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Leading zeros kept by default, dropped on blur when turned off</div>
+              <div>Leading zeros kept for identifiers, dropped on blur for amounts</div>
               <div class="hint">Leading zeros are kept by default, as an NPN or a ZIP code needs. With
 `allowLeadingZeros` off they are dropped once the field loses focus, which
-is what an amount wants, and `onChange` reports the trimmed value.</div>
-              <pre><code>const LeadingZeros = () =&gt; &lt;div style={{ display: &#39;grid&#39;, gap: &#39;1rem&#39; }}&gt;
-    &lt;InputNumber
-        onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)}
-        aria-label=&quot;ZIP code&quot; /&gt;
-    &lt;InputNumber
-        onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)}
-        aria-label=&quot;Amount&quot;
-        allowLeadingZeros={false} /&gt;
+is what an amount wants, and `onChange` reports the trimmed value. A field
+with `thousandSeparator` is an amount, so it turns them off unless
+`allowLeadingZeros` is passed.</div>
+              <pre><code>const LeadingZeros = () =&gt; &lt;div style={{ display: &#39;grid&#39;, gap: &#39;1.5rem&#39; }}&gt;
+    &lt;FieldText&gt;
+        &lt;Label&gt;ZIP code&lt;/Label&gt;
+        &lt;InputNumber
+            onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)} /&gt;
+        &lt;Field.Description&gt;Keeps leading zeros: 007 stays 007.&lt;/Field.Description&gt;
+    &lt;/FieldText&gt;
+    &lt;FieldText&gt;
+        &lt;Label&gt;Amount&lt;/Label&gt;
+        &lt;InputNumber
+            onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)}
+            thousandSeparator /&gt;
+        &lt;Field.Description&gt;Drops leading zeros on blur: 0001234 becomes 1,234.&lt;/Field.Description&gt;
+    &lt;/FieldText&gt;
 &lt;/div&gt;;</code></pre>
             </div>
             <div class="note ok">
@@ -9370,7 +9407,6 @@ frame takes its focus, disabled and invalid states from the input.</div>
         aria-label=&quot;Premium&quot;
         onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)}
         thousandSeparator
-        allowLeadingZeros={false}
         placeholder=&quot;0&quot; /&gt;
 &lt;/InputGroup.Root&gt;;</code></pre>
             </div>

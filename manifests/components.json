@@ -7760,16 +7760,16 @@
           "{string} data-slot - Always set to \"input-number\""
         ],
         "example": [
-          "<FieldText>\n  <Label>Annual premium</Label>\n  <InputNumber name=\"premium\" thousandSeparator allowLeadingZeros={false} />\n</FieldText>"
+          "<FieldText>\n  <Label>Annual premium</Label>\n  <InputNumber name=\"premium\" thousandSeparator />\n</FieldText>"
         ]
       },
-      "description": "InputNumber is a text field that only takes digits and a decimal point and\nformats them as the user types: thousands separators on request, leading\nzeros kept unless turned off, no sign. `onChange` fires with the formatted text in\n`event.target.value`. It is an `Input` driven by `react-number-format`, so\nit takes its label, messages and states from a surrounding `FieldText`.",
+      "description": "InputNumber is a text field that only takes digits and a decimal point and\nformats them as the user types: thousands separators on request, leading\nzeros kept unless turned off, no sign. `onChange` fires with the formatted text in\n`event.target.value`. On mobile devices it shows a keypad with a decimal\nkey. It is an `Input` driven by\n`react-number-format`, so it takes its label, messages and states from a surrounding `FieldText`.",
       "summary": "Numeric input formatting as you type, built on react-number-format",
       "reactComponentMeta": {
         "displayName": "InputNumber",
         "exportName": "InputNumber",
         "filePath": "/home/runner/work/design-system/design-system/src/input-number/input-number.tsx",
-        "description": "InputNumber is a text field that only takes digits and a decimal point and\nformats them as the user types: a thousands separator when\n`thousandSeparator` is set, leading zeros kept unless `allowLeadingZeros` is\noff, no sign, no decimal rounding.\nAnything that is not a digit or the decimal point is ignored, and\n`maxNumber` drops any edit that would exceed it. `onChange` fires with the\nformatted text in `event.target.value` (`\"1,234\"`, not `1234`), which is\nwhat a form library stores; parse it where the number is consumed.\n\nIt is an [Input](?path=/docs/components-input--docs) driven by\n`react-number-format`, so it keeps the caret in place while it reformats\nand takes its wiring from a surrounding `FieldText` as a plain `Input`\ndoes. Every standard `<input>` attribute is accepted and forwarded, such as\n`placeholder`, `required`, `maxLength` or `aria-invalid`; `type` is limited\nto `text`, `tel` and `password`, and `value` and `defaultValue` also take a\nnumber or `null`. The invalid state comes from `aria-invalid`, which paints\nthe destructive border. Place it inside an\n[InputGroup](?path=/docs/components-inputgroup--docs) to show a currency or\nunit affix.\n\nDo not use it for a phone number, which is formatted by `InputTel`, nor for\nfree text with some digits in it, which is a plain `Input`. It is not a\n`type=\"number\"` input on purpose: that one drops leading zeros and cannot\nshow separators, which identifiers and amounts both need.\n\nIt renders from `value`, not from the DOM, so bind it to a form through a\ncontrolled value (react-hook-form's `Controller` or `useController`), not\nthrough `register`: a value `register` writes into the `<input>`, such as a\ndefault or a `reset`, is wiped on the next render.",
+        "description": "InputNumber is a text field that only takes digits and a decimal point and\nformats them as the user types: a thousands separator when\n`thousandSeparator` is set, leading zeros kept unless `allowLeadingZeros` is\noff (it is by default with a separator), no sign, no decimal rounding.\nAnything that is not a digit or the decimal point is ignored, and\n`maxNumber` drops any edit that would exceed it. `onChange` fires with the\nformatted text in `event.target.value` (`\"1,234\"`, not `1234`), which is\nwhat a form library stores; parse it where the number is consumed.\n\nOn mobile devices it brings up a keypad with a decimal key\n(`inputMode=\"decimal\"`), since the field takes a decimal point. Pass\n`inputMode=\"numeric\"` for a digits-only keypad, as an identifier such as an\nNPN or a ZIP code wants.\n\nIt is an [Input](?path=/docs/components-input--docs) driven by\n`react-number-format`, so it keeps the caret in place while it reformats\nand takes its wiring from a surrounding `FieldText` as a plain `Input`\ndoes. Every standard `<input>` attribute is accepted and forwarded, such as\n`placeholder`, `required`, `maxLength` or `aria-invalid`; `type` is limited\nto `text`, `tel` and `password`, and `value` and `defaultValue` also take a\nnumber or `null`. The invalid state comes from `aria-invalid`, which paints\nthe destructive border. Place it inside an\n[InputGroup](?path=/docs/components-inputgroup--docs) to show a currency or\nunit affix.\n\nDo not use it for a phone number, which is formatted by `InputTel`, nor for\nfree text with some digits in it, which is a plain `Input`. It is not a\n`type=\"number\"` input on purpose: that one drops leading zeros and cannot\nshow separators, which identifiers and amounts both need.\n\nIt renders from `value`, not from the DOM, so bind it to a form through a\ncontrolled value (react-hook-form's `Controller` or `useController`), not\nthrough `register`: a value `register` writes into the `<input>`, such as a\ndefault or a `reset`, is wiped on the next render.",
         "jsDocTags": {
           "summary": [
             "Numeric input formatting as you type, built on react-number-format"
@@ -7778,7 +7778,7 @@
             "{string} data-slot - Always set to \"input-number\""
           ],
           "example": [
-            "<FieldText>\n  <Label>Annual premium</Label>\n  <InputNumber name=\"premium\" thousandSeparator allowLeadingZeros={false} />\n</FieldText>"
+            "<FieldText>\n  <Label>Annual premium</Label>\n  <InputNumber name=\"premium\" thousandSeparator />\n</FieldText>"
           ]
         },
         "props": {
@@ -7859,9 +7859,9 @@
             "type": {
               "name": "boolean"
             },
-            "description": "Keeps zeros typed in front of the number (`007`), which an identifier\nsuch as an NPN or a ZIP code needs. Set it to `false` for an amount, so\n`007` becomes `7` once the field loses focus, and `onChange` fires with\nthe trimmed value. Defaults to `true`.",
+            "description": "Keeps zeros typed in front of the number (`007`), which an identifier\nsuch as an NPN or a ZIP code needs. When it is off, `007` becomes `7` once\nthe field loses focus, and `onChange` fires with the trimmed value, which\nis what an amount wants. Defaults to `true`, or to `false` when\n`thousandSeparator` is set, so an amount never shows grouped zeros such\nas `0,001,234`.",
             "defaultValue": {
-              "value": "true"
+              "value": "!thousandSeparator"
             },
             "parent": {
               "name": "InputNumberProps",
@@ -7892,7 +7892,7 @@
                 }
               ]
             },
-            "description": "The underlying `<input>` type. Defaults to `'text'`.\n- `text` — the general case.\n- `tel` — brings up the numeric keypad on phones, for codes and\n  identifiers that are digits only.\n- `password` — masks the digits, for a PIN.",
+            "description": "The underlying `<input>` type. Defaults to `'text'`. The keypad on mobile\ndevices follows `inputMode`, not the type.\n- `text` — the general case.\n- `tel` — behaves as `text`. It does not bring up a digits-only keypad;\n  pass `inputMode=\"numeric\"` for that.\n- `password` — masks the digits, for a PIN.",
             "defaultValue": null,
             "parent": {
               "name": "InputNumberProps",
@@ -7957,8 +7957,8 @@
           "id": "components-inputnumber--type-tel",
           "name": "Type Tel",
           "snippet": "const TypeTel = () => <InputNumber\n    aria-label=\"NPN\"\n    onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n    type=\"tel\" />;",
-          "description": "`type=\"tel\"` brings up the numeric keypad on phones. The field still\nformats and filters the same way; only the underlying input type changes.",
-          "summary": "Numeric keypad on phones through the tel input type"
+          "description": "`type=\"tel\"` renders a `tel` input that behaves as a `text` one: the field\nformats and filters the same way, and the keypad on mobile devices still\nfollows `inputMode`.",
+          "summary": "tel input type, same behaviour as text"
         },
         {
           "id": "components-inputnumber--thousand-separator",
@@ -7966,6 +7966,13 @@
           "snippet": "const ThousandSeparator = () => <InputNumber\n    aria-label=\"Premium\"\n    onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n    thousandSeparator />;",
           "description": "With `thousandSeparator` the integer part is grouped with commas as the\nuser types, and the commas are part of what `onChange` reports.",
           "summary": "Thousands grouped with commas as the user types"
+        },
+        {
+          "id": "components-inputnumber--keypad",
+          "name": "Keypad",
+          "snippet": "const Keypad = () => (\n    <div style={{ display: 'grid', gap: '1.5rem' }}>\n        <FieldText>\n            <Label>Commission rate</Label>\n            <InputNumber />\n            <Field.Description>Decimal keypad, so the user can type 12.5.</Field.Description>\n        </FieldText>\n        <FieldText>\n            <Label>NPN</Label>\n            <InputNumber inputMode=\"numeric\" />\n            <Field.Description>Numeric keypad, digits only.</Field.Description>\n        </FieldText>\n    </div>\n);",
+          "description": "The field brings up a keypad with a decimal key on mobile devices, since it\ntakes a decimal point. An identifier passes `inputMode=\"numeric\"` for a\ndigits-only keypad.",
+          "summary": "Decimal keypad by default, numeric keypad when passed"
         },
         {
           "id": "components-inputnumber--max-number",
@@ -7977,9 +7984,9 @@
         {
           "id": "components-inputnumber--leading-zeros",
           "name": "Leading Zeros",
-          "snippet": "const LeadingZeros = () => <div style={{ display: 'grid', gap: '1rem' }}>\n    <InputNumber\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        aria-label=\"ZIP code\" />\n    <InputNumber\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        aria-label=\"Amount\"\n        allowLeadingZeros={false} />\n</div>;",
-          "description": "Leading zeros are kept by default, as an NPN or a ZIP code needs. With\n`allowLeadingZeros` off they are dropped once the field loses focus, which\nis what an amount wants, and `onChange` reports the trimmed value.",
-          "summary": "Leading zeros kept by default, dropped on blur when turned off"
+          "snippet": "const LeadingZeros = () => <div style={{ display: 'grid', gap: '1.5rem' }}>\n    <FieldText>\n        <Label>ZIP code</Label>\n        <InputNumber\n            onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)} />\n        <Field.Description>Keeps leading zeros: 007 stays 007.</Field.Description>\n    </FieldText>\n    <FieldText>\n        <Label>Amount</Label>\n        <InputNumber\n            onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n            thousandSeparator />\n        <Field.Description>Drops leading zeros on blur: 0001234 becomes 1,234.</Field.Description>\n    </FieldText>\n</div>;",
+          "description": "Leading zeros are kept by default, as an NPN or a ZIP code needs. With\n`allowLeadingZeros` off they are dropped once the field loses focus, which\nis what an amount wants, and `onChange` reports the trimmed value. A field\nwith `thousandSeparator` is an amount, so it turns them off unless\n`allowLeadingZeros` is passed.",
+          "summary": "Leading zeros kept for identifiers, dropped on blur for amounts"
         },
         {
           "id": "components-inputnumber--controlled",
@@ -7991,7 +7998,7 @@
         {
           "id": "components-inputnumber--inside-input-group",
           "name": "Inside Input Group",
-          "snippet": "const InsideInputGroup = () => <InputGroup.Root>\n    <InputGroup.Text>$</InputGroup.Text>\n    <InputNumber\n        aria-label=\"Premium\"\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        thousandSeparator\n        allowLeadingZeros={false}\n        placeholder=\"0\" />\n</InputGroup.Root>;",
+          "snippet": "const InsideInputGroup = () => <InputGroup.Root>\n    <InputGroup.Text>$</InputGroup.Text>\n    <InputNumber\n        aria-label=\"Premium\"\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        thousandSeparator\n        placeholder=\"0\" />\n</InputGroup.Root>;",
           "description": "Inside an `InputGroup` the field sits behind a currency affix and the\nframe takes its focus, disabled and invalid states from the input.",
           "summary": "Amount with a currency prefix inside an input group"
         },
@@ -11576,6 +11583,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5741
+    "durationMs": 5318
   }
 }
