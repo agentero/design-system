@@ -211,9 +211,11 @@ export const MaxNumber: Story = {
 /**
  * Leading zeros are kept by default, as an NPN or a ZIP code needs. With
  * `allowLeadingZeros` off they are dropped once the field loses focus, which
- * is what an amount wants, and `onChange` reports the trimmed value.
+ * is what an amount wants, and `onChange` reports the trimmed value. A field
+ * with `thousandSeparator` is an amount, so it turns them off unless
+ * `allowLeadingZeros` is passed.
  *
- * @summary Leading zeros kept by default, dropped on blur when turned off
+ * @summary Leading zeros kept for identifiers, dropped on blur for amounts
  */
 export const LeadingZeros: Story = {
 	render: args => (
@@ -225,8 +227,8 @@ export const LeadingZeros: Story = {
 			</FieldText>
 			<FieldText>
 				<Label>Amount</Label>
-				<InputNumber onChange={args.onChange} allowLeadingZeros={false} />
-				<Field.Description>Drops leading zeros on blur: 007 becomes 7.</Field.Description>
+				<InputNumber onChange={args.onChange} thousandSeparator />
+				<Field.Description>Drops leading zeros on blur: 0001234 becomes 1,234.</Field.Description>
 			</FieldText>
 		</div>
 	),
@@ -236,12 +238,12 @@ export const LeadingZeros: Story = {
 		const amount = canvas.getByRole('textbox', { name: 'Amount' });
 
 		await userEvent.type(zip, '007');
-		await userEvent.type(amount, '007');
+		await userEvent.type(amount, '0001234');
 		await userEvent.tab();
 
 		await expect(zip).toHaveValue('007');
-		await expect(amount).toHaveValue('7');
-		await expect(lastValue(args.onChange)).toBe('7');
+		await expect(amount).toHaveValue('1,234');
+		await expect(lastValue(args.onChange)).toBe('1,234');
 	}
 };
 
@@ -288,7 +290,6 @@ export const Controlled: Story = {
 export const InsideInputGroup: Story = {
 	args: {
 		thousandSeparator: true,
-		allowLeadingZeros: false,
 		placeholder: '0'
 	},
 	render: args => (
