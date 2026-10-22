@@ -15,8 +15,8 @@ import { InputNumber } from './input-number';
  * InputNumber is a text field that only takes digits and a decimal point and
  * formats them as the user types: thousands separators on request, leading
  * zeros kept unless turned off, no sign. `onChange` fires with the formatted text in
- * `event.target.value`. On mobile devices it shows a decimal keypad for an
- * amount and a numeric one for an identifier. It is an `Input` driven by
+ * `event.target.value`. On mobile devices it shows a keypad with a decimal
+ * key. It is an `Input` driven by
  * `react-number-format`, so it takes its label, messages and states from a surrounding `FieldText`.
  */
 const meta = {
@@ -87,11 +87,11 @@ export const Default: Story = {
 };
 
 /**
- * `type="tel"` renders a `tel` input, for codes and identifiers that are
- * digits only. The field still formats and filters the same way, and the
- * keypad on mobile devices follows `inputMode`, not the type.
+ * `type="tel"` renders a `tel` input that behaves as a `text` one: the field
+ * formats and filters the same way, and the keypad on mobile devices still
+ * follows `inputMode`.
  *
- * @summary Digits-only identifier on a tel input type
+ * @summary tel input type, same behaviour as text
  */
 export const TypeTel: Story = {
 	args: {
@@ -130,39 +130,31 @@ export const ThousandSeparator: Story = {
 };
 
 /**
- * The keypad on mobile devices follows the field. An amount, marked by
- * `thousandSeparator`, gets `inputMode="decimal"` so the user can type cents;
- * an identifier gets `inputMode="numeric"`, digits only. An `inputMode`
- * passed in wins over the choice.
+ * The field brings up a keypad with a decimal key on mobile devices, since it
+ * takes a decimal point. An identifier passes `inputMode="numeric"` for a
+ * digits-only keypad.
  *
- * @summary Decimal keypad for amounts, numeric keypad for identifiers
+ * @summary Decimal keypad by default, numeric keypad when passed
  */
 export const Keypad: Story = {
 	render: () => (
 		<div style={{ display: 'grid', gap: '1.5rem' }}>
 			<FieldText>
-				<Label>Annual premium</Label>
-				<InputNumber thousandSeparator />
-				<Field.Description>Decimal keypad, so the user can type cents.</Field.Description>
+				<Label>Commission rate</Label>
+				<InputNumber />
+				<Field.Description>Decimal keypad, so the user can type 12.5.</Field.Description>
 			</FieldText>
 			<FieldText>
 				<Label>NPN</Label>
-				<InputNumber />
+				<InputNumber inputMode="numeric" />
 				<Field.Description>Numeric keypad, digits only.</Field.Description>
-			</FieldText>
-			<FieldText>
-				<Label>Policy count</Label>
-				<InputNumber thousandSeparator inputMode="numeric" />
-				<Field.Description>
-					Numeric keypad: the inputMode passed in wins over the decimal one.
-				</Field.Description>
 			</FieldText>
 		</div>
 	),
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 
-		await expect(canvas.getByRole('textbox', { name: 'Annual premium' })).toHaveAttribute(
+		await expect(canvas.getByRole('textbox', { name: 'Commission rate' })).toHaveAttribute(
 			'inputmode',
 			'decimal'
 		);
@@ -170,9 +162,24 @@ export const Keypad: Story = {
 			'inputmode',
 			'numeric'
 		);
-		await expect(canvas.getByRole('textbox', { name: 'Policy count' })).toHaveAttribute(
+	}
+};
+
+/**
+ * Regression check, kept out of the manifest: a wrapper that forwards an unset
+ * `inputMode` still gets the decimal keypad.
+ *
+ * @summary Forwarded undefined inputMode keeps the decimal keypad
+ */
+export const UndefinedInputMode: Story = {
+	tags: ['!manifest'],
+	render: args => <InputNumber {...args} inputMode={undefined} />,
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		await expect(canvas.getByRole('textbox', { name: 'Premium' })).toHaveAttribute(
 			'inputmode',
-			'numeric'
+			'decimal'
 		);
 	}
 };
