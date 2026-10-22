@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>5.4s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>6.1s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -7930,7 +7930,7 @@ row under it, wrapping as in any field. A screen reader hears both.</div>
     readOnly={false}
     required={false}&gt;
     &lt;Label optional&gt;Notes&lt;/Label&gt;
-    &lt;TextArea maxLength={500} placeholder=&quot;Placeholder&quot; /&gt;
+    &lt;TextArea limit={500} placeholder=&quot;Placeholder&quot; /&gt;
     &lt;Field.Description&gt;Shared with the carrier along with the request, and kept on the policy file for audits.
                     &lt;/Field.Description&gt;
 &lt;/FieldTextArea&gt;;</code></pre>
@@ -7952,7 +7952,7 @@ error where the description goes.</div>
     required={false}&gt;
     &lt;Label&gt;Notes&lt;/Label&gt;
     &lt;TextArea
-        maxLength={40}
+        limit={40}
         defaultValue=&quot;Roof replaced in 2024 after hail damage, garage added.&quot; /&gt;
     &lt;Field.Error errors={[{ message: &#39;Keep it brief&#39; }]} /&gt;
 &lt;/FieldTextArea&gt;;</code></pre>
@@ -7967,7 +7967,7 @@ error where the description goes.</div>
 destructive, and shows its error under the box.</div>
               <pre><code>const InvalidWithCounter = () =&gt; &lt;FieldTextArea orientation=&quot;vertical&quot; invalid disabled={false} readOnly={false} required&gt;
     &lt;Label&gt;Reason&lt;/Label&gt;
-    &lt;TextArea maxLength={500} /&gt;
+    &lt;TextArea limit={500} /&gt;
     &lt;Field.Error errors={[{ message: &#39;This field is required&#39; }]} /&gt;
 &lt;/FieldTextArea&gt;;</code></pre>
             </div>
@@ -12900,7 +12900,7 @@ leading + trailing icons, and icon-only.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> TextArea</h2>
       <div class="badges">
-        <label for="c-38-components-textarea-props" class="badge ok as-toggle">1 prop type</label>
+        <label for="c-38-components-textarea-props" class="badge ok as-toggle">2 prop types</label>
         
         <label for="c-38-components-textarea-stories" class="badge ok as-toggle">9 stories</label>
         
@@ -12913,7 +12913,7 @@ leading + trailing icons, and icon-only.</div>
 states. It wires nothing on its own: `id`, `aria-invalid` and
 `aria-describedby` are plain props, set by whoever owns the field.</div>
     <div class="kv"><span class="chip">summary: Base multi-line text control sharing Input&#39;s skin, states and sizes</span><span class="chip">example: &lt;Label htmlFor=&quot;notes&quot;&gt;Notes&lt;/Label&gt;
-&lt;TextArea id=&quot;notes&quot; maxLength={500} placeholder=&quot;Anything the underwriter should know&quot; /&gt;</span></div>
+&lt;TextArea id=&quot;notes&quot; limit={500} placeholder=&quot;Anything the underwriter should know&quot; /&gt;</span></div>
   </div>
 
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
@@ -12932,11 +12932,20 @@ states. It wires nothing on its own: `id`, `aria-invalid` and
           <div class="note ok">
             <div class="row">
               <span class="ex-name">Prop types <small>(react-component-meta)</small></span>
-              <span class="badge ok">1 prop type</span>
+              <span class="badge ok">2 prop types</span>
             </div>
             <pre><code>Component: src/textarea/textarea.tsx::TextArea</code></pre>
             <pre><code>Props:</code></pre>
             <pre><code>/**
+ * Soft character limit, counted in UTF-16 units like the native `maxLength`
+ * (an emoji counts as 2). Shows a `12/500` count inside the box and lets the
+ * user type past it, turning the extra characters and the count
+ * destructive; rejecting the value is the form&#39;s validation. For a hard cap
+ * use `maxLength`, which stops typing and shows no count.
+ */
+limit?: number
+
+/**
  * Defaults to `&#39;md&#39;`. The first row measures one Input of the same size and
  * three rows show at rest: `sm` 76px, `md` 84px, `lg` 96px (`lg` also raises
  * the text to `base` and the radius to `lg`).
@@ -13043,14 +13052,14 @@ size and the minimum height shows three rows.</div>
                 <span class="ex-name">With Counter</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Character count inside the box, driven by maxLength</div>
-              <div class="hint">`maxLength` shows the count inside the box, on its last row and aligned with
+              <div>Character count inside the box, driven by limit</div>
+              <div class="hint">`limit` shows the count inside the box, on its last row and aligned with
 the text. The count is part of the control&#39;s description, so a screen reader
 hears &quot;0 of 140 characters&quot; with the field instead of on every keystroke.</div>
               <pre><code>const WithCounter = () =&gt; &lt;TextArea
     placeholder=&quot;Anything the underwriter should know&quot;
     aria-label=&quot;Notes&quot;
-    maxLength={140} /&gt;;</code></pre>
+    limit={140} /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -13063,7 +13072,7 @@ instead of scrolling, and has no resize handle.</div>
               <pre><code>const CounterGrowsWithText = () =&gt; &lt;TextArea
     placeholder=&quot;Anything the underwriter should know&quot;
     aria-label=&quot;Notes&quot;
-    maxLength={500} /&gt;;</code></pre>
+    limit={500} /&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -13077,7 +13086,7 @@ form&#39;s validation can reject it.</div>
               <pre><code>const CounterOverLimit = () =&gt; &lt;TextArea
     placeholder=&quot;Anything the underwriter should know&quot;
     aria-label=&quot;Notes&quot;
-    maxLength={10} /&gt;;</code></pre>
+    limit={10} /&gt;;</code></pre>
             </div>
         </div>
     

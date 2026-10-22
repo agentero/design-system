@@ -6628,7 +6628,7 @@
         "displayName": "FieldTextArea",
         "exportName": "FieldTextArea",
         "filePath": "/home/runner/work/design-system/design-system/src/field-textarea/index.ts",
-        "description": "A `Field.Root` for a multi-line text control: it provides `TextAreaContext`,\nso the `TextArea` inside associates itself with the label and the messages\nand takes `invalid`, `required`, `disabled` and `readOnly` from the field.\nEvery other part (`Label`, `Field.Description`, `Field.Error`) works as in\nany field. With `maxLength` on the `TextArea`, its count sits inside the box,\nso the description or the error keeps the row under it to itself.\n\nForm-library agnostic, and its contexts compose: a provider nested inside it\ncan extend `TextAreaContext` with `name`, `value`, `onChange`, `onBlur` and\n`ref` to control the `TextArea`, and `FieldContext` with the errors, on top\nof the wiring `FieldTextArea` already set.",
+        "description": "A `Field.Root` for a multi-line text control: it provides `TextAreaContext`,\nso the `TextArea` inside associates itself with the label and the messages\nand takes `invalid`, `required`, `disabled` and `readOnly` from the field.\nEvery other part (`Label`, `Field.Description`, `Field.Error`) works as in\nany field. With `limit` on the `TextArea`, its count sits inside the box,\nso the description or the error keeps the row under it to itself.\n\nForm-library agnostic, and its contexts compose: a provider nested inside it\ncan extend `TextAreaContext` with `name`, `value`, `onChange`, `onBlur` and\n`ref` to control the `TextArea`, and `FieldContext` with the errors, on top\nof the wiring `FieldTextArea` already set.",
         "jsDocTags": {
           "summary": [
             "Field for a multi-line text control, wiring the TextArea inside it"
@@ -6812,21 +6812,21 @@
         {
           "id": "components-fieldtextarea--with-counter",
           "name": "With Counter",
-          "snippet": "const WithCounter = () => <FieldTextArea\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Label optional>Notes</Label>\n    <TextArea maxLength={500} placeholder=\"Placeholder\" />\n    <Field.Description>Shared with the carrier along with the request, and kept on the policy file for audits.\n                    </Field.Description>\n</FieldTextArea>;",
+          "snippet": "const WithCounter = () => <FieldTextArea\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Label optional>Notes</Label>\n    <TextArea limit={500} placeholder=\"Placeholder\" />\n    <Field.Description>Shared with the carrier along with the request, and kept on the policy file for audits.\n                    </Field.Description>\n</FieldTextArea>;",
           "description": "With a count, the count sits inside the box and the description keeps the\nrow under it, wrapping as in any field. A screen reader hears both.",
           "summary": "Count inside the box, description under it"
         },
         {
           "id": "components-fieldtextarea--over-limit",
           "name": "Over Limit",
-          "snippet": "const OverLimit = () => <FieldTextArea\n    orientation=\"vertical\"\n    invalid\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Label>Notes</Label>\n    <TextArea\n        maxLength={40}\n        defaultValue=\"Roof replaced in 2024 after hail damage, garage added.\" />\n    <Field.Error errors={[{ message: 'Keep it brief' }]} />\n</FieldTextArea>;",
+          "snippet": "const OverLimit = () => <FieldTextArea\n    orientation=\"vertical\"\n    invalid\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Label>Notes</Label>\n    <TextArea\n        limit={40}\n        defaultValue=\"Roof replaced in 2024 after hail damage, garage added.\" />\n    <Field.Error errors={[{ message: 'Keep it brief' }]} />\n</FieldTextArea>;",
           "description": "Past the limit, as in Figma: the user keeps typing, the characters over the\nlimit and the count read destructive, and the form's validation shows its\nerror where the description goes.",
           "summary": "Over the limit: extra characters, count and error in red"
         },
         {
           "id": "components-fieldtextarea--invalid-with-counter",
           "name": "Invalid With Counter",
-          "snippet": "const InvalidWithCounter = () => <FieldTextArea orientation=\"vertical\" invalid disabled={false} readOnly={false} required>\n    <Label>Reason</Label>\n    <TextArea maxLength={500} />\n    <Field.Error errors={[{ message: 'This field is required' }]} />\n</FieldTextArea>;",
+          "snippet": "const InvalidWithCounter = () => <FieldTextArea orientation=\"vertical\" invalid disabled={false} readOnly={false} required>\n    <Label>Reason</Label>\n    <TextArea limit={500} />\n    <Field.Error errors={[{ message: 'This field is required' }]} />\n</FieldTextArea>;",
           "description": "An invalid field turns the box's border and the count inside it\ndestructive, and shows its error under the box.",
           "summary": "Destructive border and count, error under the box"
         },
@@ -10923,7 +10923,7 @@
           "Base multi-line text control sharing Input's skin, states and sizes"
         ],
         "example": [
-          "<Label htmlFor=\"notes\">Notes</Label>\n<TextArea id=\"notes\" maxLength={500} placeholder=\"Anything the underwriter should know\" />"
+          "<Label htmlFor=\"notes\">Notes</Label>\n<TextArea id=\"notes\" limit={500} placeholder=\"Anything the underwriter should know\" />"
         ]
       },
       "description": "TextArea is the base multi-line text control, with Input's skin, sizes and\nstates. It wires nothing on its own: `id`, `aria-invalid` and\n`aria-describedby` are plain props, set by whoever owns the field.",
@@ -10932,13 +10932,13 @@
         "displayName": "TextArea",
         "exportName": "TextArea",
         "filePath": "/home/runner/work/design-system/design-system/src/textarea/textarea.tsx",
-        "description": "TextArea is the design system's multi-line text control: Input's skin, states\nand sizes on a `<textarea>`, so the native resize handle and scrollbar keep\nworking. Pair it with [Label](?path=/docs/components-label--docs) the way you\npair an Input.\n\nWhen a container provides `TextAreaContext`, the text area takes its wiring\n(`id`, `aria-describedby`, `aria-invalid`, `required`, `disabled`,\n`readOnly`) from it, and its own props win; `FieldTextArea` is one such\ncontainer. Standalone, `id`, `aria-describedby` and `aria-invalid` are the\nfield owner's job. The invalid state has no prop of its own: `aria-invalid`\ndrives the destructive border, the same as Input. Every `<textarea>` attribute\nexcept `maxLength` is forwarded, so `placeholder`, `required`, `disabled`,\n`readOnly` and the rest work as in plain HTML; `rows` raises the resting\nheight when three rows are not enough.\n\n`maxLength` is a soft limit and is not forwarded, since the native attribute\nwould stop typing. It shows a `12/500` count inside the box, on its last row\nand left-aligned with the text, announced through the textarea's\n`aria-describedby` rather than on every keystroke. Past the limit the user\nkeeps typing: the extra characters and the count turn destructive, and\nrejecting a longer value is the form's validation. The count is destructive\nwhen the field is invalid too. The box is then an\n[InputGroup](?path=/docs/components-inputgroup--docs) frame, a\n`data-slot=\"textarea-root\"` wrapper that fills its container, with the bare\n`<textarea>` and the count stacked inside; size a counted TextArea from its\ncontainer rather than through `className`. A counted TextArea also grows\nwith its text (`field-sizing: content`) instead of scrolling, from its\nresting height and with no resize handle; a `max-h-*` in `className` caps\nthe growth, and `rows` no longer sets the height. Browsers without\n`field-sizing` keep the resting height and scroll.\nWithout `maxLength` the wrapper is `display: contents`, and `className` and\nevery other prop always go to the `<textarea>`.\n\nThe count follows `value` when the text area is controlled; uncontrolled, it\nfollows typing, a native form reset and any rewrite followed by a render. A\nform library that writes the value without rendering (react-hook-form's\n`setValue` on a registered field) needs the value controlled for the count\nto follow.",
+        "description": "TextArea is the design system's multi-line text control: Input's skin, states\nand sizes on a `<textarea>`, so the native resize handle and scrollbar keep\nworking. Pair it with [Label](?path=/docs/components-label--docs) the way you\npair an Input.\n\nWhen a container provides `TextAreaContext`, the text area takes its wiring\n(`id`, `aria-describedby`, `aria-invalid`, `required`, `disabled`,\n`readOnly`) from it, and its own props win; `FieldTextArea` is one such\ncontainer. Standalone, `id`, `aria-describedby` and `aria-invalid` are the\nfield owner's job. The invalid state has no prop of its own: `aria-invalid`\ndrives the destructive border, the same as Input. Every `<textarea>` attribute\nis forwarded, so `placeholder`, `required`, `disabled`, `readOnly`,\n`maxLength` and the rest work as in plain HTML; `rows` raises the resting\nheight when three rows are not enough.\n\n`limit` is a soft limit: it shows a `12/500` count inside the box, on its\nlast row and left-aligned with the text, announced through the textarea's\n`aria-describedby` rather than on every keystroke. Past the limit the user\nkeeps typing: the extra characters and the count turn destructive, and\nrejecting a longer value is the form's validation. The count is destructive\nwhen the field is invalid too. The native `maxLength` stays a hard cap that\nstops typing and shows no count. The counted box is an\n[InputGroup](?path=/docs/components-inputgroup--docs) frame, a\n`data-slot=\"textarea-root\"` wrapper that fills its container, with the bare\n`<textarea>` and the count stacked inside; size a counted TextArea from its\ncontainer rather than through `className`. A counted TextArea also grows\nwith its text (`field-sizing: content`) instead of scrolling, from its\nresting height and with no resize handle; a `max-h-*` in `className` caps\nthe growth, and `rows` no longer sets the height. Browsers without\n`field-sizing` keep the resting height and scroll.\nWithout `limit` the wrapper is `display: contents`, and `className` and\nevery other prop always go to the `<textarea>`.\n\nThe count follows `value` when the text area is controlled; uncontrolled, it\nfollows typing, a native form reset and any rewrite followed by a render. A\nform library that writes the value without rendering (react-hook-form's\n`setValue` on a registered field) needs the value controlled for the count\nto follow.",
         "jsDocTags": {
           "summary": [
             "Base multi-line text control sharing Input's skin, states and sizes"
           ],
           "example": [
-            "<Label htmlFor=\"notes\">Notes</Label>\n<TextArea id=\"notes\" maxLength={500} placeholder=\"Anything the underwriter should know\" />"
+            "<Label htmlFor=\"notes\">Notes</Label>\n<TextArea id=\"notes\" limit={500} placeholder=\"Anything the underwriter should know\" />"
           ]
         },
         "props": {
@@ -10961,6 +10961,25 @@
               ]
             },
             "description": "Defaults to `'md'`. The first row measures one Input of the same size and\nthree rows show at rest: `sm` 76px, `md` 84px, `lg` 96px (`lg` also raises\nthe text to `base` and the radius to `lg`).",
+            "defaultValue": null,
+            "parent": {
+              "name": "TextAreaProps",
+              "fileName": "src/textarea/textarea.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/textarea/textarea.tsx"
+              }
+            ]
+          },
+          "limit": {
+            "name": "limit",
+            "required": false,
+            "type": {
+              "name": "number"
+            },
+            "description": "Soft character limit, counted in UTF-16 units like the native `maxLength`\n(an emoji counts as 2). Shows a `12/500` count inside the box and lets the\nuser type past it, turning the extra characters and the count\ndestructive; rejecting the value is the form's validation. For a hard cap\nuse `maxLength`, which stops typing and shows no count.",
             "defaultValue": null,
             "parent": {
               "name": "TextAreaProps",
@@ -11021,21 +11040,21 @@
         {
           "id": "components-textarea--with-counter",
           "name": "With Counter",
-          "snippet": "const WithCounter = () => <TextArea\n    placeholder=\"Anything the underwriter should know\"\n    aria-label=\"Notes\"\n    maxLength={140} />;",
-          "description": "`maxLength` shows the count inside the box, on its last row and aligned with\nthe text. The count is part of the control's description, so a screen reader\nhears \"0 of 140 characters\" with the field instead of on every keystroke.",
-          "summary": "Character count inside the box, driven by maxLength"
+          "snippet": "const WithCounter = () => <TextArea\n    placeholder=\"Anything the underwriter should know\"\n    aria-label=\"Notes\"\n    limit={140} />;",
+          "description": "`limit` shows the count inside the box, on its last row and aligned with\nthe text. The count is part of the control's description, so a screen reader\nhears \"0 of 140 characters\" with the field instead of on every keystroke.",
+          "summary": "Character count inside the box, driven by limit"
         },
         {
           "id": "components-textarea--counter-grows-with-text",
           "name": "Counter Grows With Text",
-          "snippet": "const CounterGrowsWithText = () => <TextArea\n    placeholder=\"Anything the underwriter should know\"\n    aria-label=\"Notes\"\n    maxLength={500} />;",
+          "snippet": "const CounterGrowsWithText = () => <TextArea\n    placeholder=\"Anything the underwriter should know\"\n    aria-label=\"Notes\"\n    limit={500} />;",
           "description": "A counted TextArea grows a line at a time as the text reaches its last row,\ninstead of scrolling, and has no resize handle.",
           "summary": "Counted box grows with its text"
         },
         {
           "id": "components-textarea--counter-over-limit",
           "name": "Counter Over Limit",
-          "snippet": "const CounterOverLimit = () => <TextArea\n    placeholder=\"Anything the underwriter should know\"\n    aria-label=\"Notes\"\n    maxLength={10} />;",
+          "snippet": "const CounterOverLimit = () => <TextArea\n    placeholder=\"Anything the underwriter should know\"\n    aria-label=\"Notes\"\n    limit={10} />;",
           "description": "The limit is soft: typing goes past it, the characters over the limit and\nthe count turn destructive, and the description says by how much, so the\nform's validation can reject it.",
           "summary": "Typing past the limit turns the count destructive"
         }
@@ -11827,6 +11846,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5434
+    "durationMs": 6106
   }
 }
