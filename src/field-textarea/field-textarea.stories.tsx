@@ -25,17 +25,12 @@ const meta = {
 	component: FieldTextArea,
 	tags: ['autodocs'],
 	argTypes: {
-		orientation: {
-			control: 'radio',
-			options: ['vertical', 'horizontal', 'responsive']
-		},
 		invalid: { control: 'boolean' },
 		disabled: { control: 'boolean' },
 		readOnly: { control: 'boolean' },
 		required: { control: 'boolean' }
 	},
 	args: {
-		orientation: 'vertical',
 		invalid: false,
 		disabled: false,
 		readOnly: false,

@@ -20,7 +20,8 @@ const TextAreaProvider = ({ children }: { children: ReactNode }) => {
 	return <TextAreaContext value={value}>{children}</TextAreaContext>;
 };
 
-export type FieldTextAreaProps = FieldRootProps;
+/** `Field.Root`'s props minus `orientation`: a text area field is always vertical. */
+export type FieldTextAreaProps = Omit<FieldRootProps, 'orientation'>;
 
 /**
  * A `Field.Root` for a multi-line text control: it provides `TextAreaContext`,
@@ -28,7 +29,9 @@ export type FieldTextAreaProps = FieldRootProps;
  * and takes `invalid`, `required`, `disabled` and `readOnly` from the field.
  * Every other part (`Label`, `Field.Description`, `Field.Error`) works as in
  * any field. With `limit` on the `TextArea`, its count sits inside the box,
- * so the description or the error keeps the row under it to itself.
+ * so the description or the error keeps the row under it to itself. The field
+ * is always vertical: the design has no row layout for a control that is
+ * several lines tall and grows, so there is no `orientation`.
  *
  * Form-library agnostic, and its contexts compose: a provider nested inside it
  * can extend `TextAreaContext` with `name`, `value`, `onChange`, `onBlur` and
