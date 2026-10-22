@@ -7763,13 +7763,13 @@
           "<FieldText>\n  <Label>Annual premium</Label>\n  <InputNumber name=\"premium\" thousandSeparator />\n</FieldText>"
         ]
       },
-      "description": "InputNumber is a text field that only takes digits and a decimal point and\nformats them as the user types: thousands separators on request, leading\nzeros kept unless turned off, no sign. `onChange` fires with the formatted text in\n`event.target.value`. On mobile devices it shows a decimal keypad for an\namount and a numeric one for an identifier. It is an `Input` driven by\n`react-number-format`, so it takes its label, messages and states from a surrounding `FieldText`.",
+      "description": "InputNumber is a text field that only takes digits and a decimal point and\nformats them as the user types: thousands separators on request, leading\nzeros kept unless turned off, no sign. `onChange` fires with the formatted text in\n`event.target.value`. On mobile devices it shows a keypad with a decimal\nkey. It is an `Input` driven by\n`react-number-format`, so it takes its label, messages and states from a surrounding `FieldText`.",
       "summary": "Numeric input formatting as you type, built on react-number-format",
       "reactComponentMeta": {
         "displayName": "InputNumber",
         "exportName": "InputNumber",
         "filePath": "/home/runner/work/design-system/design-system/src/input-number/input-number.tsx",
-        "description": "InputNumber is a text field that only takes digits and a decimal point and\nformats them as the user types: a thousands separator when\n`thousandSeparator` is set, leading zeros kept unless `allowLeadingZeros` is\noff (it is by default with a separator), no sign, no decimal rounding.\nAnything that is not a digit or the decimal point is ignored, and\n`maxNumber` drops any edit that would exceed it. `onChange` fires with the\nformatted text in `event.target.value` (`\"1,234\"`, not `1234`), which is\nwhat a form library stores; parse it where the number is consumed.\n\nOn mobile devices it brings up a keypad that fits the field:\n`inputMode=\"decimal\"`, which has a decimal key, when `thousandSeparator` is\nset, since that marks an amount, and `inputMode=\"numeric\"` otherwise, for an\nidentifier such as an NPN or a ZIP code. An `inputMode` passed in overrides the choice.\n\nIt is an [Input](?path=/docs/components-input--docs) driven by\n`react-number-format`, so it keeps the caret in place while it reformats\nand takes its wiring from a surrounding `FieldText` as a plain `Input`\ndoes. Every standard `<input>` attribute is accepted and forwarded, such as\n`placeholder`, `required`, `maxLength` or `aria-invalid`; `type` is limited\nto `text`, `tel` and `password`, and `value` and `defaultValue` also take a\nnumber or `null`. The invalid state comes from `aria-invalid`, which paints\nthe destructive border. Place it inside an\n[InputGroup](?path=/docs/components-inputgroup--docs) to show a currency or\nunit affix.\n\nDo not use it for a phone number, which is formatted by `InputTel`, nor for\nfree text with some digits in it, which is a plain `Input`. It is not a\n`type=\"number\"` input on purpose: that one drops leading zeros and cannot\nshow separators, which identifiers and amounts both need.\n\nIt renders from `value`, not from the DOM, so bind it to a form through a\ncontrolled value (react-hook-form's `Controller` or `useController`), not\nthrough `register`: a value `register` writes into the `<input>`, such as a\ndefault or a `reset`, is wiped on the next render.",
+        "description": "InputNumber is a text field that only takes digits and a decimal point and\nformats them as the user types: a thousands separator when\n`thousandSeparator` is set, leading zeros kept unless `allowLeadingZeros` is\noff (it is by default with a separator), no sign, no decimal rounding.\nAnything that is not a digit or the decimal point is ignored, and\n`maxNumber` drops any edit that would exceed it. `onChange` fires with the\nformatted text in `event.target.value` (`\"1,234\"`, not `1234`), which is\nwhat a form library stores; parse it where the number is consumed.\n\nOn mobile devices it brings up a keypad with a decimal key\n(`inputMode=\"decimal\"`), since the field takes a decimal point. Pass\n`inputMode=\"numeric\"` for a digits-only keypad, as an identifier such as an\nNPN or a ZIP code wants.\n\nIt is an [Input](?path=/docs/components-input--docs) driven by\n`react-number-format`, so it keeps the caret in place while it reformats\nand takes its wiring from a surrounding `FieldText` as a plain `Input`\ndoes. Every standard `<input>` attribute is accepted and forwarded, such as\n`placeholder`, `required`, `maxLength` or `aria-invalid`; `type` is limited\nto `text`, `tel` and `password`, and `value` and `defaultValue` also take a\nnumber or `null`. The invalid state comes from `aria-invalid`, which paints\nthe destructive border. Place it inside an\n[InputGroup](?path=/docs/components-inputgroup--docs) to show a currency or\nunit affix.\n\nDo not use it for a phone number, which is formatted by `InputTel`, nor for\nfree text with some digits in it, which is a plain `Input`. It is not a\n`type=\"number\"` input on purpose: that one drops leading zeros and cannot\nshow separators, which identifiers and amounts both need.\n\nIt renders from `value`, not from the DOM, so bind it to a form through a\ncontrolled value (react-hook-form's `Controller` or `useController`), not\nthrough `register`: a value `register` writes into the `<input>`, such as a\ndefault or a `reset`, is wiped on the next render.",
         "jsDocTags": {
           "summary": [
             "Numeric input formatting as you type, built on react-number-format"
@@ -7892,7 +7892,7 @@
                 }
               ]
             },
-            "description": "The underlying `<input>` type. Defaults to `'text'`. The keypad on mobile\ndevices follows `inputMode`, not the type.\n- `text` — the general case.\n- `tel` — for codes and identifiers that are digits only.\n- `password` — masks the digits, for a PIN.",
+            "description": "The underlying `<input>` type. Defaults to `'text'`. The keypad on mobile\ndevices follows `inputMode`, not the type.\n- `text` — the general case.\n- `tel` — behaves as `text`. It does not bring up a digits-only keypad;\n  pass `inputMode=\"numeric\"` for that.\n- `password` — masks the digits, for a PIN.",
             "defaultValue": null,
             "parent": {
               "name": "InputNumberProps",
@@ -7957,8 +7957,8 @@
           "id": "components-inputnumber--type-tel",
           "name": "Type Tel",
           "snippet": "const TypeTel = () => <InputNumber\n    aria-label=\"NPN\"\n    onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n    type=\"tel\" />;",
-          "description": "`type=\"tel\"` renders a `tel` input, for codes and identifiers that are\ndigits only. The field still formats and filters the same way, and the\nkeypad on mobile devices follows `inputMode`, not the type.",
-          "summary": "Digits-only identifier on a tel input type"
+          "description": "`type=\"tel\"` renders a `tel` input that behaves as a `text` one: the field\nformats and filters the same way, and the keypad on mobile devices still\nfollows `inputMode`.",
+          "summary": "tel input type, same behaviour as text"
         },
         {
           "id": "components-inputnumber--thousand-separator",
@@ -7970,9 +7970,9 @@
         {
           "id": "components-inputnumber--keypad",
           "name": "Keypad",
-          "snippet": "const Keypad = () => (\n    <div style={{ display: 'grid', gap: '1.5rem' }}>\n        <FieldText>\n            <Label>Annual premium</Label>\n            <InputNumber thousandSeparator />\n            <Field.Description>Decimal keypad, so the user can type cents.</Field.Description>\n        </FieldText>\n        <FieldText>\n            <Label>NPN</Label>\n            <InputNumber />\n            <Field.Description>Numeric keypad, digits only.</Field.Description>\n        </FieldText>\n        <FieldText>\n            <Label>Policy count</Label>\n            <InputNumber thousandSeparator inputMode=\"numeric\" />\n            <Field.Description>\n                Numeric keypad: the inputMode passed in wins over the decimal one.\n            </Field.Description>\n        </FieldText>\n    </div>\n);",
-          "description": "The keypad on mobile devices follows the field. An amount, marked by\n`thousandSeparator`, gets `inputMode=\"decimal\"` so the user can type cents;\nan identifier gets `inputMode=\"numeric\"`, digits only. An `inputMode`\npassed in wins over the choice.",
-          "summary": "Decimal keypad for amounts, numeric keypad for identifiers"
+          "snippet": "const Keypad = () => (\n    <div style={{ display: 'grid', gap: '1.5rem' }}>\n        <FieldText>\n            <Label>Commission rate</Label>\n            <InputNumber />\n            <Field.Description>Decimal keypad, so the user can type 12.5.</Field.Description>\n        </FieldText>\n        <FieldText>\n            <Label>NPN</Label>\n            <InputNumber inputMode=\"numeric\" />\n            <Field.Description>Numeric keypad, digits only.</Field.Description>\n        </FieldText>\n    </div>\n);",
+          "description": "The field brings up a keypad with a decimal key on mobile devices, since it\ntakes a decimal point. An identifier passes `inputMode=\"numeric\"` for a\ndigits-only keypad.",
+          "summary": "Decimal keypad by default, numeric keypad when passed"
         },
         {
           "id": "components-inputnumber--max-number",
@@ -11583,6 +11583,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4221
+    "durationMs": 5858
   }
 }
