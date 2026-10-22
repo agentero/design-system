@@ -591,3 +591,80 @@ export const ToggleLimit: Story = {
 		);
 	}
 };
+
+/**
+ * A value with Windows line endings (`\r\n`) counts as the textarea holds it,
+ * one character per line break, so it never reads over the limit early.
+ *
+ * @summary Count and highlight follow native newline normalization
+ */
+export const CounterNormalizesLineEndings: Story = {
+	// Runs as a test only: an edge case, not a state consumers need to see.
+	tags: ['!dev', '!autodocs', '!manifest'],
+	render: () => (
+		<div className="flex flex-col gap-4">
+			<TextArea aria-label="Controlled at limit" value={'a\r\nb'} limit={3} readOnly />
+			<TextArea aria-label="Uncontrolled at limit" defaultValue={'a\r\nb'} limit={3} />
+			<TextArea aria-label="Controlled over limit" value={'a\r\nb\rc'} limit={3} readOnly />
+			<TextArea aria-label="Uncontrolled over limit" defaultValue={'a\r\nb\rc'} limit={3} />
+		</div>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		for (const name of ['Controlled at limit', 'Uncontrolled at limit']) {
+			const textarea = canvas.getByRole('textbox', { name });
+			await expect(textarea).toHaveValue('a\nb');
+			await expect(textarea).toHaveAccessibleDescription('3 of 3 characters');
+			await expect(
+				textarea.parentElement!.querySelector('[data-slot=textarea-overflow]')
+			).toBeNull();
+		}
+		for (const name of ['Controlled over limit', 'Uncontrolled over limit']) {
+			const textarea = canvas.getByRole('textbox', { name });
+			await expect(textarea).toHaveValue('a\nb\nc');
+			await expect(textarea).toHaveAccessibleDescription('2 characters over the limit of 3');
+			const layer = textarea.parentElement!.querySelector('[data-slot=textarea-overflow]')!;
+			await expect(layer.querySelector('[data-over]')!.textContent).toBe('\nc');
+		}
+	}
+};
+
+/**
+ * In a box with a fractional width the red layer keeps the same width, so its
+ * lines wrap where the textarea's do.
+ *
+ * @summary Highlight preserves fractional widths and native line wrapping
+ */
+export const OverflowAtFractionalWidths: Story = {
+	// Runs as a test only: an edge case, not a state consumers need to see.
+	tags: ['!dev', '!autodocs', '!manifest'],
+	render: () => (
+		<div className="flex flex-col gap-4">
+			{[279.5, 350.5, 384.25].map(width => (
+				<div key={width} style={{ width }}>
+					<TextArea
+						aria-label={`Notes at ${width}`}
+						limit={5}
+						defaultValue={'hello world '.repeat(30)}
+						style={{ maxHeight: 100 }}
+					/>
+				</div>
+			))}
+		</div>
+	),
+	play: async ({ canvasElement }) => {
+		for (const textarea of within(canvasElement).getAllByRole('textbox')) {
+			const layer = textarea.parentElement!.querySelector<HTMLElement>(
+				'[data-slot=textarea-overflow]'
+			)!;
+			// The client area, without a classic scrollbar where the platform draws one.
+			const clientArea =
+				textarea.getBoundingClientRect().width - (textarea.offsetWidth - textarea.clientWidth);
+			await expect(layer.getBoundingClientRect().width).toBeCloseTo(clientArea, 2);
+			await expect(layer.scrollHeight).toBe(textarea.scrollHeight);
+			textarea.scrollTop = textarea.scrollHeight;
+			textarea.dispatchEvent(new Event('scroll'));
+			await expect(layer.scrollTop).toBe(textarea.scrollTop);
+		}
+	}
+};

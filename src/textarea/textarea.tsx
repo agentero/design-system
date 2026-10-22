@@ -129,6 +129,8 @@ export type TextAreaProps = ComponentPropsWithRef<'textarea'> & {
 // standalone TextArea so the text and the count line up with one.
 const counterFrameClassName = cn(inputGroupRecipe().root(), 'w-full flex-col gap-0 px-4');
 
+const normalizeLineEndings = (value: string) => value.replace(/\r\n?/g, '\n');
+
 const describedByWith = (describedBy: string | undefined, id: string) =>
 	describedBy ? `${describedBy} ${id}` : id;
 
@@ -211,14 +213,14 @@ export const TextArea = (props: TextAreaProps) => {
 		},
 		[counter, controlled]
 	);
-	const initialValue = String(rest.defaultValue ?? '');
+	const initialValue = normalizeLineEndings(String(rest.defaultValue ?? ''));
 	const domValue = useSyncExternalStore(
 		subscribe,
 		() => textareaRef.current?.value ?? initialValue,
 		() => initialValue
 	);
 
-	const value = controlled ? String(rest.value) : domValue;
+	const value = controlled ? normalizeLineEndings(String(rest.value)) : domValue;
 	const length = value.length;
 	const excess = counter ? length - limit : 0;
 	const over = excess > 0;
@@ -235,11 +237,21 @@ export const TextArea = (props: TextAreaProps) => {
 		// The layer covers the textarea's client area, wherever its scrollbars sit.
 		const { offsetTop, offsetLeft, clientTop, clientLeft, clientWidth, clientHeight } = textarea;
 		const { scrollTop, scrollLeft } = textarea;
+		// Preserve subpixels lost by clientWidth so the layer wraps like the textarea.
+		const borderBoxWidth =
+			parseFloat(style.width) +
+			(style.boxSizing === 'content-box'
+				? parseFloat(style.paddingLeft) +
+					parseFloat(style.paddingRight) +
+					parseFloat(style.borderLeftWidth) +
+					parseFloat(style.borderRightWidth)
+				: 0);
+		const clientAreaWidth = borderBoxWidth - textarea.offsetWidth + clientWidth;
 
 		MIRRORED.forEach((property, index) => (layer.style[property] = values[index] ?? ''));
 		layer.style.top = `${offsetTop + clientTop}px`;
 		layer.style.left = `${offsetLeft + clientLeft}px`;
-		layer.style.width = `${clientWidth}px`;
+		layer.style.width = `${clientAreaWidth}px`;
 		layer.style.height = `${clientHeight}px`;
 		layer.dataset.ready = '';
 		layer.scrollTop = scrollTop;
