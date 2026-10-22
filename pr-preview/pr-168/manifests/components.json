@@ -6628,7 +6628,7 @@
         "displayName": "FieldTextArea",
         "exportName": "FieldTextArea",
         "filePath": "/home/runner/work/design-system/design-system/src/field-textarea/index.ts",
-        "description": "A `Field.Root` for a multi-line text control: it provides `TextAreaContext`,\nso the `TextArea` inside associates itself with the label and the messages\nand takes `invalid`, `required`, `disabled` and `readOnly` from the field.\nEvery other part (`Label`, `Field.Description`, `Field.Error`) works as in\nany field. With `limit` on the `TextArea`, its count sits inside the box,\nso the description or the error keeps the row under it to itself.\n\nForm-library agnostic, and its contexts compose: a provider nested inside it\ncan extend `TextAreaContext` with `name`, `value`, `onChange`, `onBlur` and\n`ref` to control the `TextArea`, and `FieldContext` with the errors, on top\nof the wiring `FieldTextArea` already set.",
+        "description": "A `Field.Root` for a multi-line text control: it provides `TextAreaContext`,\nso the `TextArea` inside associates itself with the label and the messages\nand takes `invalid`, `required`, `disabled` and `readOnly` from the field.\nEvery other part (`Label`, `Field.Description`, `Field.Error`) works as in\nany field. With `limit` on the `TextArea`, its count sits inside the box,\nso the description or the error keeps the row under it to itself. The field\nis always vertical: the design has no row layout for a control that is\nseveral lines tall and grows, so there is no `orientation`.\n\nForm-library agnostic, and its contexts compose: a provider nested inside it\ncan extend `TextAreaContext` with `name`, `value`, `onChange`, `onBlur` and\n`ref` to control the `TextArea`, and `FieldContext` with the errors, on top\nof the wiring `FieldTextArea` already set.",
         "jsDocTags": {
           "summary": [
             "Field for a multi-line text control, wiring the TextArea inside it"
@@ -6638,56 +6638,6 @@
           ]
         },
         "props": {
-          "orientation": {
-            "name": "orientation",
-            "required": false,
-            "type": {
-              "name": "enum",
-              "raw": "\"horizontal\" | \"vertical\" | \"responsive\"",
-              "value": [
-                {
-                  "value": "\"horizontal\""
-                },
-                {
-                  "value": "\"vertical\""
-                },
-                {
-                  "value": "\"responsive\""
-                }
-              ]
-            },
-            "description": "Layout of the field. `vertical` (default) stacks label, control and\nmessages. `horizontal` is one row at every width: the first child fills it\nand the rest keep their natural width, aligned to the right, so the\ncontrols of stacked fields line up. `responsive` stacks below `28rem` and\nbehaves like `horizontal` from there, measured on the field itself, so it\nneeds no particular wrapper. In both, `Field.Content` groups a control with\nits messages, or a label with its description.",
-            "defaultValue": null,
-            "parent": {
-              "name": "FieldRootProps",
-              "fileName": "src/field/field.tsx"
-            },
-            "declarations": [
-              {
-                "name": "TypeLiteral",
-                "fileName": "src/field/field.tsx"
-              }
-            ]
-          },
-          "invalid": {
-            "name": "invalid",
-            "required": false,
-            "type": {
-              "name": "boolean"
-            },
-            "description": "Marks the field as failing validation: sets `data-invalid` on the root and\n`aria-invalid` on the control through its context, which drives the\ncontrol's destructive border. The label keeps its color by design.",
-            "defaultValue": null,
-            "parent": {
-              "name": "FieldRootProps",
-              "fileName": "src/field/field.tsx"
-            },
-            "declarations": [
-              {
-                "name": "TypeLiteral",
-                "fileName": "src/field/field.tsx"
-              }
-            ]
-          },
           "disabled": {
             "name": "disabled",
             "required": false,
@@ -6695,6 +6645,25 @@
               "name": "boolean"
             },
             "description": "Disables the control through its context and sets `data-disabled` on the root.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
+          "required": {
+            "name": "required",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Single source of truth for a required field: the `Label` shows its\nasterisk and the control receives `required`, both through context.",
             "defaultValue": null,
             "parent": {
               "name": "FieldRootProps",
@@ -6726,13 +6695,13 @@
               }
             ]
           },
-          "required": {
-            "name": "required",
+          "invalid": {
+            "name": "invalid",
             "required": false,
             "type": {
               "name": "boolean"
             },
-            "description": "Single source of truth for a required field: the `Label` shows its\nasterisk and the control receives `required`, both through context.",
+            "description": "Marks the field as failing validation: sets `data-invalid` on the root and\n`aria-invalid` on the control through its context, which drives the\ncontrol's destructive border. The label keeps its color by design.",
             "defaultValue": null,
             "parent": {
               "name": "FieldRootProps",
@@ -6770,63 +6739,63 @@
         {
           "id": "components-fieldtextarea--default",
           "name": "Default",
-          "snippet": "const Default = () => <FieldTextArea\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Label>Notes</Label>\n    <TextArea placeholder=\"Anything the underwriter should know\" />\n    <Field.Description>Shared with the carrier along with the request.</Field.Description>\n</FieldTextArea>;",
+          "snippet": "const Default = () => <FieldTextArea invalid={false} disabled={false} readOnly={false} required={false}>\n    <Label>Notes</Label>\n    <TextArea placeholder=\"Anything the underwriter should know\" />\n    <Field.Description>Shared with the carrier along with the request.</Field.Description>\n</FieldTextArea>;",
           "description": "The composition consumers write: a label, the design system's `TextArea` and\nhelper text. The label points at the control and the control is described\nby the text, all through context.",
           "summary": "Label, TextArea and description wired with no ids"
         },
         {
           "id": "components-fieldtextarea--required",
           "name": "Required",
-          "snippet": "const Required = () => <FieldTextArea\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required>\n    <Label>Reason</Label>\n    <TextArea placeholder=\"Tell us in your own words\" />\n</FieldTextArea>;",
+          "snippet": "const Required = () => <FieldTextArea invalid={false} disabled={false} readOnly={false} required>\n    <Label>Reason</Label>\n    <TextArea placeholder=\"Tell us in your own words\" />\n</FieldTextArea>;",
           "description": "`required` on the field reaches both the label's asterisk and the control's\n`required` attribute.",
           "summary": "Required field driven from the root alone"
         },
         {
           "id": "components-fieldtextarea--invalid",
           "name": "Invalid",
-          "snippet": "const Invalid = () => <FieldTextArea\n    orientation=\"vertical\"\n    invalid\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Label>Reason</Label>\n    <TextArea defaultValue=\"n/a\" />\n    <Field.Error errors={[{ message: 'Tell us why you are cancelling.' }]} />\n</FieldTextArea>;",
+          "snippet": "const Invalid = () => <FieldTextArea invalid disabled={false} readOnly={false} required={false}>\n    <Label>Reason</Label>\n    <TextArea defaultValue=\"n/a\" />\n    <Field.Error errors={[{ message: 'Tell us why you are cancelling.' }]} />\n</FieldTextArea>;",
           "description": "`invalid` on the field sets `aria-invalid` on the control, which drives its\ndestructive border, and the error is announced with the control.",
           "summary": "Invalid field with the TextArea styled by aria-invalid"
         },
         {
           "id": "components-fieldtextarea--disabled",
           "name": "Disabled",
-          "snippet": "const Disabled = () => <FieldTextArea\n    orientation=\"vertical\"\n    invalid={false}\n    disabled\n    readOnly={false}\n    required={false}>\n    <Label>Notes</Label>\n    <TextArea defaultValue=\"Locked once the request is submitted.\" />\n</FieldTextArea>;",
+          "snippet": "const Disabled = () => <FieldTextArea invalid={false} disabled readOnly={false} required={false}>\n    <Label>Notes</Label>\n    <TextArea defaultValue=\"Locked once the request is submitted.\" />\n</FieldTextArea>;",
           "description": "`disabled` on the field disables the control through context.",
           "summary": "Disabled field driven from the root"
         },
         {
           "id": "components-fieldtextarea--read-only",
           "name": "Read Only",
-          "snippet": "const ReadOnly = () => <FieldTextArea\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly\n    required={false}>\n    <Label>Underwriter notes</Label>\n    <TextArea defaultValue=\"Approved subject to a roof inspection.\" />\n    <Field.Description>Written by the carrier; contact them to change it.</Field.Description>\n</FieldTextArea>;",
+          "snippet": "const ReadOnly = () => <FieldTextArea invalid={false} disabled={false} readOnly required={false}>\n    <Label>Underwriter notes</Label>\n    <TextArea defaultValue=\"Approved subject to a roof inspection.\" />\n    <Field.Description>Written by the carrier; contact them to change it.</Field.Description>\n</FieldTextArea>;",
           "description": "`readOnly` on the field reaches the control through context. The value\nstays focusable, copyable and submitted, and the control looks like any\nother.",
           "summary": "Read-only field driven from the root"
         },
         {
           "id": "components-fieldtextarea--own-props-win",
           "name": "Own Props Win",
-          "snippet": "const OwnPropsWin = () => <div className=\"flex flex-col gap-2\">\n    <FieldTextArea\n        orientation=\"vertical\"\n        invalid={false}\n        disabled={false}\n        readOnly={false}\n        required={false}>\n        <Label>Message</Label>\n        <TextArea size=\"lg\" className=\"max-h-60\" aria-describedby=\"message-hint\" />\n        <Field.Description>Sent to the agent as written.</Field.Description>\n    </FieldTextArea>\n    <p id=\"message-hint\" className=\"text-sm text-text-input-placeholder\">Markdown is not rendered.\n                    </p>\n</div>;",
+          "snippet": "const OwnPropsWin = () => <div className=\"flex flex-col gap-2\">\n    <FieldTextArea invalid={false} disabled={false} readOnly={false} required={false}>\n        <Label>Message</Label>\n        <TextArea size=\"lg\" className=\"max-h-60\" aria-describedby=\"message-hint\" />\n        <Field.Description>Sent to the agent as written.</Field.Description>\n    </FieldTextArea>\n    <p id=\"message-hint\" className=\"text-sm text-text-input-placeholder\">Markdown is not rendered.\n                    </p>\n</div>;",
           "description": "The context is a default, never an override: an extra `aria-describedby` is\nconcatenated with the field's ids, `className` is merged and `size` passes\nthrough untouched.",
           "summary": "TextArea's own props merge with, and win over, the field's context"
         },
         {
           "id": "components-fieldtextarea--with-counter",
           "name": "With Counter",
-          "snippet": "const WithCounter = () => <FieldTextArea\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Label optional>Notes</Label>\n    <TextArea limit={500} placeholder=\"Placeholder\" />\n    <Field.Description>Shared with the carrier along with the request, and kept on the policy file for audits.\n                    </Field.Description>\n</FieldTextArea>;",
+          "snippet": "const WithCounter = () => <FieldTextArea invalid={false} disabled={false} readOnly={false} required={false}>\n    <Label optional>Notes</Label>\n    <TextArea limit={500} placeholder=\"Placeholder\" />\n    <Field.Description>Shared with the carrier along with the request, and kept on the policy file for audits.\n                    </Field.Description>\n</FieldTextArea>;",
           "description": "With a count, the count sits inside the box and the description keeps the\nrow under it, wrapping as in any field. A screen reader hears both.",
           "summary": "Count inside the box, description under it"
         },
         {
           "id": "components-fieldtextarea--over-limit",
           "name": "Over Limit",
-          "snippet": "const OverLimit = () => <FieldTextArea\n    orientation=\"vertical\"\n    invalid\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Label>Notes</Label>\n    <TextArea\n        limit={40}\n        defaultValue=\"Roof replaced in 2024 after hail damage, garage added.\" />\n    <Field.Error errors={[{ message: 'Keep it brief' }]} />\n</FieldTextArea>;",
+          "snippet": "const OverLimit = () => <FieldTextArea invalid disabled={false} readOnly={false} required={false}>\n    <Label>Notes</Label>\n    <TextArea\n        limit={40}\n        defaultValue=\"Roof replaced in 2024 after hail damage, garage added.\" />\n    <Field.Error errors={[{ message: 'Keep it brief' }]} />\n</FieldTextArea>;",
           "description": "Past the limit, as in Figma: the user keeps typing, the characters over the\nlimit and the count read destructive, and the form's validation shows its\nerror where the description goes.",
           "summary": "Over the limit: extra characters, count and error in red"
         },
         {
           "id": "components-fieldtextarea--invalid-with-counter",
           "name": "Invalid With Counter",
-          "snippet": "const InvalidWithCounter = () => <FieldTextArea orientation=\"vertical\" invalid disabled={false} readOnly={false} required>\n    <Label>Reason</Label>\n    <TextArea limit={500} />\n    <Field.Error errors={[{ message: 'This field is required' }]} />\n</FieldTextArea>;",
+          "snippet": "const InvalidWithCounter = () => <FieldTextArea invalid disabled={false} readOnly={false} required>\n    <Label>Reason</Label>\n    <TextArea limit={500} />\n    <Field.Error errors={[{ message: 'This field is required' }]} />\n</FieldTextArea>;",
           "description": "An invalid field turns the box's border and the count inside it\ndestructive, and shows its error under the box.",
           "summary": "Destructive border and count, error under the box"
         },
@@ -11846,6 +11815,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 3469
+    "durationMs": 4088
   }
 }

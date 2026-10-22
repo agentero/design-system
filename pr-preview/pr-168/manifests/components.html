@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>3.5s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>4.1s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -7695,7 +7695,7 @@ The input&#39;s own `onChange` still runs, chained after the provider&#39;s.</di
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> FieldTextArea</h2>
       <div class="badges">
-        <label for="c-17-components-fieldtextarea-props" class="badge ok as-toggle">6 prop types</label>
+        <label for="c-17-components-fieldtextarea-props" class="badge ok as-toggle">5 prop types</label>
         
         <label for="c-17-components-fieldtextarea-stories" class="badge ok as-toggle">10 stories</label>
         
@@ -7738,7 +7738,7 @@ shows.</div>
           <div class="note ok">
             <div class="row">
               <span class="ex-name">Prop types <small>(react-component-meta)</small></span>
-              <span class="badge ok">6 prop types</span>
+              <span class="badge ok">5 prop types</span>
             </div>
             <pre><code>Component: src/field-textarea/index.ts::FieldTextArea</code></pre>
             <pre><code>Props:</code></pre>
@@ -7759,17 +7759,6 @@ disabled?: boolean
  * control&#39;s destructive border. The label keeps its color by design.
  */
 invalid?: boolean
-
-/**
- * Layout of the field. `vertical` (default) stacks label, control and
- * messages. `horizontal` is one row at every width: the first child fills it
- * and the rest keep their natural width, aligned to the right, so the
- * controls of stacked fields line up. `responsive` stacks below `28rem` and
- * behaves like `horizontal` from there, measured on the field itself, so it
- * needs no particular wrapper. In both, `Field.Content` groups a control with
- * its messages, or a label with its description.
- */
-orientation?: &quot;horizontal&quot; | &quot;vertical&quot; | &quot;responsive&quot;
 
 /**
  * Makes the control read-only through its context (focusable and copyable,
@@ -7806,12 +7795,7 @@ required?: boolean</code></pre>
               <div class="hint">The composition consumers write: a label, the design system&#39;s `TextArea` and
 helper text. The label points at the control and the control is described
 by the text, all through context.</div>
-              <pre><code>const Default = () =&gt; &lt;FieldTextArea
-    orientation=&quot;vertical&quot;
-    invalid={false}
-    disabled={false}
-    readOnly={false}
-    required={false}&gt;
+              <pre><code>const Default = () =&gt; &lt;FieldTextArea invalid={false} disabled={false} readOnly={false} required={false}&gt;
     &lt;Label&gt;Notes&lt;/Label&gt;
     &lt;TextArea placeholder=&quot;Anything the underwriter should know&quot; /&gt;
     &lt;Field.Description&gt;Shared with the carrier along with the request.&lt;/Field.Description&gt;
@@ -7825,12 +7809,7 @@ by the text, all through context.</div>
               <div>Required field driven from the root alone</div>
               <div class="hint">`required` on the field reaches both the label&#39;s asterisk and the control&#39;s
 `required` attribute.</div>
-              <pre><code>const Required = () =&gt; &lt;FieldTextArea
-    orientation=&quot;vertical&quot;
-    invalid={false}
-    disabled={false}
-    readOnly={false}
-    required&gt;
+              <pre><code>const Required = () =&gt; &lt;FieldTextArea invalid={false} disabled={false} readOnly={false} required&gt;
     &lt;Label&gt;Reason&lt;/Label&gt;
     &lt;TextArea placeholder=&quot;Tell us in your own words&quot; /&gt;
 &lt;/FieldTextArea&gt;;</code></pre>
@@ -7843,12 +7822,7 @@ by the text, all through context.</div>
               <div>Invalid field with the TextArea styled by aria-invalid</div>
               <div class="hint">`invalid` on the field sets `aria-invalid` on the control, which drives its
 destructive border, and the error is announced with the control.</div>
-              <pre><code>const Invalid = () =&gt; &lt;FieldTextArea
-    orientation=&quot;vertical&quot;
-    invalid
-    disabled={false}
-    readOnly={false}
-    required={false}&gt;
+              <pre><code>const Invalid = () =&gt; &lt;FieldTextArea invalid disabled={false} readOnly={false} required={false}&gt;
     &lt;Label&gt;Reason&lt;/Label&gt;
     &lt;TextArea defaultValue=&quot;n/a&quot; /&gt;
     &lt;Field.Error errors={[{ message: &#39;Tell us why you are cancelling.&#39; }]} /&gt;
@@ -7861,12 +7835,7 @@ destructive border, and the error is announced with the control.</div>
               </div>
               <div>Disabled field driven from the root</div>
               <div class="hint">`disabled` on the field disables the control through context.</div>
-              <pre><code>const Disabled = () =&gt; &lt;FieldTextArea
-    orientation=&quot;vertical&quot;
-    invalid={false}
-    disabled
-    readOnly={false}
-    required={false}&gt;
+              <pre><code>const Disabled = () =&gt; &lt;FieldTextArea invalid={false} disabled readOnly={false} required={false}&gt;
     &lt;Label&gt;Notes&lt;/Label&gt;
     &lt;TextArea defaultValue=&quot;Locked once the request is submitted.&quot; /&gt;
 &lt;/FieldTextArea&gt;;</code></pre>
@@ -7880,12 +7849,7 @@ destructive border, and the error is announced with the control.</div>
               <div class="hint">`readOnly` on the field reaches the control through context. The value
 stays focusable, copyable and submitted, and the control looks like any
 other.</div>
-              <pre><code>const ReadOnly = () =&gt; &lt;FieldTextArea
-    orientation=&quot;vertical&quot;
-    invalid={false}
-    disabled={false}
-    readOnly
-    required={false}&gt;
+              <pre><code>const ReadOnly = () =&gt; &lt;FieldTextArea invalid={false} disabled={false} readOnly required={false}&gt;
     &lt;Label&gt;Underwriter notes&lt;/Label&gt;
     &lt;TextArea defaultValue=&quot;Approved subject to a roof inspection.&quot; /&gt;
     &lt;Field.Description&gt;Written by the carrier; contact them to change it.&lt;/Field.Description&gt;
@@ -7901,12 +7865,7 @@ other.</div>
 concatenated with the field&#39;s ids, `className` is merged and `size` passes
 through untouched.</div>
               <pre><code>const OwnPropsWin = () =&gt; &lt;div className=&quot;flex flex-col gap-2&quot;&gt;
-    &lt;FieldTextArea
-        orientation=&quot;vertical&quot;
-        invalid={false}
-        disabled={false}
-        readOnly={false}
-        required={false}&gt;
+    &lt;FieldTextArea invalid={false} disabled={false} readOnly={false} required={false}&gt;
         &lt;Label&gt;Message&lt;/Label&gt;
         &lt;TextArea size=&quot;lg&quot; className=&quot;max-h-60&quot; aria-describedby=&quot;message-hint&quot; /&gt;
         &lt;Field.Description&gt;Sent to the agent as written.&lt;/Field.Description&gt;
@@ -7923,12 +7882,7 @@ through untouched.</div>
               <div>Count inside the box, description under it</div>
               <div class="hint">With a count, the count sits inside the box and the description keeps the
 row under it, wrapping as in any field. A screen reader hears both.</div>
-              <pre><code>const WithCounter = () =&gt; &lt;FieldTextArea
-    orientation=&quot;vertical&quot;
-    invalid={false}
-    disabled={false}
-    readOnly={false}
-    required={false}&gt;
+              <pre><code>const WithCounter = () =&gt; &lt;FieldTextArea invalid={false} disabled={false} readOnly={false} required={false}&gt;
     &lt;Label optional&gt;Notes&lt;/Label&gt;
     &lt;TextArea limit={500} placeholder=&quot;Placeholder&quot; /&gt;
     &lt;Field.Description&gt;Shared with the carrier along with the request, and kept on the policy file for audits.
@@ -7944,12 +7898,7 @@ row under it, wrapping as in any field. A screen reader hears both.</div>
               <div class="hint">Past the limit, as in Figma: the user keeps typing, the characters over the
 limit and the count read destructive, and the form&#39;s validation shows its
 error where the description goes.</div>
-              <pre><code>const OverLimit = () =&gt; &lt;FieldTextArea
-    orientation=&quot;vertical&quot;
-    invalid
-    disabled={false}
-    readOnly={false}
-    required={false}&gt;
+              <pre><code>const OverLimit = () =&gt; &lt;FieldTextArea invalid disabled={false} readOnly={false} required={false}&gt;
     &lt;Label&gt;Notes&lt;/Label&gt;
     &lt;TextArea
         limit={40}
@@ -7965,7 +7914,7 @@ error where the description goes.</div>
               <div>Destructive border and count, error under the box</div>
               <div class="hint">An invalid field turns the box&#39;s border and the count inside it
 destructive, and shows its error under the box.</div>
-              <pre><code>const InvalidWithCounter = () =&gt; &lt;FieldTextArea orientation=&quot;vertical&quot; invalid disabled={false} readOnly={false} required&gt;
+              <pre><code>const InvalidWithCounter = () =&gt; &lt;FieldTextArea invalid disabled={false} readOnly={false} required&gt;
     &lt;Label&gt;Reason&lt;/Label&gt;
     &lt;TextArea limit={500} /&gt;
     &lt;Field.Error errors={[{ message: &#39;This field is required&#39; }]} /&gt;
