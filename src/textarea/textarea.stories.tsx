@@ -193,11 +193,11 @@ export const ReadOnly: Story = {
 };
 
 /**
- * `maxLength` shows the count under the box, right-aligned, 8px below it. The
- * count is part of the control's description, so a screen reader hears
- * "0 of 140 characters" with the field instead of on every keystroke.
+ * `maxLength` shows the count inside the box, on its last row and aligned with
+ * the text. The count is part of the control's description, so a screen reader
+ * hears "0 of 140 characters" with the field instead of on every keystroke.
  *
- * @summary Character count under the box, driven by maxLength
+ * @summary Character count inside the box, driven by maxLength
  */
 export const WithCounter: Story = {
 	args: { maxLength: 140 },
@@ -214,10 +214,45 @@ export const WithCounter: Story = {
 		await expect(counter).toHaveTextContent('22/140');
 		await expect(textarea).toHaveAccessibleDescription('22 of 140 characters');
 
+		const frame = canvasElement.querySelector('[data-slot=textarea-root]')!.getBoundingClientRect();
 		const box = textarea.getBoundingClientRect();
 		const count = counter.getBoundingClientRect();
-		await expect(count.top - box.bottom).toBe(8);
-		await expect(Math.round(count.right)).toBe(Math.round(box.right));
+		// The textarea's -1px bottom margin, from the frame, tucks the count 1px under it.
+		await expect(count.top).toBe(box.bottom - 1);
+		await expect(count.bottom).toBeLessThan(frame.bottom);
+		await expect(count.left).toBe(box.left);
+		// 1px border and 16px padding, as a standalone TextArea's text.
+		await expect(box.left - frame.left).toBe(17);
+
+		// A press on the count brings focus back from elsewhere, and keeps a selection.
+		(textarea as HTMLTextAreaElement).setSelectionRange(5, 13);
+		textarea.blur();
+		await expect(textarea).not.toHaveFocus();
+		await userEvent.click(counter);
+		await expect(textarea).toHaveFocus();
+		await expect((textarea as HTMLTextAreaElement).selectionStart).toBe(5);
+		await expect((textarea as HTMLTextAreaElement).selectionEnd).toBe(13);
+	}
+};
+
+/**
+ * A counted TextArea grows a line at a time as the text reaches its last row,
+ * instead of scrolling, and has no resize handle.
+ *
+ * @summary Counted box grows with its text
+ */
+export const CounterGrowsWithText: Story = {
+	args: { maxLength: 500 },
+	play: async ({ canvasElement }) => {
+		const textarea = within(canvasElement).getByRole('textbox', { name: 'Notes' });
+		const resting = textarea.getBoundingClientRect().height;
+
+		await expect(getComputedStyle(textarea).resize).toBe('none');
+
+		await userEvent.type(textarea, 'One{Enter}Two{Enter}Three{Enter}Four{Enter}Five{Enter}Six');
+
+		await expect(textarea.getBoundingClientRect().height).toBeGreaterThan(resting);
+		await expect(textarea.scrollHeight).toBeLessThanOrEqual(textarea.clientHeight);
 	}
 };
 
@@ -306,6 +341,7 @@ export const OverflowFollowsTextarea: Story = {
 			<TextArea aria-label="Right to left" dir="rtl" maxLength={5} defaultValue="שלום עולם טוב" />
 			<TextArea
 				aria-label="Unwrapped"
+				className="max-h-24"
 				wrap="off"
 				maxLength={5}
 				defaultValue={Array(6).fill('A long line that does not wrap '.repeat(6)).join('\n')}
@@ -331,6 +367,9 @@ export const OverflowFollowsTextarea: Story = {
 		unwrapped.scrollLeft = 120;
 		unwrapped.scrollTop = unwrapped.scrollHeight;
 		unwrapped.dispatchEvent(new Event('scroll'));
+		// Capped, the counted box scrolls rather than growing, so the sync is not 0 against 0.
+		await expect(unwrapped.scrollLeft).toBeGreaterThan(0);
+		await expect(unwrapped.scrollTop).toBeGreaterThan(0);
 		await waitFor(() => {
 			const { layer } = layerMatches(unwrapped);
 			expect(layer.scrollLeft).toBe(unwrapped.scrollLeft);
@@ -464,6 +503,27 @@ export const LayoutWithoutCounter: Story = {
 			button.getBoundingClientRect().left,
 			0
 		);
+	}
+};
+
+/**
+ * With a count the frame fills its container, even one that does not stretch
+ * its children.
+ *
+ * @summary Counted frame fills its container
+ */
+export const LayoutWithCounter: Story = {
+	// Runs as a test only: an edge case, not a state consumers need to see.
+	tags: ['!dev', '!autodocs', '!manifest'],
+	render: () => (
+		<div className="flex w-96 flex-col items-start">
+			<TextArea aria-label="Notes" maxLength={140} />
+		</div>
+	),
+	play: async ({ canvasElement }) => {
+		const frame = canvasElement.querySelector('[data-slot=textarea-root]')!;
+
+		await expect(frame.getBoundingClientRect().width).toBe(384);
 	}
 };
 

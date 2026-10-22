@@ -221,12 +221,10 @@ export const OwnPropsWin: Story = {
 };
 
 /**
- * Figma's empty state with a count: the description on the left and the count
- * on the right, 16px apart under the box. Beside a count a long description
- * keeps to one line and truncates; a screen reader still hears all of it, with
- * the count.
+ * With a count, the count sits inside the box and the description keeps the
+ * row under it, wrapping as in any field. A screen reader hears both.
  *
- * @summary Count beside a truncated description, under the box
+ * @summary Count inside the box, description under it
  */
 export const WithCounter: Story = {
 	render: args => (
@@ -243,7 +241,7 @@ export const WithCounter: Story = {
 		const textarea = canvas.getByRole('textbox', { name: /Notes/ });
 		const counter = canvasElement.querySelector('[data-slot=textarea-counter]')!;
 		const description = canvas.getByText(/Shared with the carrier/);
-		const box = textarea.getBoundingClientRect();
+		const frame = canvasElement.querySelector('[data-slot=textarea-root]')!.getBoundingClientRect();
 		const count = counter.getBoundingClientRect();
 		const help = description.getBoundingClientRect();
 
@@ -251,12 +249,9 @@ export const WithCounter: Story = {
 		await expect(textarea).toHaveAccessibleDescription(
 			'Shared with the carrier along with the request, and kept on the policy file for audits. 0 of 500 characters'
 		);
-		await expect(help.top - box.bottom).toBe(8);
-		await expect(count.top).toBe(help.top);
-		await expect(Math.round(count.right)).toBe(Math.round(box.right));
-		await expect(count.left - help.right).toBe(16);
-		await expect(help.height).toBe(21);
-		await expect(getComputedStyle(description).textOverflow).toBe('ellipsis');
+		await expect(count.bottom).toBeLessThan(frame.bottom);
+		await expect(count.left).toBe(textarea.getBoundingClientRect().left);
+		await expect(help.top - frame.bottom).toBe(8);
 	}
 };
 
@@ -296,75 +291,10 @@ export const OverLimit: Story = {
 };
 
 /**
- * A horizontal field keeps its row, label beside the box, and the count sits
- * under the box rather than beside it.
+ * An invalid field turns the box's border and the count inside it
+ * destructive, and shows its error under the box.
  *
- * @summary Horizontal field: count under the box, label beside it
- */
-export const HorizontalWithCounter: Story = {
-	// Runs as a test only: a layout edge case, not a Figma state.
-	tags: ['!dev', '!autodocs', '!manifest'],
-	args: { orientation: 'horizontal' },
-	render: args => (
-		<FieldTextArea {...args}>
-			<Label>Reason</Label>
-			<TextArea maxLength={500} />
-		</FieldTextArea>
-	),
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-		const root = canvasElement.querySelector('[data-slot=field]')!;
-		const label = canvas.getByText('Reason').closest('label')!.getBoundingClientRect();
-		const box = canvas.getByRole('textbox', { name: 'Reason' }).getBoundingClientRect();
-		const count = canvasElement
-			.querySelector('[data-slot=textarea-counter]')!
-			.getBoundingClientRect();
-
-		await expect(getComputedStyle(root).display).toBe('flex');
-		await expect(box.left).toBeGreaterThan(label.right);
-		await expect(count.top - box.bottom).toBe(8);
-		await expect(Math.round(count.right)).toBe(Math.round(box.right));
-	}
-};
-
-/**
- * A `Field.Content` holding the box and its messages gets the same row as a
- * vertical field: description left, count right.
- *
- * @summary Count beside the description inside a Field.Content
- */
-export const ContentWithCounter: Story = {
-	// Runs as a test only: a layout edge case, not a Figma state.
-	tags: ['!dev', '!autodocs', '!manifest'],
-	args: { orientation: 'horizontal' },
-	render: args => (
-		<FieldTextArea {...args}>
-			<Label>Reason</Label>
-			<Field.Content className="flex-1">
-				<TextArea maxLength={500} />
-				<Field.Description>Shared with the carrier.</Field.Description>
-			</Field.Content>
-		</FieldTextArea>
-	),
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-		const box = canvas.getByRole('textbox', { name: 'Reason' }).getBoundingClientRect();
-		const help = canvas.getByText('Shared with the carrier.').getBoundingClientRect();
-		const count = canvasElement
-			.querySelector('[data-slot=textarea-counter]')!
-			.getBoundingClientRect();
-
-		await expect(count.top).toBe(help.top);
-		await expect(help.top - box.bottom).toBe(8);
-		await expect(Math.round(count.right)).toBe(Math.round(box.right));
-	}
-};
-
-/**
- * An invalid field shows its error where the description goes, and the count
- * beside it turns destructive too, as in Figma.
- *
- * @summary Error and destructive count share the row under the box
+ * @summary Destructive border and count, error under the box
  */
 export const InvalidWithCounter: Story = {
 	args: { invalid: true, required: true },
@@ -380,8 +310,13 @@ export const InvalidWithCounter: Story = {
 		const counter = canvasElement.querySelector('[data-slot=textarea-counter]')!;
 		const alert = canvas.getByRole('alert');
 
-		await expect(counter.getBoundingClientRect().top).toBe(alert.getBoundingClientRect().top);
+		const frame = canvasElement.querySelector('[data-slot=textarea-root]')!;
+
+		await expect(alert.getBoundingClientRect().top).toBeGreaterThan(
+			frame.getBoundingClientRect().bottom
+		);
 		await expect(getComputedStyle(counter).color).toBe(getComputedStyle(alert).color);
+		await expect(getComputedStyle(frame).borderColor).toBe(getComputedStyle(alert).color);
 	}
 };
 

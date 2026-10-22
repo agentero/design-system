@@ -2,6 +2,7 @@
 
 import {
 	ComponentPropsWithRef,
+	MouseEvent,
 	useCallback,
 	useId,
 	useLayoutEffect,
@@ -14,6 +15,7 @@ import { tv, VariantProps } from 'tailwind-variants';
 
 import { cn, mergeRefs } from '../../lib';
 import { inputRecipe } from '../input';
+import { inputGroupRecipe } from '../input-group';
 import { useTextAreaContext } from './context';
 
 /**
@@ -38,14 +40,17 @@ export const textAreaRecipe = tv({
 });
 
 /**
- * The count `TextArea` shows under its box when it has `maxLength`,
- * right-aligned like the helper text's row in Figma.
+ * The count `TextArea` shows inside its box when it has `maxLength`, on the
+ * last row, left-aligned with the text and as far from the bottom edge as the
+ * first line is from the top.
  *
  * @summary tailwind-variants recipe backing the TextArea character count
  */
 export const textAreaCounterRecipe = tv({
 	base: [
-		'mt-2 flex justify-end',
+		'flex justify-start pt-1 pb-2',
+		'group-has-[textarea[data-size=sm]]/textarea:pb-1',
+		'group-has-[textarea[data-size=lg]]/textarea:pb-2.75',
 		'text-sm leading-normal tabular-nums text-text-input-placeholder',
 		'group-has-[textarea:disabled]/textarea:text-text-input-disable',
 		'group-has-[textarea[aria-invalid=true]]/textarea:text-text-input-destructive',
@@ -112,6 +117,10 @@ export type TextAreaProps = ComponentPropsWithRef<'textarea'> & {
 	size?: TextAreaSize;
 };
 
+// The counted box is an input group frame stacked in a column, padded like a
+// standalone TextArea so the text and the count line up with one.
+const counterFrameClassName = cn(inputGroupRecipe().root(), 'w-full flex-col gap-0 px-4');
+
 const describedByWith = (describedBy: string | undefined, id: string) =>
 	describedBy ? `${describedBy} ${id}` : id;
 
@@ -132,15 +141,20 @@ const describedByWith = (describedBy: string | undefined, id: string) =>
  * height when three rows are not enough.
  *
  * `maxLength` is a soft limit and is not forwarded, since the native attribute
- * would stop typing. It shows a `12/500` count under the box, right-aligned and
- * announced through the textarea's `aria-describedby` rather than on every
- * keystroke. Past the limit the user keeps typing: the extra characters and
- * the count turn destructive, and rejecting a longer value is the form's
- * validation. The count is destructive when the field is invalid too. The box
- * and its count are stacked in a `data-slot="textarea-root"` wrapper that
- * fills its container, so size a counted TextArea from its container rather
- * than through `className`; `FieldTextArea` lays the count beside the
- * description or error instead.
+ * would stop typing. It shows a `12/500` count inside the box, on its last row
+ * and left-aligned with the text, announced through the textarea's
+ * `aria-describedby` rather than on every keystroke. Past the limit the user
+ * keeps typing: the extra characters and the count turn destructive, and
+ * rejecting a longer value is the form's validation. The count is destructive
+ * when the field is invalid too. The box is then an
+ * [InputGroup](?path=/docs/components-inputgroup--docs) frame, a
+ * `data-slot="textarea-root"` wrapper that fills its container, with the bare
+ * `<textarea>` and the count stacked inside; size a counted TextArea from its
+ * container rather than through `className`. A counted TextArea also grows
+ * with its text (`field-sizing: content`) instead of scrolling, from its
+ * resting height and with no resize handle; a `max-h-*` in `className` caps
+ * the growth, and `rows` no longer sets the height. Browsers without
+ * `field-sizing` keep the resting height and scroll.
  * Without `maxLength` the wrapper is `display: contents`, and `className` and
  * every other prop always go to the `<textarea>`.
  *
@@ -255,10 +269,20 @@ export const TextArea = (props: TextAreaProps) => {
 	const split = (maxLength ?? 0) - (highSurrogate ? 1 : 0);
 	const overflowStyles = textAreaOverflowRecipe();
 
+	// A press anywhere in the frame but the textarea, the count included, focuses it.
+	const focusOnPress = (event: MouseEvent<HTMLSpanElement>) => {
+		const textarea = textareaRef.current;
+		if (!textarea || event.target === textarea) return;
+
+		event.preventDefault();
+		if (document.activeElement !== textarea) textarea.focus();
+	};
+
 	return (
 		<span
 			data-slot="textarea-root"
-			className={cn('group/textarea', counter ? 'flex w-full flex-col' : 'contents')}>
+			className={cn('group/textarea', counter ? counterFrameClassName : 'contents')}
+			onMouseDown={counter ? focusOnPress : undefined}>
 			<span data-slot="textarea-box" className={counter ? 'relative block' : 'contents'}>
 				<textarea
 					ref={mergedRef}
@@ -269,6 +293,7 @@ export const TextArea = (props: TextAreaProps) => {
 						// While the layer paints the text, the textarea keeps only its caret and
 						// selection, and its colour never fades, so the swap is instant.
 						counter && 'transition-[box-shadow,outline-color,outline-offset,outline-width]',
+						counter && 'field-sizing-content resize-none',
 						'group-has-[[data-slot=textarea-overflow][data-ready]]/textarea:text-transparent',
 						'group-has-[[data-slot=textarea-overflow][data-ready]]/textarea:caret-text-input-normal',
 						'group-has-[[data-slot=textarea-overflow][data-ready]]/textarea:selection:text-transparent',
