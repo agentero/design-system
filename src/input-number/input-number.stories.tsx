@@ -138,11 +138,25 @@ export const ThousandSeparator: Story = {
  * @summary Decimal keypad for amounts, numeric keypad for identifiers
  */
 export const Keypad: Story = {
-	render: args => (
-		<div style={{ display: 'grid', gap: '1rem' }}>
-			<InputNumber {...args} aria-label="Annual premium" thousandSeparator />
-			<InputNumber {...args} aria-label="NPN" />
-			<InputNumber {...args} aria-label="Policy count" thousandSeparator inputMode="numeric" />
+	render: () => (
+		<div style={{ display: 'grid', gap: '1.5rem' }}>
+			<FieldText>
+				<Label>Annual premium</Label>
+				<InputNumber thousandSeparator />
+				<Field.Description>Decimal keypad, so the user can type cents.</Field.Description>
+			</FieldText>
+			<FieldText>
+				<Label>NPN</Label>
+				<InputNumber />
+				<Field.Description>Numeric keypad, digits only.</Field.Description>
+			</FieldText>
+			<FieldText>
+				<Label>Policy count</Label>
+				<InputNumber thousandSeparator inputMode="numeric" />
+				<Field.Description>
+					Numeric keypad: the inputMode passed in wins over the decimal one.
+				</Field.Description>
+			</FieldText>
 		</div>
 	),
 	play: async ({ canvasElement }) => {
@@ -196,9 +210,17 @@ export const MaxNumber: Story = {
  */
 export const LeadingZeros: Story = {
 	render: args => (
-		<div style={{ display: 'grid', gap: '1rem' }}>
-			<InputNumber {...args} aria-label="ZIP code" />
-			<InputNumber {...args} aria-label="Amount" allowLeadingZeros={false} />
+		<div style={{ display: 'grid', gap: '1.5rem' }}>
+			<FieldText>
+				<Label>ZIP code</Label>
+				<InputNumber onChange={args.onChange} />
+				<Field.Description>Keeps leading zeros: 007 stays 007.</Field.Description>
+			</FieldText>
+			<FieldText>
+				<Label>Amount</Label>
+				<InputNumber onChange={args.onChange} allowLeadingZeros={false} />
+				<Field.Description>Drops leading zeros on blur: 007 becomes 7.</Field.Description>
+			</FieldText>
 		</div>
 	),
 	play: async ({ args, canvasElement }) => {
