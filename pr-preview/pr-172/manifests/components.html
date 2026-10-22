@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>3.7s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>5.1s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -9312,20 +9312,27 @@ user types, and the commas are part of what `onChange` reports.</div>
 `thousandSeparator`, gets `inputMode=&quot;decimal&quot;` so the user can type cents;
 an identifier gets `inputMode=&quot;numeric&quot;`, digits only. An `inputMode`
 passed in wins over the choice.</div>
-              <pre><code>const Keypad = () =&gt; &lt;div style={{ display: &#39;grid&#39;, gap: &#39;1rem&#39; }}&gt;
-    &lt;InputNumber
-        onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)}
-        aria-label=&quot;Annual premium&quot;
-        thousandSeparator /&gt;
-    &lt;InputNumber
-        onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)}
-        aria-label=&quot;NPN&quot; /&gt;
-    &lt;InputNumber
-        onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)}
-        aria-label=&quot;Policy count&quot;
-        thousandSeparator
-        inputMode=&quot;numeric&quot; /&gt;
-&lt;/div&gt;;</code></pre>
+              <pre><code>const Keypad = () =&gt; (
+    &lt;div style={{ display: &#39;grid&#39;, gap: &#39;1.5rem&#39; }}&gt;
+        &lt;FieldText&gt;
+            &lt;Label&gt;Annual premium&lt;/Label&gt;
+            &lt;InputNumber thousandSeparator /&gt;
+            &lt;Field.Description&gt;Decimal keypad, so the user can type cents.&lt;/Field.Description&gt;
+        &lt;/FieldText&gt;
+        &lt;FieldText&gt;
+            &lt;Label&gt;NPN&lt;/Label&gt;
+            &lt;InputNumber /&gt;
+            &lt;Field.Description&gt;Numeric keypad, digits only.&lt;/Field.Description&gt;
+        &lt;/FieldText&gt;
+        &lt;FieldText&gt;
+            &lt;Label&gt;Policy count&lt;/Label&gt;
+            &lt;InputNumber thousandSeparator inputMode=&quot;numeric&quot; /&gt;
+            &lt;Field.Description&gt;
+                Numeric keypad: the inputMode passed in wins over the decimal one.
+            &lt;/Field.Description&gt;
+        &lt;/FieldText&gt;
+    &lt;/div&gt;
+);</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -9350,14 +9357,20 @@ called for it.</div>
               <div class="hint">Leading zeros are kept by default, as an NPN or a ZIP code needs. With
 `allowLeadingZeros` off they are dropped once the field loses focus, which
 is what an amount wants, and `onChange` reports the trimmed value.</div>
-              <pre><code>const LeadingZeros = () =&gt; &lt;div style={{ display: &#39;grid&#39;, gap: &#39;1rem&#39; }}&gt;
-    &lt;InputNumber
-        onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)}
-        aria-label=&quot;ZIP code&quot; /&gt;
-    &lt;InputNumber
-        onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)}
-        aria-label=&quot;Amount&quot;
-        allowLeadingZeros={false} /&gt;
+              <pre><code>const LeadingZeros = () =&gt; &lt;div style={{ display: &#39;grid&#39;, gap: &#39;1.5rem&#39; }}&gt;
+    &lt;FieldText&gt;
+        &lt;Label&gt;ZIP code&lt;/Label&gt;
+        &lt;InputNumber
+            onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)} /&gt;
+        &lt;Field.Description&gt;Keeps leading zeros: 007 stays 007.&lt;/Field.Description&gt;
+    &lt;/FieldText&gt;
+    &lt;FieldText&gt;
+        &lt;Label&gt;Amount&lt;/Label&gt;
+        &lt;InputNumber
+            onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)}
+            allowLeadingZeros={false} /&gt;
+        &lt;Field.Description&gt;Drops leading zeros on blur: 007 becomes 7.&lt;/Field.Description&gt;
+    &lt;/FieldText&gt;
 &lt;/div&gt;;</code></pre>
             </div>
             <div class="note ok">
