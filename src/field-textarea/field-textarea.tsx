@@ -27,7 +27,7 @@ export type FieldTextAreaProps = FieldRootProps;
  * so the `TextArea` inside associates itself with the label and the messages
  * and takes `invalid`, `required`, `disabled` and `readOnly` from the field.
  * Every other part (`Label`, `Field.Description`, `Field.Error`) works as in
- * any field. With `maxLength` on the `TextArea`, its count sits inside the box,
+ * any field. With `limit` on the `TextArea`, its count sits inside the box,
  * so the description or the error keeps the row under it to itself.
  *
  * Form-library agnostic, and its contexts compose: a provider nested inside it

@@ -230,7 +230,7 @@ export const WithCounter: Story = {
 	render: args => (
 		<FieldTextArea {...args}>
 			<Label optional>Notes</Label>
-			<TextArea maxLength={500} placeholder="Placeholder" />
+			<TextArea limit={500} placeholder="Placeholder" />
 			<Field.Description>
 				Shared with the carrier along with the request, and kept on the policy file for audits.
 			</Field.Description>
@@ -267,10 +267,7 @@ export const OverLimit: Story = {
 	render: args => (
 		<FieldTextArea {...args}>
 			<Label>Notes</Label>
-			<TextArea
-				maxLength={40}
-				defaultValue="Roof replaced in 2024 after hail damage, garage added."
-			/>
+			<TextArea limit={40} defaultValue="Roof replaced in 2024 after hail damage, garage added." />
 			<Field.Error errors={[{ message: 'Keep it brief' }]} />
 		</FieldTextArea>
 	),
@@ -301,7 +298,7 @@ export const InvalidWithCounter: Story = {
 	render: args => (
 		<FieldTextArea {...args}>
 			<Label>Reason</Label>
-			<TextArea maxLength={500} />
+			<TextArea limit={500} />
 			<Field.Error errors={[{ message: 'This field is required' }]} />
 		</FieldTextArea>
 	),

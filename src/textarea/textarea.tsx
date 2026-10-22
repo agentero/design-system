@@ -40,9 +40,9 @@ export const textAreaRecipe = tv({
 });
 
 /**
- * The count `TextArea` shows inside its box when it has `maxLength`, on the
- * last row, left-aligned with the text and as far from the bottom edge as the
- * first line is from the top.
+ * The count `TextArea` shows inside its box when it has `limit`, on the last
+ * row, left-aligned with the text and as far from the bottom edge as the first
+ * line is from the top.
  *
  * @summary tailwind-variants recipe backing the TextArea character count
  */
@@ -59,7 +59,7 @@ export const textAreaCounterRecipe = tv({
 });
 
 /**
- * The layer a `TextArea` lays over itself once the value passes `maxLength`:
+ * The layer a `TextArea` lays over itself once the value passes `limit`:
  * it paints the whole text, the characters over the limit in red, while the
  * textarea's own text turns transparent and keeps the caret and selection. The
  * textarea never shows through, so scrolling, which the layer follows a frame
@@ -115,6 +115,14 @@ export type TextAreaProps = ComponentPropsWithRef<'textarea'> & {
 	 * the text to `base` and the radius to `lg`).
 	 */
 	size?: TextAreaSize;
+	/**
+	 * Soft character limit, counted in UTF-16 units like the native `maxLength`
+	 * (an emoji counts as 2). Shows a `12/500` count inside the box and lets the
+	 * user type past it, turning the extra characters and the count
+	 * destructive; rejecting the value is the form's validation. For a hard cap
+	 * use `maxLength`, which stops typing and shows no count.
+	 */
+	limit?: number;
 };
 
 // The counted box is an input group frame stacked in a column, padded like a
@@ -136,17 +144,17 @@ const describedByWith = (describedBy: string | undefined, id: string) =>
  * container. Standalone, `id`, `aria-describedby` and `aria-invalid` are the
  * field owner's job. The invalid state has no prop of its own: `aria-invalid`
  * drives the destructive border, the same as Input. Every `<textarea>` attribute
- * except `maxLength` is forwarded, so `placeholder`, `required`, `disabled`,
- * `readOnly` and the rest work as in plain HTML; `rows` raises the resting
+ * is forwarded, so `placeholder`, `required`, `disabled`, `readOnly`,
+ * `maxLength` and the rest work as in plain HTML; `rows` raises the resting
  * height when three rows are not enough.
  *
- * `maxLength` is a soft limit and is not forwarded, since the native attribute
- * would stop typing. It shows a `12/500` count inside the box, on its last row
- * and left-aligned with the text, announced through the textarea's
+ * `limit` is a soft limit: it shows a `12/500` count inside the box, on its
+ * last row and left-aligned with the text, announced through the textarea's
  * `aria-describedby` rather than on every keystroke. Past the limit the user
  * keeps typing: the extra characters and the count turn destructive, and
  * rejecting a longer value is the form's validation. The count is destructive
- * when the field is invalid too. The box is then an
+ * when the field is invalid too. The native `maxLength` stays a hard cap that
+ * stops typing and shows no count. The counted box is an
  * [InputGroup](?path=/docs/components-inputgroup--docs) frame, a
  * `data-slot="textarea-root"` wrapper that fills its container, with the bare
  * `<textarea>` and the count stacked inside; size a counted TextArea from its
@@ -155,7 +163,7 @@ const describedByWith = (describedBy: string | undefined, id: string) =>
  * resting height and with no resize handle; a `max-h-*` in `className` caps
  * the growth, and `rows` no longer sets the height. Browsers without
  * `field-sizing` keep the resting height and scroll.
- * Without `maxLength` the wrapper is `display: contents`, and `className` and
+ * Without `limit` the wrapper is `display: contents`, and `className` and
  * every other prop always go to the `<textarea>`.
  *
  * The count follows `value` when the text area is controlled; uncontrolled, it
@@ -168,13 +176,13 @@ const describedByWith = (describedBy: string | undefined, id: string) =>
  *
  * @example
  * <Label htmlFor="notes">Notes</Label>
- * <TextArea id="notes" maxLength={500} placeholder="Anything the underwriter should know" />
+ * <TextArea id="notes" limit={500} placeholder="Anything the underwriter should know" />
  */
 export const TextArea = (props: TextAreaProps) => {
 	const {
 		className,
 		size,
-		maxLength,
+		limit,
 		ref,
 		'aria-describedby': describedBy,
 		...rest
@@ -183,7 +191,7 @@ export const TextArea = (props: TextAreaProps) => {
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 	const mergedRef = useMemo(() => mergeRefs(textareaRef, ref), [ref]);
 
-	const counter = maxLength !== undefined;
+	const counter = limit !== undefined;
 	const controlled = rest.value != null;
 
 	const subscribe = useCallback(
@@ -212,7 +220,8 @@ export const TextArea = (props: TextAreaProps) => {
 
 	const value = controlled ? String(rest.value) : domValue;
 	const length = value.length;
-	const over = counter && length > maxLength;
+	const excess = counter ? length - limit : 0;
+	const over = excess > 0;
 	const overflowRef = useRef<HTMLSpanElement>(null);
 	// Copies the textarea's layout onto the layer, reading every style before
 	// writing any, so it wraps and scrolls exactly like the text it covers.
@@ -265,8 +274,8 @@ export const TextArea = (props: TextAreaProps) => {
 	}, [over, syncOverflow]);
 
 	// Splits on a whole character, so an emoji across the limit is never cut in two.
-	const highSurrogate = /[\uD800-\uDBFF]/.test(value.charAt((maxLength ?? 0) - 1));
-	const split = (maxLength ?? 0) - (highSurrogate ? 1 : 0);
+	const highSurrogate = /[\uD800-\uDBFF]/.test(value.charAt((limit ?? 0) - 1));
+	const split = (limit ?? 0) - (highSurrogate ? 1 : 0);
 	const overflowStyles = textAreaOverflowRecipe();
 
 	// A press anywhere in the frame but the textarea, the count included, focuses it.
@@ -323,15 +332,15 @@ export const TextArea = (props: TextAreaProps) => {
 					<span
 						aria-hidden
 						data-slot="textarea-counter"
-						data-over={length > maxLength || undefined}
+						data-over={over || undefined}
 						className={textAreaCounterRecipe()}>
-						{length}/{maxLength}
+						{length}/{limit}
 					</span>
 					{/* Hidden, so it reaches the description but never the name of a wrapping label. */}
 					<span id={counterId} hidden>
-						{length > maxLength
-							? `${length - maxLength} characters over the limit of ${maxLength}`
-							: `${length} of ${maxLength} characters`}
+						{over
+							? `${excess} ${excess === 1 ? 'character' : 'characters'} over the limit of ${limit}`
+							: `${length} of ${limit} characters`}
 					</span>
 				</>
 			)}

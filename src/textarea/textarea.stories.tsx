@@ -40,6 +40,7 @@ const meta = {
 		},
 		rows: { control: 'number' },
 		placeholder: { control: 'text' },
+		limit: { control: 'number' },
 		maxLength: { control: 'number' },
 		disabled: { control: 'boolean' },
 		readOnly: { control: 'boolean' },
@@ -193,14 +194,14 @@ export const ReadOnly: Story = {
 };
 
 /**
- * `maxLength` shows the count inside the box, on its last row and aligned with
+ * `limit` shows the count inside the box, on its last row and aligned with
  * the text. The count is part of the control's description, so a screen reader
  * hears "0 of 140 characters" with the field instead of on every keystroke.
  *
- * @summary Character count inside the box, driven by maxLength
+ * @summary Character count inside the box, driven by limit
  */
 export const WithCounter: Story = {
-	args: { maxLength: 140 },
+	args: { limit: 140 },
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 		const textarea = canvas.getByRole('textbox', { name: 'Notes' });
@@ -242,7 +243,7 @@ export const WithCounter: Story = {
  * @summary Counted box grows with its text
  */
 export const CounterGrowsWithText: Story = {
-	args: { maxLength: 500 },
+	args: { limit: 500 },
 	play: async ({ canvasElement }) => {
 		const textarea = within(canvasElement).getByRole('textbox', { name: 'Notes' });
 		const resting = textarea.getBoundingClientRect().height;
@@ -264,7 +265,7 @@ export const CounterGrowsWithText: Story = {
  * @summary Typing past the limit turns the count destructive
  */
 export const CounterOverLimit: Story = {
-	args: { maxLength: 10 },
+	args: { limit: 10 },
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 		const textarea = canvas.getByRole('textbox', { name: 'Notes' });
@@ -291,10 +292,36 @@ export const CounterOverLimit: Story = {
 		await expect(getComputedStyle(textarea).color).toBe('rgba(0, 0, 0, 0)');
 		await expect(getComputedStyle(textarea).caretColor).not.toBe('rgba(0, 0, 0, 0)');
 
-		await userEvent.keyboard('{Backspace}{Backspace}');
+		await userEvent.keyboard('{Backspace}');
+		await expect(textarea).toHaveAccessibleDescription('1 character over the limit of 10');
+
+		await userEvent.keyboard('{Backspace}');
 		await expect(canvasElement.querySelector('[data-slot=textarea-overflow]')).toBeNull();
 		await expect(counter).not.toHaveAttribute('data-over');
 		await expect(getComputedStyle(textarea).color).not.toBe('rgba(0, 0, 0, 0)');
+	}
+};
+
+/**
+ * `maxLength` stays the native hard cap: typing stops at it and no count is
+ * shown. The soft limit with the count is `limit`.
+ *
+ * @summary Native maxLength caps typing and shows no count
+ */
+export const MaxLengthStaysNative: Story = {
+	// Runs as a test only: it pins the native attribute's meaning, not a visual state.
+	tags: ['!dev', '!autodocs', '!manifest'],
+	args: { maxLength: 5 },
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const textarea = canvas.getByRole('textbox', { name: 'Notes' });
+
+		await userEvent.type(textarea, 'Twelve chars');
+
+		await expect(textarea).toHaveAttribute('maxlength', '5');
+		await expect(textarea).toHaveValue('Twelv');
+		await expect(canvasElement.querySelector('[data-slot=textarea-counter]')).toBeNull();
+		await expect(getComputedStyle(textarea.parentElement!).display).toBe('contents');
 	}
 };
 
@@ -309,7 +336,7 @@ export const CounterInLabel: Story = {
 	render: () => (
 		<Label className="flex-col items-stretch font-normal">
 			Notes
-			<TextArea maxLength={100} defaultValue="hello" />
+			<TextArea limit={100} defaultValue="hello" />
 		</Label>
 	),
 	play: async ({ canvasElement }) => {
@@ -331,22 +358,22 @@ export const OverflowFollowsTextarea: Story = {
 	tags: ['!dev', '!autodocs', '!manifest'],
 	render: () => (
 		<div className="flex flex-col gap-4">
-			<TextArea aria-label="Margin" className="mt-4" maxLength={5} defaultValue="Twelve chars" />
+			<TextArea aria-label="Margin" className="mt-4" limit={5} defaultValue="Twelve chars" />
 			<TextArea
 				aria-label="Content box"
 				className="box-content"
-				maxLength={5}
+				limit={5}
 				defaultValue="Twelve chars"
 			/>
-			<TextArea aria-label="Right to left" dir="rtl" maxLength={5} defaultValue="שלום עולם טוב" />
+			<TextArea aria-label="Right to left" dir="rtl" limit={5} defaultValue="שלום עולם טוב" />
 			<TextArea
 				aria-label="Unwrapped"
 				className="max-h-24"
 				wrap="off"
-				maxLength={5}
+				limit={5}
 				defaultValue={Array(6).fill('A long line that does not wrap '.repeat(6)).join('\n')}
 			/>
-			<TextArea aria-label="Emoji" maxLength={3} defaultValue="ab😀cd" />
+			<TextArea aria-label="Emoji" limit={3} defaultValue="ab😀cd" />
 		</div>
 	),
 	play: async ({ canvasElement }) => {
@@ -387,7 +414,7 @@ const ControlledCounter = () => {
 	return (
 		<TextArea
 			aria-label="Notes"
-			maxLength={10}
+			limit={10}
 			value={value}
 			onChange={event => setValue(event.target.value)}
 		/>
@@ -426,7 +453,7 @@ const ResetForm = () => {
 
 	return (
 		<div className="flex flex-col items-start gap-2">
-			<TextArea ref={textareaRef} aria-label="Notes" maxLength={100} defaultValue="hello" />
+			<TextArea ref={textareaRef} aria-label="Notes" limit={100} defaultValue="hello" />
 			<Button
 				variant="secondary"
 				size="sm"
@@ -453,7 +480,7 @@ export const CounterFollowsResets: Story = {
 		<div className="flex flex-col gap-6">
 			<ResetForm />
 			<form className="flex flex-col items-start gap-2">
-				<TextArea aria-label="Native" maxLength={100} defaultValue="hello" />
+				<TextArea aria-label="Native" limit={100} defaultValue="hello" />
 				<Button type="reset" variant="secondary" size="sm">
 					Native reset
 				</Button>
@@ -480,7 +507,7 @@ export const CounterFollowsResets: Story = {
  * lays out as a direct child of its container: a width or a flex item class
  * in `className` works as on a bare `<textarea>`.
  *
- * @summary Without maxLength the wrapper leaves layout to the textarea
+ * @summary Without limit the wrapper leaves layout to the textarea
  */
 export const LayoutWithoutCounter: Story = {
 	// Runs as a test only: an edge case, not a state consumers need to see.
@@ -517,7 +544,7 @@ export const LayoutWithCounter: Story = {
 	tags: ['!dev', '!autodocs', '!manifest'],
 	render: () => (
 		<div className="flex w-96 flex-col items-start">
-			<TextArea aria-label="Notes" maxLength={140} />
+			<TextArea aria-label="Notes" limit={140} />
 		</div>
 	),
 	play: async ({ canvasElement }) => {
@@ -527,12 +554,12 @@ export const LayoutWithCounter: Story = {
 	}
 };
 
-const ToggleLimit = () => {
+const LimitToggle = () => {
 	const [limited, setLimited] = useState(false);
 
 	return (
 		<div className="flex flex-col items-start gap-2">
-			<TextArea aria-label="Notes" maxLength={limited ? 100 : undefined} />
+			<TextArea aria-label="Notes" limit={limited ? 100 : undefined} />
 			<Button variant="secondary" size="sm" onClick={() => setLimited(value => !value)}>
 				Toggle limit
 			</Button>
@@ -542,14 +569,14 @@ const ToggleLimit = () => {
 
 /**
  * The `<textarea>` keeps its place in the tree whether or not there is a
- * count, so adding or removing `maxLength` keeps what the user typed.
+ * count, so adding or removing `limit` keeps what the user typed.
  *
  * @summary Adding a limit keeps the same control and its text
  */
-export const ToggleMaxLength: Story = {
+export const ToggleLimit: Story = {
 	// Runs as a test only: an edge case, not a state consumers need to see.
 	tags: ['!dev', '!autodocs', '!manifest'],
-	render: () => <ToggleLimit />,
+	render: () => <LimitToggle />,
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 		const textarea = canvas.getByRole('textbox', { name: 'Notes' });
