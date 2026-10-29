@@ -4212,8 +4212,8 @@
         {
           "id": "components-command--inside-popover",
           "name": "Inside Popover",
-          "snippet": "const InsidePopover = () => (\n    <Popover.Root>\n        <Popover.Trigger asChild>\n            <Button variant=\"secondary\">Open commands</Button>\n        </Popover.Trigger>\n        <Popover.Content aria-label=\"Commands\" className=\"p-0\">\n            <Command.Root label=\"Search commands\">\n                <Command.Input placeholder=\"Search...\" />\n                <Command.List>\n                    {OPTIONS.map(option => (\n                        <Command.Item key={option}>{option}</Command.Item>\n                    ))}\n                </Command.List>\n            </Command.Root>\n        </Popover.Content>\n    </Popover.Root>\n);",
-          "description": "Inside a `Popover`. cmdk's list is always on screen, so Escape closes the popover."
+          "snippet": "const InsidePopover = () => (\n    <Popover.Root>\n        <Popover.Trigger asChild>\n            <Button variant=\"secondary\">Open commands</Button>\n        </Popover.Trigger>\n        <Popover.Content aria-label=\"Commands\">\n            <Command.Root label=\"Search commands\">\n                <Command.Input placeholder=\"Search...\" />\n                <Command.List>\n                    {OPTIONS.map(option => (\n                        <Command.Item key={option}>{option}</Command.Item>\n                    ))}\n                </Command.List>\n            </Command.Root>\n        </Popover.Content>\n    </Popover.Root>\n);",
+          "description": "Inside a `Popover`. The popover hands its border, shadow and padding to the `Command`, so the\npicker draws a single panel. cmdk's list is always on screen, so Escape closes the popover."
         }
       ],
       "import": "import { Button, Command, Popover } from \"@agentero/design-system\";"
@@ -11583,6 +11583,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5318
+    "durationMs": 5452
   }
 }
