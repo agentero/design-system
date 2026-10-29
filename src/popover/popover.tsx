@@ -65,6 +65,10 @@ export const popoverRecipe = tv({
 	base: [
 		'z-(--z-index-top-layer) rounded-md bg-bg-default-base-primary px-2 py-3 shadow-md',
 		'border border-border-default-base-primary',
+		// A `Command` draws its own panel, so the popover hands it the chrome instead of nesting a
+		// second border and shadow around it. Descendant, not child: consumers wrap it in a `CheckboxGroup`.
+		'has-[[data-slot=command-root]]:border-0 has-[[data-slot=command-root]]:bg-transparent',
+		'has-[[data-slot=command-root]]:p-0 has-[[data-slot=command-root]]:shadow-none',
 		'will-change-[transform,opacity]',
 		// Radix computes the exact origin (accounts for side + align) so the scale grows from the trigger edge.
 		'origin-(--radix-popover-content-transform-origin)',
