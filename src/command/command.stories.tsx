@@ -339,14 +339,17 @@ export const ReadingState: Story = {
 	}
 };
 
-/** Inside a `Popover`. cmdk's list is always on screen, so Escape closes the popover. */
+/**
+ * Inside a `Popover`. The popover hands its border, shadow and padding to the `Command`, so the
+ * picker draws a single panel. cmdk's list is always on screen, so Escape closes the popover.
+ */
 export const InsidePopover: Story = {
 	render: () => (
 		<Popover.Root>
 			<Popover.Trigger asChild>
 				<Button variant="secondary">Open commands</Button>
 			</Popover.Trigger>
-			<Popover.Content aria-label="Commands" className="p-0">
+			<Popover.Content aria-label="Commands">
 				<Command.Root label="Search commands">
 					<Command.Input placeholder="Search..." />
 					<Command.List>
@@ -365,6 +368,14 @@ export const InsidePopover: Story = {
 		await userEvent.click(trigger);
 		const input = await body.findByRole('combobox', { name: /search commands/i });
 		await waitFor(() => expect(input).toHaveFocus());
+
+		const popover = getComputedStyle(body.getByRole('dialog', { name: /commands/i }));
+		await expect(popover.borderTopWidth).toBe('0px');
+		// Tailwind composes box-shadow from several layers; `shadow-none` leaves each one transparent.
+		await expect(popover.boxShadow).toMatch(
+			/^rgba\(0, 0, 0, 0\) 0px 0px 0px 0px(, rgba\(0, 0, 0, 0\) 0px 0px 0px 0px)*$/
+		);
+		await expect(popover.paddingTop).toBe('0px');
 
 		await userEvent.keyboard('{Escape}');
 		await waitFor(() => expect(trigger).toHaveAttribute('data-state', 'closed'));
