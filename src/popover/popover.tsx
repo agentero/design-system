@@ -63,7 +63,7 @@ export const Portal = PopoverPrimitive.Portal;
 
 export const popoverRecipe = tv({
 	base: [
-		'z-(--z-index-top-layer) rounded-md bg-bg-default-base-primary px-2 py-3 shadow-md',
+		'z-(--z-index-top-layer) rounded-md bg-bg-default-base-primary px-2 py-3 shadow-lg',
 		'border border-border-default-base-primary',
 		// A `Command` draws its own panel, so the popover hands it the chrome instead of nesting a
 		// second border and shadow around it. Descendant, not child: consumers wrap it in a `CheckboxGroup`.

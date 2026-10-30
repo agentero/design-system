@@ -46,7 +46,7 @@ export const comboboxRecipe = tv({
 			'[[data-slot=combobox-field]:not([data-placeholder]):not(:has(input:read-only))_&]:hidden',
 		content: [
 			'w-(--anchor-width) max-h-(--available-height) overflow-hidden rounded-md',
-			'border border-border-default-base-primary bg-bg-default-base-primary shadow-lg',
+			'border border-border-default-base-primary bg-bg-default-base-primary shadow-xl',
 			// Not Base UI's `--transform-origin`: with `align="start"` it puts the origin on the left
 			// corner, and this surface is as wide as the input, so it has to grow from the edge it hangs from.
 			'data-[side=bottom]:origin-top data-[side=top]:origin-bottom',
