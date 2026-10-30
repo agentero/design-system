@@ -48,6 +48,15 @@ Study `src/avatar/avatar.tsx` before adding new components — it's the canonica
 - **`cn(...)` from `lib`** — always merge incoming `props.className` last: `cn(styles.root(), props.className)`. Never concatenate with template strings.
 - **Radix primitives** for behavior; Tailwind for styling. Prefer `ComponentPropsWithRef<typeof Primitive>` over hand-rolled prop types.
 - **Native attributes are inherited, not listed.** A props type that extends `ComponentPropsWithRef<'input'>` redeclares a native attribute only when its type differs here (`size` as an enum, behind an `Omit`). What the design system does with an attribute goes in the component JSDoc, which also states once that every native attribute is forwarded; docgen does not read the JSDoc above a type alias. See `src/input/input.tsx`.
+- **Floating surfaces share one elevation scale.** Every surface that floats over the page draws `border border-border-default-base-primary` on `bg-bg-default-base-primary`, and takes its shadow and radius from what it is:
+
+  | Surface | Shadow | Radius |
+  | -- | -- | -- |
+  | Tooltip | `shadow-sm` | `rounded-sm` |
+  | Popover (`Popover.Content`) | `shadow-lg` | `rounded-md` |
+  | Options list or menu (`Combobox`/`Autocomplete` list, `Command.Root`, `DropdownMenu` content and sub-content) and `HoverCard` | `shadow-xl` | `rounded-md` |
+
+  A new surface takes the row of the one it resembles instead of picking its own values.
 
 JSDoc and stories are load-bearing here — `react-docgen-typescript` feeds both the Storybook docs page and the MCP manifests consumers rely on. Use the `/document-component <path>` skill for JSDoc and `/story-component <path>` for `.stories.tsx`; those skills encode the MCP-facing conventions (`@summary` tags, required stories, arg controls). Don't hand-roll either.
 
