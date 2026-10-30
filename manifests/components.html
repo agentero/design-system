@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>5.5s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>6.2s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -4436,13 +4436,13 @@ virtualized?: boolean = false</code></pre>
               
               
               <pre><code>Expected render to be an arrow function or function expression
-   999 |  */
-  1000 | export const InsidePopoverWithValue: Story = {
-&gt; 1001 | 	render: InsidePopover.render,
+  1046 |  */
+  1047 | export const InsidePopoverWithValue: Story = {
+&gt; 1048 | 	render: InsidePopover.render,
        | 	           ^^^^^^^^^^^^^^^^^^^^
-  1002 | 	play: async ({ canvasElement }) =&gt; {
-  1003 | 		const body = within(document.body);
-  1004 | 		const trigger = within(canvasElement).getByRole(&#39;button&#39;, { name: /filter by state/i });</code></pre>
+  1049 | 	play: async ({ canvasElement }) =&gt; {
+  1050 | 		const body = within(document.body);
+  1051 | 		const trigger = within(canvasElement).getByRole(&#39;button&#39;, { name: /filter by state/i });</code></pre>
             </div>
           
           
@@ -4864,31 +4864,29 @@ rest of the page from assistive technology, label included, and a
 this checks that the dialog&#39;s modal layer neither blocks pointer events on the
 list nor treats a click in it as a click outside and closes. With a value
 picked, Escape closes the list, then clears the value, then closes the modal.</div>
-              <pre><code>const InsideModal = () =&gt; (
-    &lt;Modal.Root&gt;
-        &lt;Modal.Trigger asChild&gt;
-            &lt;Button variant=&quot;secondary&quot;&gt;Assign agency&lt;/Button&gt;
-        &lt;/Modal.Trigger&gt;
-        &lt;Modal.Content&gt;
-            &lt;Modal.Title&gt;Assign agency&lt;/Modal.Title&gt;
-            &lt;Modal.Body&gt;
-                &lt;Combobox.Root items={STATES}&gt;
-                    &lt;Combobox.Input placeholder=&quot;Search states&quot; aria-label=&quot;Search states&quot; /&gt;
-                    &lt;Combobox.Content&gt;
-                        &lt;Combobox.Empty&gt;No matches found&lt;/Combobox.Empty&gt;
-                        &lt;Combobox.List&gt;
-                            {(state: string) =&gt; (
-                                &lt;Combobox.Item key={state} value={state}&gt;
-                                    {state}
-                                &lt;/Combobox.Item&gt;
-                            )}
-                        &lt;/Combobox.List&gt;
-                    &lt;/Combobox.Content&gt;
-                &lt;/Combobox.Root&gt;
-            &lt;/Modal.Body&gt;
-        &lt;/Modal.Content&gt;
-    &lt;/Modal.Root&gt;
-);</code></pre>
+              <pre><code>const InsideModal = () =&gt; &lt;Modal.Root&gt;
+    &lt;Modal.Trigger asChild&gt;
+        &lt;Button variant=&quot;secondary&quot;&gt;Assign agency&lt;/Button&gt;
+    &lt;/Modal.Trigger&gt;
+    &lt;Modal.Content&gt;
+        &lt;Modal.Title&gt;Assign agency&lt;/Modal.Title&gt;
+        &lt;Modal.Body&gt;
+            &lt;Combobox.Root items={STATES}&gt;
+                &lt;Combobox.Input placeholder=&quot;Search states&quot; aria-label=&quot;Search states&quot; /&gt;
+                &lt;Combobox.Content&gt;
+                    &lt;Combobox.Empty&gt;No matches found&lt;/Combobox.Empty&gt;
+                    &lt;Combobox.List&gt;
+                        {(state: string) =&gt; (
+                            &lt;Combobox.Item key={state} value={state}&gt;
+                                {state}
+                            &lt;/Combobox.Item&gt;
+                        )}
+                    &lt;/Combobox.List&gt;
+                &lt;/Combobox.Content&gt;
+            &lt;/Combobox.Root&gt;
+        &lt;/Modal.Body&gt;
+    &lt;/Modal.Content&gt;
+&lt;/Modal.Root&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
