@@ -205,7 +205,9 @@ export type ComboboxRootProps<
  * stays open and keeps the typed query between picks, so several rows can be
  * ticked from one search; closing the list (Escape, a click outside) still resets
  * the query. Each row then shows whether it is selected — see `Item`. Nothing is
- * written back into the input: render the selection next to the field.
+ * written back into the input: render the selection next to the field. For the
+ * same reason Escape on a closed list leaves the selection alone, where Base UI
+ * would empty it, and `onValueChange` is not called; it still clears the text.
  *
  * @summary Root provider for an input-triggered filterable list
  * @see {@link https://base-ui.com/react/components/combobox|Base UI Combobox}
@@ -235,6 +237,7 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 	onOpenChange,
 	onOpenChangeComplete,
 	onInputValueChange,
+	onValueChange,
 	children,
 	...props
 }: ComboboxRootProps<Value, Multiple, Item>) => {
@@ -294,6 +297,18 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 		}
 	};
 
+	// Escape on a closed list empties the value, which a multi-select never shows in the input:
+	// the whole selection, disabled rows included, would go with no sign. It keeps it here, and
+	// as nothing changed, the key reaches whatever is around the field, a `Modal` say.
+	const handleValueChange: typeof onValueChange = (value, eventDetails) => {
+		if (multiple && eventDetails.reason === 'escape-key') {
+			eventDetails.cancel();
+			eventDetails.allowPropagation();
+			return;
+		}
+		onValueChange?.(value, eventDetails);
+	};
+
 	// Without a minimum, Base UI keeps its own open state, as it always has.
 	const open = openProp ?? (minInputLength > 0 ? openState : undefined);
 	const announcement = useLoadingAnnouncement(
@@ -310,6 +325,7 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 					onOpenChange={handleOpenChange}
 					onOpenChangeComplete={handleOpenChangeComplete}
 					onInputValueChange={handleInputValueChange}
+					onValueChange={handleValueChange}
 					autoHighlight={autoHighlight ?? HIGHLIGHT_FIRST}
 					{...props}
 					disabled={disabled}

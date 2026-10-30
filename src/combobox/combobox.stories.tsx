@@ -506,6 +506,67 @@ export const MultipleSelection: Story = {
 	}
 };
 
+// Not an arg: the wrapper around the field is no part of `Root`.
+const onKeyDownAround = fn();
+
+/**
+ * Regression check, kept out of the manifest: Escape on a closed multi-select
+ * keeps the selection, a disabled row included, does not call `onValueChange`,
+ * and reaches the element around the field.
+ *
+ * @summary Escape on a closed multi-select keeps the selection
+ */
+export const MultipleEscapeKeepsSelection: Story = {
+	tags: ['!manifest'],
+	args: { onValueChange: fn() },
+	render: args => (
+		<div onKeyDown={onKeyDownAround}>
+			<Combobox.Root
+				items={STATES}
+				multiple
+				defaultValue={['Colorado', 'Texas']}
+				onValueChange={args.onValueChange}>
+				<Combobox.Input placeholder="Assign states" aria-label="Assign states" />
+				<Combobox.Content>
+					<Combobox.List aria-label="States">
+						{(state: string) => (
+							<Combobox.Item key={state} value={state} disabled={state === 'Texas'}>
+								{state}
+							</Combobox.Item>
+						)}
+					</Combobox.List>
+				</Combobox.Content>
+			</Combobox.Root>
+		</div>
+	),
+	play: async ({ args, canvasElement }) => {
+		const canvas = within(canvasElement);
+		const body = within(document.body);
+		const input = canvas.getByRole('combobox', { name: /assign states/i });
+
+		await userEvent.click(input);
+		await body.findByRole('listbox', { name: 'States' });
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+
+		onKeyDownAround.mockClear();
+		await userEvent.keyboard('{Escape}');
+		await expect(args.onValueChange).not.toHaveBeenCalled();
+		await expect(onKeyDownAround).toHaveBeenCalledWith(expect.objectContaining({ key: 'Escape' }));
+
+		await userEvent.type(input, 'xas');
+		await expect(await body.findByRole('option', { name: 'Texas' })).toHaveAttribute(
+			'aria-selected',
+			'true'
+		);
+		await userEvent.clear(input);
+		await expect(await body.findByRole('option', { name: 'Colorado' })).toHaveAttribute(
+			'aria-selected',
+			'true'
+		);
+	}
+};
+
 type Agency = { id: string; name: string };
 
 const ALL_AGENCIES: Agency[] = [
