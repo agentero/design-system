@@ -156,7 +156,7 @@ const commandChrome = [
  */
 const contentStyles = tv({
 	base: [
-		'z-(--z-index-top-layer) flex flex-col rounded-lg bg-bg-default-base-primary p-1 shadow-xl',
+		'z-(--z-index-top-layer) flex flex-col rounded-md bg-bg-default-base-primary p-1 shadow-xl',
 		'border border-border-default-base-primary',
 		commandChrome,
 		'will-change-[transform,opacity]',
@@ -463,7 +463,7 @@ SubTrigger.displayName = 'DropdownMenu.SubTrigger';
  */
 const subContentStyles = tv({
 	base: [
-		'z-(--z-index-top-layer) flex flex-col rounded-lg bg-bg-default-base-primary p-1 shadow-xl',
+		'z-(--z-index-top-layer) flex flex-col rounded-md bg-bg-default-base-primary p-1 shadow-xl',
 		'border border-border-default-base-primary',
 		commandChrome,
 		'will-change-[transform,opacity]',

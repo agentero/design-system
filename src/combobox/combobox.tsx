@@ -62,7 +62,7 @@ export const comboboxRecipe = tv({
 			'[[data-slot=combobox-field]:not([data-placeholder]):not(:has(input:read-only))_&]:hidden',
 		content: [
 			'w-(--anchor-width) max-h-(--available-height) overflow-hidden rounded-md',
-			'border border-border-default-base-primary bg-bg-default-base-primary shadow-lg',
+			'border border-border-default-base-primary bg-bg-default-base-primary shadow-xl',
 			// With no row and no `Empty` to show, the border alone would read as a stray line.
 			'[&:not(:has(>:not(:empty)))]:hidden'
 		],
