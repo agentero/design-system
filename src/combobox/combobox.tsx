@@ -205,7 +205,10 @@ export type ComboboxRootProps<
  * stays open and keeps the typed query between picks, so several rows can be
  * ticked from one search; closing the list (Escape, a click outside) still resets
  * the query. Each row then shows whether it is selected — see `Item`. Nothing is
- * written back into the input: render the selection next to the field.
+ * written back into the input: render the selection next to the field. For the
+ * same reason Escape on a closed list leaves the selection alone, where Base UI
+ * would empty it, and `onValueChange` is not called. It still clears the text, and
+ * only an Escape on an empty field reaches an enclosing `Modal`.
  *
  * @summary Root provider for an input-triggered filterable list
  * @see {@link https://base-ui.com/react/components/combobox|Base UI Combobox}
@@ -235,6 +238,7 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 	onOpenChange,
 	onOpenChangeComplete,
 	onInputValueChange,
+	onValueChange,
 	children,
 	...props
 }: ComboboxRootProps<Value, Multiple, Item>) => {
@@ -253,6 +257,9 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 	// it, the user is still typing that query, so this write is skipped.
 	const closedForMinimum = useRef(false);
 	const skipCloseReset = useRef(false);
+	// Escape on a closed list clears the text, then the value, on the same event; the value
+	// handler needs to know whether there was text to clear.
+	const escapeClearedText = useRef(false);
 
 	const handleOpenChange: typeof onOpenChange = (open, eventDetails) => {
 		if (open && isShort(query.current)) {
@@ -285,6 +292,7 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 			eventDetails.cancel();
 			return;
 		}
+		escapeClearedText.current = eventDetails.reason === 'escape-key' && query.current !== '';
 		query.current = value;
 		onInputValueChange?.(value, eventDetails);
 		// Base UI only closes the list once the text is empty, so a minimum closes it here.
@@ -292,6 +300,19 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 			closedForMinimum.current = true;
 			setOpenState(false);
 		}
+	};
+
+	// Escape on a closed list empties the value, which a multi-select never shows in the input:
+	// the whole selection, disabled rows included, would go with no sign. It keeps it here. If
+	// the key cleared some text it stops there; if nothing changed, it reaches whatever is
+	// around the field, a `Modal` say.
+	const handleValueChange: typeof onValueChange = (value, eventDetails) => {
+		if (multiple && eventDetails.reason === 'escape-key') {
+			eventDetails.cancel();
+			if (!escapeClearedText.current) eventDetails.allowPropagation();
+			return;
+		}
+		onValueChange?.(value, eventDetails);
 	};
 
 	// Without a minimum, Base UI keeps its own open state, as it always has.
@@ -310,6 +331,7 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 					onOpenChange={handleOpenChange}
 					onOpenChangeComplete={handleOpenChangeComplete}
 					onInputValueChange={handleInputValueChange}
+					onValueChange={handleValueChange}
 					autoHighlight={autoHighlight ?? HIGHLIGHT_FIRST}
 					{...props}
 					disabled={disabled}
