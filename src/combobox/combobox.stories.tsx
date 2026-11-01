@@ -45,7 +45,7 @@ type Story = StoryObj<typeof meta>;
 const STATES = ['California', 'Colorado', 'Connecticut', 'Florida', 'Texas', 'Washington'];
 
 // The list anchors to the whole field, not the bare input: as wide as the frame, from its left
-// edge. Synchronous, for `waitFor`: the surface grows in from 0.95 scale over 100ms.
+// edge. Synchronous, for `waitFor`.
 const expectListAlignedWithField = (canvasElement: HTMLElement) => {
 	const field = canvasElement
 		.querySelector('[data-slot="combobox-field"]')!
@@ -122,7 +122,6 @@ export const Default: Story = {
 		);
 		await userEvent.keyboard('{Escape}');
 
-		// The surface stays mounted through its exit animation, so wait it out.
 		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
 	}
 };
