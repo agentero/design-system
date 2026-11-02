@@ -588,13 +588,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">41 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/353 story errors</a></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">41 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/354 story errors</a></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>6.2s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>5.3s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -4436,13 +4436,13 @@ virtualized?: boolean = false</code></pre>
               
               
               <pre><code>Expected render to be an arrow function or function expression
-  1046 |  */
-  1047 | export const InsidePopoverWithValue: Story = {
-&gt; 1048 | 	render: InsidePopover.render,
+  1045 |  */
+  1046 | export const InsidePopoverWithValue: Story = {
+&gt; 1047 | 	render: InsidePopover.render,
        | 	           ^^^^^^^^^^^^^^^^^^^^
-  1049 | 	play: async ({ canvasElement }) =&gt; {
-  1050 | 		const body = within(document.body);
-  1051 | 		const trigger = within(canvasElement).getByRole(&#39;button&#39;, { name: /filter by state/i });</code></pre>
+  1048 | 	play: async ({ canvasElement }) =&gt; {
+  1049 | 		const body = within(document.body);
+  1050 | 		const trigger = within(canvasElement).getByRole(&#39;button&#39;, { name: /filter by state/i });</code></pre>
             </div>
           
           
@@ -8471,7 +8471,7 @@ on its way out.</div>
         &lt;Button variant=&quot;secondary&quot;&gt;Hover me&lt;/Button&gt;
     &lt;/HoverCard.Trigger&gt;
     &lt;HoverCard.Portal&gt;
-        &lt;HoverCard.Content&gt;
+        &lt;HoverCard.Content className=&quot;duration-1000&quot;&gt;
             &lt;PreviewCard /&gt;
         &lt;/HoverCard.Content&gt;
     &lt;/HoverCard.Portal&gt;
@@ -12007,7 +12007,7 @@ variant?: &quot;enclosed&quot; | &quot;button&quot; | &quot;line&quot;</code></p
                 <span class="badge ok">story ok</span>
               </div>
               
-              <div class="hint">`line` (default): the active tab is marked with an animated underline.</div>
+              <div class="hint">`line` (default): the active tab is marked with an underline.</div>
               <pre><code>const Default = () =&gt; &lt;Tabs.Root variant=&quot;line&quot; defaultValue=&quot;overview&quot;&gt;
     &lt;Tabs.List&gt;
         &lt;TabItems /&gt;
@@ -13215,7 +13215,7 @@ action (e.g., a sync icon for a sync-in-progress toast).</div>
       <div class="badges">
         <label for="c-39-components-tooltip-props" class="badge ok as-toggle">12 prop types</label>
         
-        <label for="c-39-components-tooltip-stories" class="badge ok as-toggle">5 stories</label>
+        <label for="c-39-components-tooltip-stories" class="badge ok as-toggle">6 stories</label>
         
         
       </div>
@@ -13279,9 +13279,9 @@ content: ReactNode
 defaultOpen?: boolean
 
 /**
- * Delay in ms before opening on hover. Defaults to `0`; focus always opens instantly.
+ * Hover delay in ms for this tooltip. Defaults to the `TooltipProvider` delay, or `0` outside one; focus always opens instantly.
  */
-delayDuration?: number = 0
+delayDuration?: number
 
 /**
  * Hide the tooltip when the trigger is clipped away (e.g. scrolled out of an `overflow` container).
@@ -13312,7 +13312,7 @@ sideOffset?: number = 4</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button, Tooltip } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Button, Tooltip, TooltipProvider } from "@agentero/design-system";</code></pre>
               </div>
           
           
@@ -13337,6 +13337,26 @@ sideOffset?: number = 4</code></pre>
               <pre><code>const OpensOnFocus = () =&gt; &lt;Tooltip content=&quot;Archive this carrier&quot; side=&quot;top&quot; asChild&gt;
     &lt;Button variant=&quot;secondary&quot;&gt;Focus me&lt;/Button&gt;
 &lt;/Tooltip&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Shared Provider</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Shared provider: only the first tooltip waits for the hover delay</div>
+              <div class="hint">Inside a `TooltipProvider`, the first tooltip waits for the hover delay; the next one opens at once.</div>
+              <pre><code>const SharedProvider = () =&gt; (
+    &lt;TooltipProvider&gt;
+        &lt;div className=&quot;flex gap-2&quot;&gt;
+            &lt;Tooltip content=&quot;Edit carrier&quot; asChild&gt;
+                &lt;Button variant=&quot;secondary&quot;&gt;Edit&lt;/Button&gt;
+            &lt;/Tooltip&gt;
+            &lt;Tooltip content=&quot;Archive carrier&quot; asChild&gt;
+                &lt;Button variant=&quot;secondary&quot;&gt;Archive&lt;/Button&gt;
+            &lt;/Tooltip&gt;
+        &lt;/div&gt;
+    &lt;/TooltipProvider&gt;
+);</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
