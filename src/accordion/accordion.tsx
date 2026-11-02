@@ -91,7 +91,7 @@ export const Trigger = ({ className, children, asChild, ...props }: AccordionTri
 					{children}
 					<IconKeyboardArrowDown
 						aria-hidden
-						className="size-4 shrink-0 group-data-[state=open]:rotate-180 motion-safe:transition-transform motion-safe:duration-200"
+						className="size-4 shrink-0 group-data-[state=open]:rotate-180 motion-safe:transition-transform motion-safe:duration-200 motion-safe:ease-out-quint"
 					/>
 				</>
 			)}

@@ -795,29 +795,21 @@
     * ANIMATIONS
     * ======================================== */
 
-	--animate-cmd-overlay-in: cmd-overlay-in 200ms var(--ease-out-quint);
-	--animate-cmd-overlay-out: cmd-overlay-out 150ms var(--ease-out-quint) forwards;
-	--animate-cmd-content-in: cmd-content-in 200ms var(--ease-out-quint);
-	--animate-cmd-content-out: cmd-content-out 150ms var(--ease-out-quint) forwards;
-	--animate-fade-in: fadeIn 0.3s forwards;
-	--animate-dropdown-slide-in: dropdownSlideIn 200ms var(--ease-out-quint);
-	--animate-dropdown-slide-out: dropdownSlideOut 150ms var(--ease-out-quint);
+	--animate-fade-in: fadeIn 200ms var(--ease-out-quint) forwards;
+	--animate-dropdown-slide-in: dropdownSlideIn 150ms var(--ease-out-quint);
+	--animate-dropdown-slide-out: dropdownSlideOut 100ms var(--ease-out-quint);
 	/* Radix Presence unmounts as soon as a node's CSS animation ends, so a node
     * whose exit is driven by a transition needs a placeholder animation to hold
     * it mounted. Keep the duration in sync with any exit transition using it. */
-	--animate-presence-hold: presenceHold 150ms linear;
-	--animate-dropdown-slide-in-from-top: dropdownSlideInFromTop 200ms var(--ease-out-quint);
-	--animate-dropdown-slide-in-from-bottom: dropdownSlideInFromBottom 200ms var(--ease-out-quint);
-	--animate-dropdown-slide-in-from-left: dropdownSlideInFromLeft 200ms var(--ease-out-quint);
-	--animate-dropdown-slide-in-from-right: dropdownSlideInFromRight 200ms var(--ease-out-quint);
+	--animate-presence-hold: presenceHold 100ms linear;
+	--animate-dropdown-slide-in-from-top: dropdownSlideInFromTop 150ms var(--ease-out-quint);
+	--animate-dropdown-slide-in-from-bottom: dropdownSlideInFromBottom 150ms var(--ease-out-quint);
+	--animate-dropdown-slide-in-from-left: dropdownSlideInFromLeft 150ms var(--ease-out-quint);
+	--animate-dropdown-slide-in-from-right: dropdownSlideInFromRight 150ms var(--ease-out-quint);
 	--animate-modal-overlay-in: modalOverlayIn 200ms var(--ease-out-quint);
 	--animate-modal-overlay-out: modalOverlayOut 150ms var(--ease-out-quint) forwards;
 	--animate-modal-content-in: modalContentIn 200ms var(--ease-out-quint);
 	--animate-modal-content-out: modalContentOut 150ms var(--ease-out-quint) forwards;
-	--animate-tooltip-slide-in-from-top: tooltipSlideInFromTop 150ms var(--ease-out-quint);
-	--animate-tooltip-slide-in-from-bottom: tooltipSlideInFromBottom 150ms var(--ease-out-quint);
-	--animate-tooltip-slide-in-from-left: tooltipSlideInFromLeft 150ms var(--ease-out-quint);
-	--animate-tooltip-slide-in-from-right: tooltipSlideInFromRight 150ms var(--ease-out-quint);
 	--animate-accordion-down: accordionDown 200ms var(--ease-out-quint);
 	--animate-accordion-up: accordionUp 200ms var(--ease-out-quint);
 
@@ -863,6 +855,11 @@
 	--breakpoint-3xl: 100rem;
 }
 
+@property --presence-hold {
+	syntax: '*';
+	inherits: false;
+}
+
 /* ========================================
  * BASE LAYER - Global Styles
  * ======================================== */
@@ -870,18 +867,6 @@
 @layer base {
 	:root {
 		--text-underline-offset: 0.3em;
-	}
-
-	@keyframes dotFade {
-		0% {
-			opacity: 0;
-		}
-		50% {
-			opacity: 1;
-		}
-		100% {
-			opacity: 0;
-		}
 	}
 
 	@keyframes fadeIn {
@@ -893,76 +878,10 @@
 		}
 	}
 
-	@keyframes cmd-overlay-in {
-		from {
-			opacity: 0;
-		}
-		to {
-			opacity: 1;
-		}
-	}
-
-	@keyframes cmd-overlay-out {
-		from {
-			opacity: 1;
-		}
-		to {
-			opacity: 0;
-		}
-	}
-
-	@keyframes cmd-content-in {
-		from {
-			opacity: 0;
-			scale: 0.95;
-			translate: -50% 8px;
-		}
-		to {
-			opacity: 1;
-			scale: 1;
-			translate: -50% 0;
-		}
-	}
-
-	@keyframes cmd-content-out {
-		from {
-			opacity: 1;
-			scale: 1;
-			translate: -50% 0;
-		}
-		to {
-			opacity: 0;
-			scale: 0.95;
-			translate: -50% 8px;
-		}
-	}
-
-	@keyframes toast-slide-in {
-		from {
-			opacity: 0;
-			transform: translateY(1rem);
-		}
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
-	}
-
-	@keyframes toast-slide-out {
-		from {
-			opacity: 1;
-			transform: translateY(0);
-		}
-		to {
-			opacity: 0;
-			transform: translateY(1rem);
-		}
-	}
-
 	@keyframes dropdownSlideIn {
 		0% {
 			opacity: 0;
-			transform: scale(0.9);
+			transform: scale(0.95);
 		}
 		100% {
 			opacity: 1;
@@ -977,12 +896,13 @@
 		}
 		100% {
 			opacity: 0;
-			transform: scale(0.9);
+			transform: scale(0.95);
 		}
 	}
 
 	/* Animates nothing on purpose — it exists only so Radix Presence has an
-	 * animation to wait on. The custom property is inert and never read. */
+	 * animation to wait on. The custom property is inert and never read, and
+	 * registered as non-inherited so its ticks don't restyle descendants. */
 	@keyframes presenceHold {
 		0% {
 			--presence-hold: 0;
@@ -995,7 +915,7 @@
 	@keyframes dropdownSlideInFromTop {
 		0% {
 			opacity: 0;
-			transform: translateY(-0.5rem) scale(0.9);
+			transform: translateY(-0.25rem) scale(0.95);
 		}
 		100% {
 			opacity: 1;
@@ -1006,7 +926,7 @@
 	@keyframes dropdownSlideInFromBottom {
 		0% {
 			opacity: 0;
-			transform: translateY(0.5rem) scale(0.9);
+			transform: translateY(0.25rem) scale(0.95);
 		}
 		100% {
 			opacity: 1;
@@ -1017,7 +937,7 @@
 	@keyframes dropdownSlideInFromLeft {
 		0% {
 			opacity: 0;
-			transform: translateX(-0.5rem) scale(0.9);
+			transform: translateX(-0.25rem) scale(0.95);
 		}
 		100% {
 			opacity: 1;
@@ -1028,7 +948,7 @@
 	@keyframes dropdownSlideInFromRight {
 		0% {
 			opacity: 0;
-			transform: translateX(0.5rem) scale(0.9);
+			transform: translateX(0.25rem) scale(0.95);
 		}
 		100% {
 			opacity: 1;
@@ -1076,50 +996,6 @@
 		100% {
 			opacity: 0;
 			transform: scale(0.95);
-		}
-	}
-
-	@keyframes tooltipSlideInFromTop {
-		0% {
-			opacity: 0;
-			transform: translateY(-0.25rem);
-		}
-		100% {
-			opacity: 1;
-			transform: translateY(0);
-		}
-	}
-
-	@keyframes tooltipSlideInFromBottom {
-		0% {
-			opacity: 0;
-			transform: translateY(0.25rem);
-		}
-		100% {
-			opacity: 1;
-			transform: translateY(0);
-		}
-	}
-
-	@keyframes tooltipSlideInFromLeft {
-		0% {
-			opacity: 0;
-			transform: translateX(-0.25rem);
-		}
-		100% {
-			opacity: 1;
-			transform: translateX(0);
-		}
-	}
-
-	@keyframes tooltipSlideInFromRight {
-		0% {
-			opacity: 0;
-			transform: translateX(0.25rem);
-		}
-		100% {
-			opacity: 1;
-			transform: translateX(0);
 		}
 	}
 
@@ -1176,12 +1052,5 @@
 	em,
 	i {
 		font-style: italic;
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		[cmdk-overlay],
-		[cmdk-dialog] {
-			animation: none;
-		}
 	}
 }

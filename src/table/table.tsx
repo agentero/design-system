@@ -264,7 +264,7 @@ export const Cell = ({
 Cell.displayName = 'Table.Cell';
 
 const expandButtonStyles = tv({
-	base: 'relative z-[1] [&>svg]:shrink-0 [&>svg]:transition-transform [&>svg]:duration-200 data-[state=open]:[&>svg]:rotate-180 motion-reduce:[&>svg]:transition-none'
+	base: 'relative z-[1] [&>svg]:shrink-0 [&>svg]:transition-transform [&>svg]:duration-200 [&>svg]:ease-out-quint data-[state=open]:[&>svg]:rotate-180 motion-reduce:[&>svg]:transition-none'
 });
 
 type ExpandButtonProps = {

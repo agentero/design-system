@@ -1,28 +1,55 @@
 'use client';
 
-import { ComponentProps, ReactNode } from 'react';
+import { ComponentProps, createContext, ReactNode, use } from 'react';
 
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import { tv } from 'tailwind-variants';
 
-// Directional entrance animation is keyed off `data-side` so the tooltip
-// fades and slides in from the edge nearest its trigger.
 export const tooltipRecipe = tv({
 	base: [
 		'z-(--z-index-tooltip) max-w-[32ch] px-3 py-2',
 		'rounded-sm border border-border-default-base-primary bg-bg-default-base-primary shadow-sm',
-		'text-xs text-pretty text-text-default-base-secondary select-none',
-		'will-change-[transform,opacity]',
-		// Only the hover entrance animates. Radix marks a focus-opened tooltip
-		// `instant-open`; tabbing through triggers should not replay a slide per stop.
-		'data-[state=delayed-open]:data-[side=bottom]:animate-tooltip-slide-in-from-top',
-		'data-[state=delayed-open]:data-[side=top]:animate-tooltip-slide-in-from-bottom',
-		'data-[state=delayed-open]:data-[side=left]:animate-tooltip-slide-in-from-right',
-		'data-[state=delayed-open]:data-[side=right]:animate-tooltip-slide-in-from-left',
-		// `!` so it outranks the higher-specificity data-[state=…] rules above
-		'motion-reduce:animate-none!'
+		'text-xs text-pretty text-text-default-base-secondary select-none'
 	]
 });
+
+const SharedProviderContext = createContext(false);
+
+export type TooltipProviderProps = {
+	/** The subtree whose tooltips share one hover delay. Usually the whole app. */
+	children: ReactNode;
+	/** Hover delay in ms before the first tooltip opens. Defaults to `300`. */
+	delayDuration?: number;
+	/** Window in ms after a tooltip closes during which the next one opens with no delay. Defaults to `300`. */
+	skipDelayDuration?: number;
+};
+
+/**
+ * TooltipProvider makes every Tooltip inside it share one hover delay: the
+ * first tooltip waits `delayDuration`, and the next one the pointer reaches
+ * opens at once, until `skipDelayDuration` passes with none open. Mount it
+ * once near the app root. A Tooltip outside any TooltipProvider still works
+ * and opens as soon as it is hovered.
+ *
+ * @summary Shares one hover delay across every Tooltip inside it
+ *
+ * @example
+ * ```tsx
+ * <TooltipProvider>
+ *   <App />
+ * </TooltipProvider>
+ * ```
+ */
+export const TooltipProvider = ({
+	children,
+	delayDuration = 300,
+	skipDelayDuration = 300
+}: TooltipProviderProps) => (
+	<TooltipPrimitive.Provider delayDuration={delayDuration} skipDelayDuration={skipDelayDuration}>
+		<SharedProviderContext value>{children}</SharedProviderContext>
+	</TooltipPrimitive.Provider>
+);
+TooltipProvider.displayName = 'TooltipProvider';
 
 type RootProps = ComponentProps<typeof TooltipPrimitive.Root>;
 
@@ -41,7 +68,7 @@ export type TooltipProps = {
 	asChild?: boolean;
 	/** Hide the tooltip when the trigger is clipped away (e.g. scrolled out of an `overflow` container). */
 	hideWhenDetached?: boolean;
-	/** Delay in ms before opening on hover. Defaults to `0`; focus always opens instantly. */
+	/** Hover delay in ms for this tooltip. Defaults to the `TooltipProvider` delay, or `0` outside one; focus always opens instantly. */
 	delayDuration?: number;
 	/** Extra classes for the content surface, merged last. */
 	className?: string;
@@ -53,6 +80,9 @@ export type TooltipProps = {
  * `asChild` when the trigger is already interactive (a button or link) to avoid
  * nesting interactive elements. Don't put essential or interactive content
  * inside it — hover-only content is inaccessible to touch and keyboard users.
+ *
+ * Wrap the app in one `TooltipProvider` so only the first tooltip waits for
+ * the hover delay and its neighbours open at once.
  *
  * @summary Hover/focus hint anchored to a trigger element
  *
@@ -71,14 +101,18 @@ export const Tooltip = ({
 	sideOffset = 4,
 	asChild = false,
 	hideWhenDetached,
-	delayDuration = 0,
+	delayDuration,
 	open,
 	defaultOpen,
 	onOpenChange,
 	className
-}: TooltipProps) => (
-	<TooltipPrimitive.Provider delayDuration={delayDuration} skipDelayDuration={0}>
-		<TooltipPrimitive.Root open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
+}: TooltipProps) => {
+	const tooltip = (
+		<TooltipPrimitive.Root
+			open={open}
+			defaultOpen={defaultOpen}
+			onOpenChange={onOpenChange}
+			delayDuration={delayDuration}>
 			<TooltipPrimitive.Trigger
 				asChild={asChild}
 				data-slot="tooltip-trigger"
@@ -99,6 +133,16 @@ export const Tooltip = ({
 				</TooltipPrimitive.Content>
 			</TooltipPrimitive.Portal>
 		</TooltipPrimitive.Root>
-	</TooltipPrimitive.Provider>
-);
+	);
+
+	if (use(SharedProviderContext)) return tooltip;
+
+	// Alone, a tooltip has no neighbours to skip the delay for:
+	// a delay would only make each one in a row wait.
+	return (
+		<TooltipPrimitive.Provider delayDuration={0} skipDelayDuration={0}>
+			{tooltip}
+		</TooltipPrimitive.Provider>
+	);
+};
 Tooltip.displayName = 'Tooltip';

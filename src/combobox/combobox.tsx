@@ -35,8 +35,7 @@ export const comboboxRecipe = tv({
 			'focus-visible:outline-2 focus-visible:outline-border-input-focus',
 			'disabled:cursor-default disabled:[&>svg>path]:fill-icon-input-disable'
 		],
-		trigger:
-			'transition-[rotate] duration-100 data-popup-open:rotate-180 motion-reduce:transition-none',
+		trigger: 'data-popup-open:rotate-180',
 		// With a clear button beside it, the chevron gives way to it once there is a value, as in
 		// Base UI's own example. Base UI marks the frame `data-placeholder` while there is none.
 		// A disabled or read-only input matches `:read-only` whichever part locked it — `Root`, a
@@ -47,21 +46,8 @@ export const comboboxRecipe = tv({
 		content: [
 			'w-(--anchor-width) max-h-(--available-height) overflow-hidden rounded-md',
 			'border border-border-default-base-primary bg-bg-default-base-primary shadow-lg',
-			// Not Base UI's `--transform-origin`: with `align="start"` it puts the origin on the left
-			// corner, and this surface is as wide as the input, so it has to grow from the edge it hangs from.
-			'data-[side=bottom]:origin-top data-[side=top]:origin-bottom',
 			// With no row and no `Empty` to show, the border alone would read as a stray line.
-			'[&:not(:has(>:not(:empty)))]:hidden',
-			// The legacy Datalist's own timing — a 100ms fade over a 0.95 scale — driven off Base UI's
-			// start/end attributes rather than the shared dropdown keyframes, whose 0.9 scale and
-			// translate read as a slow start on a surface this wide.
-			// `scale`, not `transform`: Tailwind v4 scale utilities set the standalone scale property.
-			'transition-[scale,opacity] duration-100 ease-in-out',
-			// Bracketed on purpose: Tailwind does not emit a rule for the bare `data-starting-style:`
-			// form, so the surface would appear with no transition at all.
-			'data-[starting-style]:scale-95 data-[starting-style]:opacity-0',
-			'data-[ending-style]:scale-95 data-[ending-style]:opacity-0',
-			'motion-reduce:transition-none'
+			'[&:not(:has(>:not(:empty)))]:hidden'
 		],
 		// Never taller than the room left: the surface clips there and would hide the last rows.
 		// When empty, its padding alone would be a 16px band under `Empty`. `:empty`, not Base UI's

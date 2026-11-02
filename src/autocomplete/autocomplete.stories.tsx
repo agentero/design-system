@@ -69,7 +69,7 @@ const CARRIERS = ['Clearcover', 'Hippo', 'Lemonade', 'Openly', 'Progressive', 'T
 const surface = () => document.body.querySelector('[data-slot="autocomplete-content"]');
 
 // The list anchors to the whole field, not the bare input: as wide as the frame, from its left
-// edge. Synchronous, for `waitFor`: the surface grows in from 0.95 scale over 100ms.
+// edge. Synchronous, for `waitFor`.
 const expectListAlignedWithField = (canvasElement: HTMLElement) => {
 	const field = canvasElement
 		.querySelector('[data-slot="autocomplete-field"]')!
@@ -80,7 +80,6 @@ const expectListAlignedWithField = (canvasElement: HTMLElement) => {
 	expect(content.left).toBeCloseTo(field.left, 0);
 };
 
-// The surface stays mounted through its exit animation, so wait it out.
 const waitForListClosed = () =>
 	waitFor(() => expect(within(document.body).queryByRole('listbox')).not.toBeInTheDocument());
 
