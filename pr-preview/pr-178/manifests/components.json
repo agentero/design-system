@@ -7592,7 +7592,7 @@
         {
           "id": "components-hovercard--abandoned-hover",
           "name": "Abandoned Hover",
-          "snippet": "const AbandonedHover = () => <HoverCard.Root openDelay={0} closeDelay={0}>\n    <HoverCard.Trigger asChild>\n        <Button variant=\"secondary\">Hover me</Button>\n    </HoverCard.Trigger>\n    <HoverCard.Portal>\n        <HoverCard.Content>\n            <PreviewCard />\n        </HoverCard.Content>\n    </HoverCard.Portal>\n</HoverCard.Root>;",
+          "snippet": "const AbandonedHover = () => <HoverCard.Root openDelay={0} closeDelay={0}>\n    <HoverCard.Trigger asChild>\n        <Button variant=\"secondary\">Hover me</Button>\n    </HoverCard.Trigger>\n    <HoverCard.Portal>\n        <HoverCard.Content className=\"duration-1000\">\n            <PreviewCard />\n        </HoverCard.Content>\n    </HoverCard.Portal>\n</HoverCard.Root>;",
           "description": "Brushing the trigger and leaving without ever reaching the card is the most\ncommon way a hover card gets dismissed, so the exit reverses the entrance\nfrom wherever it got to. Driving it with keyframes instead would restart the\nexit at full opacity and scale, popping the half-faded card to fully visible\non its way out."
         },
         {
@@ -11588,6 +11588,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 3667
+    "durationMs": 4151
   }
 }
