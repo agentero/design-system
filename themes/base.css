@@ -801,7 +801,7 @@
 	/* Radix Presence unmounts as soon as a node's CSS animation ends, so a node
     * whose exit is driven by a transition needs a placeholder animation to hold
     * it mounted. Keep the duration in sync with any exit transition using it. */
-	--animate-presence-hold: presenceHold 150ms linear;
+	--animate-presence-hold: presenceHold 100ms linear;
 	--animate-dropdown-slide-in-from-top: dropdownSlideInFromTop 150ms var(--ease-out-quint);
 	--animate-dropdown-slide-in-from-bottom: dropdownSlideInFromBottom 150ms var(--ease-out-quint);
 	--animate-dropdown-slide-in-from-left: dropdownSlideInFromLeft 150ms var(--ease-out-quint);

@@ -122,7 +122,7 @@ export const AbandonedHover: Story = {
 			return node;
 		});
 
-		// Sample every frame across the interruption. The entrance runs 200ms, so
+		// Sample every frame across the interruption. The entrance runs 150ms, so
 		// leaving now lands well inside it.
 		const frames: { state: string | null; opacity: number }[] = [];
 		let sampling = true;
