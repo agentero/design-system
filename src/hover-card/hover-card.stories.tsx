@@ -104,7 +104,7 @@ export const AbandonedHover: Story = {
 				<Button variant="secondary">Hover me</Button>
 			</HoverCard.Trigger>
 			<HoverCard.Portal>
-				<HoverCard.Content>
+				<HoverCard.Content className="duration-1000">
 					<PreviewCard />
 				</HoverCard.Content>
 			</HoverCard.Portal>
@@ -122,8 +122,8 @@ export const AbandonedHover: Story = {
 			return node;
 		});
 
-		// Sample every frame across the interruption. The entrance runs 150ms, so
-		// leaving now lands well inside it.
+		// The real 150ms entrance is nearly opaque by the time unhover lands on a
+		// slow runner, so this story stretches it to keep the exit mid-fade.
 		const frames: { state: string | null; opacity: number }[] = [];
 		let sampling = true;
 		const sample = () => {
