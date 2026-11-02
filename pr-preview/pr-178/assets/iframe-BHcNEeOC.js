@@ -1,0 +1,1 @@
+import{t as e}from"./iframe-DGbe2-sF.js";e();
