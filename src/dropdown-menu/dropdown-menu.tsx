@@ -226,7 +226,7 @@ export const Content = ({
 		className={contentStyles({ hasTriggerWidth, className })}
 		onCloseAutoFocus={event => {
 			onCloseAutoFocus?.(event);
-			hideFocusRingAfterPointerClose();
+			hideFocusRingAfterPointerClose(event);
 		}}
 		{...props}
 	/>

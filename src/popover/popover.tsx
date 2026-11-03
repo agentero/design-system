@@ -106,7 +106,7 @@ export const Content = ({
 			}}
 			onCloseAutoFocus={event => {
 				onCloseAutoFocus?.(event);
-				hideFocusRingAfterPointerClose();
+				hideFocusRingAfterPointerClose(event);
 			}}
 			{...props}
 		/>

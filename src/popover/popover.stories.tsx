@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
@@ -117,6 +119,48 @@ export const FocusReturn: Story = {
 		);
 		await expect(trigger).toHaveFocus();
 		await expect(trigger.matches(':focus-visible')).toBe(true);
+	}
+};
+
+/**
+ * Clicking a field outside closes the popover and leaves focus in that field:
+ * Radix does not move focus back to the trigger, and the field gets no extra
+ * blur.
+ *
+ * @summary Clicking a field outside keeps focus in that field
+ */
+export const CloseIntoField: Story = {
+	render: () => {
+		const [blurCount, setBlurCount] = useState(0);
+		return (
+			<div className="flex items-center gap-4">
+				<Popover.Root>
+					<Popover.Trigger asChild>
+						<Button variant="secondary">Carrier details</Button>
+					</Popover.Trigger>
+					<Popover.Content>
+						<p className="text-sm text-text-default-base-primary">Appointed in 12 states.</p>
+					</Popover.Content>
+				</Popover.Root>
+				<input aria-label="Agency name" onBlur={() => setBlurCount(count => count + 1)} />
+				<span>Blurred {blurCount} times</span>
+			</div>
+		);
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const body = within(document.body);
+		const field = canvas.getByRole('textbox', { name: 'Agency name' });
+
+		await userEvent.click(canvas.getByRole('button', { name: 'Carrier details' }));
+		await body.findByText('Appointed in 12 states.');
+		await userEvent.click(field);
+		await waitFor(() =>
+			expect(body.queryByText('Appointed in 12 states.')).not.toBeInTheDocument()
+		);
+		await new Promise(resolve => setTimeout(resolve, 50));
+		await expect(field).toHaveFocus();
+		await expect(canvas.getByText('Blurred 0 times')).toBeInTheDocument();
 	}
 };
 
