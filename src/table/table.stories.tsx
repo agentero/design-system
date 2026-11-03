@@ -1,10 +1,11 @@
 import { Fragment, SVGProps, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { Table, type TableRootProps } from '.';
 import { Button } from '../button';
+import { DropdownMenu } from '../dropdown-menu';
 import { Switch } from '../switch';
 
 type Row = { id: string; name: string; email: string; role: string; amount: string };
@@ -294,6 +295,77 @@ export const WithRowActions: Story = {
 		// Controls are present in the DOM (hidden until row hover, a visual-only behavior).
 		await expect(canvas.getAllByRole('button', { name: /Edit / })).toHaveLength(ROWS.length);
 		await expect(canvas.getAllByRole('button', { name: /Delete / })).toHaveLength(ROWS.length);
+	}
+};
+
+/**
+ * A row keeps its hover look, and its actions stay visible, while a menu
+ * opened from one of those actions is open. The pointer leaves the row for the
+ * menu, so without it the actions would fade out under the open menu.
+ *
+ * @summary Row stays highlighted while its actions menu is open
+ */
+export const WithRowActionsMenu: Story = {
+	render: args => (
+		<Table.Root {...args}>
+			<Table.Head>
+				<Table.Row>
+					<Table.Header>Name</Table.Header>
+					<Table.Header>Email</Table.Header>
+					<Table.Header>
+						<span className="sr-only">Actions</span>
+					</Table.Header>
+				</Table.Row>
+			</Table.Head>
+			<Table.Body>
+				{ROWS.slice(0, 3).map(row => (
+					<Table.Row key={row.id}>
+						<Table.Cell className="font-bold">{row.name}</Table.Cell>
+						<Table.Cell className="text-text-default-base-secondary">{row.email}</Table.Cell>
+						<Table.Cell style={{ width: '0.0625rem', position: 'sticky', right: 0 }}>
+							<Table.RowActions>
+								<DropdownMenu.Root>
+									<DropdownMenu.Trigger asChild>
+										<Button
+											variant="ghost"
+											size="sm"
+											iconOnly
+											aria-label={`Actions for ${row.name}`}>
+											<IconEdit />
+										</Button>
+									</DropdownMenu.Trigger>
+									<DropdownMenu.Portal>
+										<DropdownMenu.Content align="end">
+											<DropdownMenu.Item>Edit</DropdownMenu.Item>
+											<DropdownMenu.Item>Delete</DropdownMenu.Item>
+										</DropdownMenu.Content>
+									</DropdownMenu.Portal>
+								</DropdownMenu.Root>
+							</Table.RowActions>
+						</Table.Cell>
+					</Table.Row>
+				))}
+			</Table.Body>
+		</Table.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const trigger = canvas.getByRole('button', { name: `Actions for ${ROWS[0]!.name}` });
+		const row = trigger.closest('tr')!;
+		const idleRow = canvas
+			.getByRole('button', { name: `Actions for ${ROWS[1]!.name}` })
+			.closest('tr')!;
+		await expect(getComputedStyle(trigger).opacity).toBe('0');
+
+		await userEvent.click(trigger);
+		await within(document.body).findByRole('menu');
+
+		await expect(getComputedStyle(trigger).opacity).toBe('1');
+		await expect(getComputedStyle(row).backgroundColor).not.toBe(
+			getComputedStyle(idleRow).backgroundColor
+		);
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(within(document.body).queryByRole('menu')).not.toBeInTheDocument());
 	}
 };
 

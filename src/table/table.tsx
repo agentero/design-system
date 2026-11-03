@@ -186,7 +186,10 @@ const rowStyles = tv({
 			true: [
 				'hover:bg-bg-default-base-secondary hover:has-[[data-slot=table-empty-state]]:bg-transparent',
 				'[&:hover_[data-slot=table-row-actions]>*]:opacity-100',
-				'[&:hover_[data-slot=table-row-actions]]:after:opacity-100'
+				'[&:hover_[data-slot=table-row-actions]]:after:opacity-100',
+				'has-overlay-open:bg-bg-default-base-secondary',
+				'has-overlay-open:[&_[data-slot=table-row-actions]>*]:opacity-100',
+				'has-overlay-open:[&_[data-slot=table-row-actions]]:after:opacity-100'
 			],
 			false: ''
 		},
@@ -201,7 +204,9 @@ const rowStyles = tv({
 
 /**
  * A table row (`<tr>`). In `Table.Body`, rows pick up dividers, hover, and the
- * sticky-footer treatment from the `Table.Root` variants automatically.
+ * sticky-footer treatment from the `Table.Root` variants automatically. A body
+ * row keeps its hover look, row actions included, while a menu or popover
+ * opened from inside it is open.
  *
  * @summary Table row element
  */
@@ -327,7 +332,8 @@ const rowActionsStyles = tv({
 
 /**
  * Inline action cluster pinned to the row's trailing edge; controls stay hidden
- * until row hover (always visible on coarse-pointer devices).
+ * until row hover (always visible on coarse-pointer devices) and stay visible
+ * while a menu opened from one of them is open.
  *
  * @summary Hover-revealed row action cluster
  */

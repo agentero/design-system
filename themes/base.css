@@ -855,6 +855,10 @@
 	--breakpoint-3xl: 100rem;
 }
 
+/* A trigger whose menu, popover, select or combobox list is open. Collapsible and
+ * accordion toggles also set aria-expanded but open nothing over the page, so they stay out. */
+@custom-variant overlay-open (&:is([aria-haspopup][aria-expanded='true'], [role='combobox'][aria-expanded='true']));
+
 @property --presence-hold {
 	syntax: '*';
 	inherits: false;

@@ -38,27 +38,30 @@ export const buttonRecipe = tv({
 				'bg-bg-button-primary-enable border-bg-button-primary-enable',
 				'text-text-button-primary-enable',
 				'[&_svg]:fill-icon-button-primary-enable',
-				'hover:bg-bg-button-primary-hover hover:border-bg-button-primary-hover'
+				'hover:bg-bg-button-primary-hover hover:border-bg-button-primary-hover',
+				'overlay-open:bg-bg-button-primary-hover overlay-open:border-bg-button-primary-hover'
 			],
 			secondary: [
 				'bg-bg-button-secondary-enable border-border-button-secondary-enable',
 				'text-text-button-secondary-enable',
 				'shadow-xs',
 				'[&_svg]:fill-icon-button-secondary-enable',
-				'hover:bg-bg-button-secondary-hover'
+				'hover:bg-bg-button-secondary-hover overlay-open:bg-bg-button-secondary-hover'
 			],
 			tertiary: [
 				'bg-bg-button-tertiary-enable border-bg-button-tertiary-enable',
 				'text-text-button-tertiary-enable',
 				'[&_svg]:fill-icon-button-tertiary-enable',
-				'hover:bg-bg-button-tertiary-hover hover:border-bg-button-tertiary-hover'
+				'hover:bg-bg-button-tertiary-hover hover:border-bg-button-tertiary-hover',
+				'overlay-open:bg-bg-button-tertiary-hover overlay-open:border-bg-button-tertiary-hover'
 			],
 			ghost: [
 				'bg-bg-button-ghost-enable border-bg-button-ghost-enable',
 				'text-text-button-ghost-enable',
 				'mix-blend-multiply bg-blend-multiply',
 				'[&_svg]:fill-icon-button-ghost-enable',
-				'hover:bg-bg-button-ghost-hover hover:border-bg-button-ghost-hover'
+				'hover:bg-bg-button-ghost-hover hover:border-bg-button-ghost-hover',
+				'overlay-open:bg-bg-button-ghost-hover overlay-open:border-bg-button-ghost-hover'
 			],
 			link: [
 				'px-0 underline',
@@ -148,7 +151,9 @@ export const buttonRecipe = tv({
 				'text-text-button-primary-destructive-enable',
 				'[&_svg]:fill-icon-button-primary-destructive-enable',
 				'hover:bg-bg-button-primary-destructive-hover',
-				'hover:border-bg-button-primary-destructive-hover'
+				'hover:border-bg-button-primary-destructive-hover',
+				'overlay-open:bg-bg-button-primary-destructive-hover',
+				'overlay-open:border-bg-button-primary-destructive-hover'
 			]
 		},
 		{
@@ -159,7 +164,8 @@ export const buttonRecipe = tv({
 				'border-border-button-secondary-destructive-enable',
 				'text-text-button-secondary-destructive-enable',
 				'[&_svg]:fill-icon-button-secondary-destructive-enable',
-				'hover:bg-bg-button-secondary-destructive-hover'
+				'hover:bg-bg-button-secondary-destructive-hover',
+				'overlay-open:bg-bg-button-secondary-destructive-hover'
 			]
 		},
 		{
@@ -171,7 +177,9 @@ export const buttonRecipe = tv({
 				'text-text-button-tertiary-destructive-enable',
 				'[&_svg]:fill-icon-button-tertiary-destructive-enable',
 				'hover:bg-bg-button-tertiary-destructive-hover',
-				'hover:border-bg-button-tertiary-destructive-hover'
+				'hover:border-bg-button-tertiary-destructive-hover',
+				'overlay-open:bg-bg-button-tertiary-destructive-hover',
+				'overlay-open:border-bg-button-tertiary-destructive-hover'
 			]
 		},
 		{
@@ -183,7 +191,9 @@ export const buttonRecipe = tv({
 				'text-text-button-ghost-destructive-enable',
 				'[&_svg]:fill-icon-button-ghost-destructive-enable',
 				'hover:bg-bg-button-ghost-destructive-hover',
-				'hover:border-bg-button-ghost-destructive-hover'
+				'hover:border-bg-button-ghost-destructive-hover',
+				'overlay-open:bg-bg-button-ghost-destructive-hover',
+				'overlay-open:border-bg-button-ghost-destructive-hover'
 			]
 		},
 		{
@@ -193,7 +203,9 @@ export const buttonRecipe = tv({
 				'text-text-button-link-destructive-enable',
 				'[&_svg]:fill-icon-button-link-destructive-enable',
 				'hover:text-text-button-link-destructive-hover',
-				'hover:[&_svg]:fill-icon-button-link-destructive-hover'
+				'hover:[&_svg]:fill-icon-button-link-destructive-hover',
+				'overlay-open:text-text-button-link-destructive-hover',
+				'overlay-open:[&_svg]:fill-icon-button-link-destructive-hover'
 			]
 		},
 		/* Destructive × variant × disabled */
