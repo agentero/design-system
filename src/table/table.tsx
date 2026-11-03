@@ -205,8 +205,8 @@ const rowStyles = tv({
 /**
  * A table row (`<tr>`). In `Table.Body`, rows pick up dividers, hover, and the
  * sticky-footer treatment from the `Table.Root` variants automatically. A body
- * row keeps its hover look, row actions included, while a menu or popover
- * opened from inside it is open.
+ * row keeps its hover look, row actions included, while a menu, popover,
+ * select or dialog opened from inside it is open.
  *
  * @summary Table row element
  */
@@ -333,7 +333,7 @@ const rowActionsStyles = tv({
 /**
  * Inline action cluster pinned to the row's trailing edge; controls stay hidden
  * until row hover (always visible on coarse-pointer devices) and stay visible
- * while a menu opened from one of them is open.
+ * while an overlay opened from one of them is open.
  *
  * @summary Hover-revealed row action cluster
  */
