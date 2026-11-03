@@ -69,6 +69,52 @@ export const Default: Story = {
 };
 
 /**
+ * Closing the popover hands focus back to its trigger. After a pointer close
+ * the trigger takes focus without a focus ring; after Escape the ring shows,
+ * so a keyboard user can see where focus went.
+ *
+ * @summary Focus returns to the trigger, with a ring only after a keyboard close
+ */
+export const FocusReturn: Story = {
+	render: () => (
+		<div className="flex gap-4">
+			<Popover.Root>
+				<Popover.Trigger asChild>
+					<Button variant="secondary">Carrier details</Button>
+				</Popover.Trigger>
+				<Popover.Content>
+					<p className="text-sm text-text-default-base-primary">Appointed in 12 states.</p>
+				</Popover.Content>
+			</Popover.Root>
+			<span>Outside the popover</span>
+		</div>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const body = within(document.body);
+		const trigger = canvas.getByRole('button', { name: 'Carrier details' });
+
+		await userEvent.click(trigger);
+		await body.findByText('Appointed in 12 states.');
+		await userEvent.click(canvas.getByText('Outside the popover'));
+		await waitFor(() =>
+			expect(body.queryByText('Appointed in 12 states.')).not.toBeInTheDocument()
+		);
+		await expect(trigger).toHaveFocus();
+		await expect(trigger.matches(':focus-visible')).toBe(false);
+
+		await userEvent.keyboard('{Enter}');
+		await body.findByText('Appointed in 12 states.');
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() =>
+			expect(body.queryByText('Appointed in 12 states.')).not.toBeInTheDocument()
+		);
+		await expect(trigger).toHaveFocus();
+		await expect(trigger.matches(':focus-visible')).toBe(true);
+	}
+};
+
+/**
  * `side` sets the preferred placement; Radix flips it on viewport collision.
  *
  * @summary Popover placement on each of the four sides
