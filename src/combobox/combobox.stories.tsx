@@ -659,12 +659,32 @@ export const AsyncSearchWithLoading: Story = {
 		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(1));
 		await expect(content).not.toHaveAttribute('aria-busy');
 
-		// Deleting back under the minimum closes the list.
+		// Deleting back under the minimum closes the list. The search clears its rows on that same
+		// keystroke, and the closing list never says "no agencies found" on its way out.
+		const emptyShown: string[] = [];
+		const watcher = new MutationObserver(() => {
+			const empty = document.body.querySelector('[data-slot="combobox-empty"]');
+			if (empty?.textContent) emptyShown.push(empty.textContent);
+		});
+		watcher.observe(document.body, { childList: true, subtree: true, characterData: true });
 		await userEvent.type(input, '{Backspace}{Backspace}{Backspace}');
 		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+		watcher.disconnect();
+		await expect(emptyShown).toEqual([]);
 		await expect(input).toHaveAttribute('aria-expanded', 'false');
 		// What is left of the query stays: the user is still typing it.
 		await expect(input).toHaveValue('a');
+
+		// An answer with no rows still says so, once it lands.
+		await userEvent.type(input, 'zz');
+		await expect(document.body.querySelector('[data-slot="combobox-content"]')).toHaveAttribute(
+			'aria-busy',
+			'true'
+		);
+		await expect(body.queryByText(/no agencies found/i)).not.toBeInTheDocument();
+		await expect(await body.findByText(/no agencies found/i, {}, { timeout: 2000 })).toBeVisible();
+		await userEvent.type(input, '{Backspace}{Backspace}');
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
 
 		await userEvent.type(input, 'nch');
 		await userEvent.click(await body.findByRole('option', { name: 'Anchor Brokers' }));

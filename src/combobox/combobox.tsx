@@ -90,9 +90,12 @@ const slots = comboboxRecipe();
 // a private store.
 const MultipleContext = createContext(false);
 
-// The root's `loading`, for `Content` to mark busy and for `Empty` to hold back. It stays
-// `undefined` for a root that never opted in.
-const LoadingContext = createContext<boolean | undefined>(undefined);
+// What the list is doing, for `Content` to mark it busy and for `Empty` to hold back. `loading`
+// is the root's and stays `undefined` for a root that never opted in. `open` drops as soon as the
+// list starts closing, while the surface is still mounted: a search that empties its rows on that
+// keystroke would otherwise flash its "no results" on the way out. Both stay `undefined` outside
+// this `Root`, under `Autocomplete`, which borrows these parts.
+const ListStateContext = createContext<{ open?: boolean; loading?: boolean }>({});
 
 // How long a request runs before its label is announced. VoiceOver cuts off whatever it is saying
 // to echo the key just typed and, when the list opens, to read out its new expanded state; both
@@ -303,14 +306,14 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 
 	// Without a minimum, Base UI keeps its own open state, as it always has.
 	const open = openProp ?? (minInputLength > 0 ? openState : undefined);
-	const announcement = useLoadingAnnouncement(
-		Boolean(loading) && (openProp ?? openState),
-		loadingLabel
-	);
+	// Every open change, Base UI's own included, goes through `handleOpenChange`, so `openState`
+	// follows the list even where Base UI keeps the open state itself.
+	const isOpen = openProp ?? openState;
+	const announcement = useLoadingAnnouncement(Boolean(loading) && isOpen, loadingLabel);
 
 	return (
 		<MultipleContext value={multiple}>
-			<LoadingContext value={loading}>
+			<ListStateContext value={{ open: isOpen, loading }}>
 				<ComboboxPrimitive.Root
 					open={open}
 					defaultOpen={defaultOpen}
@@ -333,7 +336,7 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 						</ComboboxPrimitive.Status>
 					)}
 				</ComboboxPrimitive.Root>
-			</LoadingContext>
+			</ListStateContext>
 		</MultipleContext>
 	);
 };
@@ -445,7 +448,7 @@ export const Input = ({
 }: InputProps) => {
 	const { className, size = 'md', onKeyDown, ...rest } = useBaseInputContext(props);
 	const multiple = use(MultipleContext);
-	const loading = use(LoadingContext);
+	const { loading } = use(ListStateContext);
 	const clearable = showClear && !multiple;
 
 	// With no row highlighted, Base UI closes the list and lets Enter through to the form, as a
@@ -547,7 +550,7 @@ export const Content = ({
 	children,
 	...props
 }: ContentProps) => {
-	const loading = use(LoadingContext);
+	const { loading } = use(ListStateContext);
 
 	return (
 		<ComboboxPrimitive.Portal>
@@ -650,20 +653,22 @@ type EmptyProps = ComponentPropsWithRef<typeof ComboboxPrimitive.Empty>;
  * `loading` it shows nothing: the list is empty because the results have not
  * arrived yet, not because there are none. With no rows to show either, the
  * surface would open as an empty frame, so render placeholder rows inside
- * `Content` for the wait.
+ * `Content` for the wait. Once the list starts closing it shows nothing
+ * either, so a search that clears its rows as the query drops under
+ * `minInputLength` does not flash its message on the way out.
  *
  * @summary Message shown when no item matches the query
  * @dataAttribute {string} data-slot - Always set to "combobox-empty"
  */
 export const Empty = ({ className, children, ...props }: EmptyProps) => {
-	const loading = use(LoadingContext);
+	const { open, loading } = use(ListStateContext);
 
 	return (
 		<ComboboxPrimitive.Empty
 			data-slot="combobox-empty"
 			className={cn(slots.message(), className)}
 			{...props}>
-			{loading ? null : children}
+			{loading || open === false ? null : children}
 		</ComboboxPrimitive.Empty>
 	);
 };
