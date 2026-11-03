@@ -337,7 +337,8 @@ const resolveColor = (token: string) => {
  * without the trigger looking idle. The open state is read from
  * `aria-expanded="true"` together with `aria-haspopup` (or `role="combobox"`),
  * which Radix and Base UI triggers set for you. A disclosure toggle, such as a
- * collapsible section header, sets only `aria-expanded` and keeps its regular look.
+ * collapsible section header, sets only `aria-expanded` and keeps its regular look,
+ * and a disabled or loading trigger keeps its disabled look.
  *
  * @summary Overlay triggers keep the hover look while their overlay is open
  */
@@ -355,6 +356,9 @@ export const OpenTrigger: Story = {
 				<Button variant="secondary" aria-expanded="true">
 					Section expanded
 				</Button>
+				<Button variant="secondary" loading aria-haspopup="menu" aria-expanded="true">
+					Loading menu open
+				</Button>
 			</Row>
 		</Stack>
 	),
@@ -369,6 +373,10 @@ export const OpenTrigger: Story = {
 		const disclosure = canvas.getByRole('button', { name: 'Section expanded' });
 		await expect(getComputedStyle(disclosure).backgroundColor).toBe(
 			resolveColor('--color-bg-button-secondary-enable')
+		);
+		const loadingTrigger = canvas.getByText('Loading menu open').closest('button')!;
+		await expect(getComputedStyle(loadingTrigger).backgroundColor).toBe(
+			resolveColor('--color-bg-button-secondary-disable')
 		);
 	}
 };
