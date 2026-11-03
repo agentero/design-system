@@ -588,13 +588,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">41 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/357 story errors</a></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">41 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/360 story errors</a></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>5.5s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>5.8s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -6455,7 +6455,7 @@ related controls or inline links without visual weight.</div>
       <div class="badges">
         <label for="c-14-components-dropdownmenu-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-14-components-dropdownmenu-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-14-components-dropdownmenu-stories" class="badge ok as-toggle">8 stories</label>
         
         
       </div>
@@ -6898,6 +6898,32 @@ actions outright unless the user needs to see them and understand why.</div>
                         &lt;/DropdownMenu.SubContent&gt;
                     &lt;/DropdownMenu.Portal&gt;
                 &lt;/DropdownMenu.Sub&gt;
+            &lt;/DropdownMenu.Content&gt;
+        &lt;/DropdownMenu.Portal&gt;
+    &lt;/DropdownMenu.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Focus Return</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Focus returns to the trigger, with a ring only after a keyboard close</div>
+              <div class="hint">Closing the menu hands focus back to its trigger. After a pointer close the
+trigger takes focus without a focus ring, since the pointer never asked for
+one. After a keyboard close (Escape, or choosing a row with Enter) the ring
+shows, so a keyboard user can see where focus went.</div>
+              <pre><code>const FocusReturn = () =&gt; (
+    &lt;DropdownMenu.Root&gt;
+        &lt;DropdownMenu.Trigger asChild&gt;
+            &lt;Button size=&quot;md&quot; variant=&quot;secondary&quot;&gt;
+                Contract actions
+            &lt;/Button&gt;
+        &lt;/DropdownMenu.Trigger&gt;
+        &lt;DropdownMenu.Portal&gt;
+            &lt;DropdownMenu.Content&gt;
+                &lt;DropdownMenu.Item&gt;Download contract&lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Item&gt;Mark as pending&lt;/DropdownMenu.Item&gt;
             &lt;/DropdownMenu.Content&gt;
         &lt;/DropdownMenu.Portal&gt;
     &lt;/DropdownMenu.Root&gt;
@@ -10993,7 +11019,7 @@ entries summary follow along.</div>
       <div class="badges">
         <label for="c-30-components-popover-props" class="badge ok as-toggle">5 prop types</label>
         
-        <label for="c-30-components-popover-stories" class="badge ok as-toggle">5 stories</label>
+        <label for="c-30-components-popover-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -11083,6 +11109,62 @@ click and dismisses on outside click or Escape.</div>
         &lt;/Popover.Content&gt;
     &lt;/Popover.Root&gt;
 );</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Focus Return</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Focus returns to the trigger, with a ring only after a keyboard close</div>
+              <div class="hint">Closing the popover from inside hands focus back to its trigger. After a
+pointer close the trigger takes focus without a focus ring; after Escape the
+ring shows, so a keyboard user can see where focus went.</div>
+              <pre><code>const FocusReturn = () =&gt; (
+    &lt;div className=&quot;flex gap-4&quot;&gt;
+        &lt;Popover.Root&gt;
+            &lt;Popover.Trigger asChild&gt;
+                &lt;Button variant=&quot;secondary&quot;&gt;Carrier details&lt;/Button&gt;
+            &lt;/Popover.Trigger&gt;
+            &lt;Popover.Content&gt;
+                &lt;div className=&quot;flex flex-col items-start gap-2&quot;&gt;
+                    &lt;p className=&quot;text-sm text-text-default-base-primary&quot;&gt;Appointed in 12 states.&lt;/p&gt;
+                    &lt;Popover.Close asChild&gt;
+                        &lt;Button size=&quot;xs&quot; variant=&quot;tertiary&quot;&gt;
+                            Done
+                        &lt;/Button&gt;
+                    &lt;/Popover.Close&gt;
+                &lt;/div&gt;
+            &lt;/Popover.Content&gt;
+        &lt;/Popover.Root&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Close Into Field</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Clicking a field outside keeps focus in that field</div>
+              <div class="hint">Clicking a field outside closes the popover and leaves focus in that field:
+Radix does not move focus back to the trigger, and the field gets no extra
+blur.</div>
+              <pre><code>const CloseIntoField = () =&gt; {
+    const [blurCount, setBlurCount] = useState(0);
+    return (
+        &lt;div className=&quot;flex items-center gap-4&quot;&gt;
+            &lt;Popover.Root&gt;
+                &lt;Popover.Trigger asChild&gt;
+                    &lt;Button variant=&quot;secondary&quot;&gt;Carrier details&lt;/Button&gt;
+                &lt;/Popover.Trigger&gt;
+                &lt;Popover.Content&gt;
+                    &lt;p className=&quot;text-sm text-text-default-base-primary&quot;&gt;Appointed in 12 states.&lt;/p&gt;
+                &lt;/Popover.Content&gt;
+            &lt;/Popover.Root&gt;
+            &lt;input aria-label=&quot;Agency name&quot; onBlur={() =&gt; setBlurCount(count =&gt; count + 1)} /&gt;
+            &lt;span&gt;Blurred {blurCount} times&lt;/span&gt;
+        &lt;/div&gt;
+    );
+};</code></pre>
             </div>
             <div class="note ok">
               <div class="row">

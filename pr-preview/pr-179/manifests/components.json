@@ -6404,6 +6404,13 @@
           "snippet": "const SubmenuWithDisabledItems = () => (\n    <DropdownMenu.Root>\n        <DropdownMenu.Trigger asChild>\n            <Button size=\"md\" variant=\"secondary\">\n                Document Actions\n                <IconKeyboardArrowDown />\n            </Button>\n        </DropdownMenu.Trigger>\n        <DropdownMenu.Portal>\n            <DropdownMenu.Content>\n                <DropdownMenu.Item onSelect={() => console.log('View')}>View</DropdownMenu.Item>\n                <DropdownMenu.Item onSelect={() => console.log('Edit')}>Edit</DropdownMenu.Item>\n                <DropdownMenu.Separator />\n                <DropdownMenu.Sub>\n                    <DropdownMenu.SubTrigger>\n                        <IconContentCopy />\n                        Export as\n                    </DropdownMenu.SubTrigger>\n                    <DropdownMenu.Portal>\n                        <DropdownMenu.SubContent>\n                            <DropdownMenu.Item onSelect={() => console.log('PDF')}>PDF</DropdownMenu.Item>\n                            <DropdownMenu.Item onSelect={() => console.log('Word')}>\n                                Word Document\n                            </DropdownMenu.Item>\n                            <DropdownMenu.Item disabled>Excel (Premium only)</DropdownMenu.Item>\n                            <DropdownMenu.Item disabled>PowerPoint (Premium only)</DropdownMenu.Item>\n                        </DropdownMenu.SubContent>\n                    </DropdownMenu.Portal>\n                </DropdownMenu.Sub>\n                <DropdownMenu.Sub>\n                    <DropdownMenu.SubTrigger disabled>\n                        <IconIosShare />\n                        Share (Sign in required)\n                    </DropdownMenu.SubTrigger>\n                    <DropdownMenu.Portal>\n                        <DropdownMenu.SubContent>\n                            <DropdownMenu.Item>Email</DropdownMenu.Item>\n                            <DropdownMenu.Item>Link</DropdownMenu.Item>\n                        </DropdownMenu.SubContent>\n                    </DropdownMenu.Portal>\n                </DropdownMenu.Sub>\n            </DropdownMenu.Content>\n        </DropdownMenu.Portal>\n    </DropdownMenu.Root>\n);",
           "description": "Submenu that contains `disabled` `Item`s alongside a fully-disabled\n`SubTrigger`. Use `disabled` sparingly — prefer hiding unavailable\nactions outright unless the user needs to see them and understand why.",
           "summary": "Submenu with `disabled` items and a disabled `SubTrigger`"
+        },
+        {
+          "id": "components-dropdownmenu--focus-return",
+          "name": "Focus Return",
+          "snippet": "const FocusReturn = () => (\n    <DropdownMenu.Root>\n        <DropdownMenu.Trigger asChild>\n            <Button size=\"md\" variant=\"secondary\">\n                Contract actions\n            </Button>\n        </DropdownMenu.Trigger>\n        <DropdownMenu.Portal>\n            <DropdownMenu.Content>\n                <DropdownMenu.Item>Download contract</DropdownMenu.Item>\n                <DropdownMenu.Item>Mark as pending</DropdownMenu.Item>\n            </DropdownMenu.Content>\n        </DropdownMenu.Portal>\n    </DropdownMenu.Root>\n);",
+          "description": "Closing the menu hands focus back to its trigger. After a pointer close the\ntrigger takes focus without a focus ring, since the pointer never asked for\none. After a keyboard close (Escape, or choosing a row with Enter) the ring\nshows, so a keyboard user can see where focus went.",
+          "summary": "Focus returns to the trigger, with a ring only after a keyboard close"
         }
       ],
       "import": "import { Button, DropdownMenu } from \"@agentero/design-system\";"
@@ -9485,6 +9492,20 @@
           "summary": "Basic click-to-open popover surface"
         },
         {
+          "id": "components-popover--focus-return",
+          "name": "Focus Return",
+          "snippet": "const FocusReturn = () => (\n    <div className=\"flex gap-4\">\n        <Popover.Root>\n            <Popover.Trigger asChild>\n                <Button variant=\"secondary\">Carrier details</Button>\n            </Popover.Trigger>\n            <Popover.Content>\n                <div className=\"flex flex-col items-start gap-2\">\n                    <p className=\"text-sm text-text-default-base-primary\">Appointed in 12 states.</p>\n                    <Popover.Close asChild>\n                        <Button size=\"xs\" variant=\"tertiary\">\n                            Done\n                        </Button>\n                    </Popover.Close>\n                </div>\n            </Popover.Content>\n        </Popover.Root>\n    </div>\n);",
+          "description": "Closing the popover from inside hands focus back to its trigger. After a\npointer close the trigger takes focus without a focus ring; after Escape the\nring shows, so a keyboard user can see where focus went.",
+          "summary": "Focus returns to the trigger, with a ring only after a keyboard close"
+        },
+        {
+          "id": "components-popover--close-into-field",
+          "name": "Close Into Field",
+          "snippet": "const CloseIntoField = () => {\n    const [blurCount, setBlurCount] = useState(0);\n    return (\n        <div className=\"flex items-center gap-4\">\n            <Popover.Root>\n                <Popover.Trigger asChild>\n                    <Button variant=\"secondary\">Carrier details</Button>\n                </Popover.Trigger>\n                <Popover.Content>\n                    <p className=\"text-sm text-text-default-base-primary\">Appointed in 12 states.</p>\n                </Popover.Content>\n            </Popover.Root>\n            <input aria-label=\"Agency name\" onBlur={() => setBlurCount(count => count + 1)} />\n            <span>Blurred {blurCount} times</span>\n        </div>\n    );\n};",
+          "description": "Clicking a field outside closes the popover and leaves focus in that field:\nRadix does not move focus back to the trigger, and the field gets no extra\nblur.",
+          "summary": "Clicking a field outside keeps focus in that field"
+        },
+        {
           "id": "components-popover--sides",
           "name": "Sides",
           "snippet": "const Sides = () => (\n    <div className=\"grid grid-cols-2 gap-6\">\n        {(['top', 'right', 'bottom', 'left'] as const).map(side => (\n            <Popover.Root key={side}>\n                <Popover.Trigger asChild>\n                    <Button variant=\"secondary\">{side}</Button>\n                </Popover.Trigger>\n                <Popover.Content side={side}>\n                    <p className=\"text-sm text-text-default-base-primary\">Opens on {side}</p>\n                </Popover.Content>\n            </Popover.Root>\n        ))}\n    </div>\n);",
@@ -11609,6 +11630,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5475
+    "durationMs": 5765
   }
 }
