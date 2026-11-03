@@ -324,16 +324,17 @@ const rowActionsStyles = tv({
 		// Gradient mask behind the actions, revealed on row hover.
 		'after:absolute after:inset-y-0 after:right-0 after:left-[calc(var(--table-cell-padding-inline)*-1)] after:opacity-0 after:content-[""]',
 		'after:[background:linear-gradient(to_right,transparent_0,var(--color-bg-default-base-secondary)_var(--table-cell-padding-inline))]',
-		// Controls appear on hover; always visible on coarse-pointer devices.
-		'[&>*]:relative [&>*]:z-[1] [&>*]:opacity-0',
+		// Controls appear on hover or keyboard focus; always visible on coarse-pointer devices.
+		'[&>*]:relative [&>*]:z-[1] [&>*]:opacity-0 [&>*:focus-visible]:opacity-100',
+		'has-[>*:focus-visible]:after:opacity-100',
 		'[@media(hover:none)_and_(pointer:coarse)]:[&>*]:opacity-100'
 	]
 });
 
 /**
  * Inline action cluster pinned to the row's trailing edge; controls stay hidden
- * until row hover (always visible on coarse-pointer devices) and stay visible
- * while an overlay opened from one of them is open.
+ * until row hover or keyboard focus (always visible on coarse-pointer devices)
+ * and stay visible while an overlay opened from one of them is open.
  *
  * @summary Hover-revealed row action cluster
  */

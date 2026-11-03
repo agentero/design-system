@@ -5,18 +5,8 @@ if (typeof document !== 'undefined') {
 	document.addEventListener('keydown', () => (lastInputWasPointer = false), true);
 }
 
-/**
- * Call from a Radix overlay's `onCloseAutoFocus` (menu, popover) to drop the
- * focus ring Chrome paints on the element Radix hands focus back to after a
- * pointer close. The trigger swallows its pointerdown, so the browser keeps the
- * input modality of the last key press and treats that focus as keyboard
- * focus. Radix still decides where focus goes; a keyboard close keeps its ring
- * so keyboard users still see where they are. Only a trigger (`aria-haspopup`)
- * is touched: a field the closing click moved focus to keeps it untouched, and a
- * consumer that prevented the close auto-focus keeps its own focus handling.
- *
- * @summary Removes the focus ring Radix leaves on a trigger after a pointer close
- */
+/** Radix triggers cancel their pointerdown, so Chrome keeps the last key press's modality and rings
+ * the trigger Radix refocuses on close. Call from `onCloseAutoFocus`; a keyboard close keeps the ring. */
 export const hideFocusRingAfterPointerClose = (event: Event) => {
 	if (event.defaultPrevented || !lastInputWasPointer) return;
 	// Radix moves focus right after this handler returns, in the same task.
