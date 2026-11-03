@@ -187,7 +187,7 @@ const rowStyles = tv({
 				'hover:bg-bg-default-base-secondary hover:has-[[data-slot=table-empty-state]]:bg-transparent',
 				'[&:hover_[data-slot=table-row-actions]>*]:opacity-100',
 				'[&:hover_[data-slot=table-row-actions]]:after:opacity-100',
-				'has-overlay-open:bg-bg-default-base-secondary',
+				'has-overlay-open:bg-bg-default-base-secondary has-overlay-open:has-[[data-slot=table-empty-state]]:bg-transparent',
 				'has-overlay-open:[&_[data-slot=table-row-actions]>*]:opacity-100',
 				'has-overlay-open:[&_[data-slot=table-row-actions]]:after:opacity-100'
 			],

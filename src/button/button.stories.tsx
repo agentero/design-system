@@ -356,6 +356,9 @@ export const OpenTrigger: Story = {
 				<Button variant="secondary" aria-expanded="true">
 					Section expanded
 				</Button>
+				<Button variant="secondary" status="danger" aria-haspopup="menu" aria-expanded="true">
+					Danger menu open
+				</Button>
 				<Button variant="secondary" loading aria-haspopup="menu" aria-expanded="true">
 					Loading menu open
 				</Button>
@@ -373,6 +376,10 @@ export const OpenTrigger: Story = {
 		const disclosure = canvas.getByRole('button', { name: 'Section expanded' });
 		await expect(getComputedStyle(disclosure).backgroundColor).toBe(
 			resolveColor('--color-bg-button-secondary-enable')
+		);
+		const dangerTrigger = canvas.getByRole('button', { name: 'Danger menu open' });
+		await expect(getComputedStyle(dangerTrigger).backgroundColor).toBe(
+			resolveColor('--color-bg-button-secondary-destructive-hover')
 		);
 		const loadingTrigger = canvas.getByText('Loading menu open').closest('button')!;
 		await expect(getComputedStyle(loadingTrigger).backgroundColor).toBe(

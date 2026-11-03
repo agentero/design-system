@@ -366,6 +366,10 @@ export const WithRowActionsMenu: Story = {
 		);
 		await userEvent.keyboard('{Escape}');
 		await waitFor(() => expect(within(document.body).queryByRole('menu')).not.toBeInTheDocument());
+		await expect(getComputedStyle(trigger).opacity).toBe('0');
+		await expect(getComputedStyle(row).backgroundColor).toBe(
+			getComputedStyle(idleRow).backgroundColor
+		);
 	}
 };
 
