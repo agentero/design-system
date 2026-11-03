@@ -69,9 +69,9 @@ export const Default: Story = {
 };
 
 /**
- * Closing the popover hands focus back to its trigger. After a pointer close
- * the trigger takes focus without a focus ring; after Escape the ring shows,
- * so a keyboard user can see where focus went.
+ * Closing the popover from inside hands focus back to its trigger. After a
+ * pointer close the trigger takes focus without a focus ring; after Escape the
+ * ring shows, so a keyboard user can see where focus went.
  *
  * @summary Focus returns to the trigger, with a ring only after a keyboard close
  */
@@ -83,10 +83,16 @@ export const FocusReturn: Story = {
 					<Button variant="secondary">Carrier details</Button>
 				</Popover.Trigger>
 				<Popover.Content>
-					<p className="text-sm text-text-default-base-primary">Appointed in 12 states.</p>
+					<div className="flex flex-col items-start gap-2">
+						<p className="text-sm text-text-default-base-primary">Appointed in 12 states.</p>
+						<Popover.Close asChild>
+							<Button size="xs" variant="tertiary">
+								Done
+							</Button>
+						</Popover.Close>
+					</div>
 				</Popover.Content>
 			</Popover.Root>
-			<span>Outside the popover</span>
 		</div>
 	),
 	play: async ({ canvasElement }) => {
@@ -96,7 +102,7 @@ export const FocusReturn: Story = {
 
 		await userEvent.click(trigger);
 		await body.findByText('Appointed in 12 states.');
-		await userEvent.click(canvas.getByText('Outside the popover'));
+		await userEvent.click(body.getByRole('button', { name: 'Done' }));
 		await waitFor(() =>
 			expect(body.queryByText('Appointed in 12 states.')).not.toBeInTheDocument()
 		);

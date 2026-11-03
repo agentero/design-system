@@ -857,7 +857,7 @@
 
 /* An enabled trigger whose menu, popover, dialog, select or combobox list is open. Disclosure
  * toggles set aria-expanded alone, and cmdk's input is always expanded, so both stay out. */
-@custom-variant overlay-open (&:is([aria-haspopup]:not([aria-haspopup='false']), [role='combobox']:not([cmdk-input]))[aria-expanded='true']:not(:disabled, [aria-disabled='true']));
+@custom-variant overlay-open (&:where(:is([aria-haspopup]:not([aria-haspopup='false']), [role='combobox']:not([cmdk-input]))[aria-expanded='true']:not(:disabled, [aria-disabled='true'])));
 
 @property --presence-hold {
 	syntax: '*';

@@ -5,7 +5,7 @@ import { ComponentProps } from 'react';
 import * as PopoverPrimitive from '@radix-ui/react-popover';
 import { tv } from 'tailwind-variants';
 
-import { useOverlayFocus } from '../../lib';
+import { hideFocusRingAfterPointerClose } from '../../lib';
 import { deferEscapeToCombobox } from '../../lib/combobox-escape';
 
 type RootProps = ComponentProps<typeof PopoverPrimitive.Root>;
@@ -93,24 +93,23 @@ export const Content = ({
 	className,
 	sideOffset = 8,
 	onEscapeKeyDown,
-	onOpenAutoFocus,
 	onCloseAutoFocus,
 	...props
-}: ContentProps) => {
-	const focusHandlers = useOverlayFocus({ onOpenAutoFocus, onCloseAutoFocus });
-	return (
-		<PopoverPrimitive.Portal>
-			<PopoverPrimitive.Content
-				data-slot="popover-content"
-				sideOffset={sideOffset}
-				className={popoverRecipe({ className })}
-				onEscapeKeyDown={event => {
-					if (!deferEscapeToCombobox(event)) onEscapeKeyDown?.(event);
-				}}
-				{...focusHandlers}
-				{...props}
-			/>
-		</PopoverPrimitive.Portal>
-	);
-};
+}: ContentProps) => (
+	<PopoverPrimitive.Portal>
+		<PopoverPrimitive.Content
+			data-slot="popover-content"
+			sideOffset={sideOffset}
+			className={popoverRecipe({ className })}
+			onEscapeKeyDown={event => {
+				if (!deferEscapeToCombobox(event)) onEscapeKeyDown?.(event);
+			}}
+			onCloseAutoFocus={event => {
+				onCloseAutoFocus?.(event);
+				hideFocusRingAfterPointerClose();
+			}}
+			{...props}
+		/>
+	</PopoverPrimitive.Portal>
+);
 Content.displayName = 'Popover.Content';
