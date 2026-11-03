@@ -176,6 +176,40 @@ export const Interactive: Story = {
 	}
 };
 
+const resolveColor = (token: string) => {
+	const probe = document.createElement('span');
+	probe.style.backgroundColor = `var(${token})`;
+	document.body.append(probe);
+	const color = getComputedStyle(probe).backgroundColor;
+	probe.remove();
+	return color;
+};
+
+/**
+ * An interactive Tag that opens a menu or popover keeps its hover fill while
+ * that overlay is open. The open state is read from `aria-expanded="true"`
+ * together with `aria-haspopup`, which Radix and Base UI triggers set for you.
+ *
+ * @summary Tag trigger keeps the hover fill while its overlay is open
+ */
+export const OpenTrigger: Story = {
+	render: () => (
+		<Row>
+			<Tag color="informative" variant="ghost" asChild>
+				<button type="button" aria-haspopup="menu" aria-expanded="true">
+					Status menu open
+				</button>
+			</Tag>
+		</Row>
+	),
+	play: async ({ canvasElement }) => {
+		const trigger = within(canvasElement).getByRole('button', { name: 'Status menu open' });
+		await expect(getComputedStyle(trigger).backgroundColor).toBe(
+			resolveColor('--color-bg-tag-informative-hover')
+		);
+	}
+};
+
 /**
  * `secondary` fills with a tinted background plus a matching border, shown
  * across every color.
