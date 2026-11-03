@@ -301,7 +301,8 @@ export const WithRowActions: Story = {
 /**
  * A row keeps its hover look, and its actions stay visible, while a menu
  * opened from one of those actions is open. The pointer leaves the row for the
- * menu, so without it the actions would fade out under the open menu.
+ * menu, so without it the actions would fade out under the open menu. Escape
+ * hands keyboard focus back to the action, so the row keeps that look.
  *
  * @summary Row stays highlighted while its actions menu is open
  */
@@ -361,16 +362,13 @@ export const WithRowActionsMenu: Story = {
 		await within(document.body).findByRole('menu');
 
 		await expect(getComputedStyle(trigger).opacity).toBe('1');
-		await expect(getComputedStyle(row).backgroundColor).not.toBe(
-			getComputedStyle(idleRow).backgroundColor
-		);
+		const rowOpenBackground = getComputedStyle(row).backgroundColor;
+		await expect(rowOpenBackground).not.toBe(getComputedStyle(idleRow).backgroundColor);
 		await userEvent.keyboard('{Escape}');
 		await waitFor(() => expect(within(document.body).queryByRole('menu')).not.toBeInTheDocument());
 		await expect(trigger).toHaveFocus();
 		await expect(getComputedStyle(trigger).opacity).toBe('1');
-		await expect(getComputedStyle(row).backgroundColor).toBe(
-			getComputedStyle(idleRow).backgroundColor
-		);
+		await expect(getComputedStyle(row).backgroundColor).toBe(rowOpenBackground);
 	}
 };
 

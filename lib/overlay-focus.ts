@@ -17,6 +17,7 @@ export const hideFocusRingAfterPointerClose = (event: Event) => {
 			!focused.matches('[aria-haspopup]:not(input, textarea, [contenteditable]):focus-visible')
 		)
 			return;
+		// focus() on the element that already has focus is a no-op, so the ring only drops on a fresh focus.
 		focused.blur();
 		focused.focus({ focusVisible: false, preventScroll: true });
 	});

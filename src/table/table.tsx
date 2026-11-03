@@ -189,7 +189,8 @@ const rowStyles = tv({
 				'[&:hover_[data-slot=table-row-actions]]:after:opacity-100',
 				'has-overlay-open:bg-bg-default-base-secondary has-overlay-open:has-[[data-slot=table-empty-state]]:bg-transparent',
 				'has-overlay-open:[&_[data-slot=table-row-actions]>*]:opacity-100',
-				'has-overlay-open:[&_[data-slot=table-row-actions]]:after:opacity-100'
+				'has-overlay-open:[&_[data-slot=table-row-actions]]:after:opacity-100',
+				'has-[[data-slot=table-row-actions]_:focus-visible]:bg-bg-default-base-secondary'
 			],
 			false: ''
 		},
@@ -325,8 +326,8 @@ const rowActionsStyles = tv({
 		'after:absolute after:inset-y-0 after:right-0 after:left-[calc(var(--table-cell-padding-inline)*-1)] after:opacity-0 after:content-[""]',
 		'after:[background:linear-gradient(to_right,transparent_0,var(--color-bg-default-base-secondary)_var(--table-cell-padding-inline))]',
 		// Controls appear on hover or keyboard focus; always visible on coarse-pointer devices.
-		'[&>*]:relative [&>*]:z-[1] [&>*]:opacity-0 [&>*:focus-visible]:opacity-100',
-		'has-[>*:focus-visible]:after:opacity-100',
+		'[&>*]:relative [&>*]:z-[1] [&>*]:opacity-0',
+		'has-[:focus-visible]:[&>*]:opacity-100 has-[:focus-visible]:after:opacity-100',
 		'[@media(hover:none)_and_(pointer:coarse)]:[&>*]:opacity-100'
 	]
 });
