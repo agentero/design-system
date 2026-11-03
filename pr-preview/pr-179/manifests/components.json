@@ -10138,7 +10138,7 @@
           "id": "components-table--with-row-actions-menu",
           "name": "With Row Actions Menu",
           "snippet": "const WithRowActionsMenu = () => <Table.Root size=\"md\" embed={false}>\n    <Table.Head>\n        <Table.Row>\n            <Table.Header>Name</Table.Header>\n            <Table.Header>Email</Table.Header>\n            <Table.Header>\n                <span className=\"sr-only\">Actions</span>\n            </Table.Header>\n        </Table.Row>\n    </Table.Head>\n    <Table.Body>\n        {ROWS.slice(0, 3).map(row => (\n            <Table.Row key={row.id}>\n                <Table.Cell className=\"font-bold\">{row.name}</Table.Cell>\n                <Table.Cell className=\"text-text-default-base-secondary\">{row.email}</Table.Cell>\n                <Table.Cell style={{ width: '0.0625rem', position: 'sticky', right: 0 }}>\n                    <Table.RowActions>\n                        <DropdownMenu.Root>\n                            <DropdownMenu.Trigger asChild>\n                                <Button\n                                    variant=\"ghost\"\n                                    size=\"sm\"\n                                    iconOnly\n                                    aria-label={`Actions for ${row.name}`}>\n                                    <IconEdit />\n                                </Button>\n                            </DropdownMenu.Trigger>\n                            <DropdownMenu.Portal>\n                                <DropdownMenu.Content align=\"end\">\n                                    <DropdownMenu.Item>Edit</DropdownMenu.Item>\n                                    <DropdownMenu.Item>Delete</DropdownMenu.Item>\n                                </DropdownMenu.Content>\n                            </DropdownMenu.Portal>\n                        </DropdownMenu.Root>\n                    </Table.RowActions>\n                </Table.Cell>\n            </Table.Row>\n        ))}\n    </Table.Body>\n</Table.Root>;",
-          "description": "A row keeps its hover look, and its actions stay visible, while a menu\nopened from one of those actions is open. The pointer leaves the row for the\nmenu, so without it the actions would fade out under the open menu.",
+          "description": "A row keeps its hover look, and its actions stay visible, while a menu\nopened from one of those actions is open. The pointer leaves the row for the\nmenu, so without it the actions would fade out under the open menu. Escape\nhands keyboard focus back to the action, so the row keeps that look.",
           "summary": "Row stays highlighted while its actions menu is open"
         },
         {
@@ -11630,6 +11630,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5765
+    "durationMs": 5580
   }
 }
