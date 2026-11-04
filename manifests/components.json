@@ -2362,6 +2362,13 @@
           "snippet": "const AsChild = () => (\n    <Row>\n        <Button asChild variant=\"primary\">\n            <a href=\"/dashboard\">Go to dashboard</a>\n        </Button>\n        <Button asChild variant=\"secondary\">\n            <a href=\"https://agentero.com\" target=\"_blank\" rel=\"noreferrer\">\n                Visit Agentero\n            </a>\n        </Button>\n    </Row>\n);",
           "description": "`asChild` renders Button's styles on the nested child element rather than\non a `<button>` — the child receives Button's `className`, `ref`, and\nmerged props via Radix's `Slot` primitive. Use it to turn any anchor or\nframework `Link` into a Button without coupling the design system to a\nrouter. In app code, swap the plain `<a>` below for your framework's Link\n(`next/link`, `react-router`, `@tanstack/react-router`, etc.).",
           "summary": "`asChild` composes Button's styles onto any element"
+        },
+        {
+          "id": "components-button--open-trigger",
+          "name": "Open Trigger",
+          "snippet": "const OpenTrigger = () => (\n    <Stack>\n        <Row>\n            {NON_LINK_VARIANTS.map(variant => (\n                <Button key={variant} variant={variant} aria-haspopup=\"menu\" aria-expanded=\"true\">\n                    {`${variant} menu open`}\n                </Button>\n            ))}\n        </Row>\n        <Row>\n            <Button variant=\"secondary\" aria-expanded=\"true\">\n                Section expanded\n            </Button>\n            <Button variant=\"secondary\" status=\"danger\" aria-haspopup=\"menu\" aria-expanded=\"true\">\n                Danger menu open\n            </Button>\n            <Button variant=\"secondary\" loading aria-haspopup=\"menu\" aria-expanded=\"true\">\n                Loading menu open\n            </Button>\n        </Row>\n    </Stack>\n);",
+          "description": "A Button that opens a menu, popover, select or combobox list keeps its hover\nlook while that overlay is open, so the pointer can leave it for the list\nwithout the trigger looking idle. The open state is read from\n`aria-expanded=\"true\"` together with `aria-haspopup` (or `role=\"combobox\"`),\nwhich Radix and Base UI triggers set for you. A disclosure toggle, such as a\ncollapsible section header, sets only `aria-expanded` and keeps its regular look,\nand a disabled or loading trigger keeps its disabled look.",
+          "summary": "Overlay triggers keep the hover look while their overlay is open"
         }
       ],
       "import": "import { Button } from \"@agentero/design-system\";"
@@ -6397,6 +6404,13 @@
           "snippet": "const SubmenuWithDisabledItems = () => (\n    <DropdownMenu.Root>\n        <DropdownMenu.Trigger asChild>\n            <Button size=\"md\" variant=\"secondary\">\n                Document Actions\n                <IconKeyboardArrowDown />\n            </Button>\n        </DropdownMenu.Trigger>\n        <DropdownMenu.Portal>\n            <DropdownMenu.Content>\n                <DropdownMenu.Item onSelect={() => console.log('View')}>View</DropdownMenu.Item>\n                <DropdownMenu.Item onSelect={() => console.log('Edit')}>Edit</DropdownMenu.Item>\n                <DropdownMenu.Separator />\n                <DropdownMenu.Sub>\n                    <DropdownMenu.SubTrigger>\n                        <IconContentCopy />\n                        Export as\n                    </DropdownMenu.SubTrigger>\n                    <DropdownMenu.Portal>\n                        <DropdownMenu.SubContent>\n                            <DropdownMenu.Item onSelect={() => console.log('PDF')}>PDF</DropdownMenu.Item>\n                            <DropdownMenu.Item onSelect={() => console.log('Word')}>\n                                Word Document\n                            </DropdownMenu.Item>\n                            <DropdownMenu.Item disabled>Excel (Premium only)</DropdownMenu.Item>\n                            <DropdownMenu.Item disabled>PowerPoint (Premium only)</DropdownMenu.Item>\n                        </DropdownMenu.SubContent>\n                    </DropdownMenu.Portal>\n                </DropdownMenu.Sub>\n                <DropdownMenu.Sub>\n                    <DropdownMenu.SubTrigger disabled>\n                        <IconIosShare />\n                        Share (Sign in required)\n                    </DropdownMenu.SubTrigger>\n                    <DropdownMenu.Portal>\n                        <DropdownMenu.SubContent>\n                            <DropdownMenu.Item>Email</DropdownMenu.Item>\n                            <DropdownMenu.Item>Link</DropdownMenu.Item>\n                        </DropdownMenu.SubContent>\n                    </DropdownMenu.Portal>\n                </DropdownMenu.Sub>\n            </DropdownMenu.Content>\n        </DropdownMenu.Portal>\n    </DropdownMenu.Root>\n);",
           "description": "Submenu that contains `disabled` `Item`s alongside a fully-disabled\n`SubTrigger`. Use `disabled` sparingly — prefer hiding unavailable\nactions outright unless the user needs to see them and understand why.",
           "summary": "Submenu with `disabled` items and a disabled `SubTrigger`"
+        },
+        {
+          "id": "components-dropdownmenu--focus-return",
+          "name": "Focus Return",
+          "snippet": "const FocusReturn = () => (\n    <DropdownMenu.Root>\n        <DropdownMenu.Trigger asChild>\n            <Button size=\"md\" variant=\"secondary\">\n                Contract actions\n            </Button>\n        </DropdownMenu.Trigger>\n        <DropdownMenu.Portal>\n            <DropdownMenu.Content>\n                <DropdownMenu.Item>Download contract</DropdownMenu.Item>\n                <DropdownMenu.Item>Mark as pending</DropdownMenu.Item>\n            </DropdownMenu.Content>\n        </DropdownMenu.Portal>\n    </DropdownMenu.Root>\n);",
+          "description": "Closing the menu hands focus back to its trigger. After a pointer close the\ntrigger takes focus without a focus ring, since the pointer never asked for\none. After a keyboard close (Escape, or choosing a row with Enter) the ring\nshows, so a keyboard user can see where focus went.",
+          "summary": "Focus returns to the trigger, with a ring only after a keyboard close"
         }
       ],
       "import": "import { Button, DropdownMenu } from \"@agentero/design-system\";"
@@ -9478,6 +9492,20 @@
           "summary": "Basic click-to-open popover surface"
         },
         {
+          "id": "components-popover--focus-return",
+          "name": "Focus Return",
+          "snippet": "const FocusReturn = () => (\n    <div className=\"flex gap-4\">\n        <Popover.Root>\n            <Popover.Trigger asChild>\n                <Button variant=\"secondary\">Carrier details</Button>\n            </Popover.Trigger>\n            <Popover.Content>\n                <div className=\"flex flex-col items-start gap-2\">\n                    <p className=\"text-sm text-text-default-base-primary\">Appointed in 12 states.</p>\n                    <Popover.Close asChild>\n                        <Button size=\"xs\" variant=\"tertiary\">\n                            Done\n                        </Button>\n                    </Popover.Close>\n                </div>\n            </Popover.Content>\n        </Popover.Root>\n    </div>\n);",
+          "description": "Closing the popover from inside hands focus back to its trigger. After a\npointer close the trigger takes focus without a focus ring; after Escape the\nring shows, so a keyboard user can see where focus went.",
+          "summary": "Focus returns to the trigger, with a ring only after a keyboard close"
+        },
+        {
+          "id": "components-popover--close-into-field",
+          "name": "Close Into Field",
+          "snippet": "const CloseIntoField = () => {\n    const [blurCount, setBlurCount] = useState(0);\n    return (\n        <div className=\"flex items-center gap-4\">\n            <Popover.Root>\n                <Popover.Trigger asChild>\n                    <Button variant=\"secondary\">Carrier details</Button>\n                </Popover.Trigger>\n                <Popover.Content>\n                    <p className=\"text-sm text-text-default-base-primary\">Appointed in 12 states.</p>\n                </Popover.Content>\n            </Popover.Root>\n            <input aria-label=\"Agency name\" onBlur={() => setBlurCount(count => count + 1)} />\n            <span>Blurred {blurCount} times</span>\n        </div>\n    );\n};",
+          "description": "Clicking a field outside closes the popover and leaves focus in that field:\nRadix does not move focus back to the trigger, and the field gets no extra\nblur.",
+          "summary": "Clicking a field outside keeps focus in that field"
+        },
+        {
           "id": "components-popover--sides",
           "name": "Sides",
           "snippet": "const Sides = () => (\n    <div className=\"grid grid-cols-2 gap-6\">\n        {(['top', 'right', 'bottom', 'left'] as const).map(side => (\n            <Popover.Root key={side}>\n                <Popover.Trigger asChild>\n                    <Button variant=\"secondary\">{side}</Button>\n                </Popover.Trigger>\n                <Popover.Content side={side}>\n                    <p className=\"text-sm text-text-default-base-primary\">Opens on {side}</p>\n                </Popover.Content>\n            </Popover.Root>\n        ))}\n    </div>\n);",
@@ -10107,6 +10135,20 @@
           "summary": "Hover-revealed row actions"
         },
         {
+          "id": "components-table--with-row-actions-menu",
+          "name": "With Row Actions Menu",
+          "snippet": "const WithRowActionsMenu = () => <Table.Root size=\"md\" embed={false}>\n    <Table.Head>\n        <Table.Row>\n            <Table.Header>Name</Table.Header>\n            <Table.Header>Email</Table.Header>\n            <Table.Header>\n                <span className=\"sr-only\">Actions</span>\n            </Table.Header>\n        </Table.Row>\n    </Table.Head>\n    <Table.Body>\n        {ROWS.slice(0, 3).map(row => (\n            <Table.Row key={row.id}>\n                <Table.Cell className=\"font-bold\">{row.name}</Table.Cell>\n                <Table.Cell className=\"text-text-default-base-secondary\">{row.email}</Table.Cell>\n                <Table.Cell style={{ width: '0.0625rem', position: 'sticky', right: 0 }}>\n                    <Table.RowActions>\n                        <DropdownMenu.Root>\n                            <DropdownMenu.Trigger asChild>\n                                <Button\n                                    variant=\"ghost\"\n                                    size=\"sm\"\n                                    iconOnly\n                                    aria-label={`Actions for ${row.name}`}>\n                                    <IconEdit />\n                                </Button>\n                            </DropdownMenu.Trigger>\n                            <DropdownMenu.Portal>\n                                <DropdownMenu.Content align=\"end\">\n                                    <DropdownMenu.Item>Edit</DropdownMenu.Item>\n                                    <DropdownMenu.Item>Delete</DropdownMenu.Item>\n                                </DropdownMenu.Content>\n                            </DropdownMenu.Portal>\n                        </DropdownMenu.Root>\n                    </Table.RowActions>\n                </Table.Cell>\n            </Table.Row>\n        ))}\n    </Table.Body>\n</Table.Root>;",
+          "description": "A row keeps its hover look, and its actions stay visible, while a menu\nopened from one of those actions is open. The pointer leaves the row for the\nmenu, so without it the actions would fade out under the open menu. Escape\nhands keyboard focus back to the action, so the row keeps that look.",
+          "summary": "Row stays highlighted while its actions menu is open"
+        },
+        {
+          "id": "components-table--with-loading-row-actions-menu",
+          "name": "With Loading Row Actions Menu",
+          "snippet": "const WithLoadingRowActionsMenu = () => <Table.Root size=\"md\" embed={false}>\n    <Table.Head>\n        <Table.Row>\n            <Table.Header>Name</Table.Header>\n            <Table.Header>\n                <span className=\"sr-only\">Actions</span>\n            </Table.Header>\n        </Table.Row>\n    </Table.Head>\n    <Table.Body>\n        {ROWS.slice(0, 2).map(row => (\n            <Table.Row key={row.id}>\n                <Table.Cell className=\"font-bold\">{row.name}</Table.Cell>\n                <Table.Cell style={{ width: '0.0625rem', position: 'sticky', right: 0 }}>\n                    <ArchiveRowActions name={row.name} />\n                </Table.Cell>\n            </Table.Row>\n        ))}\n    </Table.Body>\n</Table.Root>;",
+          "description": "The row stays highlighted while its menu is open even when the trigger turns\n`loading`, and with it disabled, because the menu item that started the work\nkeeps the menu open.",
+          "summary": "Row stays highlighted while a loading trigger's menu is open"
+        },
+        {
           "id": "components-table--expandable-rows",
           "name": "Expandable Rows",
           "snippet": "const ExpandableRows = () => {\n    const [openId, setOpenId] = useState<string | null>(ROWS[0]!.id);\n\n    return (\n        <Table.Root size=\"md\" embed={false}>\n            <Table.Head>\n                <Table.Row>\n                    <Table.Header>\n                        <span className=\"sr-only\">Expand</span>\n                    </Table.Header>\n                    <Table.Header>Name</Table.Header>\n                    <Table.Header>Email</Table.Header>\n                    <Table.Header>Role</Table.Header>\n                </Table.Row>\n            </Table.Head>\n            <Table.Body>\n                {ROWS.slice(0, 4).map(row => (\n                    <Fragment key={row.id}>\n                        <Table.Row>\n                            <Table.Cell>\n                                <Table.ExpandButton\n                                    isExpanded={openId === row.id}\n                                    toggleExpanded={() => setOpenId(openId === row.id ? null : row.id)}\n                                    aria-label={`Toggle ${row.name}`}\n                                />\n                            </Table.Cell>\n                            <Table.Cell className=\"font-bold\">{row.name}</Table.Cell>\n                            <Table.Cell className=\"text-text-default-base-secondary\">{row.email}</Table.Cell>\n                            <Table.Cell>{row.role}</Table.Cell>\n                        </Table.Row>\n                        {openId === row.id && (\n                            <Table.ExpandedRow>\n                                <Table.Cell colSpan={4}>\n                                    <div className=\"py-2 text-text-default-base-secondary\">\n                                        Extended details for {row.name} — {row.amount} lifetime value.\n                                    </div>\n                                </Table.Cell>\n                            </Table.ExpandedRow>\n                        )}\n                    </Fragment>\n                ))}\n            </Table.Body>\n        </Table.Root>\n    );\n};",
@@ -10114,7 +10156,7 @@
           "summary": "Expandable rows with a detail panel"
         }
       ],
-      "import": "import { Button, Switch, Table } from \"@agentero/design-system\";\nimport { Fragment } from \"react\";"
+      "import": "import { Button, DropdownMenu, Switch, Table } from \"@agentero/design-system\";\nimport { Fragment } from \"react\";"
     },
     "components-tabs": {
       "id": "components-tabs",
@@ -10631,6 +10673,13 @@
           "snippet": "const Interactive = () => (\n    <Row>\n        <Tag color=\"informative\" variant=\"secondary\">\n            badge\n        </Tag>\n        <Tag color=\"informative\" variant=\"secondary\" asChild>\n            <button type=\"button\">interactive</button>\n        </Tag>\n        <Tag color=\"informative\" variant=\"secondary\" asChild aria-label=\"add\">\n            <button type=\"button\">\n                <IconAdd />\n            </button>\n        </Tag>\n    </Row>\n);",
           "description": "Static badge vs interactive Tag. A plain `<span>` badge has no hover; pass\n`asChild` with a `<button>` (or `<a>`) to make it interactive — that adds the\npointer cursor and reveals the hover fill on `:hover`. Hover the middle and\nright Tags to see it.",
           "summary": "Static badge vs interactive (asChild) hover"
+        },
+        {
+          "id": "components-tag--open-trigger",
+          "name": "Open Trigger",
+          "snippet": "const OpenTrigger = () => (\n    <Row>\n        <Tag color=\"informative\" variant=\"ghost\" asChild>\n            <button type=\"button\" aria-haspopup=\"menu\" aria-expanded=\"true\">\n                Status menu open\n            </button>\n        </Tag>\n    </Row>\n);",
+          "description": "An interactive Tag that opens a menu or popover keeps its hover fill while\nthat overlay is open. The open state is read from `aria-expanded=\"true\"`\ntogether with `aria-haspopup`, which Radix and Base UI triggers set for you.",
+          "summary": "Tag trigger keeps the hover fill while its overlay is open"
         },
         {
           "id": "components-tag--secondary",
@@ -11588,6 +11637,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5340
+    "durationMs": 4582
   }
 }
