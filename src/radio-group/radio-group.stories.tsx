@@ -72,72 +72,42 @@ export const Default: Story = {
 };
 
 /**
- * Tab enters the group on the selected item and leaves it on the next Tab;
- * the arrow keys move the selection, wrapping at the ends.
+ * Items laid in a row, 24px apart, wrapping when the row runs out of room.
  *
- * @summary Keyboard navigation and selection
+ * @summary Items in a row
  */
-export const Keyboard: Story = {
-	args: { onValueChange: fn() },
-	render: args => (
-		<div className="flex flex-col gap-3">
-			<RadioGroup.Root {...args}>
-				{PLANS.map(({ value, label }) => (
-					<RadioGroup.Item key={value} value={value}>
-						{label}
-					</RadioGroup.Item>
-				))}
-			</RadioGroup.Root>
-			<button type="button" className="w-fit text-sm underline">
-				Continue
-			</button>
-		</div>
-	),
-	play: async ({ args, canvasElement }) => {
+export const Horizontal: Story = {
+	args: { orientation: 'horizontal' },
+	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
+		const [monthly, quarterly] = canvas
+			.getAllByRole('radio')
+			.map(radio => radio.closest('[data-slot=radio-group-item]')!.getBoundingClientRect()) as [
+			DOMRect,
+			DOMRect
+		];
 
-		await userEvent.tab();
-		await expect(canvas.getByRole('radio', { name: 'Monthly' })).toHaveFocus();
-		await userEvent.keyboard('{ArrowDown}');
-		await expect(canvas.getByRole('radio', { name: 'Quarterly' })).toHaveFocus();
-		await expect(canvas.getByRole('radio', { name: 'Quarterly' })).toBeChecked();
-		await expect(args.onValueChange).toHaveBeenLastCalledWith('quarterly');
-		await userEvent.keyboard('{ArrowUp}{ArrowUp}');
-		await expect(canvas.getByRole('radio', { name: 'Annual' })).toBeChecked();
-		await userEvent.tab();
-		await expect(canvas.getByRole('button', { name: 'Continue' })).toHaveFocus();
+		await expect(canvas.getByRole('radiogroup')).toHaveAttribute('data-orientation', 'horizontal');
+		await expect(canvas.getByRole('radiogroup')).toHaveAttribute('aria-orientation', 'horizontal');
+		await expect(quarterly.top).toBe(monthly.top);
+		await expect(quarterly.left - monthly.right).toBe(24);
 	}
 };
 
 /**
- * With no `defaultValue` nothing is selected, and Tab lands on the first item
- * without selecting it.
+ * Inside a `Field.Root`, label, messages, `invalid`, `required` and
+ * `disabled` reach the group with nothing wired by hand.
  *
- * @summary Group that starts with nothing selected
+ * @summary Wired to a surrounding Field
  */
-export const NoSelection: Story = {
-	args: { defaultValue: undefined, onValueChange: fn() },
-	play: async ({ args, canvasElement }) => {
-		const canvas = within(canvasElement);
-
-		for (const radio of canvas.getAllByRole('radio')) {
-			await expect(radio).not.toBeChecked();
-		}
-		await userEvent.tab();
-		await expect(canvas.getByRole('radio', { name: 'Monthly' })).toHaveFocus();
-		await expect(canvas.getByRole('radio', { name: 'Monthly' })).not.toBeChecked();
-		await expect(args.onValueChange).not.toHaveBeenCalled();
-	}
-};
-
-/** @summary Group named by a visible heading */
-export const LabelledByHeading: Story = {
-	args: { 'aria-label': undefined, 'aria-labelledby': 'plan-heading' },
+export const InsideField: Story = {
+	args: { 'aria-label': undefined, defaultValue: undefined },
 	render: args => (
-		<div className="flex flex-col gap-2">
-			<span id="plan-heading" className="text-sm font-semibold text-text-input-normal">
-				Payment plan
-			</span>
+		<Field.Root invalid required>
+			<Field.Content>
+				<Field.Label>Payment plan</Field.Label>
+				<Field.Description>How often the insured pays the premium.</Field.Description>
+			</Field.Content>
 			<RadioGroup.Root {...args}>
 				{PLANS.map(({ value, label }) => (
 					<RadioGroup.Item key={value} value={value}>
@@ -145,60 +115,18 @@ export const LabelledByHeading: Story = {
 					</RadioGroup.Item>
 				))}
 			</RadioGroup.Root>
-		</div>
+			<Field.Error errors={[{ message: 'Choose a payment plan' }]} />
+		</Field.Root>
 	),
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
+		const group = canvas.getByRole('radiogroup', { name: /Payment plan/ });
 
-		await expect(canvas.getByRole('radiogroup', { name: 'Payment plan' })).toBeInTheDocument();
-	}
-};
-
-/** @summary Controlled group whose value is set from outside */
-export const Controlled: Story = {
-	render: () => {
-		const [plan, setPlan] = useState('monthly');
-
-		return (
-			<div className="flex flex-col gap-3">
-				<div className="flex gap-3">
-					<button type="button" className="w-fit text-sm underline" onClick={() => setPlan('')}>
-						Clear
-					</button>
-					<button
-						type="button"
-						className="w-fit text-sm underline"
-						onClick={() => setPlan('annual')}>
-						Choose annual
-					</button>
-				</div>
-				<RadioGroup.Root aria-label="Payment plan" value={plan} onValueChange={setPlan}>
-					{PLANS.map(({ value, label }) => (
-						<RadioGroup.Item key={value} value={value}>
-							{label}
-						</RadioGroup.Item>
-					))}
-				</RadioGroup.Root>
-				<output className="text-sm">{plan || 'None'}</output>
-			</div>
+		await expect(group).toHaveAccessibleDescription(
+			/premium.*Choose a payment plan|Choose a payment plan.*premium/
 		);
-	},
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-
-		// A value set from outside moves the tab stop too: Tab enters on the new selection.
-		await userEvent.click(canvas.getByRole('button', { name: 'Choose annual' }));
-		await expect(canvas.getByRole('radio', { name: 'Annual' })).toBeChecked();
-		await userEvent.tab();
-		await expect(canvas.getByRole('radio', { name: 'Annual' })).toHaveFocus();
-
-		await userEvent.click(canvas.getByRole('radio', { name: 'Quarterly' }));
-		await expect(canvas.getByRole('status')).toHaveTextContent('quarterly');
-		await userEvent.click(canvas.getByRole('button', { name: 'Clear' }));
-		for (const radio of canvas.getAllByRole('radio')) {
-			await expect(radio).not.toBeChecked();
-		}
-		await expect(canvas.getByRole('status')).toHaveTextContent('None');
+		await expect(group).toHaveAttribute('aria-invalid', 'true');
+		await expect(group).toHaveAttribute('aria-required', 'true');
 	}
 };
 
@@ -211,7 +139,7 @@ export const Disabled: Story = {
 		for (const radio of canvas.getAllByRole('radio')) {
 			await expect(radio).toBeDisabled();
 		}
-		await expect(canvas.getByText('Monthly')).toHaveStyle({ opacity: '0.5' });
+		await expect(canvas.getByText('Monthly')).toHaveStyle({ color: 'rgb(207, 210, 219)' });
 		await userEvent.click(canvas.getByText('Annual'));
 		await expect(canvas.getByRole('radio', { name: 'Monthly' })).toBeChecked();
 		await expect(args.onValueChange).not.toHaveBeenCalled();
@@ -243,31 +171,6 @@ export const DisabledItem: Story = {
 		await userEvent.keyboard('{ArrowDown}');
 		await expect(canvas.getByRole('radio', { name: 'Annual' })).toBeChecked();
 		await expect(args.onValueChange).toHaveBeenLastCalledWith('annual');
-	}
-};
-
-/**
- * When the selected item is disabled, Tab enters the group on the first
- * enabled item instead, so the group stays reachable by keyboard.
- *
- * @summary Selected item disabled
- */
-export const DisabledSelectedItem: Story = {
-	render: args => (
-		<RadioGroup.Root {...args}>
-			<RadioGroup.Item value="monthly" disabled>
-				Monthly (no longer offered)
-			</RadioGroup.Item>
-			<RadioGroup.Item value="quarterly">Quarterly</RadioGroup.Item>
-			<RadioGroup.Item value="annual">Annual</RadioGroup.Item>
-		</RadioGroup.Root>
-	),
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-
-		await expect(canvas.getByRole('radio', { name: /Monthly/ })).toBeChecked();
-		await userEvent.tab();
-		await expect(canvas.getByRole('radio', { name: 'Quarterly' })).toHaveFocus();
 	}
 };
 
@@ -326,6 +229,54 @@ export const Invalid: Story = {
 	}
 };
 
+/** @summary Controlled group whose value is set from outside */
+export const Controlled: Story = {
+	render: () => {
+		const [plan, setPlan] = useState('monthly');
+
+		return (
+			<div className="flex flex-col gap-3">
+				<div className="flex gap-3">
+					<button type="button" className="w-fit text-sm underline" onClick={() => setPlan('')}>
+						Clear
+					</button>
+					<button
+						type="button"
+						className="w-fit text-sm underline"
+						onClick={() => setPlan('annual')}>
+						Choose annual
+					</button>
+				</div>
+				<RadioGroup.Root aria-label="Payment plan" value={plan} onValueChange={setPlan}>
+					{PLANS.map(({ value, label }) => (
+						<RadioGroup.Item key={value} value={value}>
+							{label}
+						</RadioGroup.Item>
+					))}
+				</RadioGroup.Root>
+				<output className="text-sm">{plan || 'None'}</output>
+			</div>
+		);
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		// A value set from outside moves the tab stop too: Tab enters on the new selection.
+		await userEvent.click(canvas.getByRole('button', { name: 'Choose annual' }));
+		await expect(canvas.getByRole('radio', { name: 'Annual' })).toBeChecked();
+		await userEvent.tab();
+		await expect(canvas.getByRole('radio', { name: 'Annual' })).toHaveFocus();
+
+		await userEvent.click(canvas.getByRole('radio', { name: 'Quarterly' }));
+		await expect(canvas.getByRole('status')).toHaveTextContent('quarterly');
+		await userEvent.click(canvas.getByRole('button', { name: 'Clear' }));
+		for (const radio of canvas.getAllByRole('radio')) {
+			await expect(radio).not.toBeChecked();
+		}
+		await expect(canvas.getByRole('status')).toHaveTextContent('None');
+	}
+};
+
 /**
  * With `name`, the form submits `name=value` for the selected item, and
  * `required` blocks the submission while nothing is selected.
@@ -365,145 +316,6 @@ export const InForm: Story = {
 		await userEvent.click(canvas.getByRole('radio', { name: 'Annual' }));
 		await userEvent.click(canvas.getByRole('button', { name: 'Submit' }));
 		await expect(await canvas.findByRole('status')).toHaveTextContent('annual');
-	}
-};
-
-/**
- * A native form reset puts an uncontrolled group back on its `defaultValue`,
- * on screen and in what the form submits.
- *
- * @summary Native form reset
- */
-export const FormReset: Story = {
-	render: () => {
-		const [submitted, setSubmitted] = useState<string | null>(null);
-
-		return (
-			<form
-				className="flex flex-col gap-3"
-				onSubmit={event => {
-					event.preventDefault();
-					setSubmitted(String(new FormData(event.currentTarget).get('plan')));
-				}}>
-				<RadioGroup.Root aria-label="Payment plan" name="plan" defaultValue="monthly">
-					{PLANS.map(({ value, label }) => (
-						<RadioGroup.Item key={value} value={value}>
-							{label}
-						</RadioGroup.Item>
-					))}
-				</RadioGroup.Root>
-				<div className="flex gap-3">
-					<button type="reset" className="w-fit text-sm underline">
-						Reset
-					</button>
-					<button type="submit" className="w-fit text-sm underline">
-						Submit
-					</button>
-				</div>
-				{submitted && <output className="text-sm">{submitted}</output>}
-			</form>
-		);
-	},
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-
-		await userEvent.click(canvas.getByRole('radio', { name: 'Annual' }));
-		await userEvent.click(canvas.getByRole('button', { name: 'Reset' }));
-		await expect(canvas.getByRole('radio', { name: 'Monthly' })).toBeChecked();
-		await expect(canvas.getByRole('radio', { name: 'Annual' })).not.toBeChecked();
-		await userEvent.click(canvas.getByRole('button', { name: 'Submit' }));
-		await expect(await canvas.findByRole('status')).toHaveTextContent('monthly');
-	}
-};
-
-/**
- * A native form reset leaves a controlled group on its `value`, and the form
- * submits that value too.
- *
- * @summary Native form reset on a controlled group
- */
-export const FormResetControlled: Story = {
-	render: () => {
-		const [plan, setPlan] = useState('quarterly');
-		const [submitted, setSubmitted] = useState<string | null>(null);
-
-		return (
-			<form
-				className="flex flex-col gap-3"
-				onSubmit={event => {
-					event.preventDefault();
-					setSubmitted(String(new FormData(event.currentTarget).get('plan')));
-				}}>
-				<RadioGroup.Root aria-label="Payment plan" name="plan" value={plan} onValueChange={setPlan}>
-					{PLANS.map(({ value, label }) => (
-						<RadioGroup.Item key={value} value={value}>
-							{label}
-						</RadioGroup.Item>
-					))}
-				</RadioGroup.Root>
-				<div className="flex gap-3">
-					<button type="reset" className="w-fit text-sm underline">
-						Reset
-					</button>
-					<button type="submit" className="w-fit text-sm underline">
-						Submit
-					</button>
-				</div>
-				{submitted && <output className="text-sm">{submitted}</output>}
-			</form>
-		);
-	},
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-
-		await userEvent.click(canvas.getByRole('radio', { name: 'Annual' }));
-		await userEvent.click(canvas.getByRole('button', { name: 'Reset' }));
-		await expect(canvas.getByRole('radio', { name: 'Annual' })).toBeChecked();
-		await userEvent.click(canvas.getByRole('button', { name: 'Submit' }));
-		await expect(await canvas.findByRole('status')).toHaveTextContent('annual');
-	}
-};
-
-/**
- * Without `name` the radios are not one native group, so `required` only
- * marks the group (`aria-required`) and leaves validation to the form: a
- * selection never leaves the form invalid.
- *
- * @summary Required without a name
- */
-export const RequiredWithoutName: Story = {
-	render: () => {
-		const [submitted, setSubmitted] = useState(false);
-
-		return (
-			<form
-				className="flex flex-col gap-3"
-				onSubmit={event => {
-					event.preventDefault();
-					setSubmitted(true);
-				}}>
-				<RadioGroup.Root aria-label="Payment plan" required>
-					{PLANS.map(({ value, label }) => (
-						<RadioGroup.Item key={value} value={value}>
-							{label}
-						</RadioGroup.Item>
-					))}
-				</RadioGroup.Root>
-				<button type="submit" className="w-fit text-sm underline">
-					Submit
-				</button>
-				{submitted && <output className="text-sm">Sent</output>}
-			</form>
-		);
-	},
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-
-		await expect(canvas.getByRole('radiogroup')).toHaveAttribute('aria-required', 'true');
-		await userEvent.click(canvas.getByRole('radio', { name: 'Annual' }));
-		await expect(canvasElement.querySelector('form')!.checkValidity()).toBe(true);
-		await userEvent.click(canvas.getByRole('button', { name: 'Submit' }));
-		await expect(await canvas.findByRole('status')).toHaveTextContent('Sent');
 	}
 };
 
@@ -595,30 +407,294 @@ export const LongLabel: Story = {
 };
 
 /**
- * Items laid in a row, 24px apart, wrapping when the row runs out of room.
+ * Every state of an item side by side, for checking against the design:
+ * enabled, disabled, invalid and read-only, each with one item selected.
  *
- * @summary Items in a row
+ * @summary Visual comparison of the item states
  */
-export const Horizontal: Story = {
-	args: { orientation: 'horizontal' },
+export const AllStates: Story = {
+	render: () => (
+		<div className="flex flex-wrap gap-10">
+			{(
+				[
+					['Enabled', {}],
+					['Disabled', { disabled: true }],
+					['Invalid', { 'aria-invalid': true }],
+					['Read-only', { readOnly: true }]
+				] as const
+			).map(([title, props]) => (
+				<div key={title} className="flex flex-col gap-2">
+					<span className="text-xs text-text-input-placeholder">{title}</span>
+					<RadioGroup.Root aria-label={`${title} payment plan`} defaultValue="quarterly" {...props}>
+						{PLANS.map(({ value, label }) => (
+							<RadioGroup.Item key={value} value={value}>
+								{label}
+							</RadioGroup.Item>
+						))}
+					</RadioGroup.Root>
+				</div>
+			))}
+		</div>
+	)
+};
+
+/**
+ * Tab enters the group on the selected item and leaves it on the next Tab;
+ * the arrow keys move the selection, wrapping at the ends.
+ *
+ * @summary Keyboard navigation and selection
+ */
+export const Keyboard: Story = {
+	tags: ['!dev', '!autodocs', '!manifest'],
+	args: { onValueChange: fn() },
+	render: args => (
+		<div className="flex flex-col gap-3">
+			<RadioGroup.Root {...args}>
+				{PLANS.map(({ value, label }) => (
+					<RadioGroup.Item key={value} value={value}>
+						{label}
+					</RadioGroup.Item>
+				))}
+			</RadioGroup.Root>
+			<button type="button" className="w-fit text-sm underline">
+				Continue
+			</button>
+		</div>
+	),
+	play: async ({ args, canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		await userEvent.tab();
+		await expect(canvas.getByRole('radio', { name: 'Monthly' })).toHaveFocus();
+		await userEvent.keyboard('{ArrowDown}');
+		await expect(canvas.getByRole('radio', { name: 'Quarterly' })).toHaveFocus();
+		await expect(canvas.getByRole('radio', { name: 'Quarterly' })).toBeChecked();
+		await expect(args.onValueChange).toHaveBeenLastCalledWith('quarterly');
+		await userEvent.keyboard('{ArrowUp}{ArrowUp}');
+		await expect(canvas.getByRole('radio', { name: 'Annual' })).toBeChecked();
+		await userEvent.tab();
+		await expect(canvas.getByRole('button', { name: 'Continue' })).toHaveFocus();
+	}
+};
+
+/**
+ * With no `defaultValue` nothing is selected, and Tab lands on the first item
+ * without selecting it.
+ *
+ * @summary Group that starts with nothing selected
+ */
+export const NoSelection: Story = {
+	tags: ['!dev', '!autodocs', '!manifest'],
+	args: { defaultValue: undefined, onValueChange: fn() },
+	play: async ({ args, canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		for (const radio of canvas.getAllByRole('radio')) {
+			await expect(radio).not.toBeChecked();
+		}
+		await userEvent.tab();
+		await expect(canvas.getByRole('radio', { name: 'Monthly' })).toHaveFocus();
+		await expect(canvas.getByRole('radio', { name: 'Monthly' })).not.toBeChecked();
+		await expect(args.onValueChange).not.toHaveBeenCalled();
+	}
+};
+
+/** @summary Group named by a visible heading */
+export const LabelledByHeading: Story = {
+	tags: ['!dev', '!autodocs', '!manifest'],
+	args: { 'aria-label': undefined, 'aria-labelledby': 'plan-heading' },
+	render: args => (
+		<div className="flex flex-col gap-2">
+			<span id="plan-heading" className="text-sm font-semibold text-text-input-normal">
+				Payment plan
+			</span>
+			<RadioGroup.Root {...args}>
+				{PLANS.map(({ value, label }) => (
+					<RadioGroup.Item key={value} value={value}>
+						{label}
+					</RadioGroup.Item>
+				))}
+			</RadioGroup.Root>
+		</div>
+	),
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
-		const [monthly, quarterly] = canvas
-			.getAllByRole('radio')
-			.map(radio => radio.closest('[data-slot=radio-group-item]')!.getBoundingClientRect()) as [
-			DOMRect,
-			DOMRect
-		];
 
-		await expect(canvas.getByRole('radiogroup')).toHaveAttribute('data-orientation', 'horizontal');
-		await expect(canvas.getByRole('radiogroup')).toHaveAttribute('aria-orientation', 'horizontal');
-		await expect(quarterly.top).toBe(monthly.top);
-		await expect(quarterly.left - monthly.right).toBe(24);
+		await expect(canvas.getByRole('radiogroup', { name: 'Payment plan' })).toBeInTheDocument();
+	}
+};
+
+/**
+ * When the selected item is disabled, Tab enters the group on the first
+ * enabled item instead, so the group stays reachable by keyboard.
+ *
+ * @summary Selected item disabled
+ */
+export const DisabledSelectedItem: Story = {
+	tags: ['!dev', '!autodocs', '!manifest'],
+	render: args => (
+		<RadioGroup.Root {...args}>
+			<RadioGroup.Item value="monthly" disabled>
+				Monthly (no longer offered)
+			</RadioGroup.Item>
+			<RadioGroup.Item value="quarterly">Quarterly</RadioGroup.Item>
+			<RadioGroup.Item value="annual">Annual</RadioGroup.Item>
+		</RadioGroup.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		await expect(canvas.getByRole('radio', { name: /Monthly/ })).toBeChecked();
+		await userEvent.tab();
+		await expect(canvas.getByRole('radio', { name: 'Quarterly' })).toHaveFocus();
+	}
+};
+
+/**
+ * A native form reset puts an uncontrolled group back on its `defaultValue`,
+ * on screen and in what the form submits.
+ *
+ * @summary Native form reset
+ */
+export const FormReset: Story = {
+	tags: ['!dev', '!autodocs', '!manifest'],
+	render: () => {
+		const [submitted, setSubmitted] = useState<string | null>(null);
+
+		return (
+			<form
+				className="flex flex-col gap-3"
+				onSubmit={event => {
+					event.preventDefault();
+					setSubmitted(String(new FormData(event.currentTarget).get('plan')));
+				}}>
+				<RadioGroup.Root aria-label="Payment plan" name="plan" defaultValue="monthly">
+					{PLANS.map(({ value, label }) => (
+						<RadioGroup.Item key={value} value={value}>
+							{label}
+						</RadioGroup.Item>
+					))}
+				</RadioGroup.Root>
+				<div className="flex gap-3">
+					<button type="reset" className="w-fit text-sm underline">
+						Reset
+					</button>
+					<button type="submit" className="w-fit text-sm underline">
+						Submit
+					</button>
+				</div>
+				{submitted && <output className="text-sm">{submitted}</output>}
+			</form>
+		);
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		await userEvent.click(canvas.getByRole('radio', { name: 'Annual' }));
+		await userEvent.click(canvas.getByRole('button', { name: 'Reset' }));
+		await expect(canvas.getByRole('radio', { name: 'Monthly' })).toBeChecked();
+		await expect(canvas.getByRole('radio', { name: 'Annual' })).not.toBeChecked();
+		await userEvent.click(canvas.getByRole('button', { name: 'Submit' }));
+		await expect(await canvas.findByRole('status')).toHaveTextContent('monthly');
+	}
+};
+
+/**
+ * A native form reset leaves a controlled group on its `value`, and the form
+ * submits that value too.
+ *
+ * @summary Native form reset on a controlled group
+ */
+export const FormResetControlled: Story = {
+	tags: ['!dev', '!autodocs', '!manifest'],
+	render: () => {
+		const [plan, setPlan] = useState('quarterly');
+		const [submitted, setSubmitted] = useState<string | null>(null);
+
+		return (
+			<form
+				className="flex flex-col gap-3"
+				onSubmit={event => {
+					event.preventDefault();
+					setSubmitted(String(new FormData(event.currentTarget).get('plan')));
+				}}>
+				<RadioGroup.Root aria-label="Payment plan" name="plan" value={plan} onValueChange={setPlan}>
+					{PLANS.map(({ value, label }) => (
+						<RadioGroup.Item key={value} value={value}>
+							{label}
+						</RadioGroup.Item>
+					))}
+				</RadioGroup.Root>
+				<div className="flex gap-3">
+					<button type="reset" className="w-fit text-sm underline">
+						Reset
+					</button>
+					<button type="submit" className="w-fit text-sm underline">
+						Submit
+					</button>
+				</div>
+				{submitted && <output className="text-sm">{submitted}</output>}
+			</form>
+		);
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		await userEvent.click(canvas.getByRole('radio', { name: 'Annual' }));
+		await userEvent.click(canvas.getByRole('button', { name: 'Reset' }));
+		await expect(canvas.getByRole('radio', { name: 'Annual' })).toBeChecked();
+		await userEvent.click(canvas.getByRole('button', { name: 'Submit' }));
+		await expect(await canvas.findByRole('status')).toHaveTextContent('annual');
+	}
+};
+
+/**
+ * Without `name` the radios are not one native group, so `required` only
+ * marks the group (`aria-required`) and leaves validation to the form: a
+ * selection never leaves the form invalid.
+ *
+ * @summary Required without a name
+ */
+export const RequiredWithoutName: Story = {
+	tags: ['!dev', '!autodocs', '!manifest'],
+	render: () => {
+		const [submitted, setSubmitted] = useState(false);
+
+		return (
+			<form
+				className="flex flex-col gap-3"
+				onSubmit={event => {
+					event.preventDefault();
+					setSubmitted(true);
+				}}>
+				<RadioGroup.Root aria-label="Payment plan" required>
+					{PLANS.map(({ value, label }) => (
+						<RadioGroup.Item key={value} value={value}>
+							{label}
+						</RadioGroup.Item>
+					))}
+				</RadioGroup.Root>
+				<button type="submit" className="w-fit text-sm underline">
+					Submit
+				</button>
+				{submitted && <output className="text-sm">Sent</output>}
+			</form>
+		);
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		await expect(canvas.getByRole('radiogroup')).toHaveAttribute('aria-required', 'true');
+		await userEvent.click(canvas.getByRole('radio', { name: 'Annual' }));
+		await expect(canvasElement.querySelector('form')!.checkValidity()).toBe(true);
+		await userEvent.click(canvas.getByRole('button', { name: 'Submit' }));
+		await expect(await canvas.findByRole('status')).toHaveTextContent('Sent');
 	}
 };
 
 /** @summary Item id reaches the radio */
 export const ItemId: Story = {
+	tags: ['!dev', '!autodocs', '!manifest'],
 	render: args => (
 		<RadioGroup.Root {...args}>
 			<RadioGroup.Item id="plan-monthly" value="monthly">
@@ -639,48 +715,13 @@ export const ItemId: Story = {
 };
 
 /**
- * Inside a `Field.Root`, label, messages, `invalid`, `required` and
- * `disabled` reach the group with nothing wired by hand.
- *
- * @summary Wired to a surrounding Field
- */
-export const InsideField: Story = {
-	args: { 'aria-label': undefined, defaultValue: undefined },
-	render: args => (
-		<Field.Root invalid required>
-			<Field.Content>
-				<Field.Label>Payment plan</Field.Label>
-				<Field.Description>How often the insured pays the premium.</Field.Description>
-			</Field.Content>
-			<RadioGroup.Root {...args}>
-				{PLANS.map(({ value, label }) => (
-					<RadioGroup.Item key={value} value={value}>
-						{label}
-					</RadioGroup.Item>
-				))}
-			</RadioGroup.Root>
-			<Field.Error errors={[{ message: 'Choose a payment plan' }]} />
-		</Field.Root>
-	),
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-		const group = canvas.getByRole('radiogroup', { name: /Payment plan/ });
-
-		await expect(group).toHaveAccessibleDescription(
-			/premium.*Choose a payment plan|Choose a payment plan.*premium/
-		);
-		await expect(group).toHaveAttribute('aria-invalid', 'true');
-		await expect(group).toHaveAttribute('aria-required', 'true');
-	}
-};
-
-/**
  * `aria-label` and `disabled={false}` on the group win over the field. Its own
  * `aria-describedby` joins the field's messages instead of replacing them.
  *
  * @summary Own props override the Field wiring
  */
 export const InsideFieldOverridden: Story = {
+	tags: ['!dev', '!autodocs', '!manifest'],
 	args: { 'aria-label': 'Plan', 'aria-describedby': 'plan-note', disabled: false },
 	render: args => (
 		<Field.Root disabled>

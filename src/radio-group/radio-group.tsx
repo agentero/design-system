@@ -46,10 +46,11 @@ export const radioGroupRecipe = tv({
 			'relative box-border inline-flex size-4 shrink-0 items-center justify-center rounded-full',
 			'border-[1.5px] border-solid border-border-checkbox-default bg-bg-input-normal',
 			'cursor-pointer transition-colors duration-150',
-			// Only an enabled radio lifts with the shadow, and only a valid one darkens on hover, so
-			// neither has to be undone by the disabled and invalid states below.
+			// Only an enabled radio lifts with the shadow, and only a valid, editable one darkens on hover,
+			// so neither has to be undone by the states below. Hover reads from the whole row, which
+			// selects as a whole, as Figma's Radio Group hover state does.
 			'not-data-disabled:data-unchecked:shadow-xs',
-			'not-data-disabled:not-in-aria-invalid:data-unchecked:hover:border-border-input-hover',
+			'not-data-disabled:not-data-readonly:not-in-aria-invalid:data-unchecked:group-hover/radio-group-item:border-border-input-hover',
 			'data-checked:border-bg-checkbox-selected',
 			'outline-solid outline-2 outline-offset-2 outline-transparent',
 			'focus-visible:outline-focus-ring-button-primary',
@@ -68,8 +69,8 @@ export const radioGroupRecipe = tv({
 			'data-disabled:bg-bg-checkbox-disabled',
 			'in-aria-invalid:data-disabled:bg-bg-checkbox-invalid-disabled'
 		],
-		// The radio dims itself when disabled; only the text needs it here.
-		text: 'flex min-h-6 items-center group-data-disabled/radio-group-item:opacity-50'
+		// Figma greys the text of a disabled item out to slate-200 rather than fading it.
+		text: 'flex min-h-6 items-center group-data-disabled/radio-group-item:text-text-default-disable-primary'
 	},
 	variants: {
 		orientation: {
