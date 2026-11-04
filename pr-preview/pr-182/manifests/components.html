@@ -588,13 +588,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">43 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/394 story errors</a></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">43 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/386 story errors</a></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.1s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>5.5s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -11727,7 +11727,7 @@ percentage: number</code></pre>
       <div class="badges">
         <label for="c-33-components-radiogroup-props" class="badge ok as-toggle">8 prop types</label>
         
-        <label for="c-33-components-radiogroup-stories" class="badge ok as-toggle">20 stories</label>
+        <label for="c-33-components-radiogroup-stories" class="badge ok as-toggle">12 stories</label>
         
         
       </div>
@@ -11835,33 +11835,12 @@ value?: string</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">Keyboard</span>
+                <span class="ex-name">Horizontal</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Keyboard navigation and selection</div>
-              <div class="hint">Tab enters the group on the selected item and leaves it on the next Tab;
-the arrow keys move the selection, wrapping at the ends.</div>
-              <pre><code>const Keyboard = () =&gt; &lt;div className=&quot;flex flex-col gap-3&quot;&gt;
-    &lt;RadioGroup.Root aria-label=&quot;Payment plan&quot; defaultValue=&quot;monthly&quot; onValueChange={fn()}&gt;
-        {PLANS.map(({ value, label }) =&gt; (
-            &lt;RadioGroup.Item key={value} value={value}&gt;
-                {label}
-            &lt;/RadioGroup.Item&gt;
-        ))}
-    &lt;/RadioGroup.Root&gt;
-    &lt;button type=&quot;button&quot; className=&quot;w-fit text-sm underline&quot;&gt;Continue
-                    &lt;/button&gt;
-&lt;/div&gt;;</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">No Selection</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Group that starts with nothing selected</div>
-              <div class="hint">With no `defaultValue` nothing is selected, and Tab lands on the first item
-without selecting it.</div>
-              <pre><code>const NoSelection = () =&gt; &lt;RadioGroup.Root aria-label=&quot;Payment plan&quot; defaultValue={undefined} onValueChange={fn()}&gt;
+              <div>Items in a row</div>
+              <div class="hint">Items laid in a row, 24px apart, wrapping when the row runs out of room.</div>
+              <pre><code>const Horizontal = () =&gt; &lt;RadioGroup.Root aria-label=&quot;Payment plan&quot; defaultValue=&quot;monthly&quot; orientation=&quot;horizontal&quot;&gt;
     {PLANS.map(({ value, label }) =&gt; (
         &lt;RadioGroup.Item key={value} value={value}&gt;
             {label}
@@ -11871,62 +11850,26 @@ without selecting it.</div>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">Labelled By Heading</span>
+                <span class="ex-name">Inside Field</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Group named by a visible heading</div>
-              
-              <pre><code>const LabelledByHeading = () =&gt; &lt;div className=&quot;flex flex-col gap-2&quot;&gt;
-    &lt;span
-        id=&quot;plan-heading&quot;
-        className=&quot;text-sm font-semibold text-text-input-normal&quot;&gt;Payment plan
-                    &lt;/span&gt;
-    &lt;RadioGroup.Root
-        aria-label={undefined}
-        defaultValue=&quot;monthly&quot;
-        aria-labelledby=&quot;plan-heading&quot;&gt;
+              <div>Wired to a surrounding Field</div>
+              <div class="hint">Inside a `Field.Root`, label, messages, `invalid`, `required` and
+`disabled` reach the group with nothing wired by hand.</div>
+              <pre><code>const InsideField = () =&gt; &lt;Field.Root invalid required&gt;
+    &lt;Field.Content&gt;
+        &lt;Field.Label&gt;Payment plan&lt;/Field.Label&gt;
+        &lt;Field.Description&gt;How often the insured pays the premium.&lt;/Field.Description&gt;
+    &lt;/Field.Content&gt;
+    &lt;RadioGroup.Root aria-label={undefined} defaultValue={undefined}&gt;
         {PLANS.map(({ value, label }) =&gt; (
             &lt;RadioGroup.Item key={value} value={value}&gt;
                 {label}
             &lt;/RadioGroup.Item&gt;
         ))}
     &lt;/RadioGroup.Root&gt;
-&lt;/div&gt;;</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Controlled</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Controlled group whose value is set from outside</div>
-              
-              <pre><code>const Controlled = () =&gt; {
-    const [plan, setPlan] = useState(&#39;monthly&#39;);
-
-    return (
-        &lt;div className=&quot;flex flex-col gap-3&quot;&gt;
-            &lt;div className=&quot;flex gap-3&quot;&gt;
-                &lt;button type=&quot;button&quot; className=&quot;w-fit text-sm underline&quot; onClick={() =&gt; setPlan(&#39;&#39;)}&gt;
-                    Clear
-                &lt;/button&gt;
-                &lt;button
-                    type=&quot;button&quot;
-                    className=&quot;w-fit text-sm underline&quot;
-                    onClick={() =&gt; setPlan(&#39;annual&#39;)}&gt;
-                    Choose annual
-                &lt;/button&gt;
-            &lt;/div&gt;
-            &lt;RadioGroup.Root aria-label=&quot;Payment plan&quot; value={plan} onValueChange={setPlan}&gt;
-                {PLANS.map(({ value, label }) =&gt; (
-                    &lt;RadioGroup.Item key={value} value={value}&gt;
-                        {label}
-                    &lt;/RadioGroup.Item&gt;
-                ))}
-            &lt;/RadioGroup.Root&gt;
-            &lt;output className=&quot;text-sm&quot;&gt;{plan || &#39;None&#39;}&lt;/output&gt;
-        &lt;/div&gt;
-    );
-};</code></pre>
+    &lt;Field.Error errors={[{ message: &#39;Choose a payment plan&#39; }]} /&gt;
+&lt;/Field.Root&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -11959,21 +11902,6 @@ it.</div>
     &lt;RadioGroup.Item value=&quot;monthly&quot;&gt;Monthly&lt;/RadioGroup.Item&gt;
     &lt;RadioGroup.Item value=&quot;quarterly&quot; disabled&gt;Quarterly (not offered by this carrier)
                     &lt;/RadioGroup.Item&gt;
-    &lt;RadioGroup.Item value=&quot;annual&quot;&gt;Annual&lt;/RadioGroup.Item&gt;
-&lt;/RadioGroup.Root&gt;;</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Disabled Selected Item</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Selected item disabled</div>
-              <div class="hint">When the selected item is disabled, Tab enters the group on the first
-enabled item instead, so the group stays reachable by keyboard.</div>
-              <pre><code>const DisabledSelectedItem = () =&gt; &lt;RadioGroup.Root aria-label=&quot;Payment plan&quot; defaultValue=&quot;monthly&quot;&gt;
-    &lt;RadioGroup.Item value=&quot;monthly&quot; disabled&gt;Monthly (no longer offered)
-                    &lt;/RadioGroup.Item&gt;
-    &lt;RadioGroup.Item value=&quot;quarterly&quot;&gt;Quarterly&lt;/RadioGroup.Item&gt;
     &lt;RadioGroup.Item value=&quot;annual&quot;&gt;Annual&lt;/RadioGroup.Item&gt;
 &lt;/RadioGroup.Root&gt;;</code></pre>
             </div>
@@ -12023,6 +11951,41 @@ every radio paints the destructive border from it.</div>
             </div>
             <div class="note ok">
               <div class="row">
+                <span class="ex-name">Controlled</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Controlled group whose value is set from outside</div>
+              
+              <pre><code>const Controlled = () =&gt; {
+    const [plan, setPlan] = useState(&#39;monthly&#39;);
+
+    return (
+        &lt;div className=&quot;flex flex-col gap-3&quot;&gt;
+            &lt;div className=&quot;flex gap-3&quot;&gt;
+                &lt;button type=&quot;button&quot; className=&quot;w-fit text-sm underline&quot; onClick={() =&gt; setPlan(&#39;&#39;)}&gt;
+                    Clear
+                &lt;/button&gt;
+                &lt;button
+                    type=&quot;button&quot;
+                    className=&quot;w-fit text-sm underline&quot;
+                    onClick={() =&gt; setPlan(&#39;annual&#39;)}&gt;
+                    Choose annual
+                &lt;/button&gt;
+            &lt;/div&gt;
+            &lt;RadioGroup.Root aria-label=&quot;Payment plan&quot; value={plan} onValueChange={setPlan}&gt;
+                {PLANS.map(({ value, label }) =&gt; (
+                    &lt;RadioGroup.Item key={value} value={value}&gt;
+                        {label}
+                    &lt;/RadioGroup.Item&gt;
+                ))}
+            &lt;/RadioGroup.Root&gt;
+            &lt;output className=&quot;text-sm&quot;&gt;{plan || &#39;None&#39;}&lt;/output&gt;
+        &lt;/div&gt;
+    );
+};</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
                 <span class="ex-name">In Form</span>
                 <span class="badge ok">story ok</span>
               </div>
@@ -12050,117 +12013,6 @@ every radio paints the destructive border from it.</div>
                 Submit
             &lt;/button&gt;
             {submitted &amp;&amp; &lt;output className=&quot;text-sm&quot;&gt;{submitted}&lt;/output&gt;}
-        &lt;/form&gt;
-    );
-};</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Form Reset</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Native form reset</div>
-              <div class="hint">A native form reset puts an uncontrolled group back on its `defaultValue`,
-on screen and in what the form submits.</div>
-              <pre><code>const FormReset = () =&gt; {
-    const [submitted, setSubmitted] = useState&lt;string | null&gt;(null);
-
-    return (
-        &lt;form
-            className=&quot;flex flex-col gap-3&quot;
-            onSubmit={event =&gt; {
-                event.preventDefault();
-                setSubmitted(String(new FormData(event.currentTarget).get(&#39;plan&#39;)));
-            }}&gt;
-            &lt;RadioGroup.Root aria-label=&quot;Payment plan&quot; name=&quot;plan&quot; defaultValue=&quot;monthly&quot;&gt;
-                {PLANS.map(({ value, label }) =&gt; (
-                    &lt;RadioGroup.Item key={value} value={value}&gt;
-                        {label}
-                    &lt;/RadioGroup.Item&gt;
-                ))}
-            &lt;/RadioGroup.Root&gt;
-            &lt;div className=&quot;flex gap-3&quot;&gt;
-                &lt;button type=&quot;reset&quot; className=&quot;w-fit text-sm underline&quot;&gt;
-                    Reset
-                &lt;/button&gt;
-                &lt;button type=&quot;submit&quot; className=&quot;w-fit text-sm underline&quot;&gt;
-                    Submit
-                &lt;/button&gt;
-            &lt;/div&gt;
-            {submitted &amp;&amp; &lt;output className=&quot;text-sm&quot;&gt;{submitted}&lt;/output&gt;}
-        &lt;/form&gt;
-    );
-};</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Form Reset Controlled</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Native form reset on a controlled group</div>
-              <div class="hint">A native form reset leaves a controlled group on its `value`, and the form
-submits that value too.</div>
-              <pre><code>const FormResetControlled = () =&gt; {
-    const [plan, setPlan] = useState(&#39;quarterly&#39;);
-    const [submitted, setSubmitted] = useState&lt;string | null&gt;(null);
-
-    return (
-        &lt;form
-            className=&quot;flex flex-col gap-3&quot;
-            onSubmit={event =&gt; {
-                event.preventDefault();
-                setSubmitted(String(new FormData(event.currentTarget).get(&#39;plan&#39;)));
-            }}&gt;
-            &lt;RadioGroup.Root aria-label=&quot;Payment plan&quot; name=&quot;plan&quot; value={plan} onValueChange={setPlan}&gt;
-                {PLANS.map(({ value, label }) =&gt; (
-                    &lt;RadioGroup.Item key={value} value={value}&gt;
-                        {label}
-                    &lt;/RadioGroup.Item&gt;
-                ))}
-            &lt;/RadioGroup.Root&gt;
-            &lt;div className=&quot;flex gap-3&quot;&gt;
-                &lt;button type=&quot;reset&quot; className=&quot;w-fit text-sm underline&quot;&gt;
-                    Reset
-                &lt;/button&gt;
-                &lt;button type=&quot;submit&quot; className=&quot;w-fit text-sm underline&quot;&gt;
-                    Submit
-                &lt;/button&gt;
-            &lt;/div&gt;
-            {submitted &amp;&amp; &lt;output className=&quot;text-sm&quot;&gt;{submitted}&lt;/output&gt;}
-        &lt;/form&gt;
-    );
-};</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Required Without Name</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Required without a name</div>
-              <div class="hint">Without `name` the radios are not one native group, so `required` only
-marks the group (`aria-required`) and leaves validation to the form: a
-selection never leaves the form invalid.</div>
-              <pre><code>const RequiredWithoutName = () =&gt; {
-    const [submitted, setSubmitted] = useState(false);
-
-    return (
-        &lt;form
-            className=&quot;flex flex-col gap-3&quot;
-            onSubmit={event =&gt; {
-                event.preventDefault();
-                setSubmitted(true);
-            }}&gt;
-            &lt;RadioGroup.Root aria-label=&quot;Payment plan&quot; required&gt;
-                {PLANS.map(({ value, label }) =&gt; (
-                    &lt;RadioGroup.Item key={value} value={value}&gt;
-                        {label}
-                    &lt;/RadioGroup.Item&gt;
-                ))}
-            &lt;/RadioGroup.Root&gt;
-            &lt;button type=&quot;submit&quot; className=&quot;w-fit text-sm underline&quot;&gt;
-                Submit
-            &lt;/button&gt;
-            {submitted &amp;&amp; &lt;output className=&quot;text-sm&quot;&gt;Sent&lt;/output&gt;}
         &lt;/form&gt;
     );
 };</code></pre>
@@ -12228,81 +12080,35 @@ line.</div>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">Horizontal</span>
+                <span class="ex-name">All States</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Items in a row</div>
-              <div class="hint">Items laid in a row, 24px apart, wrapping when the row runs out of room.</div>
-              <pre><code>const Horizontal = () =&gt; &lt;RadioGroup.Root aria-label=&quot;Payment plan&quot; defaultValue=&quot;monthly&quot; orientation=&quot;horizontal&quot;&gt;
-    {PLANS.map(({ value, label }) =&gt; (
-        &lt;RadioGroup.Item key={value} value={value}&gt;
-            {label}
-        &lt;/RadioGroup.Item&gt;
-    ))}
-&lt;/RadioGroup.Root&gt;;</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Item Id</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Item id reaches the radio</div>
-              
-              <pre><code>const ItemId = () =&gt; &lt;RadioGroup.Root aria-label=&quot;Payment plan&quot; defaultValue=&quot;monthly&quot;&gt;
-    &lt;RadioGroup.Item id=&quot;plan-monthly&quot; value=&quot;monthly&quot;&gt;Monthly
-                    &lt;/RadioGroup.Item&gt;
-    &lt;RadioGroup.Item value=&quot;annual&quot;&gt;Annual&lt;/RadioGroup.Item&gt;
-&lt;/RadioGroup.Root&gt;;</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Inside Field</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Wired to a surrounding Field</div>
-              <div class="hint">Inside a `Field.Root`, label, messages, `invalid`, `required` and
-`disabled` reach the group with nothing wired by hand.</div>
-              <pre><code>const InsideField = () =&gt; &lt;Field.Root invalid required&gt;
-    &lt;Field.Content&gt;
-        &lt;Field.Label&gt;Payment plan&lt;/Field.Label&gt;
-        &lt;Field.Description&gt;How often the insured pays the premium.&lt;/Field.Description&gt;
-    &lt;/Field.Content&gt;
-    &lt;RadioGroup.Root aria-label={undefined} defaultValue={undefined}&gt;
-        {PLANS.map(({ value, label }) =&gt; (
-            &lt;RadioGroup.Item key={value} value={value}&gt;
-                {label}
-            &lt;/RadioGroup.Item&gt;
+              <div>Visual comparison of the item states</div>
+              <div class="hint">Every state of an item side by side, for checking against the design:
+enabled, disabled, invalid and read-only, each with one item selected.</div>
+              <pre><code>const AllStates = () =&gt; (
+    &lt;div className=&quot;flex flex-wrap gap-10&quot;&gt;
+        {(
+            [
+                [&#39;Enabled&#39;, {}],
+                [&#39;Disabled&#39;, { disabled: true }],
+                [&#39;Invalid&#39;, { &#39;aria-invalid&#39;: true }],
+                [&#39;Read-only&#39;, { readOnly: true }]
+            ] as const
+        ).map(([title, props]) =&gt; (
+            &lt;div key={title} className=&quot;flex flex-col gap-2&quot;&gt;
+                &lt;span className=&quot;text-xs text-text-input-placeholder&quot;&gt;{title}&lt;/span&gt;
+                &lt;RadioGroup.Root aria-label={`${title} payment plan`} defaultValue=&quot;quarterly&quot; {...props}&gt;
+                    {PLANS.map(({ value, label }) =&gt; (
+                        &lt;RadioGroup.Item key={value} value={value}&gt;
+                            {label}
+                        &lt;/RadioGroup.Item&gt;
+                    ))}
+                &lt;/RadioGroup.Root&gt;
+            &lt;/div&gt;
         ))}
-    &lt;/RadioGroup.Root&gt;
-    &lt;Field.Error errors={[{ message: &#39;Choose a payment plan&#39; }]} /&gt;
-&lt;/Field.Root&gt;;</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Inside Field Overridden</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Own props override the Field wiring</div>
-              <div class="hint">`aria-label` and `disabled={false}` on the group win over the field. Its own
-`aria-describedby` joins the field&#39;s messages instead of replacing them.</div>
-              <pre><code>const InsideFieldOverridden = () =&gt; &lt;Field.Root disabled&gt;
-    &lt;Field.Content&gt;
-        &lt;Field.Label&gt;Payment plan&lt;/Field.Label&gt;
-        &lt;Field.Description&gt;How often the insured pays the premium.&lt;/Field.Description&gt;
-    &lt;/Field.Content&gt;
-    &lt;p id=&quot;plan-note&quot;&gt;Changing it starts at the next renewal.&lt;/p&gt;
-    &lt;RadioGroup.Root
-        aria-label=&quot;Plan&quot;
-        defaultValue=&quot;monthly&quot;
-        aria-describedby=&quot;plan-note&quot;
-        disabled={false}&gt;
-        {PLANS.map(({ value, label }) =&gt; (
-            &lt;RadioGroup.Item key={value} value={value}&gt;
-                {label}
-            &lt;/RadioGroup.Item&gt;
-        ))}
-    &lt;/RadioGroup.Root&gt;
-&lt;/Field.Root&gt;;</code></pre>
+    &lt;/div&gt;
+);</code></pre>
             </div>
         </div>
     
