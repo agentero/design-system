@@ -45,7 +45,7 @@ type Story = StoryObj<typeof meta>;
 const STATES = ['California', 'Colorado', 'Connecticut', 'Florida', 'Texas', 'Washington'];
 
 // The list anchors to the whole field, not the bare input: as wide as the frame, from its left
-// edge. Synchronous, for `waitFor`: the surface grows in from 0.95 scale over 100ms.
+// edge. Synchronous, for `waitFor`.
 const expectListAlignedWithField = (canvasElement: HTMLElement) => {
 	const field = canvasElement
 		.querySelector('[data-slot="combobox-field"]')!
@@ -122,7 +122,6 @@ export const Default: Story = {
 		);
 		await userEvent.keyboard('{Escape}');
 
-		// The surface stays mounted through its exit animation, so wait it out.
 		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
 	}
 };
@@ -890,7 +889,7 @@ export const InsideFieldText: Story = {
  * picked, Escape closes the list, then clears the value, then closes the modal.
  */
 export const InsideModal: Story = {
-	render: () => (
+	render: args => (
 		<Modal.Root>
 			<Modal.Trigger asChild>
 				<Button variant="secondary">Assign agency</Button>
@@ -898,7 +897,7 @@ export const InsideModal: Story = {
 			<Modal.Content>
 				<Modal.Title>Assign agency</Modal.Title>
 				<Modal.Body>
-					<Combobox.Root items={STATES}>
+					<Combobox.Root {...args} items={STATES}>
 						<Combobox.Input placeholder="Search states" aria-label="Search states" />
 						<Combobox.Content>
 							<Combobox.Empty>No matches found</Combobox.Empty>
@@ -945,6 +944,53 @@ export const InsideModal: Story = {
 		await expect(dialog).toHaveAttribute('data-state', 'open');
 		await userEvent.keyboard('{Escape}');
 		await waitFor(() => expect(dialog).toHaveAttribute('data-state', 'closed'));
+	}
+};
+
+/**
+ * Regression check, kept out of the manifest: a multi-select inside a `Modal`.
+ * Escape on the closed list clears a short query and stops there; on the empty
+ * field it closes the modal. Neither touches the selection or calls
+ * `onValueChange`.
+ *
+ * @summary Escape on a closed multi-select keeps the selection
+ */
+export const InsideModalMultiple: Story = {
+	...InsideModal,
+	tags: ['!manifest'],
+	args: {
+		multiple: true,
+		defaultValue: ['Colorado', 'Texas'],
+		minInputLength: 2,
+		onValueChange: fn()
+	},
+	play: async ({ args, canvasElement }) => {
+		const canvas = within(canvasElement);
+		const body = within(document.body);
+
+		await userEvent.click(canvas.getByRole('button', { name: /assign agency/i }));
+		const dialog = await body.findByRole('dialog', { name: /assign agency/i });
+		const input = within(dialog).getByRole('combobox', { name: /search states/i });
+
+		// One character is under the minimum, so the list stays shut with text in the field.
+		await userEvent.type(input, 'c');
+		await expect(body.queryByRole('listbox')).not.toBeInTheDocument();
+		await userEvent.keyboard('{Escape}');
+		await expect(input).toHaveValue('');
+		await expect(dialog).toHaveAttribute('data-state', 'open');
+
+		await userEvent.type(input, 'xas');
+		await expect(await body.findByRole('option', { name: 'Texas' })).toHaveAttribute(
+			'aria-selected',
+			'true'
+		);
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+		await expect(dialog).toHaveAttribute('data-state', 'open');
+
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(dialog).toHaveAttribute('data-state', 'closed'));
+		await expect(args.onValueChange).not.toHaveBeenCalled();
 	}
 };
 

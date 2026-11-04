@@ -5,6 +5,7 @@ import { ComponentProps } from 'react';
 import * as PopoverPrimitive from '@radix-ui/react-popover';
 import { tv } from 'tailwind-variants';
 
+import { hideFocusRingAfterPointerClose } from '../../lib';
 import { deferEscapeToCombobox } from '../../lib/combobox-escape';
 
 type RootProps = ComponentProps<typeof PopoverPrimitive.Root>;
@@ -65,6 +66,10 @@ export const popoverRecipe = tv({
 	base: [
 		'z-(--z-index-top-layer) rounded-md bg-bg-default-base-primary px-2 py-3 shadow-md',
 		'border border-border-default-base-primary',
+		// A `Command` draws its own panel, so the popover hands it the chrome instead of nesting a
+		// second border and shadow around it. Descendant, not child: consumers wrap it in a `CheckboxGroup`.
+		'has-[[data-slot=command-root]]:border-0 has-[[data-slot=command-root]]:bg-transparent',
+		'has-[[data-slot=command-root]]:p-0 has-[[data-slot=command-root]]:shadow-none',
 		'will-change-[transform,opacity]',
 		// Radix computes the exact origin (accounts for side + align) so the scale grows from the trigger edge.
 		'origin-(--radix-popover-content-transform-origin)',
@@ -84,7 +89,13 @@ type ContentProps = ComponentProps<typeof PopoverPrimitive.Content>;
 // matching `DropdownMenu` and `HoverCard` so every trigger-anchored surface sits at the same distance.
 // An Escape from a combobox inside it goes to the field first (open list, then picked value); only the
 // one the field lets through closes the popover and reaches `onEscapeKeyDown`.
-export const Content = ({ className, sideOffset = 8, onEscapeKeyDown, ...props }: ContentProps) => (
+export const Content = ({
+	className,
+	sideOffset = 8,
+	onEscapeKeyDown,
+	onCloseAutoFocus,
+	...props
+}: ContentProps) => (
 	<PopoverPrimitive.Portal>
 		<PopoverPrimitive.Content
 			data-slot="popover-content"
@@ -92,6 +103,10 @@ export const Content = ({ className, sideOffset = 8, onEscapeKeyDown, ...props }
 			className={popoverRecipe({ className })}
 			onEscapeKeyDown={event => {
 				if (!deferEscapeToCombobox(event)) onEscapeKeyDown?.(event);
+			}}
+			onCloseAutoFocus={event => {
+				onCloseAutoFocus?.(event);
+				hideFocusRingAfterPointerClose(event);
 			}}
 			{...props}
 		/>

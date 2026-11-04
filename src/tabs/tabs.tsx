@@ -12,7 +12,7 @@ export const tabsRecipe = tv({
 		root: 'flex flex-col',
 		list: 'z-1 flex shrink-0 overflow-x-auto overflow-y-hidden',
 		trigger: [
-			'relative cursor-pointer text-sm font-semibold text-text-default-base-secondary no-underline transition-colors duration-150',
+			'relative cursor-pointer text-sm font-semibold text-text-default-base-secondary no-underline',
 			'hover:text-text-default-base-primary',
 			'focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring-button-primary',
 			'data-disabled:cursor-not-allowed data-disabled:opacity-50',
@@ -26,7 +26,7 @@ export const tabsRecipe = tv({
 				list: 'w-full gap-6 border-b border-border-default-base-primary bg-bg-default-base-primary px-4',
 				trigger: [
 					'grid h-10 content-center text-text-default-base-tertiary',
-					"before:absolute before:inset-x-0 before:bottom-0 before:h-0.5 before:bg-text-button-secondary-enable before:opacity-0 before:transition-opacity before:duration-150 before:content-['']",
+					"before:absolute before:inset-x-0 before:bottom-0 before:h-0.5 before:bg-text-button-secondary-enable before:opacity-0 before:content-['']",
 					'data-[state=active]:before:opacity-100'
 				]
 			},

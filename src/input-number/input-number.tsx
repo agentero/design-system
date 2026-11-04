@@ -32,16 +32,19 @@ export type InputNumberProps = Omit<InputProps, 'type' | 'value' | 'defaultValue
 	thousandSeparator?: boolean;
 	/**
 	 * Keeps zeros typed in front of the number (`007`), which an identifier
-	 * such as an NPN or a ZIP code needs. Set it to `false` for an amount, so
-	 * `007` becomes `7` once the field loses focus, and `onChange` fires with
-	 * the trimmed value. Defaults to `true`.
+	 * such as an NPN or a ZIP code needs. When it is off, `007` becomes `7` once
+	 * the field loses focus, and `onChange` fires with the trimmed value, which
+	 * is what an amount wants. Defaults to `true`, or to `false` when
+	 * `thousandSeparator` is set, so an amount never shows grouped zeros such
+	 * as `0,001,234`.
 	 */
 	allowLeadingZeros?: boolean;
 	/**
-	 * The underlying `<input>` type. Defaults to `'text'`.
+	 * The underlying `<input>` type. Defaults to `'text'`. The keypad on mobile
+	 * devices follows `inputMode`, not the type.
 	 * - `text` — the general case.
-	 * - `tel` — brings up the numeric keypad on phones, for codes and
-	 *   identifiers that are digits only.
+	 * - `tel` — behaves as `text`. It does not bring up a digits-only keypad;
+	 *   pass `inputMode="numeric"` for that.
 	 * - `password` — masks the digits, for a PIN.
 	 */
 	type?: 'password' | 'tel' | 'text';
@@ -59,11 +62,16 @@ export type InputNumberProps = Omit<InputProps, 'type' | 'value' | 'defaultValue
  * InputNumber is a text field that only takes digits and a decimal point and
  * formats them as the user types: a thousands separator when
  * `thousandSeparator` is set, leading zeros kept unless `allowLeadingZeros` is
- * off, no sign, no decimal rounding.
+ * off (it is by default with a separator), no sign, no decimal rounding.
  * Anything that is not a digit or the decimal point is ignored, and
  * `maxNumber` drops any edit that would exceed it. `onChange` fires with the
  * formatted text in `event.target.value` (`"1,234"`, not `1234`), which is
  * what a form library stores; parse it where the number is consumed.
+ *
+ * On mobile devices it brings up a keypad with a decimal key
+ * (`inputMode="decimal"`), since the field takes a decimal point. Pass
+ * `inputMode="numeric"` for a digits-only keypad, as an identifier such as an
+ * NPN or a ZIP code wants.
  *
  * It is an [Input](?path=/docs/components-input--docs) driven by
  * `react-number-format`, so it keeps the caret in place while it reformats
@@ -92,7 +100,7 @@ export type InputNumberProps = Omit<InputProps, 'type' | 'value' | 'defaultValue
  * @example
  * <FieldText>
  *   <Label>Annual premium</Label>
- *   <InputNumber name="premium" thousandSeparator allowLeadingZeros={false} />
+ *   <InputNumber name="premium" thousandSeparator />
  * </FieldText>
  */
 export const InputNumber = (props: InputNumberProps) => {
@@ -100,7 +108,7 @@ export const InputNumber = (props: InputNumberProps) => {
 		ref,
 		maxNumber,
 		thousandSeparator = false,
-		allowLeadingZeros = true,
+		allowLeadingZeros = !thousandSeparator,
 		onChange,
 		...rest
 	} = useInputContext(props);
@@ -108,6 +116,7 @@ export const InputNumber = (props: InputNumberProps) => {
 	return (
 		<NumericFormat
 			{...rest}
+			inputMode={rest.inputMode ?? 'decimal'}
 			customInput={BareInput}
 			getInputRef={ref}
 			thousandSeparator={thousandSeparator}

@@ -35,8 +35,7 @@ export const comboboxRecipe = tv({
 			'focus-visible:outline-2 focus-visible:outline-border-input-focus',
 			'disabled:cursor-default disabled:[&>svg>path]:fill-icon-input-disable'
 		],
-		trigger:
-			'transition-[rotate] duration-100 data-popup-open:rotate-180 motion-reduce:transition-none',
+		trigger: 'data-popup-open:rotate-180',
 		// With a clear button beside it, the chevron gives way to it once there is a value, as in
 		// Base UI's own example. Base UI marks the frame `data-placeholder` while there is none.
 		// A disabled or read-only input matches `:read-only` whichever part locked it — `Root`, a
@@ -47,21 +46,8 @@ export const comboboxRecipe = tv({
 		content: [
 			'w-(--anchor-width) max-h-(--available-height) overflow-hidden rounded-md',
 			'border border-border-default-base-primary bg-bg-default-base-primary shadow-lg',
-			// Not Base UI's `--transform-origin`: with `align="start"` it puts the origin on the left
-			// corner, and this surface is as wide as the input, so it has to grow from the edge it hangs from.
-			'data-[side=bottom]:origin-top data-[side=top]:origin-bottom',
 			// With no row and no `Empty` to show, the border alone would read as a stray line.
-			'[&:not(:has(>:not(:empty)))]:hidden',
-			// The legacy Datalist's own timing — a 100ms fade over a 0.95 scale — driven off Base UI's
-			// start/end attributes rather than the shared dropdown keyframes, whose 0.9 scale and
-			// translate read as a slow start on a surface this wide.
-			// `scale`, not `transform`: Tailwind v4 scale utilities set the standalone scale property.
-			'transition-[scale,opacity] duration-100 ease-in-out',
-			// Bracketed on purpose: Tailwind does not emit a rule for the bare `data-starting-style:`
-			// form, so the surface would appear with no transition at all.
-			'data-[starting-style]:scale-95 data-[starting-style]:opacity-0',
-			'data-[ending-style]:scale-95 data-[ending-style]:opacity-0',
-			'motion-reduce:transition-none'
+			'[&:not(:has(>:not(:empty)))]:hidden'
 		],
 		// Never taller than the room left: the surface clips there and would hide the last rows.
 		// When empty, its padding alone would be a 16px band under `Empty`. `:empty`, not Base UI's
@@ -205,7 +191,10 @@ export type ComboboxRootProps<
  * stays open and keeps the typed query between picks, so several rows can be
  * ticked from one search; closing the list (Escape, a click outside) still resets
  * the query. Each row then shows whether it is selected — see `Item`. Nothing is
- * written back into the input: render the selection next to the field.
+ * written back into the input: render the selection next to the field. For the
+ * same reason Escape on a closed list leaves the selection alone, where Base UI
+ * would empty it, and `onValueChange` is not called. It still clears the text, and
+ * only an Escape on an empty field reaches an enclosing `Modal`.
  *
  * @summary Root provider for an input-triggered filterable list
  * @see {@link https://base-ui.com/react/components/combobox|Base UI Combobox}
@@ -235,6 +224,7 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 	onOpenChange,
 	onOpenChangeComplete,
 	onInputValueChange,
+	onValueChange,
 	children,
 	...props
 }: ComboboxRootProps<Value, Multiple, Item>) => {
@@ -253,6 +243,9 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 	// it, the user is still typing that query, so this write is skipped.
 	const closedForMinimum = useRef(false);
 	const skipCloseReset = useRef(false);
+	// Escape on a closed list clears the text, then the value, on the same event; the value
+	// handler needs to know whether there was text to clear.
+	const escapeClearedText = useRef(false);
 
 	const handleOpenChange: typeof onOpenChange = (open, eventDetails) => {
 		if (open && isShort(query.current)) {
@@ -285,6 +278,7 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 			eventDetails.cancel();
 			return;
 		}
+		escapeClearedText.current = eventDetails.reason === 'escape-key' && query.current !== '';
 		query.current = value;
 		onInputValueChange?.(value, eventDetails);
 		// Base UI only closes the list once the text is empty, so a minimum closes it here.
@@ -292,6 +286,19 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 			closedForMinimum.current = true;
 			setOpenState(false);
 		}
+	};
+
+	// Escape on a closed list empties the value, which a multi-select never shows in the input:
+	// the whole selection, disabled rows included, would go with no sign. It keeps it here. If
+	// the key cleared some text it stops there; if nothing changed, it reaches whatever is
+	// around the field, a `Modal` say.
+	const handleValueChange: typeof onValueChange = (value, eventDetails) => {
+		if (multiple && eventDetails.reason === 'escape-key') {
+			eventDetails.cancel();
+			if (!escapeClearedText.current) eventDetails.allowPropagation();
+			return;
+		}
+		onValueChange?.(value, eventDetails);
 	};
 
 	// Without a minimum, Base UI keeps its own open state, as it always has.
@@ -310,6 +317,7 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 					onOpenChange={handleOpenChange}
 					onOpenChangeComplete={handleOpenChangeComplete}
 					onInputValueChange={handleInputValueChange}
+					onValueChange={handleValueChange}
 					autoHighlight={autoHighlight ?? HIGHLIGHT_FIRST}
 					{...props}
 					disabled={disabled}

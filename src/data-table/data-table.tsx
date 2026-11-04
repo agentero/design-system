@@ -174,7 +174,7 @@ ToolBar.displayName = 'DataTable.ToolBar';
 /* ------------ DataTable Table ------------ */
 
 const orderIconStyles = tv({
-	base: 'size-4 transition-transform duration-200 motion-reduce:transition-none',
+	base: 'size-4 transition-transform duration-200 ease-out-quint motion-reduce:transition-none',
 	variants: {
 		direction: {
 			asc: '',
@@ -323,10 +323,7 @@ export const DataTableTable = ({
 							return (
 								<Fragment key={row.id}>
 									<Table.Row
-										className={cn(
-											'has-aria-expanded:bg-bg-default-base-secondary',
-											isClickable && 'cursor-pointer'
-										)}
+										className={cn(isClickable && 'cursor-pointer')}
 										onClick={
 											isClickable
 												? e => {

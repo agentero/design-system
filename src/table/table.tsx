@@ -184,9 +184,15 @@ const rowStyles = tv({
 	variants: {
 		body: {
 			true: [
+				// Fades out with a closing menu; hover still shows at once.
+				'transition-colors duration-100 hover:duration-0 motion-reduce:transition-none',
 				'hover:bg-bg-default-base-secondary hover:has-[[data-slot=table-empty-state]]:bg-transparent',
-				'[&:hover_[data-slot=table-row-actions]>*]:opacity-100',
-				'[&:hover_[data-slot=table-row-actions]]:after:opacity-100'
+				'[&:hover_[data-slot=table-row-actions]]:opacity-100 [&:hover_[data-slot=table-row-actions]]:duration-0',
+				'[&:hover_[data-slot=table-row-actions]]:after:opacity-100 [&:hover_[data-slot=table-row-actions]]:after:duration-0',
+				'overlay-open-within:bg-bg-default-base-secondary overlay-open-within:has-[[data-slot=table-empty-state]]:bg-transparent',
+				'overlay-open-within:[&_[data-slot=table-row-actions]]:opacity-100',
+				'overlay-open-within:[&_[data-slot=table-row-actions]]:after:opacity-100',
+				'has-[[data-slot=table-row-actions]_:focus-visible]:bg-bg-default-base-secondary'
 			],
 			false: ''
 		},
@@ -201,7 +207,9 @@ const rowStyles = tv({
 
 /**
  * A table row (`<tr>`). In `Table.Body`, rows pick up dividers, hover, and the
- * sticky-footer treatment from the `Table.Root` variants automatically.
+ * sticky-footer treatment from the `Table.Root` variants automatically. A body
+ * row keeps its hover look, row actions included, while a menu, popover,
+ * select or dialog opened from inside it is open.
  *
  * @summary Table row element
  */
@@ -264,7 +272,7 @@ export const Cell = ({
 Cell.displayName = 'Table.Cell';
 
 const expandButtonStyles = tv({
-	base: 'relative z-[1] [&>svg]:shrink-0 [&>svg]:transition-transform [&>svg]:duration-200 data-[state=open]:[&>svg]:rotate-180 motion-reduce:[&>svg]:transition-none'
+	base: 'relative z-[1] [&>svg]:shrink-0 [&>svg]:transition-transform [&>svg]:duration-200 [&>svg]:ease-out-quint data-[state=open]:[&>svg]:rotate-180 motion-reduce:[&>svg]:transition-none'
 });
 
 type ExpandButtonProps = {
@@ -319,15 +327,18 @@ const rowActionsStyles = tv({
 		// Gradient mask behind the actions, revealed on row hover.
 		'after:absolute after:inset-y-0 after:right-0 after:left-[calc(var(--table-cell-padding-inline)*-1)] after:opacity-0 after:content-[""]',
 		'after:[background:linear-gradient(to_right,transparent_0,var(--color-bg-default-base-secondary)_var(--table-cell-padding-inline))]',
-		// Controls appear on hover; always visible on coarse-pointer devices.
-		'[&>*]:relative [&>*]:z-[1] [&>*]:opacity-0',
-		'[@media(hover:none)_and_(pointer:coarse)]:[&>*]:opacity-100'
+		'after:transition-opacity after:duration-100 motion-reduce:after:transition-none',
+		// Controls appear on hover or keyboard focus; always visible on coarse-pointer devices.
+		'opacity-0 transition-opacity duration-100 motion-reduce:transition-none [&>*]:relative [&>*]:z-[1]',
+		'has-[:focus-visible]:opacity-100 has-[:focus-visible]:after:opacity-100',
+		'[@media(hover:none)_and_(pointer:coarse)]:opacity-100'
 	]
 });
 
 /**
  * Inline action cluster pinned to the row's trailing edge; controls stay hidden
- * until row hover (always visible on coarse-pointer devices).
+ * until row hover or keyboard focus (always visible on coarse-pointer devices)
+ * and stay visible while an overlay opened from one of them is open.
  *
  * @summary Hover-revealed row action cluster
  */

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { Button } from '../button';
-import { Tooltip } from './tooltip';
+import { Tooltip, TooltipProvider } from './tooltip';
 
 /**
  * Tooltip reveals a short, non-essential hint anchored to a trigger element
@@ -98,6 +98,38 @@ export const OpensOnFocus: Story = {
 		const tooltips = await body.findAllByText(args.content as string);
 		await expect(tooltips.length).toBeGreaterThan(0);
 		await expect(trigger).toHaveAttribute('aria-describedby');
+	}
+};
+
+/**
+ * Inside a `TooltipProvider`, the first tooltip waits for the hover delay; the next one opens at once.
+ *
+ * @summary Shared provider: only the first tooltip waits for the hover delay
+ */
+export const SharedProvider: Story = {
+	render: () => (
+		<TooltipProvider>
+			<div className="flex gap-2">
+				<Tooltip content="Edit carrier" asChild>
+					<Button variant="secondary">Edit</Button>
+				</Tooltip>
+				<Tooltip content="Archive carrier" asChild>
+					<Button variant="secondary">Archive</Button>
+				</Tooltip>
+			</div>
+		</TooltipProvider>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const edit = canvas.getByRole('button', { name: 'Edit' });
+		const archive = canvas.getByRole('button', { name: 'Archive' });
+
+		await userEvent.hover(edit);
+		await waitFor(() => expect(edit).toHaveAttribute('data-state', 'delayed-open'));
+
+		await userEvent.unhover(edit);
+		await userEvent.hover(archive);
+		await waitFor(() => expect(archive).toHaveAttribute('data-state', 'instant-open'));
 	}
 };
 
