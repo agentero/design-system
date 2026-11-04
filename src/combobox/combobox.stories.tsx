@@ -661,12 +661,16 @@ export const AsyncSearchWithLoading: Story = {
 
 		// Deleting back under the minimum closes the list. The search clears its rows on that same
 		// keystroke, and the closing list never says "no agencies found" on its way out.
+		// From the records, not the live DOM: text added and cleared before the callback runs counts too.
 		const emptyShown: string[] = [];
-		const watcher = new MutationObserver(() => {
-			const empty = document.body.querySelector('[data-slot="combobox-empty"]');
-			if (empty?.textContent) emptyShown.push(empty.textContent);
+		const watcher = new MutationObserver(records => {
+			for (const { target, addedNodes } of records) {
+				if (!(target instanceof Element) || !target.closest('[data-slot="combobox-empty"]'))
+					continue;
+				for (const node of addedNodes) if (node.textContent) emptyShown.push(node.textContent);
+			}
 		});
-		watcher.observe(document.body, { childList: true, subtree: true, characterData: true });
+		watcher.observe(document.body, { childList: true, subtree: true });
 		await userEvent.type(input, '{Backspace}{Backspace}{Backspace}');
 		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
 		watcher.disconnect();

@@ -90,12 +90,15 @@ const slots = comboboxRecipe();
 // a private store.
 const MultipleContext = createContext(false);
 
-// What the list is doing, for `Content` to mark it busy and for `Empty` to hold back. `loading`
-// is the root's and stays `undefined` for a root that never opted in. `open` drops as soon as the
-// list starts closing, while the surface is still mounted: a search that empties its rows on that
-// keystroke would otherwise flash its "no results" on the way out. Both stay `undefined` outside
-// this `Root`, under `Autocomplete`, which borrows these parts.
-const ListStateContext = createContext<{ open?: boolean; loading?: boolean }>({});
+// The root's `loading`, for `Content` to mark busy and for `Empty` to hold back. It stays
+// `undefined` for a root that never opted in.
+const LoadingContext = createContext<boolean | undefined>(undefined);
+
+// Whether the list is open, for `Empty` to hold back. It drops as soon as the list starts closing,
+// while the surface is still mounted: a search that empties its rows on that keystroke would
+// otherwise flash its "no results" on the way out. It stays `undefined` outside this `Root`, under
+// `Autocomplete`, which borrows these parts.
+const OpenContext = createContext<boolean | undefined>(undefined);
 
 // How long a request runs before its label is announced. VoiceOver cuts off whatever it is saying
 // to echo the key just typed and, when the list opens, to read out its new expanded state; both
@@ -313,7 +316,7 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 
 	return (
 		<MultipleContext value={multiple}>
-			<ListStateContext value={{ open: isOpen, loading }}>
+			<LoadingContext value={loading}>
 				<ComboboxPrimitive.Root
 					open={open}
 					defaultOpen={defaultOpen}
@@ -325,7 +328,7 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 					{...props}
 					disabled={disabled}
 					readOnly={readOnly}>
-					{children}
+					<OpenContext value={isOpen}>{children}</OpenContext>
 					{loading !== undefined && (
 						// Next to the field, not inside `Content`: the surface mounts on the keystroke that
 						// starts the request, and a live region that appears already filled in is skipped.
@@ -336,7 +339,7 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 						</ComboboxPrimitive.Status>
 					)}
 				</ComboboxPrimitive.Root>
-			</ListStateContext>
+			</LoadingContext>
 		</MultipleContext>
 	);
 };
@@ -448,7 +451,7 @@ export const Input = ({
 }: InputProps) => {
 	const { className, size = 'md', onKeyDown, ...rest } = useBaseInputContext(props);
 	const multiple = use(MultipleContext);
-	const { loading } = use(ListStateContext);
+	const loading = use(LoadingContext);
 	const clearable = showClear && !multiple;
 
 	// With no row highlighted, Base UI closes the list and lets Enter through to the form, as a
@@ -550,7 +553,7 @@ export const Content = ({
 	children,
 	...props
 }: ContentProps) => {
-	const { loading } = use(ListStateContext);
+	const loading = use(LoadingContext);
 
 	return (
 		<ComboboxPrimitive.Portal>
@@ -661,7 +664,8 @@ type EmptyProps = ComponentPropsWithRef<typeof ComboboxPrimitive.Empty>;
  * @dataAttribute {string} data-slot - Always set to "combobox-empty"
  */
 export const Empty = ({ className, children, ...props }: EmptyProps) => {
-	const { open, loading } = use(ListStateContext);
+	const loading = use(LoadingContext);
+	const open = use(OpenContext);
 
 	return (
 		<ComboboxPrimitive.Empty
