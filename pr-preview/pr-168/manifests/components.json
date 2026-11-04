@@ -2362,6 +2362,13 @@
           "snippet": "const AsChild = () => (\n    <Row>\n        <Button asChild variant=\"primary\">\n            <a href=\"/dashboard\">Go to dashboard</a>\n        </Button>\n        <Button asChild variant=\"secondary\">\n            <a href=\"https://agentero.com\" target=\"_blank\" rel=\"noreferrer\">\n                Visit Agentero\n            </a>\n        </Button>\n    </Row>\n);",
           "description": "`asChild` renders Button's styles on the nested child element rather than\non a `<button>` — the child receives Button's `className`, `ref`, and\nmerged props via Radix's `Slot` primitive. Use it to turn any anchor or\nframework `Link` into a Button without coupling the design system to a\nrouter. In app code, swap the plain `<a>` below for your framework's Link\n(`next/link`, `react-router`, `@tanstack/react-router`, etc.).",
           "summary": "`asChild` composes Button's styles onto any element"
+        },
+        {
+          "id": "components-button--open-trigger",
+          "name": "Open Trigger",
+          "snippet": "const OpenTrigger = () => (\n    <Stack>\n        <Row>\n            {NON_LINK_VARIANTS.map(variant => (\n                <Button key={variant} variant={variant} aria-haspopup=\"menu\" aria-expanded=\"true\">\n                    {`${variant} menu open`}\n                </Button>\n            ))}\n        </Row>\n        <Row>\n            <Button variant=\"secondary\" aria-expanded=\"true\">\n                Section expanded\n            </Button>\n            <Button variant=\"secondary\" status=\"danger\" aria-haspopup=\"menu\" aria-expanded=\"true\">\n                Danger menu open\n            </Button>\n            <Button variant=\"secondary\" loading aria-haspopup=\"menu\" aria-expanded=\"true\">\n                Loading menu open\n            </Button>\n        </Row>\n    </Stack>\n);",
+          "description": "A Button that opens a menu, popover, select or combobox list keeps its hover\nlook while that overlay is open, so the pointer can leave it for the list\nwithout the trigger looking idle. The open state is read from\n`aria-expanded=\"true\"` together with `aria-haspopup` (or `role=\"combobox\"`),\nwhich Radix and Base UI triggers set for you. A disclosure toggle, such as a\ncollapsible section header, sets only `aria-expanded` and keeps its regular look,\nand a disabled or loading trigger keeps its disabled look.",
+          "summary": "Overlay triggers keep the hover look while their overlay is open"
         }
       ],
       "import": "import { Button } from \"@agentero/design-system\";"
@@ -3034,7 +3041,7 @@
         "displayName": "Combobox.Root",
         "exportName": "Combobox",
         "filePath": "/home/runner/work/design-system/design-system/src/combobox/index.ts",
-        "description": "Root of a combobox: a text input that filters a list of options and writes the\nchosen one back into itself. The list opens on focus, on the first keystroke\nor from the chevron of `Input`'s `select` variant.\n\nFor a search against an API, set `minInputLength` so the list stays shut until\nthe query is worth sending: a field that opens an empty list on focus reads as\nbroken. For a pick from a short fixed list with no typing at all, prefer a\nselect.\n\nPass the options as `items`. For a list that comes from the server, set\n`filter={null}`, hand the already-filtered rows to `filteredItems`, request\nthem from `onInputValueChange`, and pass the request's state as `loading`:\nthe combobox announces the wait and marks the list busy on its own.\n\nEvery Base UI root prop is accepted and forwarded — `items`, `filter`,\n`value`, `onValueChange` and so on. `open` stays the consumer's to control;\n`minInputLength` only refuses to open below the minimum.\n\n`disabled` and `readOnly` belong here, not on `Input`: the input, the clear\nbutton and the chevron all read them from the root. `disabled` locks the\nwhole field; `readOnly` locks the value but still lets the list open and be\nbrowsed. Inside a `FieldText` both default to the field's.\n\nThe first row is highlighted as soon as the list shows one, so Enter picks\nit without the arrow keys; pass `autoHighlight={false}` to start with\nnothing highlighted. The highlight follows `items` (and `filteredItems`):\nrows rendered without them, by a child that loads its own data, are only\nhighlighted once the query changes. See `Input` for what Enter does in a form.\n\nWith `multiple`, the value is an array and picking a row toggles it. The list\nstays open and keeps the typed query between picks, so several rows can be\nticked from one search; closing the list (Escape, a click outside) still resets\nthe query. Each row then shows whether it is selected — see `Item`. Nothing is\nwritten back into the input: render the selection next to the field.",
+        "description": "Root of a combobox: a text input that filters a list of options and writes the\nchosen one back into itself. The list opens on focus, on the first keystroke\nor from the chevron of `Input`'s `select` variant.\n\nFor a search against an API, set `minInputLength` so the list stays shut until\nthe query is worth sending: a field that opens an empty list on focus reads as\nbroken. For a pick from a short fixed list with no typing at all, prefer a\nselect.\n\nPass the options as `items`. For a list that comes from the server, set\n`filter={null}`, hand the already-filtered rows to `filteredItems`, request\nthem from `onInputValueChange`, and pass the request's state as `loading`:\nthe combobox announces the wait and marks the list busy on its own.\n\nEvery Base UI root prop is accepted and forwarded — `items`, `filter`,\n`value`, `onValueChange` and so on. `open` stays the consumer's to control;\n`minInputLength` only refuses to open below the minimum.\n\n`disabled` and `readOnly` belong here, not on `Input`: the input, the clear\nbutton and the chevron all read them from the root. `disabled` locks the\nwhole field; `readOnly` locks the value but still lets the list open and be\nbrowsed. Inside a `FieldText` both default to the field's.\n\nThe first row is highlighted as soon as the list shows one, so Enter picks\nit without the arrow keys; pass `autoHighlight={false}` to start with\nnothing highlighted. The highlight follows `items` (and `filteredItems`):\nrows rendered without them, by a child that loads its own data, are only\nhighlighted once the query changes. See `Input` for what Enter does in a form.\n\nWith `multiple`, the value is an array and picking a row toggles it. The list\nstays open and keeps the typed query between picks, so several rows can be\nticked from one search; closing the list (Escape, a click outside) still resets\nthe query. Each row then shows whether it is selected — see `Item`. Nothing is\nwritten back into the input: render the selection next to the field. For the\nsame reason Escape on a closed list leaves the selection alone, where Base UI\nwould empty it, and `onValueChange` is not called. It still clears the text, and\nonly an Escape on an empty field reaches an enclosing `Modal`.",
         "jsDocTags": {
           "summary": [
             "Root provider for an input-triggered filterable list"
@@ -3945,7 +3952,7 @@
         {
           "id": "components-combobox--inside-modal",
           "name": "Inside Modal",
-          "snippet": "const InsideModal = () => (\n    <Modal.Root>\n        <Modal.Trigger asChild>\n            <Button variant=\"secondary\">Assign agency</Button>\n        </Modal.Trigger>\n        <Modal.Content>\n            <Modal.Title>Assign agency</Modal.Title>\n            <Modal.Body>\n                <Combobox.Root items={STATES}>\n                    <Combobox.Input placeholder=\"Search states\" aria-label=\"Search states\" />\n                    <Combobox.Content>\n                        <Combobox.Empty>No matches found</Combobox.Empty>\n                        <Combobox.List>\n                            {(state: string) => (\n                                <Combobox.Item key={state} value={state}>\n                                    {state}\n                                </Combobox.Item>\n                            )}\n                        </Combobox.List>\n                    </Combobox.Content>\n                </Combobox.Root>\n            </Modal.Body>\n        </Modal.Content>\n    </Modal.Root>\n);",
+          "snippet": "const InsideModal = () => <Modal.Root>\n    <Modal.Trigger asChild>\n        <Button variant=\"secondary\">Assign agency</Button>\n    </Modal.Trigger>\n    <Modal.Content>\n        <Modal.Title>Assign agency</Modal.Title>\n        <Modal.Body>\n            <Combobox.Root items={STATES}>\n                <Combobox.Input placeholder=\"Search states\" aria-label=\"Search states\" />\n                <Combobox.Content>\n                    <Combobox.Empty>No matches found</Combobox.Empty>\n                    <Combobox.List>\n                        {(state: string) => (\n                            <Combobox.Item key={state} value={state}>\n                                {state}\n                            </Combobox.Item>\n                        )}\n                    </Combobox.List>\n                </Combobox.Content>\n            </Combobox.Root>\n        </Modal.Body>\n    </Modal.Content>\n</Modal.Root>;",
           "description": "Inside a `Modal`, which is a Radix Dialog. The surface portals to the body, so\nthis checks that the dialog's modal layer neither blocks pointer events on the\nlist nor treats a click in it as a click outside and closes. With a value\npicked, Escape closes the list, then clears the value, then closes the modal."
         },
         {
@@ -3959,7 +3966,7 @@
           "name": "Inside Popover With Value",
           "error": {
             "name": "SyntaxError",
-            "message": "Expected render to be an arrow function or function expression\n   999 |  */\n  1000 | export const InsidePopoverWithValue: Story = {\n> 1001 | \trender: InsidePopover.render,\n       | \t           ^^^^^^^^^^^^^^^^^^^^\n  1002 | \tplay: async ({ canvasElement }) => {\n  1003 | \t\tconst body = within(document.body);\n  1004 | \t\tconst trigger = within(canvasElement).getByRole('button', { name: /filter by state/i });"
+            "message": "Expected render to be an arrow function or function expression\n  1045 |  */\n  1046 | export const InsidePopoverWithValue: Story = {\n> 1047 | \trender: InsidePopover.render,\n       | \t           ^^^^^^^^^^^^^^^^^^^^\n  1048 | \tplay: async ({ canvasElement }) => {\n  1049 | \t\tconst body = within(document.body);\n  1050 | \t\tconst trigger = within(canvasElement).getByRole('button', { name: /filter by state/i });"
           }
         },
         {
@@ -4212,8 +4219,8 @@
         {
           "id": "components-command--inside-popover",
           "name": "Inside Popover",
-          "snippet": "const InsidePopover = () => (\n    <Popover.Root>\n        <Popover.Trigger asChild>\n            <Button variant=\"secondary\">Open commands</Button>\n        </Popover.Trigger>\n        <Popover.Content aria-label=\"Commands\" className=\"p-0\">\n            <Command.Root label=\"Search commands\">\n                <Command.Input placeholder=\"Search...\" />\n                <Command.List>\n                    {OPTIONS.map(option => (\n                        <Command.Item key={option}>{option}</Command.Item>\n                    ))}\n                </Command.List>\n            </Command.Root>\n        </Popover.Content>\n    </Popover.Root>\n);",
-          "description": "Inside a `Popover`. cmdk's list is always on screen, so Escape closes the popover."
+          "snippet": "const InsidePopover = () => (\n    <Popover.Root>\n        <Popover.Trigger asChild>\n            <Button variant=\"secondary\">Open commands</Button>\n        </Popover.Trigger>\n        <Popover.Content aria-label=\"Commands\">\n            <Command.Root label=\"Search commands\">\n                <Command.Input placeholder=\"Search...\" />\n                <Command.List>\n                    {OPTIONS.map(option => (\n                        <Command.Item key={option}>{option}</Command.Item>\n                    ))}\n                </Command.List>\n            </Command.Root>\n        </Popover.Content>\n    </Popover.Root>\n);",
+          "description": "Inside a `Popover`. The popover hands its border, shadow and padding to the `Command`, so the\npicker draws a single panel. cmdk's list is always on screen, so Escape closes the popover."
         }
       ],
       "import": "import { Button, Command, Popover } from \"@agentero/design-system\";"
@@ -6397,6 +6404,13 @@
           "snippet": "const SubmenuWithDisabledItems = () => (\n    <DropdownMenu.Root>\n        <DropdownMenu.Trigger asChild>\n            <Button size=\"md\" variant=\"secondary\">\n                Document Actions\n                <IconKeyboardArrowDown />\n            </Button>\n        </DropdownMenu.Trigger>\n        <DropdownMenu.Portal>\n            <DropdownMenu.Content>\n                <DropdownMenu.Item onSelect={() => console.log('View')}>View</DropdownMenu.Item>\n                <DropdownMenu.Item onSelect={() => console.log('Edit')}>Edit</DropdownMenu.Item>\n                <DropdownMenu.Separator />\n                <DropdownMenu.Sub>\n                    <DropdownMenu.SubTrigger>\n                        <IconContentCopy />\n                        Export as\n                    </DropdownMenu.SubTrigger>\n                    <DropdownMenu.Portal>\n                        <DropdownMenu.SubContent>\n                            <DropdownMenu.Item onSelect={() => console.log('PDF')}>PDF</DropdownMenu.Item>\n                            <DropdownMenu.Item onSelect={() => console.log('Word')}>\n                                Word Document\n                            </DropdownMenu.Item>\n                            <DropdownMenu.Item disabled>Excel (Premium only)</DropdownMenu.Item>\n                            <DropdownMenu.Item disabled>PowerPoint (Premium only)</DropdownMenu.Item>\n                        </DropdownMenu.SubContent>\n                    </DropdownMenu.Portal>\n                </DropdownMenu.Sub>\n                <DropdownMenu.Sub>\n                    <DropdownMenu.SubTrigger disabled>\n                        <IconIosShare />\n                        Share (Sign in required)\n                    </DropdownMenu.SubTrigger>\n                    <DropdownMenu.Portal>\n                        <DropdownMenu.SubContent>\n                            <DropdownMenu.Item>Email</DropdownMenu.Item>\n                            <DropdownMenu.Item>Link</DropdownMenu.Item>\n                        </DropdownMenu.SubContent>\n                    </DropdownMenu.Portal>\n                </DropdownMenu.Sub>\n            </DropdownMenu.Content>\n        </DropdownMenu.Portal>\n    </DropdownMenu.Root>\n);",
           "description": "Submenu that contains `disabled` `Item`s alongside a fully-disabled\n`SubTrigger`. Use `disabled` sparingly — prefer hiding unavailable\nactions outright unless the user needs to see them and understand why.",
           "summary": "Submenu with `disabled` items and a disabled `SubTrigger`"
+        },
+        {
+          "id": "components-dropdownmenu--focus-return",
+          "name": "Focus Return",
+          "snippet": "const FocusReturn = () => (\n    <DropdownMenu.Root>\n        <DropdownMenu.Trigger asChild>\n            <Button size=\"md\" variant=\"secondary\">\n                Contract actions\n            </Button>\n        </DropdownMenu.Trigger>\n        <DropdownMenu.Portal>\n            <DropdownMenu.Content>\n                <DropdownMenu.Item>Download contract</DropdownMenu.Item>\n                <DropdownMenu.Item>Mark as pending</DropdownMenu.Item>\n            </DropdownMenu.Content>\n        </DropdownMenu.Portal>\n    </DropdownMenu.Root>\n);",
+          "description": "Closing the menu hands focus back to its trigger. After a pointer close the\ntrigger takes focus without a focus ring, since the pointer never asked for\none. After a keyboard close (Escape, or choosing a row with Enter) the ring\nshows, so a keyboard user can see where focus went.",
+          "summary": "Focus returns to the trigger, with a ring only after a keyboard close"
         }
       ],
       "import": "import { Button, DropdownMenu } from \"@agentero/design-system\";"
@@ -7791,7 +7805,7 @@
         {
           "id": "components-hovercard--abandoned-hover",
           "name": "Abandoned Hover",
-          "snippet": "const AbandonedHover = () => <HoverCard.Root openDelay={0} closeDelay={0}>\n    <HoverCard.Trigger asChild>\n        <Button variant=\"secondary\">Hover me</Button>\n    </HoverCard.Trigger>\n    <HoverCard.Portal>\n        <HoverCard.Content>\n            <PreviewCard />\n        </HoverCard.Content>\n    </HoverCard.Portal>\n</HoverCard.Root>;",
+          "snippet": "const AbandonedHover = () => <HoverCard.Root openDelay={0} closeDelay={0}>\n    <HoverCard.Trigger asChild>\n        <Button variant=\"secondary\">Hover me</Button>\n    </HoverCard.Trigger>\n    <HoverCard.Portal>\n        <HoverCard.Content className=\"duration-1000\">\n            <PreviewCard />\n        </HoverCard.Content>\n    </HoverCard.Portal>\n</HoverCard.Root>;",
           "description": "Brushing the trigger and leaving without ever reaching the card is the most\ncommon way a hover card gets dismissed, so the exit reverses the entrance\nfrom wherever it got to. Driving it with keyframes instead would restart the\nexit at full opacity and scale, popping the half-faded card to fully visible\non its way out."
         },
         {
@@ -7959,16 +7973,16 @@
           "{string} data-slot - Always set to \"input-number\""
         ],
         "example": [
-          "<FieldText>\n  <Label>Annual premium</Label>\n  <InputNumber name=\"premium\" thousandSeparator allowLeadingZeros={false} />\n</FieldText>"
+          "<FieldText>\n  <Label>Annual premium</Label>\n  <InputNumber name=\"premium\" thousandSeparator />\n</FieldText>"
         ]
       },
-      "description": "InputNumber is a text field that only takes digits and a decimal point and\nformats them as the user types: thousands separators on request, leading\nzeros kept unless turned off, no sign. `onChange` fires with the formatted text in\n`event.target.value`. It is an `Input` driven by `react-number-format`, so\nit takes its label, messages and states from a surrounding `FieldText`.",
+      "description": "InputNumber is a text field that only takes digits and a decimal point and\nformats them as the user types: thousands separators on request, leading\nzeros kept unless turned off, no sign. `onChange` fires with the formatted text in\n`event.target.value`. On mobile devices it shows a keypad with a decimal\nkey. It is an `Input` driven by\n`react-number-format`, so it takes its label, messages and states from a surrounding `FieldText`.",
       "summary": "Numeric input formatting as you type, built on react-number-format",
       "reactComponentMeta": {
         "displayName": "InputNumber",
         "exportName": "InputNumber",
         "filePath": "/home/runner/work/design-system/design-system/src/input-number/input-number.tsx",
-        "description": "InputNumber is a text field that only takes digits and a decimal point and\nformats them as the user types: a thousands separator when\n`thousandSeparator` is set, leading zeros kept unless `allowLeadingZeros` is\noff, no sign, no decimal rounding.\nAnything that is not a digit or the decimal point is ignored, and\n`maxNumber` drops any edit that would exceed it. `onChange` fires with the\nformatted text in `event.target.value` (`\"1,234\"`, not `1234`), which is\nwhat a form library stores; parse it where the number is consumed.\n\nIt is an [Input](?path=/docs/components-input--docs) driven by\n`react-number-format`, so it keeps the caret in place while it reformats\nand takes its wiring from a surrounding `FieldText` as a plain `Input`\ndoes. Every standard `<input>` attribute is accepted and forwarded, such as\n`placeholder`, `required`, `maxLength` or `aria-invalid`; `type` is limited\nto `text`, `tel` and `password`, and `value` and `defaultValue` also take a\nnumber or `null`. The invalid state comes from `aria-invalid`, which paints\nthe destructive border. Place it inside an\n[InputGroup](?path=/docs/components-inputgroup--docs) to show a currency or\nunit affix.\n\nDo not use it for a phone number, which is formatted by `InputTel`, nor for\nfree text with some digits in it, which is a plain `Input`. It is not a\n`type=\"number\"` input on purpose: that one drops leading zeros and cannot\nshow separators, which identifiers and amounts both need.\n\nIt renders from `value`, not from the DOM, so bind it to a form through a\ncontrolled value (react-hook-form's `Controller` or `useController`), not\nthrough `register`: a value `register` writes into the `<input>`, such as a\ndefault or a `reset`, is wiped on the next render.",
+        "description": "InputNumber is a text field that only takes digits and a decimal point and\nformats them as the user types: a thousands separator when\n`thousandSeparator` is set, leading zeros kept unless `allowLeadingZeros` is\noff (it is by default with a separator), no sign, no decimal rounding.\nAnything that is not a digit or the decimal point is ignored, and\n`maxNumber` drops any edit that would exceed it. `onChange` fires with the\nformatted text in `event.target.value` (`\"1,234\"`, not `1234`), which is\nwhat a form library stores; parse it where the number is consumed.\n\nOn mobile devices it brings up a keypad with a decimal key\n(`inputMode=\"decimal\"`), since the field takes a decimal point. Pass\n`inputMode=\"numeric\"` for a digits-only keypad, as an identifier such as an\nNPN or a ZIP code wants.\n\nIt is an [Input](?path=/docs/components-input--docs) driven by\n`react-number-format`, so it keeps the caret in place while it reformats\nand takes its wiring from a surrounding `FieldText` as a plain `Input`\ndoes. Every standard `<input>` attribute is accepted and forwarded, such as\n`placeholder`, `required`, `maxLength` or `aria-invalid`; `type` is limited\nto `text`, `tel` and `password`, and `value` and `defaultValue` also take a\nnumber or `null`. The invalid state comes from `aria-invalid`, which paints\nthe destructive border. Place it inside an\n[InputGroup](?path=/docs/components-inputgroup--docs) to show a currency or\nunit affix.\n\nDo not use it for a phone number, which is formatted by `InputTel`, nor for\nfree text with some digits in it, which is a plain `Input`. It is not a\n`type=\"number\"` input on purpose: that one drops leading zeros and cannot\nshow separators, which identifiers and amounts both need.\n\nIt renders from `value`, not from the DOM, so bind it to a form through a\ncontrolled value (react-hook-form's `Controller` or `useController`), not\nthrough `register`: a value `register` writes into the `<input>`, such as a\ndefault or a `reset`, is wiped on the next render.",
         "jsDocTags": {
           "summary": [
             "Numeric input formatting as you type, built on react-number-format"
@@ -7977,7 +7991,7 @@
             "{string} data-slot - Always set to \"input-number\""
           ],
           "example": [
-            "<FieldText>\n  <Label>Annual premium</Label>\n  <InputNumber name=\"premium\" thousandSeparator allowLeadingZeros={false} />\n</FieldText>"
+            "<FieldText>\n  <Label>Annual premium</Label>\n  <InputNumber name=\"premium\" thousandSeparator />\n</FieldText>"
           ]
         },
         "props": {
@@ -8058,9 +8072,9 @@
             "type": {
               "name": "boolean"
             },
-            "description": "Keeps zeros typed in front of the number (`007`), which an identifier\nsuch as an NPN or a ZIP code needs. Set it to `false` for an amount, so\n`007` becomes `7` once the field loses focus, and `onChange` fires with\nthe trimmed value. Defaults to `true`.",
+            "description": "Keeps zeros typed in front of the number (`007`), which an identifier\nsuch as an NPN or a ZIP code needs. When it is off, `007` becomes `7` once\nthe field loses focus, and `onChange` fires with the trimmed value, which\nis what an amount wants. Defaults to `true`, or to `false` when\n`thousandSeparator` is set, so an amount never shows grouped zeros such\nas `0,001,234`.",
             "defaultValue": {
-              "value": "true"
+              "value": "!thousandSeparator"
             },
             "parent": {
               "name": "InputNumberProps",
@@ -8091,7 +8105,7 @@
                 }
               ]
             },
-            "description": "The underlying `<input>` type. Defaults to `'text'`.\n- `text` — the general case.\n- `tel` — brings up the numeric keypad on phones, for codes and\n  identifiers that are digits only.\n- `password` — masks the digits, for a PIN.",
+            "description": "The underlying `<input>` type. Defaults to `'text'`. The keypad on mobile\ndevices follows `inputMode`, not the type.\n- `text` — the general case.\n- `tel` — behaves as `text`. It does not bring up a digits-only keypad;\n  pass `inputMode=\"numeric\"` for that.\n- `password` — masks the digits, for a PIN.",
             "defaultValue": null,
             "parent": {
               "name": "InputNumberProps",
@@ -8156,8 +8170,8 @@
           "id": "components-inputnumber--type-tel",
           "name": "Type Tel",
           "snippet": "const TypeTel = () => <InputNumber\n    aria-label=\"NPN\"\n    onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n    type=\"tel\" />;",
-          "description": "`type=\"tel\"` brings up the numeric keypad on phones. The field still\nformats and filters the same way; only the underlying input type changes.",
-          "summary": "Numeric keypad on phones through the tel input type"
+          "description": "`type=\"tel\"` renders a `tel` input that behaves as a `text` one: the field\nformats and filters the same way, and the keypad on mobile devices still\nfollows `inputMode`.",
+          "summary": "tel input type, same behaviour as text"
         },
         {
           "id": "components-inputnumber--thousand-separator",
@@ -8165,6 +8179,13 @@
           "snippet": "const ThousandSeparator = () => <InputNumber\n    aria-label=\"Premium\"\n    onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n    thousandSeparator />;",
           "description": "With `thousandSeparator` the integer part is grouped with commas as the\nuser types, and the commas are part of what `onChange` reports.",
           "summary": "Thousands grouped with commas as the user types"
+        },
+        {
+          "id": "components-inputnumber--keypad",
+          "name": "Keypad",
+          "snippet": "const Keypad = () => (\n    <div style={{ display: 'grid', gap: '1.5rem' }}>\n        <FieldText>\n            <Label>Commission rate</Label>\n            <InputNumber />\n            <Field.Description>Decimal keypad, so the user can type 12.5.</Field.Description>\n        </FieldText>\n        <FieldText>\n            <Label>NPN</Label>\n            <InputNumber inputMode=\"numeric\" />\n            <Field.Description>Numeric keypad, digits only.</Field.Description>\n        </FieldText>\n    </div>\n);",
+          "description": "The field brings up a keypad with a decimal key on mobile devices, since it\ntakes a decimal point. An identifier passes `inputMode=\"numeric\"` for a\ndigits-only keypad.",
+          "summary": "Decimal keypad by default, numeric keypad when passed"
         },
         {
           "id": "components-inputnumber--max-number",
@@ -8176,9 +8197,9 @@
         {
           "id": "components-inputnumber--leading-zeros",
           "name": "Leading Zeros",
-          "snippet": "const LeadingZeros = () => <div style={{ display: 'grid', gap: '1rem' }}>\n    <InputNumber\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        aria-label=\"ZIP code\" />\n    <InputNumber\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        aria-label=\"Amount\"\n        allowLeadingZeros={false} />\n</div>;",
-          "description": "Leading zeros are kept by default, as an NPN or a ZIP code needs. With\n`allowLeadingZeros` off they are dropped once the field loses focus, which\nis what an amount wants, and `onChange` reports the trimmed value.",
-          "summary": "Leading zeros kept by default, dropped on blur when turned off"
+          "snippet": "const LeadingZeros = () => <div style={{ display: 'grid', gap: '1.5rem' }}>\n    <FieldText>\n        <Label>ZIP code</Label>\n        <InputNumber\n            onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)} />\n        <Field.Description>Keeps leading zeros: 007 stays 007.</Field.Description>\n    </FieldText>\n    <FieldText>\n        <Label>Amount</Label>\n        <InputNumber\n            onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n            thousandSeparator />\n        <Field.Description>Drops leading zeros on blur: 0001234 becomes 1,234.</Field.Description>\n    </FieldText>\n</div>;",
+          "description": "Leading zeros are kept by default, as an NPN or a ZIP code needs. With\n`allowLeadingZeros` off they are dropped once the field loses focus, which\nis what an amount wants, and `onChange` reports the trimmed value. A field\nwith `thousandSeparator` is an amount, so it turns them off unless\n`allowLeadingZeros` is passed.",
+          "summary": "Leading zeros kept for identifiers, dropped on blur for amounts"
         },
         {
           "id": "components-inputnumber--controlled",
@@ -8190,7 +8211,7 @@
         {
           "id": "components-inputnumber--inside-input-group",
           "name": "Inside Input Group",
-          "snippet": "const InsideInputGroup = () => <InputGroup.Root>\n    <InputGroup.Text>$</InputGroup.Text>\n    <InputNumber\n        aria-label=\"Premium\"\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        thousandSeparator\n        allowLeadingZeros={false}\n        placeholder=\"0\" />\n</InputGroup.Root>;",
+          "snippet": "const InsideInputGroup = () => <InputGroup.Root>\n    <InputGroup.Text>$</InputGroup.Text>\n    <InputNumber\n        aria-label=\"Premium\"\n        onChange={fn((event: ChangeEvent<HTMLInputElement>) => event.target.value)}\n        thousandSeparator\n        placeholder=\"0\" />\n</InputGroup.Root>;",
           "description": "Inside an `InputGroup` the field sits behind a currency affix and the\nframe takes its focus, disabled and invalid states from the input.",
           "summary": "Amount with a currency prefix inside an input group"
         },
@@ -9670,6 +9691,20 @@
           "summary": "Basic click-to-open popover surface"
         },
         {
+          "id": "components-popover--focus-return",
+          "name": "Focus Return",
+          "snippet": "const FocusReturn = () => (\n    <div className=\"flex gap-4\">\n        <Popover.Root>\n            <Popover.Trigger asChild>\n                <Button variant=\"secondary\">Carrier details</Button>\n            </Popover.Trigger>\n            <Popover.Content>\n                <div className=\"flex flex-col items-start gap-2\">\n                    <p className=\"text-sm text-text-default-base-primary\">Appointed in 12 states.</p>\n                    <Popover.Close asChild>\n                        <Button size=\"xs\" variant=\"tertiary\">\n                            Done\n                        </Button>\n                    </Popover.Close>\n                </div>\n            </Popover.Content>\n        </Popover.Root>\n    </div>\n);",
+          "description": "Closing the popover from inside hands focus back to its trigger. After a\npointer close the trigger takes focus without a focus ring; after Escape the\nring shows, so a keyboard user can see where focus went.",
+          "summary": "Focus returns to the trigger, with a ring only after a keyboard close"
+        },
+        {
+          "id": "components-popover--close-into-field",
+          "name": "Close Into Field",
+          "snippet": "const CloseIntoField = () => {\n    const [blurCount, setBlurCount] = useState(0);\n    return (\n        <div className=\"flex items-center gap-4\">\n            <Popover.Root>\n                <Popover.Trigger asChild>\n                    <Button variant=\"secondary\">Carrier details</Button>\n                </Popover.Trigger>\n                <Popover.Content>\n                    <p className=\"text-sm text-text-default-base-primary\">Appointed in 12 states.</p>\n                </Popover.Content>\n            </Popover.Root>\n            <input aria-label=\"Agency name\" onBlur={() => setBlurCount(count => count + 1)} />\n            <span>Blurred {blurCount} times</span>\n        </div>\n    );\n};",
+          "description": "Clicking a field outside closes the popover and leaves focus in that field:\nRadix does not move focus back to the trigger, and the field gets no extra\nblur.",
+          "summary": "Clicking a field outside keeps focus in that field"
+        },
+        {
           "id": "components-popover--sides",
           "name": "Sides",
           "snippet": "const Sides = () => (\n    <div className=\"grid grid-cols-2 gap-6\">\n        {(['top', 'right', 'bottom', 'left'] as const).map(side => (\n            <Popover.Root key={side}>\n                <Popover.Trigger asChild>\n                    <Button variant=\"secondary\">{side}</Button>\n                </Popover.Trigger>\n                <Popover.Content side={side}>\n                    <p className=\"text-sm text-text-default-base-primary\">Opens on {side}</p>\n                </Popover.Content>\n            </Popover.Root>\n        ))}\n    </div>\n);",
@@ -10299,6 +10334,20 @@
           "summary": "Hover-revealed row actions"
         },
         {
+          "id": "components-table--with-row-actions-menu",
+          "name": "With Row Actions Menu",
+          "snippet": "const WithRowActionsMenu = () => <Table.Root size=\"md\" embed={false}>\n    <Table.Head>\n        <Table.Row>\n            <Table.Header>Name</Table.Header>\n            <Table.Header>Email</Table.Header>\n            <Table.Header>\n                <span className=\"sr-only\">Actions</span>\n            </Table.Header>\n        </Table.Row>\n    </Table.Head>\n    <Table.Body>\n        {ROWS.slice(0, 3).map(row => (\n            <Table.Row key={row.id}>\n                <Table.Cell className=\"font-bold\">{row.name}</Table.Cell>\n                <Table.Cell className=\"text-text-default-base-secondary\">{row.email}</Table.Cell>\n                <Table.Cell style={{ width: '0.0625rem', position: 'sticky', right: 0 }}>\n                    <Table.RowActions>\n                        <DropdownMenu.Root>\n                            <DropdownMenu.Trigger asChild>\n                                <Button\n                                    variant=\"ghost\"\n                                    size=\"sm\"\n                                    iconOnly\n                                    aria-label={`Actions for ${row.name}`}>\n                                    <IconEdit />\n                                </Button>\n                            </DropdownMenu.Trigger>\n                            <DropdownMenu.Portal>\n                                <DropdownMenu.Content align=\"end\">\n                                    <DropdownMenu.Item>Edit</DropdownMenu.Item>\n                                    <DropdownMenu.Item>Delete</DropdownMenu.Item>\n                                </DropdownMenu.Content>\n                            </DropdownMenu.Portal>\n                        </DropdownMenu.Root>\n                    </Table.RowActions>\n                </Table.Cell>\n            </Table.Row>\n        ))}\n    </Table.Body>\n</Table.Root>;",
+          "description": "A row keeps its hover look, and its actions stay visible, while a menu\nopened from one of those actions is open. The pointer leaves the row for the\nmenu, so without it the actions would fade out under the open menu. Escape\nhands keyboard focus back to the action, so the row keeps that look.",
+          "summary": "Row stays highlighted while its actions menu is open"
+        },
+        {
+          "id": "components-table--with-loading-row-actions-menu",
+          "name": "With Loading Row Actions Menu",
+          "snippet": "const WithLoadingRowActionsMenu = () => <Table.Root size=\"md\" embed={false}>\n    <Table.Head>\n        <Table.Row>\n            <Table.Header>Name</Table.Header>\n            <Table.Header>\n                <span className=\"sr-only\">Actions</span>\n            </Table.Header>\n        </Table.Row>\n    </Table.Head>\n    <Table.Body>\n        {ROWS.slice(0, 2).map(row => (\n            <Table.Row key={row.id}>\n                <Table.Cell className=\"font-bold\">{row.name}</Table.Cell>\n                <Table.Cell style={{ width: '0.0625rem', position: 'sticky', right: 0 }}>\n                    <ArchiveRowActions name={row.name} />\n                </Table.Cell>\n            </Table.Row>\n        ))}\n    </Table.Body>\n</Table.Root>;",
+          "description": "The row stays highlighted while its menu is open even when the trigger turns\n`loading`, and with it disabled, because the menu item that started the work\nkeeps the menu open.",
+          "summary": "Row stays highlighted while a loading trigger's menu is open"
+        },
+        {
           "id": "components-table--expandable-rows",
           "name": "Expandable Rows",
           "snippet": "const ExpandableRows = () => {\n    const [openId, setOpenId] = useState<string | null>(ROWS[0]!.id);\n\n    return (\n        <Table.Root size=\"md\" embed={false}>\n            <Table.Head>\n                <Table.Row>\n                    <Table.Header>\n                        <span className=\"sr-only\">Expand</span>\n                    </Table.Header>\n                    <Table.Header>Name</Table.Header>\n                    <Table.Header>Email</Table.Header>\n                    <Table.Header>Role</Table.Header>\n                </Table.Row>\n            </Table.Head>\n            <Table.Body>\n                {ROWS.slice(0, 4).map(row => (\n                    <Fragment key={row.id}>\n                        <Table.Row>\n                            <Table.Cell>\n                                <Table.ExpandButton\n                                    isExpanded={openId === row.id}\n                                    toggleExpanded={() => setOpenId(openId === row.id ? null : row.id)}\n                                    aria-label={`Toggle ${row.name}`}\n                                />\n                            </Table.Cell>\n                            <Table.Cell className=\"font-bold\">{row.name}</Table.Cell>\n                            <Table.Cell className=\"text-text-default-base-secondary\">{row.email}</Table.Cell>\n                            <Table.Cell>{row.role}</Table.Cell>\n                        </Table.Row>\n                        {openId === row.id && (\n                            <Table.ExpandedRow>\n                                <Table.Cell colSpan={4}>\n                                    <div className=\"py-2 text-text-default-base-secondary\">\n                                        Extended details for {row.name} — {row.amount} lifetime value.\n                                    </div>\n                                </Table.Cell>\n                            </Table.ExpandedRow>\n                        )}\n                    </Fragment>\n                ))}\n            </Table.Body>\n        </Table.Root>\n    );\n};",
@@ -10306,7 +10355,7 @@
           "summary": "Expandable rows with a detail panel"
         }
       ],
-      "import": "import { Button, Switch, Table } from \"@agentero/design-system\";\nimport { Fragment } from \"react\";"
+      "import": "import { Button, DropdownMenu, Switch, Table } from \"@agentero/design-system\";\nimport { Fragment } from \"react\";"
     },
     "components-tabs": {
       "id": "components-tabs",
@@ -10552,7 +10601,7 @@
           "id": "components-tabs--default",
           "name": "Default",
           "snippet": "const Default = () => <Tabs.Root variant=\"line\" defaultValue=\"overview\">\n    <Tabs.List>\n        <TabItems />\n    </Tabs.List>\n    <TabPanels />\n</Tabs.Root>;",
-          "description": "`line` (default): the active tab is marked with an animated underline."
+          "description": "`line` (default): the active tab is marked with an underline."
         },
         {
           "id": "components-tabs--enclosed",
@@ -10823,6 +10872,13 @@
           "snippet": "const Interactive = () => (\n    <Row>\n        <Tag color=\"informative\" variant=\"secondary\">\n            badge\n        </Tag>\n        <Tag color=\"informative\" variant=\"secondary\" asChild>\n            <button type=\"button\">interactive</button>\n        </Tag>\n        <Tag color=\"informative\" variant=\"secondary\" asChild aria-label=\"add\">\n            <button type=\"button\">\n                <IconAdd />\n            </button>\n        </Tag>\n    </Row>\n);",
           "description": "Static badge vs interactive Tag. A plain `<span>` badge has no hover; pass\n`asChild` with a `<button>` (or `<a>`) to make it interactive — that adds the\npointer cursor and reveals the hover fill on `:hover`. Hover the middle and\nright Tags to see it.",
           "summary": "Static badge vs interactive (asChild) hover"
+        },
+        {
+          "id": "components-tag--open-trigger",
+          "name": "Open Trigger",
+          "snippet": "const OpenTrigger = () => (\n    <Row>\n        <Tag color=\"informative\" variant=\"ghost\" asChild>\n            <button type=\"button\" aria-haspopup=\"menu\" aria-expanded=\"true\">\n                Status menu open\n            </button>\n        </Tag>\n    </Row>\n);",
+          "description": "An interactive Tag that opens a menu or popover keeps its hover fill while\nthat overlay is open. The open state is read from `aria-expanded=\"true\"`\ntogether with `aria-haspopup`, which Radix and Base UI triggers set for you.",
+          "summary": "Tag trigger keeps the hover fill while its overlay is open"
         },
         {
           "id": "components-tag--secondary",
@@ -11407,7 +11463,7 @@
         "displayName": "Tooltip",
         "exportName": "Tooltip",
         "filePath": "/home/runner/work/design-system/design-system/src/tooltip/tooltip.tsx",
-        "description": "Tooltip reveals a short, non-essential hint anchored to a trigger element on\nhover or focus. Pass the trigger as `children` and the hint as `content`; use\n`asChild` when the trigger is already interactive (a button or link) to avoid\nnesting interactive elements. Don't put essential or interactive content\ninside it — hover-only content is inaccessible to touch and keyboard users.",
+        "description": "Tooltip reveals a short, non-essential hint anchored to a trigger element on\nhover or focus. Pass the trigger as `children` and the hint as `content`; use\n`asChild` when the trigger is already interactive (a button or link) to avoid\nnesting interactive elements. Don't put essential or interactive content\ninside it — hover-only content is inaccessible to touch and keyboard users.\n\nWrap the app in one `TooltipProvider` so only the first tooltip waits for\nthe hover delay and its neighbours open at once.",
         "jsDocTags": {
           "summary": [
             "Hover/focus hint anchored to a trigger element"
@@ -11589,10 +11645,8 @@
             "type": {
               "name": "number"
             },
-            "description": "Delay in ms before opening on hover. Defaults to `0`; focus always opens instantly.",
-            "defaultValue": {
-              "value": "0"
-            },
+            "description": "Hover delay in ms for this tooltip. Defaults to the `TooltipProvider` delay, or `0` outside one; focus always opens instantly.",
+            "defaultValue": null,
             "parent": {
               "name": "TooltipProps",
               "fileName": "src/tooltip/tooltip.tsx"
@@ -11696,6 +11750,13 @@
           "description": "Opens on keyboard focus too, wiring `aria-describedby` on the trigger."
         },
         {
+          "id": "components-tooltip--shared-provider",
+          "name": "Shared Provider",
+          "snippet": "const SharedProvider = () => (\n    <TooltipProvider>\n        <div className=\"flex gap-2\">\n            <Tooltip content=\"Edit carrier\" asChild>\n                <Button variant=\"secondary\">Edit</Button>\n            </Tooltip>\n            <Tooltip content=\"Archive carrier\" asChild>\n                <Button variant=\"secondary\">Archive</Button>\n            </Tooltip>\n        </div>\n    </TooltipProvider>\n);",
+          "description": "Inside a `TooltipProvider`, the first tooltip waits for the hover delay; the next one opens at once.",
+          "summary": "Shared provider: only the first tooltip waits for the hover delay"
+        },
+        {
           "id": "components-tooltip--sides",
           "name": "Sides",
           "snippet": "const Sides = () => (\n    <div className=\"grid grid-cols-2 gap-6\">\n        <Tooltip content=\"Tooltip on top\" side=\"top\" asChild>\n            <Button variant=\"secondary\">Top</Button>\n        </Tooltip>\n        <Tooltip content=\"Tooltip on the right\" side=\"right\" asChild>\n            <Button variant=\"secondary\">Right</Button>\n        </Tooltip>\n        <Tooltip content=\"Tooltip on the bottom\" side=\"bottom\" asChild>\n            <Button variant=\"secondary\">Bottom</Button>\n        </Tooltip>\n        <Tooltip content=\"Tooltip on the left\" side=\"left\" asChild>\n            <Button variant=\"secondary\">Left</Button>\n        </Tooltip>\n    </div>\n);",
@@ -11714,7 +11775,7 @@
           "description": "Content wraps at the `32ch` max width."
         }
       ],
-      "import": "import { Button, Tooltip } from \"@agentero/design-system\";"
+      "import": "import { Button, Tooltip, TooltipProvider } from \"@agentero/design-system\";"
     },
     "components-validationlist": {
       "id": "components-validationlist",
@@ -11815,6 +11876,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5960
+    "durationMs": 5861
   }
 }

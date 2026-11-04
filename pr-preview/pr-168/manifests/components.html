@@ -588,13 +588,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">42 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/365 story errors</a></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">42 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/374 story errors</a></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>6.0s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>5.9s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -2906,7 +2906,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
       <div class="badges">
         <label for="c-5-components-button-props" class="badge ok as-toggle">12 prop types</label>
         
-        <label for="c-5-components-button-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-5-components-button-stories" class="badge ok as-toggle">11 stories</label>
         
         
       </div>
@@ -3290,6 +3290,42 @@ router. In app code, swap the plain `&lt;a&gt;` below for your framework&#39;s L
             &lt;/a&gt;
         &lt;/Button&gt;
     &lt;/Row&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Open Trigger</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Overlay triggers keep the hover look while their overlay is open</div>
+              <div class="hint">A Button that opens a menu, popover, select or combobox list keeps its hover
+look while that overlay is open, so the pointer can leave it for the list
+without the trigger looking idle. The open state is read from
+`aria-expanded=&quot;true&quot;` together with `aria-haspopup` (or `role=&quot;combobox&quot;`),
+which Radix and Base UI triggers set for you. A disclosure toggle, such as a
+collapsible section header, sets only `aria-expanded` and keeps its regular look,
+and a disabled or loading trigger keeps its disabled look.</div>
+              <pre><code>const OpenTrigger = () =&gt; (
+    &lt;Stack&gt;
+        &lt;Row&gt;
+            {NON_LINK_VARIANTS.map(variant =&gt; (
+                &lt;Button key={variant} variant={variant} aria-haspopup=&quot;menu&quot; aria-expanded=&quot;true&quot;&gt;
+                    {`${variant} menu open`}
+                &lt;/Button&gt;
+            ))}
+        &lt;/Row&gt;
+        &lt;Row&gt;
+            &lt;Button variant=&quot;secondary&quot; aria-expanded=&quot;true&quot;&gt;
+                Section expanded
+            &lt;/Button&gt;
+            &lt;Button variant=&quot;secondary&quot; status=&quot;danger&quot; aria-haspopup=&quot;menu&quot; aria-expanded=&quot;true&quot;&gt;
+                Danger menu open
+            &lt;/Button&gt;
+            &lt;Button variant=&quot;secondary&quot; loading aria-haspopup=&quot;menu&quot; aria-expanded=&quot;true&quot;&gt;
+                Loading menu open
+            &lt;/Button&gt;
+        &lt;/Row&gt;
+    &lt;/Stack&gt;
 );</code></pre>
             </div>
         </div>
@@ -4436,13 +4472,13 @@ virtualized?: boolean = false</code></pre>
               
               
               <pre><code>Expected render to be an arrow function or function expression
-   999 |  */
-  1000 | export const InsidePopoverWithValue: Story = {
-&gt; 1001 | 	render: InsidePopover.render,
+  1045 |  */
+  1046 | export const InsidePopoverWithValue: Story = {
+&gt; 1047 | 	render: InsidePopover.render,
        | 	           ^^^^^^^^^^^^^^^^^^^^
-  1002 | 	play: async ({ canvasElement }) =&gt; {
-  1003 | 		const body = within(document.body);
-  1004 | 		const trigger = within(canvasElement).getByRole(&#39;button&#39;, { name: /filter by state/i });</code></pre>
+  1048 | 	play: async ({ canvasElement }) =&gt; {
+  1049 | 		const body = within(document.body);
+  1050 | 		const trigger = within(canvasElement).getByRole(&#39;button&#39;, { name: /filter by state/i });</code></pre>
             </div>
           
           
@@ -4864,31 +4900,29 @@ rest of the page from assistive technology, label included, and a
 this checks that the dialog&#39;s modal layer neither blocks pointer events on the
 list nor treats a click in it as a click outside and closes. With a value
 picked, Escape closes the list, then clears the value, then closes the modal.</div>
-              <pre><code>const InsideModal = () =&gt; (
-    &lt;Modal.Root&gt;
-        &lt;Modal.Trigger asChild&gt;
-            &lt;Button variant=&quot;secondary&quot;&gt;Assign agency&lt;/Button&gt;
-        &lt;/Modal.Trigger&gt;
-        &lt;Modal.Content&gt;
-            &lt;Modal.Title&gt;Assign agency&lt;/Modal.Title&gt;
-            &lt;Modal.Body&gt;
-                &lt;Combobox.Root items={STATES}&gt;
-                    &lt;Combobox.Input placeholder=&quot;Search states&quot; aria-label=&quot;Search states&quot; /&gt;
-                    &lt;Combobox.Content&gt;
-                        &lt;Combobox.Empty&gt;No matches found&lt;/Combobox.Empty&gt;
-                        &lt;Combobox.List&gt;
-                            {(state: string) =&gt; (
-                                &lt;Combobox.Item key={state} value={state}&gt;
-                                    {state}
-                                &lt;/Combobox.Item&gt;
-                            )}
-                        &lt;/Combobox.List&gt;
-                    &lt;/Combobox.Content&gt;
-                &lt;/Combobox.Root&gt;
-            &lt;/Modal.Body&gt;
-        &lt;/Modal.Content&gt;
-    &lt;/Modal.Root&gt;
-);</code></pre>
+              <pre><code>const InsideModal = () =&gt; &lt;Modal.Root&gt;
+    &lt;Modal.Trigger asChild&gt;
+        &lt;Button variant=&quot;secondary&quot;&gt;Assign agency&lt;/Button&gt;
+    &lt;/Modal.Trigger&gt;
+    &lt;Modal.Content&gt;
+        &lt;Modal.Title&gt;Assign agency&lt;/Modal.Title&gt;
+        &lt;Modal.Body&gt;
+            &lt;Combobox.Root items={STATES}&gt;
+                &lt;Combobox.Input placeholder=&quot;Search states&quot; aria-label=&quot;Search states&quot; /&gt;
+                &lt;Combobox.Content&gt;
+                    &lt;Combobox.Empty&gt;No matches found&lt;/Combobox.Empty&gt;
+                    &lt;Combobox.List&gt;
+                        {(state: string) =&gt; (
+                            &lt;Combobox.Item key={state} value={state}&gt;
+                                {state}
+                            &lt;/Combobox.Item&gt;
+                        )}
+                    &lt;/Combobox.List&gt;
+                &lt;/Combobox.Content&gt;
+            &lt;/Combobox.Root&gt;
+        &lt;/Modal.Body&gt;
+    &lt;/Modal.Content&gt;
+&lt;/Modal.Root&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -5231,13 +5265,14 @@ offering to create an agency appears only when the search text matches no existi
                 <span class="badge ok">story ok</span>
               </div>
               
-              <div class="hint">Inside a `Popover`. cmdk&#39;s list is always on screen, so Escape closes the popover.</div>
+              <div class="hint">Inside a `Popover`. The popover hands its border, shadow and padding to the `Command`, so the
+picker draws a single panel. cmdk&#39;s list is always on screen, so Escape closes the popover.</div>
               <pre><code>const InsidePopover = () =&gt; (
     &lt;Popover.Root&gt;
         &lt;Popover.Trigger asChild&gt;
             &lt;Button variant=&quot;secondary&quot;&gt;Open commands&lt;/Button&gt;
         &lt;/Popover.Trigger&gt;
-        &lt;Popover.Content aria-label=&quot;Commands&quot; className=&quot;p-0&quot;&gt;
+        &lt;Popover.Content aria-label=&quot;Commands&quot;&gt;
             &lt;Command.Root label=&quot;Search commands&quot;&gt;
                 &lt;Command.Input placeholder=&quot;Search...&quot; /&gt;
                 &lt;Command.List&gt;
@@ -6420,7 +6455,7 @@ related controls or inline links without visual weight.</div>
       <div class="badges">
         <label for="c-14-components-dropdownmenu-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-14-components-dropdownmenu-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-14-components-dropdownmenu-stories" class="badge ok as-toggle">8 stories</label>
         
         
       </div>
@@ -6863,6 +6898,32 @@ actions outright unless the user needs to see them and understand why.</div>
                         &lt;/DropdownMenu.SubContent&gt;
                     &lt;/DropdownMenu.Portal&gt;
                 &lt;/DropdownMenu.Sub&gt;
+            &lt;/DropdownMenu.Content&gt;
+        &lt;/DropdownMenu.Portal&gt;
+    &lt;/DropdownMenu.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Focus Return</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Focus returns to the trigger, with a ring only after a keyboard close</div>
+              <div class="hint">Closing the menu hands focus back to its trigger. After a pointer close the
+trigger takes focus without a focus ring, since the pointer never asked for
+one. After a keyboard close (Escape, or choosing a row with Enter) the ring
+shows, so a keyboard user can see where focus went.</div>
+              <pre><code>const FocusReturn = () =&gt; (
+    &lt;DropdownMenu.Root&gt;
+        &lt;DropdownMenu.Trigger asChild&gt;
+            &lt;Button size=&quot;md&quot; variant=&quot;secondary&quot;&gt;
+                Contract actions
+            &lt;/Button&gt;
+        &lt;/DropdownMenu.Trigger&gt;
+        &lt;DropdownMenu.Portal&gt;
+            &lt;DropdownMenu.Content&gt;
+                &lt;DropdownMenu.Item&gt;Download contract&lt;/DropdownMenu.Item&gt;
+                &lt;DropdownMenu.Item&gt;Mark as pending&lt;/DropdownMenu.Item&gt;
             &lt;/DropdownMenu.Content&gt;
         &lt;/DropdownMenu.Portal&gt;
     &lt;/DropdownMenu.Root&gt;
@@ -8750,7 +8811,7 @@ on its way out.</div>
         &lt;Button variant=&quot;secondary&quot;&gt;Hover me&lt;/Button&gt;
     &lt;/HoverCard.Trigger&gt;
     &lt;HoverCard.Portal&gt;
-        &lt;HoverCard.Content&gt;
+        &lt;HoverCard.Content className=&quot;duration-1000&quot;&gt;
             &lt;PreviewCard /&gt;
         &lt;/HoverCard.Content&gt;
     &lt;/HoverCard.Portal&gt;
@@ -9434,7 +9495,7 @@ button&#39;s start corners with the frame.</div>
       <div class="badges">
         <label for="c-23-components-inputnumber-props" class="badge ok as-toggle">7 prop types</label>
         
-        <label for="c-23-components-inputnumber-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-23-components-inputnumber-stories" class="badge ok as-toggle">12 stories</label>
         
         
       </div>
@@ -9444,11 +9505,12 @@ button&#39;s start corners with the frame.</div>
     <div class="hint">InputNumber is a text field that only takes digits and a decimal point and
 formats them as the user types: thousands separators on request, leading
 zeros kept unless turned off, no sign. `onChange` fires with the formatted text in
-`event.target.value`. It is an `Input` driven by `react-number-format`, so
-it takes its label, messages and states from a surrounding `FieldText`.</div>
+`event.target.value`. On mobile devices it shows a keypad with a decimal
+key. It is an `Input` driven by
+`react-number-format`, so it takes its label, messages and states from a surrounding `FieldText`.</div>
     <div class="kv"><span class="chip">summary: Numeric input formatting as you type, built on react-number-format</span><span class="chip">dataAttribute: {string} data-slot - Always set to &quot;input-number&quot;</span><span class="chip">example: &lt;FieldText&gt;
   &lt;Label&gt;Annual premium&lt;/Label&gt;
-  &lt;InputNumber name=&quot;premium&quot; thousandSeparator allowLeadingZeros={false} /&gt;
+  &lt;InputNumber name=&quot;premium&quot; thousandSeparator /&gt;
 &lt;/FieldText&gt;</span></div>
   </div>
 
@@ -9474,11 +9536,13 @@ it takes its label, messages and states from a surrounding `FieldText`.</div>
             <pre><code>Props:</code></pre>
             <pre><code>/**
  * Keeps zeros typed in front of the number (`007`), which an identifier
- * such as an NPN or a ZIP code needs. Set it to `false` for an amount, so
- * `007` becomes `7` once the field loses focus, and `onChange` fires with
- * the trimmed value. Defaults to `true`.
+ * such as an NPN or a ZIP code needs. When it is off, `007` becomes `7` once
+ * the field loses focus, and `onChange` fires with the trimmed value, which
+ * is what an amount wants. Defaults to `true`, or to `false` when
+ * `thousandSeparator` is set, so an amount never shows grouped zeros such
+ * as `0,001,234`.
  */
-allowLeadingZeros?: boolean = true
+allowLeadingZeros?: boolean = !thousandSeparator
 
 /**
  * Initial value of an uncontrolled field, in the same forms as `value`.
@@ -9509,10 +9573,11 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;
 thousandSeparator?: boolean = false
 
 /**
- * The underlying `&lt;input&gt;` type. Defaults to `&#39;text&#39;`.
+ * The underlying `&lt;input&gt;` type. Defaults to `&#39;text&#39;`. The keypad on mobile
+ * devices follows `inputMode`, not the type.
  * - `text` — the general case.
- * - `tel` — brings up the numeric keypad on phones, for codes and
- *   identifiers that are digits only.
+ * - `tel` — behaves as `text`. It does not bring up a digits-only keypad;
+ *   pass `inputMode=&quot;numeric&quot;` for that.
  * - `password` — masks the digits, for a PIN.
  */
 type?: &quot;text&quot; | &quot;tel&quot; | &quot;password&quot;
@@ -9557,9 +9622,10 @@ points at the `&lt;input&gt;` element.</div>
                 <span class="ex-name">Type Tel</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Numeric keypad on phones through the tel input type</div>
-              <div class="hint">`type=&quot;tel&quot;` brings up the numeric keypad on phones. The field still
-formats and filters the same way; only the underlying input type changes.</div>
+              <div>tel input type, same behaviour as text</div>
+              <div class="hint">`type=&quot;tel&quot;` renders a `tel` input that behaves as a `text` one: the field
+formats and filters the same way, and the keypad on mobile devices still
+follows `inputMode`.</div>
               <pre><code>const TypeTel = () =&gt; &lt;InputNumber
     aria-label=&quot;NPN&quot;
     onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)}
@@ -9580,6 +9646,30 @@ user types, and the commas are part of what `onChange` reports.</div>
             </div>
             <div class="note ok">
               <div class="row">
+                <span class="ex-name">Keypad</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Decimal keypad by default, numeric keypad when passed</div>
+              <div class="hint">The field brings up a keypad with a decimal key on mobile devices, since it
+takes a decimal point. An identifier passes `inputMode=&quot;numeric&quot;` for a
+digits-only keypad.</div>
+              <pre><code>const Keypad = () =&gt; (
+    &lt;div style={{ display: &#39;grid&#39;, gap: &#39;1.5rem&#39; }}&gt;
+        &lt;FieldText&gt;
+            &lt;Label&gt;Commission rate&lt;/Label&gt;
+            &lt;InputNumber /&gt;
+            &lt;Field.Description&gt;Decimal keypad, so the user can type 12.5.&lt;/Field.Description&gt;
+        &lt;/FieldText&gt;
+        &lt;FieldText&gt;
+            &lt;Label&gt;NPN&lt;/Label&gt;
+            &lt;InputNumber inputMode=&quot;numeric&quot; /&gt;
+            &lt;Field.Description&gt;Numeric keypad, digits only.&lt;/Field.Description&gt;
+        &lt;/FieldText&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
                 <span class="ex-name">Max Number</span>
                 <span class="badge ok">story ok</span>
               </div>
@@ -9597,18 +9687,26 @@ called for it.</div>
                 <span class="ex-name">Leading Zeros</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Leading zeros kept by default, dropped on blur when turned off</div>
+              <div>Leading zeros kept for identifiers, dropped on blur for amounts</div>
               <div class="hint">Leading zeros are kept by default, as an NPN or a ZIP code needs. With
 `allowLeadingZeros` off they are dropped once the field loses focus, which
-is what an amount wants, and `onChange` reports the trimmed value.</div>
-              <pre><code>const LeadingZeros = () =&gt; &lt;div style={{ display: &#39;grid&#39;, gap: &#39;1rem&#39; }}&gt;
-    &lt;InputNumber
-        onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)}
-        aria-label=&quot;ZIP code&quot; /&gt;
-    &lt;InputNumber
-        onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)}
-        aria-label=&quot;Amount&quot;
-        allowLeadingZeros={false} /&gt;
+is what an amount wants, and `onChange` reports the trimmed value. A field
+with `thousandSeparator` is an amount, so it turns them off unless
+`allowLeadingZeros` is passed.</div>
+              <pre><code>const LeadingZeros = () =&gt; &lt;div style={{ display: &#39;grid&#39;, gap: &#39;1.5rem&#39; }}&gt;
+    &lt;FieldText&gt;
+        &lt;Label&gt;ZIP code&lt;/Label&gt;
+        &lt;InputNumber
+            onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)} /&gt;
+        &lt;Field.Description&gt;Keeps leading zeros: 007 stays 007.&lt;/Field.Description&gt;
+    &lt;/FieldText&gt;
+    &lt;FieldText&gt;
+        &lt;Label&gt;Amount&lt;/Label&gt;
+        &lt;InputNumber
+            onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)}
+            thousandSeparator /&gt;
+        &lt;Field.Description&gt;Drops leading zeros on blur: 0001234 becomes 1,234.&lt;/Field.Description&gt;
+    &lt;/FieldText&gt;
 &lt;/div&gt;;</code></pre>
             </div>
             <div class="note ok">
@@ -9648,7 +9746,6 @@ frame takes its focus, disabled and invalid states from the input.</div>
         aria-label=&quot;Premium&quot;
         onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)}
         thousandSeparator
-        allowLeadingZeros={false}
         placeholder=&quot;0&quot; /&gt;
 &lt;/InputGroup.Root&gt;;</code></pre>
             </div>
@@ -11200,7 +11297,7 @@ entries summary follow along.</div>
       <div class="badges">
         <label for="c-31-components-popover-props" class="badge ok as-toggle">5 prop types</label>
         
-        <label for="c-31-components-popover-stories" class="badge ok as-toggle">5 stories</label>
+        <label for="c-31-components-popover-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -11290,6 +11387,62 @@ click and dismisses on outside click or Escape.</div>
         &lt;/Popover.Content&gt;
     &lt;/Popover.Root&gt;
 );</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Focus Return</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Focus returns to the trigger, with a ring only after a keyboard close</div>
+              <div class="hint">Closing the popover from inside hands focus back to its trigger. After a
+pointer close the trigger takes focus without a focus ring; after Escape the
+ring shows, so a keyboard user can see where focus went.</div>
+              <pre><code>const FocusReturn = () =&gt; (
+    &lt;div className=&quot;flex gap-4&quot;&gt;
+        &lt;Popover.Root&gt;
+            &lt;Popover.Trigger asChild&gt;
+                &lt;Button variant=&quot;secondary&quot;&gt;Carrier details&lt;/Button&gt;
+            &lt;/Popover.Trigger&gt;
+            &lt;Popover.Content&gt;
+                &lt;div className=&quot;flex flex-col items-start gap-2&quot;&gt;
+                    &lt;p className=&quot;text-sm text-text-default-base-primary&quot;&gt;Appointed in 12 states.&lt;/p&gt;
+                    &lt;Popover.Close asChild&gt;
+                        &lt;Button size=&quot;xs&quot; variant=&quot;tertiary&quot;&gt;
+                            Done
+                        &lt;/Button&gt;
+                    &lt;/Popover.Close&gt;
+                &lt;/div&gt;
+            &lt;/Popover.Content&gt;
+        &lt;/Popover.Root&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Close Into Field</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Clicking a field outside keeps focus in that field</div>
+              <div class="hint">Clicking a field outside closes the popover and leaves focus in that field:
+Radix does not move focus back to the trigger, and the field gets no extra
+blur.</div>
+              <pre><code>const CloseIntoField = () =&gt; {
+    const [blurCount, setBlurCount] = useState(0);
+    return (
+        &lt;div className=&quot;flex items-center gap-4&quot;&gt;
+            &lt;Popover.Root&gt;
+                &lt;Popover.Trigger asChild&gt;
+                    &lt;Button variant=&quot;secondary&quot;&gt;Carrier details&lt;/Button&gt;
+                &lt;/Popover.Trigger&gt;
+                &lt;Popover.Content&gt;
+                    &lt;p className=&quot;text-sm text-text-default-base-primary&quot;&gt;Appointed in 12 states.&lt;/p&gt;
+                &lt;/Popover.Content&gt;
+            &lt;/Popover.Root&gt;
+            &lt;input aria-label=&quot;Agency name&quot; onBlur={() =&gt; setBlurCount(count =&gt; count + 1)} /&gt;
+            &lt;span&gt;Blurred {blurCount} times&lt;/span&gt;
+        &lt;/div&gt;
+    );
+};</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -11891,7 +12044,7 @@ size?: &quot;sm&quot; | &quot;md&quot;</code></pre>
       <div class="badges">
         <label for="c-35-components-table-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-35-components-table-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-35-components-table-stories" class="badge ok as-toggle">12 stories</label>
         
         
       </div>
@@ -11961,7 +12114,7 @@ sticky?: &quot;header&quot; | &quot;headerAndFooter&quot;</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button, Switch, Table } from "@agentero/design-system";
+                <pre><code>import { Button, DropdownMenu, Switch, Table } from "@agentero/design-system";
 import { Fragment } from "react";</code></pre>
               </div>
           
@@ -12072,6 +12225,87 @@ keeps its padding.</div>
               <div>Hover-revealed row actions</div>
               <div class="hint">Hover-revealed row actions pinned to the trailing edge.</div>
               <pre><code>const WithRowActions = args =&gt; renderTable(args, { actions: true });</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Row Actions Menu</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Row stays highlighted while its actions menu is open</div>
+              <div class="hint">A row keeps its hover look, and its actions stay visible, while a menu
+opened from one of those actions is open. The pointer leaves the row for the
+menu, so without it the actions would fade out under the open menu. Escape
+hands keyboard focus back to the action, so the row keeps that look.</div>
+              <pre><code>const WithRowActionsMenu = () =&gt; &lt;Table.Root size=&quot;md&quot; embed={false}&gt;
+    &lt;Table.Head&gt;
+        &lt;Table.Row&gt;
+            &lt;Table.Header&gt;Name&lt;/Table.Header&gt;
+            &lt;Table.Header&gt;Email&lt;/Table.Header&gt;
+            &lt;Table.Header&gt;
+                &lt;span className=&quot;sr-only&quot;&gt;Actions&lt;/span&gt;
+            &lt;/Table.Header&gt;
+        &lt;/Table.Row&gt;
+    &lt;/Table.Head&gt;
+    &lt;Table.Body&gt;
+        {ROWS.slice(0, 3).map(row =&gt; (
+            &lt;Table.Row key={row.id}&gt;
+                &lt;Table.Cell className=&quot;font-bold&quot;&gt;{row.name}&lt;/Table.Cell&gt;
+                &lt;Table.Cell className=&quot;text-text-default-base-secondary&quot;&gt;{row.email}&lt;/Table.Cell&gt;
+                &lt;Table.Cell style={{ width: &#39;0.0625rem&#39;, position: &#39;sticky&#39;, right: 0 }}&gt;
+                    &lt;Table.RowActions&gt;
+                        &lt;DropdownMenu.Root&gt;
+                            &lt;DropdownMenu.Trigger asChild&gt;
+                                &lt;Button
+                                    variant=&quot;ghost&quot;
+                                    size=&quot;sm&quot;
+                                    iconOnly
+                                    aria-label={`Actions for ${row.name}`}&gt;
+                                    &lt;IconEdit /&gt;
+                                &lt;/Button&gt;
+                            &lt;/DropdownMenu.Trigger&gt;
+                            &lt;DropdownMenu.Portal&gt;
+                                &lt;DropdownMenu.Content align=&quot;end&quot;&gt;
+                                    &lt;DropdownMenu.Item&gt;Edit&lt;/DropdownMenu.Item&gt;
+                                    &lt;DropdownMenu.Item&gt;Delete&lt;/DropdownMenu.Item&gt;
+                                &lt;/DropdownMenu.Content&gt;
+                            &lt;/DropdownMenu.Portal&gt;
+                        &lt;/DropdownMenu.Root&gt;
+                    &lt;/Table.RowActions&gt;
+                &lt;/Table.Cell&gt;
+            &lt;/Table.Row&gt;
+        ))}
+    &lt;/Table.Body&gt;
+&lt;/Table.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Loading Row Actions Menu</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Row stays highlighted while a loading trigger&#39;s menu is open</div>
+              <div class="hint">The row stays highlighted while its menu is open even when the trigger turns
+`loading`, and with it disabled, because the menu item that started the work
+keeps the menu open.</div>
+              <pre><code>const WithLoadingRowActionsMenu = () =&gt; &lt;Table.Root size=&quot;md&quot; embed={false}&gt;
+    &lt;Table.Head&gt;
+        &lt;Table.Row&gt;
+            &lt;Table.Header&gt;Name&lt;/Table.Header&gt;
+            &lt;Table.Header&gt;
+                &lt;span className=&quot;sr-only&quot;&gt;Actions&lt;/span&gt;
+            &lt;/Table.Header&gt;
+        &lt;/Table.Row&gt;
+    &lt;/Table.Head&gt;
+    &lt;Table.Body&gt;
+        {ROWS.slice(0, 2).map(row =&gt; (
+            &lt;Table.Row key={row.id}&gt;
+                &lt;Table.Cell className=&quot;font-bold&quot;&gt;{row.name}&lt;/Table.Cell&gt;
+                &lt;Table.Cell style={{ width: &#39;0.0625rem&#39;, position: &#39;sticky&#39;, right: 0 }}&gt;
+                    &lt;ArchiveRowActions name={row.name} /&gt;
+                &lt;/Table.Cell&gt;
+            &lt;/Table.Row&gt;
+        ))}
+    &lt;/Table.Body&gt;
+&lt;/Table.Root&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -12250,7 +12484,7 @@ variant?: &quot;enclosed&quot; | &quot;button&quot; | &quot;line&quot;</code></p
                 <span class="badge ok">story ok</span>
               </div>
               
-              <div class="hint">`line` (default): the active tab is marked with an animated underline.</div>
+              <div class="hint">`line` (default): the active tab is marked with an underline.</div>
               <pre><code>const Default = () =&gt; &lt;Tabs.Root variant=&quot;line&quot; defaultValue=&quot;overview&quot;&gt;
     &lt;Tabs.List&gt;
         &lt;TabItems /&gt;
@@ -12402,7 +12636,7 @@ tablist role is announced.</div>
       <div class="badges">
         <label for="c-37-components-tag-props" class="badge ok as-toggle">8 prop types</label>
         
-        <label for="c-37-components-tag-stories" class="badge ok as-toggle">12 stories</label>
+        <label for="c-37-components-tag-stories" class="badge ok as-toggle">13 stories</label>
         
         
       </div>
@@ -12572,6 +12806,25 @@ right Tags to see it.</div>
         &lt;Tag color=&quot;informative&quot; variant=&quot;secondary&quot; asChild aria-label=&quot;add&quot;&gt;
             &lt;button type=&quot;button&quot;&gt;
                 &lt;IconAdd /&gt;
+            &lt;/button&gt;
+        &lt;/Tag&gt;
+    &lt;/Row&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Open Trigger</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Tag trigger keeps the hover fill while its overlay is open</div>
+              <div class="hint">An interactive Tag that opens a menu or popover keeps its hover fill while
+that overlay is open. The open state is read from `aria-expanded=&quot;true&quot;`
+together with `aria-haspopup`, which Radix and Base UI triggers set for you.</div>
+              <pre><code>const OpenTrigger = () =&gt; (
+    &lt;Row&gt;
+        &lt;Tag color=&quot;informative&quot; variant=&quot;ghost&quot; asChild&gt;
+            &lt;button type=&quot;button&quot; aria-haspopup=&quot;menu&quot; aria-expanded=&quot;true&quot;&gt;
+                Status menu open
             &lt;/button&gt;
         &lt;/Tag&gt;
     &lt;/Row&gt;
@@ -13509,7 +13762,7 @@ action (e.g., a sync icon for a sync-in-progress toast).</div>
       <div class="badges">
         <label for="c-40-components-tooltip-props" class="badge ok as-toggle">12 prop types</label>
         
-        <label for="c-40-components-tooltip-stories" class="badge ok as-toggle">5 stories</label>
+        <label for="c-40-components-tooltip-stories" class="badge ok as-toggle">6 stories</label>
         
         
       </div>
@@ -13573,9 +13826,9 @@ content: ReactNode
 defaultOpen?: boolean
 
 /**
- * Delay in ms before opening on hover. Defaults to `0`; focus always opens instantly.
+ * Hover delay in ms for this tooltip. Defaults to the `TooltipProvider` delay, or `0` outside one; focus always opens instantly.
  */
-delayDuration?: number = 0
+delayDuration?: number
 
 /**
  * Hide the tooltip when the trigger is clipped away (e.g. scrolled out of an `overflow` container).
@@ -13606,7 +13859,7 @@ sideOffset?: number = 4</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button, Tooltip } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Button, Tooltip, TooltipProvider } from "@agentero/design-system";</code></pre>
               </div>
           
           
@@ -13631,6 +13884,26 @@ sideOffset?: number = 4</code></pre>
               <pre><code>const OpensOnFocus = () =&gt; &lt;Tooltip content=&quot;Archive this carrier&quot; side=&quot;top&quot; asChild&gt;
     &lt;Button variant=&quot;secondary&quot;&gt;Focus me&lt;/Button&gt;
 &lt;/Tooltip&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Shared Provider</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Shared provider: only the first tooltip waits for the hover delay</div>
+              <div class="hint">Inside a `TooltipProvider`, the first tooltip waits for the hover delay; the next one opens at once.</div>
+              <pre><code>const SharedProvider = () =&gt; (
+    &lt;TooltipProvider&gt;
+        &lt;div className=&quot;flex gap-2&quot;&gt;
+            &lt;Tooltip content=&quot;Edit carrier&quot; asChild&gt;
+                &lt;Button variant=&quot;secondary&quot;&gt;Edit&lt;/Button&gt;
+            &lt;/Tooltip&gt;
+            &lt;Tooltip content=&quot;Archive carrier&quot; asChild&gt;
+                &lt;Button variant=&quot;secondary&quot;&gt;Archive&lt;/Button&gt;
+            &lt;/Tooltip&gt;
+        &lt;/div&gt;
+    &lt;/TooltipProvider&gt;
+);</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
