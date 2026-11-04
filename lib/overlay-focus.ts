@@ -6,7 +6,9 @@ if (typeof document !== 'undefined') {
 }
 
 /** Radix triggers cancel their pointerdown, so Chrome keeps the last key press's modality and rings
- * the trigger Radix refocuses on close. Call from `onCloseAutoFocus`; a keyboard close keeps the ring. */
+ * the trigger Radix refocuses on close. Call from `onCloseAutoFocus`; a keyboard close keeps the ring.
+ * A pointer close that drops a ring fires one extra `blur` and `focus` on the trigger, so its `onBlur`
+ * (a form's touched state or validation, say) runs again. */
 export const hideFocusRingAfterPointerClose = (event: Event) => {
 	if (event.defaultPrevented || !lastInputWasPointer) return;
 	// Radix moves focus right after this handler returns, in the same task.

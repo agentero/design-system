@@ -184,12 +184,14 @@ const rowStyles = tv({
 	variants: {
 		body: {
 			true: [
+				// Fades out with a closing menu; hover still shows at once.
+				'transition-colors duration-100 hover:duration-0 motion-reduce:transition-none',
 				'hover:bg-bg-default-base-secondary hover:has-[[data-slot=table-empty-state]]:bg-transparent',
-				'[&:hover_[data-slot=table-row-actions]>*]:opacity-100',
-				'[&:hover_[data-slot=table-row-actions]]:after:opacity-100',
-				'has-overlay-open:bg-bg-default-base-secondary has-overlay-open:has-[[data-slot=table-empty-state]]:bg-transparent',
-				'has-overlay-open:[&_[data-slot=table-row-actions]>*]:opacity-100',
-				'has-overlay-open:[&_[data-slot=table-row-actions]]:after:opacity-100',
+				'[&:hover_[data-slot=table-row-actions]]:opacity-100 [&:hover_[data-slot=table-row-actions]]:duration-0',
+				'[&:hover_[data-slot=table-row-actions]]:after:opacity-100 [&:hover_[data-slot=table-row-actions]]:after:duration-0',
+				'overlay-open-within:bg-bg-default-base-secondary overlay-open-within:has-[[data-slot=table-empty-state]]:bg-transparent',
+				'overlay-open-within:[&_[data-slot=table-row-actions]]:opacity-100',
+				'overlay-open-within:[&_[data-slot=table-row-actions]]:after:opacity-100',
 				'has-[[data-slot=table-row-actions]_:focus-visible]:bg-bg-default-base-secondary'
 			],
 			false: ''
@@ -325,10 +327,11 @@ const rowActionsStyles = tv({
 		// Gradient mask behind the actions, revealed on row hover.
 		'after:absolute after:inset-y-0 after:right-0 after:left-[calc(var(--table-cell-padding-inline)*-1)] after:opacity-0 after:content-[""]',
 		'after:[background:linear-gradient(to_right,transparent_0,var(--color-bg-default-base-secondary)_var(--table-cell-padding-inline))]',
+		'after:transition-opacity after:duration-100 motion-reduce:after:transition-none',
 		// Controls appear on hover or keyboard focus; always visible on coarse-pointer devices.
-		'[&>*]:relative [&>*]:z-[1] [&>*]:opacity-0',
-		'has-[:focus-visible]:[&>*]:opacity-100 has-[:focus-visible]:after:opacity-100',
-		'[@media(hover:none)_and_(pointer:coarse)]:[&>*]:opacity-100'
+		'opacity-0 transition-opacity duration-100 motion-reduce:transition-none [&>*]:relative [&>*]:z-[1]',
+		'has-[:focus-visible]:opacity-100 has-[:focus-visible]:after:opacity-100',
+		'[@media(hover:none)_and_(pointer:coarse)]:opacity-100'
 	]
 });
 

@@ -470,18 +470,27 @@ export const FocusReturn: Story = {
 	play: async ({ canvasElement }) => {
 		const body = within(document.body);
 		const trigger = within(canvasElement).getByRole('button', { name: 'Contract actions' });
+		const triggerFocusEvents: string[] = [];
+		const recordFocusEvent = (event: FocusEvent) => triggerFocusEvents.push(event.type);
+		trigger.addEventListener('focus', recordFocusEvent);
+		trigger.addEventListener('blur', recordFocusEvent);
 
 		await userEvent.click(trigger);
-		await userEvent.click(await body.findByRole('menuitem', { name: 'Download contract' }));
+		const downloadItem = await body.findByRole('menuitem', { name: 'Download contract' });
+		triggerFocusEvents.length = 0;
+		await userEvent.click(downloadItem);
 		await waitFor(() => expect(body.queryByRole('menu')).not.toBeInTheDocument());
 		await expect(trigger).toHaveFocus();
 		await expect(trigger.matches(':focus-visible')).toBe(false);
+		await expect(triggerFocusEvents).toEqual(['focus', 'blur', 'focus']);
 
 		await userEvent.keyboard('{Enter}');
 		await body.findByRole('menu');
+		triggerFocusEvents.length = 0;
 		await userEvent.keyboard('{Escape}');
 		await waitFor(() => expect(body.queryByRole('menu')).not.toBeInTheDocument());
 		await expect(trigger).toHaveFocus();
 		await expect(trigger.matches(':focus-visible')).toBe(true);
+		await expect(triggerFocusEvents).toEqual(['focus']);
 	}
 };

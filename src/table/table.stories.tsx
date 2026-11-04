@@ -8,6 +8,9 @@ import { Button } from '../button';
 import { DropdownMenu } from '../dropdown-menu';
 import { Switch } from '../switch';
 
+const runningTransitions = (element: Element) =>
+	element.getAnimations({ subtree: true }).filter(animation => animation instanceof CSSTransition);
+
 type Row = { id: string; name: string; email: string; role: string; amount: string };
 
 const ROWS: Row[] = [
@@ -352,23 +355,114 @@ export const WithRowActionsMenu: Story = {
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 		const trigger = canvas.getByRole('button', { name: `Actions for ${ROWS[0]!.name}` });
+		const actions = trigger.closest<HTMLElement>('[data-slot=table-row-actions]')!;
 		const row = trigger.closest('tr')!;
 		const idleRow = canvas
 			.getByRole('button', { name: `Actions for ${ROWS[1]!.name}` })
 			.closest('tr')!;
-		await expect(getComputedStyle(trigger).opacity).toBe('0');
+		await expect(getComputedStyle(actions).opacity).toBe('0');
 
 		await userEvent.click(trigger);
 		await within(document.body).findByRole('menu');
 
-		await expect(getComputedStyle(trigger).opacity).toBe('1');
+		await waitFor(() => expect(runningTransitions(row)).toHaveLength(0));
+		await expect(getComputedStyle(actions).opacity).toBe('1');
 		const rowOpenBackground = getComputedStyle(row).backgroundColor;
 		await expect(rowOpenBackground).not.toBe(getComputedStyle(idleRow).backgroundColor);
 		await userEvent.keyboard('{Escape}');
 		await waitFor(() => expect(within(document.body).queryByRole('menu')).not.toBeInTheDocument());
 		await expect(trigger).toHaveFocus();
-		await expect(getComputedStyle(trigger).opacity).toBe('1');
+		await waitFor(() => expect(runningTransitions(row)).toHaveLength(0));
+		await expect(getComputedStyle(actions).opacity).toBe('1');
 		await expect(getComputedStyle(row).backgroundColor).toBe(rowOpenBackground);
+	}
+};
+
+const ArchiveRowActions = ({ name }: { name: string }) => {
+	const [isArchiving, setIsArchiving] = useState(false);
+
+	return (
+		<Table.RowActions>
+			<DropdownMenu.Root>
+				<DropdownMenu.Trigger asChild>
+					<Button
+						variant="ghost"
+						size="sm"
+						iconOnly
+						loading={isArchiving}
+						aria-label={`Actions for ${name}`}>
+						<IconEdit />
+					</Button>
+				</DropdownMenu.Trigger>
+				<DropdownMenu.Portal>
+					<DropdownMenu.Content align="end">
+						<DropdownMenu.Item
+							onSelect={event => {
+								event.preventDefault();
+								setIsArchiving(true);
+							}}>
+							Archive
+						</DropdownMenu.Item>
+					</DropdownMenu.Content>
+				</DropdownMenu.Portal>
+			</DropdownMenu.Root>
+		</Table.RowActions>
+	);
+};
+
+/**
+ * The row stays highlighted while its menu is open even when the trigger turns
+ * `loading`, and with it disabled, because the menu item that started the work
+ * keeps the menu open.
+ *
+ * @summary Row stays highlighted while a loading trigger's menu is open
+ */
+export const WithLoadingRowActionsMenu: Story = {
+	render: args => (
+		<Table.Root {...args}>
+			<Table.Head>
+				<Table.Row>
+					<Table.Header>Name</Table.Header>
+					<Table.Header>
+						<span className="sr-only">Actions</span>
+					</Table.Header>
+				</Table.Row>
+			</Table.Head>
+			<Table.Body>
+				{ROWS.slice(0, 2).map(row => (
+					<Table.Row key={row.id}>
+						<Table.Cell className="font-bold">{row.name}</Table.Cell>
+						<Table.Cell style={{ width: '0.0625rem', position: 'sticky', right: 0 }}>
+							<ArchiveRowActions name={row.name} />
+						</Table.Cell>
+					</Table.Row>
+				))}
+			</Table.Body>
+		</Table.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const body = within(document.body);
+		const trigger = canvas.getByRole('button', { name: `Actions for ${ROWS[0]!.name}` });
+		const actions = trigger.closest<HTMLElement>('[data-slot=table-row-actions]')!;
+		const row = trigger.closest('tr')!;
+		const idleRow = canvas
+			.getByRole('button', { name: `Actions for ${ROWS[1]!.name}` })
+			.closest('tr')!;
+
+		await userEvent.click(trigger);
+		await userEvent.click(await body.findByRole('menuitem', { name: 'Archive' }));
+
+		await waitFor(() => expect(trigger).toBeDisabled());
+		await expect(body.getByRole('menu')).toBeInTheDocument();
+		await waitFor(() => expect(runningTransitions(row)).toHaveLength(0));
+		await expect(getComputedStyle(actions).opacity).toBe('1');
+		await expect(getComputedStyle(row).backgroundColor).not.toBe(
+			getComputedStyle(idleRow).backgroundColor
+		);
+
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(body.queryByRole('menu')).not.toBeInTheDocument());
 	}
 };
 
