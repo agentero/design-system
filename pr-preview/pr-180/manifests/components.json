@@ -2362,6 +2362,13 @@
           "snippet": "const AsChild = () => (\n    <Row>\n        <Button asChild variant=\"primary\">\n            <a href=\"/dashboard\">Go to dashboard</a>\n        </Button>\n        <Button asChild variant=\"secondary\">\n            <a href=\"https://agentero.com\" target=\"_blank\" rel=\"noreferrer\">\n                Visit Agentero\n            </a>\n        </Button>\n    </Row>\n);",
           "description": "`asChild` renders Button's styles on the nested child element rather than\non a `<button>` — the child receives Button's `className`, `ref`, and\nmerged props via Radix's `Slot` primitive. Use it to turn any anchor or\nframework `Link` into a Button without coupling the design system to a\nrouter. In app code, swap the plain `<a>` below for your framework's Link\n(`next/link`, `react-router`, `@tanstack/react-router`, etc.).",
           "summary": "`asChild` composes Button's styles onto any element"
+        },
+        {
+          "id": "components-button--open-trigger",
+          "name": "Open Trigger",
+          "snippet": "const OpenTrigger = () => (\n    <Stack>\n        <Row>\n            {NON_LINK_VARIANTS.map(variant => (\n                <Button key={variant} variant={variant} aria-haspopup=\"menu\" aria-expanded=\"true\">\n                    {`${variant} menu open`}\n                </Button>\n            ))}\n        </Row>\n        <Row>\n            <Button variant=\"secondary\" aria-expanded=\"true\">\n                Section expanded\n            </Button>\n            <Button variant=\"secondary\" status=\"danger\" aria-haspopup=\"menu\" aria-expanded=\"true\">\n                Danger menu open\n            </Button>\n            <Button variant=\"secondary\" loading aria-haspopup=\"menu\" aria-expanded=\"true\">\n                Loading menu open\n            </Button>\n        </Row>\n    </Stack>\n);",
+          "description": "A Button that opens a menu, popover, select or combobox list keeps its hover\nlook while that overlay is open, so the pointer can leave it for the list\nwithout the trigger looking idle. The open state is read from\n`aria-expanded=\"true\"` together with `aria-haspopup` (or `role=\"combobox\"`),\nwhich Radix and Base UI triggers set for you. A disclosure toggle, such as a\ncollapsible section header, sets only `aria-expanded` and keeps its regular look,\nand a disabled or loading trigger keeps its disabled look.",
+          "summary": "Overlay triggers keep the hover look while their overlay is open"
         }
       ],
       "import": "import { Button } from \"@agentero/design-system\";"
@@ -3959,7 +3966,7 @@
           "name": "Inside Popover With Value",
           "error": {
             "name": "SyntaxError",
-            "message": "Expected render to be an arrow function or function expression\n  1065 |  */\n  1066 | export const InsidePopoverWithValue: Story = {\n> 1067 | \trender: InsidePopover.render,\n       | \t           ^^^^^^^^^^^^^^^^^^^^\n  1068 | \tplay: async ({ canvasElement }) => {\n  1069 | \t\tconst body = within(document.body);\n  1070 | \t\tconst trigger = within(canvasElement).getByRole('button', { name: /filter by state/i });"
+            "message": "Expected render to be an arrow function or function expression\n  1069 |  */\n  1070 | export const InsidePopoverWithValue: Story = {\n> 1071 | \trender: InsidePopover.render,\n       | \t           ^^^^^^^^^^^^^^^^^^^^\n  1072 | \tplay: async ({ canvasElement }) => {\n  1073 | \t\tconst body = within(document.body);\n  1074 | \t\tconst trigger = within(canvasElement).getByRole('button', { name: /filter by state/i });"
           }
         },
         {
@@ -6397,6 +6404,13 @@
           "snippet": "const SubmenuWithDisabledItems = () => (\n    <DropdownMenu.Root>\n        <DropdownMenu.Trigger asChild>\n            <Button size=\"md\" variant=\"secondary\">\n                Document Actions\n                <IconKeyboardArrowDown />\n            </Button>\n        </DropdownMenu.Trigger>\n        <DropdownMenu.Portal>\n            <DropdownMenu.Content>\n                <DropdownMenu.Item onSelect={() => console.log('View')}>View</DropdownMenu.Item>\n                <DropdownMenu.Item onSelect={() => console.log('Edit')}>Edit</DropdownMenu.Item>\n                <DropdownMenu.Separator />\n                <DropdownMenu.Sub>\n                    <DropdownMenu.SubTrigger>\n                        <IconContentCopy />\n                        Export as\n                    </DropdownMenu.SubTrigger>\n                    <DropdownMenu.Portal>\n                        <DropdownMenu.SubContent>\n                            <DropdownMenu.Item onSelect={() => console.log('PDF')}>PDF</DropdownMenu.Item>\n                            <DropdownMenu.Item onSelect={() => console.log('Word')}>\n                                Word Document\n                            </DropdownMenu.Item>\n                            <DropdownMenu.Item disabled>Excel (Premium only)</DropdownMenu.Item>\n                            <DropdownMenu.Item disabled>PowerPoint (Premium only)</DropdownMenu.Item>\n                        </DropdownMenu.SubContent>\n                    </DropdownMenu.Portal>\n                </DropdownMenu.Sub>\n                <DropdownMenu.Sub>\n                    <DropdownMenu.SubTrigger disabled>\n                        <IconIosShare />\n                        Share (Sign in required)\n                    </DropdownMenu.SubTrigger>\n                    <DropdownMenu.Portal>\n                        <DropdownMenu.SubContent>\n                            <DropdownMenu.Item>Email</DropdownMenu.Item>\n                            <DropdownMenu.Item>Link</DropdownMenu.Item>\n                        </DropdownMenu.SubContent>\n                    </DropdownMenu.Portal>\n                </DropdownMenu.Sub>\n            </DropdownMenu.Content>\n        </DropdownMenu.Portal>\n    </DropdownMenu.Root>\n);",
           "description": "Submenu that contains `disabled` `Item`s alongside a fully-disabled\n`SubTrigger`. Use `disabled` sparingly — prefer hiding unavailable\nactions outright unless the user needs to see them and understand why.",
           "summary": "Submenu with `disabled` items and a disabled `SubTrigger`"
+        },
+        {
+          "id": "components-dropdownmenu--focus-return",
+          "name": "Focus Return",
+          "snippet": "const FocusReturn = () => (\n    <DropdownMenu.Root>\n        <DropdownMenu.Trigger asChild>\n            <Button size=\"md\" variant=\"secondary\">\n                Contract actions\n            </Button>\n        </DropdownMenu.Trigger>\n        <DropdownMenu.Portal>\n            <DropdownMenu.Content>\n                <DropdownMenu.Item>Download contract</DropdownMenu.Item>\n                <DropdownMenu.Item>Mark as pending</DropdownMenu.Item>\n            </DropdownMenu.Content>\n        </DropdownMenu.Portal>\n    </DropdownMenu.Root>\n);",
+          "description": "Closing the menu hands focus back to its trigger. After a pointer close the\ntrigger takes focus without a focus ring, since the pointer never asked for\none. After a keyboard close (Escape, or choosing a row with Enter) the ring\nshows, so a keyboard user can see where focus went.",
+          "summary": "Focus returns to the trigger, with a ring only after a keyboard close"
         }
       ],
       "import": "import { Button, DropdownMenu } from \"@agentero/design-system\";"
@@ -6609,6 +6623,205 @@
         }
       ],
       "import": "import { Field, FieldContext, FieldText, Input, InputContext, Label } from \"@agentero/design-system\";"
+    },
+    "components-fieldtextarea": {
+      "id": "components-fieldtextarea",
+      "name": "FieldTextArea",
+      "path": "./src/field-textarea/field-textarea.stories.tsx",
+      "jsDocTags": {
+        "summary": [
+          "Field for a multi-line text control, wiring the TextArea inside it"
+        ],
+        "example": [
+          "<FieldTextArea invalid={!!error} required>\n  <Label>Reason</Label>\n  <TextArea placeholder=\"Tell us in your own words\" />\n  <Field.Description>Shared with the carrier.</Field.Description>\n  <Field.Error errors={[error]} />\n</FieldTextArea>"
+        ]
+      },
+      "description": "FieldTextArea is a `Field.Root` for a multi-line text control. It provides\n`TextAreaContext`, so the `TextArea` inside associates itself with the label\nand the messages and takes `invalid`, `required`, `disabled` and `readOnly`\nfrom the field — no `id`, `htmlFor`, `aria-describedby` or `aria-invalid`\nwritten by hand.\n\nIt knows nothing about form libraries, and its contexts compose: a provider\nnested inside it can extend `TextAreaContext` with `value`, `onChange`,\n`onBlur` and `name`, and `FieldContext` with the errors, as the last story\nshows.",
+      "summary": "Field for a multi-line text control, wiring the TextArea inside it",
+      "reactComponentMeta": {
+        "displayName": "FieldTextArea",
+        "exportName": "FieldTextArea",
+        "filePath": "/home/runner/work/design-system/design-system/src/field-textarea/index.ts",
+        "description": "A `Field.Root` for a multi-line text control: it provides `TextAreaContext`,\nso the `TextArea` inside associates itself with the label and the messages\nand takes `invalid`, `required`, `disabled` and `readOnly` from the field.\nEvery other part (`Label`, `Field.Description`, `Field.Error`) works as in\nany field. With `limit` on the `TextArea`, its count sits inside the box,\nso the description or the error keeps the row under it to itself. The field\nis always vertical: the design has no row layout for a control that is\nseveral lines tall and grows, so there is no `orientation`.\n\nForm-library agnostic, and its contexts compose: a provider nested inside it\ncan extend `TextAreaContext` with `name`, `value`, `onChange`, `onBlur` and\n`ref` to control the `TextArea`, and `FieldContext` with the errors, on top\nof the wiring `FieldTextArea` already set.",
+        "jsDocTags": {
+          "summary": [
+            "Field for a multi-line text control, wiring the TextArea inside it"
+          ],
+          "example": [
+            "<FieldTextArea invalid={!!error} required>\n  <Label>Reason</Label>\n  <TextArea placeholder=\"Tell us in your own words\" />\n  <Field.Description>Shared with the carrier.</Field.Description>\n  <Field.Error errors={[error]} />\n</FieldTextArea>"
+          ]
+        },
+        "props": {
+          "disabled": {
+            "name": "disabled",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Disables the control through its context and sets `data-disabled` on the root.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
+          "required": {
+            "name": "required",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Single source of truth for a required field: the `Label` shows its\nasterisk and the control receives `required`, both through context.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
+          "readOnly": {
+            "name": "readOnly",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Makes the control read-only through its context (focusable and copyable,\nnot editable, still submitted) and sets `data-readonly` on the root.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
+          "invalid": {
+            "name": "invalid",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Marks the field as failing validation: sets `data-invalid` on the root and\n`aria-invalid` on the control through its context, which drives the\ncontrol's destructive border. The label keeps its color by design.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
+          "controlId": {
+            "name": "controlId",
+            "required": false,
+            "type": {
+              "name": "string"
+            },
+            "description": "`id` for the control. Generated when omitted. Set it here, not on the\ncontrol, so the label and the messages keep pointing at the right element.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          }
+        }
+      },
+      "stories": [
+        {
+          "id": "components-fieldtextarea--default",
+          "name": "Default",
+          "snippet": "const Default = () => <FieldTextArea invalid={false} disabled={false} readOnly={false} required={false}>\n    <Label>Notes</Label>\n    <TextArea placeholder=\"Anything the underwriter should know\" />\n    <Field.Description>Shared with the carrier along with the request.</Field.Description>\n</FieldTextArea>;",
+          "description": "The composition consumers write: a label, the design system's `TextArea` and\nhelper text. The label points at the control and the control is described\nby the text, all through context.",
+          "summary": "Label, TextArea and description wired with no ids"
+        },
+        {
+          "id": "components-fieldtextarea--required",
+          "name": "Required",
+          "snippet": "const Required = () => <FieldTextArea invalid={false} disabled={false} readOnly={false} required>\n    <Label>Reason</Label>\n    <TextArea placeholder=\"Tell us in your own words\" />\n</FieldTextArea>;",
+          "description": "`required` on the field reaches both the label's asterisk and the control's\n`required` attribute.",
+          "summary": "Required field driven from the root alone"
+        },
+        {
+          "id": "components-fieldtextarea--invalid",
+          "name": "Invalid",
+          "snippet": "const Invalid = () => <FieldTextArea invalid disabled={false} readOnly={false} required={false}>\n    <Label>Reason</Label>\n    <TextArea defaultValue=\"n/a\" />\n    <Field.Error errors={[{ message: 'Tell us why you are cancelling.' }]} />\n</FieldTextArea>;",
+          "description": "`invalid` on the field sets `aria-invalid` on the control, which drives its\ndestructive border, and the error is announced with the control.",
+          "summary": "Invalid field with the TextArea styled by aria-invalid"
+        },
+        {
+          "id": "components-fieldtextarea--disabled",
+          "name": "Disabled",
+          "snippet": "const Disabled = () => <FieldTextArea invalid={false} disabled readOnly={false} required={false}>\n    <Label>Notes</Label>\n    <TextArea defaultValue=\"Locked once the request is submitted.\" />\n</FieldTextArea>;",
+          "description": "`disabled` on the field disables the control through context.",
+          "summary": "Disabled field driven from the root"
+        },
+        {
+          "id": "components-fieldtextarea--read-only",
+          "name": "Read Only",
+          "snippet": "const ReadOnly = () => <FieldTextArea invalid={false} disabled={false} readOnly required={false}>\n    <Label>Underwriter notes</Label>\n    <TextArea defaultValue=\"Approved subject to a roof inspection.\" />\n    <Field.Description>Written by the carrier; contact them to change it.</Field.Description>\n</FieldTextArea>;",
+          "description": "`readOnly` on the field reaches the control through context. The value\nstays focusable, copyable and submitted, and the control looks like any\nother.",
+          "summary": "Read-only field driven from the root"
+        },
+        {
+          "id": "components-fieldtextarea--own-props-win",
+          "name": "Own Props Win",
+          "snippet": "const OwnPropsWin = () => <div className=\"flex flex-col gap-2\">\n    <FieldTextArea invalid={false} disabled={false} readOnly={false} required={false}>\n        <Label>Message</Label>\n        <TextArea size=\"lg\" className=\"max-h-60\" aria-describedby=\"message-hint\" />\n        <Field.Description>Sent to the agent as written.</Field.Description>\n    </FieldTextArea>\n    <p id=\"message-hint\" className=\"text-sm text-text-input-placeholder\">Markdown is not rendered.\n                    </p>\n</div>;",
+          "description": "The context is a default, never an override: an extra `aria-describedby` is\nconcatenated with the field's ids, `className` is merged and `size` passes\nthrough untouched.",
+          "summary": "TextArea's own props merge with, and win over, the field's context"
+        },
+        {
+          "id": "components-fieldtextarea--with-counter",
+          "name": "With Counter",
+          "snippet": "const WithCounter = () => <FieldTextArea invalid={false} disabled={false} readOnly={false} required={false}>\n    <Label optional>Notes</Label>\n    <TextArea limit={500} placeholder=\"Placeholder\" />\n    <Field.Description>Shared with the carrier along with the request, and kept on the policy file for audits.\n                    </Field.Description>\n</FieldTextArea>;",
+          "description": "With a count, the count sits inside the box and the description keeps the\nrow under it, wrapping as in any field. A screen reader hears both.",
+          "summary": "Count inside the box, description under it"
+        },
+        {
+          "id": "components-fieldtextarea--over-limit",
+          "name": "Over Limit",
+          "snippet": "const OverLimit = () => <FieldTextArea invalid disabled={false} readOnly={false} required={false}>\n    <Label>Notes</Label>\n    <TextArea\n        limit={40}\n        defaultValue=\"Roof replaced in 2024 after hail damage, garage added.\" />\n    <Field.Error errors={[{ message: 'Keep it brief' }]} />\n</FieldTextArea>;",
+          "description": "Past the limit, as in Figma: the user keeps typing, the characters over the\nlimit and the count read destructive, and the form's validation shows its\nerror where the description goes.",
+          "summary": "Over the limit: extra characters, count and error in red"
+        },
+        {
+          "id": "components-fieldtextarea--invalid-with-counter",
+          "name": "Invalid With Counter",
+          "snippet": "const InvalidWithCounter = () => <FieldTextArea invalid disabled={false} readOnly={false} required>\n    <Label>Reason</Label>\n    <TextArea limit={500} />\n    <Field.Error errors={[{ message: 'This field is required' }]} />\n</FieldTextArea>;",
+          "description": "An invalid field turns the box's border and the count inside it\ndestructive, and shows its error under the box.",
+          "summary": "Destructive border and count, error under the box"
+        },
+        {
+          "id": "components-fieldtextarea--controlled-from-context",
+          "name": "Controlled From Context",
+          "snippet": "const ControlledFromContext = () => {\n    const [value, setValue] = useState('');\n    const [touched, setTouched] = useState(false);\n\n    const errors = touched && !value ? [{ message: 'Required' }] : undefined;\n\n    return (\n        <FieldTextArea invalid={!!errors} required>\n            <ContextExtension\n                textAreaProps={{\n                    name: 'notes',\n                    value,\n                    onChange: event => setValue(event.target.value),\n                    onBlur: () => setTouched(true)\n                }}\n                errors={errors}>\n                <Label>Notes</Label>\n                <TextArea onChange={onOwnChange} />\n                <Field.Error />\n            </ContextExtension>\n        </FieldTextArea>\n    );\n};",
+          "description": "The contexts are an extension point: a provider nested in the field adds\n`name`, `value`, `onChange` and `onBlur` to `TextAreaContext`, so a bare\n`<TextArea />` becomes controlled, and the errors to `FieldContext`, so a\nbare `<Field.Error />` renders them — here with `useState` and no form\nlibrary. The text area's own `onChange` still runs, chained after the\nprovider's.",
+          "summary": "TextArea controlled and errors supplied from outside the field"
+        }
+      ],
+      "import": "import { Field, FieldContext, FieldTextArea, Label, TextArea, TextAreaContext } from \"@agentero/design-system\";"
     },
     "components-field": {
       "id": "components-field",
@@ -9478,6 +9691,20 @@
           "summary": "Basic click-to-open popover surface"
         },
         {
+          "id": "components-popover--focus-return",
+          "name": "Focus Return",
+          "snippet": "const FocusReturn = () => (\n    <div className=\"flex gap-4\">\n        <Popover.Root>\n            <Popover.Trigger asChild>\n                <Button variant=\"secondary\">Carrier details</Button>\n            </Popover.Trigger>\n            <Popover.Content>\n                <div className=\"flex flex-col items-start gap-2\">\n                    <p className=\"text-sm text-text-default-base-primary\">Appointed in 12 states.</p>\n                    <Popover.Close asChild>\n                        <Button size=\"xs\" variant=\"tertiary\">\n                            Done\n                        </Button>\n                    </Popover.Close>\n                </div>\n            </Popover.Content>\n        </Popover.Root>\n    </div>\n);",
+          "description": "Closing the popover from inside hands focus back to its trigger. After a\npointer close the trigger takes focus without a focus ring; after Escape the\nring shows, so a keyboard user can see where focus went.",
+          "summary": "Focus returns to the trigger, with a ring only after a keyboard close"
+        },
+        {
+          "id": "components-popover--close-into-field",
+          "name": "Close Into Field",
+          "snippet": "const CloseIntoField = () => {\n    const [blurCount, setBlurCount] = useState(0);\n    return (\n        <div className=\"flex items-center gap-4\">\n            <Popover.Root>\n                <Popover.Trigger asChild>\n                    <Button variant=\"secondary\">Carrier details</Button>\n                </Popover.Trigger>\n                <Popover.Content>\n                    <p className=\"text-sm text-text-default-base-primary\">Appointed in 12 states.</p>\n                </Popover.Content>\n            </Popover.Root>\n            <input aria-label=\"Agency name\" onBlur={() => setBlurCount(count => count + 1)} />\n            <span>Blurred {blurCount} times</span>\n        </div>\n    );\n};",
+          "description": "Clicking a field outside closes the popover and leaves focus in that field:\nRadix does not move focus back to the trigger, and the field gets no extra\nblur.",
+          "summary": "Clicking a field outside keeps focus in that field"
+        },
+        {
           "id": "components-popover--sides",
           "name": "Sides",
           "snippet": "const Sides = () => (\n    <div className=\"grid grid-cols-2 gap-6\">\n        {(['top', 'right', 'bottom', 'left'] as const).map(side => (\n            <Popover.Root key={side}>\n                <Popover.Trigger asChild>\n                    <Button variant=\"secondary\">{side}</Button>\n                </Popover.Trigger>\n                <Popover.Content side={side}>\n                    <p className=\"text-sm text-text-default-base-primary\">Opens on {side}</p>\n                </Popover.Content>\n            </Popover.Root>\n        ))}\n    </div>\n);",
@@ -10107,6 +10334,20 @@
           "summary": "Hover-revealed row actions"
         },
         {
+          "id": "components-table--with-row-actions-menu",
+          "name": "With Row Actions Menu",
+          "snippet": "const WithRowActionsMenu = () => <Table.Root size=\"md\" embed={false}>\n    <Table.Head>\n        <Table.Row>\n            <Table.Header>Name</Table.Header>\n            <Table.Header>Email</Table.Header>\n            <Table.Header>\n                <span className=\"sr-only\">Actions</span>\n            </Table.Header>\n        </Table.Row>\n    </Table.Head>\n    <Table.Body>\n        {ROWS.slice(0, 3).map(row => (\n            <Table.Row key={row.id}>\n                <Table.Cell className=\"font-bold\">{row.name}</Table.Cell>\n                <Table.Cell className=\"text-text-default-base-secondary\">{row.email}</Table.Cell>\n                <Table.Cell style={{ width: '0.0625rem', position: 'sticky', right: 0 }}>\n                    <Table.RowActions>\n                        <DropdownMenu.Root>\n                            <DropdownMenu.Trigger asChild>\n                                <Button\n                                    variant=\"ghost\"\n                                    size=\"sm\"\n                                    iconOnly\n                                    aria-label={`Actions for ${row.name}`}>\n                                    <IconEdit />\n                                </Button>\n                            </DropdownMenu.Trigger>\n                            <DropdownMenu.Portal>\n                                <DropdownMenu.Content align=\"end\">\n                                    <DropdownMenu.Item>Edit</DropdownMenu.Item>\n                                    <DropdownMenu.Item>Delete</DropdownMenu.Item>\n                                </DropdownMenu.Content>\n                            </DropdownMenu.Portal>\n                        </DropdownMenu.Root>\n                    </Table.RowActions>\n                </Table.Cell>\n            </Table.Row>\n        ))}\n    </Table.Body>\n</Table.Root>;",
+          "description": "A row keeps its hover look, and its actions stay visible, while a menu\nopened from one of those actions is open. The pointer leaves the row for the\nmenu, so without it the actions would fade out under the open menu. Escape\nhands keyboard focus back to the action, so the row keeps that look.",
+          "summary": "Row stays highlighted while its actions menu is open"
+        },
+        {
+          "id": "components-table--with-loading-row-actions-menu",
+          "name": "With Loading Row Actions Menu",
+          "snippet": "const WithLoadingRowActionsMenu = () => <Table.Root size=\"md\" embed={false}>\n    <Table.Head>\n        <Table.Row>\n            <Table.Header>Name</Table.Header>\n            <Table.Header>\n                <span className=\"sr-only\">Actions</span>\n            </Table.Header>\n        </Table.Row>\n    </Table.Head>\n    <Table.Body>\n        {ROWS.slice(0, 2).map(row => (\n            <Table.Row key={row.id}>\n                <Table.Cell className=\"font-bold\">{row.name}</Table.Cell>\n                <Table.Cell style={{ width: '0.0625rem', position: 'sticky', right: 0 }}>\n                    <ArchiveRowActions name={row.name} />\n                </Table.Cell>\n            </Table.Row>\n        ))}\n    </Table.Body>\n</Table.Root>;",
+          "description": "The row stays highlighted while its menu is open even when the trigger turns\n`loading`, and with it disabled, because the menu item that started the work\nkeeps the menu open.",
+          "summary": "Row stays highlighted while a loading trigger's menu is open"
+        },
+        {
           "id": "components-table--expandable-rows",
           "name": "Expandable Rows",
           "snippet": "const ExpandableRows = () => {\n    const [openId, setOpenId] = useState<string | null>(ROWS[0]!.id);\n\n    return (\n        <Table.Root size=\"md\" embed={false}>\n            <Table.Head>\n                <Table.Row>\n                    <Table.Header>\n                        <span className=\"sr-only\">Expand</span>\n                    </Table.Header>\n                    <Table.Header>Name</Table.Header>\n                    <Table.Header>Email</Table.Header>\n                    <Table.Header>Role</Table.Header>\n                </Table.Row>\n            </Table.Head>\n            <Table.Body>\n                {ROWS.slice(0, 4).map(row => (\n                    <Fragment key={row.id}>\n                        <Table.Row>\n                            <Table.Cell>\n                                <Table.ExpandButton\n                                    isExpanded={openId === row.id}\n                                    toggleExpanded={() => setOpenId(openId === row.id ? null : row.id)}\n                                    aria-label={`Toggle ${row.name}`}\n                                />\n                            </Table.Cell>\n                            <Table.Cell className=\"font-bold\">{row.name}</Table.Cell>\n                            <Table.Cell className=\"text-text-default-base-secondary\">{row.email}</Table.Cell>\n                            <Table.Cell>{row.role}</Table.Cell>\n                        </Table.Row>\n                        {openId === row.id && (\n                            <Table.ExpandedRow>\n                                <Table.Cell colSpan={4}>\n                                    <div className=\"py-2 text-text-default-base-secondary\">\n                                        Extended details for {row.name} — {row.amount} lifetime value.\n                                    </div>\n                                </Table.Cell>\n                            </Table.ExpandedRow>\n                        )}\n                    </Fragment>\n                ))}\n            </Table.Body>\n        </Table.Root>\n    );\n};",
@@ -10114,7 +10355,7 @@
           "summary": "Expandable rows with a detail panel"
         }
       ],
-      "import": "import { Button, Switch, Table } from \"@agentero/design-system\";\nimport { Fragment } from \"react\";"
+      "import": "import { Button, DropdownMenu, Switch, Table } from \"@agentero/design-system\";\nimport { Fragment } from \"react\";"
     },
     "components-tabs": {
       "id": "components-tabs",
@@ -10633,6 +10874,13 @@
           "summary": "Static badge vs interactive (asChild) hover"
         },
         {
+          "id": "components-tag--open-trigger",
+          "name": "Open Trigger",
+          "snippet": "const OpenTrigger = () => (\n    <Row>\n        <Tag color=\"informative\" variant=\"ghost\" asChild>\n            <button type=\"button\" aria-haspopup=\"menu\" aria-expanded=\"true\">\n                Status menu open\n            </button>\n        </Tag>\n    </Row>\n);",
+          "description": "An interactive Tag that opens a menu or popover keeps its hover fill while\nthat overlay is open. The open state is read from `aria-expanded=\"true\"`\ntogether with `aria-haspopup`, which Radix and Base UI triggers set for you.",
+          "summary": "Tag trigger keeps the hover fill while its overlay is open"
+        },
+        {
           "id": "components-tag--secondary",
           "name": "Secondary",
           "snippet": "const Secondary = () => (\n    <Row>\n        {COLORS.map(color => (\n            <Tag key={color} variant=\"secondary\" color={color}>\n                {color}\n            </Tag>\n        ))}\n    </Row>\n);",
@@ -10700,7 +10948,7 @@
           "Base multi-line text control sharing Input's skin, states and sizes"
         ],
         "example": [
-          "<Label htmlFor=\"notes\">Notes</Label>\n<TextArea id=\"notes\" placeholder=\"Anything the underwriter should know\" />"
+          "<Label htmlFor=\"notes\">Notes</Label>\n<TextArea id=\"notes\" limit={500} placeholder=\"Anything the underwriter should know\" />"
         ]
       },
       "description": "TextArea is the base multi-line text control, with Input's skin, sizes and\nstates. It wires nothing on its own: `id`, `aria-invalid` and\n`aria-describedby` are plain props, set by whoever owns the field.",
@@ -10709,13 +10957,13 @@
         "displayName": "TextArea",
         "exportName": "TextArea",
         "filePath": "/home/runner/work/design-system/design-system/src/textarea/textarea.tsx",
-        "description": "TextArea is the design system's multi-line text control: Input's skin, states\nand sizes on a single `<textarea>` with nothing around it, so the native\nresize handle and scrollbar keep working. Pair it with\n[Label](?path=/docs/components-label--docs) the way you pair an Input.\n\nIt wires nothing itself — `id`, `aria-describedby` and `aria-invalid` are the\nfield owner's job. The invalid state has no prop of its own: `aria-invalid`\ndrives the destructive border, the same as Input. Every `<textarea>` attribute\nis accepted and forwarded, so `placeholder`, `required`, `disabled`,\n`readOnly`, `maxLength` and the rest work as in plain HTML; `rows` raises the\nresting height when three rows are not enough. It holds no value either, so a\ncharacter counter belongs to whoever owns it.",
+        "description": "TextArea is the design system's multi-line text control: Input's skin, states\nand sizes on a `<textarea>`, so the native resize handle and scrollbar keep\nworking. Pair it with [Label](?path=/docs/components-label--docs) the way you\npair an Input.\n\nWhen a container provides `TextAreaContext`, the text area takes its wiring\n(`id`, `aria-describedby`, `aria-invalid`, `required`, `disabled`,\n`readOnly`) from it, and its own props win; `FieldTextArea` is one such\ncontainer. Standalone, `id`, `aria-describedby` and `aria-invalid` are the\nfield owner's job. The invalid state has no prop of its own: `aria-invalid`\ndrives the destructive border, the same as Input. Every `<textarea>` attribute\nis forwarded, so `placeholder`, `required`, `disabled`, `readOnly`,\n`maxLength` and the rest work as in plain HTML; `rows` raises the resting\nheight when three rows are not enough.\n\n`limit` is a soft limit: it shows a `12/500` count inside the box, on its\nlast row and left-aligned with the text, announced through the textarea's\n`aria-describedby` rather than on every keystroke. Past the limit the user\nkeeps typing: the extra characters and the count turn destructive, and\nrejecting a longer value is the form's validation. The count is destructive\nwhen the field is invalid too. The native `maxLength` stays a hard cap that\nstops typing and shows no count. The counted box is an\n[InputGroup](?path=/docs/components-inputgroup--docs) frame, a\n`data-slot=\"textarea-root\"` wrapper that fills its container, with the bare\n`<textarea>` and the count stacked inside; size a counted TextArea from its\ncontainer rather than through `className`. A counted TextArea also grows\nwith its text (`field-sizing: content`) instead of scrolling, from its\nresting height and with no resize handle; a `max-h-*` in `className` caps\nthe growth, and `rows` no longer sets the height. Browsers without\n`field-sizing` keep the resting height and scroll.\nWithout `limit` the wrapper is `display: contents`, and `className` and\nevery other prop always go to the `<textarea>`.\n\nThe count follows `value` when the text area is controlled; uncontrolled, it\nfollows typing, a native form reset and any rewrite followed by a render. A\nform library that writes the value without rendering (react-hook-form's\n`setValue` on a registered field) needs the value controlled for the count\nto follow.",
         "jsDocTags": {
           "summary": [
             "Base multi-line text control sharing Input's skin, states and sizes"
           ],
           "example": [
-            "<Label htmlFor=\"notes\">Notes</Label>\n<TextArea id=\"notes\" placeholder=\"Anything the underwriter should know\" />"
+            "<Label htmlFor=\"notes\">Notes</Label>\n<TextArea id=\"notes\" limit={500} placeholder=\"Anything the underwriter should know\" />"
           ]
         },
         "props": {
@@ -10738,6 +10986,25 @@
               ]
             },
             "description": "Defaults to `'md'`. The first row measures one Input of the same size and\nthree rows show at rest: `sm` 76px, `md` 84px, `lg` 96px (`lg` also raises\nthe text to `base` and the radius to `lg`).",
+            "defaultValue": null,
+            "parent": {
+              "name": "TextAreaProps",
+              "fileName": "src/textarea/textarea.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/textarea/textarea.tsx"
+              }
+            ]
+          },
+          "limit": {
+            "name": "limit",
+            "required": false,
+            "type": {
+              "name": "number"
+            },
+            "description": "Soft character limit, counted in UTF-16 units like the native `maxLength`\n(an emoji counts as 2). Shows a `12/500` count inside the box and lets the\nuser type past it, turning the extra characters and the count\ndestructive; rejecting the value is the form's validation. For a hard cap\nuse `maxLength`, which stops typing and shows no count.",
             "defaultValue": null,
             "parent": {
               "name": "TextAreaProps",
@@ -10777,7 +11044,7 @@
         {
           "id": "components-textarea--invalid",
           "name": "Invalid",
-          "snippet": "const Invalid = () => <div style={{ display: 'grid', gap: '0.25rem' }}>\n    <TextArea\n        placeholder=\"Anything the underwriter should know\"\n        aria-label=\"Reason\"\n        aria-invalid\n        aria-describedby=\"reason-error\"\n        defaultValue=\"n/a\" />\n    <span id=\"reason-error\">Tell us why you are cancelling.</span>\n</div>;",
+          "snippet": "const Invalid = () => <div style={{ display: 'grid', gap: '0.25rem' }}>\n    <TextArea\n        placeholder=\"Anything the underwriter should know\"\n        aria-label=\"Reason\"\n        aria-invalid\n        aria-describedby=\"reason-error\"\n        defaultValue=\"n/a\" />\n    <span id=\"reason-error\" className=\"text-sm text-text-input-destructive\">Tell us why you are cancelling.\n                    </span>\n</div>;",
           "description": "The invalid treatment comes purely from `aria-invalid`; point\n`aria-describedby` at the message so it is read with the control.",
           "summary": "Invalid state driven by aria-invalid"
         },
@@ -10794,9 +11061,30 @@
           "snippet": "const ReadOnly = () => <TextArea\n    placeholder=\"Anything the underwriter should know\"\n    aria-label=\"Notes\"\n    readOnly\n    defaultValue=\"Copy me, but do not change me\" />;",
           "description": "",
           "summary": "Read-only value that stays focusable and copyable"
+        },
+        {
+          "id": "components-textarea--with-counter",
+          "name": "With Counter",
+          "snippet": "const WithCounter = () => <TextArea\n    placeholder=\"Anything the underwriter should know\"\n    aria-label=\"Notes\"\n    limit={140} />;",
+          "description": "`limit` shows the count inside the box, on its last row and aligned with\nthe text. The count is part of the control's description, so a screen reader\nhears \"0 of 140 characters\" with the field instead of on every keystroke.",
+          "summary": "Character count inside the box, driven by limit"
+        },
+        {
+          "id": "components-textarea--counter-grows-with-text",
+          "name": "Counter Grows With Text",
+          "snippet": "const CounterGrowsWithText = () => <TextArea\n    placeholder=\"Anything the underwriter should know\"\n    aria-label=\"Notes\"\n    limit={500} />;",
+          "description": "A counted TextArea grows a line at a time as the text reaches its last row,\ninstead of scrolling, and has no resize handle.",
+          "summary": "Counted box grows with its text"
+        },
+        {
+          "id": "components-textarea--counter-over-limit",
+          "name": "Counter Over Limit",
+          "snippet": "const CounterOverLimit = () => <TextArea\n    placeholder=\"Anything the underwriter should know\"\n    aria-label=\"Notes\"\n    limit={10} />;",
+          "description": "The limit is soft: typing goes past it, the characters over the limit and\nthe count turn destructive, and the description says by how much, so the\nform's validation can reject it.",
+          "summary": "Typing past the limit turns the count destructive"
         }
       ],
-      "import": "import { TextArea } from \"@agentero/design-system\";"
+      "import": "import { Button, Label, TextArea } from \"@agentero/design-system\";"
     },
     "components-toast": {
       "id": "components-toast",
@@ -11588,6 +11876,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5732
+    "durationMs": 5997
   }
 }
