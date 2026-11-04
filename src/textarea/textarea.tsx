@@ -58,16 +58,13 @@ export const textAreaCounterRecipe = tv({
 	]
 });
 
-/**
- * The layer a `TextArea` lays over itself once the value passes `limit`:
- * it paints the whole text, the characters over the limit in red, while the
- * textarea's own text turns transparent and keeps the caret and selection. The
- * textarea never shows through, so scrolling, which the layer follows a frame
- * late, cannot flash the red characters dark.
- *
- * @summary tailwind-variants recipe backing the TextArea over-limit highlight
- */
-export const textAreaOverflowRecipe = tv({
+// The layer a `TextArea` lays over itself once the value passes `limit`: it
+// paints the whole text, the characters over the limit in red, while the
+// textarea's own text turns transparent and keeps the caret and selection. The
+// textarea never shows through, so scrolling, which the layer follows a frame
+// late, cannot flash the red characters dark. Disabled, the whole text is muted
+// like the count.
+const textAreaOverflowRecipe = tv({
 	slots: {
 		// Hidden until it has been measured, so a server render never shows it misplaced.
 		root: 'pointer-events-none invisible absolute box-border overflow-hidden border-0 data-ready:visible',
@@ -75,7 +72,10 @@ export const textAreaOverflowRecipe = tv({
 			'text-text-input-normal',
 			'group-has-[textarea:disabled]/textarea:text-text-input-disable'
 		],
-		over: 'text-text-input-destructive'
+		over: [
+			'text-text-input-destructive',
+			'group-has-[textarea:disabled]/textarea:text-text-input-disable'
+		]
 	}
 });
 

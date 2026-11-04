@@ -447,6 +447,27 @@ export const CounterControlled: Story = {
 	}
 };
 
+/**
+ * Disabled past the limit, the text over it is muted like the count instead
+ * of staying destructive.
+ *
+ * @summary Disabled over-limit text is muted like the count
+ */
+export const DisabledOverLimit: Story = {
+	// Runs as a test only: covers the disabled colour of the over-limit layer.
+	tags: ['!dev', '!autodocs', '!manifest'],
+	args: { limit: 5, disabled: true, defaultValue: 'Twelve chars' },
+	play: async ({ canvasElement }) => {
+		const counter = canvasElement.querySelector('[data-slot=textarea-counter]')!;
+		const within = canvasElement.querySelector('[data-slot=textarea-overflow] > span')!;
+		const overText = canvasElement.querySelector('[data-slot=textarea-overflow] [data-over]')!;
+
+		await expect(counter).toHaveTextContent('12/5');
+		await expect(getComputedStyle(overText).color).toBe(getComputedStyle(counter).color);
+		await expect(getComputedStyle(overText).color).toBe(getComputedStyle(within).color);
+	}
+};
+
 const ResetForm = () => {
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 	const [, setResets] = useState(0);
