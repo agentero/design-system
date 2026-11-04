@@ -5,6 +5,7 @@ import { ComponentProps } from 'react';
 import * as PopoverPrimitive from '@radix-ui/react-popover';
 import { tv } from 'tailwind-variants';
 
+import { hideFocusRingAfterPointerClose } from '../../lib';
 import { deferEscapeToCombobox } from '../../lib/combobox-escape';
 
 type RootProps = ComponentProps<typeof PopoverPrimitive.Root>;
@@ -88,7 +89,13 @@ type ContentProps = ComponentProps<typeof PopoverPrimitive.Content>;
 // matching `DropdownMenu` and `HoverCard` so every trigger-anchored surface sits at the same distance.
 // An Escape from a combobox inside it goes to the field first (open list, then picked value); only the
 // one the field lets through closes the popover and reaches `onEscapeKeyDown`.
-export const Content = ({ className, sideOffset = 8, onEscapeKeyDown, ...props }: ContentProps) => (
+export const Content = ({
+	className,
+	sideOffset = 8,
+	onEscapeKeyDown,
+	onCloseAutoFocus,
+	...props
+}: ContentProps) => (
 	<PopoverPrimitive.Portal>
 		<PopoverPrimitive.Content
 			data-slot="popover-content"
@@ -96,6 +103,10 @@ export const Content = ({ className, sideOffset = 8, onEscapeKeyDown, ...props }
 			className={popoverRecipe({ className })}
 			onEscapeKeyDown={event => {
 				if (!deferEscapeToCombobox(event)) onEscapeKeyDown?.(event);
+			}}
+			onCloseAutoFocus={event => {
+				onCloseAutoFocus?.(event);
+				hideFocusRingAfterPointerClose(event);
 			}}
 			{...props}
 		/>

@@ -323,10 +323,7 @@ export const DataTableTable = ({
 							return (
 								<Fragment key={row.id}>
 									<Table.Row
-										className={cn(
-											'has-aria-expanded:bg-bg-default-base-secondary',
-											isClickable && 'cursor-pointer'
-										)}
+										className={cn(isClickable && 'cursor-pointer')}
 										onClick={
 											isClickable
 												? e => {
