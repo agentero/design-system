@@ -10142,6 +10142,13 @@
           "summary": "Row stays highlighted while its actions menu is open"
         },
         {
+          "id": "components-table--with-loading-row-actions-menu",
+          "name": "With Loading Row Actions Menu",
+          "snippet": "const WithLoadingRowActionsMenu = () => <Table.Root size=\"md\" embed={false}>\n    <Table.Head>\n        <Table.Row>\n            <Table.Header>Name</Table.Header>\n            <Table.Header>\n                <span className=\"sr-only\">Actions</span>\n            </Table.Header>\n        </Table.Row>\n    </Table.Head>\n    <Table.Body>\n        {ROWS.slice(0, 2).map(row => (\n            <Table.Row key={row.id}>\n                <Table.Cell className=\"font-bold\">{row.name}</Table.Cell>\n                <Table.Cell style={{ width: '0.0625rem', position: 'sticky', right: 0 }}>\n                    <ArchiveRowActions name={row.name} />\n                </Table.Cell>\n            </Table.Row>\n        ))}\n    </Table.Body>\n</Table.Root>;",
+          "description": "The row stays highlighted while its menu is open even when the trigger turns\n`loading`, and with it disabled, because the menu item that started the work\nkeeps the menu open.",
+          "summary": "Row stays highlighted while a loading trigger's menu is open"
+        },
+        {
           "id": "components-table--expandable-rows",
           "name": "Expandable Rows",
           "snippet": "const ExpandableRows = () => {\n    const [openId, setOpenId] = useState<string | null>(ROWS[0]!.id);\n\n    return (\n        <Table.Root size=\"md\" embed={false}>\n            <Table.Head>\n                <Table.Row>\n                    <Table.Header>\n                        <span className=\"sr-only\">Expand</span>\n                    </Table.Header>\n                    <Table.Header>Name</Table.Header>\n                    <Table.Header>Email</Table.Header>\n                    <Table.Header>Role</Table.Header>\n                </Table.Row>\n            </Table.Head>\n            <Table.Body>\n                {ROWS.slice(0, 4).map(row => (\n                    <Fragment key={row.id}>\n                        <Table.Row>\n                            <Table.Cell>\n                                <Table.ExpandButton\n                                    isExpanded={openId === row.id}\n                                    toggleExpanded={() => setOpenId(openId === row.id ? null : row.id)}\n                                    aria-label={`Toggle ${row.name}`}\n                                />\n                            </Table.Cell>\n                            <Table.Cell className=\"font-bold\">{row.name}</Table.Cell>\n                            <Table.Cell className=\"text-text-default-base-secondary\">{row.email}</Table.Cell>\n                            <Table.Cell>{row.role}</Table.Cell>\n                        </Table.Row>\n                        {openId === row.id && (\n                            <Table.ExpandedRow>\n                                <Table.Cell colSpan={4}>\n                                    <div className=\"py-2 text-text-default-base-secondary\">\n                                        Extended details for {row.name} — {row.amount} lifetime value.\n                                    </div>\n                                </Table.Cell>\n                            </Table.ExpandedRow>\n                        )}\n                    </Fragment>\n                ))}\n            </Table.Body>\n        </Table.Root>\n    );\n};",
@@ -11630,6 +11637,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 3754
+    "durationMs": 5476
   }
 }

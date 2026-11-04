@@ -588,13 +588,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">41 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/360 story errors</a></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">41 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/361 story errors</a></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>3.8s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>5.5s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -11766,7 +11766,7 @@ size?: &quot;sm&quot; | &quot;md&quot;</code></pre>
       <div class="badges">
         <label for="c-34-components-table-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-34-components-table-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-34-components-table-stories" class="badge ok as-toggle">12 stories</label>
         
         
       </div>
@@ -11993,6 +11993,36 @@ hands keyboard focus back to the action, so the row keeps that look.</div>
                             &lt;/DropdownMenu.Portal&gt;
                         &lt;/DropdownMenu.Root&gt;
                     &lt;/Table.RowActions&gt;
+                &lt;/Table.Cell&gt;
+            &lt;/Table.Row&gt;
+        ))}
+    &lt;/Table.Body&gt;
+&lt;/Table.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Loading Row Actions Menu</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Row stays highlighted while a loading trigger&#39;s menu is open</div>
+              <div class="hint">The row stays highlighted while its menu is open even when the trigger turns
+`loading`, and with it disabled, because the menu item that started the work
+keeps the menu open.</div>
+              <pre><code>const WithLoadingRowActionsMenu = () =&gt; &lt;Table.Root size=&quot;md&quot; embed={false}&gt;
+    &lt;Table.Head&gt;
+        &lt;Table.Row&gt;
+            &lt;Table.Header&gt;Name&lt;/Table.Header&gt;
+            &lt;Table.Header&gt;
+                &lt;span className=&quot;sr-only&quot;&gt;Actions&lt;/span&gt;
+            &lt;/Table.Header&gt;
+        &lt;/Table.Row&gt;
+    &lt;/Table.Head&gt;
+    &lt;Table.Body&gt;
+        {ROWS.slice(0, 2).map(row =&gt; (
+            &lt;Table.Row key={row.id}&gt;
+                &lt;Table.Cell className=&quot;font-bold&quot;&gt;{row.name}&lt;/Table.Cell&gt;
+                &lt;Table.Cell style={{ width: &#39;0.0625rem&#39;, position: &#39;sticky&#39;, right: 0 }}&gt;
+                    &lt;ArchiveRowActions name={row.name} /&gt;
                 &lt;/Table.Cell&gt;
             &lt;/Table.Row&gt;
         ))}
