@@ -1,2 +1,4 @@
-export { TextArea, textAreaRecipe } from './textarea';
+export { TextAreaContext, useTextAreaContext } from './context';
+export type { TextAreaContextValue } from './context';
+export { TextArea, textAreaCounterRecipe, textAreaRecipe } from './textarea';
 export type { TextAreaProps, TextAreaSize, TextAreaVariants } from './textarea';
