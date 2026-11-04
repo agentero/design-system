@@ -1,6 +1,7 @@
 import type { SVGProps } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { DropdownMenu } from '.';
 import { Button } from '../button';
@@ -440,4 +441,56 @@ export const SubmenuWithDisabledItems: Story = {
 			</DropdownMenu.Portal>
 		</DropdownMenu.Root>
 	)
+};
+
+/**
+ * Closing the menu hands focus back to its trigger. After a pointer close the
+ * trigger takes focus without a focus ring, since the pointer never asked for
+ * one. After a keyboard close (Escape, or choosing a row with Enter) the ring
+ * shows, so a keyboard user can see where focus went.
+ *
+ * @summary Focus returns to the trigger, with a ring only after a keyboard close
+ */
+export const FocusReturn: Story = {
+	render: () => (
+		<DropdownMenu.Root>
+			<DropdownMenu.Trigger asChild>
+				<Button size="md" variant="secondary">
+					Contract actions
+				</Button>
+			</DropdownMenu.Trigger>
+			<DropdownMenu.Portal>
+				<DropdownMenu.Content>
+					<DropdownMenu.Item>Download contract</DropdownMenu.Item>
+					<DropdownMenu.Item>Mark as pending</DropdownMenu.Item>
+				</DropdownMenu.Content>
+			</DropdownMenu.Portal>
+		</DropdownMenu.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const body = within(document.body);
+		const trigger = within(canvasElement).getByRole('button', { name: 'Contract actions' });
+		const triggerFocusEvents: string[] = [];
+		const recordFocusEvent = (event: FocusEvent) => triggerFocusEvents.push(event.type);
+		trigger.addEventListener('focus', recordFocusEvent);
+		trigger.addEventListener('blur', recordFocusEvent);
+
+		await userEvent.click(trigger);
+		const downloadItem = await body.findByRole('menuitem', { name: 'Download contract' });
+		triggerFocusEvents.length = 0;
+		await userEvent.click(downloadItem);
+		await waitFor(() => expect(body.queryByRole('menu')).not.toBeInTheDocument());
+		await expect(trigger).toHaveFocus();
+		await expect(trigger.matches(':focus-visible')).toBe(false);
+		await expect(triggerFocusEvents).toEqual(['focus', 'blur', 'focus']);
+
+		await userEvent.keyboard('{Enter}');
+		await body.findByRole('menu');
+		triggerFocusEvents.length = 0;
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(body.queryByRole('menu')).not.toBeInTheDocument());
+		await expect(trigger).toHaveFocus();
+		await expect(trigger.matches(':focus-visible')).toBe(true);
+		await expect(triggerFocusEvents).toEqual(['focus']);
+	}
 };

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, within } from 'storybook/test';
 
 import { Button } from './button';
 
@@ -317,4 +318,72 @@ export const AsChild: Story = {
 			</Button>
 		</Row>
 	)
+};
+
+/* --------------- Open trigger --------------- */
+
+const resolveColor = (token: string) => {
+	const probe = document.createElement('span');
+	probe.style.backgroundColor = `var(${token})`;
+	document.body.append(probe);
+	const color = getComputedStyle(probe).backgroundColor;
+	probe.remove();
+	return color;
+};
+
+/**
+ * A Button that opens a menu, popover, select or combobox list keeps its hover
+ * look while that overlay is open, so the pointer can leave it for the list
+ * without the trigger looking idle. The open state is read from
+ * `aria-expanded="true"` together with `aria-haspopup` (or `role="combobox"`),
+ * which Radix and Base UI triggers set for you. A disclosure toggle, such as a
+ * collapsible section header, sets only `aria-expanded` and keeps its regular look,
+ * and a disabled or loading trigger keeps its disabled look.
+ *
+ * @summary Overlay triggers keep the hover look while their overlay is open
+ */
+export const OpenTrigger: Story = {
+	render: () => (
+		<Stack>
+			<Row>
+				{NON_LINK_VARIANTS.map(variant => (
+					<Button key={variant} variant={variant} aria-haspopup="menu" aria-expanded="true">
+						{`${variant} menu open`}
+					</Button>
+				))}
+			</Row>
+			<Row>
+				<Button variant="secondary" aria-expanded="true">
+					Section expanded
+				</Button>
+				<Button variant="secondary" status="danger" aria-haspopup="menu" aria-expanded="true">
+					Danger menu open
+				</Button>
+				<Button variant="secondary" loading aria-haspopup="menu" aria-expanded="true">
+					Loading menu open
+				</Button>
+			</Row>
+		</Stack>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		for (const variant of NON_LINK_VARIANTS) {
+			const trigger = canvas.getByRole('button', { name: `${variant} menu open` });
+			await expect(getComputedStyle(trigger).backgroundColor).toBe(
+				resolveColor(`--color-bg-button-${variant}-hover`)
+			);
+		}
+		const disclosure = canvas.getByRole('button', { name: 'Section expanded' });
+		await expect(getComputedStyle(disclosure).backgroundColor).toBe(
+			resolveColor('--color-bg-button-secondary-enable')
+		);
+		const dangerTrigger = canvas.getByRole('button', { name: 'Danger menu open' });
+		await expect(getComputedStyle(dangerTrigger).backgroundColor).toBe(
+			resolveColor('--color-bg-button-secondary-destructive-hover')
+		);
+		const loadingTrigger = canvas.getByText('Loading menu open').closest('button')!;
+		await expect(getComputedStyle(loadingTrigger).backgroundColor).toBe(
+			resolveColor('--color-bg-button-secondary-disable')
+		);
+	}
 };

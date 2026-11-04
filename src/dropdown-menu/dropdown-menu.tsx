@@ -1,9 +1,11 @@
+'use client';
+
 import { ComponentProps } from 'react';
 
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import { type VariantProps, tv } from 'tailwind-variants';
 
-import { cn } from '../../lib';
+import { cn, hideFocusRingAfterPointerClose } from '../../lib';
 import { IconArrowRight } from './icons';
 
 /**
@@ -215,12 +217,17 @@ export const Content = ({
 	className,
 	hasTriggerWidth = false,
 	sideOffset = 8,
+	onCloseAutoFocus,
 	...props
 }: ContentProps) => (
 	<DropdownMenuPrimitive.Content
 		data-slot="dropdown-menu-content"
 		sideOffset={sideOffset}
 		className={contentStyles({ hasTriggerWidth, className })}
+		onCloseAutoFocus={event => {
+			onCloseAutoFocus?.(event);
+			hideFocusRingAfterPointerClose(event);
+		}}
 		{...props}
 	/>
 );
