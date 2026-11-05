@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.1s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>5.9s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -4341,16 +4341,14 @@ limit?: number = -1
  * Whether the options are being fetched. Once the list has been open and
  * loading for half a second, `loadingLabel` is announced once: sooner, a
  * screen reader would cut it off to echo the key just typed, and a faster
- * answer has no wait to announce. `Content` is marked `aria-busy`, and `Empty`
- * shows nothing, so &quot;no results&quot; is not read out before the results arrive —
- * unless the request began with an answer with no rows on screen: that answer
- * stays through the wait, as rows do. The announcement comes from a
- * visually hidden live region the root renders next to the field, so it is in
- * place before the list opens. On a search against an API, pass it from the
- * first render, as `false` while idle: a root that leaves it out gets no live
- * region. A list filtered in memory never waits and leaves it out. While
- * loading with nothing else to show, `Skeleton` draws placeholder rows —
- * `Empty` stays quiet.
+ * answer has no wait to announce. `Content` is marked `aria-busy`, and
+ * `Empty` shows nothing, so &quot;no results&quot; is not read out before the results
+ * arrive. The announcement comes from a visually hidden live region the root
+ * renders next to the field, so it is in place before the list opens. On a search
+ * against an API, pass it from the first render, as `false` while idle: a root
+ * that leaves it out gets no live region. A list filtered in memory never
+ * waits and leaves it out. While loading with no rows yet, `Skeleton` draws
+ * placeholder rows — `Empty` stays quiet.
  */
 loading?: boolean
 
@@ -4474,13 +4472,13 @@ virtualized?: boolean = false</code></pre>
               
               
               <pre><code>Expected render to be an arrow function or function expression
-  1329 |  */
-  1330 | export const InsidePopoverWithValue: Story = {
-&gt; 1331 | 	render: InsidePopover.render,
+  1172 |  */
+  1173 | export const InsidePopoverWithValue: Story = {
+&gt; 1174 | 	render: InsidePopover.render,
        | 	           ^^^^^^^^^^^^^^^^^^^^
-  1332 | 	play: async ({ canvasElement }) =&gt; {
-  1333 | 		const body = within(document.body);
-  1334 | 		const trigger = within(canvasElement).getByRole(&#39;button&#39;, { name: /filter by state/i });</code></pre>
+  1175 | 	play: async ({ canvasElement }) =&gt; {
+  1176 | 		const body = within(document.body);
+  1177 | 		const trigger = within(canvasElement).getByRole(&#39;button&#39;, { name: /filter by state/i });</code></pre>
             </div>
           
           
@@ -4734,14 +4732,10 @@ through `items` and `filteredItems`, and the data layer&#39;s `loading` flag goe
 to `Root`. That is all the wiring the wait needs:
 `Content` is marked busy, `loadingLabel` is announced once when the request
 starts, and `Empty` holds back &quot;no results&quot; until the answer is in.
-`Skeleton` draws placeholder rows while there is nothing else to show, hidden
-from assistive technology since the label already speaks for them. After the
-first answer, the previous one stays until the next replaces it, whether it
-had rows or none. A request that is no longer the latest is dropped.
-
-This search matches substrings, so a query that contains one with no rows is
-not sent: it cannot find any either. Leave that out for a search that
-corrects typos, such as an address lookup.
+`Skeleton` draws placeholder rows only while there are no rows to show,
+hidden from assistive technology since the label already speaks for them;
+after that, the previous rows stay until the new ones replace them. A request
+that is no longer the latest is dropped.
 
 `minInputLength` keeps the list shut until two characters are typed — focusing
 the field opens nothing, and deleting back under the minimum closes it — and
@@ -4751,38 +4745,20 @@ no request goes out for a shorter query either.</div>
     const [isLoading, setIsLoading] = useState(false);
     // Only the latest request may land; fast typing returns responses out of order.
     const latestRequest = useRef(0);
-    // The last query that came back with no rows, while the list stays open. This search matches
-    // substrings, so a query that contains it has none either and is not sent. A search that
-    // corrects typos, such as an address lookup, can find rows for a longer query and has to ask
-    // every time.
-    const noRowsFor = useRef&lt;string | null&gt;(null);
 
-    const onInputValueChange = async (query: string, { reason }: { reason: string }) =&gt; {
+    const onInputValueChange = async (query: string) =&gt; {
         const request = ++latestRequest.current;
         if (query.trim().length &lt; MIN_QUERY_LENGTH) {
             setResults([]);
             setIsLoading(false);
-            noRowsFor.current = null;
             return;
         }
 
-        // Compared as sent, case aside: the search does not trim, so `risk ` can come back empty
-        // while `risk` finds Beacon Risk. Only what the user types counts; the label written back
-        // after a pick is not a search of theirs.
-        const term = query.toLowerCase();
-        const typed = reason === &#39;input-change&#39;;
-        if (typed &amp;&amp; noRowsFor.current !== null &amp;&amp; term.includes(noRowsFor.current)) {
-            setResults([]);
-            setIsLoading(false);
-            return;
-        }
-
-        // The previous answer stays through the wait, marked busy, rather than blinking out and back.
+        // The previous rows stay through the wait, marked busy, rather than blinking out and back.
         setIsLoading(true);
         const agencies = await searchAgencies(query);
         if (request !== latestRequest.current) return;
 
-        if (typed &amp;&amp; agencies.length === 0) noRowsFor.current = term;
         setResults(agencies);
         setIsLoading(false);
     };
@@ -4798,10 +4774,7 @@ no request goes out for a shorter query either.</div>
             loadingLabel=&quot;Searching agencies…&quot;
             itemToStringLabel={(agency: Agency) =&gt; agency.name}
             isItemEqualToValue={(a: Agency, b: Agency) =&gt; a.id === b.id}
-            onInputValueChange={onInputValueChange}
-            onOpenChange={open =&gt; {
-                if (!open) noRowsFor.current = null;
-            }}&gt;
+            onInputValueChange={onInputValueChange}&gt;
             &lt;Combobox.Input placeholder=&quot;Search agencies&quot; aria-label=&quot;Search agencies&quot; /&gt;
             &lt;Combobox.Content&gt;
                 &lt;Combobox.Skeleton /&gt;
@@ -4828,7 +4801,7 @@ no request goes out for a shorter query either.</div>
 shows an avatar, the name and its state, so `Skeleton` gets the same three
 pieces as its children; as a function, it receives the row&#39;s index to vary
 the name&#39;s width. Its rows take an item&#39;s padding, so they come out as tall as
-the agency rows and the surface keeps its size when the results land.</div>
+the agency rows that replace them.</div>
               <pre><code>const SkeletonShapedLikeTheRows = () =&gt; {
     const [results, setResults] = useState&lt;Agency[]&gt;([]);
     const [isLoading, setIsLoading] = useState(false);
