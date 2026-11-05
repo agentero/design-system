@@ -29,7 +29,7 @@ export const radioGroupRecipe = tv({
 		// Figma leaves 16px between the options and the field's label block or error; the field's
 		// gap is 8.
 		root: [
-			'flex [:is([data-slot=field-content],[data-slot=field-description])+&]:mt-2',
+			'flex [:is([data-slot=field-content],[data-slot=field-label],[data-slot=label],[data-slot=field-description])+&]:mt-2',
 			'[&:has(+[data-slot=field-error])]:mb-2'
 		],
 		item: 'group/radio-group-item flex',

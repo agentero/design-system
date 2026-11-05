@@ -5,6 +5,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { RadioGroup } from '.';
+import { Button } from '../button';
 import { Field } from '../field';
 
 /** `Root` owns the selected value; each `Item` is a radio with its label. */
@@ -234,17 +235,14 @@ export const Controlled: Story = {
 		const [plan, setPlan] = useState('monthly');
 
 		return (
-			<div className="flex flex-col gap-3">
+			<div className="flex flex-col items-start gap-6">
 				<div className="flex gap-3">
-					<button type="button" className="w-fit text-sm underline" onClick={() => setPlan('')}>
+					<Button variant="secondary" size="sm" onClick={() => setPlan('')}>
 						Clear
-					</button>
-					<button
-						type="button"
-						className="w-fit text-sm underline"
-						onClick={() => setPlan('annual')}>
+					</Button>
+					<Button variant="secondary" size="sm" onClick={() => setPlan('annual')}>
 						Choose annual
-					</button>
+					</Button>
 				</div>
 				<RadioGroup.Root aria-label="Payment plan" value={plan} onValueChange={setPlan}>
 					{PLANS.map(({ value, label }) => (
@@ -253,7 +251,7 @@ export const Controlled: Story = {
 						</RadioGroup.Item>
 					))}
 				</RadioGroup.Root>
-				<output className="text-sm">{plan || 'None'}</output>
+				<output className="text-sm">Selected: {plan || 'none'}</output>
 			</div>
 		);
 	},
@@ -271,7 +269,7 @@ export const Controlled: Story = {
 		for (const radio of canvas.getAllByRole('radio')) {
 			await expect(radio).not.toBeChecked();
 		}
-		await expect(canvas.getByRole('status')).toHaveTextContent('None');
+		await expect(canvas.getByRole('status')).toHaveTextContent('Selected: none');
 	}
 };
 
@@ -287,7 +285,7 @@ export const InForm: Story = {
 
 		return (
 			<form
-				className="flex flex-col gap-3"
+				className="flex flex-col items-start gap-6"
 				onSubmit={event => {
 					event.preventDefault();
 					setSubmitted(String(new FormData(event.currentTarget).get('plan')));
@@ -299,10 +297,8 @@ export const InForm: Story = {
 						</RadioGroup.Item>
 					))}
 				</RadioGroup.Root>
-				<button type="submit" className="w-fit text-sm underline">
-					Submit
-				</button>
-				{submitted && <output className="text-sm">{submitted}</output>}
+				<Button type="submit">Submit</Button>
+				{submitted && <output className="text-sm">Submitted: {submitted}</output>}
 			</form>
 		);
 	},
@@ -331,32 +327,32 @@ export const WithReactHookForm: Story = {
 
 		return (
 			<form
-				className="flex flex-col gap-3"
+				className="flex flex-col items-start gap-6"
 				onSubmit={handleSubmit(data => setSubmitted(data.plan))}>
 				<Controller
 					name="plan"
 					control={control}
 					rules={{ required: 'Choose a payment plan' }}
 					render={({ field, fieldState }) => (
-						<RadioGroup.Root
-							aria-label="Payment plan"
-							ref={field.ref}
-							value={field.value}
-							onValueChange={field.onChange}
-							onBlur={field.onBlur}
-							aria-invalid={fieldState.invalid}>
-							{PLANS.map(({ value, label }) => (
-								<RadioGroup.Item key={value} value={value}>
-									{label}
-								</RadioGroup.Item>
-							))}
-						</RadioGroup.Root>
+						<Field.Root invalid={fieldState.invalid} required>
+							<Field.Label>Payment plan</Field.Label>
+							<RadioGroup.Root
+								ref={field.ref}
+								value={field.value}
+								onValueChange={field.onChange}
+								onBlur={field.onBlur}>
+								{PLANS.map(({ value, label }) => (
+									<RadioGroup.Item key={value} value={value}>
+										{label}
+									</RadioGroup.Item>
+								))}
+							</RadioGroup.Root>
+							<Field.Error errors={[fieldState.error]} />
+						</Field.Root>
 					)}
 				/>
-				<button type="submit" className="w-fit text-sm underline">
-					Submit
-				</button>
-				{submitted && <output className="text-sm">{submitted}</output>}
+				<Button type="submit">Submit</Button>
+				{submitted && <output className="text-sm">Submitted: {submitted}</output>}
 			</form>
 		);
 	},
@@ -365,7 +361,13 @@ export const WithReactHookForm: Story = {
 
 		await userEvent.click(canvas.getByRole('button', { name: 'Submit' }));
 		await expect(canvas.getByRole('radio', { name: 'Monthly' })).toHaveFocus();
-		await expect(canvas.getByRole('radiogroup')).toHaveAttribute('aria-invalid', 'true');
+		const group = canvas.getByRole('radiogroup', { name: /Payment plan/ });
+		await expect(group).toHaveAccessibleDescription('Choose a payment plan');
+		await expect(group).toHaveAttribute('aria-invalid', 'true');
+		await expect(
+			group.getBoundingClientRect().top -
+				group.previousElementSibling!.getBoundingClientRect().bottom
+		).toBe(16);
 		await userEvent.keyboard('{ArrowDown}');
 		await userEvent.click(canvas.getByRole('button', { name: 'Submit' }));
 		await expect(await canvas.findByRole('status')).toHaveTextContent('quarterly');
@@ -446,7 +448,7 @@ export const Keyboard: Story = {
 	tags: ['!dev', '!autodocs', '!manifest'],
 	args: { onValueChange: fn() },
 	render: args => (
-		<div className="flex flex-col gap-3">
+		<div className="flex flex-col items-start gap-6">
 			<RadioGroup.Root {...args}>
 				{PLANS.map(({ value, label }) => (
 					<RadioGroup.Item key={value} value={value}>
@@ -454,9 +456,7 @@ export const Keyboard: Story = {
 					</RadioGroup.Item>
 				))}
 			</RadioGroup.Root>
-			<button type="button" className="w-fit text-sm underline">
-				Continue
-			</button>
+			<Button variant="secondary">Continue</Button>
 		</div>
 	),
 	play: async ({ args, canvasElement }) => {
@@ -561,7 +561,7 @@ export const FormReset: Story = {
 
 		return (
 			<form
-				className="flex flex-col gap-3"
+				className="flex flex-col items-start gap-6"
 				onSubmit={event => {
 					event.preventDefault();
 					setSubmitted(String(new FormData(event.currentTarget).get('plan')));
@@ -574,14 +574,12 @@ export const FormReset: Story = {
 					))}
 				</RadioGroup.Root>
 				<div className="flex gap-3">
-					<button type="reset" className="w-fit text-sm underline">
+					<Button type="reset" variant="secondary">
 						Reset
-					</button>
-					<button type="submit" className="w-fit text-sm underline">
-						Submit
-					</button>
+					</Button>
+					<Button type="submit">Submit</Button>
 				</div>
-				{submitted && <output className="text-sm">{submitted}</output>}
+				{submitted && <output className="text-sm">Submitted: {submitted}</output>}
 			</form>
 		);
 	},
@@ -611,7 +609,7 @@ export const FormResetControlled: Story = {
 
 		return (
 			<form
-				className="flex flex-col gap-3"
+				className="flex flex-col items-start gap-6"
 				onSubmit={event => {
 					event.preventDefault();
 					setSubmitted(String(new FormData(event.currentTarget).get('plan')));
@@ -624,14 +622,12 @@ export const FormResetControlled: Story = {
 					))}
 				</RadioGroup.Root>
 				<div className="flex gap-3">
-					<button type="reset" className="w-fit text-sm underline">
+					<Button type="reset" variant="secondary">
 						Reset
-					</button>
-					<button type="submit" className="w-fit text-sm underline">
-						Submit
-					</button>
+					</Button>
+					<Button type="submit">Submit</Button>
 				</div>
-				{submitted && <output className="text-sm">{submitted}</output>}
+				{submitted && <output className="text-sm">Submitted: {submitted}</output>}
 			</form>
 		);
 	},
@@ -660,7 +656,7 @@ export const RequiredWithoutName: Story = {
 
 		return (
 			<form
-				className="flex flex-col gap-3"
+				className="flex flex-col items-start gap-6"
 				onSubmit={event => {
 					event.preventDefault();
 					setSubmitted(true);
@@ -672,9 +668,7 @@ export const RequiredWithoutName: Story = {
 						</RadioGroup.Item>
 					))}
 				</RadioGroup.Root>
-				<button type="submit" className="w-fit text-sm underline">
-					Submit
-				</button>
+				<Button type="submit">Submit</Button>
 				{submitted && <output className="text-sm">Sent</output>}
 			</form>
 		);
