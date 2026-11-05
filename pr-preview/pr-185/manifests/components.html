@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>6.1s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>5.7s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -11916,18 +11916,16 @@ value?: string | null | undefined</code></pre>
               </div>
               <div>Pick an option from the list</div>
               
-              <pre><code>const Default = () =&gt; &lt;div className=&quot;w-80&quot;&gt;
-    &lt;Select.Root onValueChange={fn()} items={STATES}&gt;
-        &lt;Select.Trigger aria-label=&quot;State&quot; placeholder=&quot;Select a state&quot; /&gt;
-        &lt;Select.Content&gt;
-            {STATES.map(({ value, label }) =&gt; (
-                &lt;Select.Item key={value} value={value}&gt;
-                    {label}
-                &lt;/Select.Item&gt;
-            ))}
-        &lt;/Select.Content&gt;
-    &lt;/Select.Root&gt;
-&lt;/div&gt;;</code></pre>
+              <pre><code>const Default = () =&gt; &lt;Select.Root onValueChange={fn()} items={items}&gt;
+    &lt;Select.Trigger aria-label=&quot;State&quot; placeholder=&quot;Select a state&quot; /&gt;
+    &lt;Select.Content&gt;
+        {(items as typeof STATES).map(({ value, label }) =&gt; (
+            &lt;Select.Item key={value} value={value}&gt;
+                {label}
+            &lt;/Select.Item&gt;
+        ))}
+    &lt;/Select.Content&gt;
+&lt;/Select.Root&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -11936,18 +11934,16 @@ value?: string | null | undefined</code></pre>
               </div>
               <div>Uncontrolled with a starting value</div>
               <div class="hint">Starts on a value; the list opens with that option checked.</div>
-              <pre><code>const WithValue = () =&gt; &lt;div className=&quot;w-80&quot;&gt;
-    &lt;Select.Root defaultValue=&quot;TX&quot; items={STATES}&gt;
-        &lt;Select.Trigger aria-label=&quot;State&quot; placeholder=&quot;Select a state&quot; /&gt;
-        &lt;Select.Content&gt;
-            {STATES.map(({ value, label }) =&gt; (
-                &lt;Select.Item key={value} value={value}&gt;
-                    {label}
-                &lt;/Select.Item&gt;
-            ))}
-        &lt;/Select.Content&gt;
-    &lt;/Select.Root&gt;
-&lt;/div&gt;;</code></pre>
+              <pre><code>const WithValue = () =&gt; &lt;Select.Root defaultValue=&quot;TX&quot; items={items}&gt;
+    &lt;Select.Trigger aria-label=&quot;State&quot; placeholder=&quot;Select a state&quot; /&gt;
+    &lt;Select.Content&gt;
+        {(items as typeof STATES).map(({ value, label }) =&gt; (
+            &lt;Select.Item key={value} value={value}&gt;
+                {label}
+            &lt;/Select.Item&gt;
+        ))}
+    &lt;/Select.Content&gt;
+&lt;/Select.Root&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -11957,7 +11953,7 @@ value?: string | null | undefined</code></pre>
               <div>Small, medium and large triggers</div>
               <div class="hint">Trigger heights match `Input`: 32, 40 and 48px.</div>
               <pre><code>const Sizes = () =&gt; (
-    &lt;div className=&quot;flex w-80 flex-col gap-4&quot;&gt;
+    &lt;div className=&quot;flex w-full flex-col gap-4&quot;&gt;
         {([&#39;sm&#39;, &#39;md&#39;, &#39;lg&#39;] as const).map(size =&gt; (
             &lt;Select.Root key={size} items={STATES} defaultValue=&quot;CA&quot;&gt;
                 &lt;Select.Trigger aria-label={`State ${size}`} size={size} /&gt;
@@ -11982,7 +11978,7 @@ value?: string | null | undefined</code></pre>
               <div class="hint">Inside a `Field.Root`, the label, description, error, `invalid` and
 `required` reach the trigger with nothing wired by hand.</div>
               <pre><code>const InsideField = () =&gt; (
-    &lt;div className=&quot;w-80&quot;&gt;
+    &lt;div className=&quot;w-full&quot;&gt;
         &lt;Field.Root invalid required&gt;
             &lt;Field.Label&gt;State&lt;/Field.Label&gt;
             &lt;Select.Root items={STATES}&gt;
@@ -12008,18 +12004,16 @@ value?: string | null | undefined</code></pre>
               </div>
               <div>Whole select disabled</div>
               
-              <pre><code>const Disabled = () =&gt; &lt;div className=&quot;w-80&quot;&gt;
-    &lt;Select.Root disabled defaultValue=&quot;CA&quot; items={STATES}&gt;
-        &lt;Select.Trigger aria-label=&quot;State&quot; placeholder=&quot;Select a state&quot; /&gt;
-        &lt;Select.Content&gt;
-            {STATES.map(({ value, label }) =&gt; (
-                &lt;Select.Item key={value} value={value}&gt;
-                    {label}
-                &lt;/Select.Item&gt;
-            ))}
-        &lt;/Select.Content&gt;
-    &lt;/Select.Root&gt;
-&lt;/div&gt;;</code></pre>
+              <pre><code>const Disabled = () =&gt; &lt;Select.Root disabled defaultValue=&quot;CA&quot; items={items}&gt;
+    &lt;Select.Trigger aria-label=&quot;State&quot; placeholder=&quot;Select a state&quot; /&gt;
+    &lt;Select.Content&gt;
+        {(items as typeof STATES).map(({ value, label }) =&gt; (
+            &lt;Select.Item key={value} value={value}&gt;
+                {label}
+            &lt;/Select.Item&gt;
+        ))}
+    &lt;/Select.Content&gt;
+&lt;/Select.Root&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -12029,18 +12023,16 @@ value?: string | null | undefined</code></pre>
               <div>One option disabled</div>
               <div class="hint">`disabled` on one item leaves the rest selectable. The arrow keys still stop
 on it, so it is announced, but neither Enter nor a press picks it.</div>
-              <pre><code>const DisabledItem = () =&gt; &lt;div className=&quot;w-80&quot;&gt;
-    &lt;Select.Root onValueChange={fn()} items={STATES}&gt;
-        &lt;Select.Trigger aria-label=&quot;State&quot; placeholder=&quot;Select a state&quot; /&gt;
-        &lt;Select.Content&gt;
-            {STATES.map(({ value, label }) =&gt; (
-                &lt;Select.Item key={value} value={value} disabled={value === &#39;FL&#39;}&gt;
-                    {label}
-                &lt;/Select.Item&gt;
-            ))}
-        &lt;/Select.Content&gt;
-    &lt;/Select.Root&gt;
-&lt;/div&gt;;</code></pre>
+              <pre><code>const DisabledItem = () =&gt; &lt;Select.Root onValueChange={fn()} items={STATES}&gt;
+    &lt;Select.Trigger aria-label=&quot;State&quot; placeholder=&quot;Select a state&quot; /&gt;
+    &lt;Select.Content&gt;
+        {STATES.map(({ value, label }) =&gt; (
+            &lt;Select.Item key={value} value={value} disabled={value === &#39;FL&#39;}&gt;
+                {label}
+            &lt;/Select.Item&gt;
+        ))}
+    &lt;/Select.Content&gt;
+&lt;/Select.Root&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -12050,18 +12042,16 @@ on it, so it is announced, but neither Enter nor a press picks it.</div>
               <div>Read-only select</div>
               <div class="hint">The list still opens to show the options, but neither a press, the arrow
 keys nor typing a letter changes the value.</div>
-              <pre><code>const ReadOnly = () =&gt; &lt;div className=&quot;w-80&quot;&gt;
-    &lt;Select.Root readOnly defaultValue=&quot;CA&quot; onValueChange={fn()} items={STATES}&gt;
-        &lt;Select.Trigger aria-label=&quot;State&quot; placeholder=&quot;Select a state&quot; /&gt;
-        &lt;Select.Content&gt;
-            {STATES.map(({ value, label }) =&gt; (
-                &lt;Select.Item key={value} value={value}&gt;
-                    {label}
-                &lt;/Select.Item&gt;
-            ))}
-        &lt;/Select.Content&gt;
-    &lt;/Select.Root&gt;
-&lt;/div&gt;;</code></pre>
+              <pre><code>const ReadOnly = () =&gt; &lt;Select.Root readOnly defaultValue=&quot;CA&quot; onValueChange={fn()} items={items}&gt;
+    &lt;Select.Trigger aria-label=&quot;State&quot; placeholder=&quot;Select a state&quot; /&gt;
+    &lt;Select.Content&gt;
+        {(items as typeof STATES).map(({ value, label }) =&gt; (
+            &lt;Select.Item key={value} value={value}&gt;
+                {label}
+            &lt;/Select.Item&gt;
+        ))}
+    &lt;/Select.Content&gt;
+&lt;/Select.Root&gt;;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -12074,7 +12064,7 @@ keys nor typing a letter changes the value.</div>
     const [state, setState] = useState&lt;string | null&gt;(&#39;CA&#39;);
 
     return (
-        &lt;div className=&quot;flex w-80 flex-col items-start gap-6&quot;&gt;
+        &lt;div className=&quot;flex w-full flex-col items-start gap-6&quot;&gt;
             &lt;div className=&quot;flex gap-3&quot;&gt;
                 &lt;Button variant=&quot;secondary&quot; size=&quot;sm&quot; onClick={() =&gt; setState(null)}&gt;
                     Clear
@@ -12113,7 +12103,7 @@ submission until something is picked.</div>
 
     return (
         &lt;form
-            className=&quot;flex w-80 flex-col items-start gap-6&quot;
+            className=&quot;flex w-full flex-col items-start gap-6&quot;
             onSubmit={event =&gt; {
                 event.preventDefault();
                 setSubmitted(String(new FormData(event.currentTarget).get(&#39;state&#39;)));
@@ -12154,7 +12144,7 @@ submission until something is picked.</div>
         // `noValidate`, as `Form.Root` renders it: the field&#39;s validation is the form library&#39;s.
         &lt;form
             noValidate
-            className=&quot;flex w-80 flex-col items-start gap-6&quot;
+            className=&quot;flex w-full flex-col items-start gap-6&quot;
             onSubmit={handleSubmit(data =&gt; setSubmitted(data.state))}&gt;
             &lt;Controller
                 name=&quot;state&quot;
@@ -12225,7 +12215,7 @@ and the chevron keeps its place.</div>
               <div>Visual comparison of the trigger states</div>
               <div class="hint">Every state of the trigger side by side, for checking against the design.</div>
               <pre><code>const AllStates = () =&gt; (
-    &lt;div className=&quot;grid w-[42rem] grid-cols-2 gap-6&quot;&gt;
+    &lt;div className=&quot;grid w-full grid-cols-2 gap-6&quot;&gt;
         {(
             [
                 [&#39;Placeholder&#39;, {}],
