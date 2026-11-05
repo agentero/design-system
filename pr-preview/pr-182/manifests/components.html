@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>3.3s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>4.4s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -11814,7 +11814,7 @@ value?: string</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Controller, Field, RadioGroup } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Button, Controller, Field, RadioGroup } from "@agentero/design-system";</code></pre>
               </div>
           
           
@@ -11960,17 +11960,14 @@ every radio paints the destructive border from it.</div>
     const [plan, setPlan] = useState(&#39;monthly&#39;);
 
     return (
-        &lt;div className=&quot;flex flex-col gap-3&quot;&gt;
+        &lt;div className=&quot;flex flex-col items-start gap-6&quot;&gt;
             &lt;div className=&quot;flex gap-3&quot;&gt;
-                &lt;button type=&quot;button&quot; className=&quot;w-fit text-sm underline&quot; onClick={() =&gt; setPlan(&#39;&#39;)}&gt;
+                &lt;Button variant=&quot;secondary&quot; size=&quot;sm&quot; onClick={() =&gt; setPlan(&#39;&#39;)}&gt;
                     Clear
-                &lt;/button&gt;
-                &lt;button
-                    type=&quot;button&quot;
-                    className=&quot;w-fit text-sm underline&quot;
-                    onClick={() =&gt; setPlan(&#39;annual&#39;)}&gt;
+                &lt;/Button&gt;
+                &lt;Button variant=&quot;secondary&quot; size=&quot;sm&quot; onClick={() =&gt; setPlan(&#39;annual&#39;)}&gt;
                     Choose annual
-                &lt;/button&gt;
+                &lt;/Button&gt;
             &lt;/div&gt;
             &lt;RadioGroup.Root aria-label=&quot;Payment plan&quot; value={plan} onValueChange={setPlan}&gt;
                 {PLANS.map(({ value, label }) =&gt; (
@@ -11979,7 +11976,7 @@ every radio paints the destructive border from it.</div>
                     &lt;/RadioGroup.Item&gt;
                 ))}
             &lt;/RadioGroup.Root&gt;
-            &lt;output className=&quot;text-sm&quot;&gt;{plan || &#39;None&#39;}&lt;/output&gt;
+            &lt;output className=&quot;text-sm&quot;&gt;Selected: {plan || &#39;none&#39;}&lt;/output&gt;
         &lt;/div&gt;
     );
 };</code></pre>
@@ -11997,7 +11994,7 @@ every radio paints the destructive border from it.</div>
 
     return (
         &lt;form
-            className=&quot;flex flex-col gap-3&quot;
+            className=&quot;flex flex-col items-start gap-6&quot;
             onSubmit={event =&gt; {
                 event.preventDefault();
                 setSubmitted(String(new FormData(event.currentTarget).get(&#39;plan&#39;)));
@@ -12009,10 +12006,8 @@ every radio paints the destructive border from it.</div>
                     &lt;/RadioGroup.Item&gt;
                 ))}
             &lt;/RadioGroup.Root&gt;
-            &lt;button type=&quot;submit&quot; className=&quot;w-fit text-sm underline&quot;&gt;
-                Submit
-            &lt;/button&gt;
-            {submitted &amp;&amp; &lt;output className=&quot;text-sm&quot;&gt;{submitted}&lt;/output&gt;}
+            &lt;Button type=&quot;submit&quot;&gt;Submit&lt;/Button&gt;
+            {submitted &amp;&amp; &lt;output className=&quot;text-sm&quot;&gt;Submitted: {submitted}&lt;/output&gt;}
         &lt;/form&gt;
     );
 };</code></pre>
@@ -12032,32 +12027,32 @@ would reach.</div>
 
     return (
         &lt;form
-            className=&quot;flex flex-col gap-3&quot;
+            className=&quot;flex flex-col items-start gap-6&quot;
             onSubmit={handleSubmit(data =&gt; setSubmitted(data.plan))}&gt;
             &lt;Controller
                 name=&quot;plan&quot;
                 control={control}
                 rules={{ required: &#39;Choose a payment plan&#39; }}
                 render={({ field, fieldState }) =&gt; (
-                    &lt;RadioGroup.Root
-                        aria-label=&quot;Payment plan&quot;
-                        ref={field.ref}
-                        value={field.value}
-                        onValueChange={field.onChange}
-                        onBlur={field.onBlur}
-                        aria-invalid={fieldState.invalid}&gt;
-                        {PLANS.map(({ value, label }) =&gt; (
-                            &lt;RadioGroup.Item key={value} value={value}&gt;
-                                {label}
-                            &lt;/RadioGroup.Item&gt;
-                        ))}
-                    &lt;/RadioGroup.Root&gt;
+                    &lt;Field.Root invalid={fieldState.invalid} required&gt;
+                        &lt;Field.Label&gt;Payment plan&lt;/Field.Label&gt;
+                        &lt;RadioGroup.Root
+                            ref={field.ref}
+                            value={field.value}
+                            onValueChange={field.onChange}
+                            onBlur={field.onBlur}&gt;
+                            {PLANS.map(({ value, label }) =&gt; (
+                                &lt;RadioGroup.Item key={value} value={value}&gt;
+                                    {label}
+                                &lt;/RadioGroup.Item&gt;
+                            ))}
+                        &lt;/RadioGroup.Root&gt;
+                        &lt;Field.Error errors={[fieldState.error]} /&gt;
+                    &lt;/Field.Root&gt;
                 )}
             /&gt;
-            &lt;button type=&quot;submit&quot; className=&quot;w-fit text-sm underline&quot;&gt;
-                Submit
-            &lt;/button&gt;
-            {submitted &amp;&amp; &lt;output className=&quot;text-sm&quot;&gt;{submitted}&lt;/output&gt;}
+            &lt;Button type=&quot;submit&quot;&gt;Submit&lt;/Button&gt;
+            {submitted &amp;&amp; &lt;output className=&quot;text-sm&quot;&gt;Submitted: {submitted}&lt;/output&gt;}
         &lt;/form&gt;
     );
 };</code></pre>
