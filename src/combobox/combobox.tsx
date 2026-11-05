@@ -2,7 +2,15 @@
 
 // Stays: `@base-ui/react/combobox` is `export * as Combobox`, so its parts hang off one
 // export like cmdk's — without the directive they arrive `undefined` (see `command.tsx`).
-import { ComponentPropsWithRef, createContext, use, useEffect, useRef, useState } from 'react';
+import {
+	ComponentPropsWithRef,
+	createContext,
+	ReactNode,
+	use,
+	useEffect,
+	useRef,
+	useState
+} from 'react';
 
 import { Combobox as ComboboxPrimitive } from '@base-ui/react/combobox';
 import { tv } from 'tailwind-variants';
@@ -11,16 +19,23 @@ import { cn } from '../../lib';
 import { useFieldContext } from '../field';
 import { inputRecipe, InputSize } from '../input';
 import { InputGroup } from '../input-group';
+import { Skeleton as SkeletonBlock } from '../skeleton';
 import { IconCancel, IconCheck, IconKeyboardArrowDown, IconSearch } from './icons';
 import { useBaseInputContext } from './input-context';
+
+// Shared by `list` and `skeleton`, and by `item` and `skeletonRow`, so the placeholder rows take
+// the list's height and an item's size without a copy of either.
+const LIST_BOX = 'max-h-[min(10.25rem,var(--available-height))] py-2';
+const ROW_BOX = 'mx-2 my-px px-3 py-2 text-sm';
 
 /**
  * Style recipe for Combobox. Slots: `action` and `trigger` (the clear and
  * chevron buttons inside the input's frame, which is `InputGroup`'s),
  * `clear` (hides the clear button while the input is disabled or read-only),
  * `triggerReplaced` (hides the chevron once the clear button has a value to
- * clear), `content`,
- * `list`, `item`, `indicator` and `message`. The surface carries its
+ * clear), `content`, `list`, `item`, `skeleton` and `skeletonRow` (the
+ * placeholder rows, on the list's and the item's geometry), `indicator` and
+ * `message`. The surface carries its
  * own chrome — border, background and shadow — because the list it holds is
  * plain content.
  *
@@ -53,18 +68,21 @@ export const comboboxRecipe = tv({
 		// When empty, its padding alone would be a 16px band under `Empty`. `:empty`, not Base UI's
 		// `data-empty`: that one tracks the root's `items`, so a list whose rows are rendered by hand
 		// (a server search with no `items`) is always flagged empty and loses its padding.
-		list: [
-			'max-h-[min(10.25rem,var(--available-height))] overflow-y-auto scroll-py-2 py-2 outline-none',
-			'empty:py-0'
-		],
+		list: [LIST_BOX, 'overflow-y-auto scroll-py-2 outline-none', 'empty:py-0'],
 		item: [
+			ROW_BOX,
 			// Panel radius minus the 2px gap, so the row reads as concentric with the panel.
-			'group/item mx-2 my-px flex cursor-pointer items-center rounded-[calc(var(--radius-md)-2px)]',
-			'px-3 py-2 text-sm text-text-default-base-primary select-none',
+			'group/item flex cursor-pointer items-center rounded-[calc(var(--radius-md)-2px)]',
+			'text-text-default-base-primary select-none',
 			// `data-highlighted` covers pointer and keyboard alike; no `hover:` needed.
 			'data-highlighted:bg-bg-default-base-primary-hover',
 			'data-disabled:cursor-default data-disabled:text-text-default-base-tertiary'
 		],
+		// `Skeleton`: the list's box around rows with an item's, so each row is as tall as the item
+		// that replaces it. The minimum height is a one-line item, a `text-sm` line plus the `py-2` of
+		// `ROW_BOX`; taller content sets the height, as it does in an item.
+		skeleton: [LIST_BOX, 'overflow-hidden'],
+		skeletonRow: [ROW_BOX, 'flex min-h-[calc(1lh+1rem)] items-center gap-2'],
 		// A checkbox lookalike on the same tokens as `Checkbox`, so a multi-select row reads as the
 		// legacy checkbox row did. Presentational: the row itself is the option, so a real checkbox
 		// here would nest one control inside another.
@@ -90,8 +108,8 @@ const slots = comboboxRecipe();
 // a private store.
 const MultipleContext = createContext(false);
 
-// The root's `loading`, for `Content` to mark busy and for `Empty` to hold back. It stays
-// `undefined` for a root that never opted in.
+// The root's `loading`, for `Content` to mark busy, for `Empty` to hold back and for `Skeleton`
+// to show. It stays `undefined` for a root that never opted in.
 const LoadingContext = createContext<boolean | undefined>(undefined);
 
 // Whether the list is open, for `Empty` to hold back. It drops as soon as the list starts closing,
@@ -151,14 +169,14 @@ export type ComboboxRootProps<
 	 * renders next to the field, so it is in place before the list opens. On a search
 	 * against an API, pass it from the first render, as `false` while idle: a root
 	 * that leaves it out gets no live region. A list filtered in memory never
-	 * waits and leaves it out. While loading with no rows yet, the surface shows
-	 * whatever placeholder `Content` holds — `Empty` stays quiet.
+	 * waits and leaves it out. While loading with no rows yet, `Skeleton` draws
+	 * placeholder rows — `Empty` stays quiet.
 	 */
 	loading?: boolean;
 	/**
-	 * What a screen reader hears when `loading` turns `true`. Announced only; any
-	 * loading visuals — placeholder rows, a spinner — are yours to render inside
-	 * `Content`, hidden from assistive technology. Defaults to `'Loading…'`.
+	 * What a screen reader hears when `loading` turns `true`. Announced only: the
+	 * placeholder rows `Skeleton` draws are hidden from assistive technology.
+	 * Defaults to `'Loading…'`.
 	 */
 	loadingLabel?: string;
 };
@@ -647,6 +665,77 @@ export const Item = ({ className, children, ...props }: ItemProps) => {
 };
 Item.displayName = 'Combobox.Item';
 
+type SkeletonProps = Omit<ComponentPropsWithRef<'div'>, 'children'> & {
+	/**
+	 * What one placeholder row holds, shaped like the rows that replace it — an
+	 * avatar, a name and a secondary line for rows that show those. A function
+	 * receives the row's index, to vary widths from one row to the next. Each row
+	 * already has an item's padding and height, so only its content needs
+	 * drawing. Defaults to one line of text, alternating between two widths.
+	 */
+	children?: ReactNode | ((index: number) => ReactNode);
+	/**
+	 * How many placeholder rows to draw. Defaults to `5`, more than the list
+	 * shows before it scrolls, so the block fills the surface as a full list
+	 * would.
+	 */
+	rows?: number;
+};
+
+const lineRow = (index: number) => (
+	<SkeletonBlock className={cn('h-4', index % 2 === 0 ? 'w-2/5' : 'w-3/5')} />
+);
+
+/**
+ * Placeholder rows for a search against an API, shown while the root is
+ * `loading` and the list has no rows to show: the wait `Empty` keeps quiet
+ * through. Rows already on screen stay through a wait, so it shows nothing
+ * then, nor once the list starts closing; render it inside `Content` as it is,
+ * before `Empty` and `List`, with no condition of your own. Like `Empty`, it
+ * needs `items` on `Root` to know whether rows are on screen. The block takes
+ * the list's height and padding, and each row is as tall as the item that
+ * replaces it, so a full list lands without the surface changing size; give it
+ * children shaped like the rows when they hold more than a line of text. It is
+ * hidden from assistive technology, since `loadingLabel` on `Root` announces
+ * the wait. A list filtered in memory never waits and has no use for it. Every
+ * native `div` attribute is accepted and forwarded to the block, such as
+ * `className`, `id` or `style`.
+ *
+ * @summary Placeholder rows that hold the list's place while results load
+ * @dataAttribute {string} data-slot - Always set to "combobox-skeleton"
+ * @example
+ * <Combobox.Content>
+ *   <Combobox.Skeleton />
+ *   <Combobox.Empty>No agencies found</Combobox.Empty>
+ *   <Combobox.List>
+ *     {(agency: Agency) => <Combobox.Item value={agency}>{agency.name}</Combobox.Item>}
+ *   </Combobox.List>
+ * </Combobox.Content>
+ */
+export const Skeleton = ({ className, children = lineRow, rows = 5, ...props }: SkeletonProps) => {
+	const loading = use(LoadingContext);
+	const open = use(OpenContext);
+	const shown = ComboboxPrimitive.useFilteredItems().length;
+	// Rows on screen stay through the wait, and a list on its way out draws nothing new, as with
+	// `Empty`.
+	if (!loading || open === false || shown > 0) return null;
+
+	return (
+		<div
+			data-slot="combobox-skeleton"
+			aria-hidden="true"
+			className={cn(slots.skeleton(), className)}
+			{...props}>
+			{Array.from({ length: rows }, (_, index) => (
+				<div key={index} className={slots.skeletonRow()}>
+					{typeof children === 'function' ? children(index) : children}
+				</div>
+			))}
+		</div>
+	);
+};
+Skeleton.displayName = 'Combobox.Skeleton';
+
 type EmptyProps = ComponentPropsWithRef<typeof ComboboxPrimitive.Empty>;
 
 /**
@@ -655,8 +744,8 @@ type EmptyProps = ComponentPropsWithRef<typeof ComboboxPrimitive.Empty>;
  * change its children rather than rendering it conditionally. While the root is
  * `loading` it shows nothing: the list is empty because the results have not
  * arrived yet, not because there are none. With no rows to show either, the
- * surface would open as an empty frame, so render placeholder rows inside
- * `Content` for the wait. Once the list starts closing it shows nothing
+ * surface would open as an empty frame, so render `Skeleton` inside `Content`
+ * for the wait. Once the list starts closing it shows nothing
  * either, so a search that clears its rows as the query drops under
  * `minInputLength` does not flash its message on the way out.
  *

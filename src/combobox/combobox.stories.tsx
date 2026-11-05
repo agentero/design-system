@@ -4,6 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { Combobox } from '.';
+import { Avatar } from '../avatar';
 import { Button } from '../button';
 import { Field } from '../field';
 import { FieldText } from '../field-text';
@@ -505,13 +506,13 @@ export const MultipleSelection: Story = {
 	}
 };
 
-type Agency = { id: string; name: string };
+type Agency = { id: string; name: string; state: string };
 
 const ALL_AGENCIES: Agency[] = [
-	{ id: 'acme', name: 'Acme Insurance' },
-	{ id: 'anchor', name: 'Anchor Brokers' },
-	{ id: 'beacon', name: 'Beacon Risk' },
-	{ id: 'cardinal', name: 'Cardinal Agency' }
+	{ id: 'acme', name: 'Acme Insurance', state: 'CA' },
+	{ id: 'anchor', name: 'Anchor Brokers', state: 'TX' },
+	{ id: 'beacon', name: 'Beacon Risk', state: 'NY' },
+	{ id: 'cardinal', name: 'Cardinal Agency', state: 'FL' }
 ];
 
 const searchAgencies = (query: string) =>
@@ -522,18 +523,6 @@ const searchAgencies = (query: string) =>
 		);
 	});
 
-// Placeholder rows with an item's exact height, so the surface keeps its size while the results
-// land instead of collapsing to a status line and growing back.
-const SkeletonRows = () => (
-	<div data-slot="combobox-skeleton" className="py-2" aria-hidden="true">
-		{['w-28', 'w-36', 'w-32'].map(width => (
-			<div key={width} className="mx-2 my-px flex items-center px-3 py-2">
-				<Skeleton className={`h-5 ${width}`} />
-			</div>
-		))}
-	</div>
-);
-
 // What the apps wait for before asking the API.
 const MIN_QUERY_LENGTH = 2;
 
@@ -542,11 +531,11 @@ const MIN_QUERY_LENGTH = 2;
  * through `items` and `filteredItems`, and the data layer's `loading` flag goes
  * to `Root`. That is all the wiring the wait needs:
  * `Content` is marked busy, `loadingLabel` is announced once when the request
- * starts, and `Empty` holds back "no results" until the answer is in. Placeholder
- * rows show only while there is nothing to show yet, hidden from assistive
- * technology since the label already speaks for them; after that, the previous
- * rows stay until the new ones replace them. A request that is no longer the
- * latest is dropped.
+ * starts, and `Empty` holds back "no results" until the answer is in.
+ * `Skeleton` draws placeholder rows only while there are no rows to show,
+ * hidden from assistive technology since the label already speaks for them;
+ * after that, the previous rows stay until the new ones replace them. A request
+ * that is no longer the latest is dropped.
  *
  * `minInputLength` keeps the list shut until two characters are typed — focusing
  * the field opens nothing, and deleting back under the minimum closes it — and
@@ -592,7 +581,7 @@ export const AsyncSearchWithLoading: Story = {
 				onInputValueChange={onInputValueChange}>
 				<Combobox.Input placeholder="Search agencies" aria-label="Search agencies" />
 				<Combobox.Content>
-					{isLoading && results.length === 0 && <SkeletonRows />}
+					<Combobox.Skeleton />
 					<Combobox.Empty>No agencies found</Combobox.Empty>
 					<Combobox.List>
 						{(agency: Agency) => (
@@ -622,6 +611,12 @@ export const AsyncSearchWithLoading: Story = {
 		await expect(body.queryByRole('listbox')).not.toBeInTheDocument();
 
 		await userEvent.type(input, 'n');
+		const placeholder = await waitFor(() => {
+			const row = document.body.querySelector('[data-slot="combobox-skeleton"] > div');
+			expect(row).toBeInTheDocument();
+			return row;
+		});
+		const placeholderHeight = placeholder?.getBoundingClientRect().height;
 
 		// One live region speaks for the wait; the placeholder rows and `Empty` stay silent.
 		await waitFor(() => expect(region).toHaveTextContent(/searching agencies/i));
@@ -632,7 +627,11 @@ export const AsyncSearchWithLoading: Story = {
 		await expect(speaking).toEqual([region]);
 		await expect(body.queryByText(/no agencies found/i)).not.toBeInTheDocument();
 		await expect(body.queryByRole('option')).not.toBeInTheDocument();
+		// The placeholder rows are as tall as the rows that replace them.
 		await waitFor(() => expect(body.getAllByRole('option').length).toBeGreaterThan(0));
+		await expect(body.getAllByRole('option')[0]?.getBoundingClientRect().height).toBe(
+			placeholderHeight
+		);
 		await expect(content).not.toHaveAttribute('aria-busy');
 		// Rows that arrive after the query are highlighted too, so Enter picks the first.
 		await waitFor(() => expect(body.getAllByRole('option')[0]).toHaveAttribute('data-highlighted'));
@@ -693,6 +692,110 @@ export const AsyncSearchWithLoading: Story = {
 		await userEvent.type(input, 'nch');
 		await userEvent.click(await body.findByRole('option', { name: 'Anchor Brokers' }));
 		await waitFor(() => expect(input).toHaveValue('Anchor Brokers'));
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+	}
+};
+
+/**
+ * Placeholder rows shaped like the rows that replace them. Each agency row
+ * shows an avatar, the name and its state, so `Skeleton` gets the same three
+ * pieces as its children; as a function, it receives the row's index to vary
+ * the name's width. Its rows take an item's padding, so they come out as tall as
+ * the agency rows that replace them.
+ *
+ * @summary Placeholder rows shaped like the results they stand in for
+ */
+export const SkeletonShapedLikeTheRows: Story = {
+	render: () => {
+		const [results, setResults] = useState<Agency[]>([]);
+		const [isLoading, setIsLoading] = useState(false);
+		const latestRequest = useRef(0);
+
+		const onInputValueChange = async (query: string) => {
+			const request = ++latestRequest.current;
+			if (query.trim().length < MIN_QUERY_LENGTH) {
+				setResults([]);
+				setIsLoading(false);
+				return;
+			}
+
+			setIsLoading(true);
+			const agencies = await searchAgencies(query);
+			if (request !== latestRequest.current) return;
+
+			setResults(agencies);
+			setIsLoading(false);
+		};
+
+		return (
+			<Combobox.Root
+				items={results}
+				filteredItems={results}
+				filter={null}
+				minInputLength={MIN_QUERY_LENGTH}
+				loading={isLoading}
+				loadingLabel="Searching agencies…"
+				itemToStringLabel={(agency: Agency) => agency.name}
+				isItemEqualToValue={(a: Agency, b: Agency) => a.id === b.id}
+				onInputValueChange={onInputValueChange}>
+				<Combobox.Input placeholder="Search agencies" aria-label="Search agencies" />
+				<Combobox.Content>
+					<Combobox.Skeleton>
+						{index => (
+							<>
+								<Skeleton className="size-6 shrink-0 rounded-[38.5%]" />
+								<Skeleton className={index % 2 === 0 ? 'h-4 w-2/5' : 'h-4 w-3/5'} />
+								<Skeleton className="ml-auto h-3 w-6 shrink-0" />
+							</>
+						)}
+					</Combobox.Skeleton>
+					<Combobox.Empty>No agencies found</Combobox.Empty>
+					<Combobox.List>
+						{(agency: Agency) => (
+							<Combobox.Item key={agency.id} value={agency} className="gap-2">
+								<Avatar
+									fallback={agency.name
+										.split(' ')
+										.map(word => word[0])
+										.join('')}
+									size="xs"
+									variant="pillow"
+									aria-hidden="true"
+								/>
+								<span className="truncate">{agency.name}</span>
+								<span className="ml-auto text-xs text-text-default-base-secondary">
+									{agency.state}
+								</span>
+							</Combobox.Item>
+						)}
+					</Combobox.List>
+				</Combobox.Content>
+			</Combobox.Root>
+		);
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const body = within(document.body);
+		const input = canvas.getByRole('combobox', { name: /search agencies/i });
+
+		// While the first search runs, each placeholder row holds an avatar, a name and a state.
+		await userEvent.type(input, 'an');
+		const rows = await waitFor(() => {
+			const placeholders = document.body.querySelectorAll('[data-slot="combobox-skeleton"] > div');
+			expect(placeholders).toHaveLength(5);
+			return placeholders;
+		});
+		await expect(rows[0]?.children).toHaveLength(3);
+		const rowHeight = rows[0]?.getBoundingClientRect().height;
+
+		// The agency rows replace them at the same height.
+		const acme = await body.findByRole('option', { name: /acme insurance/i }, { timeout: 2000 });
+		await expect(
+			document.body.querySelector('[data-slot="combobox-skeleton"]')
+		).not.toBeInTheDocument();
+		await expect(acme.getBoundingClientRect().height).toBe(rowHeight);
+
 		await userEvent.keyboard('{Escape}');
 		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
 	}
