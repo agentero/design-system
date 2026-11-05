@@ -1,0 +1,1 @@
+import{t as e}from"./iframe-Btlg8hym.js";e();

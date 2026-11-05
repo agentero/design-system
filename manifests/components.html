@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>3.6s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>5.8s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -4472,13 +4472,13 @@ virtualized?: boolean = false</code></pre>
               
               
               <pre><code>Expected render to be an arrow function or function expression
-  1045 |  */
-  1046 | export const InsidePopoverWithValue: Story = {
-&gt; 1047 | 	render: InsidePopover.render,
+  1069 |  */
+  1070 | export const InsidePopoverWithValue: Story = {
+&gt; 1071 | 	render: InsidePopover.render,
        | 	           ^^^^^^^^^^^^^^^^^^^^
-  1048 | 	play: async ({ canvasElement }) =&gt; {
-  1049 | 		const body = within(document.body);
-  1050 | 		const trigger = within(canvasElement).getByRole(&#39;button&#39;, { name: /filter by state/i });</code></pre>
+  1072 | 	play: async ({ canvasElement }) =&gt; {
+  1073 | 		const body = within(document.body);
+  1074 | 		const trigger = within(canvasElement).getByRole(&#39;button&#39;, { name: /filter by state/i });</code></pre>
             </div>
           
           
