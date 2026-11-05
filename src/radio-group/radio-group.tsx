@@ -4,9 +4,12 @@ import {
 	ComponentPropsWithRef,
 	createContext,
 	ReactNode,
+	Ref,
 	use,
+	useCallback,
 	useEffect,
 	useId,
+	useImperativeHandle,
 	useLayoutEffect,
 	useMemo,
 	useRef,
@@ -34,7 +37,7 @@ export const radioGroupRecipe = tv({
 		],
 		item: 'group/radio-group-item flex',
 		label: [
-			'flex cursor-pointer items-start gap-3 text-sm text-text-default-base-primary select-none',
+			'group/radio-group-label flex cursor-pointer items-start gap-3 text-sm text-text-default-base-primary select-none',
 			'group-data-disabled/radio-group-item:cursor-not-allowed',
 			'in-data-readonly:cursor-default'
 		],
@@ -43,9 +46,9 @@ export const radioGroupRecipe = tv({
 			'relative box-border inline-flex size-4 shrink-0 items-center justify-center rounded-full',
 			'border-[1.5px] border-solid border-border-checkbox-default bg-bg-input-normal',
 			'cursor-pointer transition-colors duration-150',
-			// Hover reads from the whole row, which selects as a whole.
+			// Hover reads from the label, which is what a press selects: the radio and its text.
 			'not-data-disabled:data-unchecked:shadow-xs',
-			'not-data-disabled:not-data-readonly:not-in-aria-invalid:data-unchecked:group-hover/radio-group-item:border-border-input-hover',
+			'not-data-disabled:not-data-readonly:not-in-aria-invalid:data-unchecked:group-hover/radio-group-label:border-border-input-hover',
 			'data-checked:border-bg-checkbox-selected',
 			'outline-solid outline-2 outline-offset-2 outline-transparent',
 			'focus-visible:outline-focus-ring-button-primary',
@@ -78,28 +81,35 @@ export const radioGroupRecipe = tv({
 
 export type RadioGroupVariants = VariantProps<typeof radioGroupRecipe>;
 
+type RegisteredRadio = { value: string; disabled: boolean; element: HTMLElement };
+
 type RadioGroupContextValue = {
 	styles: ReturnType<typeof radioGroupRecipe>;
 	disabled?: boolean;
+	tabStop: string | undefined;
+	register: (radio: RegisteredRadio) => () => void;
 };
 
 const RadioGroupContext = createContext<RadioGroupContextValue | null>(null);
 
-const getRadios = (root: HTMLElement | null) =>
-	Array.from(root?.querySelectorAll<HTMLButtonElement>('[data-slot=radio-group-radio]') ?? []);
+const byDocumentOrder = (a: RegisteredRadio, b: RegisteredRadio) =>
+	a.element.compareDocumentPosition(b.element) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1;
 
 const getInputs = (root: HTMLElement | null) =>
 	Array.from(root?.querySelectorAll<HTMLInputElement>('input[type=radio]') ?? []);
 
-const getTabStop = (root: HTMLElement | null) =>
-	getRadios(root).find(radio => radio.tabIndex === 0);
+/** What `controlRef` receives: a handle a form library can focus. */
+export type RadioGroupControl = { focus: () => void };
 
 export type RadioGroupRootProps = Omit<
 	ComponentPropsWithRef<'div'>,
 	'defaultValue' | 'onChange'
 > & {
-	/** Controlled value of the selected item. `''` leaves every item unselected. */
-	value?: string;
+	/**
+	 * Controlled value of the selected item. `null` leaves every item unselected; `undefined`
+	 * makes the group uncontrolled.
+	 */
+	value?: string | null;
 	/** Initial value for an uncontrolled group. Leave it out to start with nothing selected. */
 	defaultValue?: string;
 	/** Fires with the value of the item the user selects. */
@@ -118,6 +128,12 @@ export type RadioGroupRootProps = Omit<
 	orientation?: RadioGroupVariants['orientation'];
 	/** Form field name; the form submits `name=value` for the selected item. */
 	name?: string;
+	/**
+	 * Receives `{ focus }`, which moves focus to the radio Tab would land on.
+	 * Pass a form library's field ref here (react-hook-form's `field.ref`) so it
+	 * can focus the group on a failed submit.
+	 */
+	controlRef?: Ref<RadioGroupControl>;
 };
 
 /**
@@ -135,14 +151,14 @@ export type RadioGroupRootProps = Omit<
  *
  * Every native `<div>` attribute is forwarded to the group, `aria-invalid`
  * included: `role="radiogroup"` supports it, and each radio paints the
- * destructive state from it. The `ref` reaches the group element, and calling
- * `focus()` on it moves focus to the radio Tab would land on, so a form
- * library can focus the field on a failed submit. With react-hook-form, wire
- * it through `Controller` (`value`, `onValueChange`, `ref`), not `register`:
- * the radios' inputs belong to the group, not to the form library.
+ * destructive state from it. With react-hook-form, wire it through
+ * `Controller` (`value`, `onValueChange`, and `field.ref` as `controlRef`),
+ * not `register`: the radios' inputs belong to the group, not to the form
+ * library.
  *
- * A native form reset puts an uncontrolled group back on `defaultValue` and a
- * controlled one on its `value`.
+ * The group is a single Tab stop: the selected radio if it is enabled, else
+ * the first enabled one. A native form reset puts an uncontrolled group back
+ * on `defaultValue` and a controlled one on its `value`.
  *
  * @summary Single-select radio list holding its selected value as a string
  *
@@ -170,7 +186,7 @@ export const Root = ({
 	'aria-labelledby': labelledByProp,
 	'aria-describedby': describedByProp,
 	ref,
-	onFocus,
+	controlRef,
 	className,
 	children,
 	...props
@@ -189,36 +205,47 @@ export const Root = ({
 	)['aria-describedby'];
 
 	// Base UI always runs controlled, so the tab stop and the form reset below know the selection.
-	const [initialValue] = useState(defaultValue);
-	const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue);
+	const [initialValue] = useState(defaultValue ?? null);
+	const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue ?? null);
 	const isControlled = value !== undefined;
 	const selected = isControlled ? value : uncontrolledValue;
+
+	// A controlled value dropped back to `undefined` (a form library's reset with no defaults)
+	// clears the selection, rather than showing whatever the group last held on its own.
+	const [previousValue, setPreviousValue] = useState(value);
+	if (value !== previousValue) {
+		setPreviousValue(value);
+		if (value === undefined) setUncontrolledValue(null);
+	}
+
+	// Base UI leaves the tab stop on a disabled selected radio, and does not move it when the value
+	// changes from outside, so the group picks it from its own list of radios.
+	const [radios, setRadios] = useState<RegisteredRadio[]>([]);
+	const register = useCallback((radio: RegisteredRadio) => {
+		setRadios(list =>
+			[...list.filter(entry => entry.element !== radio.element), radio].sort(byDocumentOrder)
+		);
+		return () => setRadios(list => list.filter(entry => entry.element !== radio.element));
+	}, []);
+	const enabled = radios.filter(radio => !radio.disabled);
+	const stop = enabled.find(radio => radio.value === selected) ?? enabled[0];
+
+	useImperativeHandle(controlRef, () => ({ focus: () => stop?.element.focus() }), [stop]);
 
 	const rootRef = useRef<HTMLDivElement>(null);
 	const mergedRef = useMemo(() => mergeRefs(rootRef, ref), [ref]);
 	const resetTarget = useRef({ isControlled, selected, initialValue });
 	resetTarget.current = { isControlled, selected, initialValue };
 
-	// Base UI leaves the tab stop on a disabled checked radio, and does not move it when the value
-	// changes from outside. Put it on the checked radio if enabled, else on the first enabled one.
-	useLayoutEffect(() => {
-		const radios = getRadios(rootRef.current);
-		const enabled = radios.filter(radio => !radio.disabled);
-		const stop = enabled.find(radio => radio.getAttribute('aria-checked') === 'true') ?? enabled[0];
-
-		if (!stop) return;
-		for (const radio of radios) radio.tabIndex = radio === stop ? 0 : -1;
-	});
-
-	// A native reset rewrites the radio inputs behind Base UI's back. Once it is done, go back to the
-	// starting (or controlled) value and make the inputs match what is shown.
+	// A native reset rewrites the radio inputs behind Base UI's back, after the `reset` event. Once
+	// it is done, go back to the starting (or controlled) value and make the inputs match it.
 	useEffect(() => {
 		const form = rootRef.current?.closest('form');
 
 		if (!form) return;
 
 		const handleReset = () =>
-			queueMicrotask(() => {
+			setTimeout(() => {
 				const { isControlled, selected, initialValue } = resetTarget.current;
 				const target = isControlled ? selected : initialValue;
 
@@ -231,17 +258,11 @@ export const Root = ({
 	}, []);
 
 	return (
-		<RadioGroupContext value={{ styles, disabled }}>
+		<RadioGroupContext value={{ styles, disabled, tabStop: stop?.value, register }}>
 			<RadioGroupPrimitive<string | null>
 				{...props}
 				ref={mergedRef}
-				// Focusable by script only, so `focus()` on the group can hand focus to a radio.
-				tabIndex={-1}
-				onFocus={event => {
-					onFocus?.(event);
-					if (event.target === event.currentTarget) getTabStop(rootRef.current)?.focus();
-				}}
-				value={selected ?? null}
+				value={selected}
 				onValueChange={next => {
 					if (next === null) return;
 					if (!isControlled) setUncontrolledValue(next);
@@ -299,9 +320,15 @@ export const Item = ({
 
 	if (!context) throw new Error('RadioGroup.Item must be rendered inside RadioGroup.Root.');
 
-	const { styles } = context;
+	const { styles, register } = context;
 	const id = idProp ?? generatedId;
-	const isDisabled = context.disabled || disabled;
+	const isDisabled = Boolean(context.disabled || disabled);
+	const radioRef = useRef<HTMLButtonElement>(null);
+
+	useLayoutEffect(() => {
+		if (!radioRef.current) return;
+		return register({ value, disabled: isDisabled, element: radioRef.current });
+	}, [register, value, isDisabled]);
 
 	return (
 		<div
@@ -315,9 +342,11 @@ export const Item = ({
 					<RadioPrimitive.Root
 						nativeButton
 						render={<button type="button" />}
+						ref={radioRef}
 						id={id}
 						value={value}
 						disabled={isDisabled}
+						tabIndex={value === context.tabStop ? 0 : -1}
 						data-slot="radio-group-radio"
 						className={styles.radio()}>
 						<RadioPrimitive.Indicator

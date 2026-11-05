@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Controller, useForm } from 'react-hook-form';
-import { expect, fn, userEvent, within } from 'storybook/test';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { RadioGroup } from '.';
 import { Button } from '../button';
@@ -232,12 +232,12 @@ export const Invalid: Story = {
 /** @summary Controlled group whose value is set from outside */
 export const Controlled: Story = {
 	render: () => {
-		const [plan, setPlan] = useState('monthly');
+		const [plan, setPlan] = useState<string | null>('monthly');
 
 		return (
 			<div className="flex flex-col items-start gap-6">
 				<div className="flex gap-3">
-					<Button variant="secondary" size="sm" onClick={() => setPlan('')}>
+					<Button variant="secondary" size="sm" onClick={() => setPlan(null)}>
 						Clear
 					</Button>
 					<Button variant="secondary" size="sm" onClick={() => setPlan('annual')}>
@@ -251,7 +251,7 @@ export const Controlled: Story = {
 						</RadioGroup.Item>
 					))}
 				</RadioGroup.Root>
-				<output className="text-sm">Selected: {plan || 'none'}</output>
+				<output className="text-sm">Selected: {plan ?? 'none'}</output>
 			</div>
 		);
 	},
@@ -337,7 +337,7 @@ export const WithReactHookForm: Story = {
 						<Field.Root invalid={fieldState.invalid} required>
 							<Field.Label>Payment plan</Field.Label>
 							<RadioGroup.Root
-								ref={field.ref}
+								controlRef={field.ref}
 								value={field.value}
 								onValueChange={field.onChange}
 								onBlur={field.onBlur}>
@@ -742,5 +742,141 @@ export const InsideFieldOverridden: Story = {
 		for (const radio of canvas.getAllByRole('radio')) {
 			await expect(radio).toBeEnabled();
 		}
+	}
+};
+
+/**
+ * An item can carry the empty string, for a "None" choice: `''` selects it,
+ * and only `null` leaves the group without a selection.
+ *
+ * @summary Empty-string value for a None option
+ */
+export const EmptyStringOption: Story = {
+	tags: ['!dev', '!autodocs', '!manifest'],
+	render: () => {
+		const [plan, setPlan] = useState<string | null>('');
+
+		return (
+			<div className="flex flex-col items-start gap-6">
+				<Button variant="secondary" size="sm" onClick={() => setPlan(null)}>
+					Clear
+				</Button>
+				<RadioGroup.Root aria-label="Payment plan" value={plan} onValueChange={setPlan}>
+					<RadioGroup.Item value="">None</RadioGroup.Item>
+					<RadioGroup.Item value="monthly">Monthly</RadioGroup.Item>
+				</RadioGroup.Root>
+			</div>
+		);
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		await expect(canvas.getByRole('radio', { name: 'None' })).toBeChecked();
+		await userEvent.click(canvas.getByRole('button', { name: 'Clear' }));
+		await expect(canvas.getByRole('radio', { name: 'None' })).not.toBeChecked();
+		await expect(canvas.getByRole('radio', { name: 'Monthly' })).not.toBeChecked();
+	}
+};
+
+/**
+ * A react-hook-form reset with no default values sets the field back to
+ * `undefined`: the group clears instead of keeping the last pick on screen.
+ *
+ * @summary Form reset to undefined clears the selection
+ */
+export const ResetToUndefined: Story = {
+	tags: ['!dev', '!autodocs', '!manifest'],
+	render: () => {
+		const { control, reset } = useForm<{ plan?: string }>();
+
+		return (
+			<div className="flex flex-col items-start gap-6">
+				<Controller
+					name="plan"
+					control={control}
+					render={({ field }) => (
+						<RadioGroup.Root
+							aria-label="Payment plan"
+							controlRef={field.ref}
+							value={field.value}
+							onValueChange={field.onChange}>
+							{PLANS.map(({ value, label }) => (
+								<RadioGroup.Item key={value} value={value}>
+									{label}
+								</RadioGroup.Item>
+							))}
+						</RadioGroup.Root>
+					)}
+				/>
+				<Button variant="secondary" size="sm" onClick={() => reset()}>
+					Reset form
+				</Button>
+			</div>
+		);
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		await userEvent.click(canvas.getByRole('radio', { name: 'Annual' }));
+		await expect(canvas.getByRole('radio', { name: 'Annual' })).toBeChecked();
+		await userEvent.click(canvas.getByRole('button', { name: 'Reset form' }));
+		for (const radio of canvas.getAllByRole('radio')) {
+			await expect(radio).not.toBeChecked();
+		}
+	}
+};
+
+/**
+ * The group is always one Tab stop, even read-only with a value that arrives
+ * after mount and a press that moves focus to another radio.
+ *
+ * @summary Single tab stop when read-only
+ */
+export const SingleTabStop: Story = {
+	tags: ['!dev', '!autodocs', '!manifest'],
+	render: () => {
+		const [plan, setPlan] = useState<string | null>(null);
+
+		useEffect(() => {
+			setPlan('annual');
+		}, []);
+
+		return (
+			<RadioGroup.Root aria-label="Payment plan" readOnly value={plan}>
+				{PLANS.map(({ value, label }) => (
+					<RadioGroup.Item key={value} value={value}>
+						{label}
+					</RadioGroup.Item>
+				))}
+			</RadioGroup.Root>
+		);
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const stops = () => canvas.getAllByRole('radio').filter(radio => radio.tabIndex === 0);
+
+		await waitFor(() => expect(canvas.getByRole('radio', { name: 'Annual' })).toBeChecked());
+		await expect(stops()).toEqual([canvas.getByRole('radio', { name: 'Annual' })]);
+		await userEvent.click(canvas.getByRole('radio', { name: 'Quarterly' }));
+		await expect(stops()).toEqual([canvas.getByRole('radio', { name: 'Annual' })]);
+	}
+};
+
+/**
+ * A press on an item's text focuses that item, so the arrow keys continue
+ * from the one just picked.
+ *
+ * @summary Pressing a label focuses its radio
+ */
+export const LabelPressFocus: Story = {
+	tags: ['!dev', '!autodocs', '!manifest'],
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		await userEvent.click(canvas.getByText('Quarterly'));
+		await expect(canvas.getByRole('radio', { name: 'Quarterly' })).toBeChecked();
+		await expect(canvas.getByRole('radio', { name: 'Quarterly' })).toHaveFocus();
+		await userEvent.keyboard('{ArrowDown}');
+		await expect(canvas.getByRole('radio', { name: 'Annual' })).toBeChecked();
 	}
 };
