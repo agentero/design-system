@@ -10,40 +10,6 @@ import { Field } from '../field';
 import { Modal } from '../modal';
 import { Popover } from '../popover';
 
-/** `Root` owns the picked value; `Trigger` is the closed field and `Content` the list of `Item`s. */
-const meta = {
-	title: 'Components/Select',
-	component: Select.Root,
-	tags: ['autodocs'],
-	argTypes: {
-		disabled: { control: 'boolean' },
-		readOnly: { control: 'boolean' },
-		required: { control: 'boolean' },
-		onValueChange: { action: 'valueChange' }
-	},
-	args: {
-		items: [] as { value: string; label: string }[]
-	},
-	render: args => (
-		<div className="w-80">
-			<Select.Root {...args} items={STATES}>
-				<Select.Trigger aria-label="State" placeholder="Select a state" />
-				<Select.Content>
-					{STATES.map(({ value, label }) => (
-						<Select.Item key={value} value={value}>
-							{label}
-						</Select.Item>
-					))}
-				</Select.Content>
-			</Select.Root>
-		</div>
-	)
-} satisfies Meta<typeof Select.Root<string>>;
-
-export default meta;
-
-type Story = StoryObj<typeof meta>;
-
 const STATES = [
 	{ value: 'AZ', label: 'Arizona' },
 	{ value: 'CA', label: 'California' },
@@ -52,6 +18,69 @@ const STATES = [
 	{ value: 'NY', label: 'New York' },
 	{ value: 'TX', label: 'Texas' }
 ];
+
+/** `Root` owns the picked value; `Trigger` is the closed field and `Content` the list of `Item`s. */
+const meta = {
+	title: 'Components/Select',
+	component: Select.Root,
+	tags: ['autodocs'],
+	parameters: {
+		// Room under the trigger for the open list, so it does not cover the docs around it.
+		docs: { story: { height: '320px' } }
+	},
+	// The list takes the trigger's width; 592px is what the marketplace forms give it.
+	decorators: [
+		Story => (
+			<div className="w-148 max-w-full p-4">
+				<Story />
+			</div>
+		)
+	],
+	argTypes: {
+		items: {
+			control: 'object',
+			description:
+				'The options as `{ value, label }`, so the trigger shows the picked label rather than its value.'
+		},
+		disabled: {
+			control: 'boolean',
+			description: 'Blocks the whole select. Defaults to the surrounding `Field.Root`.'
+		},
+		readOnly: {
+			control: 'boolean',
+			description:
+				'The list still opens, but the value cannot change. Defaults to the surrounding `Field.Root`.'
+		},
+		required: {
+			control: 'boolean',
+			description:
+				'Blocks a native form submission until something is picked. Defaults to the surrounding `Field.Root`.'
+		},
+		onValueChange: {
+			action: 'valueChange',
+			description: 'Called with the picked value and Base UI event details.'
+		}
+	},
+	args: {
+		items: STATES
+	},
+	render: ({ items, ...args }) => (
+		<Select.Root {...args} items={items}>
+			<Select.Trigger aria-label="State" placeholder="Select a state" />
+			<Select.Content>
+				{(items as typeof STATES).map(({ value, label }) => (
+					<Select.Item key={value} value={value}>
+						{label}
+					</Select.Item>
+				))}
+			</Select.Content>
+		</Select.Root>
+	)
+} satisfies Meta<typeof Select.Root<string>>;
+
+export default meta;
+
+type Story = StoryObj<typeof meta>;
 
 const open = async (trigger: HTMLElement) => {
 	await userEvent.click(trigger);
@@ -112,7 +141,7 @@ export const WithValue: Story = {
  */
 export const Sizes: Story = {
 	render: () => (
-		<div className="flex w-80 flex-col gap-4">
+		<div className="flex w-full flex-col gap-4">
 			{(['sm', 'md', 'lg'] as const).map(size => (
 				<Select.Root key={size} items={STATES} defaultValue="CA">
 					<Select.Trigger aria-label={`State ${size}`} size={size} />
@@ -150,7 +179,7 @@ export const Sizes: Story = {
  */
 export const InsideField: Story = {
 	render: () => (
-		<div className="w-80">
+		<div className="w-full">
 			<Field.Root invalid required>
 				<Field.Label>State</Field.Label>
 				<Select.Root items={STATES}>
@@ -203,18 +232,16 @@ export const Disabled: Story = {
 export const DisabledItem: Story = {
 	args: { onValueChange: fn() },
 	render: args => (
-		<div className="w-80">
-			<Select.Root {...args} items={STATES}>
-				<Select.Trigger aria-label="State" placeholder="Select a state" />
-				<Select.Content>
-					{STATES.map(({ value, label }) => (
-						<Select.Item key={value} value={value} disabled={value === 'FL'}>
-							{label}
-						</Select.Item>
-					))}
-				</Select.Content>
-			</Select.Root>
-		</div>
+		<Select.Root {...args} items={STATES}>
+			<Select.Trigger aria-label="State" placeholder="Select a state" />
+			<Select.Content>
+				{STATES.map(({ value, label }) => (
+					<Select.Item key={value} value={value} disabled={value === 'FL'}>
+						{label}
+					</Select.Item>
+				))}
+			</Select.Content>
+		</Select.Root>
 	),
 	play: async ({ args, canvasElement }) => {
 		const list = await open(within(canvasElement).getByRole('combobox', { name: 'State' }));
@@ -260,7 +287,7 @@ export const Controlled: Story = {
 		const [state, setState] = useState<string | null>('CA');
 
 		return (
-			<div className="flex w-80 flex-col items-start gap-6">
+			<div className="flex w-full flex-col items-start gap-6">
 				<div className="flex gap-3">
 					<Button variant="secondary" size="sm" onClick={() => setState(null)}>
 						Clear
@@ -309,7 +336,7 @@ export const InForm: Story = {
 
 		return (
 			<form
-				className="flex w-80 flex-col items-start gap-6"
+				className="flex w-full flex-col items-start gap-6"
 				onSubmit={event => {
 					event.preventDefault();
 					setSubmitted(String(new FormData(event.currentTarget).get('state')));
@@ -361,7 +388,7 @@ export const WithReactHookForm: Story = {
 			// `noValidate`, as `Form.Root` renders it: the field's validation is the form library's.
 			<form
 				noValidate
-				className="flex w-80 flex-col items-start gap-6"
+				className="flex w-full flex-col items-start gap-6"
 				onSubmit={handleSubmit(data => setSubmitted(data.state))}>
 				<Controller
 					name="state"
@@ -452,7 +479,7 @@ export const LongLabel: Story = {
  */
 export const AllStates: Story = {
 	render: () => (
-		<div className="grid w-[42rem] grid-cols-2 gap-6">
+		<div className="grid w-full grid-cols-2 gap-6">
 			{(
 				[
 					['Placeholder', {}],
@@ -571,6 +598,42 @@ export const ListGeometry: Story = {
 };
 
 /**
+ * A `max-h-*` on `Content` shrinks the scrolling area; the last option is still
+ * reachable by scrolling.
+ *
+ * @summary Shorter list through className
+ */
+export const ContentMaxHeight: Story = {
+	tags: ['!dev', '!autodocs', '!manifest'],
+	render: () => (
+		<Select.Root items={STATES}>
+			<Select.Trigger aria-label="State" placeholder="Select a state" />
+			<Select.Content className="max-h-40">
+				{STATES.map(({ value, label }) => (
+					<Select.Item key={value} value={value}>
+						{label}
+					</Select.Item>
+				))}
+			</Select.Content>
+		</Select.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const list = await open(within(canvasElement).getByRole('combobox', { name: 'State' }));
+		const surface = list.closest('[data-slot=select-content]')!;
+
+		await expect(surface.getBoundingClientRect().height).toBe(160);
+		await expect(list.scrollHeight).toBeGreaterThan(list.clientHeight);
+		list.scrollTop = list.scrollHeight;
+		await waitFor(() =>
+			expect(
+				within(list).getByRole('option', { name: 'Texas' }).getBoundingClientRect().bottom
+			).toBeLessThanOrEqual(surface.getBoundingClientRect().bottom)
+		);
+		await close();
+	}
+};
+
+/**
  * A native form reset puts an uncontrolled select back on its `defaultValue`,
  * on screen and in what the form submits.
  *
@@ -583,7 +646,7 @@ export const FormReset: Story = {
 
 		return (
 			<form
-				className="flex w-80 flex-col items-start gap-6"
+				className="flex w-full flex-col items-start gap-6"
 				onSubmit={event => {
 					event.preventDefault();
 					setSubmitted(String(new FormData(event.currentTarget).get('state')));
@@ -740,7 +803,7 @@ export const InsidePopover: Story = {
 export const RightToLeft: Story = {
 	tags: ['!dev', '!autodocs', '!manifest'],
 	render: () => (
-		<div dir="rtl" className="w-80">
+		<div dir="rtl" className="w-full">
 			<Select.Root items={STATES} defaultValue="TX">
 				<Select.Trigger aria-label="State" />
 				<Select.Content>
@@ -772,7 +835,7 @@ export const BlurOnLeave: Story = {
 		const [blurs, setBlurs] = useState(0);
 
 		return (
-			<div className="flex w-80 flex-col items-start gap-6">
+			<div className="flex w-full flex-col items-start gap-6">
 				<div className="w-full">
 					<Select.Root items={STATES} defaultValue="CA">
 						<Select.Trigger aria-label="State" onBlur={() => setBlurs(count => count + 1)} />

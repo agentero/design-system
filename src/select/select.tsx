@@ -44,12 +44,14 @@ export const selectRecipe = tv({
 			'[&_path]:fill-icon-input-default group-data-popup-open/select-trigger:rotate-180',
 			'group-disabled/select-trigger:[&_path]:fill-icon-input-disable'
 		],
+		// The height cap lives on the surface alone and the list fills it, so a `max-h-*` passed as
+		// `className` shrinks the scrolling area instead of cutting off the last rows.
 		content: [
-			'w-(--anchor-width) max-h-(--available-height) overflow-hidden rounded-md',
-			'border border-border-default-base-primary bg-bg-default-base-primary shadow-lg',
+			'flex w-(--anchor-width) max-h-[min(18rem,var(--available-height))] flex-col overflow-hidden',
+			'rounded-md border border-border-default-base-primary bg-bg-default-base-primary shadow-lg',
 			'outline-none'
 		],
-		list: 'max-h-[min(18rem,var(--available-height))] overflow-y-auto scroll-py-2 py-2 outline-none',
+		list: 'min-h-0 flex-1 overflow-y-auto scroll-py-2 py-2 outline-none',
 		item: [
 			'group/item mx-2 my-px flex cursor-pointer items-center gap-2 rounded-[calc(var(--radius-md)-2px)]',
 			'px-3 py-2 text-sm text-text-default-base-primary outline-none select-none',
@@ -155,8 +157,11 @@ export const Root = <Value,>({
 		return () => form.removeEventListener('reset', handleReset);
 	}, [trigger]);
 
+	// Stable between renders, so `Trigger` and `Content` only re-render when the trigger changes.
+	const context = useMemo(() => ({ trigger, setTrigger, triggerBlur }), [trigger]);
+
 	return (
-		<SelectContext value={{ trigger, setTrigger, triggerBlur }}>
+		<SelectContext value={context}>
 			<SelectPrimitive.Root<Value, false>
 				{...props}
 				value={isControlled ? value : uncontrolledValue}
@@ -173,7 +178,8 @@ export const Root = <Value,>({
 };
 Root.displayName = 'Select.Root';
 
-// The native `size` is not a token here; the control height is.
+// The native `size` is not a token here; the control height is. `className` is narrowed to a string:
+// Base UI also takes a function of its state, which `cn` cannot merge.
 export type SelectTriggerProps = Omit<
 	ComponentPropsWithRef<typeof SelectPrimitive.Trigger>,
 	'children' | 'className'
