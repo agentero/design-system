@@ -26,36 +26,30 @@ import { useFieldContext } from '../field';
  */
 export const radioGroupRecipe = tv({
 	slots: {
-		// Same spacing as CheckboxGroup: Figma leaves 16px between the label block and the options,
-		// where the field's gap is 8, and an error below gets the same 16px.
+		// Figma leaves 16px between the options and the field's label block or error; the field's
+		// gap is 8.
 		root: [
 			'flex [:is([data-slot=field-content],[data-slot=field-description])+&]:mt-2',
 			'[&:has(+[data-slot=field-error])]:mb-2'
 		],
 		item: 'group/radio-group-item flex',
 		label: [
-			// Figma's Radio Group draws the option text in slate-900.
 			'flex cursor-pointer items-start gap-3 text-sm text-text-default-base-primary select-none',
 			'group-data-disabled/radio-group-item:cursor-not-allowed',
 			'in-data-readonly:cursor-default'
 		],
 		control: 'flex size-6 shrink-0 items-center justify-center',
-		// Drawn to the Portal UI library's Base Radio on the Checkbox tokens: a 16px circle with a
-		// 1.5px border, slate-300 with the xs shadow when unchecked, slate-800 when checked.
 		radio: [
 			'relative box-border inline-flex size-4 shrink-0 items-center justify-center rounded-full',
 			'border-[1.5px] border-solid border-border-checkbox-default bg-bg-input-normal',
 			'cursor-pointer transition-colors duration-150',
-			// Only an enabled radio lifts with the shadow, and only a valid, editable one darkens on hover,
-			// so neither has to be undone by the states below. Hover reads from the whole row, which
-			// selects as a whole, as Figma's Radio Group hover state does.
+			// Hover reads from the whole row, which selects as a whole.
 			'not-data-disabled:data-unchecked:shadow-xs',
 			'not-data-disabled:not-data-readonly:not-in-aria-invalid:data-unchecked:group-hover/radio-group-item:border-border-input-hover',
 			'data-checked:border-bg-checkbox-selected',
 			'outline-solid outline-2 outline-offset-2 outline-transparent',
 			'focus-visible:outline-focus-ring-button-primary',
-			// `aria-invalid` sits on the group (`role="radiogroup"` supports it), so each radio reads it
-			// from there.
+			// `aria-invalid` sits on the group, so each radio reads it from there.
 			'in-aria-invalid:border-border-input-destructive',
 			'in-aria-invalid:focus-visible:outline-focus-ring-button-destructive',
 			'in-aria-invalid:data-checked:border-bg-default-danger-primary',
@@ -69,7 +63,6 @@ export const radioGroupRecipe = tv({
 			'data-disabled:bg-bg-checkbox-disabled',
 			'in-aria-invalid:data-disabled:bg-bg-checkbox-invalid-disabled'
 		],
-		// Figma greys the text of a disabled item out to slate-200 rather than fading it.
 		text: 'flex min-h-6 items-center group-data-disabled/radio-group-item:text-text-default-disable-primary'
 	},
 	variants: {
@@ -190,14 +183,12 @@ export const Root = ({
 	const readOnly = readOnlyProp ?? (field?.readOnly || undefined);
 	const required = requiredProp ?? (field?.required || undefined);
 	const invalid = invalidProp ?? (field?.invalid || undefined);
-	// Own ids join the field's error and description instead of replacing them.
 	const describedBy = mergeProps(
 		{ 'aria-describedby': field?.describedBy },
 		{ 'aria-describedby': describedByProp }
 	)['aria-describedby'];
 
-	// The group always runs Base UI controlled, so the selection is known here: the tab stop and
-	// the form reset below both need it.
+	// Base UI always runs controlled, so the tab stop and the form reset below know the selection.
 	const [initialValue] = useState(defaultValue);
 	const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue);
 	const isControlled = value !== undefined;
@@ -208,10 +199,8 @@ export const Root = ({
 	const resetTarget = useRef({ isControlled, selected, initialValue });
 	resetTarget.current = { isControlled, selected, initialValue };
 
-	// Base UI puts the tab stop on the checked radio even when it is disabled, which leaves no
-	// enabled radio reachable by Tab, and keeps it where it was when the value changes from outside.
-	// After every render, the stop goes on the checked radio if it is enabled, else on the first
-	// enabled one.
+	// Base UI leaves the tab stop on a disabled checked radio, and does not move it when the value
+	// changes from outside. Put it on the checked radio if enabled, else on the first enabled one.
 	useLayoutEffect(() => {
 		const radios = getRadios(rootRef.current);
 		const enabled = radios.filter(radio => !radio.disabled);
@@ -221,9 +210,8 @@ export const Root = ({
 		for (const radio of radios) radio.tabIndex = radio === stop ? 0 : -1;
 	});
 
-	// A native reset sets each radio input back to its default `checked`, behind Base UI's back. Once
-	// the reset is done, put the group back on its starting value (or its controlled one) and make
-	// the inputs agree with it, so what is shown and what the form submits stay the same.
+	// A native reset rewrites the radio inputs behind Base UI's back. Once it is done, go back to the
+	// starting (or controlled) value and make the inputs match what is shown.
 	useEffect(() => {
 		const form = rootRef.current?.closest('form');
 
@@ -261,8 +249,8 @@ export const Root = ({
 				}}
 				disabled={disabled}
 				readOnly={readOnly}
-				// Without a shared `name` the inputs are not one native group, so a native `required`
-				// cannot mean "one of them": only `aria-required` marks the group then.
+				// Unnamed radios are not one native group, so a native `required` cannot mean
+				// "one of them".
 				required={required && name !== undefined}
 				aria-required={required || undefined}
 				name={name}
@@ -321,10 +309,9 @@ export const Item = ({
 			data-slot="radio-group-item"
 			data-disabled={isDisabled || undefined}
 			className={cn(styles.item(), className)}>
-			{/* The label wraps the radio's slot and the gap too, so the whole row selects. */}
 			<label htmlFor={id} data-slot="radio-group-item-label" className={styles.label()}>
 				<span data-slot="radio-group-item-control" className={styles.control()}>
-					{/* A native button, like Checkbox: it takes the `id`, so the `<label>` names it. */}
+					{/* Base UI's default <span> passes `id` to its hidden input, so no <label> names it. */}
 					<RadioPrimitive.Root
 						nativeButton
 						render={<button type="button" />}

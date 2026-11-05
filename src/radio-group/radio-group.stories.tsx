@@ -64,7 +64,6 @@ export const Default: Story = {
 		await expect(canvas.getByRole('radio', { name: 'Annual' })).toBeChecked();
 		await expect(args.onValueChange).toHaveBeenLastCalledWith('annual');
 
-		// The padding around the radio and the gap before the text select too: the label wraps them.
 		const monthly = canvas.getByRole('radio', { name: 'Monthly' });
 		await userEvent.click(monthly.closest('[data-slot=radio-group-item-control]')!);
 		await expect(monthly).toBeChecked();
@@ -261,7 +260,6 @@ export const Controlled: Story = {
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 
-		// A value set from outside moves the tab stop too: Tab enters on the new selection.
 		await userEvent.click(canvas.getByRole('button', { name: 'Choose annual' }));
 		await expect(canvas.getByRole('radio', { name: 'Annual' })).toBeChecked();
 		await userEvent.tab();
