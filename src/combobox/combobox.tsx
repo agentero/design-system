@@ -94,6 +94,12 @@ const MultipleContext = createContext(false);
 // `undefined` for a root that never opted in.
 const LoadingContext = createContext<boolean | undefined>(undefined);
 
+// Whether the list is open, for `Empty` to hold back. It drops as soon as the list starts closing,
+// while the surface is still mounted: a search that empties its rows on that keystroke would
+// otherwise flash its "no results" on the way out. It stays `undefined` outside this `Root`, under
+// `Autocomplete`, which borrows these parts.
+const OpenContext = createContext<boolean | undefined>(undefined);
+
 // How long a request runs before its label is announced. VoiceOver cuts off whatever it is saying
 // to echo the key just typed and, when the list opens, to read out its new expanded state; both
 // start about 100ms after the keystroke. A label that lands later queues behind them instead of
@@ -303,10 +309,10 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 
 	// Without a minimum, Base UI keeps its own open state, as it always has.
 	const open = openProp ?? (minInputLength > 0 ? openState : undefined);
-	const announcement = useLoadingAnnouncement(
-		Boolean(loading) && (openProp ?? openState),
-		loadingLabel
-	);
+	// Every open change, Base UI's own included, goes through `handleOpenChange`, so `openState`
+	// follows the list even where Base UI keeps the open state itself.
+	const isOpen = openProp ?? openState;
+	const announcement = useLoadingAnnouncement(Boolean(loading) && isOpen, loadingLabel);
 
 	return (
 		<MultipleContext value={multiple}>
@@ -322,7 +328,7 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 					{...props}
 					disabled={disabled}
 					readOnly={readOnly}>
-					{children}
+					<OpenContext value={isOpen}>{children}</OpenContext>
 					{loading !== undefined && (
 						// Next to the field, not inside `Content`: the surface mounts on the keystroke that
 						// starts the request, and a live region that appears already filled in is skipped.
@@ -650,20 +656,23 @@ type EmptyProps = ComponentPropsWithRef<typeof ComboboxPrimitive.Empty>;
  * `loading` it shows nothing: the list is empty because the results have not
  * arrived yet, not because there are none. With no rows to show either, the
  * surface would open as an empty frame, so render placeholder rows inside
- * `Content` for the wait.
+ * `Content` for the wait. Once the list starts closing it shows nothing
+ * either, so a search that clears its rows as the query drops under
+ * `minInputLength` does not flash its message on the way out.
  *
  * @summary Message shown when no item matches the query
  * @dataAttribute {string} data-slot - Always set to "combobox-empty"
  */
 export const Empty = ({ className, children, ...props }: EmptyProps) => {
 	const loading = use(LoadingContext);
+	const open = use(OpenContext);
 
 	return (
 		<ComboboxPrimitive.Empty
 			data-slot="combobox-empty"
 			className={cn(slots.message(), className)}
 			{...props}>
-			{loading ? null : children}
+			{loading || open === false ? null : children}
 		</ComboboxPrimitive.Empty>
 	);
 };
