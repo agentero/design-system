@@ -514,6 +514,9 @@ const ALL_AGENCIES: Agency[] = [
 	{ id: 'cardinal', name: 'Cardinal Agency' }
 ];
 
+// What the root reads before the first answer: one array, so it does not see a new list each render.
+const NO_AGENCIES: Agency[] = [];
+
 const searchAgencies = (query: string) =>
 	new Promise<Agency[]>(resolve => {
 		setTimeout(
@@ -542,11 +545,16 @@ const MIN_QUERY_LENGTH = 2;
  * through `items` and `filteredItems`, and the data layer's `loading` flag goes
  * to `Root`. That is all the wiring the wait needs:
  * `Content` is marked busy, `loadingLabel` is announced once when the request
- * starts, and `Empty` holds back "no results" until the answer is in. Placeholder
- * rows show only while there is nothing to show yet, hidden from assistive
- * technology since the label already speaks for them; after that, the previous
- * rows stay until the new ones replace them. A request that is no longer the
- * latest is dropped.
+ * starts, and `Empty` holds back "no results" until the first answer is in.
+ * Placeholder rows show only before that first answer, so the results stay
+ * `null` until one lands; they are hidden from assistive technology since the
+ * label already speaks for them. After that, the previous answer stays until
+ * the next one replaces it, whether it had rows or none. A request that is no
+ * longer the latest is dropped.
+ *
+ * This search matches substrings, so a query that contains one with no rows is
+ * not sent: it cannot find any either. Leave that out for a search that
+ * corrects typos, such as an address lookup.
  *
  * `minInputLength` keeps the list shut until two characters are typed — focusing
  * the field opens nothing, and deleting back under the minimum closes it — and
@@ -556,24 +564,43 @@ const MIN_QUERY_LENGTH = 2;
  */
 export const AsyncSearchWithLoading: Story = {
 	render: () => {
-		const [results, setResults] = useState<Agency[]>([]);
+		// `null` until the first answer: no answer yet is not the same as an answer with no rows.
+		const [results, setResults] = useState<Agency[] | null>(null);
 		const [isLoading, setIsLoading] = useState(false);
 		// Only the latest request may land; fast typing returns responses out of order.
 		const latestRequest = useRef(0);
+		// The last query that came back with no rows, while the list stays open. This search matches
+		// substrings, so a query that contains it has none either and is not sent. A search that
+		// corrects typos, such as an address lookup, can find rows for a longer query and has to ask
+		// every time.
+		const noRowsFor = useRef<string | null>(null);
 
-		const onInputValueChange = async (query: string) => {
+		const onInputValueChange = async (query: string, { reason }: { reason: string }) => {
 			const request = ++latestRequest.current;
 			if (query.trim().length < MIN_QUERY_LENGTH) {
+				setResults(null);
+				setIsLoading(false);
+				noRowsFor.current = null;
+				return;
+			}
+
+			// Compared as sent, case aside: the search does not trim, so `risk ` can come back empty
+			// while `risk` finds Beacon Risk. Only what the user types counts; the label written back
+			// after a pick is not a search of theirs.
+			const term = query.toLowerCase();
+			const typed = reason === 'input-change';
+			if (typed && noRowsFor.current !== null && term.includes(noRowsFor.current)) {
 				setResults([]);
 				setIsLoading(false);
 				return;
 			}
 
-			// The previous rows stay through the wait, marked busy, rather than blinking out and back.
+			// The previous answer stays through the wait, marked busy, rather than blinking out and back.
 			setIsLoading(true);
 			const agencies = await searchAgencies(query);
 			if (request !== latestRequest.current) return;
 
+			if (typed && agencies.length === 0) noRowsFor.current = term;
 			setResults(agencies);
 			setIsLoading(false);
 		};
@@ -581,18 +608,21 @@ export const AsyncSearchWithLoading: Story = {
 		return (
 			// `filter={null}` hands filtering to the server; `filteredItems` is what came back.
 			<Combobox.Root
-				items={results}
-				filteredItems={results}
+				items={results ?? NO_AGENCIES}
+				filteredItems={results ?? NO_AGENCIES}
 				filter={null}
 				minInputLength={MIN_QUERY_LENGTH}
 				loading={isLoading}
 				loadingLabel="Searching agencies…"
 				itemToStringLabel={(agency: Agency) => agency.name}
 				isItemEqualToValue={(a: Agency, b: Agency) => a.id === b.id}
-				onInputValueChange={onInputValueChange}>
+				onInputValueChange={onInputValueChange}
+				onOpenChange={open => {
+					if (!open) noRowsFor.current = null;
+				}}>
 				<Combobox.Input placeholder="Search agencies" aria-label="Search agencies" />
 				<Combobox.Content>
-					{isLoading && results.length === 0 && <SkeletonRows />}
+					{isLoading && results === null && <SkeletonRows />}
 					<Combobox.Empty>No agencies found</Combobox.Empty>
 					<Combobox.List>
 						{(agency: Agency) => (
@@ -679,20 +709,146 @@ export const AsyncSearchWithLoading: Story = {
 		// What is left of the query stays: the user is still typing it.
 		await expect(input).toHaveValue('a');
 
-		// An answer with no rows still says so, once it lands.
+		// An answer with no rows still says so, once it lands. It is the first answer since the list
+		// opened, so the placeholder rows hold the wait.
 		await userEvent.type(input, 'zz');
-		await expect(document.body.querySelector('[data-slot="combobox-content"]')).toHaveAttribute(
-			'aria-busy',
-			'true'
-		);
+		const surface = document.body.querySelector('[data-slot="combobox-content"]');
+		const skeleton = () => document.body.querySelector('[data-slot="combobox-skeleton"]');
+		await expect(surface).toHaveAttribute('aria-busy', 'true');
+		await expect(skeleton()).toBeInTheDocument();
 		await expect(body.queryByText(/no agencies found/i)).not.toBeInTheDocument();
 		await expect(await body.findByText(/no agencies found/i, {}, { timeout: 2000 })).toBeVisible();
+		await expect(surface).not.toHaveAttribute('aria-busy');
+		const empty = document.body.querySelector('[data-slot="combobox-empty"]');
+		const message = empty?.firstChild;
+
+		// A query that contains one with no rows has none either, so it is not sent: nothing waits.
+		await userEvent.type(input, 'x');
+		await expect(surface).not.toHaveAttribute('aria-busy');
+		await expect(body.getByText(/no agencies found/i)).toBeVisible();
+		await expect(empty?.firstChild).toBe(message);
+
+		// One that does not contain it is sent. The message stays through the wait, marked busy, with
+		// no placeholder rows. Once the answer lands it is written in again, so the live region reads
+		// it out again.
 		await userEvent.type(input, '{Backspace}{Backspace}');
+		await expect(input).toHaveValue('az');
+		await expect(surface).toHaveAttribute('aria-busy', 'true');
+		await expect(body.getByText(/no agencies found/i)).toBeVisible();
+		await expect(skeleton()).not.toBeInTheDocument();
+		await expect(empty?.firstChild).toBe(message);
+		await waitFor(() => expect(surface).not.toHaveAttribute('aria-busy'), { timeout: 2000 });
+		await expect(body.getByText(/no agencies found/i)).toBeVisible();
+		await expect(empty?.firstChild).not.toBe(message);
+		await userEvent.type(input, '{Backspace}');
 		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
 
 		await userEvent.type(input, 'nch');
 		await userEvent.click(await body.findByRole('option', { name: 'Anchor Brokers' }));
 		await waitFor(() => expect(input).toHaveValue('Anchor Brokers'));
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+	}
+};
+
+/**
+ * Regression check, kept out of the manifest: a search that waits out a
+ * debounce before it asks, then clears its rows and flags `loading` together,
+ * and answers a query it has already asked from a cache, with no request.
+ * `Empty` keeps "no results" back while each request runs over rows cleared
+ * for it, the first request included, whatever answer came before.
+ *
+ * @summary No "no results" while a request runs over rows cleared for it
+ */
+export const AsyncSearchThatClearsItsRows: Story = {
+	tags: ['!manifest'],
+	render: () => {
+		const [results, setResults] = useState<Agency[]>([]);
+		const [isLoading, setIsLoading] = useState(false);
+		const pending = useRef<ReturnType<typeof setTimeout>>(undefined);
+		const latestRequest = useRef(0);
+		const cache = useRef(new Map<string, Agency[]>());
+
+		const onInputValueChange = (query: string) => {
+			const request = ++latestRequest.current;
+			clearTimeout(pending.current);
+			const cached = cache.current.get(query);
+			if (query.trim().length < MIN_QUERY_LENGTH || cached) {
+				setResults(cached ?? []);
+				setIsLoading(false);
+				return;
+			}
+
+			pending.current = setTimeout(async () => {
+				setResults([]);
+				setIsLoading(true);
+				const agencies = await searchAgencies(query);
+				if (request !== latestRequest.current) return;
+
+				cache.current.set(query, agencies);
+				setResults(agencies);
+				setIsLoading(false);
+			}, 300);
+		};
+
+		return (
+			<Combobox.Root
+				items={results}
+				filteredItems={results}
+				filter={null}
+				minInputLength={MIN_QUERY_LENGTH}
+				loading={isLoading}
+				itemToStringLabel={(agency: Agency) => agency.name}
+				onInputValueChange={onInputValueChange}>
+				<Combobox.Input placeholder="Search agencies" aria-label="Search agencies" />
+				<Combobox.Content>
+					<Combobox.Empty>No agencies found</Combobox.Empty>
+					<Combobox.List>
+						{(agency: Agency) => (
+							<Combobox.Item key={agency.id} value={agency}>
+								{agency.name}
+							</Combobox.Item>
+						)}
+					</Combobox.List>
+				</Combobox.Content>
+			</Combobox.Root>
+		);
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const body = within(document.body);
+		const input = canvas.getByRole('combobox', { name: /search agencies/i });
+		const busy = () =>
+			document.body.querySelector('[data-slot="combobox-content"][aria-busy="true"]');
+
+		// The first request starts after the list has opened; its wait says nothing.
+		await userEvent.type(input, 'an');
+		await waitFor(() => expect(busy()).toBeInTheDocument());
+		await expect(body.queryByText(/no agencies found/i)).not.toBeInTheDocument();
+		await waitFor(() => expect(body.getAllByRole('option').length).toBeGreaterThan(0), {
+			timeout: 2000
+		});
+
+		// The next one clears the rows that answered once it starts: still nothing to say while it
+		// runs. Until then, the rows stay. Its answer has none, and says so.
+		await userEvent.type(input, 'zz');
+		await expect(body.getAllByRole('option').length).toBeGreaterThan(0);
+		await waitFor(() => expect(busy()).toBeInTheDocument());
+		await expect(body.queryByText(/no agencies found/i)).not.toBeInTheDocument();
+		await expect(await body.findByText(/no agencies found/i, {}, { timeout: 2000 })).toBeVisible();
+
+		// Back to a query already answered: the cache puts its rows back, with no request. A request
+		// that clears them says nothing either, though the last answer that landed had no rows.
+		await userEvent.type(input, '{Backspace}{Backspace}');
+		await waitFor(() => expect(body.getAllByRole('option').length).toBeGreaterThan(0));
+		await expect(busy()).not.toBeInTheDocument();
+		await userEvent.type(input, 'c');
+		await waitFor(() => expect(busy()).toBeInTheDocument());
+		await expect(body.queryByText(/no agencies found/i)).not.toBeInTheDocument();
+		await waitFor(() => expect(body.getAllByRole('option').length).toBeGreaterThan(0), {
+			timeout: 2000
+		});
+
 		await userEvent.keyboard('{Escape}');
 		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
 	}

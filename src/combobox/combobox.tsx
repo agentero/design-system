@@ -2,7 +2,16 @@
 
 // Stays: `@base-ui/react/combobox` is `export * as Combobox`, so its parts hang off one
 // export like cmdk's — without the directive they arrive `undefined` (see `command.tsx`).
-import { ComponentPropsWithRef, createContext, use, useEffect, useRef, useState } from 'react';
+import {
+	ComponentPropsWithRef,
+	createContext,
+	Fragment,
+	ReactNode,
+	use,
+	useEffect,
+	useRef,
+	useState
+} from 'react';
 
 import { Combobox as ComboboxPrimitive } from '@base-ui/react/combobox';
 import { tv } from 'tailwind-variants';
@@ -100,6 +109,63 @@ const LoadingContext = createContext<boolean | undefined>(undefined);
 // `Autocomplete`, which borrows these parts.
 const OpenContext = createContext<boolean | undefined>(undefined);
 
+// What the list has shown since it opened, for `Empty` to decide whether its message waits with
+// the list while a request runs. `null` outside this `Root`.
+type Answers = {
+	open: boolean;
+	loading: boolean;
+	// An answer has landed since the list opened.
+	answered: boolean;
+	// The list showed no rows the last time it was not loading.
+	idleEmpty: boolean;
+	// The request under way began with an answer with no rows on screen, so that message is still
+	// the answer and stays through the wait.
+	keep: boolean;
+	// Answers that have landed, so each one writes the message in afresh.
+	landings: number;
+};
+const AnswersContext = createContext<Answers | null>(null);
+
+// Rendered inside Base UI's root, where the rows on screen can be read: what came back with
+// `filter={null}`, what the filter let through otherwise. What a wait keeps is settled from the
+// last render before it began, so it does not matter whether the consumer clears its rows, or
+// sets `loading`, in the same update as the other. It resets when the list opens rather than when
+// the surface unmounts, so a list reopened while it is still closing starts clean.
+const AnswersTracker = ({
+	open,
+	loading,
+	children
+}: {
+	open: boolean;
+	loading: boolean;
+	children: ReactNode;
+}) => {
+	const rows = ComboboxPrimitive.useFilteredItems().length;
+	const [answers, setAnswers] = useState<Answers>(() => ({
+		open,
+		loading,
+		answered: false,
+		idleEmpty: rows === 0,
+		keep: false,
+		landings: 0
+	}));
+	const idleEmpty = loading ? answers.idleEmpty : rows === 0;
+	if (open !== answers.open || loading !== answers.loading || idleEmpty !== answers.idleEmpty) {
+		const landed = answers.loading && !loading;
+		const answered = open && !answers.open ? false : answers.answered || landed;
+		setAnswers({
+			open,
+			loading,
+			answered,
+			idleEmpty,
+			keep: loading && !answers.loading ? answered && answers.idleEmpty : answers.keep,
+			landings: answers.landings + (landed ? 1 : 0)
+		});
+	}
+
+	return <AnswersContext value={answers}>{children}</AnswersContext>;
+};
+
 // How long a request runs before its label is announced. VoiceOver cuts off whatever it is saying
 // to echo the key just typed and, when the list opens, to read out its new expanded state; both
 // start about 100ms after the keystroke. A label that lands later queues behind them instead of
@@ -145,14 +211,16 @@ export type ComboboxRootProps<
 	 * Whether the options are being fetched. Once the list has been open and
 	 * loading for half a second, `loadingLabel` is announced once: sooner, a
 	 * screen reader would cut it off to echo the key just typed, and a faster
-	 * answer has no wait to announce. `Content` is marked `aria-busy`, and
-	 * `Empty` shows nothing, so "no results" is not read out before the results
-	 * arrive. The announcement comes from a visually hidden live region the root
-	 * renders next to the field, so it is in place before the list opens. On a search
-	 * against an API, pass it from the first render, as `false` while idle: a root
-	 * that leaves it out gets no live region. A list filtered in memory never
-	 * waits and leaves it out. While loading with no rows yet, the surface shows
-	 * whatever placeholder `Content` holds — `Empty` stays quiet.
+	 * answer has no wait to announce. `Content` is marked `aria-busy`, and `Empty`
+	 * shows nothing, so "no results" is not read out before the results arrive —
+	 * unless the request began with an answer with no rows on screen: that answer
+	 * stays through the wait, as rows do. The announcement comes from a
+	 * visually hidden live region the root renders next to the field, so it is in
+	 * place before the list opens. On a search against an API, pass it from the
+	 * first render, as `false` while idle: a root that leaves it out gets no live
+	 * region. A list filtered in memory never waits and leaves it out. While
+	 * loading with nothing to show yet, the surface shows whatever placeholder
+	 * `Content` holds — `Empty` stays quiet.
 	 */
 	loading?: boolean;
 	/**
@@ -328,7 +396,11 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 					{...props}
 					disabled={disabled}
 					readOnly={readOnly}>
-					<OpenContext value={isOpen}>{children}</OpenContext>
+					<OpenContext value={isOpen}>
+						<AnswersTracker open={isOpen} loading={Boolean(loading)}>
+							{children}
+						</AnswersTracker>
+					</OpenContext>
 					{loading !== undefined && (
 						// Next to the field, not inside `Content`: the surface mounts on the keystroke that
 						// starts the request, and a live region that appears already filled in is skipped.
@@ -656,9 +728,12 @@ type EmptyProps = ComponentPropsWithRef<typeof ComboboxPrimitive.Empty>;
  * `loading` it shows nothing: the list is empty because the results have not
  * arrived yet, not because there are none. With no rows to show either, the
  * surface would open as an empty frame, so render placeholder rows inside
- * `Content` for the wait. Once the list starts closing it shows nothing
- * either, so a search that clears its rows as the query drops under
- * `minInputLength` does not flash its message on the way out.
+ * `Content` for the wait. The exception is a request that begins with an
+ * answer with no rows on screen: that message is still the answer, so it stays
+ * through the wait, as rows do, and no placeholder rows should show. Each new
+ * answer with no rows is announced again. Once the list starts closing it
+ * shows nothing either, so a search that clears its rows as the query drops
+ * under `minInputLength` does not flash its message on the way out.
  *
  * @summary Message shown when no item matches the query
  * @dataAttribute {string} data-slot - Always set to "combobox-empty"
@@ -666,13 +741,23 @@ type EmptyProps = ComponentPropsWithRef<typeof ComboboxPrimitive.Empty>;
 export const Empty = ({ className, children, ...props }: EmptyProps) => {
 	const loading = use(LoadingContext);
 	const open = use(OpenContext);
+	const answers = use(AnswersContext);
+	// While a request runs, the message waits with the list only when it was the answer on screen
+	// as the request began. Otherwise the list is empty because the rows have not come back yet, or
+	// were cleared for the request.
+	const holdBack = loading && !answers?.keep;
 
 	return (
 		<ComboboxPrimitive.Empty
 			data-slot="combobox-empty"
 			className={cn(slots.message(), className)}
 			{...props}>
-			{loading || open === false ? null : children}
+			{open === false || holdBack ? null : (
+				// A new text node for each answer: a message that stays through the wait would not
+				// change the live region, and a new answer with no rows would go unannounced. An
+				// answer with rows renders no message, so for those the key changes nothing.
+				<Fragment key={answers?.landings}>{children}</Fragment>
+			)}
 		</ComboboxPrimitive.Empty>
 	);
 };
