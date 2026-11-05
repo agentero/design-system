@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.4s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>6.1s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -4472,13 +4472,13 @@ virtualized?: boolean = false</code></pre>
               
               
               <pre><code>Expected render to be an arrow function or function expression
-  1045 |  */
-  1046 | export const InsidePopoverWithValue: Story = {
-&gt; 1047 | 	render: InsidePopover.render,
+  1069 |  */
+  1070 | export const InsidePopoverWithValue: Story = {
+&gt; 1071 | 	render: InsidePopover.render,
        | 	           ^^^^^^^^^^^^^^^^^^^^
-  1048 | 	play: async ({ canvasElement }) =&gt; {
-  1049 | 		const body = within(document.body);
-  1050 | 		const trigger = within(canvasElement).getByRole(&#39;button&#39;, { name: /filter by state/i });</code></pre>
+  1072 | 	play: async ({ canvasElement }) =&gt; {
+  1073 | 		const body = within(document.body);
+  1074 | 		const trigger = within(canvasElement).getByRole(&#39;button&#39;, { name: /filter by state/i });</code></pre>
             </div>
           
           
@@ -11725,7 +11725,7 @@ percentage: number</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> RadioGroup.Root</h2>
       <div class="badges">
-        <label for="c-33-components-radiogroup-props" class="badge ok as-toggle">8 prop types</label>
+        <label for="c-33-components-radiogroup-props" class="badge ok as-toggle">9 prop types</label>
         
         <label for="c-33-components-radiogroup-stories" class="badge ok as-toggle">12 stories</label>
         
@@ -11758,11 +11758,18 @@ percentage: number</code></pre>
           <div class="note ok">
             <div class="row">
               <span class="ex-name">Prop types <small>(react-component-meta)</small></span>
-              <span class="badge ok">8 prop types</span>
+              <span class="badge ok">9 prop types</span>
             </div>
             <pre><code>Component: src/radio-group/index.ts::RadioGroup</code></pre>
             <pre><code>Props:</code></pre>
             <pre><code>/**
+ * Receives `{ focus }`, which moves focus to the radio Tab would land on.
+ * Pass a form library&#39;s field ref here (react-hook-form&#39;s `field.ref`) so it
+ * can focus the group on a failed submit.
+ */
+controlRef?: Ref&lt;RadioGroupControl&gt; | undefined
+
+/**
  * Initial value for an uncontrolled group. Leave it out to start with nothing selected.
  */
 defaultValue?: string
@@ -11800,9 +11807,10 @@ readOnly?: boolean
 required?: boolean
 
 /**
- * Controlled value of the selected item. `&#39;&#39;` leaves every item unselected.
+ * Controlled value of the selected item. `null` leaves every item unselected; `undefined`
+ * makes the group uncontrolled.
  */
-value?: string</code></pre>
+value?: string | null | undefined</code></pre>
           </div>
         </div>
     
@@ -11957,12 +11965,12 @@ every radio paints the destructive border from it.</div>
               <div>Controlled group whose value is set from outside</div>
               
               <pre><code>const Controlled = () =&gt; {
-    const [plan, setPlan] = useState(&#39;monthly&#39;);
+    const [plan, setPlan] = useState&lt;string | null&gt;(&#39;monthly&#39;);
 
     return (
         &lt;div className=&quot;flex flex-col items-start gap-6&quot;&gt;
             &lt;div className=&quot;flex gap-3&quot;&gt;
-                &lt;Button variant=&quot;secondary&quot; size=&quot;sm&quot; onClick={() =&gt; setPlan(&#39;&#39;)}&gt;
+                &lt;Button variant=&quot;secondary&quot; size=&quot;sm&quot; onClick={() =&gt; setPlan(null)}&gt;
                     Clear
                 &lt;/Button&gt;
                 &lt;Button variant=&quot;secondary&quot; size=&quot;sm&quot; onClick={() =&gt; setPlan(&#39;annual&#39;)}&gt;
@@ -11976,7 +11984,7 @@ every radio paints the destructive border from it.</div>
                     &lt;/RadioGroup.Item&gt;
                 ))}
             &lt;/RadioGroup.Root&gt;
-            &lt;output className=&quot;text-sm&quot;&gt;Selected: {plan || &#39;none&#39;}&lt;/output&gt;
+            &lt;output className=&quot;text-sm&quot;&gt;Selected: {plan ?? &#39;none&#39;}&lt;/output&gt;
         &lt;/div&gt;
     );
 };</code></pre>
@@ -12037,7 +12045,7 @@ would reach.</div>
                     &lt;Field.Root invalid={fieldState.invalid} required&gt;
                         &lt;Field.Label&gt;Payment plan&lt;/Field.Label&gt;
                         &lt;RadioGroup.Root
-                            ref={field.ref}
+                            controlRef={field.ref}
                             value={field.value}
                             onValueChange={field.onChange}
                             onBlur={field.onBlur}&gt;
