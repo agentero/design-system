@@ -1,11 +1,10 @@
 // Radix closes a Modal or Popover on an Escape it catches on the document during capture, before
-// the focused control sees it. An Escape from a combobox, or from the open list of a `Select` (an
-// option, or the list itself, which holds focus when it opens by pointer with nothing picked), is
-// the field's to take first: Base UI stops it when it closes the list or clears the value, and
-// lets it bubble when it has nothing to undo, such as no matches and no `Empty`. So the layer
-// holds the Escape, and closes only if it comes back up unstopped, by sending a fresh Escape from
-// the body that no combobox will claim. It waits on the window, past the document, where Base UI
-// may stop it too.
+// the focused control sees it. An Escape from a combobox is the field's to take first: Base UI
+// (Combobox, Autocomplete) stops it when it closes the list or clears the value, and lets it bubble
+// when it has nothing to undo, such as no matches and no `Empty`. So the layer holds the Escape,
+// and closes only if it comes back up unstopped, by sending a fresh Escape from the body that no
+// combobox will claim. It waits on the window, past the document, where Base UI may stop it too.
+// The open list of a `Select`, an option or the list itself, is held the same way.
 // cmdk never stops it, so a `Command` closes the layer at once.
 // Returns whether the Escape was held, in which case the layer's own handling must not run.
 export const deferEscapeToCombobox = (event: KeyboardEvent) => {

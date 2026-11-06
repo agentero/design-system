@@ -27,7 +27,6 @@ const STATES = [
  * options that should all stay visible, use RadioGroup. `Root` owns the picked
  * value; `Trigger` is the closed field and `Content` the list of `Item`s.
  */
-// What the stories hand to their own code, on top of the root's props: the trigger's look.
 type StoryArgs = SelectRootProps<string> & {
 	/** Control height of the trigger, matching `Input`. */
 	size?: InputSize;
@@ -40,10 +39,9 @@ const meta = {
 	component: Select.Root,
 	tags: ['autodocs'],
 	parameters: {
-		// Room under the trigger for the open list, so it does not cover the docs around it.
 		docs: { story: { height: '320px' } }
 	},
-	// The list takes the trigger's width; 592px is what the marketplace forms give it.
+	// 592px is what the marketplace forms give a field.
 	decorators: [
 		Story => (
 			<div className="w-148 max-w-full p-4">
@@ -113,8 +111,7 @@ const open = async (trigger: HTMLElement) => {
 	return screen.findByRole('listbox');
 };
 
-// A story ends with the list gone: while it is open Base UI keeps focus guards on the page, which
-// the accessibility check run after every story reports.
+// Stories end with the list closed: its focus guards fail the accessibility check.
 const close = async () => {
 	await userEvent.keyboard('{Escape}');
 	await waitFor(() => expect(screen.queryByRole('listbox')).not.toBeInTheDocument());
@@ -450,7 +447,6 @@ export const WithReactHookForm: Story = {
 		const [submitted, setSubmitted] = useState<string | null>(null);
 
 		return (
-			// `noValidate`, as `Form.Root` renders it: the field's validation is the form library's.
 			<form
 				noValidate
 				className="flex w-full flex-col items-start gap-6"

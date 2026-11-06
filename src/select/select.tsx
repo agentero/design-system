@@ -44,8 +44,7 @@ export const selectRecipe = tv({
 			'[&_path]:fill-icon-input-default group-data-popup-open/select-trigger:rotate-180',
 			'group-disabled/select-trigger:[&_path]:fill-icon-input-disable'
 		],
-		// The height cap lives on the surface alone and the list fills it, so a `max-h-*` passed as
-		// `className` shrinks the scrolling area instead of cutting off the last rows.
+		// The cap sits on the surface, so a `max-h-*` from `className` shrinks the list, not clips it.
 		content: [
 			'flex w-(--anchor-width) max-h-[min(18rem,var(--available-height))] flex-col overflow-hidden',
 			'rounded-md border border-border-default-base-primary bg-bg-default-base-primary shadow-lg',
@@ -68,8 +67,6 @@ export const selectRecipe = tv({
 
 const slots = selectRecipe();
 
-// The trigger's element, which `Root` needs to find the form to reset and `Content` the layer to
-// render into, and the trigger's `onBlur`, which `Content` calls when focus leaves the open list.
 type SelectContextValue = {
 	trigger: HTMLElement | null;
 	setTrigger: Dispatch<SetStateAction<HTMLElement | null>>;
@@ -78,8 +75,6 @@ type SelectContextValue = {
 
 const SelectContext = createContext<SelectContextValue | null>(null);
 
-// A Radix layer traps focus and closes on an outside press. Rendered inside it, the list keeps
-// focus on its options and counts as inside.
 const LAYER = '[data-slot=modal-content], [data-slot=popover-content]';
 
 const isInList = (element: EventTarget | null) =>
@@ -141,8 +136,7 @@ export const Root = <Value,>({
 	const [uncontrolledValue, setUncontrolledValue] = useState<Value | null>(defaultValue);
 	const isControlled = value !== undefined;
 
-	// A controlled value dropped back to `undefined` (a form library's reset with no defaults)
-	// clears the selection, rather than showing whatever the select last held on its own.
+	// A form library's reset hands back `undefined`: clear the pick rather than show the last one.
 	const [previousValue, setPreviousValue] = useState(value);
 	if (value !== previousValue) {
 		setPreviousValue(value);
@@ -154,8 +148,7 @@ export const Root = <Value,>({
 		if (!isControlled) setUncontrolledValue(initialValue);
 	};
 
-	// Base UI keeps the value in state and feeds its hidden input from it, so a native reset
-	// changes nothing on screen or in what the form submits.
+	// Base UI ignores a native form reset, so the select listens for it.
 	useEffect(() => {
 		const form = trigger?.closest('form');
 
@@ -166,7 +159,6 @@ export const Root = <Value,>({
 		return () => form.removeEventListener('reset', handleReset);
 	}, [trigger]);
 
-	// Stable between renders, so `Trigger` and `Content` only re-render when the trigger changes.
 	const context = useMemo(() => ({ trigger, setTrigger, triggerBlur }), [trigger]);
 
 	return (
@@ -187,8 +179,7 @@ export const Root = <Value,>({
 };
 Root.displayName = 'Select.Root';
 
-// The native `size` is not a token here; the control height is. `className` is narrowed to a
-// string: Base UI also takes a function of its state, which `cn` cannot merge.
+// `className` is a string only: Base UI also takes a function, which `cn` cannot merge.
 export type SelectTriggerProps = Omit<
 	ComponentPropsWithRef<typeof SelectPrimitive.Trigger>,
 	'children' | 'className'
@@ -237,8 +228,7 @@ export const Trigger = ({
 	const own = mergeProps(
 		{
 			id: field?.controlId,
-			// While the list is open Base UI hides the rest of the page from assistive technology,
-			// label included; a direct reference keeps the trigger named.
+			// Base UI hides the label from assistive technology while the list is open.
 			'aria-labelledby': field && props['aria-label'] === undefined ? field.labelId : undefined,
 			'aria-describedby': field?.describedBy,
 			'aria-invalid': field?.invalid || undefined
@@ -246,15 +236,13 @@ export const Trigger = ({
 		props
 	);
 	const { onBlur } = own;
-	// The list's blur event stands in for the trigger's; a form library reads neither's target.
 	if (context) context.triggerBlur.current = onBlur as SelectContextValue['triggerBlur']['current'];
 
 	return (
 		<SelectPrimitive.Trigger
 			{...own}
 			ref={mergedRef}
-			// Opening moves focus into the list. The field is still being used, so that blur is held
-			// back; `Content` reports it once focus leaves the list for anything but the trigger.
+			// Focus moving into the list is not a blur; `Content` reports it once focus leaves both.
 			onBlur={event => {
 				if (!isInList(event.relatedTarget)) onBlur?.(event);
 			}}
@@ -316,7 +304,7 @@ export const Content = ({
 	const field = useFieldContext();
 	const context = use(SelectContext);
 	const trigger = context?.trigger;
-	// Base UI ships the listbox unnamed. Not the trigger's id: that resolves to the picked value.
+	// Base UI leaves the listbox unnamed; the trigger's id would name it after the picked value.
 	const labelledBy = labelledByProp ?? (labelProp !== undefined ? undefined : field?.labelId);
 	const label = labelProp ?? (labelledBy !== undefined ? undefined : 'Options');
 	const layer = trigger?.closest<HTMLElement>(LAYER) ?? undefined;
@@ -326,15 +314,14 @@ export const Content = ({
 	return (
 		<SelectPrimitive.Portal container={layer}>
 			<SelectPrimitive.Positioner
-				// Opens below the trigger like every other surface, instead of over it, macOS style.
+				// Below the trigger like every other surface, not over it.
 				alignItemWithTrigger={false}
 				side={side}
 				align={align}
 				sideOffset={sideOffset}
 				alignOffset={alignOffset}
 				collisionPadding={collisionPadding}
-				// A Radix modal (`Modal`) sets `pointer-events: none` on the body and re-enables only its
-				// own layers; the surface portals to the body, so it re-enables itself the same way.
+				// `Modal` sets `pointer-events: none` on the body, where the surface may portal.
 				className="isolate z-(--z-index-top-layer) pointer-events-auto">
 				<SelectPrimitive.Popup
 					{...props}
