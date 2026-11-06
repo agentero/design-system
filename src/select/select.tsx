@@ -187,8 +187,8 @@ export const Root = <Value,>({
 };
 Root.displayName = 'Select.Root';
 
-// The native `size` is not a token here; the control height is. `className` is narrowed to a string:
-// Base UI also takes a function of its state, which `cn` cannot merge.
+// The native `size` is not a token here; the control height is. `className` is narrowed to a
+// string: Base UI also takes a function of its state, which `cn` cannot merge.
 export type SelectTriggerProps = Omit<
 	ComponentPropsWithRef<typeof SelectPrimitive.Trigger>,
 	'children' | 'className'
@@ -239,7 +239,7 @@ export const Trigger = ({
 			id: field?.controlId,
 			// While the list is open Base UI hides the rest of the page from assistive technology,
 			// label included; a direct reference keeps the trigger named.
-			'aria-labelledby': field && !props['aria-label'] ? field.labelId : undefined,
+			'aria-labelledby': field && props['aria-label'] === undefined ? field.labelId : undefined,
 			'aria-describedby': field?.describedBy,
 			'aria-invalid': field?.invalid || undefined
 		},
@@ -317,8 +317,8 @@ export const Content = ({
 	const context = use(SelectContext);
 	const trigger = context?.trigger;
 	// Base UI ships the listbox unnamed. Not the trigger's id: that resolves to the picked value.
-	const labelledBy = labelledByProp ?? (labelProp ? undefined : field?.labelId);
-	const label = labelProp ?? (labelledBy ? undefined : 'Options');
+	const labelledBy = labelledByProp ?? (labelProp !== undefined ? undefined : field?.labelId);
+	const label = labelProp ?? (labelledBy !== undefined ? undefined : 'Options');
 	const layer = trigger?.closest<HTMLElement>(LAYER) ?? undefined;
 	// Portalled away from the trigger, the list would lose a `dir` set around it.
 	const dir = trigger ? getComputedStyle(trigger).direction : undefined;
@@ -337,6 +337,7 @@ export const Content = ({
 				// own layers; the surface portals to the body, so it re-enables itself the same way.
 				className="isolate z-(--z-index-top-layer) pointer-events-auto">
 				<SelectPrimitive.Popup
+					{...props}
 					data-slot="select-content"
 					dir={dir}
 					onBlur={event => {
@@ -345,8 +346,7 @@ export const Content = ({
 						if (isInList(next) || next === trigger) return;
 						context?.triggerBlur.current?.(event);
 					}}
-					className={cn(slots.content(), className)}
-					{...props}>
+					className={cn(slots.content(), className)}>
 					<SelectPrimitive.List
 						data-slot="select-list"
 						aria-label={label}
@@ -381,7 +381,7 @@ export type SelectItemProps = Omit<
  * @dataAttribute {string} data-highlighted - Present on the row under the pointer or the keyboard
  */
 export const Item = ({ className, children, ...props }: SelectItemProps) => (
-	<SelectPrimitive.Item data-slot="select-item" className={cn(slots.item(), className)} {...props}>
+	<SelectPrimitive.Item {...props} data-slot="select-item" className={cn(slots.item(), className)}>
 		<SelectPrimitive.ItemIndicator
 			keepMounted
 			data-slot="select-item-indicator"

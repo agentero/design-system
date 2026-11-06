@@ -4,9 +4,10 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Controller, useForm } from 'react-hook-form';
 import { expect, fn, screen, userEvent, waitFor, within } from 'storybook/test';
 
-import { Select } from '.';
+import { Select, type SelectRootProps } from '.';
 import { Button } from '../button';
 import { Field } from '../field';
+import type { InputSize } from '../input';
 import { Modal } from '../modal';
 import { Popover } from '../popover';
 
@@ -19,7 +20,21 @@ const STATES = [
 	{ value: 'TX', label: 'Texas' }
 ];
 
-/** `Root` owns the picked value; `Trigger` is the closed field and `Content` the list of `Item`s. */
+/**
+ * Select is a button that opens a list of options and shows the one picked.
+ * Use it for a pick from a short, known list, where typing would add nothing.
+ * For a long list or one the user searches, use Combobox; for a handful of
+ * options that should all stay visible, use RadioGroup. `Root` owns the picked
+ * value; `Trigger` is the closed field and `Content` the list of `Item`s.
+ */
+// What the stories hand to their own code, on top of the root's props: the trigger's look.
+type StoryArgs = SelectRootProps<string> & {
+	/** Control height of the trigger, matching `Input`. */
+	size?: InputSize;
+	/** Text the trigger shows while nothing is picked. */
+	placeholder?: string;
+};
+
 const meta = {
 	title: 'Components/Select',
 	component: Select.Root,
@@ -37,6 +52,15 @@ const meta = {
 		)
 	],
 	argTypes: {
+		size: {
+			control: 'inline-radio',
+			options: ['sm', 'md', 'lg'],
+			description: 'Control height of the trigger, matching `Input`. Set on `Select.Trigger`.'
+		},
+		placeholder: {
+			control: 'text',
+			description: 'Text the trigger shows while nothing is picked. Set on `Select.Trigger`.'
+		},
 		items: {
 			control: 'object',
 			description:
@@ -62,11 +86,13 @@ const meta = {
 		}
 	},
 	args: {
-		items: STATES
+		items: STATES,
+		size: 'md',
+		placeholder: 'Select a state'
 	},
-	render: ({ items, ...args }) => (
+	render: ({ items, size, placeholder, ...args }) => (
 		<Select.Root {...args} items={items}>
-			<Select.Trigger aria-label="State" placeholder="Select a state" />
+			<Select.Trigger aria-label="State" size={size} placeholder={placeholder} />
 			<Select.Content>
 				{(items as typeof STATES).map(({ value, label }) => (
 					<Select.Item key={value} value={value}>
@@ -76,7 +102,7 @@ const meta = {
 			</Select.Content>
 		</Select.Root>
 	)
-} satisfies Meta<typeof Select.Root<string>>;
+} satisfies Meta<StoryArgs>;
 
 export default meta;
 
@@ -278,6 +304,45 @@ export const ReadOnly: Story = {
 		await expect(trigger).toHaveTextContent('California');
 		await expect(args.onValueChange).not.toHaveBeenCalled();
 		await close();
+	}
+};
+
+/**
+ * `aria-invalid` on the trigger paints the destructive border, and
+ * `aria-describedby` points at the message. Inside a `Field.Root`, `invalid`
+ * on the field sets both.
+ *
+ * @summary Failed validation on the trigger
+ */
+export const Invalid: Story = {
+	render: () => (
+		<div className="flex w-full flex-col gap-2">
+			<Select.Root items={STATES}>
+				<Select.Trigger
+					aria-label="State"
+					aria-invalid
+					aria-describedby="state-error"
+					placeholder="Select a state"
+				/>
+				<Select.Content>
+					{STATES.map(({ value, label }) => (
+						<Select.Item key={value} value={value}>
+							{label}
+						</Select.Item>
+					))}
+				</Select.Content>
+			</Select.Root>
+			<p id="state-error" className="text-sm text-text-input-destructive">
+				Choose a state.
+			</p>
+		</div>
+	),
+	play: async ({ canvasElement }) => {
+		const trigger = within(canvasElement).getByRole('combobox', { name: 'State' });
+
+		await expect(trigger).toHaveAttribute('aria-invalid', 'true');
+		await expect(trigger).toHaveAccessibleDescription('Choose a state.');
+		await expect(trigger).toHaveStyle({ borderColor: 'rgb(217, 38, 38)' });
 	}
 };
 
@@ -735,6 +800,46 @@ export const ResetToUndefined: Story = {
 
 		await userEvent.click(canvas.getByRole('button', { name: 'Reset form' }));
 		await expect(trigger).toHaveTextContent('Select a state');
+	}
+};
+
+/**
+ * `aria-label` and `disabled={false}` on the select win over the field. Its own
+ * `aria-describedby` joins the field's description instead of replacing it.
+ *
+ * @summary Own props override the Field wiring
+ */
+export const InsideFieldOverridden: Story = {
+	tags: ['!dev', '!autodocs', '!manifest'],
+	render: () => (
+		<Field.Root disabled>
+			<Field.Label>State</Field.Label>
+			<Select.Root items={STATES} disabled={false}>
+				<Select.Trigger
+					aria-label="Risk state"
+					aria-describedby="state-note"
+					placeholder="Select a state"
+				/>
+				<Select.Content>
+					{STATES.map(({ value, label }) => (
+						<Select.Item key={value} value={value}>
+							{label}
+						</Select.Item>
+					))}
+				</Select.Content>
+			</Select.Root>
+			<Field.Description>Where the risk is located.</Field.Description>
+			<p id="state-note">Changing it requotes every carrier.</p>
+		</Field.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const trigger = within(canvasElement).getByRole('combobox', { name: 'Risk state' });
+
+		await expect(trigger).not.toHaveAttribute('aria-labelledby');
+		await expect(trigger).toHaveAccessibleDescription(
+			'Where the risk is located. Changing it requotes every carrier.'
+		);
+		await expect(trigger).toBeEnabled();
 	}
 };
 
