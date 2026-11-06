@@ -2336,8 +2336,8 @@
         {
           "id": "components-button--legacy-filled-icon",
           "name": "Legacy Filled Icon",
-          "snippet": "const LegacyFilledIcon = () => (\n    <Stack>\n        {NON_LINK_VARIANTS.map(variant => (\n            <Row key={variant}>\n                <Button variant={variant}>\n                    <PlusIcon />\n                    lucide\n                </Button>\n                <Button variant={variant}>\n                    <LegacyBarePathIcon />\n                    bare path\n                </Button>\n                <Button variant={variant}>\n                    <LegacyHardcodedFillIcon />\n                    hardcoded fill\n                </Button>\n            </Row>\n        ))}\n    </Stack>\n);",
-          "description": "Test only — hidden from the sidebar and the docs page (`!dev`, `!autodocs`),\nso every visible story stays on lucide. Consumers still pass filled Material\nglyphs from `@agentero/icons`, in two shapes a stroke icon does not have: a\n`<path>` with no `fill` at all (black unless the recipe paints it) and a\n`<path>` carrying its own hardcoded `fill`. Both must land on the same token\nas a lucide icon in every variant — this run is what catches\n`[&_svg:not([fill=none])]:fill-current` and `[&_svg_path[fill]]:fill-current`\nregressing.",
+          "snippet": "const LegacyFilledIcon = () => (\n    <Stack>\n        {NON_LINK_VARIANTS.map(variant => (\n            <Row key={variant}>\n                <Button variant={variant}>\n                    <PlusIcon />\n                    lucide\n                </Button>\n                <Button variant={variant}>\n                    <LegacyBarePathIcon />\n                    bare path\n                </Button>\n                <Button variant={variant}>\n                    <LegacyHardcodedFillIcon />\n                    hardcoded fill\n                </Button>\n                <Button variant={variant}>\n                    <LegacyMaskedIcon />\n                    masked\n                </Button>\n            </Row>\n        ))}\n    </Stack>\n);",
+          "description": "Test only — hidden from the sidebar and the docs page (`!dev`, `!autodocs`),\nso every visible story stays on lucide. Consumers still pass filled Material\nglyphs from `@agentero/icons`, in shapes a stroke icon does not have: a\n`<path>` with no `fill` at all (black unless the recipe paints it), a `<path>`\ncarrying its own hardcoded `fill`, and a `fill=\"none\"` mask path in front of\nthe glyph that must stay transparent. All must land on the button's color like\na lucide icon in every variant — this run is what catches the two `:where()`\ncompatibility rules regressing.",
           "summary": "Legacy filled icons land on the same token as lucide ones"
         },
         {
@@ -8022,7 +8022,7 @@
           "id": "components-inputgroup--legacy-filled-icon",
           "name": "Legacy Filled Icon",
           "snippet": "const LegacyFilledIcon = () => (\n    <div className=\"flex flex-col gap-2\">\n        {[false, true].map(disabled =>\n            [SearchIcon, LegacyBarePathIcon, LegacyHardcodedFillIcon].map((Icon, index) => (\n                <InputGroup.Root key={`${disabled}-${index}`}>\n                    <InputGroup.Addon>\n                        <Icon />\n                    </InputGroup.Addon>\n                    <Input disabled={disabled} placeholder=\"Search agencies\" aria-label=\"Search agencies\" />\n                </InputGroup.Root>\n            ))\n        )}\n    </div>\n);",
-          "description": "Test only — hidden from the sidebar and the docs page (`!dev`, `!autodocs`),\nso every visible story stays on lucide. Consumers still put filled glyphs from\n`@agentero/icons` in an addon (a search field's magnifier), in two shapes a\nstroke icon does not have. Both must take the addon's token, enabled and\ndisabled, exactly like a lucide icon does — this run is what catches the\naddon's `[&_svg:not([fill=none])]:fill-current` and\n`[&_svg_path[fill]]:fill-current` regressing."
+          "description": "Test only — hidden from the sidebar and the docs page (`!dev`, `!autodocs`),\nso every visible story stays on lucide. Consumers still put filled glyphs from\n`@agentero/icons` in an addon (a search field's magnifier), in two shapes a\nstroke icon does not have. Both must take the addon's token, enabled and\ndisabled, exactly like a lucide icon does — this run is what catches the\naddon's two `:where()` compatibility rules regressing."
         }
       ],
       "import": "import {\n    Button,\n    Divider,\n    DropdownMenu,\n    Field,\n    FieldText,\n    Input,\n    InputGroup,\n    Label,\n    Tag,\n} from \"@agentero/design-system\";\nimport { ChevronDownIcon, MailIcon, SearchIcon } from \"lucide-react\";"
@@ -11814,12 +11814,12 @@
         {
           "id": "components-toast--custom-icon",
           "name": "Custom Icon",
-          "snippet": "const CustomIcon = () => (\n    <Button\n        variant=\"secondary\"\n        onClick={() =>\n            toast.success('Sync started', {\n                description: 'Data sync is in progress.',\n                icon: (\n                    <svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" fill=\"currentColor\" aria-hidden>\n                        <path d=\"M12 4V1L8 5l4 4V6c3.3 0 6 2.7 6 6 0 1-.3 2-.7 2.8l1.5 1.5C19.5 15 20 13.6 20 12c0-4.4-3.6-8-8-8zm0 14c-3.3 0-6-2.7-6-6 0-1 .3-2 .7-2.8L5.2 7.7C4.5 9 4 10.4 4 12c0 4.4 3.6 8 8 8v3l4-4-4-4v3z\" />\n                    </svg>\n                )\n            })\n        }>\n        Show toast with custom icon\n    </Button>\n);",
+          "snippet": "const CustomIcon = () => (\n    <Button\n        variant=\"secondary\"\n        onClick={() =>\n            toast.success('Sync started', {\n                description: 'Data sync is in progress.',\n                icon: <RefreshCwIcon />\n            })\n        }>\n        Show toast with custom icon\n    </Button>\n);",
           "description": "Custom `icon` override. Pass any ReactNode as `icon` to replace the\ntype-based default — helpful when the toast reflects a domain-specific\naction (e.g., a sync icon for a sync-in-progress toast).",
           "summary": "Override the default type-based icon"
         }
       ],
-      "import": "import { Button, Toast } from \"@agentero/design-system\";"
+      "import": "import { Button, Toast } from \"@agentero/design-system\";\nimport { RefreshCwIcon } from \"lucide-react\";"
     },
     "components-tooltip": {
       "id": "components-tooltip",
@@ -12252,6 +12252,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4494
+    "durationMs": 4380
   }
 }
