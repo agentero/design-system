@@ -278,7 +278,7 @@ export const Item = ({ className, ...props }: ItemProps) => (
 			'data-disabled:text-text-default-disable-primary',
 			'data-disabled:active:bg-bg-default-base-primary',
 			'[&>svg]:size-5',
-			'[&_svg]:text-icon-default-base-tertiary [&_svg:not([fill=none])]:fill-current [&_svg_path[fill]]:fill-current',
+			'[&_svg]:text-icon-default-base-tertiary [&_:where(svg:not([fill=none]))]:fill-current [&_:where(svg_path[fill]:not([fill=none]))]:fill-current',
 			className
 		)}
 		{...props}
@@ -434,7 +434,7 @@ export const SubTrigger = ({ className, children, ...props }: SubTriggerProps) =
 			'data-disabled:pointer-events-none data-disabled:cursor-not-allowed',
 			'data-disabled:text-text-default-disable-primary',
 			'[&>svg]:size-5',
-			'[&_svg]:text-icon-default-base-tertiary [&_svg:not([fill=none])]:fill-current [&_svg_path[fill]]:fill-current',
+			'[&_svg]:text-icon-default-base-tertiary [&_:where(svg:not([fill=none]))]:fill-current [&_:where(svg_path[fill]:not([fill=none]))]:fill-current',
 			className
 		)}
 		{...props}>

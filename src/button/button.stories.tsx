@@ -25,6 +25,15 @@ const LegacyHardcodedFillIcon = (props: SVGProps<SVGSVGElement>) => (
 	</svg>
 );
 
+// The other shape in `@agentero/icons`: a painted root, a transparent `fill="none"`
+// mask path in front and the bare glyph path behind it.
+const LegacyMaskedIcon = (props: SVGProps<SVGSVGElement>) => (
+	<svg viewBox="0 0 24 24" fill="#000000" xmlns="http://www.w3.org/2000/svg" aria-hidden {...props}>
+		<path d="M0 0h24v24H0z" fill="none" />
+		<path d="M11.25 12.75H6.25a.75.75 0 0 1 0-1.5h5v-5a.75.75 0 0 1 1.5 0v5h5a.75.75 0 0 1 0 1.5h-5v5a.75.75 0 0 1-1.5 0z" />
+	</svg>
+);
+
 const TEXT = 'Button';
 
 const VARIANTS = ['primary', 'secondary', 'tertiary', 'ghost', 'link'] as const;
@@ -191,25 +200,27 @@ export const WithIcons: Story = {
 type Paint = ReturnType<typeof paintedWith>;
 
 const paintedWith = (svg: SVGElement) => {
-	const path = svg.querySelector('path') as SVGPathElement;
+	const path = svg.querySelector('path:not([fill=none])') as SVGPathElement;
+	const mask = svg.querySelector('path[fill=none]');
 	return {
 		color: getComputedStyle(svg).color,
 		svgFill: getComputedStyle(svg).fill,
 		pathFill: getComputedStyle(path).fill,
 		pathStroke: getComputedStyle(path).stroke,
-		strokeWidth: getComputedStyle(path).strokeWidth
+		strokeWidth: getComputedStyle(path).strokeWidth,
+		maskFill: mask ? getComputedStyle(mask).fill : undefined
 	};
 };
 
 /**
  * Test only — hidden from the sidebar and the docs page (`!dev`, `!autodocs`),
  * so every visible story stays on lucide. Consumers still pass filled Material
- * glyphs from `@agentero/icons`, in two shapes a stroke icon does not have: a
- * `<path>` with no `fill` at all (black unless the recipe paints it) and a
- * `<path>` carrying its own hardcoded `fill`. Both must land on the same token
- * as a lucide icon in every variant — this run is what catches
- * `[&_svg:not([fill=none])]:fill-current` and `[&_svg_path[fill]]:fill-current`
- * regressing.
+ * glyphs from `@agentero/icons`, in shapes a stroke icon does not have: a
+ * `<path>` with no `fill` at all (black unless the recipe paints it), a `<path>`
+ * carrying its own hardcoded `fill`, and a `fill="none"` mask path in front of
+ * the glyph that must stay transparent. All must land on the button's color like
+ * a lucide icon in every variant — this run is what catches the two `:where()`
+ * compatibility rules regressing.
  *
  * @summary Legacy filled icons land on the same token as lucide ones
  */
@@ -231,18 +242,28 @@ export const LegacyFilledIcon: Story = {
 						<LegacyHardcodedFillIcon />
 						hardcoded fill
 					</Button>
+					<Button variant={variant}>
+						<LegacyMaskedIcon />
+						masked
+					</Button>
 				</Row>
 			))}
 		</Stack>
 	),
 	play: async ({ canvasElement }) => {
 		const icons = [...canvasElement.querySelectorAll<SVGElement>('button svg')].map(paintedWith);
-		await expect(icons).toHaveLength(NON_LINK_VARIANTS.length * 3);
-		for (let i = 0; i < icons.length; i += 3) {
-			const [lucide, barePath, hardcoded] = icons.slice(i, i + 3) as [Paint, Paint, Paint];
-			// One variant per row: the three icons share the variant's icon token…
+		await expect(icons).toHaveLength(NON_LINK_VARIANTS.length * 4);
+		for (let i = 0; i < icons.length; i += 4) {
+			const [lucide, barePath, hardcoded, masked] = icons.slice(i, i + 4) as [
+				Paint,
+				Paint,
+				Paint,
+				Paint
+			];
+			// One variant per row: the four icons share the button's color…
 			await expect(barePath.color).toBe(lucide.color);
 			await expect(hardcoded.color).toBe(lucide.color);
+			await expect(masked.color).toBe(lucide.color);
 			// …lucide by stroke, never filled; the legacy shapes by fill.
 			await expect(lucide.pathStroke).toBe(lucide.color);
 			await expect(lucide.pathFill).toBe('none');
@@ -250,6 +271,9 @@ export const LegacyFilledIcon: Story = {
 			await expect(lucide.strokeWidth).toBe('1.5px');
 			await expect(barePath.pathFill).toBe(lucide.color);
 			await expect(hardcoded.pathFill).toBe(lucide.color);
+			await expect(masked.pathFill).toBe(lucide.color);
+			// …and the mask in front of a legacy glyph stays transparent.
+			await expect(masked.maskFill).toBe('none');
 		}
 	}
 };

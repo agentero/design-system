@@ -34,9 +34,9 @@ export const paginationRecipe = tv({
 			'disabled:pointer-events-none disabled:opacity-30',
 			'focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-[0.0625rem] focus-visible:outline-focus-ring-button-primary',
 			'hover:not-aria-[current=page]:border-border-button-secondary-enable hover:not-aria-[current=page]:shadow-xs',
-			'[&_svg]:size-5 [&_svg:not([fill=none])]:fill-current [&_svg_path[fill]]:fill-current'
+			'[&_svg]:size-5 [&_:where(svg:not([fill=none]))]:fill-current [&_:where(svg_path[fill]:not([fill=none]))]:fill-current'
 		],
-		dots: 'inline-flex size-8 items-center justify-center text-text-button-ghost-enable [&_svg]:size-4 [&_svg:not([fill=none])]:fill-current [&_svg_path[fill]]:fill-current'
+		dots: 'inline-flex size-8 items-center justify-center text-text-button-ghost-enable [&_svg]:size-4 [&_:where(svg:not([fill=none]))]:fill-current [&_:where(svg_path[fill]:not([fill=none]))]:fill-current'
 	},
 	variants: {
 		active: {

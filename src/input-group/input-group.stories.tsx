@@ -571,8 +571,7 @@ const paintedWith = (svg: SVGElement) => {
  * `@agentero/icons` in an addon (a search field's magnifier), in two shapes a
  * stroke icon does not have. Both must take the addon's token, enabled and
  * disabled, exactly like a lucide icon does — this run is what catches the
- * addon's `[&_svg:not([fill=none])]:fill-current` and
- * `[&_svg_path[fill]]:fill-current` regressing.
+ * addon's two `:where()` compatibility rules regressing.
  */
 export const LegacyFilledIcon: Story = {
 	tags: ['!dev', '!autodocs'],

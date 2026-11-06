@@ -31,7 +31,9 @@ export const avatarRecipe = tv({
 		],
 		fallback: [
 			'uppercase',
-			'[&_svg]:size-[1.5em] [&_svg]:text-neutral-500 [&_svg:not([fill=none])]:fill-current [&_svg_path[fill]]:fill-current'
+			// Only the bare-path rule: a fallback is often a logo whose paths carry their own
+			// brand fills, and those must stay as drawn.
+			'[&_svg]:size-[1.5em] [&_svg]:text-neutral-500 [&_:where(svg:not([fill=none]))]:fill-current'
 		]
 	},
 	variants: {

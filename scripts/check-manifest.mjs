@@ -53,6 +53,9 @@ for (const [id, entry] of entries) {
 	if (!entry.import?.trim()) failures.push(`${id}: no import line`);
 }
 
+const checked = entries.filter(([id]) => isComponentEntry(id)).length;
+if (checked === 0) failures.push('the manifest carries no component entries (components-*)');
+
 if (failures.length > 0) {
 	console.error(`✗ ${MANIFEST} is incomplete:\n`);
 	for (const failure of failures) console.error(`  · ${failure}`);
@@ -63,5 +66,4 @@ if (failures.length > 0) {
 	process.exit(1);
 }
 
-const checked = entries.filter(([id]) => isComponentEntry(id)).length;
 console.log(`✓ ${checked} manifest entries carry a description, a @summary and props`);

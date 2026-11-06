@@ -48,7 +48,7 @@ export const alertRecipe = tv({
 		title: 'font-semibold',
 		paragraph: '',
 		content: 'flex flex-col h-full self-start',
-		icon: 'shrink-0 [&:not([fill=none])]:fill-current [&_path[fill]]:fill-current'
+		icon: 'shrink-0 [&:where(:not([fill=none]))]:fill-current [&_:where(path[fill]:not([fill=none]))]:fill-current'
 	},
 	variants: {
 		color: {
@@ -566,9 +566,9 @@ export const Alert = ({
 							size={size}
 							iconOnly
 							aria-label="Dismiss"
-							// The X follows the alert's color, not the ghost icon token — the
-							// second class outranks Button's own `[&_svg]:text-*` in the merge.
-							className="text-current [&_svg]:text-current"
+							// The X follows the alert's color: `text-current` replaces the ghost text
+							// token in the merge and the icon inherits it.
+							className="text-current"
 							onClick={onDismiss}>
 							<XIcon />
 						</Button>
