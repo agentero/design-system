@@ -875,6 +875,12 @@
 		--text-underline-offset: 0.3em;
 	}
 
+	/* The Figma library draws every lucide icon at a 1.5 stroke; lucide ships 2. CSS beats the
+	 * `stroke-width` attribute lucide writes, and a `stroke-*` utility on one icon beats this layer. */
+	svg.lucide {
+		stroke-width: 1.5;
+	}
+
 	@keyframes fadeIn {
 		from {
 			opacity: 0;

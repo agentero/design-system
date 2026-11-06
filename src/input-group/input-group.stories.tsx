@@ -1,12 +1,11 @@
 import { type ReactNode, type SVGProps, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { ChevronDownIcon, MailIcon, SearchIcon } from 'lucide-react';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { InputGroup } from '.';
-import { IconKeyboardArrowDown } from '../accordion/icons';
 import { Button } from '../button';
-import { IconSearch } from '../command/icons';
 import { Divider } from '../divider';
 import { DropdownMenu } from '../dropdown-menu';
 import { Field } from '../field';
@@ -57,7 +56,7 @@ export const Default: Story = {
 	render: () => (
 		<InputGroup.Root>
 			<InputGroup.Addon>
-				<IconSearch />
+				<SearchIcon />
 			</InputGroup.Addon>
 			<Input type="search" placeholder="Search agencies" aria-label="Search agencies" />
 		</InputGroup.Root>
@@ -163,7 +162,7 @@ export const WithTags: Story = {
 			</InputGroup.Root>
 			<InputGroup.Root>
 				<InputGroup.Addon>
-					<IconSearch />
+					<SearchIcon />
 				</InputGroup.Addon>
 				<Input placeholder="Describe your filters" aria-label="Describe your filters" />
 				<InputGroup.Addon>
@@ -245,7 +244,7 @@ export const Disabled: Story = {
 	render: () => (
 		<InputGroup.Root>
 			<InputGroup.Addon>
-				<IconSearch />
+				<SearchIcon />
 			</InputGroup.Addon>
 			<Input placeholder="Search agencies" aria-label="Search agencies" disabled />
 			<InputGroup.Text>USD</InputGroup.Text>
@@ -301,7 +300,7 @@ export const AllSizes: Story = {
 			{SIZES.map(size => (
 				<InputGroup.Root key={size}>
 					<InputGroup.Addon>
-						<IconSearch />
+						<SearchIcon />
 					</InputGroup.Addon>
 					<Input size={size} placeholder={`Size ${size}`} aria-label={`Size ${size}`} />
 				</InputGroup.Root>
@@ -348,18 +347,6 @@ export const InsideFieldText: Story = {
 	}
 };
 
-const IconMail = (props: SVGProps<SVGSVGElement>) => (
-	<svg
-		width="24"
-		height="24"
-		viewBox="0 0 24 24"
-		fill="none"
-		xmlns="http://www.w3.org/2000/svg"
-		{...props}>
-		<path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z" />
-	</svg>
-);
-
 type FieldStatesProps = {
 	label: ReactNode;
 	tooltip?: ReactNode;
@@ -398,7 +385,7 @@ export const EmailField: Story = {
 		<FieldStates label="Email" required error="Enter a valid email address.">
 			<InputGroup.Root>
 				<InputGroup.Addon>
-					<IconMail />
+					<MailIcon />
 				</InputGroup.Addon>
 				<Input type="email" placeholder="me@email.com" />
 			</InputGroup.Root>
@@ -431,7 +418,7 @@ const PriceInput = () => {
 					<DropdownMenu.Trigger asChild>
 						<Button variant="ghost" size="sm" aria-label={`Currency: ${currency}`}>
 							{currency}
-							<IconKeyboardArrowDown />
+							<ChevronDownIcon />
 						</Button>
 					</DropdownMenu.Trigger>
 					<DropdownMenu.Portal>
@@ -495,7 +482,7 @@ const PhoneInput = () => {
 					<DropdownMenu.Trigger asChild>
 						<Button variant="ghost" size="sm" aria-label={`Country code: ${code}`}>
 							{code}
-							<IconKeyboardArrowDown />
+							<ChevronDownIcon />
 						</Button>
 					</DropdownMenu.Trigger>
 					<DropdownMenu.Portal>
@@ -543,5 +530,72 @@ export const PhoneField: Story = {
 		await expect(getComputedStyle(trigger).borderTopLeftRadius).toBe(
 			getComputedStyle(group).borderTopLeftRadius
 		);
+	}
+};
+
+const LegacyBarePathIcon = (props: SVGProps<SVGSVGElement>) => (
+	<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden {...props}>
+		<path d="M9.5 16a6.5 6.5 0 1 1 5.16-2.55l5.2 5.2a.75.75 0 0 1-1.06 1.06l-5.2-5.2A6.47 6.47 0 0 1 9.5 16m0-1.5a5 5 0 1 0 0-10 5 5 0 0 0 0 10" />
+	</svg>
+);
+
+const LegacyHardcodedFillIcon = (props: SVGProps<SVGSVGElement>) => (
+	<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden {...props}>
+		<path
+			fill="#434856"
+			d="M9.5 16a6.5 6.5 0 1 1 5.16-2.55l5.2 5.2a.75.75 0 0 1-1.06 1.06l-5.2-5.2A6.47 6.47 0 0 1 9.5 16m0-1.5a5 5 0 1 0 0-10 5 5 0 0 0 0 10"
+		/>
+	</svg>
+);
+
+type Paint = ReturnType<typeof paintedWith>;
+
+const paintedWith = (svg: SVGElement) => {
+	const shape = svg.querySelector('path') as SVGPathElement;
+	return {
+		color: getComputedStyle(svg).color,
+		pathFill: getComputedStyle(shape).fill,
+		pathStroke: getComputedStyle(shape).stroke
+	};
+};
+
+/**
+ * Test only, hidden from the sidebar and the docs (`!dev`, `!autodocs`). A legacy
+ * glyph in an addon must take the addon's token, enabled and disabled, like a
+ * lucide icon does.
+ */
+export const LegacyFilledIcon: Story = {
+	tags: ['!dev', '!autodocs'],
+	render: () => (
+		<div className="flex flex-col gap-2">
+			{[false, true].map(disabled =>
+				[SearchIcon, LegacyBarePathIcon, LegacyHardcodedFillIcon].map((Icon, index) => (
+					<InputGroup.Root key={`${disabled}-${index}`}>
+						<InputGroup.Addon>
+							<Icon />
+						</InputGroup.Addon>
+						<Input disabled={disabled} placeholder="Search agencies" aria-label="Search agencies" />
+					</InputGroup.Root>
+				))
+			)}
+		</div>
+	),
+	play: async ({ canvasElement }) => {
+		const icons = [
+			...canvasElement.querySelectorAll<SVGElement>('[data-slot="input-group-addon"] svg')
+		].map(paintedWith);
+		await expect(icons).toHaveLength(6);
+		const enabled = icons.slice(0, 3) as [Paint, Paint, Paint];
+		const disabled = icons.slice(3) as [Paint, Paint, Paint];
+		// Disabling the input repaints the addon with the disabled token.
+		await expect(disabled[0].color).not.toBe(enabled[0].color);
+		for (const [lucide, barePath, hardcoded] of [enabled, disabled]) {
+			await expect(barePath.color).toBe(lucide.color);
+			await expect(hardcoded.color).toBe(lucide.color);
+			await expect(lucide.pathStroke).toBe(lucide.color);
+			await expect(lucide.pathFill).toBe('none');
+			await expect(barePath.pathFill).toBe(lucide.color);
+			await expect(hardcoded.pathFill).toBe(lucide.color);
+		}
 	}
 };

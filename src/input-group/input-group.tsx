@@ -49,8 +49,11 @@ export const inputGroupRecipe = tv({
 		],
 		addon: [
 			'flex h-auto cursor-text items-center justify-center',
-			'*:[svg]:-mx-1 *:[svg]:size-6 [&_path]:fill-icon-input-default',
-			'group-has-[input:disabled,textarea:disabled]/input-group:[&_path]:fill-icon-input-disable'
+			// 20px with -2px each side keeps the 16px footprint the 24px Material glyph had at -4px,
+			// so the input text does not move.
+			'*:[svg]:-mx-0.5 *:[svg]:size-5 *:[svg]:text-icon-input-default',
+			'[&_:where(svg:not([fill=none]))]:fill-current [&_:where(svg_path[fill]:not([fill=none]))]:fill-current',
+			'group-has-[input:disabled,textarea:disabled]/input-group:*:[svg]:text-icon-input-disable'
 		],
 		text: [
 			'flex items-center text-sm text-text-input-placeholder',

@@ -29,25 +29,29 @@ export const avatarRecipe = tv({
 			// Radix mounts the <img> once it has loaded, so @starting-style is its entrance.
 			'data-loaded-late:transition-opacity data-loaded-late:duration-200 data-loaded-late:starting:opacity-0'
 		],
-		fallback: ['uppercase', '[&_svg]:size-[1.5em] [&_svg]:fill-neutral-500']
+		fallback: [
+			'uppercase',
+			// Only the bare-path rule: a fallback is often a logo whose paths keep their brand fills.
+			'[&_svg]:size-[1.5em] [&_svg]:text-neutral-500 [&_:where(svg:not([fill=none]))]:fill-current'
+		]
 	},
 	variants: {
 		size: {
 			xs: {
 				root: 'size-6',
-				fallback: 'text-xs leading-[1.125rem] [&_svg]:size-[0.9375rem]'
+				fallback: 'text-xs leading-[1.125rem] [&_svg]:size-3.5'
 			},
 			sm: {
 				root: 'size-8',
-				fallback: 'text-sm'
+				fallback: 'text-sm [&_svg]:size-4'
 			},
 			md: {
 				root: 'size-10',
-				fallback: 'text-base'
+				fallback: 'text-base [&_svg]:size-5'
 			},
 			lg: {
 				root: 'size-12',
-				fallback: 'text-lg'
+				fallback: 'text-lg [&_svg]:size-7'
 			},
 			xl: {
 				root: 'size-16',

@@ -2,12 +2,12 @@
 
 import { useState } from 'react';
 
+import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import { tv } from 'tailwind-variants';
 
 import { Button } from '../button';
 import { Input, InputProps } from '../input';
 import { InputGroup } from '../input-group';
-import { IconVisibility, IconVisibilityOff } from './icons';
 
 /**
  * Style recipe for InputPassword. Slots: `toggle` (the addon holding the
@@ -21,13 +21,14 @@ import { IconVisibility, IconVisibilityOff } from './icons';
 export const inputPasswordRecipe = tv({
 	slots: {
 		toggle: 'group-has-[input:disabled]/input-group:hidden',
-		button: '[&_svg]:mx-0'
+		// The input's icon token, not the ghost button's: the merge replaces the button's text token.
+		button: 'text-icon-input-default [&_svg]:mx-0'
 	},
 	variants: {
 		size: {
 			sm: { toggle: '-me-2.25', button: 'rounded-sm [&_svg]:size-4' },
 			md: { toggle: '-me-2.25', button: 'rounded-sm [&_svg]:size-5' },
-			lg: { toggle: '-me-1.25', button: '[&_svg]:size-6' }
+			lg: { toggle: '-me-1.25', button: '[&_svg]:size-5' }
 		}
 	},
 	defaultVariants: {
@@ -88,7 +89,7 @@ export const InputPassword = ({ className, size, ...props }: InputPasswordProps)
 					aria-label={isHidden ? 'Show password' : 'Hide password'}
 					onMouseDown={event => event.preventDefault()}
 					onClick={() => setType(isHidden ? 'text' : 'password')}>
-					{isHidden ? <IconVisibility /> : <IconVisibilityOff />}
+					{isHidden ? <EyeIcon /> : <EyeOffIcon />}
 				</Button>
 			</InputGroup.Addon>
 		</InputGroup.Root>
