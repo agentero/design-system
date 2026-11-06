@@ -24,9 +24,9 @@ import { IconCancel, IconCheck, IconKeyboardArrowDown, IconSearch } from './icon
 import { useBaseInputContext } from './input-context';
 
 // Shared by `list` and `skeleton`, and by `item` and `skeletonRow`, so the placeholder rows take
-// the list's height and an item's size without a copy of either.
+// the list's height and an item's size and layout without a copy of either.
 const LIST_BOX = 'max-h-[min(10.25rem,var(--available-height))] py-2';
-const ROW_BOX = 'mx-2 my-px px-3 py-2 text-sm';
+const ROW_BOX = 'mx-2 my-px flex items-center gap-2 px-3 py-2 text-sm';
 
 /**
  * Style recipe for Combobox. Slots: `action` and `trigger` (the clear and
@@ -72,7 +72,7 @@ export const comboboxRecipe = tv({
 		item: [
 			ROW_BOX,
 			// Panel radius minus the 2px gap, so the row reads as concentric with the panel.
-			'group/item flex cursor-pointer items-center rounded-[calc(var(--radius-md)-2px)]',
+			'group/item cursor-pointer rounded-[calc(var(--radius-md)-2px)]',
 			'text-text-default-base-primary select-none',
 			// `data-highlighted` covers pointer and keyboard alike; no `hover:` needed.
 			'data-highlighted:bg-bg-default-base-primary-hover',
@@ -82,12 +82,12 @@ export const comboboxRecipe = tv({
 		// that replaces it. The minimum height is a one-line item, a `text-sm` line plus the `py-2` of
 		// `ROW_BOX`; taller content sets the height, as it does in an item.
 		skeleton: [LIST_BOX, 'overflow-hidden'],
-		skeletonRow: [ROW_BOX, 'flex min-h-[calc(1lh+1rem)] items-center gap-2'],
+		skeletonRow: [ROW_BOX, 'min-h-[calc(1lh+1rem)]'],
 		// A checkbox lookalike on the same tokens as `Checkbox`, so a multi-select row reads as the
 		// legacy checkbox row did. Presentational: the row itself is the option, so a real checkbox
 		// here would nest one control inside another.
 		indicator: [
-			'mr-2 flex size-4 shrink-0 items-center justify-center rounded-sm',
+			'flex size-4 shrink-0 items-center justify-center rounded-sm',
 			'border-[1.5px] border-border-checkbox-default bg-bg-input-normal',
 			'text-text-default-base-inverse-primary transition-colors duration-150',
 			'data-selected:border-bg-checkbox-selected data-selected:bg-bg-checkbox-selected',
@@ -697,9 +697,10 @@ const lineRow = (index: number) => (
  * replaces it, so a full list lands without the surface changing size; give it
  * children shaped like the rows when they hold more than a line of text. It is
  * hidden from assistive technology, since `loadingLabel` on `Root` announces
- * the wait. A list filtered in memory never waits and has no use for it. Every
- * native `div` attribute is accepted and forwarded to the block, such as
- * `className`, `id` or `style`.
+ * the wait. A list filtered in memory never waits and has no use for it. Each
+ * row carries `data-slot="combobox-skeleton-row"`. Every native `div`
+ * attribute is accepted and forwarded to the block, such as `className`, `id`
+ * or `style`.
  *
  * @summary Placeholder rows that hold the list's place while results load
  * @dataAttribute {string} data-slot - Always set to "combobox-skeleton"
@@ -727,7 +728,7 @@ export const Skeleton = ({ className, children = lineRow, rows = 5, ...props }: 
 			className={cn(slots.skeleton(), className)}
 			{...props}>
 			{Array.from({ length: rows }, (_, index) => (
-				<div key={index} className={slots.skeletonRow()}>
+				<div key={index} data-slot="combobox-skeleton-row" className={slots.skeletonRow()}>
 					{typeof children === 'function' ? children(index) : children}
 				</div>
 			))}

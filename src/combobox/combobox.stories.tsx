@@ -612,7 +612,7 @@ export const AsyncSearchWithLoading: Story = {
 
 		await userEvent.type(input, 'n');
 		const placeholder = await waitFor(() => {
-			const row = document.body.querySelector('[data-slot="combobox-skeleton"] > div');
+			const row = document.body.querySelector('[data-slot="combobox-skeleton-row"]');
 			expect(row).toBeInTheDocument();
 			return row;
 		});
@@ -753,7 +753,7 @@ export const SkeletonShapedLikeTheRows: Story = {
 					<Combobox.Empty>No agencies found</Combobox.Empty>
 					<Combobox.List>
 						{(agency: Agency) => (
-							<Combobox.Item key={agency.id} value={agency} className="gap-2">
+							<Combobox.Item key={agency.id} value={agency}>
 								<Avatar
 									fallback={agency.name
 										.split(' ')
@@ -782,7 +782,7 @@ export const SkeletonShapedLikeTheRows: Story = {
 		// While the first search runs, each placeholder row holds an avatar, a name and a state.
 		await userEvent.type(input, 'an');
 		const rows = await waitFor(() => {
-			const placeholders = document.body.querySelectorAll('[data-slot="combobox-skeleton"] > div');
+			const placeholders = document.body.querySelectorAll('[data-slot="combobox-skeleton-row"]');
 			expect(placeholders).toHaveLength(5);
 			return placeholders;
 		});
