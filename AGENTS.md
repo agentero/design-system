@@ -75,8 +75,10 @@ There is no wrapper component and no size scale. A lucide icon is a plain SVG th
 | InputPassword toggle | `sm` 16 · `md`/`lg` 20 |
 | InputGroup addon | 20, at `-mx-0.5` (the 16px footprint the 24px glyph had at `-mx-1`, so the text does not move) |
 | Combobox / InputSearch clear and chevron | 20 inside the 24px icon button |
+| DataTable sort | 16 (Data table / Header cell) |
+| Accordion chevron | 16 (the Accordion page is empty; kept from master) |
 
-Components the sheet doesn't cover (Accordion, Checkbox, CheckList, DataTable, Table) keep the size tuned at the lucide migration. The Checkbox check and minus (and the Combobox row check that mirrors them) are not Material: they are cut from the library's Base Checkbox, so they stay as local SVGs in `checkbox/icons.tsx` and `combobox/icons.tsx`. When a Button or Item sizes its icon through `[&_svg]:size-*`, override it on that element with the same variant, never with a `size-*` on the icon — the recipe's compound selector outranks it.
+Components Figma doesn't cover (Checkbox, CheckList, Table) keep the size tuned at the lucide migration. The Checkbox check and minus (and the Combobox row check that mirrors them) are not Material: they are cut from the library's Base Checkbox, so they stay as local SVGs in `checkbox/icons.tsx` and `combobox/icons.tsx`. When a Button or Item sizes its icon through `[&_svg]:size-*`, override it on that element with the same variant, never with a `size-*` on the icon — the recipe's compound selector outranks it.
 
 **Stroke is 1.5, set once in `themes/base.css`** (`svg.lucide { stroke-width: 1.5 }` in the base layer): the Figma library draws every lucide icon at 1.5 and lucide ships 2. It reaches consumers through the theme they already import, with no `LucideProvider`. Don't pass `strokeWidth` to an icon — the CSS rule beats the attribute it writes, so the prop does nothing; put a `stroke-*` utility on the icon instead, which beats the base layer.
 

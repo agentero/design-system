@@ -91,7 +91,7 @@ export const Trigger = ({ className, children, asChild, ...props }: AccordionTri
 					{children}
 					<ChevronDownIcon
 						aria-hidden
-						className="size-3 shrink-0 group-data-[state=open]:rotate-180 motion-safe:transition-transform motion-safe:duration-200 motion-safe:ease-out-quint"
+						className="size-4 shrink-0 group-data-[state=open]:rotate-180 motion-safe:transition-transform motion-safe:duration-200 motion-safe:ease-out-quint"
 					/>
 				</>
 			)}

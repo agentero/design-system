@@ -174,7 +174,7 @@ ToolBar.displayName = 'DataTable.ToolBar';
 /* ------------ DataTable Table ------------ */
 
 const orderIconStyles = tv({
-	base: 'size-3.5 transition-transform duration-200 ease-out-quint motion-reduce:transition-none',
+	base: 'size-4 transition-transform duration-200 ease-out-quint motion-reduce:transition-none',
 	variants: {
 		direction: {
 			asc: '',
@@ -272,7 +272,7 @@ export const DataTableTable = ({
 												{sorted ? (
 													<ArrowUpIcon className={orderIconStyles({ direction: sorted })} />
 												) : (
-													<ArrowUpDownIcon className="size-3.5" />
+													<ArrowUpDownIcon className="size-4" />
 												)}
 											</span>
 										)}
