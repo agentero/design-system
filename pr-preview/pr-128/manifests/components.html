@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.4s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>3.7s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -1295,12 +1295,9 @@ the surrounding context already conveys the semantic intent.</div>
                 <span class="badge ok">story ok</span>
               </div>
               <div>Legacy filled icons take the alert color like the lucide default</div>
-              <div class="hint">Test only — hidden from the sidebar and the docs page (`!dev`, `!autodocs`),
-so every visible story stays on lucide. The `icon` slot lands on the icon&#39;s
-own `&lt;svg&gt;` and its paint rules target that element; this run proves that a
-consumer&#39;s filled `@agentero/icons` glyph and a bare-path SVG both land on
-the alert&#39;s color, while the lucide default keeps its stroke and never gets
-a fill.</div>
+              <div class="hint">Test only, hidden from the sidebar and the docs (`!dev`, `!autodocs`). The
+`icon` slot lands on the icon&#39;s own `&lt;svg&gt;`, so Alert&#39;s compatibility rules
+target `&amp;`; the legacy shapes must take the alert&#39;s color like the lucide default.</div>
               <pre><code>const LegacyFilledIcon = () =&gt; &lt;div className=&quot;flex flex-col gap-2&quot;&gt;
     &lt;Alert color=&quot;warning&quot; size=&quot;sm&quot; ghost={false} hasIcon icon={LightbulbIcon}&gt;
         &lt;Alert.Title&gt;lucide&lt;/Alert.Title&gt;
@@ -3192,14 +3189,9 @@ and `data-disabled` on the child instead.</div>
                 <span class="badge ok">story ok</span>
               </div>
               <div>Legacy filled icons land on the same token as lucide ones</div>
-              <div class="hint">Test only — hidden from the sidebar and the docs page (`!dev`, `!autodocs`),
-so every visible story stays on lucide. Consumers still pass filled Material
-glyphs from `@agentero/icons`, in shapes a stroke icon does not have: a
-`&lt;path&gt;` with no `fill` at all (black unless the recipe paints it), a `&lt;path&gt;`
-carrying its own hardcoded `fill`, and a `fill=&quot;none&quot;` mask path in front of
-the glyph that must stay transparent. All must land on the button&#39;s color like
-a lucide icon in every variant — this run is what catches the two `:where()`
-compatibility rules regressing.</div>
+              <div class="hint">Test only, hidden from the sidebar and the docs (`!dev`, `!autodocs`). The
+legacy shapes must land on the button&#39;s color like a lucide icon in every
+variant; this is what catches the two compatibility rules regressing.</div>
               <pre><code>const LegacyFilledIcon = () =&gt; (
     &lt;Stack&gt;
         {NON_LINK_VARIANTS.map(variant =&gt; (
@@ -10007,12 +9999,9 @@ button&#39;s start corners with the frame.</div>
                 <span class="badge ok">story ok</span>
               </div>
               
-              <div class="hint">Test only — hidden from the sidebar and the docs page (`!dev`, `!autodocs`),
-so every visible story stays on lucide. Consumers still put filled glyphs from
-`@agentero/icons` in an addon (a search field&#39;s magnifier), in two shapes a
-stroke icon does not have. Both must take the addon&#39;s token, enabled and
-disabled, exactly like a lucide icon does — this run is what catches the
-addon&#39;s two `:where()` compatibility rules regressing.</div>
+              <div class="hint">Test only, hidden from the sidebar and the docs (`!dev`, `!autodocs`). A legacy
+glyph in an addon must take the addon&#39;s token, enabled and disabled, like a
+lucide icon does.</div>
               <pre><code>const LegacyFilledIcon = () =&gt; (
     &lt;div className=&quot;flex flex-col gap-2&quot;&gt;
         {[false, true].map(disabled =&gt;

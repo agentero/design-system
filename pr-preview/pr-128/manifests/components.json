@@ -603,7 +603,7 @@
           "id": "components-alert--legacy-filled-icon",
           "name": "Legacy Filled Icon",
           "snippet": "const LegacyFilledIcon = () => <div className=\"flex flex-col gap-2\">\n    <Alert color=\"warning\" size=\"sm\" ghost={false} hasIcon icon={LightbulbIcon}>\n        <Alert.Title>lucide</Alert.Title>\n    </Alert>\n    <Alert color=\"warning\" size=\"sm\" ghost={false} hasIcon icon={LegacyBarePathIcon}>\n        <Alert.Title>bare path</Alert.Title>\n    </Alert>\n    <Alert\n        color=\"warning\"\n        size=\"sm\"\n        ghost={false}\n        hasIcon\n        icon={LegacyHardcodedFillIcon}>\n        <Alert.Title>hardcoded fill</Alert.Title>\n    </Alert>\n</div>;",
-          "description": "Test only — hidden from the sidebar and the docs page (`!dev`, `!autodocs`),\nso every visible story stays on lucide. The `icon` slot lands on the icon's\nown `<svg>` and its paint rules target that element; this run proves that a\nconsumer's filled `@agentero/icons` glyph and a bare-path SVG both land on\nthe alert's color, while the lucide default keeps its stroke and never gets\na fill.",
+          "description": "Test only, hidden from the sidebar and the docs (`!dev`, `!autodocs`). The\n`icon` slot lands on the icon's own `<svg>`, so Alert's compatibility rules\ntarget `&`; the legacy shapes must take the alert's color like the lucide default.",
           "summary": "Legacy filled icons take the alert color like the lucide default"
         },
         {
@@ -2337,7 +2337,7 @@
           "id": "components-button--legacy-filled-icon",
           "name": "Legacy Filled Icon",
           "snippet": "const LegacyFilledIcon = () => (\n    <Stack>\n        {NON_LINK_VARIANTS.map(variant => (\n            <Row key={variant}>\n                <Button variant={variant}>\n                    <PlusIcon />\n                    lucide\n                </Button>\n                <Button variant={variant}>\n                    <LegacyBarePathIcon />\n                    bare path\n                </Button>\n                <Button variant={variant}>\n                    <LegacyHardcodedFillIcon />\n                    hardcoded fill\n                </Button>\n                <Button variant={variant}>\n                    <LegacyMaskedIcon />\n                    masked\n                </Button>\n            </Row>\n        ))}\n    </Stack>\n);",
-          "description": "Test only — hidden from the sidebar and the docs page (`!dev`, `!autodocs`),\nso every visible story stays on lucide. Consumers still pass filled Material\nglyphs from `@agentero/icons`, in shapes a stroke icon does not have: a\n`<path>` with no `fill` at all (black unless the recipe paints it), a `<path>`\ncarrying its own hardcoded `fill`, and a `fill=\"none\"` mask path in front of\nthe glyph that must stay transparent. All must land on the button's color like\na lucide icon in every variant — this run is what catches the two `:where()`\ncompatibility rules regressing.",
+          "description": "Test only, hidden from the sidebar and the docs (`!dev`, `!autodocs`). The\nlegacy shapes must land on the button's color like a lucide icon in every\nvariant; this is what catches the two compatibility rules regressing.",
           "summary": "Legacy filled icons land on the same token as lucide ones"
         },
         {
@@ -8022,7 +8022,7 @@
           "id": "components-inputgroup--legacy-filled-icon",
           "name": "Legacy Filled Icon",
           "snippet": "const LegacyFilledIcon = () => (\n    <div className=\"flex flex-col gap-2\">\n        {[false, true].map(disabled =>\n            [SearchIcon, LegacyBarePathIcon, LegacyHardcodedFillIcon].map((Icon, index) => (\n                <InputGroup.Root key={`${disabled}-${index}`}>\n                    <InputGroup.Addon>\n                        <Icon />\n                    </InputGroup.Addon>\n                    <Input disabled={disabled} placeholder=\"Search agencies\" aria-label=\"Search agencies\" />\n                </InputGroup.Root>\n            ))\n        )}\n    </div>\n);",
-          "description": "Test only — hidden from the sidebar and the docs page (`!dev`, `!autodocs`),\nso every visible story stays on lucide. Consumers still put filled glyphs from\n`@agentero/icons` in an addon (a search field's magnifier), in two shapes a\nstroke icon does not have. Both must take the addon's token, enabled and\ndisabled, exactly like a lucide icon does — this run is what catches the\naddon's two `:where()` compatibility rules regressing."
+          "description": "Test only, hidden from the sidebar and the docs (`!dev`, `!autodocs`). A legacy\nglyph in an addon must take the addon's token, enabled and disabled, like a\nlucide icon does."
         }
       ],
       "import": "import {\n    Button,\n    Divider,\n    DropdownMenu,\n    Field,\n    FieldText,\n    Input,\n    InputGroup,\n    Label,\n    Tag,\n} from \"@agentero/design-system\";\nimport { ChevronDownIcon, MailIcon, SearchIcon } from \"lucide-react\";"
@@ -12252,6 +12252,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4380
+    "durationMs": 3657
   }
 }
