@@ -18,10 +18,7 @@ const NO_OWN_PROPS = new Set([
 	'components-skeleton'
 ]);
 
-// Pages that document a convention rather than a component (Foundations/*).
-// They have no `meta.component`, so every component-shaped assertion below
-// would fail on them — but they carry nothing a consumer reads either, so the
-// manifest just skips them instead of asserting a shape they cannot have.
+// Foundations/* pages document a convention and have no `meta.component`, so the manifest skips them.
 const isComponentEntry = id => id.startsWith('components-');
 
 if (!fs.existsSync(MANIFEST)) {

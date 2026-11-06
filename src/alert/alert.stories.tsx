@@ -13,10 +13,6 @@ import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { Alert } from './alert';
 
-// Not icons anyone should ship — stand-ins for what consumers still pass in.
-// `LegacyBarePathIcon` is a hand-drawn SVG whose path has no `fill` (it renders
-// black unless the recipe paints it); `LegacyHardcodedFillIcon` is the exact shape
-// `@agentero/icons` exports: root `fill="none"`, path with its own hex fill.
 const LegacyBarePathIcon = (props: SVGProps<SVGSVGElement>) => (
 	<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden {...props}>
 		<path d="M11.25 12.75H6.25a.75.75 0 0 1 0-1.5h5v-5a.75.75 0 0 1 1.5 0v5h5a.75.75 0 0 1 0 1.5h-5v5a.75.75 0 0 1-1.5 0z" />
@@ -290,8 +286,6 @@ export const WithoutIcon: Story = {
  *
  * @summary Alert with a custom icon override
  */
-// Reads what the browser actually painted: the icon's own color, and how each
-// shape reached it (lucide by stroke, the legacy shapes by fill).
 type Paint = ReturnType<typeof paintedWith>;
 
 const paintedWith = (svg: SVGElement) => {
@@ -305,12 +299,9 @@ const paintedWith = (svg: SVGElement) => {
 };
 
 /**
- * Test only — hidden from the sidebar and the docs page (`!dev`, `!autodocs`),
- * so every visible story stays on lucide. The `icon` slot lands on the icon's
- * own `<svg>` and its paint rules target that element; this run proves that a
- * consumer's filled `@agentero/icons` glyph and a bare-path SVG both land on
- * the alert's color, while the lucide default keeps its stroke and never gets
- * a fill.
+ * Test only, hidden from the sidebar and the docs (`!dev`, `!autodocs`). The
+ * `icon` slot lands on the icon's own `<svg>`, so Alert's compatibility rules
+ * target `&`; the legacy shapes must take the alert's color like the lucide default.
  *
  * @summary Legacy filled icons take the alert color like the lucide default
  */
@@ -336,14 +327,11 @@ export const LegacyFilledIcon: Story = {
 		);
 		await expect(icons).toHaveLength(3);
 		const [lucide, barePath, hardcoded] = icons as [Paint, Paint, Paint];
-		// All three share the alert's warning color…
 		await expect(barePath.color).toBe(lucide.color);
 		await expect(hardcoded.color).toBe(lucide.color);
-		// …lucide reaches it by stroke and is never filled,
 		await expect(lucide.pathStroke).toBe(lucide.color);
 		await expect(lucide.svgFill).toBe('none');
 		await expect(lucide.pathFill).toBe('none');
-		// …the legacy shapes reach it by fill.
 		await expect(barePath.pathFill).toBe(lucide.color);
 		await expect(hardcoded.pathFill).toBe(lucide.color);
 	}

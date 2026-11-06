@@ -533,10 +533,6 @@ export const PhoneField: Story = {
 	}
 };
 
-// Not icons anyone should ship — stand-ins for what consumers still pass in.
-// `LegacyBarePathIcon` is a hand-drawn SVG whose path has no `fill` (it renders
-// black unless the addon paints it); `LegacyHardcodedFillIcon` is the exact shape
-// `@agentero/icons` exports: root `fill="none"`, path with its own hex fill.
 const LegacyBarePathIcon = (props: SVGProps<SVGSVGElement>) => (
 	<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden {...props}>
 		<path d="M9.5 16a6.5 6.5 0 1 1 5.16-2.55l5.2 5.2a.75.75 0 0 1-1.06 1.06l-5.2-5.2A6.47 6.47 0 0 1 9.5 16m0-1.5a5 5 0 1 0 0-10 5 5 0 0 0 0 10" />
@@ -552,8 +548,6 @@ const LegacyHardcodedFillIcon = (props: SVGProps<SVGSVGElement>) => (
 	</svg>
 );
 
-// Reads what the browser actually painted: the icon's own color, and how each
-// shape reached it (lucide by stroke, the legacy shapes by fill).
 type Paint = ReturnType<typeof paintedWith>;
 
 const paintedWith = (svg: SVGElement) => {
@@ -566,12 +560,9 @@ const paintedWith = (svg: SVGElement) => {
 };
 
 /**
- * Test only — hidden from the sidebar and the docs page (`!dev`, `!autodocs`),
- * so every visible story stays on lucide. Consumers still put filled glyphs from
- * `@agentero/icons` in an addon (a search field's magnifier), in two shapes a
- * stroke icon does not have. Both must take the addon's token, enabled and
- * disabled, exactly like a lucide icon does — this run is what catches the
- * addon's two `:where()` compatibility rules regressing.
+ * Test only, hidden from the sidebar and the docs (`!dev`, `!autodocs`). A legacy
+ * glyph in an addon must take the addon's token, enabled and disabled, like a
+ * lucide icon does.
  */
 export const LegacyFilledIcon: Story = {
 	tags: ['!dev', '!autodocs'],
@@ -599,10 +590,8 @@ export const LegacyFilledIcon: Story = {
 		// Disabling the input repaints the addon with the disabled token.
 		await expect(disabled[0].color).not.toBe(enabled[0].color);
 		for (const [lucide, barePath, hardcoded] of [enabled, disabled]) {
-			// The three share the addon's token…
 			await expect(barePath.color).toBe(lucide.color);
 			await expect(hardcoded.color).toBe(lucide.color);
-			// …lucide by stroke, never filled; the legacy shapes by fill.
 			await expect(lucide.pathStroke).toBe(lucide.color);
 			await expect(lucide.pathFill).toBe('none');
 			await expect(barePath.pathFill).toBe(lucide.color);

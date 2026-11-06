@@ -566,8 +566,7 @@ export const Alert = ({
 							size={size}
 							iconOnly
 							aria-label="Dismiss"
-							// The X follows the alert's color: `text-current` replaces the ghost text
-							// token in the merge and the icon inherits it.
+							// `text-current` replaces the ghost text token, so the X follows the alert's color.
 							className="text-current"
 							onClick={onDismiss}>
 							<XIcon />

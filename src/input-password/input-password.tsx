@@ -21,8 +21,7 @@ import { InputGroup } from '../input-group';
 export const inputPasswordRecipe = tv({
 	slots: {
 		toggle: 'group-has-[input:disabled]/input-group:hidden',
-		// The toggle takes the input's icon token, not the ghost button's: the merge replaces
-		// the button's text token and the icon inherits it.
+		// The input's icon token, not the ghost button's: the merge replaces the button's text token.
 		button: 'text-icon-input-default [&_svg]:mx-0'
 	},
 	variants: {

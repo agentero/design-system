@@ -6,10 +6,8 @@ import { expect, within } from 'storybook/test';
 
 import { Button } from './button';
 
-// Not icons anyone should ship — stand-ins for what consumers still pass in.
-// `LegacyBarePathIcon` is a hand-drawn SVG whose path has no `fill` (it renders
-// black unless the recipe paints it); `LegacyHardcodedFillIcon` is the exact shape
-// `@agentero/icons` exports: root `fill="none"`, path with its own hex fill.
+// Stand-ins for the filled glyphs consumers still pass from `@agentero/icons`: a bare
+// path (black unless the recipe paints it) and a path carrying its own hex fill.
 const LegacyBarePathIcon = (props: SVGProps<SVGSVGElement>) => (
 	<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden {...props}>
 		<path d="M11.25 12.75H6.25a.75.75 0 0 1 0-1.5h5v-5a.75.75 0 0 1 1.5 0v5h5a.75.75 0 0 1 0 1.5h-5v5a.75.75 0 0 1-1.5 0z" />
@@ -25,8 +23,7 @@ const LegacyHardcodedFillIcon = (props: SVGProps<SVGSVGElement>) => (
 	</svg>
 );
 
-// The other shape in `@agentero/icons`: a painted root, a transparent `fill="none"`
-// mask path in front and the bare glyph path behind it.
+// The third shape: a painted root with a transparent mask path in front of the glyph.
 const LegacyMaskedIcon = (props: SVGProps<SVGSVGElement>) => (
 	<svg viewBox="0 0 24 24" fill="#000000" xmlns="http://www.w3.org/2000/svg" aria-hidden {...props}>
 		<path d="M0 0h24v24H0z" fill="none" />
@@ -195,8 +192,6 @@ export const WithIcons: Story = {
 	)
 };
 
-// Reads what the browser actually painted: the icon's own color, and how each
-// shape reached it (lucide by stroke, the legacy shapes by fill).
 type Paint = ReturnType<typeof paintedWith>;
 
 const paintedWith = (svg: SVGElement) => {
@@ -213,14 +208,9 @@ const paintedWith = (svg: SVGElement) => {
 };
 
 /**
- * Test only — hidden from the sidebar and the docs page (`!dev`, `!autodocs`),
- * so every visible story stays on lucide. Consumers still pass filled Material
- * glyphs from `@agentero/icons`, in shapes a stroke icon does not have: a
- * `<path>` with no `fill` at all (black unless the recipe paints it), a `<path>`
- * carrying its own hardcoded `fill`, and a `fill="none"` mask path in front of
- * the glyph that must stay transparent. All must land on the button's color like
- * a lucide icon in every variant — this run is what catches the two `:where()`
- * compatibility rules regressing.
+ * Test only, hidden from the sidebar and the docs (`!dev`, `!autodocs`). The
+ * legacy shapes must land on the button's color like a lucide icon in every
+ * variant; this is what catches the two compatibility rules regressing.
  *
  * @summary Legacy filled icons land on the same token as lucide ones
  */
@@ -260,19 +250,17 @@ export const LegacyFilledIcon: Story = {
 				Paint,
 				Paint
 			];
-			// One variant per row: the four icons share the button's color…
+			// Each row is one variant: lucide, bare path, hardcoded fill, masked.
 			await expect(barePath.color).toBe(lucide.color);
 			await expect(hardcoded.color).toBe(lucide.color);
 			await expect(masked.color).toBe(lucide.color);
-			// …lucide by stroke, never filled; the legacy shapes by fill.
 			await expect(lucide.pathStroke).toBe(lucide.color);
 			await expect(lucide.pathFill).toBe('none');
-			// …at the library's 1.5 stroke, not lucide's default 2.
+			// The library's 1.5 stroke, not lucide's default 2.
 			await expect(lucide.strokeWidth).toBe('1.5px');
 			await expect(barePath.pathFill).toBe(lucide.color);
 			await expect(hardcoded.pathFill).toBe(lucide.color);
 			await expect(masked.pathFill).toBe(lucide.color);
-			// …and the mask in front of a legacy glyph stays transparent.
 			await expect(masked.maskFill).toBe('none');
 		}
 	}
