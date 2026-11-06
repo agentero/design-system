@@ -36,7 +36,12 @@ export const selectRecipe = tv({
 	slots: {
 		trigger: [
 			'flex cursor-pointer items-center gap-2 pe-3 text-start',
-			'data-readonly:cursor-default'
+			'data-readonly:cursor-default',
+			// Focus moves to the options while the list is open; the field keeps its ring meanwhile.
+			'data-popup-open:border-border-input-focus data-popup-open:outline-border-input-focus',
+			'data-popup-open:outline-[0.125rem] data-popup-open:outline-offset-[-0.0625rem]',
+			'aria-invalid:data-popup-open:border-border-input-destructive',
+			'aria-invalid:data-popup-open:outline-border-input-destructive'
 		],
 		value: 'min-w-0 flex-1 truncate data-placeholder:text-text-input-placeholder',
 		icon: [
@@ -200,7 +205,8 @@ export type SelectTriggerProps = Omit<
 /**
  * The closed field: a button drawn as an `Input`, showing the picked option
  * (or `placeholder`) and a chevron. Click, Enter, Space or the arrow keys
- * open the list.
+ * open the list, and so does a click on the field's `<label>`. While the list
+ * is open the focus is on the options, and the field keeps its focus ring.
  *
  * Inside a `Field.Root` it takes the field's `id`, label, description and
  * `invalid` with nothing passed by hand, and its own props win. Outside one,

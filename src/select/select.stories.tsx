@@ -582,7 +582,8 @@ export const AllStates: Story = {
 
 /**
  * Enter, Space or the arrow keys open the list; the arrows move, Enter picks
- * and Escape closes it, handing focus back to the trigger.
+ * and Escape closes it, handing focus back to the trigger. The trigger keeps
+ * its focus ring while the options hold the focus.
  *
  * @summary Keyboard selection
  */
@@ -591,14 +592,17 @@ export const Keyboard: Story = {
 	args: { defaultValue: 'CA', onValueChange: fn() },
 	play: async ({ args, canvasElement }) => {
 		const trigger = within(canvasElement).getByRole('combobox', { name: 'State' });
+		const focusBorder = 'rgb(45, 48, 57)';
 
 		await userEvent.tab();
 		await expect(trigger).toHaveFocus();
+		await waitFor(() => expect(trigger).toHaveStyle({ borderColor: focusBorder }));
 		await userEvent.keyboard('{ArrowDown}');
 		const list = await screen.findByRole('listbox');
 		await waitFor(() =>
 			expect(within(list).getByRole('option', { name: 'California' })).toHaveFocus()
 		);
+		await expect(trigger).toHaveStyle({ borderColor: focusBorder });
 		await userEvent.keyboard('{ArrowDown}{Enter}');
 		await waitFor(() => expect(screen.queryByRole('listbox')).not.toBeInTheDocument());
 		await expect(trigger).toHaveTextContent('Florida');
