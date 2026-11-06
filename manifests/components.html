@@ -588,13 +588,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">43 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/386 story errors</a></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">43 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/387 story errors</a></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.5s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>6.2s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -4147,7 +4147,7 @@ import { CheckList } from &#39;@agentero/design-system/check-list&#39;;
       <div class="badges">
         <label for="c-9-components-combobox-props" class="badge ok as-toggle">41 prop types</label>
         
-        <label for="c-9-components-combobox-stories" class="badge err as-toggle">1/16 story errors</label>
+        <label for="c-9-components-combobox-stories" class="badge err as-toggle">1/17 story errors</label>
         
         
       </div>
@@ -4347,15 +4347,15 @@ limit?: number = -1
  * renders next to the field, so it is in place before the list opens. On a search
  * against an API, pass it from the first render, as `false` while idle: a root
  * that leaves it out gets no live region. A list filtered in memory never
- * waits and leaves it out. While loading with no rows yet, the surface shows
- * whatever placeholder `Content` holds — `Empty` stays quiet.
+ * waits and leaves it out. While loading with no rows yet, `Skeleton` draws
+ * placeholder rows — `Empty` stays quiet.
  */
 loading?: boolean
 
 /**
- * What a screen reader hears when `loading` turns `true`. Announced only; any
- * loading visuals — placeholder rows, a spinner — are yours to render inside
- * `Content`, hidden from assistive technology. Defaults to `&#39;Loading…&#39;`.
+ * What a screen reader hears when `loading` turns `true`. Announced only: the
+ * placeholder rows `Skeleton` draws are hidden from assistive technology.
+ * Defaults to `&#39;Loading…&#39;`.
  */
 loadingLabel?: string = &#39;Loading…&#39;
 
@@ -4472,13 +4472,13 @@ virtualized?: boolean = false</code></pre>
               
               
               <pre><code>Expected render to be an arrow function or function expression
-  1069 |  */
-  1070 | export const InsidePopoverWithValue: Story = {
-&gt; 1071 | 	render: InsidePopover.render,
+  1172 |  */
+  1173 | export const InsidePopoverWithValue: Story = {
+&gt; 1174 | 	render: InsidePopover.render,
        | 	           ^^^^^^^^^^^^^^^^^^^^
-  1072 | 	play: async ({ canvasElement }) =&gt; {
-  1073 | 		const body = within(document.body);
-  1074 | 		const trigger = within(canvasElement).getByRole(&#39;button&#39;, { name: /filter by state/i });</code></pre>
+  1175 | 	play: async ({ canvasElement }) =&gt; {
+  1176 | 		const body = within(document.body);
+  1177 | 		const trigger = within(canvasElement).getByRole(&#39;button&#39;, { name: /filter by state/i });</code></pre>
             </div>
           
           
@@ -4486,7 +4486,18 @@ virtualized?: boolean = false</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button, Combobox, Field, FieldText, Label, Modal, Popover, Skeleton, Tag } from "@agentero/design-system";</code></pre>
+                <pre><code>import {
+    Avatar,
+    Button,
+    Combobox,
+    Field,
+    FieldText,
+    Label,
+    Modal,
+    Popover,
+    Skeleton,
+    Tag,
+} from "@agentero/design-system";</code></pre>
               </div>
           
           
@@ -4720,11 +4731,11 @@ here as tags.</div>
 through `items` and `filteredItems`, and the data layer&#39;s `loading` flag goes
 to `Root`. That is all the wiring the wait needs:
 `Content` is marked busy, `loadingLabel` is announced once when the request
-starts, and `Empty` holds back &quot;no results&quot; until the answer is in. Placeholder
-rows show only while there is nothing to show yet, hidden from assistive
-technology since the label already speaks for them; after that, the previous
-rows stay until the new ones replace them. A request that is no longer the
-latest is dropped.
+starts, and `Empty` holds back &quot;no results&quot; until the answer is in.
+`Skeleton` draws placeholder rows only while there are no rows to show,
+hidden from assistive technology since the label already speaks for them;
+after that, the previous rows stay until the new ones replace them. A request
+that is no longer the latest is dropped.
 
 `minInputLength` keeps the list shut until two characters are typed — focusing
 the field opens nothing, and deleting back under the minimum closes it — and
@@ -4766,12 +4777,91 @@ no request goes out for a shorter query either.</div>
             onInputValueChange={onInputValueChange}&gt;
             &lt;Combobox.Input placeholder=&quot;Search agencies&quot; aria-label=&quot;Search agencies&quot; /&gt;
             &lt;Combobox.Content&gt;
-                {isLoading &amp;&amp; results.length === 0 &amp;&amp; &lt;SkeletonRows /&gt;}
+                &lt;Combobox.Skeleton /&gt;
                 &lt;Combobox.Empty&gt;No agencies found&lt;/Combobox.Empty&gt;
                 &lt;Combobox.List&gt;
                     {(agency: Agency) =&gt; (
                         &lt;Combobox.Item key={agency.id} value={agency}&gt;
                             {agency.name}
+                        &lt;/Combobox.Item&gt;
+                    )}
+                &lt;/Combobox.List&gt;
+            &lt;/Combobox.Content&gt;
+        &lt;/Combobox.Root&gt;
+    );
+};</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Skeleton Shaped Like The Rows</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Placeholder rows shaped like the results they stand in for</div>
+              <div class="hint">Placeholder rows shaped like the rows that replace them. Each agency row
+shows an avatar, the name and its state, so `Skeleton` gets the same three
+pieces as its children; as a function, it receives the row&#39;s index to vary
+the name&#39;s width. Its rows take an item&#39;s padding, so they come out as tall as
+the agency rows that replace them.</div>
+              <pre><code>const SkeletonShapedLikeTheRows = () =&gt; {
+    const [results, setResults] = useState&lt;Agency[]&gt;([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const latestRequest = useRef(0);
+
+    const onInputValueChange = async (query: string) =&gt; {
+        const request = ++latestRequest.current;
+        if (query.trim().length &lt; MIN_QUERY_LENGTH) {
+            setResults([]);
+            setIsLoading(false);
+            return;
+        }
+
+        setIsLoading(true);
+        const agencies = await searchAgencies(query);
+        if (request !== latestRequest.current) return;
+
+        setResults(agencies);
+        setIsLoading(false);
+    };
+
+    return (
+        &lt;Combobox.Root
+            items={results}
+            filteredItems={results}
+            filter={null}
+            minInputLength={MIN_QUERY_LENGTH}
+            loading={isLoading}
+            loadingLabel=&quot;Searching agencies…&quot;
+            itemToStringLabel={(agency: Agency) =&gt; agency.name}
+            isItemEqualToValue={(a: Agency, b: Agency) =&gt; a.id === b.id}
+            onInputValueChange={onInputValueChange}&gt;
+            &lt;Combobox.Input placeholder=&quot;Search agencies&quot; aria-label=&quot;Search agencies&quot; /&gt;
+            &lt;Combobox.Content&gt;
+                &lt;Combobox.Skeleton&gt;
+                    {index =&gt; (
+                        &lt;&gt;
+                            &lt;Skeleton className=&quot;size-6 shrink-0 rounded-[38.5%]&quot; /&gt;
+                            &lt;Skeleton className={index % 2 === 0 ? &#39;h-4 w-2/5&#39; : &#39;h-4 w-3/5&#39;} /&gt;
+                            &lt;Skeleton className=&quot;ml-auto h-3 w-6 shrink-0&quot; /&gt;
+                        &lt;/&gt;
+                    )}
+                &lt;/Combobox.Skeleton&gt;
+                &lt;Combobox.Empty&gt;No agencies found&lt;/Combobox.Empty&gt;
+                &lt;Combobox.List&gt;
+                    {(agency: Agency) =&gt; (
+                        &lt;Combobox.Item key={agency.id} value={agency}&gt;
+                            &lt;Avatar
+                                fallback={agency.name
+                                    .split(&#39; &#39;)
+                                    .map(word =&gt; word[0])
+                                    .join(&#39;&#39;)}
+                                size=&quot;xs&quot;
+                                variant=&quot;pillow&quot;
+                                aria-hidden=&quot;true&quot;
+                            /&gt;
+                            &lt;span className=&quot;truncate&quot;&gt;{agency.name}&lt;/span&gt;
+                            &lt;span className=&quot;ml-auto text-xs text-text-default-base-secondary&quot;&gt;
+                                {agency.state}
+                            &lt;/span&gt;
                         &lt;/Combobox.Item&gt;
                     )}
                 &lt;/Combobox.List&gt;
