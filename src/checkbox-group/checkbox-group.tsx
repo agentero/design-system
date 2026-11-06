@@ -14,7 +14,7 @@ export const checkboxGroupRecipe = tv({
 		// Figma leaves 16px between the label block and the options, where the field's gap is 8;
 		// an error below gets the same 16px.
 		root: [
-			'flex [:is([data-slot=field-content],[data-slot=field-description])+&]:mt-2',
+			'flex [:is([data-slot=field-content],[data-slot=field-label],[data-slot=label],[data-slot=field-description])+&]:mt-2',
 			'[&:has(+[data-slot=field-error])]:mb-2'
 		],
 		item: 'group/checkbox-group-item flex',
