@@ -10194,7 +10194,7 @@
           "<Select.Root items={plans} defaultValue=\"monthly\" name=\"plan\">\n  <Select.Trigger placeholder=\"Select a plan\" />\n  <Select.Content>\n    {plans.map(plan => (\n      <Select.Item key={plan.value} value={plan.value}>\n        {plan.label}\n      </Select.Item>\n    ))}\n  </Select.Content>\n</Select.Root>"
         ]
       },
-      "description": "`Root` owns the picked value; `Trigger` is the closed field and `Content` the list of `Item`s.",
+      "description": "Root of a select: a button that opens a list of options and shows the one\npicked. Use it for a pick from a short, known list, where typing would add\nnothing. For a long list or one the user searches, use\n[Combobox](?path=/docs/components-combobox--docs); for a handful of options\nthat should all stay visible, use\n[RadioGroup](?path=/docs/components-radiogroup--docs).\n\nPass the options as `items` (`{ value, label }`) so the trigger shows the\npicked option's label rather than its value. With `name`, the form submits\n`name=value`, and `required` blocks the submission until something is picked.\n\nInside a `Field.Root`, `disabled`, `readOnly` and `required` default to the\nfield's, and the trigger takes its label, description and error. Every Base\nUI root prop is accepted and forwarded — `value`, `defaultValue`,\n`onValueChange`, `open` and so on. A native form reset puts an uncontrolled\nselect back on its `defaultValue`.\n\nWith react-hook-form, wire it through `Controller` and render the form with\n`noValidate`, as `Form.Root` does: a required select also sets the native\n`required`, and the browser would otherwise block the submit before the\nform library validates.",
       "summary": "Root of a single-select dropdown picking from a short list",
       "reactComponentMeta": {
         "displayName": "Select.Root",
@@ -10670,14 +10670,14 @@
         {
           "id": "components-select--default",
           "name": "Default",
-          "snippet": "const Default = () => <Select.Root onValueChange={fn()} items={items}>\n    <Select.Trigger aria-label=\"State\" placeholder=\"Select a state\" />\n    <Select.Content>\n        {(items as typeof STATES).map(({ value, label }) => (\n            <Select.Item key={value} value={value}>\n                {label}\n            </Select.Item>\n        ))}\n    </Select.Content>\n</Select.Root>;",
+          "snippet": "const Default = () => <Select.Root size=\"md\" placeholder=\"Select a state\" onValueChange={fn()} items={items}>\n    <Select.Trigger aria-label=\"State\" size={size} placeholder={placeholder} />\n    <Select.Content>\n        {(items as typeof STATES).map(({ value, label }) => (\n            <Select.Item key={value} value={value}>\n                {label}\n            </Select.Item>\n        ))}\n    </Select.Content>\n</Select.Root>;",
           "description": "",
           "summary": "Pick an option from the list"
         },
         {
           "id": "components-select--with-value",
           "name": "With Value",
-          "snippet": "const WithValue = () => <Select.Root defaultValue=\"TX\" items={items}>\n    <Select.Trigger aria-label=\"State\" placeholder=\"Select a state\" />\n    <Select.Content>\n        {(items as typeof STATES).map(({ value, label }) => (\n            <Select.Item key={value} value={value}>\n                {label}\n            </Select.Item>\n        ))}\n    </Select.Content>\n</Select.Root>;",
+          "snippet": "const WithValue = () => <Select.Root size=\"md\" placeholder=\"Select a state\" defaultValue=\"TX\" items={items}>\n    <Select.Trigger aria-label=\"State\" size={size} placeholder={placeholder} />\n    <Select.Content>\n        {(items as typeof STATES).map(({ value, label }) => (\n            <Select.Item key={value} value={value}>\n                {label}\n            </Select.Item>\n        ))}\n    </Select.Content>\n</Select.Root>;",
           "description": "Starts on a value; the list opens with that option checked.",
           "summary": "Uncontrolled with a starting value"
         },
@@ -10698,23 +10698,30 @@
         {
           "id": "components-select--disabled",
           "name": "Disabled",
-          "snippet": "const Disabled = () => <Select.Root disabled defaultValue=\"CA\" items={items}>\n    <Select.Trigger aria-label=\"State\" placeholder=\"Select a state\" />\n    <Select.Content>\n        {(items as typeof STATES).map(({ value, label }) => (\n            <Select.Item key={value} value={value}>\n                {label}\n            </Select.Item>\n        ))}\n    </Select.Content>\n</Select.Root>;",
+          "snippet": "const Disabled = () => <Select.Root\n    size=\"md\"\n    placeholder=\"Select a state\"\n    disabled\n    defaultValue=\"CA\"\n    items={items}>\n    <Select.Trigger aria-label=\"State\" size={size} placeholder={placeholder} />\n    <Select.Content>\n        {(items as typeof STATES).map(({ value, label }) => (\n            <Select.Item key={value} value={value}>\n                {label}\n            </Select.Item>\n        ))}\n    </Select.Content>\n</Select.Root>;",
           "description": "",
           "summary": "Whole select disabled"
         },
         {
           "id": "components-select--disabled-item",
           "name": "Disabled Item",
-          "snippet": "const DisabledItem = () => <Select.Root onValueChange={fn()} items={STATES}>\n    <Select.Trigger aria-label=\"State\" placeholder=\"Select a state\" />\n    <Select.Content>\n        {STATES.map(({ value, label }) => (\n            <Select.Item key={value} value={value} disabled={value === 'FL'}>\n                {label}\n            </Select.Item>\n        ))}\n    </Select.Content>\n</Select.Root>;",
+          "snippet": "const DisabledItem = () => <Select.Root\n    size=\"md\"\n    placeholder=\"Select a state\"\n    onValueChange={fn()}\n    items={STATES}>\n    <Select.Trigger aria-label=\"State\" placeholder=\"Select a state\" />\n    <Select.Content>\n        {STATES.map(({ value, label }) => (\n            <Select.Item key={value} value={value} disabled={value === 'FL'}>\n                {label}\n            </Select.Item>\n        ))}\n    </Select.Content>\n</Select.Root>;",
           "description": "`disabled` on one item leaves the rest selectable. The arrow keys still stop\non it, so it is announced, but neither Enter nor a press picks it.",
           "summary": "One option disabled"
         },
         {
           "id": "components-select--read-only",
           "name": "Read Only",
-          "snippet": "const ReadOnly = () => <Select.Root readOnly defaultValue=\"CA\" onValueChange={fn()} items={items}>\n    <Select.Trigger aria-label=\"State\" placeholder=\"Select a state\" />\n    <Select.Content>\n        {(items as typeof STATES).map(({ value, label }) => (\n            <Select.Item key={value} value={value}>\n                {label}\n            </Select.Item>\n        ))}\n    </Select.Content>\n</Select.Root>;",
+          "snippet": "const ReadOnly = () => <Select.Root\n    size=\"md\"\n    placeholder=\"Select a state\"\n    readOnly\n    defaultValue=\"CA\"\n    onValueChange={fn()}\n    items={items}>\n    <Select.Trigger aria-label=\"State\" size={size} placeholder={placeholder} />\n    <Select.Content>\n        {(items as typeof STATES).map(({ value, label }) => (\n            <Select.Item key={value} value={value}>\n                {label}\n            </Select.Item>\n        ))}\n    </Select.Content>\n</Select.Root>;",
           "description": "The list still opens to show the options, but neither a press, the arrow\nkeys nor typing a letter changes the value.",
           "summary": "Read-only select"
+        },
+        {
+          "id": "components-select--invalid",
+          "name": "Invalid",
+          "snippet": "const Invalid = () => (\n    <div className=\"flex w-full flex-col gap-2\">\n        <Select.Root items={STATES}>\n            <Select.Trigger\n                aria-label=\"State\"\n                aria-invalid\n                aria-describedby=\"state-error\"\n                placeholder=\"Select a state\"\n            />\n            <Select.Content>\n                {STATES.map(({ value, label }) => (\n                    <Select.Item key={value} value={value}>\n                        {label}\n                    </Select.Item>\n                ))}\n            </Select.Content>\n        </Select.Root>\n        <p id=\"state-error\" className=\"text-sm text-text-input-destructive\">\n            Choose a state.\n        </p>\n    </div>\n);",
+          "description": "`aria-invalid` on the trigger paints the destructive border, and\n`aria-describedby` points at the message. Inside a `Field.Root`, `invalid`\non the field sets both.",
+          "summary": "Failed validation on the trigger"
         },
         {
           "id": "components-select--controlled",
@@ -12761,6 +12768,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5323
+    "durationMs": 6095
   }
 }
