@@ -9869,6 +9869,316 @@
       ],
       "import": "import { Progress } from \"@agentero/design-system\";"
     },
+    "components-radiogroup": {
+      "id": "components-radiogroup",
+      "name": "RadioGroup.Root",
+      "path": "./src/radio-group/radio-group.stories.tsx",
+      "jsDocTags": {
+        "summary": [
+          "Single-select radio list holding its selected value as a string"
+        ],
+        "example": [
+          "<span id=\"payment\">Payment plan</span>\n<RadioGroup.Root aria-labelledby=\"payment\" defaultValue=\"monthly\" onValueChange={setPlan}>\n  <RadioGroup.Item value=\"monthly\">Monthly</RadioGroup.Item>\n  <RadioGroup.Item value=\"annual\">Annual</RadioGroup.Item>\n</RadioGroup.Root>"
+        ],
+        "dataAttribute": [
+          "{string} data-orientation - \"vertical\" | \"horizontal\"",
+          "{string} data-disabled - Present when the whole group is disabled",
+          "{string} data-readonly - Present when the group is read-only"
+        ]
+      },
+      "description": "`Root` owns the selected value; each `Item` is a radio with its label.",
+      "summary": "Single-select radio list holding its selected value as a string",
+      "reactComponentMeta": {
+        "displayName": "RadioGroup.Root",
+        "exportName": "RadioGroup",
+        "filePath": "/home/runner/work/design-system/design-system/src/radio-group/index.ts",
+        "description": "Single-select list of radios that holds the selected value as a `string`.\nRenders `role=\"radiogroup\"`: name it with `aria-labelledby` or\n`aria-label`, or put it inside a `Field.Root`, which names, describes,\ninvalidates, disables, requires and makes it read-only (the group's own\nprops win). Tab enters the group on the selected item, and the arrow keys\nmove the selection.\n\nUse it when the options are few and should all stay visible. For a long\nlist use [Combobox](?path=/docs/components-combobox--docs), for several\nvalues use [CheckboxGroup](?path=/docs/components-checkboxgroup--docs), and\nfor an on/off setting use [Switch](?path=/docs/components-switch--docs).\n\nEvery native `<div>` attribute is forwarded to the group, `aria-invalid`\nincluded: `role=\"radiogroup\"` supports it, and each radio paints the\ndestructive state from it. With react-hook-form, wire it through\n`Controller` (`value`, `onValueChange`, and `field.ref` as `controlRef`),\nnot `register`: the radios' inputs belong to the group, not to the form\nlibrary.\n\nThe group is a single Tab stop: the selected radio if it is enabled, else\nthe first enabled one. A native form reset puts an uncontrolled group back\non `defaultValue` and a controlled one on its `value`.",
+        "jsDocTags": {
+          "summary": [
+            "Single-select radio list holding its selected value as a string"
+          ],
+          "example": [
+            "<span id=\"payment\">Payment plan</span>\n<RadioGroup.Root aria-labelledby=\"payment\" defaultValue=\"monthly\" onValueChange={setPlan}>\n  <RadioGroup.Item value=\"monthly\">Monthly</RadioGroup.Item>\n  <RadioGroup.Item value=\"annual\">Annual</RadioGroup.Item>\n</RadioGroup.Root>"
+          ],
+          "dataAttribute": [
+            "{string} data-orientation - \"vertical\" | \"horizontal\"",
+            "{string} data-disabled - Present when the whole group is disabled",
+            "{string} data-readonly - Present when the group is read-only"
+          ]
+        },
+        "props": {
+          "value": {
+            "name": "value",
+            "required": false,
+            "type": {
+              "name": "string | null | undefined"
+            },
+            "description": "Controlled value of the selected item. `null` leaves every item unselected; `undefined`\nmakes the group uncontrolled.",
+            "defaultValue": null,
+            "parent": {
+              "name": "RadioGroupRootProps",
+              "fileName": "src/radio-group/radio-group.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/radio-group/radio-group.tsx"
+              }
+            ]
+          },
+          "defaultValue": {
+            "name": "defaultValue",
+            "required": false,
+            "type": {
+              "name": "string"
+            },
+            "description": "Initial value for an uncontrolled group. Leave it out to start with nothing selected.",
+            "defaultValue": null,
+            "parent": {
+              "name": "RadioGroupRootProps",
+              "fileName": "src/radio-group/radio-group.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/radio-group/radio-group.tsx"
+              }
+            ]
+          },
+          "onValueChange": {
+            "name": "onValueChange",
+            "required": false,
+            "type": {
+              "name": "(value: string) => void"
+            },
+            "description": "Fires with the value of the item the user selects.",
+            "defaultValue": null,
+            "parent": {
+              "name": "RadioGroupRootProps",
+              "fileName": "src/radio-group/radio-group.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/radio-group/radio-group.tsx"
+              }
+            ]
+          },
+          "disabled": {
+            "name": "disabled",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Disables every item in the group.",
+            "defaultValue": null,
+            "parent": {
+              "name": "RadioGroupRootProps",
+              "fileName": "src/radio-group/radio-group.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/radio-group/radio-group.tsx"
+              }
+            ]
+          },
+          "readOnly": {
+            "name": "readOnly",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Keeps the items focusable but stops the selection from changing.",
+            "defaultValue": null,
+            "parent": {
+              "name": "RadioGroupRootProps",
+              "fileName": "src/radio-group/radio-group.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/radio-group/radio-group.tsx"
+              }
+            ]
+          },
+          "required": {
+            "name": "required",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Marks the group required (`aria-required`). With `name`, the browser also\nblocks a form submission until an item is selected; without it the radios\nare not one native group, so validation is left to the form.",
+            "defaultValue": null,
+            "parent": {
+              "name": "RadioGroupRootProps",
+              "fileName": "src/radio-group/radio-group.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/radio-group/radio-group.tsx"
+              }
+            ]
+          },
+          "orientation": {
+            "name": "orientation",
+            "required": false,
+            "type": {
+              "name": "enum",
+              "raw": "\"horizontal\" | \"vertical\"",
+              "value": [
+                {
+                  "value": "\"horizontal\""
+                },
+                {
+                  "value": "\"vertical\""
+                }
+              ]
+            },
+            "description": "`vertical` (default) stacks the items; `horizontal` lays them in a row that wraps.",
+            "defaultValue": {
+              "value": "'vertical'"
+            },
+            "parent": {
+              "name": "RadioGroupRootProps",
+              "fileName": "src/radio-group/radio-group.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/radio-group/radio-group.tsx"
+              }
+            ]
+          },
+          "name": {
+            "name": "name",
+            "required": false,
+            "type": {
+              "name": "string"
+            },
+            "description": "Form field name; the form submits `name=value` for the selected item.",
+            "defaultValue": null,
+            "parent": {
+              "name": "RadioGroupRootProps",
+              "fileName": "src/radio-group/radio-group.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/radio-group/radio-group.tsx"
+              }
+            ]
+          },
+          "controlRef": {
+            "name": "controlRef",
+            "required": false,
+            "type": {
+              "name": "Ref<RadioGroupControl> | undefined"
+            },
+            "description": "Receives `{ focus }`, which moves focus to the radio Tab would land on.\nPass a form library's field ref here (react-hook-form's `field.ref`) so it\ncan focus the group on a failed submit.",
+            "defaultValue": null,
+            "parent": {
+              "name": "RadioGroupRootProps",
+              "fileName": "src/radio-group/radio-group.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/radio-group/radio-group.tsx"
+              }
+            ]
+          }
+        }
+      },
+      "stories": [
+        {
+          "id": "components-radiogroup--default",
+          "name": "Default",
+          "snippet": "const Default = () => <RadioGroup.Root aria-label=\"Payment plan\" defaultValue=\"monthly\" onValueChange={fn()}>\n    {PLANS.map(({ value, label }) => (\n        <RadioGroup.Item key={value} value={value}>\n            {label}\n        </RadioGroup.Item>\n    ))}\n</RadioGroup.Root>;",
+          "description": "",
+          "summary": "Uncontrolled group with one item selected"
+        },
+        {
+          "id": "components-radiogroup--horizontal",
+          "name": "Horizontal",
+          "snippet": "const Horizontal = () => <RadioGroup.Root aria-label=\"Payment plan\" defaultValue=\"monthly\" orientation=\"horizontal\">\n    {PLANS.map(({ value, label }) => (\n        <RadioGroup.Item key={value} value={value}>\n            {label}\n        </RadioGroup.Item>\n    ))}\n</RadioGroup.Root>;",
+          "description": "Items laid in a row, 24px apart, wrapping when the row runs out of room.",
+          "summary": "Items in a row"
+        },
+        {
+          "id": "components-radiogroup--inside-field",
+          "name": "Inside Field",
+          "snippet": "const InsideField = () => <Field.Root invalid required>\n    <Field.Content>\n        <Field.Label>Payment plan</Field.Label>\n        <Field.Description>How often the insured pays the premium.</Field.Description>\n    </Field.Content>\n    <RadioGroup.Root aria-label={undefined} defaultValue={undefined}>\n        {PLANS.map(({ value, label }) => (\n            <RadioGroup.Item key={value} value={value}>\n                {label}\n            </RadioGroup.Item>\n        ))}\n    </RadioGroup.Root>\n    <Field.Error errors={[{ message: 'Choose a payment plan' }]} />\n</Field.Root>;",
+          "description": "Inside a `Field.Root`, label, messages, `invalid`, `required` and\n`disabled` reach the group with nothing wired by hand.",
+          "summary": "Wired to a surrounding Field"
+        },
+        {
+          "id": "components-radiogroup--disabled",
+          "name": "Disabled",
+          "snippet": "const Disabled = () => <RadioGroup.Root\n    aria-label=\"Payment plan\"\n    defaultValue=\"monthly\"\n    disabled\n    onValueChange={fn()}>\n    {PLANS.map(({ value, label }) => (\n        <RadioGroup.Item key={value} value={value}>\n            {label}\n        </RadioGroup.Item>\n    ))}\n</RadioGroup.Root>;",
+          "description": "",
+          "summary": "Whole group disabled"
+        },
+        {
+          "id": "components-radiogroup--disabled-item",
+          "name": "Disabled Item",
+          "snippet": "const DisabledItem = () => <RadioGroup.Root aria-label=\"Payment plan\" defaultValue=\"monthly\" onValueChange={fn()}>\n    <RadioGroup.Item value=\"monthly\">Monthly</RadioGroup.Item>\n    <RadioGroup.Item value=\"quarterly\" disabled>Quarterly (not offered by this carrier)\n                    </RadioGroup.Item>\n    <RadioGroup.Item value=\"annual\">Annual</RadioGroup.Item>\n</RadioGroup.Root>;",
+          "description": "`disabled` on one item leaves the rest interactive, and the arrow keys skip\nit.",
+          "summary": "One item disabled"
+        },
+        {
+          "id": "components-radiogroup--read-only",
+          "name": "Read Only",
+          "snippet": "const ReadOnly = () => <RadioGroup.Root\n    aria-label=\"Payment plan\"\n    defaultValue=\"monthly\"\n    readOnly\n    onValueChange={fn()}>\n    {PLANS.map(({ value, label }) => (\n        <RadioGroup.Item key={value} value={value}>\n            {label}\n        </RadioGroup.Item>\n    ))}\n</RadioGroup.Root>;",
+          "description": "The items stay focusable but the selection does not change, by pointer or\nby keyboard.",
+          "summary": "Read-only group"
+        },
+        {
+          "id": "components-radiogroup--invalid",
+          "name": "Invalid",
+          "snippet": "const Invalid = () => <div className=\"flex flex-col gap-2\">\n    <RadioGroup.Root\n        aria-label=\"Payment plan\"\n        defaultValue={undefined}\n        aria-invalid\n        aria-describedby=\"plan-error\">\n        {PLANS.map(({ value, label }) => (\n            <RadioGroup.Item key={value} value={value}>\n                {label}\n            </RadioGroup.Item>\n        ))}\n    </RadioGroup.Root>\n    <p id=\"plan-error\" className=\"text-sm text-text-input-destructive\">Choose a payment plan.\n                    </p>\n</div>;",
+          "description": "`aria-invalid` sits on the group, which `role=\"radiogroup\"` supports, and\nevery radio paints the destructive border from it.",
+          "summary": "Failed validation on the group"
+        },
+        {
+          "id": "components-radiogroup--controlled",
+          "name": "Controlled",
+          "snippet": "const Controlled = () => {\n    const [plan, setPlan] = useState<string | null>('monthly');\n\n    return (\n        <div className=\"flex flex-col items-start gap-6\">\n            <div className=\"flex gap-3\">\n                <Button variant=\"secondary\" size=\"sm\" onClick={() => setPlan(null)}>\n                    Clear\n                </Button>\n                <Button variant=\"secondary\" size=\"sm\" onClick={() => setPlan('annual')}>\n                    Choose annual\n                </Button>\n            </div>\n            <RadioGroup.Root aria-label=\"Payment plan\" value={plan} onValueChange={setPlan}>\n                {PLANS.map(({ value, label }) => (\n                    <RadioGroup.Item key={value} value={value}>\n                        {label}\n                    </RadioGroup.Item>\n                ))}\n            </RadioGroup.Root>\n            <output className=\"text-sm\">Selected: {plan ?? 'none'}</output>\n        </div>\n    );\n};",
+          "description": "",
+          "summary": "Controlled group whose value is set from outside"
+        },
+        {
+          "id": "components-radiogroup--in-form",
+          "name": "In Form",
+          "snippet": "const InForm = () => {\n    const [submitted, setSubmitted] = useState<string | null>(null);\n\n    return (\n        <form\n            className=\"flex flex-col items-start gap-6\"\n            onSubmit={event => {\n                event.preventDefault();\n                setSubmitted(String(new FormData(event.currentTarget).get('plan')));\n            }}>\n            <RadioGroup.Root aria-label=\"Payment plan\" name=\"plan\" required>\n                {PLANS.map(({ value, label }) => (\n                    <RadioGroup.Item key={value} value={value}>\n                        {label}\n                    </RadioGroup.Item>\n                ))}\n            </RadioGroup.Root>\n            <Button type=\"submit\">Submit</Button>\n            {submitted && <output className=\"text-sm\">Submitted: {submitted}</output>}\n        </form>\n    );\n};",
+          "description": "With `name`, the form submits `name=value` for the selected item, and\n`required` blocks the submission while nothing is selected.",
+          "summary": "Native form submission"
+        },
+        {
+          "id": "components-radiogroup--with-react-hook-form",
+          "name": "With React Hook Form",
+          "snippet": "const WithReactHookForm = () => {\n    const { control, handleSubmit } = useForm<{ plan: string }>({ defaultValues: { plan: '' } });\n    const [submitted, setSubmitted] = useState<string | null>(null);\n\n    return (\n        <form\n            className=\"flex flex-col items-start gap-6\"\n            onSubmit={handleSubmit(data => setSubmitted(data.plan))}>\n            <Controller\n                name=\"plan\"\n                control={control}\n                rules={{ required: 'Choose a payment plan' }}\n                render={({ field, fieldState }) => (\n                    <Field.Root invalid={fieldState.invalid} required>\n                        <Field.Label>Payment plan</Field.Label>\n                        <RadioGroup.Root\n                            controlRef={field.ref}\n                            value={field.value}\n                            onValueChange={field.onChange}\n                            onBlur={field.onBlur}>\n                            {PLANS.map(({ value, label }) => (\n                                <RadioGroup.Item key={value} value={value}>\n                                    {label}\n                                </RadioGroup.Item>\n                            ))}\n                        </RadioGroup.Root>\n                        <Field.Error errors={[fieldState.error]} />\n                    </Field.Root>\n                )}\n            />\n            <Button type=\"submit\">Submit</Button>\n            {submitted && <output className=\"text-sm\">Submitted: {submitted}</output>}\n        </form>\n    );\n};",
+          "description": "With react-hook-form, wire the group through `Controller`. Its `ref` lets\nthe form focus the group on a failed submit: focus lands on the radio Tab\nwould reach.",
+          "summary": "React Hook Form through Controller"
+        },
+        {
+          "id": "components-radiogroup--long-label",
+          "name": "Long Label",
+          "snippet": "const LongLabel = () => <div className=\"w-60\">\n    <RadioGroup.Root aria-label=\"Payment plan\" defaultValue=\"monthly\">\n        <RadioGroup.Item value=\"monthly\">Monthly, charged on the policy's effective day of every month\n                            </RadioGroup.Item>\n        <RadioGroup.Item value=\"annual\">Annual</RadioGroup.Item>\n    </RadioGroup.Root>\n</div>;",
+          "description": "A long label wraps under itself and the radio stays level with its first\nline.",
+          "summary": "Wrapping label keeps the radio on the first line"
+        },
+        {
+          "id": "components-radiogroup--all-states",
+          "name": "All States",
+          "snippet": "const AllStates = () => (\n    <div className=\"flex flex-wrap gap-10\">\n        {(\n            [\n                ['Enabled', {}],\n                ['Disabled', { disabled: true }],\n                ['Invalid', { 'aria-invalid': true }],\n                ['Read-only', { readOnly: true }]\n            ] as const\n        ).map(([title, props]) => (\n            <div key={title} className=\"flex flex-col gap-2\">\n                <span className=\"text-xs text-text-input-placeholder\">{title}</span>\n                <RadioGroup.Root aria-label={`${title} payment plan`} defaultValue=\"quarterly\" {...props}>\n                    {PLANS.map(({ value, label }) => (\n                        <RadioGroup.Item key={value} value={value}>\n                            {label}\n                        </RadioGroup.Item>\n                    ))}\n                </RadioGroup.Root>\n            </div>\n        ))}\n    </div>\n);",
+          "description": "Every state of an item side by side, for checking against the design:\nenabled, disabled, invalid and read-only, each with one item selected.",
+          "summary": "Visual comparison of the item states"
+        }
+      ],
+      "import": "import { Button, Controller, Field, RadioGroup } from \"@agentero/design-system\";"
+    },
     "components-skeleton": {
       "id": "components-skeleton",
       "name": "Skeleton",
@@ -11876,6 +12186,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5795
+    "durationMs": 4501
   }
 }
