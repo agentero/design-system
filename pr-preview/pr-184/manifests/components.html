@@ -588,13 +588,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">42 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/375 story errors</a></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">43 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/387 story errors</a></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>5.9s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>6.2s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -4848,7 +4848,7 @@ the agency rows that replace them.</div>
                 &lt;Combobox.Empty&gt;No agencies found&lt;/Combobox.Empty&gt;
                 &lt;Combobox.List&gt;
                     {(agency: Agency) =&gt; (
-                        &lt;Combobox.Item key={agency.id} value={agency} className=&quot;gap-2&quot;&gt;
+                        &lt;Combobox.Item key={agency.id} value={agency}&gt;
                             &lt;Avatar
                                 fallback={agency.name
                                     .split(&#39; &#39;)
@@ -11810,6 +11810,411 @@ percentage: number</code></pre>
   no-story-error
   no-doc-error"
   role="listitem"
+  aria-label="RadioGroup.Root">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> RadioGroup.Root</h2>
+      <div class="badges">
+        <label for="c-33-components-radiogroup-props" class="badge ok as-toggle">9 prop types</label>
+        
+        <label for="c-33-components-radiogroup-stories" class="badge ok as-toggle">12 stories</label>
+        
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/radio-group/radio-group.stories.tsx">components-radiogroup · ./src/radio-group/radio-group.stories.tsx</div>
+    <div>Single-select radio list holding its selected value as a string</div>
+    <div class="hint">`Root` owns the selected value; each `Item` is a radio with its label.</div>
+    <div class="kv"><span class="chip">summary: Single-select radio list holding its selected value as a string</span><span class="chip">example: &lt;span id=&quot;payment&quot;&gt;Payment plan&lt;/span&gt;
+&lt;RadioGroup.Root aria-labelledby=&quot;payment&quot; defaultValue=&quot;monthly&quot; onValueChange={setPlan}&gt;
+  &lt;RadioGroup.Item value=&quot;monthly&quot;&gt;Monthly&lt;/RadioGroup.Item&gt;
+  &lt;RadioGroup.Item value=&quot;annual&quot;&gt;Annual&lt;/RadioGroup.Item&gt;
+&lt;/RadioGroup.Root&gt;</span><span class="chip">dataAttribute: {string} data-orientation - &quot;vertical&quot; | &quot;horizontal&quot;</span><span class="chip">dataAttribute: {string} data-disabled - Present when the whole group is disabled</span><span class="chip">dataAttribute: {string} data-readonly - Present when the group is read-only</span></div>
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-33-components-radiogroup-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+  <input id="c-33-components-radiogroup-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-component-meta)</small></span>
+              <span class="badge ok">9 prop types</span>
+            </div>
+            <pre><code>Component: src/radio-group/index.ts::RadioGroup</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>/**
+ * Receives `{ focus }`, which moves focus to the radio Tab would land on.
+ * Pass a form library&#39;s field ref here (react-hook-form&#39;s `field.ref`) so it
+ * can focus the group on a failed submit.
+ */
+controlRef?: Ref&lt;RadioGroupControl&gt; | undefined
+
+/**
+ * Initial value for an uncontrolled group. Leave it out to start with nothing selected.
+ */
+defaultValue?: string
+
+/**
+ * Disables every item in the group.
+ */
+disabled?: boolean
+
+/**
+ * Form field name; the form submits `name=value` for the selected item.
+ */
+name?: string
+
+/**
+ * Fires with the value of the item the user selects.
+ */
+onValueChange?: (value: string) =&gt; void
+
+/**
+ * `vertical` (default) stacks the items; `horizontal` lays them in a row that wraps.
+ */
+orientation?: &quot;horizontal&quot; | &quot;vertical&quot; = &#39;vertical&#39;
+
+/**
+ * Keeps the items focusable but stops the selection from changing.
+ */
+readOnly?: boolean
+
+/**
+ * Marks the group required (`aria-required`). With `name`, the browser also
+ * blocks a form submission until an item is selected; without it the radios
+ * are not one native group, so validation is left to the form.
+ */
+required?: boolean
+
+/**
+ * Controlled value of the selected item. `null` leaves every item unselected; `undefined`
+ * makes the group uncontrolled.
+ */
+value?: string | null | undefined</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Button, Controller, Field, RadioGroup } from "@agentero/design-system";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Uncontrolled group with one item selected</div>
+              
+              <pre><code>const Default = () =&gt; &lt;RadioGroup.Root aria-label=&quot;Payment plan&quot; defaultValue=&quot;monthly&quot; onValueChange={fn()}&gt;
+    {PLANS.map(({ value, label }) =&gt; (
+        &lt;RadioGroup.Item key={value} value={value}&gt;
+            {label}
+        &lt;/RadioGroup.Item&gt;
+    ))}
+&lt;/RadioGroup.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Horizontal</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Items in a row</div>
+              <div class="hint">Items laid in a row, 24px apart, wrapping when the row runs out of room.</div>
+              <pre><code>const Horizontal = () =&gt; &lt;RadioGroup.Root aria-label=&quot;Payment plan&quot; defaultValue=&quot;monthly&quot; orientation=&quot;horizontal&quot;&gt;
+    {PLANS.map(({ value, label }) =&gt; (
+        &lt;RadioGroup.Item key={value} value={value}&gt;
+            {label}
+        &lt;/RadioGroup.Item&gt;
+    ))}
+&lt;/RadioGroup.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Inside Field</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Wired to a surrounding Field</div>
+              <div class="hint">Inside a `Field.Root`, label, messages, `invalid`, `required` and
+`disabled` reach the group with nothing wired by hand.</div>
+              <pre><code>const InsideField = () =&gt; &lt;Field.Root invalid required&gt;
+    &lt;Field.Content&gt;
+        &lt;Field.Label&gt;Payment plan&lt;/Field.Label&gt;
+        &lt;Field.Description&gt;How often the insured pays the premium.&lt;/Field.Description&gt;
+    &lt;/Field.Content&gt;
+    &lt;RadioGroup.Root aria-label={undefined} defaultValue={undefined}&gt;
+        {PLANS.map(({ value, label }) =&gt; (
+            &lt;RadioGroup.Item key={value} value={value}&gt;
+                {label}
+            &lt;/RadioGroup.Item&gt;
+        ))}
+    &lt;/RadioGroup.Root&gt;
+    &lt;Field.Error errors={[{ message: &#39;Choose a payment plan&#39; }]} /&gt;
+&lt;/Field.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Disabled</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Whole group disabled</div>
+              
+              <pre><code>const Disabled = () =&gt; &lt;RadioGroup.Root
+    aria-label=&quot;Payment plan&quot;
+    defaultValue=&quot;monthly&quot;
+    disabled
+    onValueChange={fn()}&gt;
+    {PLANS.map(({ value, label }) =&gt; (
+        &lt;RadioGroup.Item key={value} value={value}&gt;
+            {label}
+        &lt;/RadioGroup.Item&gt;
+    ))}
+&lt;/RadioGroup.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Disabled Item</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>One item disabled</div>
+              <div class="hint">`disabled` on one item leaves the rest interactive, and the arrow keys skip
+it.</div>
+              <pre><code>const DisabledItem = () =&gt; &lt;RadioGroup.Root aria-label=&quot;Payment plan&quot; defaultValue=&quot;monthly&quot; onValueChange={fn()}&gt;
+    &lt;RadioGroup.Item value=&quot;monthly&quot;&gt;Monthly&lt;/RadioGroup.Item&gt;
+    &lt;RadioGroup.Item value=&quot;quarterly&quot; disabled&gt;Quarterly (not offered by this carrier)
+                    &lt;/RadioGroup.Item&gt;
+    &lt;RadioGroup.Item value=&quot;annual&quot;&gt;Annual&lt;/RadioGroup.Item&gt;
+&lt;/RadioGroup.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Read Only</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Read-only group</div>
+              <div class="hint">The items stay focusable but the selection does not change, by pointer or
+by keyboard.</div>
+              <pre><code>const ReadOnly = () =&gt; &lt;RadioGroup.Root
+    aria-label=&quot;Payment plan&quot;
+    defaultValue=&quot;monthly&quot;
+    readOnly
+    onValueChange={fn()}&gt;
+    {PLANS.map(({ value, label }) =&gt; (
+        &lt;RadioGroup.Item key={value} value={value}&gt;
+            {label}
+        &lt;/RadioGroup.Item&gt;
+    ))}
+&lt;/RadioGroup.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Invalid</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Failed validation on the group</div>
+              <div class="hint">`aria-invalid` sits on the group, which `role=&quot;radiogroup&quot;` supports, and
+every radio paints the destructive border from it.</div>
+              <pre><code>const Invalid = () =&gt; &lt;div className=&quot;flex flex-col gap-2&quot;&gt;
+    &lt;RadioGroup.Root
+        aria-label=&quot;Payment plan&quot;
+        defaultValue={undefined}
+        aria-invalid
+        aria-describedby=&quot;plan-error&quot;&gt;
+        {PLANS.map(({ value, label }) =&gt; (
+            &lt;RadioGroup.Item key={value} value={value}&gt;
+                {label}
+            &lt;/RadioGroup.Item&gt;
+        ))}
+    &lt;/RadioGroup.Root&gt;
+    &lt;p id=&quot;plan-error&quot; className=&quot;text-sm text-text-input-destructive&quot;&gt;Choose a payment plan.
+                    &lt;/p&gt;
+&lt;/div&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Controlled</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Controlled group whose value is set from outside</div>
+              
+              <pre><code>const Controlled = () =&gt; {
+    const [plan, setPlan] = useState&lt;string | null&gt;(&#39;monthly&#39;);
+
+    return (
+        &lt;div className=&quot;flex flex-col items-start gap-6&quot;&gt;
+            &lt;div className=&quot;flex gap-3&quot;&gt;
+                &lt;Button variant=&quot;secondary&quot; size=&quot;sm&quot; onClick={() =&gt; setPlan(null)}&gt;
+                    Clear
+                &lt;/Button&gt;
+                &lt;Button variant=&quot;secondary&quot; size=&quot;sm&quot; onClick={() =&gt; setPlan(&#39;annual&#39;)}&gt;
+                    Choose annual
+                &lt;/Button&gt;
+            &lt;/div&gt;
+            &lt;RadioGroup.Root aria-label=&quot;Payment plan&quot; value={plan} onValueChange={setPlan}&gt;
+                {PLANS.map(({ value, label }) =&gt; (
+                    &lt;RadioGroup.Item key={value} value={value}&gt;
+                        {label}
+                    &lt;/RadioGroup.Item&gt;
+                ))}
+            &lt;/RadioGroup.Root&gt;
+            &lt;output className=&quot;text-sm&quot;&gt;Selected: {plan ?? &#39;none&#39;}&lt;/output&gt;
+        &lt;/div&gt;
+    );
+};</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">In Form</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Native form submission</div>
+              <div class="hint">With `name`, the form submits `name=value` for the selected item, and
+`required` blocks the submission while nothing is selected.</div>
+              <pre><code>const InForm = () =&gt; {
+    const [submitted, setSubmitted] = useState&lt;string | null&gt;(null);
+
+    return (
+        &lt;form
+            className=&quot;flex flex-col items-start gap-6&quot;
+            onSubmit={event =&gt; {
+                event.preventDefault();
+                setSubmitted(String(new FormData(event.currentTarget).get(&#39;plan&#39;)));
+            }}&gt;
+            &lt;RadioGroup.Root aria-label=&quot;Payment plan&quot; name=&quot;plan&quot; required&gt;
+                {PLANS.map(({ value, label }) =&gt; (
+                    &lt;RadioGroup.Item key={value} value={value}&gt;
+                        {label}
+                    &lt;/RadioGroup.Item&gt;
+                ))}
+            &lt;/RadioGroup.Root&gt;
+            &lt;Button type=&quot;submit&quot;&gt;Submit&lt;/Button&gt;
+            {submitted &amp;&amp; &lt;output className=&quot;text-sm&quot;&gt;Submitted: {submitted}&lt;/output&gt;}
+        &lt;/form&gt;
+    );
+};</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With React Hook Form</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>React Hook Form through Controller</div>
+              <div class="hint">With react-hook-form, wire the group through `Controller`. Its `ref` lets
+the form focus the group on a failed submit: focus lands on the radio Tab
+would reach.</div>
+              <pre><code>const WithReactHookForm = () =&gt; {
+    const { control, handleSubmit } = useForm&lt;{ plan: string }&gt;({ defaultValues: { plan: &#39;&#39; } });
+    const [submitted, setSubmitted] = useState&lt;string | null&gt;(null);
+
+    return (
+        &lt;form
+            className=&quot;flex flex-col items-start gap-6&quot;
+            onSubmit={handleSubmit(data =&gt; setSubmitted(data.plan))}&gt;
+            &lt;Controller
+                name=&quot;plan&quot;
+                control={control}
+                rules={{ required: &#39;Choose a payment plan&#39; }}
+                render={({ field, fieldState }) =&gt; (
+                    &lt;Field.Root invalid={fieldState.invalid} required&gt;
+                        &lt;Field.Label&gt;Payment plan&lt;/Field.Label&gt;
+                        &lt;RadioGroup.Root
+                            controlRef={field.ref}
+                            value={field.value}
+                            onValueChange={field.onChange}
+                            onBlur={field.onBlur}&gt;
+                            {PLANS.map(({ value, label }) =&gt; (
+                                &lt;RadioGroup.Item key={value} value={value}&gt;
+                                    {label}
+                                &lt;/RadioGroup.Item&gt;
+                            ))}
+                        &lt;/RadioGroup.Root&gt;
+                        &lt;Field.Error errors={[fieldState.error]} /&gt;
+                    &lt;/Field.Root&gt;
+                )}
+            /&gt;
+            &lt;Button type=&quot;submit&quot;&gt;Submit&lt;/Button&gt;
+            {submitted &amp;&amp; &lt;output className=&quot;text-sm&quot;&gt;Submitted: {submitted}&lt;/output&gt;}
+        &lt;/form&gt;
+    );
+};</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Long Label</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Wrapping label keeps the radio on the first line</div>
+              <div class="hint">A long label wraps under itself and the radio stays level with its first
+line.</div>
+              <pre><code>const LongLabel = () =&gt; &lt;div className=&quot;w-60&quot;&gt;
+    &lt;RadioGroup.Root aria-label=&quot;Payment plan&quot; defaultValue=&quot;monthly&quot;&gt;
+        &lt;RadioGroup.Item value=&quot;monthly&quot;&gt;Monthly, charged on the policy&#39;s effective day of every month
+                            &lt;/RadioGroup.Item&gt;
+        &lt;RadioGroup.Item value=&quot;annual&quot;&gt;Annual&lt;/RadioGroup.Item&gt;
+    &lt;/RadioGroup.Root&gt;
+&lt;/div&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">All States</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Visual comparison of the item states</div>
+              <div class="hint">Every state of an item side by side, for checking against the design:
+enabled, disabled, invalid and read-only, each with one item selected.</div>
+              <pre><code>const AllStates = () =&gt; (
+    &lt;div className=&quot;flex flex-wrap gap-10&quot;&gt;
+        {(
+            [
+                [&#39;Enabled&#39;, {}],
+                [&#39;Disabled&#39;, { disabled: true }],
+                [&#39;Invalid&#39;, { &#39;aria-invalid&#39;: true }],
+                [&#39;Read-only&#39;, { readOnly: true }]
+            ] as const
+        ).map(([title, props]) =&gt; (
+            &lt;div key={title} className=&quot;flex flex-col gap-2&quot;&gt;
+                &lt;span className=&quot;text-xs text-text-input-placeholder&quot;&gt;{title}&lt;/span&gt;
+                &lt;RadioGroup.Root aria-label={`${title} payment plan`} defaultValue=&quot;quarterly&quot; {...props}&gt;
+                    {PLANS.map(({ value, label }) =&gt; (
+                        &lt;RadioGroup.Item key={value} value={value}&gt;
+                            {label}
+                        &lt;/RadioGroup.Item&gt;
+                    ))}
+                &lt;/RadioGroup.Root&gt;
+            &lt;/div&gt;
+        ))}
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+        </div>
+    
+    
+  </div>
+</article>
+<article
+  class="card 
+  no-error 
+  no-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
   aria-label="Skeleton">
   <div class="head">
     <div class="title">
@@ -11817,7 +12222,7 @@ percentage: number</code></pre>
       <div class="badges">
         
         
-        <label for="c-33-components-skeleton-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-34-components-skeleton-stories" class="badge ok as-toggle">4 stories</label>
         
         
       </div>
@@ -11834,7 +12239,7 @@ shape it with Tailwind classes to mirror the content it stands in for.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-33-components-skeleton-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-34-components-skeleton-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
   
@@ -11930,9 +12335,9 @@ shape it with Tailwind classes to mirror the content it stands in for.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Switch</h2>
       <div class="badges">
-        <label for="c-34-components-switch-props" class="badge ok as-toggle">8 prop types</label>
+        <label for="c-35-components-switch-props" class="badge ok as-toggle">8 prop types</label>
         
-        <label for="c-34-components-switch-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-35-components-switch-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -11948,10 +12353,10 @@ a Checkbox for a single boolean that applies instantly, and pair it with a
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-34-components-switch-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-35-components-switch-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-34-components-switch-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-35-components-switch-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -12132,9 +12537,9 @@ size?: &quot;sm&quot; | &quot;md&quot;</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Table.Root</h2>
       <div class="badges">
-        <label for="c-35-components-table-props" class="badge ok as-toggle">6 prop types</label>
+        <label for="c-36-components-table-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-35-components-table-stories" class="badge ok as-toggle">12 stories</label>
+        <label for="c-36-components-table-stories" class="badge ok as-toggle">12 stories</label>
         
         
       </div>
@@ -12165,10 +12570,10 @@ import { Table } from &#39;@agentero/design-system/table&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-35-components-table-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-36-components-table-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-35-components-table-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-36-components-table-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -12467,9 +12872,9 @@ keeps the menu open.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tabs.Root</h2>
       <div class="badges">
-        <label for="c-36-components-tabs-props" class="badge ok as-toggle">9 prop types</label>
+        <label for="c-37-components-tabs-props" class="badge ok as-toggle">9 prop types</label>
         
-        <label for="c-36-components-tabs-stories" class="badge ok as-toggle">8 stories</label>
+        <label for="c-37-components-tabs-stories" class="badge ok as-toggle">8 stories</label>
         
         
       </div>
@@ -12500,10 +12905,10 @@ import { Tabs } from &#39;@agentero/design-system/tabs&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-36-components-tabs-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-37-components-tabs-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-36-components-tabs-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-37-components-tabs-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -12724,9 +13129,9 @@ tablist role is announced.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tag</h2>
       <div class="badges">
-        <label for="c-37-components-tag-props" class="badge ok as-toggle">8 prop types</label>
+        <label for="c-38-components-tag-props" class="badge ok as-toggle">8 prop types</label>
         
-        <label for="c-37-components-tag-stories" class="badge ok as-toggle">13 stories</label>
+        <label for="c-38-components-tag-stories" class="badge ok as-toggle">13 stories</label>
         
         
       </div>
@@ -12745,10 +13150,10 @@ it an interactive link or button, which adds the pointer cursor and hover fill.<
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-37-components-tag-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-38-components-tag-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-37-components-tag-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-38-components-tag-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -13192,9 +13597,9 @@ leading + trailing icons, and icon-only.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> TextArea</h2>
       <div class="badges">
-        <label for="c-38-components-textarea-props" class="badge ok as-toggle">2 prop types</label>
+        <label for="c-39-components-textarea-props" class="badge ok as-toggle">2 prop types</label>
         
-        <label for="c-38-components-textarea-stories" class="badge ok as-toggle">9 stories</label>
+        <label for="c-39-components-textarea-stories" class="badge ok as-toggle">9 stories</label>
         
         
       </div>
@@ -13211,10 +13616,10 @@ states. It wires nothing on its own: `id`, `aria-invalid` and
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-38-components-textarea-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-39-components-textarea-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-38-components-textarea-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-39-components-textarea-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -13397,9 +13802,9 @@ form&#39;s validation can reject it.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Toast</h2>
       <div class="badges">
-        <label for="c-39-components-toast-props" class="badge ok as-toggle">11 prop types</label>
+        <label for="c-40-components-toast-props" class="badge ok as-toggle">11 prop types</label>
         
-        <label for="c-39-components-toast-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-40-components-toast-stories" class="badge ok as-toggle">11 stories</label>
         
         
       </div>
@@ -13418,10 +13823,10 @@ common feedback patterns.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-39-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-40-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-39-components-toast-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-40-components-toast-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -13850,9 +14255,9 @@ action (e.g., a sync icon for a sync-in-progress toast).</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tooltip</h2>
       <div class="badges">
-        <label for="c-40-components-tooltip-props" class="badge ok as-toggle">12 prop types</label>
+        <label for="c-41-components-tooltip-props" class="badge ok as-toggle">12 prop types</label>
         
-        <label for="c-40-components-tooltip-stories" class="badge ok as-toggle">6 stories</label>
+        <label for="c-41-components-tooltip-stories" class="badge ok as-toggle">6 stories</label>
         
         
       </div>
@@ -13871,10 +14276,10 @@ on hover or focus.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-40-components-tooltip-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-41-components-tooltip-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-40-components-tooltip-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-41-components-tooltip-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -14066,9 +14471,9 @@ sideOffset?: number = 4</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> ValidationList</h2>
       <div class="badges">
-        <label for="c-41-components-validationlist-props" class="badge ok as-toggle">2 prop types</label>
+        <label for="c-42-components-validationlist-props" class="badge ok as-toggle">2 prop types</label>
         
-        <label for="c-41-components-validationlist-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-42-components-validationlist-stories" class="badge ok as-toggle">4 stories</label>
         
         
       </div>
@@ -14089,10 +14494,10 @@ your form validation; it does not own the input or block submission.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-41-components-validationlist-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-42-components-validationlist-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-41-components-validationlist-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-42-components-validationlist-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
