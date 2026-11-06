@@ -3,10 +3,10 @@
 import { ComponentProps } from 'react';
 
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
+import { ChevronRightIcon } from 'lucide-react';
 import { type VariantProps, tv } from 'tailwind-variants';
 
 import { cn, hideFocusRingAfterPointerClose } from '../../lib';
-import { IconArrowRight } from './icons';
 
 /**
  * Props for the DropdownMenu Root component.
@@ -249,7 +249,7 @@ type ItemProps = ComponentProps<typeof DropdownMenuPrimitive.Item>;
 /**
  * Selectable row inside the menu. Fires `onSelect` on click or keyboard
  * activation; passing `disabled` greys the row and blocks interaction. Any
- * leading `<svg>` is sized to 24px and tinted with the tertiary icon token.
+ * leading `<svg>` is sized to 20px and tinted with the tertiary icon token.
  *
  * @summary Selectable menu row with hover + disabled styling
  *
@@ -277,8 +277,8 @@ export const Item = ({ className, ...props }: ItemProps) => (
 			'data-disabled:pointer-events-none data-disabled:cursor-not-allowed',
 			'data-disabled:text-text-default-disable-primary',
 			'data-disabled:active:bg-bg-default-base-primary',
-			'[&>svg]:h-6',
-			'[&_path]:fill-icon-default-base-tertiary',
+			'[&>svg]:size-5',
+			'[&_svg]:text-icon-default-base-tertiary [&_svg:not([fill=none])]:fill-current [&_svg_path[fill]]:fill-current',
 			className
 		)}
 		{...props}
@@ -433,13 +433,13 @@ export const SubTrigger = ({ className, children, ...props }: SubTriggerProps) =
 			'data-[state=open]:bg-bg-default-base-primary-hover',
 			'data-disabled:pointer-events-none data-disabled:cursor-not-allowed',
 			'data-disabled:text-text-default-disable-primary',
-			'[&>svg]:h-6',
-			'[&_path]:fill-icon-default-base-tertiary',
+			'[&>svg]:size-5',
+			'[&_svg]:text-icon-default-base-tertiary [&_svg:not([fill=none])]:fill-current [&_svg_path[fill]]:fill-current',
 			className
 		)}
 		{...props}>
 		{children}
-		<IconArrowRight className="ml-auto h-4 w-4 [&>path]:fill-icon-default-base-tertiary" />
+		<ChevronRightIcon className="ml-auto size-5 text-icon-default-base-tertiary" />
 	</DropdownMenuPrimitive.SubTrigger>
 );
 SubTrigger.displayName = 'DropdownMenu.SubTrigger';

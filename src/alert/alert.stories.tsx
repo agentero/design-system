@@ -1,20 +1,34 @@
 import type { SVGProps } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import {
+	CircleAlertIcon,
+	CircleCheckIcon,
+	InfoIcon,
+	LightbulbIcon,
+	StarIcon,
+	TriangleAlertIcon
+} from 'lucide-react';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { Alert } from './alert';
-import { IconCheckCircle, IconErrorOutline, IconInfoOutline, IconStar, IconWarning } from './icons';
 
-const IconLightbulb = (props: SVGProps<SVGSVGElement>) => (
-	<svg
-		width="24"
-		height="24"
-		viewBox="0 0 24 24"
-		fill="none"
-		xmlns="http://www.w3.org/2000/svg"
-		{...props}>
-		<path d="M12 2a7 7 0 0 0-4 12.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26A7 7 0 0 0 12 2zm-2 18a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-1h-4v1z" />
+// Not icons anyone should ship — stand-ins for what consumers still pass in.
+// `LegacyBarePathIcon` is a hand-drawn SVG whose path has no `fill` (it renders
+// black unless the recipe paints it); `LegacyHardcodedFillIcon` is the exact shape
+// `@agentero/icons` exports: root `fill="none"`, path with its own hex fill.
+const LegacyBarePathIcon = (props: SVGProps<SVGSVGElement>) => (
+	<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden {...props}>
+		<path d="M11.25 12.75H6.25a.75.75 0 0 1 0-1.5h5v-5a.75.75 0 0 1 1.5 0v5h5a.75.75 0 0 1 0 1.5h-5v5a.75.75 0 0 1-1.5 0z" />
+	</svg>
+);
+
+const LegacyHardcodedFillIcon = (props: SVGProps<SVGSVGElement>) => (
+	<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden {...props}>
+		<path
+			fill="#434856"
+			d="M11.25 12.75H6.25a.75.75 0 0 1 0-1.5h5v-5a.75.75 0 0 1 1.5 0v5h5a.75.75 0 0 1 0 1.5h-5v5a.75.75 0 0 1-1.5 0z"
+		/>
 	</svg>
 );
 
@@ -57,11 +71,11 @@ const meta = {
 			options: ['default', 'star', 'check', 'error', 'info', 'warning'],
 			mapping: {
 				default: undefined,
-				star: IconStar,
-				check: IconCheckCircle,
-				error: IconErrorOutline,
-				info: IconInfoOutline,
-				warning: IconWarning
+				star: StarIcon,
+				check: CircleCheckIcon,
+				error: CircleAlertIcon,
+				info: InfoIcon,
+				warning: TriangleAlertIcon
 			}
 		}
 	},
@@ -276,8 +290,67 @@ export const WithoutIcon: Story = {
  *
  * @summary Alert with a custom icon override
  */
+// Reads what the browser actually painted: the icon's own color, and how each
+// shape reached it (lucide by stroke, the legacy shapes by fill).
+type Paint = ReturnType<typeof paintedWith>;
+
+const paintedWith = (svg: SVGElement) => {
+	const path = svg.querySelector('path') as SVGPathElement;
+	return {
+		color: getComputedStyle(svg).color,
+		svgFill: getComputedStyle(svg).fill,
+		pathFill: getComputedStyle(path).fill,
+		pathStroke: getComputedStyle(path).stroke
+	};
+};
+
+/**
+ * Test only — hidden from the sidebar and the docs page (`!dev`, `!autodocs`),
+ * so every visible story stays on lucide. The `icon` slot lands on the icon's
+ * own `<svg>` and its paint rules target that element; this run proves that a
+ * consumer's filled `@agentero/icons` glyph and a bare-path SVG both land on
+ * the alert's color, while the lucide default keeps its stroke and never gets
+ * a fill.
+ *
+ * @summary Legacy filled icons take the alert color like the lucide default
+ */
+export const LegacyFilledIcon: Story = {
+	tags: ['!dev', '!autodocs'],
+	args: { color: 'warning' },
+	render: args => (
+		<div className="flex flex-col gap-2">
+			<Alert {...args} icon={LightbulbIcon}>
+				<Alert.Title>lucide</Alert.Title>
+			</Alert>
+			<Alert {...args} icon={LegacyBarePathIcon}>
+				<Alert.Title>bare path</Alert.Title>
+			</Alert>
+			<Alert {...args} icon={LegacyHardcodedFillIcon}>
+				<Alert.Title>hardcoded fill</Alert.Title>
+			</Alert>
+		</div>
+	),
+	play: async ({ canvasElement }) => {
+		const icons = [...canvasElement.querySelectorAll<SVGElement>('[data-slot=alert-icon]')].map(
+			paintedWith
+		);
+		await expect(icons).toHaveLength(3);
+		const [lucide, barePath, hardcoded] = icons as [Paint, Paint, Paint];
+		// All three share the alert's warning color…
+		await expect(barePath.color).toBe(lucide.color);
+		await expect(hardcoded.color).toBe(lucide.color);
+		// …lucide reaches it by stroke and is never filled,
+		await expect(lucide.pathStroke).toBe(lucide.color);
+		await expect(lucide.svgFill).toBe('none');
+		await expect(lucide.pathFill).toBe('none');
+		// …the legacy shapes reach it by fill.
+		await expect(barePath.pathFill).toBe(lucide.color);
+		await expect(hardcoded.pathFill).toBe(lucide.color);
+	}
+};
+
 export const WithCustomIcon: Story = {
-	args: { color: 'creative', icon: IconLightbulb }
+	args: { color: 'creative', icon: LightbulbIcon }
 };
 
 /**

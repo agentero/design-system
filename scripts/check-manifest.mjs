@@ -18,6 +18,12 @@ const NO_OWN_PROPS = new Set([
 	'components-skeleton'
 ]);
 
+// Pages that document a convention rather than a component (Foundations/*).
+// They have no `meta.component`, so every component-shaped assertion below
+// would fail on them — but they carry nothing a consumer reads either, so the
+// manifest just skips them instead of asserting a shape they cannot have.
+const isComponentEntry = id => id.startsWith('components-');
+
 if (!fs.existsSync(MANIFEST)) {
 	console.error(`✗ ${MANIFEST} not found — run \`yarn build-storybook\` first.`);
 	process.exit(1);
@@ -30,6 +36,8 @@ const failures = [];
 if (entries.length === 0) failures.push('the manifest carries no components at all');
 
 for (const [id, entry] of entries) {
+	if (!isComponentEntry(id)) continue;
+
 	const docgen = entry.reactComponentMeta ?? entry.reactDocgenTypescript ?? {};
 	// Where the tags live depends on the docgen engine, and the unused slots are
 	// present but empty — so merge rather than pick the first one that exists.
@@ -55,4 +63,5 @@ if (failures.length > 0) {
 	process.exit(1);
 }
 
-console.log(`✓ ${entries.length} manifest entries carry a description, a @summary and props`);
+const checked = entries.filter(([id]) => isComponentEntry(id)).length;
+console.log(`✓ ${checked} manifest entries carry a description, a @summary and props`);

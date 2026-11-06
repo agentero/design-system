@@ -109,7 +109,7 @@ const RowsProbe = ({ onChange }: { onChange: (hasRows: boolean) => void }) => {
  *
  * <form onSubmit={() => runPrompt(prompt)}>
  *   <Autocomplete.Root items={recentPrompts} value={prompt} onValueChange={setPrompt}>
- *     <Autocomplete.Input aria-label="Describe your filters" before={<IconEffects />} />
+ *     <Autocomplete.Input aria-label="Describe your filters" before={<SparklesIcon />} />
  *     <Autocomplete.Content>
  *       <Autocomplete.List>
  *         {(recent: string) => (

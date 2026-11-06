@@ -1,15 +1,14 @@
 import { ComponentProps } from 'react';
 
+import { CheckIcon } from 'lucide-react';
 import { tv } from 'tailwind-variants';
-
-import { IconCheck } from './icons';
 
 export const checkListRecipe = tv({
 	slots: {
 		root: 'flex flex-col gap-1.5 text-sm text-text-default-base-primary',
 		item: 'flex items-start gap-2',
 		// em-based so the check scales with the item's font size
-		icon: 'relative top-[0.125em] size-[1.25em] shrink-0'
+		icon: 'relative top-[0.25em] size-[1em] shrink-0'
 	}
 });
 
@@ -43,7 +42,7 @@ type ItemProps = ComponentProps<'li'>;
 /** @summary List row with a leading check icon */
 export const Item = ({ className, children, ...props }: ItemProps) => (
 	<li data-slot="check-list-item" className={slots.item({ className })} {...props}>
-		<IconCheck className={slots.icon()} aria-hidden />
+		<CheckIcon className={slots.icon()} aria-hidden />
 		{children}
 	</li>
 );
