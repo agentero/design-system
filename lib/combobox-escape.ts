@@ -4,11 +4,16 @@
 // when it has nothing to undo, such as no matches and no `Empty`. So the layer holds the Escape,
 // and closes only if it comes back up unstopped, by sending a fresh Escape from the body that no
 // combobox will claim. It waits on the window, past the document, where Base UI may stop it too.
+// The open list of a `Select`, an option or the list itself, is held the same way.
 // cmdk never stops it, so a `Command` closes the layer at once.
 // Returns whether the Escape was held, in which case the layer's own handling must not run.
 export const deferEscapeToCombobox = (event: KeyboardEvent) => {
 	const target = event.target;
-	if (!(target instanceof Element) || !target.matches('[role="combobox"]')) return false;
+	if (
+		!(target instanceof Element) ||
+		!target.matches('[role="combobox"], [role="option"], [data-slot="select-content"]')
+	)
+		return false;
 	const doc = target.ownerDocument;
 	const win = doc.defaultView;
 	if (!win) return false;

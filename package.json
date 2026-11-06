@@ -55,6 +55,7 @@
     "./popover": "./src/popover/index.ts",
     "./progress": "./src/progress/index.ts",
     "./radio-group": "./src/radio-group/index.ts",
+    "./select": "./src/select/index.ts",
     "./skeleton": "./src/skeleton/index.ts",
     "./switch": "./src/switch/index.ts",
     "./table": "./src/table/index.ts",
