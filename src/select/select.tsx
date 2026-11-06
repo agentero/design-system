@@ -140,6 +140,15 @@ export const Root = <Value,>({
 	const [initialValue] = useState(defaultValue);
 	const [uncontrolledValue, setUncontrolledValue] = useState<Value | null>(defaultValue);
 	const isControlled = value !== undefined;
+
+	// A controlled value dropped back to `undefined` (a form library's reset with no defaults)
+	// clears the selection, rather than showing whatever the select last held on its own.
+	const [previousValue, setPreviousValue] = useState(value);
+	if (value !== previousValue) {
+		setPreviousValue(value);
+		if (value === undefined) setUncontrolledValue(null);
+	}
+
 	const reset = useRef(() => {});
 	reset.current = () => {
 		if (!isControlled) setUncontrolledValue(initialValue);

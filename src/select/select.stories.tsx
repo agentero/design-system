@@ -688,6 +688,57 @@ export const FormReset: Story = {
 };
 
 /**
+ * A form library's reset with no default values hands the select `undefined`,
+ * which clears the pick instead of bringing back the last one.
+ *
+ * @summary Reset to undefined clears the value
+ */
+export const ResetToUndefined: Story = {
+	tags: ['!dev', '!autodocs', '!manifest'],
+	render: () => {
+		const { control, reset } = useForm<{ state?: string | null }>();
+
+		return (
+			<div className="flex w-full flex-col items-start gap-6">
+				<div className="w-full">
+					<Controller
+						name="state"
+						control={control}
+						render={({ field }) => (
+							<Select.Root items={STATES} value={field.value} onValueChange={field.onChange}>
+								<Select.Trigger ref={field.ref} aria-label="State" placeholder="Select a state" />
+								<Select.Content>
+									{STATES.map(({ value, label }) => (
+										<Select.Item key={value} value={value}>
+											{label}
+										</Select.Item>
+									))}
+								</Select.Content>
+							</Select.Root>
+						)}
+					/>
+				</div>
+				<Button variant="secondary" size="sm" onClick={() => reset()}>
+					Reset form
+				</Button>
+			</div>
+		);
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const trigger = canvas.getByRole('combobox', { name: 'State' });
+
+		const list = await open(trigger);
+		await userEvent.click(within(list).getByRole('option', { name: 'Georgia' }));
+		await waitFor(() => expect(screen.queryByRole('listbox')).not.toBeInTheDocument());
+		await expect(trigger).toHaveTextContent('Georgia');
+
+		await userEvent.click(canvas.getByRole('button', { name: 'Reset form' }));
+		await expect(trigger).toHaveTextContent('Select a state');
+	}
+};
+
+/**
  * Inside a `Modal`, the list renders into the dialog, so the arrow keys keep
  * focus on the options. Escape closes the list first and the modal on the
  * next press.
@@ -740,6 +791,53 @@ export const InsideModal: Story = {
 
 		await userEvent.keyboard('{ArrowDown}');
 		await body.findByRole('listbox');
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+		await expect(dialog).toHaveAttribute('data-state', 'open');
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(dialog).toHaveAttribute('data-state', 'closed'));
+	}
+};
+
+/**
+ * Opened by pointer with nothing picked, the list itself holds focus, and
+ * Escape there still closes the list only, not the `Modal`.
+ *
+ * @summary Escape from the list itself inside a Modal
+ */
+export const ModalEscapeFromList: Story = {
+	tags: ['!dev', '!autodocs', '!manifest'],
+	render: () => (
+		<Modal.Root>
+			<Modal.Trigger asChild>
+				<Button variant="secondary">Edit address</Button>
+			</Modal.Trigger>
+			<Modal.Content>
+				<Modal.Title>Edit address</Modal.Title>
+				<Modal.Body>
+					<Select.Root items={STATES}>
+						<Select.Trigger aria-label="State" />
+						<Select.Content>
+							{STATES.map(({ value, label }) => (
+								<Select.Item key={value} value={value}>
+									{label}
+								</Select.Item>
+							))}
+						</Select.Content>
+					</Select.Root>
+				</Modal.Body>
+			</Modal.Content>
+		</Modal.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const body = within(document.body);
+		await userEvent.click(within(canvasElement).getByRole('button', { name: 'Edit address' }));
+		const dialog = await body.findByRole('dialog', { name: 'Edit address' });
+		const trigger = within(dialog).getByRole('combobox', { name: 'State' });
+		await open(trigger);
+		await waitFor(() =>
+			expect(document.activeElement).toHaveAttribute('data-slot', 'select-content')
+		);
 		await userEvent.keyboard('{Escape}');
 		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
 		await expect(dialog).toHaveAttribute('data-state', 'open');
