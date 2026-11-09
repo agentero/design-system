@@ -31,9 +31,9 @@ export const inputGroupRecipe = tv({
 			'has-[input:disabled,textarea:disabled]:bg-bg-input-disable',
 			'has-[input:disabled,textarea:disabled]:text-text-input-disable',
 			'has-[input:disabled,textarea:disabled]:shadow-none',
-			'has-[input[data-size="lg"],textarea[data-size="lg"]]:rounded-lg',
-			'has-[input[aria-invalid="true"],textarea[aria-invalid="true"]]:border-border-input-destructive',
-			'has-[input[aria-invalid="true"]:focus-within,textarea[aria-invalid="true"]:focus-within]:outline-outline-input-destructive',
+			'has-[input[data-size=lg],textarea[data-size=lg]]:rounded-lg',
+			'has-[input[aria-invalid=true],textarea[aria-invalid=true]]:border-border-input-destructive',
+			'has-[input[aria-invalid=true]:focus-within,textarea[aria-invalid=true]:focus-within]:outline-outline-input-destructive',
 			// The 1px negative margins swallow the frame's border so the group is as tall as a
 			// standalone Input; the extra `focus-visible` reset is needed because the Input's own
 			// ring rule outranks a plain descendant reset.
@@ -54,7 +54,7 @@ export const inputGroupRecipe = tv({
 		],
 		text: [
 			'flex items-center text-sm text-text-input-placeholder',
-			'group-has-[input[data-size="lg"]]/input-group:text-base',
+			'group-has-[input[data-size=lg]]/input-group:text-base',
 			'group-has-[input:disabled,textarea:disabled]/input-group:text-text-input-disable'
 		]
 	},
