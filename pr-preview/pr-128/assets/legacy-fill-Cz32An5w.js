@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-DkW27tQK.js";var t,n,r,i;function a(){return(a=e((()=>{t=`[&_:where(svg:not([fill=none]))]:fill-current`,n=`[&_:where(svg_path[fill]:not([fill=none]))]:fill-current`,r=`${t} ${n}`,i=`[&:where(:not([fill=none]))]:fill-current [&_:where(path[fill]:not([fill=none]))]:fill-current`})))()}export{i,r as n,t as r,a as t};

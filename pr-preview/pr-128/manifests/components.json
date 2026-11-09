@@ -600,16 +600,11 @@
           "summary": "Alert without the default icon"
         },
         {
-          "id": "components-alert--legacy-filled-icon",
-          "name": "Legacy Filled Icon",
-          "snippet": "const LegacyFilledIcon = () => <div className=\"flex flex-col gap-2\">\n    <Alert color=\"warning\" size=\"sm\" ghost={false} hasIcon icon={LightbulbIcon}>\n        <Alert.Title>lucide</Alert.Title>\n    </Alert>\n    <Alert color=\"warning\" size=\"sm\" ghost={false} hasIcon icon={LegacyBarePathIcon}>\n        <Alert.Title>bare path</Alert.Title>\n    </Alert>\n    <Alert\n        color=\"warning\"\n        size=\"sm\"\n        ghost={false}\n        hasIcon\n        icon={LegacyHardcodedFillIcon}>\n        <Alert.Title>hardcoded fill</Alert.Title>\n    </Alert>\n</div>;",
-          "description": "Test only, hidden from the sidebar and the docs (`!dev`, `!autodocs`). The\n`icon` slot lands on the icon's own `<svg>`, so Alert's compatibility rules\ntarget `&`; the legacy shapes must take the alert's color like the lucide default.",
-          "summary": "Legacy filled icons take the alert color like the lucide default"
-        },
-        {
           "id": "components-alert--with-custom-icon",
           "name": "With Custom Icon",
-          "snippet": "const WithCustomIcon = () => <Alert\n    color=\"creative\"\n    size=\"sm\"\n    ghost={false}\n    hasIcon\n    icon={LightbulbIcon}\n    onDismiss={onDismiss ? () => {} : undefined}>\n    <Alert.Content>\n        <Alert.Title>Title</Alert.Title>\n        <Alert.Paragraph>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</Alert.Paragraph>\n    </Alert.Content>\n</Alert>;"
+          "snippet": "const WithCustomIcon = () => <Alert\n    color=\"creative\"\n    size=\"sm\"\n    ghost={false}\n    hasIcon\n    icon={LightbulbIcon}\n    onDismiss={onDismiss ? () => {} : undefined}>\n    <Alert.Content>\n        <Alert.Title>Title</Alert.Title>\n        <Alert.Paragraph>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</Alert.Paragraph>\n    </Alert.Content>\n</Alert>;",
+          "description": "Alert with a caller-supplied icon that replaces the default color icon. The\ncustom icon receives the slot-computed className so color tokens still\napply.",
+          "summary": "Alert with a custom icon override"
         },
         {
           "id": "components-alert--with-paragraph-html",
@@ -2332,13 +2327,6 @@
           "snippet": "const WithIcons = () => (\n    <Stack>\n        {VARIANTS.map(variant => (\n            <Row key={variant}>\n                {SIZES.map(size => (\n                    <Button key={size} variant={variant} size={size}>\n                        <PlusIcon />\n                        {TEXT}\n                        <PlusIcon />\n                    </Button>\n                ))}\n            </Row>\n        ))}\n    </Stack>\n);",
           "description": "Variant × size grid with leading and trailing icons.",
           "summary": "Variant × size grid with leading + trailing icons"
-        },
-        {
-          "id": "components-button--legacy-filled-icon",
-          "name": "Legacy Filled Icon",
-          "snippet": "const LegacyFilledIcon = () => (\n    <Stack>\n        {NON_LINK_VARIANTS.map(variant => (\n            <Row key={variant}>\n                <Button variant={variant}>\n                    <PlusIcon />\n                    lucide\n                </Button>\n                <Button variant={variant}>\n                    <LegacyBarePathIcon />\n                    bare path\n                </Button>\n                <Button variant={variant}>\n                    <LegacyHardcodedFillIcon />\n                    hardcoded fill\n                </Button>\n                <Button variant={variant}>\n                    <LegacyMaskedIcon />\n                    masked\n                </Button>\n            </Row>\n        ))}\n    </Stack>\n);",
-          "description": "Test only, hidden from the sidebar and the docs (`!dev`, `!autodocs`). The\nlegacy shapes must land on the button's color like a lucide icon in every\nvariant; this is what catches the two compatibility rules regressing.",
-          "summary": "Legacy filled icons land on the same token as lucide ones"
         },
         {
           "id": "components-button--only-icon",
@@ -7859,47 +7847,6 @@
       ],
       "import": "import { Avatar, Button, HoverCard } from \"@agentero/design-system\";"
     },
-    "foundations-icons": {
-      "id": "foundations-icons",
-      "name": "Icons",
-      "path": "./src/icons/icons.stories.tsx",
-      "jsDocTags": {},
-      "error": {
-        "name": "No component found",
-        "message": "We could not detect the component from your story file. Specify meta.component.\n  44 |  * @summary How to size and color icons, and the set the components use\n  45 |  */\n> 46 | const meta: Meta = {\n     | ^\n  47 | \ttitle: 'Foundations/Icons',\n  48 | \tparameters: {\n  49 | \t\tlayout: 'padded'\n\n./src/icons/icons.stories.tsx:\nimport type { Meta, StoryObj } from '@storybook/react-vite';\nimport {\n\tArrowUpDownIcon,\n\tArrowUpIcon,\n\tBellIcon,\n\tCheckIcon,\n\tChevronDownIcon,\n\tChevronLeftIcon,\n\tChevronRightIcon,\n\tCircleAlertIcon,\n\tCircleCheckIcon,\n\tCircleXIcon,\n\tDownloadIcon,\n\tEllipsisIcon,\n\tEyeIcon,\n\tEyeOffIcon,\n\tInfoIcon,\n\tPlusIcon,\n\tSearchIcon,\n\tStarIcon,\n\tTrash2Icon,\n\tTriangleAlertIcon,\n\tXIcon\n} from 'lucide-react';\n\n/**\n * Icons ship with the design system. `lucide-react` is a runtime dependency\n * here and reaches consumers through the `@agentero/design-system/icons`\n * subpath, so nothing is declared or versioned on the consumer side.\n *\n * There is no wrapper component and no size scale: a lucide icon is a plain\n * SVG that takes `className`, so Tailwind already does the job — `size-*` for\n * size, a `text-*` token for color, `shrink-0` when it sits next to text in a\n * flex row. The stroke is 1.5, as the Figma library draws it: the theme sets\n * it on every `svg.lucide`, so don't pass `strokeWidth` (the prop loses to that\n * rule); put a `stroke-*` class on the icon when one really needs another.\n *\n * ```tsx\n * import { ChevronRightIcon } from '@agentero/design-system/icons';\n *\n * <ChevronRightIcon className=\"size-4 shrink-0 text-icon-default-base-secondary\" />\n * ```\n *\n * @summary How to size and color icons, and the set the components use\n */\nconst meta: Meta = {\n\ttitle: 'Foundations/Icons',\n\tparameters: {\n\t\tlayout: 'padded'\n\t},\n\ttags: ['autodocs']\n};\n\nexport default meta;\ntype Story = StoryObj;\n\n/**\n * Size comes from a `size-*` class on the icon. The design system imposes no\n * scale — components pick the size that fits their own density.\n *\n * @summary Sizing icons with Tailwind classes\n */\nexport const Sizes: Story = {\n\trender: () => (\n\t\t<div className=\"flex items-end gap-8 text-icon-default-base-primary\">\n\t\t\t{['size-3.5', 'size-4', 'size-5', 'size-6'].map(size => (\n\t\t\t\t<div key={size} className=\"flex flex-col items-center gap-2\">\n\t\t\t\t\t<ChevronRightIcon className={size} />\n\t\t\t\t\t<span className=\"text-xs text-text-default-base-tertiary\">{size}</span>\n\t\t\t\t</div>\n\t\t\t))}\n\t\t</div>\n\t)\n};\n\n/**\n * Lucide paints with `stroke=\"currentColor\"` and leaves `fill` empty, so color\n * comes from a `text-*` token — **not** from `fill-*`, which is what the old\n * inlined Material glyphs used and which does nothing here.\n *\n * @summary Color through text tokens, not fill\n */\nexport const Colors: Story = {\n\trender: () => (\n\t\t<div className=\"flex gap-8\">\n\t\t\t{[\n\t\t\t\t{ token: 'text-icon-default-base-primary', Icon: BellIcon, label: 'primary' },\n\t\t\t\t{ token: 'text-icon-default-base-secondary', Icon: BellIcon, label: 'secondary' },\n\t\t\t\t{ token: 'text-icon-default-base-tertiary', Icon: BellIcon, label: 'tertiary' },\n\t\t\t\t{ token: 'text-icon-default-danger-primary', Icon: TriangleAlertIcon, label: 'danger' },\n\t\t\t\t{ token: 'text-icon-default-positive-primary', Icon: CircleCheckIcon, label: 'positive' }\n\t\t\t].map(({ token, Icon, label }) => (\n\t\t\t\t<div key={label} className={`flex flex-col items-center gap-2 ${token}`}>\n\t\t\t\t\t<Icon className=\"size-5\" />\n\t\t\t\t\t<span className=\"text-xs text-text-default-base-tertiary\">{label}</span>\n\t\t\t\t</div>\n\t\t\t))}\n\t\t</div>\n\t)\n};\n\n/**\n * The icons the components themselves render, with the name each one replaced.\n * The Checkbox check and minus, and the Combobox row check that mirrors them,\n * are not here: they are the Figma Base Checkbox glyphs, kept as local SVGs.\n * Use this page to check a swap before reaching for a different lucide glyph.\n *\n * @summary The set the design system renders internally\n */\nexport const InComponents: Story = {\n\trender: () => (\n\t\t<div className=\"grid grid-cols-2 gap-4 text-icon-default-base-primary sm:grid-cols-4\">\n\t\t\t{[\n\t\t\t\t{ Icon: ChevronRightIcon, name: 'ChevronRightIcon', where: 'Pagination, DropdownMenu' },\n\t\t\t\t{ Icon: ChevronLeftIcon, name: 'ChevronLeftIcon', where: 'Pagination' },\n\t\t\t\t{ Icon: ChevronDownIcon, name: 'ChevronDownIcon', where: 'Accordion, Combobox, Table' },\n\t\t\t\t{ Icon: CheckIcon, name: 'CheckIcon', where: 'CheckList' },\n\t\t\t\t{ Icon: XIcon, name: 'XIcon', where: 'Alert, Modal, Toast' },\n\t\t\t\t{ Icon: SearchIcon, name: 'SearchIcon', where: 'Command, Combobox, InputSearch' },\n\t\t\t\t{ Icon: CircleXIcon, name: 'CircleXIcon', where: 'Combobox, InputSearch clear' },\n\t\t\t\t{ Icon: EyeIcon, name: 'EyeIcon', where: 'InputPassword' },\n\t\t\t\t{ Icon: EyeOffIcon, name: 'EyeOffIcon', where: 'InputPassword' },\n\t\t\t\t{ Icon: ArrowUpIcon, name: 'ArrowUpIcon', where: 'DataTable sorted' },\n\t\t\t\t{ Icon: ArrowUpDownIcon, name: 'ArrowUpDownIcon', where: 'DataTable sortable' },\n\t\t\t\t{ Icon: EllipsisIcon, name: 'EllipsisIcon', where: 'Pagination ellipsis' },\n\t\t\t\t{ Icon: CircleCheckIcon, name: 'CircleCheckIcon', where: 'Alert, Toast' },\n\t\t\t\t{ Icon: CircleAlertIcon, name: 'CircleAlertIcon', where: 'Alert, Toast' },\n\t\t\t\t{ Icon: TriangleAlertIcon, name: 'TriangleAlertIcon', where: 'Alert, Toast' },\n\t\t\t\t{ Icon: InfoIcon, name: 'InfoIcon', where: 'Alert, Toast, Field' },\n\t\t\t\t{ Icon: StarIcon, name: 'StarIcon', where: 'Alert creative' }\n\t\t\t].map(({ Icon, name, where }) => (\n\t\t\t\t<div key={name} className=\"flex items-start gap-2\">\n\t\t\t\t\t<Icon className=\"size-5 shrink-0\" />\n\t\t\t\t\t<span className=\"flex flex-col text-xs\">\n\t\t\t\t\t\t<span className=\"text-text-default-base-primary\">{name}</span>\n\t\t\t\t\t\t<span className=\"text-text-default-base-tertiary\">{where}</span>\n\t\t\t\t\t</span>\n\t\t\t\t</div>\n\t\t\t))}\n\t\t</div>\n\t)\n};\n\n/**\n * Next to text: `size-*` to match the line, `shrink-0` so the flex row can't\n * squash it, and no color of its own so it follows the parent's token.\n *\n * @summary Icon composed with text\n */\nexport const InComposition: Story = {\n\trender: () => (\n\t\t<div className=\"flex items-center gap-4\">\n\t\t\t<span className=\"flex items-center gap-2 rounded-full bg-bg-button-primary-enable px-4 py-2 text-sm text-text-button-primary-enable\">\n\t\t\t\t<PlusIcon className=\"size-4 shrink-0\" />\n\t\t\t\tCreate agent\n\t\t\t</span>\n\t\t\t<span className=\"flex items-center gap-2 text-sm text-text-default-base-secondary\">\n\t\t\t\t<DownloadIcon className=\"size-4 shrink-0\" />\n\t\t\t\tDownload report\n\t\t\t</span>\n\t\t\t<span className=\"flex items-center gap-2 text-sm text-text-default-danger-primary\">\n\t\t\t\t<Trash2Icon className=\"size-4 shrink-0\" />\n\t\t\t\tDelete\n\t\t\t</span>\n\t\t</div>\n\t)\n};\n"
-      },
-      "stories": [
-        {
-          "id": "foundations-icons--sizes",
-          "name": "Sizes",
-          "snippet": "const Sizes = () => (\n    <div className=\"flex items-end gap-8 text-icon-default-base-primary\">\n        {['size-3.5', 'size-4', 'size-5', 'size-6'].map(size => (\n            <div key={size} className=\"flex flex-col items-center gap-2\">\n                <ChevronRightIcon className={size} />\n                <span className=\"text-xs text-text-default-base-tertiary\">{size}</span>\n            </div>\n        ))}\n    </div>\n);",
-          "description": "Size comes from a `size-*` class on the icon. The design system imposes no\nscale — components pick the size that fits their own density.",
-          "summary": "Sizing icons with Tailwind classes"
-        },
-        {
-          "id": "foundations-icons--colors",
-          "name": "Colors",
-          "snippet": "const Colors = () => (\n    <div className=\"flex gap-8\">\n        {[\n            { token: 'text-icon-default-base-primary', Icon: BellIcon, label: 'primary' },\n            { token: 'text-icon-default-base-secondary', Icon: BellIcon, label: 'secondary' },\n            { token: 'text-icon-default-base-tertiary', Icon: BellIcon, label: 'tertiary' },\n            { token: 'text-icon-default-danger-primary', Icon: TriangleAlertIcon, label: 'danger' },\n            { token: 'text-icon-default-positive-primary', Icon: CircleCheckIcon, label: 'positive' }\n        ].map(({ token, Icon, label }) => (\n            <div key={label} className={`flex flex-col items-center gap-2 ${token}`}>\n                <Icon className=\"size-5\" />\n                <span className=\"text-xs text-text-default-base-tertiary\">{label}</span>\n            </div>\n        ))}\n    </div>\n);",
-          "description": "Lucide paints with `stroke=\"currentColor\"` and leaves `fill` empty, so color\ncomes from a `text-*` token — **not** from `fill-*`, which is what the old\ninlined Material glyphs used and which does nothing here.",
-          "summary": "Color through text tokens, not fill"
-        },
-        {
-          "id": "foundations-icons--in-components",
-          "name": "In Components",
-          "snippet": "const InComponents = () => (\n    <div className=\"grid grid-cols-2 gap-4 text-icon-default-base-primary sm:grid-cols-4\">\n        {[\n            { Icon: ChevronRightIcon, name: 'ChevronRightIcon', where: 'Pagination, DropdownMenu' },\n            { Icon: ChevronLeftIcon, name: 'ChevronLeftIcon', where: 'Pagination' },\n            { Icon: ChevronDownIcon, name: 'ChevronDownIcon', where: 'Accordion, Combobox, Table' },\n            { Icon: CheckIcon, name: 'CheckIcon', where: 'CheckList' },\n            { Icon: XIcon, name: 'XIcon', where: 'Alert, Modal, Toast' },\n            { Icon: SearchIcon, name: 'SearchIcon', where: 'Command, Combobox, InputSearch' },\n            { Icon: CircleXIcon, name: 'CircleXIcon', where: 'Combobox, InputSearch clear' },\n            { Icon: EyeIcon, name: 'EyeIcon', where: 'InputPassword' },\n            { Icon: EyeOffIcon, name: 'EyeOffIcon', where: 'InputPassword' },\n            { Icon: ArrowUpIcon, name: 'ArrowUpIcon', where: 'DataTable sorted' },\n            { Icon: ArrowUpDownIcon, name: 'ArrowUpDownIcon', where: 'DataTable sortable' },\n            { Icon: EllipsisIcon, name: 'EllipsisIcon', where: 'Pagination ellipsis' },\n            { Icon: CircleCheckIcon, name: 'CircleCheckIcon', where: 'Alert, Toast' },\n            { Icon: CircleAlertIcon, name: 'CircleAlertIcon', where: 'Alert, Toast' },\n            { Icon: TriangleAlertIcon, name: 'TriangleAlertIcon', where: 'Alert, Toast' },\n            { Icon: InfoIcon, name: 'InfoIcon', where: 'Alert, Toast, Field' },\n            { Icon: StarIcon, name: 'StarIcon', where: 'Alert creative' }\n        ].map(({ Icon, name, where }) => (\n            <div key={name} className=\"flex items-start gap-2\">\n                <Icon className=\"size-5 shrink-0\" />\n                <span className=\"flex flex-col text-xs\">\n                    <span className=\"text-text-default-base-primary\">{name}</span>\n                    <span className=\"text-text-default-base-tertiary\">{where}</span>\n                </span>\n            </div>\n        ))}\n    </div>\n);",
-          "description": "The icons the components themselves render, with the name each one replaced.\nThe Checkbox check and minus, and the Combobox row check that mirrors them,\nare not here: they are the Figma Base Checkbox glyphs, kept as local SVGs.\nUse this page to check a swap before reaching for a different lucide glyph.",
-          "summary": "The set the design system renders internally"
-        },
-        {
-          "id": "foundations-icons--in-composition",
-          "name": "In Composition",
-          "snippet": "const InComposition = () => (\n    <div className=\"flex items-center gap-4\">\n        <span className=\"flex items-center gap-2 rounded-full bg-bg-button-primary-enable px-4 py-2 text-sm text-text-button-primary-enable\">\n            <PlusIcon className=\"size-4 shrink-0\" />\n            Create agent\n        </span>\n        <span className=\"flex items-center gap-2 text-sm text-text-default-base-secondary\">\n            <DownloadIcon className=\"size-4 shrink-0\" />\n            Download report\n        </span>\n        <span className=\"flex items-center gap-2 text-sm text-text-default-danger-primary\">\n            <Trash2Icon className=\"size-4 shrink-0\" />\n            Delete\n        </span>\n    </div>\n);",
-          "description": "Next to text: `size-*` to match the line, `shrink-0` so the flex row can't\nsquash it, and no color of its own so it follows the parent's token.",
-          "summary": "Icon composed with text"
-        }
-      ],
-      "import": "import { ChevronRightIcon, DownloadIcon, PlusIcon, Trash2Icon } from \"lucide-react\";"
-    },
     "components-inputgroup": {
       "id": "components-inputgroup",
       "name": "InputGroup.Root",
@@ -8017,12 +7964,6 @@
           "snippet": "const PhoneField = () => (\n    <FieldStates label=\"Phone number\" error=\"Enter a 10-digit phone number.\">\n        <PhoneInput />\n    </FieldStates>\n);",
           "description": "The optional phone field from the Portal UI library: a country code picker\nbefore the number. The picker leads, so the `action` addon rounds its\nbutton's start corners with the frame.",
           "summary": "Phone field with a leading country code picker, valid and invalid"
-        },
-        {
-          "id": "components-inputgroup--legacy-filled-icon",
-          "name": "Legacy Filled Icon",
-          "snippet": "const LegacyFilledIcon = () => (\n    <div className=\"flex flex-col gap-2\">\n        {[false, true].map(disabled =>\n            [SearchIcon, LegacyBarePathIcon, LegacyHardcodedFillIcon].map((Icon, index) => (\n                <InputGroup.Root key={`${disabled}-${index}`}>\n                    <InputGroup.Addon>\n                        <Icon />\n                    </InputGroup.Addon>\n                    <Input disabled={disabled} placeholder=\"Search agencies\" aria-label=\"Search agencies\" />\n                </InputGroup.Root>\n            ))\n        )}\n    </div>\n);",
-          "description": "Test only, hidden from the sidebar and the docs (`!dev`, `!autodocs`). A legacy\nglyph in an addon must take the addon's token, enabled and disabled, like a\nlucide icon does."
         }
       ],
       "import": "import {\n    Button,\n    Divider,\n    DropdownMenu,\n    Field,\n    FieldText,\n    Input,\n    InputGroup,\n    Label,\n    Tag,\n} from \"@agentero/design-system\";\nimport { ChevronDownIcon, MailIcon, SearchIcon } from \"lucide-react\";"
@@ -12252,6 +12193,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5317
+    "durationMs": 4626
   }
 }

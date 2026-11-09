@@ -588,13 +588,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><a class="filter-pill err" data-k="errors" href="#filter-errors">1/44 prop type error</a><a class="filter-pill info" data-k="infos" href="#filter-infos">1/44 info</a><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/394 story errors</a></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">43 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/387 story errors</a></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>5.3s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>4.6s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -865,7 +865,7 @@ import { ChevronDownIcon } from "lucide-react";</code></pre>
       <div class="badges">
         <label for="c-1-components-alert-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-1-components-alert-stories" class="badge ok as-toggle">24 stories</label>
+        <label for="c-1-components-alert-stories" class="badge ok as-toggle">23 stories</label>
         
         
       </div>
@@ -1291,37 +1291,13 @@ the surrounding context already conveys the semantic intent.</div>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">Legacy Filled Icon</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Legacy filled icons take the alert color like the lucide default</div>
-              <div class="hint">Test only, hidden from the sidebar and the docs (`!dev`, `!autodocs`). The
-`icon` slot lands on the icon&#39;s own `&lt;svg&gt;`, so Alert&#39;s compatibility rules
-target `&amp;`; the legacy shapes must take the alert&#39;s color like the lucide default.</div>
-              <pre><code>const LegacyFilledIcon = () =&gt; &lt;div className=&quot;flex flex-col gap-2&quot;&gt;
-    &lt;Alert color=&quot;warning&quot; size=&quot;sm&quot; ghost={false} hasIcon icon={LightbulbIcon}&gt;
-        &lt;Alert.Title&gt;lucide&lt;/Alert.Title&gt;
-    &lt;/Alert&gt;
-    &lt;Alert color=&quot;warning&quot; size=&quot;sm&quot; ghost={false} hasIcon icon={LegacyBarePathIcon}&gt;
-        &lt;Alert.Title&gt;bare path&lt;/Alert.Title&gt;
-    &lt;/Alert&gt;
-    &lt;Alert
-        color=&quot;warning&quot;
-        size=&quot;sm&quot;
-        ghost={false}
-        hasIcon
-        icon={LegacyHardcodedFillIcon}&gt;
-        &lt;Alert.Title&gt;hardcoded fill&lt;/Alert.Title&gt;
-    &lt;/Alert&gt;
-&lt;/div&gt;;</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
                 <span class="ex-name">With Custom Icon</span>
                 <span class="badge ok">story ok</span>
               </div>
-              
-              
+              <div>Alert with a custom icon override</div>
+              <div class="hint">Alert with a caller-supplied icon that replaces the default color icon. The
+custom icon receives the slot-computed className so color tokens still
+apply.</div>
               <pre><code>const WithCustomIcon = () =&gt; &lt;Alert
     color=&quot;creative&quot;
     size=&quot;sm&quot;
@@ -2932,7 +2908,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
       <div class="badges">
         <label for="c-5-components-button-props" class="badge ok as-toggle">12 prop types</label>
         
-        <label for="c-5-components-button-stories" class="badge ok as-toggle">12 stories</label>
+        <label for="c-5-components-button-stories" class="badge ok as-toggle">11 stories</label>
         
         
       </div>
@@ -3178,40 +3154,6 @@ and `data-disabled` on the child instead.</div>
                         &lt;PlusIcon /&gt;
                     &lt;/Button&gt;
                 ))}
-            &lt;/Row&gt;
-        ))}
-    &lt;/Stack&gt;
-);</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Legacy Filled Icon</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Legacy filled icons land on the same token as lucide ones</div>
-              <div class="hint">Test only, hidden from the sidebar and the docs (`!dev`, `!autodocs`). The
-legacy shapes must land on the button&#39;s color like a lucide icon in every
-variant; this is what catches the two compatibility rules regressing.</div>
-              <pre><code>const LegacyFilledIcon = () =&gt; (
-    &lt;Stack&gt;
-        {NON_LINK_VARIANTS.map(variant =&gt; (
-            &lt;Row key={variant}&gt;
-                &lt;Button variant={variant}&gt;
-                    &lt;PlusIcon /&gt;
-                    lucide
-                &lt;/Button&gt;
-                &lt;Button variant={variant}&gt;
-                    &lt;LegacyBarePathIcon /&gt;
-                    bare path
-                &lt;/Button&gt;
-                &lt;Button variant={variant}&gt;
-                    &lt;LegacyHardcodedFillIcon /&gt;
-                    hardcoded fill
-                &lt;/Button&gt;
-                &lt;Button variant={variant}&gt;
-                    &lt;LegacyMaskedIcon /&gt;
-                    masked
-                &lt;/Button&gt;
             &lt;/Row&gt;
         ))}
     &lt;/Stack&gt;
@@ -9134,364 +9076,6 @@ trigger-dense UIs where an instant preview reads as more responsive.</div>
 </article>
 <article
   class="card 
-  has-error 
-  has-info 
-  no-story-error
-  no-doc-error"
-  role="listitem"
-  aria-label="Icons">
-  <div class="head">
-    <div class="title">
-      <h2><span class="status-dot dot-err"></span> Icons</h2>
-      <div class="badges">
-        <label for="c-21-foundations-icons-err" class="badge err as-toggle">prop type error</label>
-        <label for="c-21-foundations-icons-info" class="badge info as-toggle">1 info</label>
-        <label for="c-21-foundations-icons-stories" class="badge ok as-toggle">4 stories</label>
-        
-        
-      </div>
-    </div>
-    <div class="meta" title="./src/icons/icons.stories.tsx">foundations-icons · ./src/icons/icons.stories.tsx</div>
-    
-    
-    
-  </div>
-
-  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
-  <input id="c-21-foundations-icons-err" class="tg tg-err" type="checkbox" hidden />
-  <input id="c-21-foundations-icons-info" class="tg tg-info" type="checkbox" hidden />
-  <input id="c-21-foundations-icons-stories" class="tg tg-stories" type="checkbox" hidden />
-  
-  
-  
-
-  <div class="panels">
-    
-        <div class="panel panel-err">
-          
-    <div class="note err">
-      <div class="note-title">Prop type error</div>
-      <div class="note-body"><pre><code>We could not detect the component from your story file. Specify meta.component.
-  44 |  * @summary How to size and color icons, and the set the components use
-  45 |  */
-&gt; 46 | const meta: Meta = {
-     | ^
-  47 | 	title: &#39;Foundations/Icons&#39;,
-  48 | 	parameters: {
-  49 | 		layout: &#39;padded&#39;
-
-./src/icons/icons.stories.tsx:
-import type { Meta, StoryObj } from &#39;@storybook/react-vite&#39;;
-import {
-	ArrowUpDownIcon,
-	ArrowUpIcon,
-	BellIcon,
-	CheckIcon,
-	ChevronDownIcon,
-	ChevronLeftIcon,
-	ChevronRightIcon,
-	CircleAlertIcon,
-	CircleCheckIcon,
-	CircleXIcon,
-	DownloadIcon,
-	EllipsisIcon,
-	EyeIcon,
-	EyeOffIcon,
-	InfoIcon,
-	PlusIcon,
-	SearchIcon,
-	StarIcon,
-	Trash2Icon,
-	TriangleAlertIcon,
-	XIcon
-} from &#39;lucide-react&#39;;
-
-/**
- * Icons ship with the design system. `lucide-react` is a runtime dependency
- * here and reaches consumers through the `@agentero/design-system/icons`
- * subpath, so nothing is declared or versioned on the consumer side.
- *
- * There is no wrapper component and no size scale: a lucide icon is a plain
- * SVG that takes `className`, so Tailwind already does the job — `size-*` for
- * size, a `text-*` token for color, `shrink-0` when it sits next to text in a
- * flex row. The stroke is 1.5, as the Figma library draws it: the theme sets
- * it on every `svg.lucide`, so don&#39;t pass `strokeWidth` (the prop loses to that
- * rule); put a `stroke-*` class on the icon when one really needs another.
- *
- * ```tsx
- * import { ChevronRightIcon } from &#39;@agentero/design-system/icons&#39;;
- *
- * &lt;ChevronRightIcon className=&quot;size-4 shrink-0 text-icon-default-base-secondary&quot; /&gt;
- * ```
- *
- * @summary How to size and color icons, and the set the components use
- */
-const meta: Meta = {
-	title: &#39;Foundations/Icons&#39;,
-	parameters: {
-		layout: &#39;padded&#39;
-	},
-	tags: [&#39;autodocs&#39;]
-};
-
-export default meta;
-type Story = StoryObj;
-
-/**
- * Size comes from a `size-*` class on the icon. The design system imposes no
- * scale — components pick the size that fits their own density.
- *
- * @summary Sizing icons with Tailwind classes
- */
-export const Sizes: Story = {
-	render: () =&gt; (
-		&lt;div className=&quot;flex items-end gap-8 text-icon-default-base-primary&quot;&gt;
-			{[&#39;size-3.5&#39;, &#39;size-4&#39;, &#39;size-5&#39;, &#39;size-6&#39;].map(size =&gt; (
-				&lt;div key={size} className=&quot;flex flex-col items-center gap-2&quot;&gt;
-					&lt;ChevronRightIcon className={size} /&gt;
-					&lt;span className=&quot;text-xs text-text-default-base-tertiary&quot;&gt;{size}&lt;/span&gt;
-				&lt;/div&gt;
-			))}
-		&lt;/div&gt;
-	)
-};
-
-/**
- * Lucide paints with `stroke=&quot;currentColor&quot;` and leaves `fill` empty, so color
- * comes from a `text-*` token — **not** from `fill-*`, which is what the old
- * inlined Material glyphs used and which does nothing here.
- *
- * @summary Color through text tokens, not fill
- */
-export const Colors: Story = {
-	render: () =&gt; (
-		&lt;div className=&quot;flex gap-8&quot;&gt;
-			{[
-				{ token: &#39;text-icon-default-base-primary&#39;, Icon: BellIcon, label: &#39;primary&#39; },
-				{ token: &#39;text-icon-default-base-secondary&#39;, Icon: BellIcon, label: &#39;secondary&#39; },
-				{ token: &#39;text-icon-default-base-tertiary&#39;, Icon: BellIcon, label: &#39;tertiary&#39; },
-				{ token: &#39;text-icon-default-danger-primary&#39;, Icon: TriangleAlertIcon, label: &#39;danger&#39; },
-				{ token: &#39;text-icon-default-positive-primary&#39;, Icon: CircleCheckIcon, label: &#39;positive&#39; }
-			].map(({ token, Icon, label }) =&gt; (
-				&lt;div key={label} className={`flex flex-col items-center gap-2 ${token}`}&gt;
-					&lt;Icon className=&quot;size-5&quot; /&gt;
-					&lt;span className=&quot;text-xs text-text-default-base-tertiary&quot;&gt;{label}&lt;/span&gt;
-				&lt;/div&gt;
-			))}
-		&lt;/div&gt;
-	)
-};
-
-/**
- * The icons the components themselves render, with the name each one replaced.
- * The Checkbox check and minus, and the Combobox row check that mirrors them,
- * are not here: they are the Figma Base Checkbox glyphs, kept as local SVGs.
- * Use this page to check a swap before reaching for a different lucide glyph.
- *
- * @summary The set the design system renders internally
- */
-export const InComponents: Story = {
-	render: () =&gt; (
-		&lt;div className=&quot;grid grid-cols-2 gap-4 text-icon-default-base-primary sm:grid-cols-4&quot;&gt;
-			{[
-				{ Icon: ChevronRightIcon, name: &#39;ChevronRightIcon&#39;, where: &#39;Pagination, DropdownMenu&#39; },
-				{ Icon: ChevronLeftIcon, name: &#39;ChevronLeftIcon&#39;, where: &#39;Pagination&#39; },
-				{ Icon: ChevronDownIcon, name: &#39;ChevronDownIcon&#39;, where: &#39;Accordion, Combobox, Table&#39; },
-				{ Icon: CheckIcon, name: &#39;CheckIcon&#39;, where: &#39;CheckList&#39; },
-				{ Icon: XIcon, name: &#39;XIcon&#39;, where: &#39;Alert, Modal, Toast&#39; },
-				{ Icon: SearchIcon, name: &#39;SearchIcon&#39;, where: &#39;Command, Combobox, InputSearch&#39; },
-				{ Icon: CircleXIcon, name: &#39;CircleXIcon&#39;, where: &#39;Combobox, InputSearch clear&#39; },
-				{ Icon: EyeIcon, name: &#39;EyeIcon&#39;, where: &#39;InputPassword&#39; },
-				{ Icon: EyeOffIcon, name: &#39;EyeOffIcon&#39;, where: &#39;InputPassword&#39; },
-				{ Icon: ArrowUpIcon, name: &#39;ArrowUpIcon&#39;, where: &#39;DataTable sorted&#39; },
-				{ Icon: ArrowUpDownIcon, name: &#39;ArrowUpDownIcon&#39;, where: &#39;DataTable sortable&#39; },
-				{ Icon: EllipsisIcon, name: &#39;EllipsisIcon&#39;, where: &#39;Pagination ellipsis&#39; },
-				{ Icon: CircleCheckIcon, name: &#39;CircleCheckIcon&#39;, where: &#39;Alert, Toast&#39; },
-				{ Icon: CircleAlertIcon, name: &#39;CircleAlertIcon&#39;, where: &#39;Alert, Toast&#39; },
-				{ Icon: TriangleAlertIcon, name: &#39;TriangleAlertIcon&#39;, where: &#39;Alert, Toast&#39; },
-				{ Icon: InfoIcon, name: &#39;InfoIcon&#39;, where: &#39;Alert, Toast, Field&#39; },
-				{ Icon: StarIcon, name: &#39;StarIcon&#39;, where: &#39;Alert creative&#39; }
-			].map(({ Icon, name, where }) =&gt; (
-				&lt;div key={name} className=&quot;flex items-start gap-2&quot;&gt;
-					&lt;Icon className=&quot;size-5 shrink-0&quot; /&gt;
-					&lt;span className=&quot;flex flex-col text-xs&quot;&gt;
-						&lt;span className=&quot;text-text-default-base-primary&quot;&gt;{name}&lt;/span&gt;
-						&lt;span className=&quot;text-text-default-base-tertiary&quot;&gt;{where}&lt;/span&gt;
-					&lt;/span&gt;
-				&lt;/div&gt;
-			))}
-		&lt;/div&gt;
-	)
-};
-
-/**
- * Next to text: `size-*` to match the line, `shrink-0` so the flex row can&#39;t
- * squash it, and no color of its own so it follows the parent&#39;s token.
- *
- * @summary Icon composed with text
- */
-export const InComposition: Story = {
-	render: () =&gt; (
-		&lt;div className=&quot;flex items-center gap-4&quot;&gt;
-			&lt;span className=&quot;flex items-center gap-2 rounded-full bg-bg-button-primary-enable px-4 py-2 text-sm text-text-button-primary-enable&quot;&gt;
-				&lt;PlusIcon className=&quot;size-4 shrink-0&quot; /&gt;
-				Create agent
-			&lt;/span&gt;
-			&lt;span className=&quot;flex items-center gap-2 text-sm text-text-default-base-secondary&quot;&gt;
-				&lt;DownloadIcon className=&quot;size-4 shrink-0&quot; /&gt;
-				Download report
-			&lt;/span&gt;
-			&lt;span className=&quot;flex items-center gap-2 text-sm text-text-default-danger-primary&quot;&gt;
-				&lt;Trash2Icon className=&quot;size-4 shrink-0&quot; /&gt;
-				Delete
-			&lt;/span&gt;
-		&lt;/div&gt;
-	)
-};
-</code></pre></div>
-    </div>
-        </div>
-    
-        <div class="panel panel-info">
-          
-    <div class="note info">
-      <div class="note-title">Info</div>
-      <div class="note-body">No description found. Write a jsdoc comment such as /** Component description */.</div>
-    </div>
-        </div>
-    
-    
-        <div class="panel panel-stories">
-          
-          
-          
-          <div class="note ok">
-                <div class="row">
-                  <span class="ex-name">Imports</span>
-                </div>
-                <pre><code>import { ChevronRightIcon, DownloadIcon, PlusIcon, Trash2Icon } from "lucide-react";</code></pre>
-              </div>
-          
-          
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Sizes</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Sizing icons with Tailwind classes</div>
-              <div class="hint">Size comes from a `size-*` class on the icon. The design system imposes no
-scale — components pick the size that fits their own density.</div>
-              <pre><code>const Sizes = () =&gt; (
-    &lt;div className=&quot;flex items-end gap-8 text-icon-default-base-primary&quot;&gt;
-        {[&#39;size-3.5&#39;, &#39;size-4&#39;, &#39;size-5&#39;, &#39;size-6&#39;].map(size =&gt; (
-            &lt;div key={size} className=&quot;flex flex-col items-center gap-2&quot;&gt;
-                &lt;ChevronRightIcon className={size} /&gt;
-                &lt;span className=&quot;text-xs text-text-default-base-tertiary&quot;&gt;{size}&lt;/span&gt;
-            &lt;/div&gt;
-        ))}
-    &lt;/div&gt;
-);</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Colors</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Color through text tokens, not fill</div>
-              <div class="hint">Lucide paints with `stroke=&quot;currentColor&quot;` and leaves `fill` empty, so color
-comes from a `text-*` token — **not** from `fill-*`, which is what the old
-inlined Material glyphs used and which does nothing here.</div>
-              <pre><code>const Colors = () =&gt; (
-    &lt;div className=&quot;flex gap-8&quot;&gt;
-        {[
-            { token: &#39;text-icon-default-base-primary&#39;, Icon: BellIcon, label: &#39;primary&#39; },
-            { token: &#39;text-icon-default-base-secondary&#39;, Icon: BellIcon, label: &#39;secondary&#39; },
-            { token: &#39;text-icon-default-base-tertiary&#39;, Icon: BellIcon, label: &#39;tertiary&#39; },
-            { token: &#39;text-icon-default-danger-primary&#39;, Icon: TriangleAlertIcon, label: &#39;danger&#39; },
-            { token: &#39;text-icon-default-positive-primary&#39;, Icon: CircleCheckIcon, label: &#39;positive&#39; }
-        ].map(({ token, Icon, label }) =&gt; (
-            &lt;div key={label} className={`flex flex-col items-center gap-2 ${token}`}&gt;
-                &lt;Icon className=&quot;size-5&quot; /&gt;
-                &lt;span className=&quot;text-xs text-text-default-base-tertiary&quot;&gt;{label}&lt;/span&gt;
-            &lt;/div&gt;
-        ))}
-    &lt;/div&gt;
-);</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">In Components</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>The set the design system renders internally</div>
-              <div class="hint">The icons the components themselves render, with the name each one replaced.
-The Checkbox check and minus, and the Combobox row check that mirrors them,
-are not here: they are the Figma Base Checkbox glyphs, kept as local SVGs.
-Use this page to check a swap before reaching for a different lucide glyph.</div>
-              <pre><code>const InComponents = () =&gt; (
-    &lt;div className=&quot;grid grid-cols-2 gap-4 text-icon-default-base-primary sm:grid-cols-4&quot;&gt;
-        {[
-            { Icon: ChevronRightIcon, name: &#39;ChevronRightIcon&#39;, where: &#39;Pagination, DropdownMenu&#39; },
-            { Icon: ChevronLeftIcon, name: &#39;ChevronLeftIcon&#39;, where: &#39;Pagination&#39; },
-            { Icon: ChevronDownIcon, name: &#39;ChevronDownIcon&#39;, where: &#39;Accordion, Combobox, Table&#39; },
-            { Icon: CheckIcon, name: &#39;CheckIcon&#39;, where: &#39;CheckList&#39; },
-            { Icon: XIcon, name: &#39;XIcon&#39;, where: &#39;Alert, Modal, Toast&#39; },
-            { Icon: SearchIcon, name: &#39;SearchIcon&#39;, where: &#39;Command, Combobox, InputSearch&#39; },
-            { Icon: CircleXIcon, name: &#39;CircleXIcon&#39;, where: &#39;Combobox, InputSearch clear&#39; },
-            { Icon: EyeIcon, name: &#39;EyeIcon&#39;, where: &#39;InputPassword&#39; },
-            { Icon: EyeOffIcon, name: &#39;EyeOffIcon&#39;, where: &#39;InputPassword&#39; },
-            { Icon: ArrowUpIcon, name: &#39;ArrowUpIcon&#39;, where: &#39;DataTable sorted&#39; },
-            { Icon: ArrowUpDownIcon, name: &#39;ArrowUpDownIcon&#39;, where: &#39;DataTable sortable&#39; },
-            { Icon: EllipsisIcon, name: &#39;EllipsisIcon&#39;, where: &#39;Pagination ellipsis&#39; },
-            { Icon: CircleCheckIcon, name: &#39;CircleCheckIcon&#39;, where: &#39;Alert, Toast&#39; },
-            { Icon: CircleAlertIcon, name: &#39;CircleAlertIcon&#39;, where: &#39;Alert, Toast&#39; },
-            { Icon: TriangleAlertIcon, name: &#39;TriangleAlertIcon&#39;, where: &#39;Alert, Toast&#39; },
-            { Icon: InfoIcon, name: &#39;InfoIcon&#39;, where: &#39;Alert, Toast, Field&#39; },
-            { Icon: StarIcon, name: &#39;StarIcon&#39;, where: &#39;Alert creative&#39; }
-        ].map(({ Icon, name, where }) =&gt; (
-            &lt;div key={name} className=&quot;flex items-start gap-2&quot;&gt;
-                &lt;Icon className=&quot;size-5 shrink-0&quot; /&gt;
-                &lt;span className=&quot;flex flex-col text-xs&quot;&gt;
-                    &lt;span className=&quot;text-text-default-base-primary&quot;&gt;{name}&lt;/span&gt;
-                    &lt;span className=&quot;text-text-default-base-tertiary&quot;&gt;{where}&lt;/span&gt;
-                &lt;/span&gt;
-            &lt;/div&gt;
-        ))}
-    &lt;/div&gt;
-);</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">In Composition</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Icon composed with text</div>
-              <div class="hint">Next to text: `size-*` to match the line, `shrink-0` so the flex row can&#39;t
-squash it, and no color of its own so it follows the parent&#39;s token.</div>
-              <pre><code>const InComposition = () =&gt; (
-    &lt;div className=&quot;flex items-center gap-4&quot;&gt;
-        &lt;span className=&quot;flex items-center gap-2 rounded-full bg-bg-button-primary-enable px-4 py-2 text-sm text-text-button-primary-enable&quot;&gt;
-            &lt;PlusIcon className=&quot;size-4 shrink-0&quot; /&gt;
-            Create agent
-        &lt;/span&gt;
-        &lt;span className=&quot;flex items-center gap-2 text-sm text-text-default-base-secondary&quot;&gt;
-            &lt;DownloadIcon className=&quot;size-4 shrink-0&quot; /&gt;
-            Download report
-        &lt;/span&gt;
-        &lt;span className=&quot;flex items-center gap-2 text-sm text-text-default-danger-primary&quot;&gt;
-            &lt;Trash2Icon className=&quot;size-4 shrink-0&quot; /&gt;
-            Delete
-        &lt;/span&gt;
-    &lt;/div&gt;
-);</code></pre>
-            </div>
-        </div>
-    
-    
-  </div>
-</article>
-<article
-  class="card 
   no-error 
   no-info 
   no-story-error
@@ -9502,9 +9086,9 @@ squash it, and no color of its own so it follows the parent&#39;s token.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Input</h2>
       <div class="badges">
-        <label for="c-22-components-input-props" class="badge ok as-toggle">1 prop type</label>
+        <label for="c-21-components-input-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-22-components-input-stories" class="badge ok as-toggle">9 stories</label>
+        <label for="c-21-components-input-stories" class="badge ok as-toggle">9 stories</label>
         
         
       </div>
@@ -9527,10 +9111,10 @@ what assistive technology announces.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-22-components-input-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-21-components-input-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-22-components-input-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-21-components-input-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -9704,7 +9288,7 @@ they cannot change.</div>
       <div class="badges">
         
         
-        <label for="c-23-components-inputgroup-stories" class="badge ok as-toggle">13 stories</label>
+        <label for="c-22-components-inputgroup-stories" class="badge ok as-toggle">12 stories</label>
         
         
       </div>
@@ -9727,7 +9311,7 @@ hands its state to the frame through `:has()`, so focus, `disabled`,
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-23-components-inputgroup-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-22-components-inputgroup-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
   
@@ -9993,30 +9577,6 @@ button&#39;s start corners with the frame.</div>
     &lt;/FieldStates&gt;
 );</code></pre>
             </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Legacy Filled Icon</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              
-              <div class="hint">Test only, hidden from the sidebar and the docs (`!dev`, `!autodocs`). A legacy
-glyph in an addon must take the addon&#39;s token, enabled and disabled, like a
-lucide icon does.</div>
-              <pre><code>const LegacyFilledIcon = () =&gt; (
-    &lt;div className=&quot;flex flex-col gap-2&quot;&gt;
-        {[false, true].map(disabled =&gt;
-            [SearchIcon, LegacyBarePathIcon, LegacyHardcodedFillIcon].map((Icon, index) =&gt; (
-                &lt;InputGroup.Root key={`${disabled}-${index}`}&gt;
-                    &lt;InputGroup.Addon&gt;
-                        &lt;Icon /&gt;
-                    &lt;/InputGroup.Addon&gt;
-                    &lt;Input disabled={disabled} placeholder=&quot;Search agencies&quot; aria-label=&quot;Search agencies&quot; /&gt;
-                &lt;/InputGroup.Root&gt;
-            ))
-        )}
-    &lt;/div&gt;
-);</code></pre>
-            </div>
         </div>
     
     
@@ -10034,9 +9594,9 @@ lucide icon does.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> InputNumber</h2>
       <div class="badges">
-        <label for="c-24-components-inputnumber-props" class="badge ok as-toggle">7 prop types</label>
+        <label for="c-23-components-inputnumber-props" class="badge ok as-toggle">7 prop types</label>
         
-        <label for="c-24-components-inputnumber-stories" class="badge ok as-toggle">12 stories</label>
+        <label for="c-23-components-inputnumber-stories" class="badge ok as-toggle">12 stories</label>
         
         
       </div>
@@ -10058,10 +9618,10 @@ key. It is an `Input` driven by
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-24-components-inputnumber-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-23-components-inputnumber-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-24-components-inputnumber-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-23-components-inputnumber-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -10391,9 +9951,9 @@ plain `Input`.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> InputPassword</h2>
       <div class="badges">
-        <label for="c-25-components-inputpassword-props" class="badge ok as-toggle">1 prop type</label>
+        <label for="c-24-components-inputpassword-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-25-components-inputpassword-stories" class="badge ok as-toggle">5 stories</label>
+        <label for="c-24-components-inputpassword-stories" class="badge ok as-toggle">5 stories</label>
         
         
       </div>
@@ -10414,10 +9974,10 @@ rendered while the input is disabled.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-25-components-inputpassword-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-24-components-inputpassword-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-25-components-inputpassword-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-24-components-inputpassword-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -10559,9 +10119,9 @@ the field through the frame. A disabled field removes the toggle too.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> InputSearch</h2>
       <div class="badges">
-        <label for="c-26-components-inputsearch-props" class="badge ok as-toggle">3 prop types</label>
+        <label for="c-25-components-inputsearch-props" class="badge ok as-toggle">3 prop types</label>
         
-        <label for="c-26-components-inputsearch-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-25-components-inputsearch-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -10584,10 +10144,10 @@ once there is text. It is an `Input` of `type=&quot;search&quot;` inside an
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-26-components-inputsearch-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-25-components-inputsearch-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-26-components-inputsearch-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-25-components-inputsearch-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -10789,9 +10349,9 @@ several search fields does not read &quot;Clear search&quot; twice.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> InputTel</h2>
       <div class="badges">
-        <label for="c-27-components-inputtel-props" class="badge ok as-toggle">1 prop type</label>
+        <label for="c-26-components-inputtel-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-27-components-inputtel-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-26-components-inputtel-stories" class="badge ok as-toggle">11 stories</label>
         
         
       </div>
@@ -10812,10 +10372,10 @@ with the masked text already in `event.target.value`.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-27-components-inputtel-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-26-components-inputtel-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-27-components-inputtel-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-26-components-inputtel-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -11053,9 +10613,9 @@ with the input.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Label</h2>
       <div class="badges">
-        <label for="c-28-components-label-props" class="badge ok as-toggle">3 prop types</label>
+        <label for="c-27-components-label-props" class="badge ok as-toggle">3 prop types</label>
         
-        <label for="c-28-components-label-stories" class="badge ok as-toggle">5 stories</label>
+        <label for="c-27-components-label-stories" class="badge ok as-toggle">5 stories</label>
         
         
       </div>
@@ -11075,10 +10635,10 @@ still has to carry `required` / `aria-required`.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-28-components-label-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-27-components-label-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-28-components-label-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-27-components-label-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -11202,9 +10762,9 @@ field&#39;s control with no `htmlFor`. An explicit `htmlFor` still wins.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Loading</h2>
       <div class="badges">
-        <label for="c-29-components-loading-props" class="badge ok as-toggle">1 prop type</label>
+        <label for="c-28-components-loading-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-29-components-loading-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-28-components-loading-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -11221,10 +10781,10 @@ parent font size via `em`-based size variants (`sm`, `md`, `lg`).</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-29-components-loading-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-28-components-loading-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-29-components-loading-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-28-components-loading-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -11375,9 +10935,9 @@ against the dark background.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Modal.Root</h2>
       <div class="badges">
-        <label for="c-30-components-modal-props" class="badge ok as-toggle">5 prop types</label>
+        <label for="c-29-components-modal-props" class="badge ok as-toggle">5 prop types</label>
         
-        <label for="c-30-components-modal-stories" class="badge ok as-toggle">6 stories</label>
+        <label for="c-29-components-modal-stories" class="badge ok as-toggle">6 stories</label>
         
         
       </div>
@@ -11423,10 +10983,10 @@ import { Modal } from &#39;@agentero/design-system/modal&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-30-components-modal-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-29-components-modal-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-30-components-modal-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-29-components-modal-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -11646,9 +11206,9 @@ announced as an `alertdialog`. Only the footer actions close it.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Pagination</h2>
       <div class="badges">
-        <label for="c-31-components-pagination-props" class="badge ok as-toggle">5 prop types</label>
+        <label for="c-30-components-pagination-props" class="badge ok as-toggle">5 prop types</label>
         
-        <label for="c-31-components-pagination-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-30-components-pagination-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -11678,10 +11238,10 @@ const [page, setPage] = useState(1);
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-31-components-pagination-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-30-components-pagination-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-31-components-pagination-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-30-components-pagination-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -11836,9 +11396,9 @@ entries summary follow along.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Popover.Root</h2>
       <div class="badges">
-        <label for="c-32-components-popover-props" class="badge ok as-toggle">5 prop types</label>
+        <label for="c-31-components-popover-props" class="badge ok as-toggle">5 prop types</label>
         
-        <label for="c-32-components-popover-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-31-components-popover-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -11867,10 +11427,10 @@ import { Popover } from &#39;@agentero/design-system/popover&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-32-components-popover-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-31-components-popover-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-32-components-popover-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-31-components-popover-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -12125,9 +11685,9 @@ focus returning to its trigger once the modal closes.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Progress</h2>
       <div class="badges">
-        <label for="c-33-components-progress-props" class="badge ok as-toggle">4 prop types</label>
+        <label for="c-32-components-progress-props" class="badge ok as-toggle">4 prop types</label>
         
-        <label for="c-33-components-progress-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-32-components-progress-stories" class="badge ok as-toggle">4 stories</label>
         
         
       </div>
@@ -12146,10 +11706,10 @@ with `currentColor`, so recolor it with a plain text class — e.g.
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-33-components-progress-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-32-components-progress-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-33-components-progress-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-32-components-progress-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -12266,9 +11826,9 @@ percentage: number</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> RadioGroup.Root</h2>
       <div class="badges">
-        <label for="c-34-components-radiogroup-props" class="badge ok as-toggle">9 prop types</label>
+        <label for="c-33-components-radiogroup-props" class="badge ok as-toggle">9 prop types</label>
         
-        <label for="c-34-components-radiogroup-stories" class="badge ok as-toggle">12 stories</label>
+        <label for="c-33-components-radiogroup-stories" class="badge ok as-toggle">12 stories</label>
         
         
       </div>
@@ -12286,10 +11846,10 @@ percentage: number</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-34-components-radiogroup-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-33-components-radiogroup-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-34-components-radiogroup-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-33-components-radiogroup-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -12673,7 +12233,7 @@ enabled, disabled, invalid and read-only, each with one item selected.</div>
       <div class="badges">
         
         
-        <label for="c-35-components-skeleton-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-34-components-skeleton-stories" class="badge ok as-toggle">4 stories</label>
         
         
       </div>
@@ -12690,7 +12250,7 @@ shape it with Tailwind classes to mirror the content it stands in for.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-35-components-skeleton-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-34-components-skeleton-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
   
@@ -12786,9 +12346,9 @@ shape it with Tailwind classes to mirror the content it stands in for.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Switch</h2>
       <div class="badges">
-        <label for="c-36-components-switch-props" class="badge ok as-toggle">8 prop types</label>
+        <label for="c-35-components-switch-props" class="badge ok as-toggle">8 prop types</label>
         
-        <label for="c-36-components-switch-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-35-components-switch-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -12804,10 +12364,10 @@ a Checkbox for a single boolean that applies instantly, and pair it with a
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-36-components-switch-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-35-components-switch-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-36-components-switch-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-35-components-switch-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -12988,9 +12548,9 @@ size?: &quot;sm&quot; | &quot;md&quot;</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Table.Root</h2>
       <div class="badges">
-        <label for="c-37-components-table-props" class="badge ok as-toggle">6 prop types</label>
+        <label for="c-36-components-table-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-37-components-table-stories" class="badge ok as-toggle">12 stories</label>
+        <label for="c-36-components-table-stories" class="badge ok as-toggle">12 stories</label>
         
         
       </div>
@@ -13021,10 +12581,10 @@ import { Table } from &#39;@agentero/design-system/table&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-37-components-table-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-36-components-table-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-37-components-table-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-36-components-table-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -13324,9 +12884,9 @@ keeps the menu open.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tabs.Root</h2>
       <div class="badges">
-        <label for="c-38-components-tabs-props" class="badge ok as-toggle">9 prop types</label>
+        <label for="c-37-components-tabs-props" class="badge ok as-toggle">9 prop types</label>
         
-        <label for="c-38-components-tabs-stories" class="badge ok as-toggle">8 stories</label>
+        <label for="c-37-components-tabs-stories" class="badge ok as-toggle">8 stories</label>
         
         
       </div>
@@ -13357,10 +12917,10 @@ import { Tabs } from &#39;@agentero/design-system/tabs&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-38-components-tabs-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-37-components-tabs-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-38-components-tabs-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-37-components-tabs-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -13581,9 +13141,9 @@ tablist role is announced.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tag</h2>
       <div class="badges">
-        <label for="c-39-components-tag-props" class="badge ok as-toggle">8 prop types</label>
+        <label for="c-38-components-tag-props" class="badge ok as-toggle">8 prop types</label>
         
-        <label for="c-39-components-tag-stories" class="badge ok as-toggle">13 stories</label>
+        <label for="c-38-components-tag-stories" class="badge ok as-toggle">13 stories</label>
         
         
       </div>
@@ -13602,10 +13162,10 @@ it an interactive link or button, which adds the pointer cursor and hover fill.<
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-39-components-tag-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-38-components-tag-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-39-components-tag-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-38-components-tag-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -14050,9 +13610,9 @@ leading + trailing icons, and icon-only.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> TextArea</h2>
       <div class="badges">
-        <label for="c-40-components-textarea-props" class="badge ok as-toggle">2 prop types</label>
+        <label for="c-39-components-textarea-props" class="badge ok as-toggle">2 prop types</label>
         
-        <label for="c-40-components-textarea-stories" class="badge ok as-toggle">9 stories</label>
+        <label for="c-39-components-textarea-stories" class="badge ok as-toggle">9 stories</label>
         
         
       </div>
@@ -14069,10 +13629,10 @@ states. It wires nothing on its own: `id`, `aria-invalid` and
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-40-components-textarea-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-39-components-textarea-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-40-components-textarea-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-39-components-textarea-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -14255,9 +13815,9 @@ form&#39;s validation can reject it.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Toast</h2>
       <div class="badges">
-        <label for="c-41-components-toast-props" class="badge ok as-toggle">11 prop types</label>
+        <label for="c-40-components-toast-props" class="badge ok as-toggle">11 prop types</label>
         
-        <label for="c-41-components-toast-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-40-components-toast-stories" class="badge ok as-toggle">11 stories</label>
         
         
       </div>
@@ -14276,10 +13836,10 @@ common feedback patterns.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-41-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-40-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-41-components-toast-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-40-components-toast-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -14705,9 +14265,9 @@ action (e.g., a sync icon for a sync-in-progress toast).</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tooltip</h2>
       <div class="badges">
-        <label for="c-42-components-tooltip-props" class="badge ok as-toggle">12 prop types</label>
+        <label for="c-41-components-tooltip-props" class="badge ok as-toggle">12 prop types</label>
         
-        <label for="c-42-components-tooltip-stories" class="badge ok as-toggle">6 stories</label>
+        <label for="c-41-components-tooltip-stories" class="badge ok as-toggle">6 stories</label>
         
         
       </div>
@@ -14726,10 +14286,10 @@ on hover or focus.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-42-components-tooltip-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-41-components-tooltip-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-42-components-tooltip-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-41-components-tooltip-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -14921,9 +14481,9 @@ sideOffset?: number = 4</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> ValidationList</h2>
       <div class="badges">
-        <label for="c-43-components-validationlist-props" class="badge ok as-toggle">2 prop types</label>
+        <label for="c-42-components-validationlist-props" class="badge ok as-toggle">2 prop types</label>
         
-        <label for="c-43-components-validationlist-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-42-components-validationlist-stories" class="badge ok as-toggle">4 stories</label>
         
         
       </div>
@@ -14944,10 +14504,10 @@ your form validation; it does not own the input or block submission.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-43-components-validationlist-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-42-components-validationlist-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-43-components-validationlist-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-42-components-validationlist-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -15035,375 +14595,7 @@ value: string</code></pre>
   </div>
 </article>
     </div>
-    <div class="error-groups" role="region" aria-label="Prop type error groups">
-        <section class="group">
-          <input id="no-component-found-toggle" class="group-tg" type="checkbox" hidden />
-          <label for="no-component-found-toggle" class="group-header">
-            <span class="caret">▸</span>
-            <span class="group-title">No component found</span>
-            <span class="group-count">1</span>
-          </label>
-          <div class="group-cards">
-<article
-  class="card 
-  has-error 
-  has-info 
-  no-story-error
-  no-doc-error"
-  role="listitem"
-  aria-label="Icons">
-  <div class="head">
-    <div class="title">
-      <h2><span class="status-dot dot-err"></span> Icons</h2>
-      <div class="badges">
-        <label for="c-error-0-foundations-icons-err" class="badge err as-toggle">prop type error</label>
-        <label for="c-error-0-foundations-icons-info" class="badge info as-toggle">1 info</label>
-        <label for="c-error-0-foundations-icons-stories" class="badge ok as-toggle">4 stories</label>
-        
-        
-      </div>
-    </div>
-    <div class="meta" title="./src/icons/icons.stories.tsx">foundations-icons · ./src/icons/icons.stories.tsx</div>
     
-    
-    
-  </div>
-
-  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
-  <input id="c-error-0-foundations-icons-err" class="tg tg-err" type="checkbox" hidden />
-  <input id="c-error-0-foundations-icons-info" class="tg tg-info" type="checkbox" hidden />
-  <input id="c-error-0-foundations-icons-stories" class="tg tg-stories" type="checkbox" hidden />
-  
-  
-  
-
-  <div class="panels">
-    
-        <div class="panel panel-err">
-          
-    <div class="note err">
-      <div class="note-title">Prop type error</div>
-      <div class="note-body"><pre><code>We could not detect the component from your story file. Specify meta.component.
-  44 |  * @summary How to size and color icons, and the set the components use
-  45 |  */
-&gt; 46 | const meta: Meta = {
-     | ^
-  47 | 	title: &#39;Foundations/Icons&#39;,
-  48 | 	parameters: {
-  49 | 		layout: &#39;padded&#39;
-
-./src/icons/icons.stories.tsx:
-import type { Meta, StoryObj } from &#39;@storybook/react-vite&#39;;
-import {
-	ArrowUpDownIcon,
-	ArrowUpIcon,
-	BellIcon,
-	CheckIcon,
-	ChevronDownIcon,
-	ChevronLeftIcon,
-	ChevronRightIcon,
-	CircleAlertIcon,
-	CircleCheckIcon,
-	CircleXIcon,
-	DownloadIcon,
-	EllipsisIcon,
-	EyeIcon,
-	EyeOffIcon,
-	InfoIcon,
-	PlusIcon,
-	SearchIcon,
-	StarIcon,
-	Trash2Icon,
-	TriangleAlertIcon,
-	XIcon
-} from &#39;lucide-react&#39;;
-
-/**
- * Icons ship with the design system. `lucide-react` is a runtime dependency
- * here and reaches consumers through the `@agentero/design-system/icons`
- * subpath, so nothing is declared or versioned on the consumer side.
- *
- * There is no wrapper component and no size scale: a lucide icon is a plain
- * SVG that takes `className`, so Tailwind already does the job — `size-*` for
- * size, a `text-*` token for color, `shrink-0` when it sits next to text in a
- * flex row. The stroke is 1.5, as the Figma library draws it: the theme sets
- * it on every `svg.lucide`, so don&#39;t pass `strokeWidth` (the prop loses to that
- * rule); put a `stroke-*` class on the icon when one really needs another.
- *
- * ```tsx
- * import { ChevronRightIcon } from &#39;@agentero/design-system/icons&#39;;
- *
- * &lt;ChevronRightIcon className=&quot;size-4 shrink-0 text-icon-default-base-secondary&quot; /&gt;
- * ```
- *
- * @summary How to size and color icons, and the set the components use
- */
-const meta: Meta = {
-	title: &#39;Foundations/Icons&#39;,
-	parameters: {
-		layout: &#39;padded&#39;
-	},
-	tags: [&#39;autodocs&#39;]
-};
-
-export default meta;
-type Story = StoryObj;
-
-/**
- * Size comes from a `size-*` class on the icon. The design system imposes no
- * scale — components pick the size that fits their own density.
- *
- * @summary Sizing icons with Tailwind classes
- */
-export const Sizes: Story = {
-	render: () =&gt; (
-		&lt;div className=&quot;flex items-end gap-8 text-icon-default-base-primary&quot;&gt;
-			{[&#39;size-3.5&#39;, &#39;size-4&#39;, &#39;size-5&#39;, &#39;size-6&#39;].map(size =&gt; (
-				&lt;div key={size} className=&quot;flex flex-col items-center gap-2&quot;&gt;
-					&lt;ChevronRightIcon className={size} /&gt;
-					&lt;span className=&quot;text-xs text-text-default-base-tertiary&quot;&gt;{size}&lt;/span&gt;
-				&lt;/div&gt;
-			))}
-		&lt;/div&gt;
-	)
-};
-
-/**
- * Lucide paints with `stroke=&quot;currentColor&quot;` and leaves `fill` empty, so color
- * comes from a `text-*` token — **not** from `fill-*`, which is what the old
- * inlined Material glyphs used and which does nothing here.
- *
- * @summary Color through text tokens, not fill
- */
-export const Colors: Story = {
-	render: () =&gt; (
-		&lt;div className=&quot;flex gap-8&quot;&gt;
-			{[
-				{ token: &#39;text-icon-default-base-primary&#39;, Icon: BellIcon, label: &#39;primary&#39; },
-				{ token: &#39;text-icon-default-base-secondary&#39;, Icon: BellIcon, label: &#39;secondary&#39; },
-				{ token: &#39;text-icon-default-base-tertiary&#39;, Icon: BellIcon, label: &#39;tertiary&#39; },
-				{ token: &#39;text-icon-default-danger-primary&#39;, Icon: TriangleAlertIcon, label: &#39;danger&#39; },
-				{ token: &#39;text-icon-default-positive-primary&#39;, Icon: CircleCheckIcon, label: &#39;positive&#39; }
-			].map(({ token, Icon, label }) =&gt; (
-				&lt;div key={label} className={`flex flex-col items-center gap-2 ${token}`}&gt;
-					&lt;Icon className=&quot;size-5&quot; /&gt;
-					&lt;span className=&quot;text-xs text-text-default-base-tertiary&quot;&gt;{label}&lt;/span&gt;
-				&lt;/div&gt;
-			))}
-		&lt;/div&gt;
-	)
-};
-
-/**
- * The icons the components themselves render, with the name each one replaced.
- * The Checkbox check and minus, and the Combobox row check that mirrors them,
- * are not here: they are the Figma Base Checkbox glyphs, kept as local SVGs.
- * Use this page to check a swap before reaching for a different lucide glyph.
- *
- * @summary The set the design system renders internally
- */
-export const InComponents: Story = {
-	render: () =&gt; (
-		&lt;div className=&quot;grid grid-cols-2 gap-4 text-icon-default-base-primary sm:grid-cols-4&quot;&gt;
-			{[
-				{ Icon: ChevronRightIcon, name: &#39;ChevronRightIcon&#39;, where: &#39;Pagination, DropdownMenu&#39; },
-				{ Icon: ChevronLeftIcon, name: &#39;ChevronLeftIcon&#39;, where: &#39;Pagination&#39; },
-				{ Icon: ChevronDownIcon, name: &#39;ChevronDownIcon&#39;, where: &#39;Accordion, Combobox, Table&#39; },
-				{ Icon: CheckIcon, name: &#39;CheckIcon&#39;, where: &#39;CheckList&#39; },
-				{ Icon: XIcon, name: &#39;XIcon&#39;, where: &#39;Alert, Modal, Toast&#39; },
-				{ Icon: SearchIcon, name: &#39;SearchIcon&#39;, where: &#39;Command, Combobox, InputSearch&#39; },
-				{ Icon: CircleXIcon, name: &#39;CircleXIcon&#39;, where: &#39;Combobox, InputSearch clear&#39; },
-				{ Icon: EyeIcon, name: &#39;EyeIcon&#39;, where: &#39;InputPassword&#39; },
-				{ Icon: EyeOffIcon, name: &#39;EyeOffIcon&#39;, where: &#39;InputPassword&#39; },
-				{ Icon: ArrowUpIcon, name: &#39;ArrowUpIcon&#39;, where: &#39;DataTable sorted&#39; },
-				{ Icon: ArrowUpDownIcon, name: &#39;ArrowUpDownIcon&#39;, where: &#39;DataTable sortable&#39; },
-				{ Icon: EllipsisIcon, name: &#39;EllipsisIcon&#39;, where: &#39;Pagination ellipsis&#39; },
-				{ Icon: CircleCheckIcon, name: &#39;CircleCheckIcon&#39;, where: &#39;Alert, Toast&#39; },
-				{ Icon: CircleAlertIcon, name: &#39;CircleAlertIcon&#39;, where: &#39;Alert, Toast&#39; },
-				{ Icon: TriangleAlertIcon, name: &#39;TriangleAlertIcon&#39;, where: &#39;Alert, Toast&#39; },
-				{ Icon: InfoIcon, name: &#39;InfoIcon&#39;, where: &#39;Alert, Toast, Field&#39; },
-				{ Icon: StarIcon, name: &#39;StarIcon&#39;, where: &#39;Alert creative&#39; }
-			].map(({ Icon, name, where }) =&gt; (
-				&lt;div key={name} className=&quot;flex items-start gap-2&quot;&gt;
-					&lt;Icon className=&quot;size-5 shrink-0&quot; /&gt;
-					&lt;span className=&quot;flex flex-col text-xs&quot;&gt;
-						&lt;span className=&quot;text-text-default-base-primary&quot;&gt;{name}&lt;/span&gt;
-						&lt;span className=&quot;text-text-default-base-tertiary&quot;&gt;{where}&lt;/span&gt;
-					&lt;/span&gt;
-				&lt;/div&gt;
-			))}
-		&lt;/div&gt;
-	)
-};
-
-/**
- * Next to text: `size-*` to match the line, `shrink-0` so the flex row can&#39;t
- * squash it, and no color of its own so it follows the parent&#39;s token.
- *
- * @summary Icon composed with text
- */
-export const InComposition: Story = {
-	render: () =&gt; (
-		&lt;div className=&quot;flex items-center gap-4&quot;&gt;
-			&lt;span className=&quot;flex items-center gap-2 rounded-full bg-bg-button-primary-enable px-4 py-2 text-sm text-text-button-primary-enable&quot;&gt;
-				&lt;PlusIcon className=&quot;size-4 shrink-0&quot; /&gt;
-				Create agent
-			&lt;/span&gt;
-			&lt;span className=&quot;flex items-center gap-2 text-sm text-text-default-base-secondary&quot;&gt;
-				&lt;DownloadIcon className=&quot;size-4 shrink-0&quot; /&gt;
-				Download report
-			&lt;/span&gt;
-			&lt;span className=&quot;flex items-center gap-2 text-sm text-text-default-danger-primary&quot;&gt;
-				&lt;Trash2Icon className=&quot;size-4 shrink-0&quot; /&gt;
-				Delete
-			&lt;/span&gt;
-		&lt;/div&gt;
-	)
-};
-</code></pre></div>
-    </div>
-        </div>
-    
-        <div class="panel panel-info">
-          
-    <div class="note info">
-      <div class="note-title">Info</div>
-      <div class="note-body">No description found. Write a jsdoc comment such as /** Component description */.</div>
-    </div>
-        </div>
-    
-    
-        <div class="panel panel-stories">
-          
-          
-          
-          <div class="note ok">
-                <div class="row">
-                  <span class="ex-name">Imports</span>
-                </div>
-                <pre><code>import { ChevronRightIcon, DownloadIcon, PlusIcon, Trash2Icon } from "lucide-react";</code></pre>
-              </div>
-          
-          
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Sizes</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Sizing icons with Tailwind classes</div>
-              <div class="hint">Size comes from a `size-*` class on the icon. The design system imposes no
-scale — components pick the size that fits their own density.</div>
-              <pre><code>const Sizes = () =&gt; (
-    &lt;div className=&quot;flex items-end gap-8 text-icon-default-base-primary&quot;&gt;
-        {[&#39;size-3.5&#39;, &#39;size-4&#39;, &#39;size-5&#39;, &#39;size-6&#39;].map(size =&gt; (
-            &lt;div key={size} className=&quot;flex flex-col items-center gap-2&quot;&gt;
-                &lt;ChevronRightIcon className={size} /&gt;
-                &lt;span className=&quot;text-xs text-text-default-base-tertiary&quot;&gt;{size}&lt;/span&gt;
-            &lt;/div&gt;
-        ))}
-    &lt;/div&gt;
-);</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Colors</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Color through text tokens, not fill</div>
-              <div class="hint">Lucide paints with `stroke=&quot;currentColor&quot;` and leaves `fill` empty, so color
-comes from a `text-*` token — **not** from `fill-*`, which is what the old
-inlined Material glyphs used and which does nothing here.</div>
-              <pre><code>const Colors = () =&gt; (
-    &lt;div className=&quot;flex gap-8&quot;&gt;
-        {[
-            { token: &#39;text-icon-default-base-primary&#39;, Icon: BellIcon, label: &#39;primary&#39; },
-            { token: &#39;text-icon-default-base-secondary&#39;, Icon: BellIcon, label: &#39;secondary&#39; },
-            { token: &#39;text-icon-default-base-tertiary&#39;, Icon: BellIcon, label: &#39;tertiary&#39; },
-            { token: &#39;text-icon-default-danger-primary&#39;, Icon: TriangleAlertIcon, label: &#39;danger&#39; },
-            { token: &#39;text-icon-default-positive-primary&#39;, Icon: CircleCheckIcon, label: &#39;positive&#39; }
-        ].map(({ token, Icon, label }) =&gt; (
-            &lt;div key={label} className={`flex flex-col items-center gap-2 ${token}`}&gt;
-                &lt;Icon className=&quot;size-5&quot; /&gt;
-                &lt;span className=&quot;text-xs text-text-default-base-tertiary&quot;&gt;{label}&lt;/span&gt;
-            &lt;/div&gt;
-        ))}
-    &lt;/div&gt;
-);</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">In Components</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>The set the design system renders internally</div>
-              <div class="hint">The icons the components themselves render, with the name each one replaced.
-The Checkbox check and minus, and the Combobox row check that mirrors them,
-are not here: they are the Figma Base Checkbox glyphs, kept as local SVGs.
-Use this page to check a swap before reaching for a different lucide glyph.</div>
-              <pre><code>const InComponents = () =&gt; (
-    &lt;div className=&quot;grid grid-cols-2 gap-4 text-icon-default-base-primary sm:grid-cols-4&quot;&gt;
-        {[
-            { Icon: ChevronRightIcon, name: &#39;ChevronRightIcon&#39;, where: &#39;Pagination, DropdownMenu&#39; },
-            { Icon: ChevronLeftIcon, name: &#39;ChevronLeftIcon&#39;, where: &#39;Pagination&#39; },
-            { Icon: ChevronDownIcon, name: &#39;ChevronDownIcon&#39;, where: &#39;Accordion, Combobox, Table&#39; },
-            { Icon: CheckIcon, name: &#39;CheckIcon&#39;, where: &#39;CheckList&#39; },
-            { Icon: XIcon, name: &#39;XIcon&#39;, where: &#39;Alert, Modal, Toast&#39; },
-            { Icon: SearchIcon, name: &#39;SearchIcon&#39;, where: &#39;Command, Combobox, InputSearch&#39; },
-            { Icon: CircleXIcon, name: &#39;CircleXIcon&#39;, where: &#39;Combobox, InputSearch clear&#39; },
-            { Icon: EyeIcon, name: &#39;EyeIcon&#39;, where: &#39;InputPassword&#39; },
-            { Icon: EyeOffIcon, name: &#39;EyeOffIcon&#39;, where: &#39;InputPassword&#39; },
-            { Icon: ArrowUpIcon, name: &#39;ArrowUpIcon&#39;, where: &#39;DataTable sorted&#39; },
-            { Icon: ArrowUpDownIcon, name: &#39;ArrowUpDownIcon&#39;, where: &#39;DataTable sortable&#39; },
-            { Icon: EllipsisIcon, name: &#39;EllipsisIcon&#39;, where: &#39;Pagination ellipsis&#39; },
-            { Icon: CircleCheckIcon, name: &#39;CircleCheckIcon&#39;, where: &#39;Alert, Toast&#39; },
-            { Icon: CircleAlertIcon, name: &#39;CircleAlertIcon&#39;, where: &#39;Alert, Toast&#39; },
-            { Icon: TriangleAlertIcon, name: &#39;TriangleAlertIcon&#39;, where: &#39;Alert, Toast&#39; },
-            { Icon: InfoIcon, name: &#39;InfoIcon&#39;, where: &#39;Alert, Toast, Field&#39; },
-            { Icon: StarIcon, name: &#39;StarIcon&#39;, where: &#39;Alert creative&#39; }
-        ].map(({ Icon, name, where }) =&gt; (
-            &lt;div key={name} className=&quot;flex items-start gap-2&quot;&gt;
-                &lt;Icon className=&quot;size-5 shrink-0&quot; /&gt;
-                &lt;span className=&quot;flex flex-col text-xs&quot;&gt;
-                    &lt;span className=&quot;text-text-default-base-primary&quot;&gt;{name}&lt;/span&gt;
-                    &lt;span className=&quot;text-text-default-base-tertiary&quot;&gt;{where}&lt;/span&gt;
-                &lt;/span&gt;
-            &lt;/div&gt;
-        ))}
-    &lt;/div&gt;
-);</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">In Composition</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Icon composed with text</div>
-              <div class="hint">Next to text: `size-*` to match the line, `shrink-0` so the flex row can&#39;t
-squash it, and no color of its own so it follows the parent&#39;s token.</div>
-              <pre><code>const InComposition = () =&gt; (
-    &lt;div className=&quot;flex items-center gap-4&quot;&gt;
-        &lt;span className=&quot;flex items-center gap-2 rounded-full bg-bg-button-primary-enable px-4 py-2 text-sm text-text-button-primary-enable&quot;&gt;
-            &lt;PlusIcon className=&quot;size-4 shrink-0&quot; /&gt;
-            Create agent
-        &lt;/span&gt;
-        &lt;span className=&quot;flex items-center gap-2 text-sm text-text-default-base-secondary&quot;&gt;
-            &lt;DownloadIcon className=&quot;size-4 shrink-0&quot; /&gt;
-            Download report
-        &lt;/span&gt;
-        &lt;span className=&quot;flex items-center gap-2 text-sm text-text-default-danger-primary&quot;&gt;
-            &lt;Trash2Icon className=&quot;size-4 shrink-0&quot; /&gt;
-            Delete
-        &lt;/span&gt;
-    &lt;/div&gt;
-);</code></pre>
-            </div>
-        </div>
-    
-    
-  </div>
-</article></div>
-        </section>
-      </div>
     
     
   </div>
