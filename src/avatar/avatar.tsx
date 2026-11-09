@@ -6,6 +6,7 @@ import * as AvatarPrimitive from '@radix-ui/react-avatar';
 import { tv, VariantProps } from 'tailwind-variants';
 
 import { cn } from '../../lib';
+import { legacyIconRootFill } from '../icons/legacy-fill';
 
 /**
  * Style recipe for Avatar using tailwind-variants.
@@ -32,7 +33,8 @@ export const avatarRecipe = tv({
 		fallback: [
 			'uppercase',
 			// Only the bare-path rule: a fallback is often a logo whose paths keep their brand fills.
-			'[&_svg]:size-[1.5em] [&_svg]:text-neutral-500 [&_:where(svg:not([fill=none]))]:fill-current'
+			'[&_svg]:size-[1.5em] [&_svg]:text-neutral-500',
+			legacyIconRootFill
 		]
 	},
 	variants: {

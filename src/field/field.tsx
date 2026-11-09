@@ -13,6 +13,7 @@ import { InfoIcon } from 'lucide-react';
 import { tv, VariantProps } from 'tailwind-variants';
 
 import { cn } from '../../lib';
+import { legacyIconFill } from '../icons/legacy-fill';
 import { Label as BaseLabel, LabelContext, type LabelProps } from '../label';
 import { Tooltip, type TooltipProps } from '../tooltip';
 import {
@@ -43,7 +44,8 @@ export const fieldRecipe = tv({
 		label: 'flex flex-wrap items-center gap-1',
 		labelTooltip: [
 			'inline-flex shrink-0 cursor-pointer items-center justify-center rounded-sm',
-			'text-icon-input-default [&_svg]:size-5 [&_:where(svg:not([fill=none]))]:fill-current [&_:where(svg_path[fill]:not([fill=none]))]:fill-current',
+			'text-icon-input-default [&_svg]:size-5',
+			legacyIconFill,
 			'focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring-button-primary'
 		],
 		description: [

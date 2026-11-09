@@ -8,6 +8,7 @@ import { tv, VariantProps } from 'tailwind-variants';
 
 import { cn } from '../../lib';
 import { Button } from '../button';
+import { legacyIconFill } from '../icons/legacy-fill';
 
 /**
  * Style recipe for Toast using tailwind-variants. Multi-slot recipe whose
@@ -24,7 +25,7 @@ export const toastRecipe = tv({
 	slots: {
 		root: 'w-full flex items-start border border-border-default-base-primary bg-bg-default-base-primary text-text-default-base-primary shadow-xs',
 		iconWrapper: 'shrink-0',
-		icon: 'size-5 [&_svg]:size-5 [&_:where(svg:not([fill=none]))]:fill-current [&_:where(svg_path[fill]:not([fill=none]))]:fill-current',
+		icon: ['size-5 [&_svg]:size-5', legacyIconFill],
 		contentWrapper: 'flex flex-1 min-w-0',
 		leading: 'flex flex-1 min-w-0 text-sm leading-normal',
 		title: 'font-semibold text-text-default-base-primary shrink-0',

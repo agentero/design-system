@@ -25,6 +25,7 @@ import { tv, VariantProps } from 'tailwind-variants';
 
 import { cn } from '../../lib';
 import { Button } from '../button';
+import { legacyIconSelfFill } from '../icons/legacy-fill';
 
 /**
  * Style recipe for Alert using tailwind-variants. Exposes five slots
@@ -48,7 +49,7 @@ export const alertRecipe = tv({
 		title: 'font-semibold',
 		paragraph: '',
 		content: 'flex flex-col h-full self-start',
-		icon: 'shrink-0 [&:where(:not([fill=none]))]:fill-current [&_:where(path[fill]:not([fill=none]))]:fill-current'
+		icon: ['shrink-0', legacyIconSelfFill]
 	},
 	variants: {
 		color: {

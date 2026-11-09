@@ -286,6 +286,10 @@ export const WithoutIcon: Story = {
  *
  * @summary Alert with a custom icon override
  */
+export const WithCustomIcon: Story = {
+	args: { color: 'creative', icon: LightbulbIcon }
+};
+
 type Paint = ReturnType<typeof paintedWith>;
 
 const paintedWith = (svg: SVGElement) => {
@@ -299,14 +303,15 @@ const paintedWith = (svg: SVGElement) => {
 };
 
 /**
- * Test only, hidden from the sidebar and the docs (`!dev`, `!autodocs`). The
+ * Test only, hidden from the sidebar, the docs and the agents' manifest
+ * (`!dev`, `!autodocs`, `!manifest`). The
  * `icon` slot lands on the icon's own `<svg>`, so Alert's compatibility rules
  * target `&`; the legacy shapes must take the alert's color like the lucide default.
  *
  * @summary Legacy filled icons take the alert color like the lucide default
  */
 export const LegacyFilledIcon: Story = {
-	tags: ['!dev', '!autodocs'],
+	tags: ['!dev', '!autodocs', '!manifest'],
 	args: { color: 'warning' },
 	render: args => (
 		<div className="flex flex-col gap-2">
@@ -335,10 +340,6 @@ export const LegacyFilledIcon: Story = {
 		await expect(barePath.pathFill).toBe(lucide.color);
 		await expect(hardcoded.pathFill).toBe(lucide.color);
 	}
-};
-
-export const WithCustomIcon: Story = {
-	args: { color: 'creative', icon: LightbulbIcon }
 };
 
 /**

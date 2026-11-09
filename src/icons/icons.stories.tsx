@@ -23,6 +23,8 @@ import {
 	XIcon
 } from 'lucide-react';
 
+import { Button } from '../button';
+
 /**
  * Icons ship with the design system. `lucide-react` is a runtime dependency
  * here and reaches consumers through the `@agentero/design-system/icons`
@@ -34,6 +36,10 @@ import {
  * flex row. The stroke is 1.5, as the Figma library draws it: the theme sets
  * it on every `svg.lucide`, so don't pass `strokeWidth` (the prop loses to that
  * rule); put a `stroke-*` class on the icon when one really needs another.
+ *
+ * Always import the `*Icon` form. Lucide also exports bare names such as `Tag`,
+ * `Table` and `Command` that collide with design-system components, so an
+ * auto-import on the bare name lands on the icon.
  *
  * ```tsx
  * import { ChevronRightIcon } from '@agentero/design-system/icons';
@@ -48,7 +54,7 @@ const meta: Meta = {
 	parameters: {
 		layout: 'padded'
 	},
-	tags: ['autodocs']
+	tags: ['autodocs', '!manifest']
 };
 
 export default meta;
@@ -143,17 +149,18 @@ export const InComponents: Story = {
 
 /**
  * Next to text: `size-*` to match the line, `shrink-0` so the flex row can't
- * squash it, and no color of its own so it follows the parent's token.
+ * squash it, and no color of its own so it follows the parent's token. Inside a
+ * Button none of that is needed: the recipe sizes the icon and colors it.
  *
  * @summary Icon composed with text
  */
 export const InComposition: Story = {
 	render: () => (
 		<div className="flex items-center gap-4">
-			<span className="flex items-center gap-2 rounded-full bg-bg-button-primary-enable px-4 py-2 text-sm text-text-button-primary-enable">
-				<PlusIcon className="size-4 shrink-0" />
+			<Button>
+				<PlusIcon />
 				Create agent
-			</span>
+			</Button>
 			<span className="flex items-center gap-2 text-sm text-text-default-base-secondary">
 				<DownloadIcon className="size-4 shrink-0" />
 				Download report

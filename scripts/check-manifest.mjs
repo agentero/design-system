@@ -5,6 +5,10 @@
 // without anyone noticing (PR #98 and PR #99), because nothing here fails when
 // an entry comes out empty — the Storybook docs page keeps looking fine, since
 // it reads from a different path. This runs after `yarn build-storybook`.
+//
+// Every entry is checked: a story file without `meta.component` lands here as an
+// error entry, so a page that documents a convention (Foundations/*) stays out
+// with the `!manifest` tag instead.
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -18,9 +22,6 @@ const NO_OWN_PROPS = new Set([
 	'components-skeleton'
 ]);
 
-// Foundations/* pages document a convention and have no `meta.component`, so the manifest skips them.
-const isComponentEntry = id => id.startsWith('components-');
-
 if (!fs.existsSync(MANIFEST)) {
 	console.error(`✗ ${MANIFEST} not found — run \`yarn build-storybook\` first.`);
 	process.exit(1);
@@ -33,8 +34,6 @@ const failures = [];
 if (entries.length === 0) failures.push('the manifest carries no components at all');
 
 for (const [id, entry] of entries) {
-	if (!isComponentEntry(id)) continue;
-
 	const docgen = entry.reactComponentMeta ?? entry.reactDocgenTypescript ?? {};
 	// Where the tags live depends on the docgen engine, and the unused slots are
 	// present but empty — so merge rather than pick the first one that exists.
@@ -50,9 +49,6 @@ for (const [id, entry] of entries) {
 	if (!entry.import?.trim()) failures.push(`${id}: no import line`);
 }
 
-const checked = entries.filter(([id]) => isComponentEntry(id)).length;
-if (checked === 0) failures.push('the manifest carries no component entries (components-*)');
-
 if (failures.length > 0) {
 	console.error(`✗ ${MANIFEST} is incomplete:\n`);
 	for (const failure of failures) console.error(`  · ${failure}`);
@@ -63,4 +59,4 @@ if (failures.length > 0) {
 	process.exit(1);
 }
 
-console.log(`✓ ${checked} manifest entries carry a description, a @summary and props`);
+console.log(`✓ ${entries.length} manifest entries carry a description, a @summary and props`);

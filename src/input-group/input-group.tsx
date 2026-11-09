@@ -5,6 +5,7 @@ import { ComponentPropsWithRef, MouseEvent } from 'react';
 import { type VariantProps, tv } from 'tailwind-variants';
 
 import { cn } from '../../lib';
+import { legacyIconFill } from '../icons/legacy-fill';
 
 /**
  * Style recipe for InputGroup. Slots: `root` (the bordered frame), `addon` and
@@ -52,7 +53,7 @@ export const inputGroupRecipe = tv({
 			// 20px with -2px each side keeps the 16px footprint the 24px Material glyph had at -4px,
 			// so the input text does not move.
 			'*:[svg]:-mx-0.5 *:[svg]:size-5 *:[svg]:text-icon-input-default',
-			'[&_:where(svg:not([fill=none]))]:fill-current [&_:where(svg_path[fill]:not([fill=none]))]:fill-current',
+			legacyIconFill,
 			'group-has-[input:disabled,textarea:disabled]/input-group:*:[svg]:text-icon-input-disable'
 		],
 		text: [

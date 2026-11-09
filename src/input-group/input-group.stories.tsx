@@ -560,12 +560,13 @@ const paintedWith = (svg: SVGElement) => {
 };
 
 /**
- * Test only, hidden from the sidebar and the docs (`!dev`, `!autodocs`). A legacy
+ * Test only, hidden from the sidebar, the docs and the agents' manifest
+ * (`!dev`, `!autodocs`, `!manifest`). A legacy
  * glyph in an addon must take the addon's token, enabled and disabled, like a
  * lucide icon does.
  */
 export const LegacyFilledIcon: Story = {
-	tags: ['!dev', '!autodocs'],
+	tags: ['!dev', '!autodocs', '!manifest'],
 	render: () => (
 		<div className="flex flex-col gap-2">
 			{[false, true].map(disabled =>

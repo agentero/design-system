@@ -6,6 +6,7 @@ import * as TabsPrimitive from '@radix-ui/react-tabs';
 import { type VariantProps, tv } from 'tailwind-variants';
 
 import { cn } from '../../lib';
+import { legacyIconFill } from '../icons/legacy-fill';
 
 export const tabsRecipe = tv({
 	slots: {
@@ -40,7 +41,7 @@ export const tabsRecipe = tv({
 				trigger: [
 					'flex h-8 items-center gap-2.5 rounded-md px-3 text-sm font-normal text-text-default-base-secondary',
 					'[&>svg]:-mx-1 [&>svg]:size-4 [&>svg]:text-icon-default-base-secondary',
-					'[&_:where(svg:not([fill=none]))]:fill-current [&_:where(svg_path[fill]:not([fill=none]))]:fill-current',
+					legacyIconFill,
 					'hover:bg-bg-default-base-primary-hover data-[state=active]:bg-bg-default-base-primary-hover'
 				]
 			}

@@ -208,14 +208,15 @@ const paintedWith = (svg: SVGElement) => {
 };
 
 /**
- * Test only, hidden from the sidebar and the docs (`!dev`, `!autodocs`). The
+ * Test only, hidden from the sidebar, the docs and the agents' manifest
+ * (`!dev`, `!autodocs`, `!manifest`). The
  * legacy shapes must land on the button's color like a lucide icon in every
  * variant; this is what catches the two compatibility rules regressing.
  *
  * @summary Legacy filled icons land on the same token as lucide ones
  */
 export const LegacyFilledIcon: Story = {
-	tags: ['!dev', '!autodocs'],
+	tags: ['!dev', '!autodocs', '!manifest'],
 	render: () => (
 		<Stack>
 			{NON_LINK_VARIANTS.map(variant => (

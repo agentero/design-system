@@ -4,6 +4,7 @@ import { Slot, Slottable } from '@radix-ui/react-slot';
 import { tv, VariantProps } from 'tailwind-variants';
 
 import { cn } from '../../lib';
+import { legacyIconFill } from '../icons/legacy-fill';
 
 /**
  * Style recipe for Tag. Each color maps to its dedicated `*-tag-*` semantic
@@ -20,7 +21,8 @@ export const tagRecipe = tv({
 		'transition-[background-color,opacity] duration-150',
 		// shrink-0: an icon is a flex item, so without it a narrow Tag squashes it
 		// horizontally instead of clipping the label.
-		'[&_svg]:size-3.5 [&_svg]:shrink-0 [&_:where(svg:not([fill=none]))]:fill-current [&_:where(svg_path[fill]:not([fill=none]))]:fill-current'
+		'[&_svg]:size-3.5 [&_svg]:shrink-0',
+		legacyIconFill
 	],
 	variants: {
 		color: {

@@ -4,6 +4,7 @@ import { Slot, Slottable } from '@radix-ui/react-slot';
 import { tv } from 'tailwind-variants';
 
 import { cn } from '../../lib';
+import { legacyIconFill } from '../icons/legacy-fill';
 
 /**
  * Style recipe for Button using tailwind-variants. Single-slot recipe whose
@@ -26,7 +27,7 @@ export const buttonRecipe = tv({
 		'transition-[background-color,border-color,color] duration-150',
 		'[-webkit-tap-highlight-color:transparent]',
 		'[&_svg]:[flex:0_0_fit-content]',
-		'[&_:where(svg:not([fill=none]))]:fill-current [&_:where(svg_path[fill]:not([fill=none]))]:fill-current',
+		legacyIconFill,
 		'disabled:cursor-not-allowed disabled:pointer-events-none',
 		'focus-visible:outline-solid focus-visible:outline-2',
 		'focus-visible:outline-offset-[0.125rem]',
