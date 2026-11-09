@@ -78,8 +78,8 @@ export const Controlled: Story = {
 
 		return (
 			<div className="flex items-center gap-2">
-				<Switch id="controlled" checked={enabled} onCheckedChange={setEnabled} />
-				<label htmlFor="controlled" className="text-sm text-text-default-base-primary">
+				<Switch id="notifications" checked={enabled} onCheckedChange={setEnabled} />
+				<label htmlFor="notifications" className="text-sm text-text-default-base-primary">
 					Notifications {enabled ? 'on' : 'off'}
 				</label>
 			</div>
@@ -94,8 +94,8 @@ export const Controlled: Story = {
 export const WithLabel: Story = {
 	render: () => (
 		<div className="flex items-center gap-6">
-			<Switch id="with-label" label="Email" defaultChecked />
-			<Switch id="with-label-reverse" label="SMS" reverse />
+			<Switch id="email-alerts" label="Email" defaultChecked />
+			<Switch id="sms-alerts" label="SMS" reverse />
 		</div>
 	)
 };
