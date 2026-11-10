@@ -24,13 +24,6 @@ import {
 
 import { Button } from '../button';
 import * as custom from './custom';
-import {
-	CircleAlertFilledIcon,
-	CircleCheckFilledIcon,
-	CircleXFilledIcon,
-	InfoFilledIcon,
-	TriangleAlertFilledIcon
-} from './custom';
 
 /**
  * Icons ship with the design system. `lucide-react` is a runtime dependency
@@ -131,7 +124,7 @@ export const InComponents: Story = {
 				{ Icon: XIcon, name: 'XIcon', where: 'Alert, Modal, Toast' },
 				{ Icon: SearchIcon, name: 'SearchIcon', where: 'Command, Combobox, InputSearch' },
 				{
-					Icon: CircleXFilledIcon,
+					Icon: custom.CircleXFilledIcon,
 					name: 'CircleXFilledIcon',
 					where: 'Combobox, InputSearch clear'
 				},
@@ -144,10 +137,10 @@ export const InComponents: Story = {
 				{ Icon: CircleAlertIcon, name: 'CircleAlertIcon', where: 'Alert' },
 				{ Icon: TriangleAlertIcon, name: 'TriangleAlertIcon', where: 'Alert' },
 				{ Icon: InfoIcon, name: 'InfoIcon', where: 'Alert, Field' },
-				{ Icon: CircleCheckFilledIcon, name: 'CircleCheckFilledIcon', where: 'Toast' },
-				{ Icon: CircleAlertFilledIcon, name: 'CircleAlertFilledIcon', where: 'Toast' },
-				{ Icon: TriangleAlertFilledIcon, name: 'TriangleAlertFilledIcon', where: 'Toast' },
-				{ Icon: InfoFilledIcon, name: 'InfoFilledIcon', where: 'Toast' },
+				{ Icon: custom.CircleCheckFilledIcon, name: 'CircleCheckFilledIcon', where: 'Toast' },
+				{ Icon: custom.CircleAlertFilledIcon, name: 'CircleAlertFilledIcon', where: 'Toast' },
+				{ Icon: custom.TriangleAlertFilledIcon, name: 'TriangleAlertFilledIcon', where: 'Toast' },
+				{ Icon: custom.InfoFilledIcon, name: 'InfoFilledIcon', where: 'Toast' },
 				{ Icon: StarIcon, name: 'StarIcon', where: 'Alert creative' }
 			].map(({ Icon, name, where }) => (
 				<div key={name} className="flex items-start gap-2">
