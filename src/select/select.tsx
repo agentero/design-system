@@ -57,15 +57,15 @@ export const selectRecipe = tv({
 		],
 		list: 'min-h-0 flex-1 overflow-y-auto scroll-py-2 py-2 outline-none',
 		item: [
-			'group/item mx-2 my-px flex cursor-pointer items-center gap-2 rounded-[calc(var(--radius-md)-2px)]',
-			'px-3 py-2 text-sm text-text-default-base-primary outline-none select-none',
+			'group/item relative mx-2 my-px flex cursor-pointer items-center rounded-[calc(var(--radius-md)-2px)]',
+			// The end padding keeps room for the check, so the text never runs under it.
+			'py-2 ps-3 pe-9 text-sm text-text-default-base-primary outline-none select-none',
 			'data-highlighted:bg-bg-default-base-primary-hover',
 			'data-disabled:cursor-default data-disabled:text-text-default-base-tertiary'
 		],
 		indicator: [
-			'flex size-4 shrink-0 items-center justify-center text-text-default-base-primary',
-			// Kept in the row while hidden, so the text of every row starts at the same place.
-			'invisible group-data-selected/item:visible group-data-disabled/item:text-text-default-base-tertiary'
+			'pointer-events-none absolute end-3 flex size-4 items-center justify-center',
+			'text-text-default-base-primary group-data-disabled/item:text-text-default-base-tertiary'
 		]
 	}
 });
@@ -365,8 +365,9 @@ export type SelectItemProps = Omit<
 /**
  * One option. `value` is what the select stores and submits; the children are
  * the label shown in the row and, through the root's `items`, in the trigger.
- * The picked row carries a check. A `disabled` row is greyed out and cannot be
- * picked, but the arrow keys still stop on it, so it is announced.
+ * The picked row carries a check at its end. A `disabled` row is greyed out
+ * and cannot be picked, but the arrow keys still stop on it, so it is
+ * announced.
  *
  * @summary Option row inside the list
  * @dataAttribute {string} data-slot - Always set to "select-item"
@@ -375,15 +376,12 @@ export type SelectItemProps = Omit<
  */
 export const Item = ({ className, children, ...props }: SelectItemProps) => (
 	<SelectPrimitive.Item {...props} data-slot="select-item" className={cn(slots.item(), className)}>
-		<SelectPrimitive.ItemIndicator
-			keepMounted
-			data-slot="select-item-indicator"
-			className={slots.indicator()}>
-			<IconCheck className="size-4" />
-		</SelectPrimitive.ItemIndicator>
 		<SelectPrimitive.ItemText className="min-w-0 flex-1 truncate">
 			{children}
 		</SelectPrimitive.ItemText>
+		<SelectPrimitive.ItemIndicator data-slot="select-item-indicator" className={slots.indicator()}>
+			<IconCheck className="size-4" />
+		</SelectPrimitive.ItemIndicator>
 	</SelectPrimitive.Item>
 );
 Item.displayName = 'Select.Item';
