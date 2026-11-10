@@ -24,7 +24,7 @@ Invoked as `/plan-ds-migration <TICKET>` where `<TICKET>` is the Linear issue id
 
 Don't guess on anything ambiguous — stop and ask. Typical unknowns to surface as questions:
 
-- API shape: keep legacy signature as-is, or tighten it? Any compound / sub-component restructuring?
+- API shape: keep legacy signature as-is, or tighten it? Any compound / sub-component restructuring? Recommend tightening when the legacy API breaks "Make the easy thing the right thing" in `AGENTS.md`, and name the wrong use it removes.
 - Variant set: which legacy variants stay, which get dropped or renamed?
 - Tokens: are new tokens needed, or does `themes/base.css` already cover every color/spacing/radius the component uses?
 - Runtime deps: any new Radix primitives or third-party packages?
