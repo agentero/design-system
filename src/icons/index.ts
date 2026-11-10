@@ -3,3 +3,4 @@
 // re-export rather than a curated list, so a new lucide icon never waits for a
 // design-system release; Next.js consumers keep this subpath in `optimizePackageImports`.
 export * from 'lucide-react';
+export * from './custom';

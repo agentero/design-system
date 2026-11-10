@@ -2,10 +2,11 @@
 
 import { ChangeEvent, use, useMemo, useRef, useState } from 'react';
 
-import { CircleXIcon, SearchIcon } from 'lucide-react';
+import { SearchIcon } from 'lucide-react';
 import { tv } from 'tailwind-variants';
 
 import { chain, mergeRefs } from '../../lib';
+import { CircleXFilledIcon } from '../icons/custom';
 import { Input, InputContext, InputProps } from '../input';
 import { InputGroup } from '../input-group';
 import { Loading } from '../loading';
@@ -154,7 +155,7 @@ export const InputSearch = ({
 				showClear && (
 					<InputGroup.Addon>
 						<button type="button" className={slots.clear()} aria-label={clearLabel} onClick={clear}>
-							<CircleXIcon />
+							<CircleXFilledIcon />
 						</button>
 					</InputGroup.Addon>
 				)

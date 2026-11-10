@@ -9,7 +9,6 @@ import {
 	ChevronRightIcon,
 	CircleAlertIcon,
 	CircleCheckIcon,
-	CircleXIcon,
 	DownloadIcon,
 	EllipsisIcon,
 	EyeIcon,
@@ -24,6 +23,14 @@ import {
 } from 'lucide-react';
 
 import { Button } from '../button';
+import * as custom from './custom';
+import {
+	CircleAlertFilledIcon,
+	CircleCheckFilledIcon,
+	CircleXFilledIcon,
+	InfoFilledIcon,
+	TriangleAlertFilledIcon
+} from './custom';
 
 /**
  * Icons ship with the design system. `lucide-react` is a runtime dependency
@@ -123,16 +130,24 @@ export const InComponents: Story = {
 				{ Icon: CheckIcon, name: 'CheckIcon', where: 'CheckList' },
 				{ Icon: XIcon, name: 'XIcon', where: 'Alert, Modal, Toast' },
 				{ Icon: SearchIcon, name: 'SearchIcon', where: 'Command, Combobox, InputSearch' },
-				{ Icon: CircleXIcon, name: 'CircleXIcon', where: 'Combobox, InputSearch clear' },
+				{
+					Icon: CircleXFilledIcon,
+					name: 'CircleXFilledIcon',
+					where: 'Combobox, InputSearch clear'
+				},
 				{ Icon: EyeIcon, name: 'EyeIcon', where: 'InputPassword' },
 				{ Icon: EyeOffIcon, name: 'EyeOffIcon', where: 'InputPassword' },
 				{ Icon: ArrowUpIcon, name: 'ArrowUpIcon', where: 'DataTable sorted' },
 				{ Icon: ArrowUpDownIcon, name: 'ArrowUpDownIcon', where: 'DataTable sortable' },
 				{ Icon: EllipsisIcon, name: 'EllipsisIcon', where: 'Pagination ellipsis' },
-				{ Icon: CircleCheckIcon, name: 'CircleCheckIcon', where: 'Alert, Toast' },
-				{ Icon: CircleAlertIcon, name: 'CircleAlertIcon', where: 'Alert, Toast' },
-				{ Icon: TriangleAlertIcon, name: 'TriangleAlertIcon', where: 'Alert, Toast' },
-				{ Icon: InfoIcon, name: 'InfoIcon', where: 'Alert, Toast, Field' },
+				{ Icon: CircleCheckIcon, name: 'CircleCheckIcon', where: 'Alert' },
+				{ Icon: CircleAlertIcon, name: 'CircleAlertIcon', where: 'Alert' },
+				{ Icon: TriangleAlertIcon, name: 'TriangleAlertIcon', where: 'Alert' },
+				{ Icon: InfoIcon, name: 'InfoIcon', where: 'Alert, Field' },
+				{ Icon: CircleCheckFilledIcon, name: 'CircleCheckFilledIcon', where: 'Toast' },
+				{ Icon: CircleAlertFilledIcon, name: 'CircleAlertFilledIcon', where: 'Toast' },
+				{ Icon: TriangleAlertFilledIcon, name: 'TriangleAlertFilledIcon', where: 'Toast' },
+				{ Icon: InfoFilledIcon, name: 'InfoFilledIcon', where: 'Toast' },
 				{ Icon: StarIcon, name: 'StarIcon', where: 'Alert creative' }
 			].map(({ Icon, name, where }) => (
 				<div key={name} className="flex items-start gap-2">
@@ -141,6 +156,26 @@ export const InComponents: Story = {
 						<span className="text-text-default-base-primary">{name}</span>
 						<span className="text-text-default-base-tertiary">{where}</span>
 					</span>
+				</div>
+			))}
+		</div>
+	)
+};
+
+/**
+ * Glyphs the Figma library draws and lucide doesn't ship. They come from the same
+ * subpath and behave like any lucide icon: `size-*`, a `text-*` token, and the
+ * filled ones paint with `currentColor` too.
+ *
+ * @summary Icons the design system adds to lucide
+ */
+export const Custom: Story = {
+	render: () => (
+		<div className="grid grid-cols-2 gap-4 text-icon-default-base-primary sm:grid-cols-4">
+			{Object.entries(custom).map(([name, Icon]) => (
+				<div key={name} className="flex items-center gap-2">
+					<Icon className="size-5 shrink-0" />
+					<span className="text-xs text-text-default-base-primary">{name}</span>
 				</div>
 			))}
 		</div>

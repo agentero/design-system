@@ -2,12 +2,18 @@
 
 import { ReactNode } from 'react';
 
-import { CircleAlertIcon, CircleCheckIcon, InfoIcon, TriangleAlertIcon, XIcon } from 'lucide-react';
+import { XIcon } from 'lucide-react';
 import { Toaster, toast as sonnerToast } from 'sonner';
 import { tv, VariantProps } from 'tailwind-variants';
 
 import { cn } from '../../lib';
 import { Button } from '../button';
+import {
+	CircleAlertFilledIcon,
+	CircleCheckFilledIcon,
+	InfoFilledIcon,
+	TriangleAlertFilledIcon
+} from '../icons/custom';
 import { legacyIconFill } from '../icons/legacy-fill';
 
 /**
@@ -113,11 +119,11 @@ const isActionObject = (action: ToastAction): action is ToastActionObject =>
 	action !== null && typeof action === 'object' && 'onClick' in action;
 
 const iconMap: Record<ToastType, ReactNode> = {
-	neutral: <InfoIcon />,
-	success: <CircleCheckIcon />,
-	info: <InfoIcon />,
-	warning: <TriangleAlertIcon />,
-	error: <CircleAlertIcon />
+	neutral: <InfoFilledIcon />,
+	success: <CircleCheckFilledIcon />,
+	info: <InfoFilledIcon />,
+	warning: <TriangleAlertFilledIcon />,
+	error: <CircleAlertFilledIcon />
 };
 
 type ToastContentProps = {
