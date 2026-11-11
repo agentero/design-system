@@ -1,0 +1,126 @@
+import{a as e,n as t}from"./rolldown-runtime-DkW27tQK.js";import{d as n}from"./iframe-DuaohP_x.js";import{t as r}from"./jsx-runtime-DeHZSEgm.js";import{i,n as a,r as o,t as s}from"./dist-COTlpqSU.js";import{n as c,t as l}from"./dist-Kbp_jkti.js";import{n as u,t as d}from"./dist-CKgeh4bT.js";import{n as f,t as p}from"./dist-C8AlzbfS.js";import{n as m,t as h}from"./utils-nsk-j2e0.js";import{i as g,n as ee,r as _,t as v}from"./dist-B-TKZWzv.js";import{n as te,t as y}from"./dist-tl2MC7y1.js";import{r as b,t as x}from"./dist-DG8aPgtu.js";import{n as ne,t as re}from"./dist-DjLUJHRp.js";function ie(e,t){if(typeof e==`function`)return e(t);e!=null&&(e.current=t)}function ae(...e){return t=>{let n=!1,r=e.map(e=>{let r=ie(e,t);return!n&&typeof r==`function`&&(n=!0),r});if(n)return()=>{for(let t=0;t<r.length;t++){let n=r[t];typeof n==`function`?n():ie(e[t],null)}}}}function oe(...e){return se.useCallback(ae(...e),e)}var se;function ce(){return(ce=t((()=>{se=e(n(),1)})))()}function le(e){let t=ue.useRef(e);return ue.useEffect(()=>{t.current=e}),ue.useMemo(()=>((...e)=>t.current?.(...e)),[])}var ue;function de(){return(de=t((()=>{ue=e(n(),1)})))()}function fe(){let[e,t]=ge.useState(_e);return ge.useEffect(()=>{_e||(_e=!0,t(!0))},[]),e}function pe(){return()=>{}}function me(){return ve(pe,()=>!0,()=>!1)}var he,ge,_e,ve,ye;function be(){return(be=t((()=>{he=e(n(),1),ge=e(n(),1),_e=!1,ve=he.useSyncExternalStore,ye=typeof ve==`function`?me:fe})))()}function xe(e,t){return t===`rtl`?e===`ArrowLeft`?`ArrowRight`:e===`ArrowRight`?`ArrowLeft`:e:e}function Se(e,t,n){let r=xe(e.key,n);if(!(t===`vertical`&&[`ArrowLeft`,`ArrowRight`].includes(r))&&!(t===`horizontal`&&[`ArrowUp`,`ArrowDown`].includes(r)))return Ie[r]}function Ce(e,t=!1){let n=document.activeElement;for(let r of e)if(r===n||(r.focus({preventScroll:t}),document.activeElement!==n))return}function we(e,t){return e.map((n,r)=>e[(t+r)%e.length])}var S,C,w,Te,T,E,Ee,De,Oe,ke,Ae,je,Me,Ne,Pe,Fe,Ie,Le,Re;function ze(){return(ze=t((()=>{S=e(n(),1),g(),ne(),ce(),te(),l(),b(),de(),s(),d(),o(),be(),C=r(),w=`rovingFocusGroup.onEntryFocus`,Te={bubbles:!1,cancelable:!0},T=`RovingFocusGroup`,[E,Ee,De]=re(T),[Oe,ke]=y(T,[De]),[Ae,je]=Oe(T),Me=S.forwardRef((e,t)=>(0,C.jsx)(E.Provider,{scope:e.__scopeRovingFocusGroup,children:(0,C.jsx)(E.Slot,{scope:e.__scopeRovingFocusGroup,children:(0,C.jsx)(Ne,{...e,ref:t})})})),Me.displayName=T,Ne=S.forwardRef((e,t)=>{let{__scopeRovingFocusGroup:n,orientation:r,loop:i=!1,dir:o,currentTabStopId:s,defaultCurrentTabStopId:c,onCurrentTabStopIdChange:l,onEntryFocus:d,preventScrollOnEntryFocus:f=!1,...p}=e,m=S.useRef(null),h=oe(t,m),g=u(o),[ee,v]=a({prop:s,defaultProp:c??null,onChange:l,caller:T}),[te,y]=S.useState(!1),b=le(d),ne=Ee(n),re=S.useRef(!1),[ie,ae]=S.useState(0);return S.useEffect(()=>{let e=m.current;if(e)return e.addEventListener(w,b),()=>e.removeEventListener(w,b)},[b]),(0,C.jsx)(Ae,{scope:n,orientation:r,dir:g,loop:i,currentTabStopId:ee,onItemFocus:S.useCallback(e=>v(e),[v]),onItemShiftTab:S.useCallback(()=>y(!0),[]),onFocusableItemAdd:S.useCallback(()=>ae(e=>e+1),[]),onFocusableItemRemove:S.useCallback(()=>ae(e=>e-1),[]),children:(0,C.jsx)(x.div,{tabIndex:te||ie===0?-1:0,"data-orientation":r,...p,ref:h,style:{outline:`none`,...e.style},onMouseDown:_(e.onMouseDown,()=>{re.current=!0}),onFocus:_(e.onFocus,e=>{let t=!re.current;if(e.target===e.currentTarget&&t&&!te){let t=new CustomEvent(w,Te);if(e.currentTarget.dispatchEvent(t),!t.defaultPrevented){let e=ne().filter(e=>e.focusable);Ce([e.find(e=>e.active),e.find(e=>e.id===ee),...e].filter(Boolean).map(e=>e.ref.current),f)}}re.current=!1}),onBlur:_(e.onBlur,()=>y(!1))})})}),Pe=`RovingFocusGroupItem`,Fe=S.forwardRef((e,t)=>{let{__scopeRovingFocusGroup:n,focusable:r=!0,active:a=!1,tabStopId:o,children:s,...l}=e,u=c(),d=o||u,f=je(Pe,n),p=f.currentTabStopId===d,m=Ee(n),{onFocusableItemAdd:h,onFocusableItemRemove:g,currentTabStopId:ee}=f,v=ye();return i(()=>{if(v&&r)return h(),()=>g()},[v,r,h,g]),S.useEffect(()=>{if(!v&&r)return h(),()=>g()},[v,r,h,g]),(0,C.jsx)(E.ItemSlot,{scope:n,id:d,focusable:r,active:a,children:(0,C.jsx)(x.span,{tabIndex:p?0:-1,"data-orientation":f.orientation,...l,ref:t,onMouseDown:_(e.onMouseDown,e=>{r?f.onItemFocus(d):e.preventDefault()}),onFocus:_(e.onFocus,()=>f.onItemFocus(d)),onKeyDown:_(e.onKeyDown,e=>{if(e.key===`Tab`&&e.shiftKey){f.onItemShiftTab();return}if(e.target!==e.currentTarget)return;let t=Se(e,f.orientation,f.dir);if(t!==void 0){if(e.metaKey||e.ctrlKey||e.altKey||e.shiftKey)return;e.preventDefault();let n=m().filter(e=>e.focusable).map(e=>e.ref.current);if(t===`last`)n.reverse();else if(t===`prev`||t===`next`){t===`prev`&&n.reverse();let r=n.indexOf(e.currentTarget);n=f.loop?we(n,r+1):n.slice(r+1)}setTimeout(()=>Ce(n))}}),children:typeof s==`function`?s({isCurrentTabStop:p,hasTabStop:ee!=null}):s})})}),Fe.displayName=Pe,Ie={ArrowLeft:`prev`,ArrowUp:`prev`,ArrowRight:`next`,ArrowDown:`next`,PageUp:`first`,Home:`first`,PageDown:`last`,End:`last`},Le=Me,Re=Fe})))()}function Be(e,t){return`${e}-trigger-${t}`}function Ve(e,t){return`${e}-content-${t}`}var D,O,k,He,Ue,We,Ge,A,Ke,qe,Je,Ye,Xe,Ze,Qe,$e,et,tt,nt;function rt(){return(rt=t((()=>{D=e(n(),1),g(),te(),ze(),ee(),b(),d(),s(),l(),O=r(),k=`Tabs`,[He,Ue]=y(k,[ke]),We=ke(),[Ge,A]=He(k),Ke=D.forwardRef((e,t)=>{let{__scopeTabs:n,value:r,onValueChange:i,defaultValue:o,orientation:s=`horizontal`,dir:l,activationMode:d=`automatic`,...f}=e,p=u(l),[m,h]=a({prop:r,onChange:i,defaultProp:o??``,caller:k});return(0,O.jsx)(Ge,{scope:n,baseId:c(),value:m,onValueChange:h,orientation:s,dir:p,activationMode:d,children:(0,O.jsx)(x.div,{dir:p,"data-orientation":s,...f,ref:t})})}),Ke.displayName=k,qe=`TabsList`,Je=D.forwardRef((e,t)=>{let{__scopeTabs:n,loop:r=!0,...i}=e,a=A(qe,n),o=We(n);return(0,O.jsx)(Le,{asChild:!0,...o,orientation:a.orientation,dir:a.dir,loop:r,children:(0,O.jsx)(x.div,{role:`tablist`,"aria-orientation":a.orientation,...i,ref:t})})}),Je.displayName=qe,Ye=`TabsTrigger`,Xe=D.forwardRef((e,t)=>{let{__scopeTabs:n,value:r,disabled:i=!1,...a}=e,o=A(Ye,n),s=We(n),c=Be(o.baseId,r),l=Ve(o.baseId,r),u=r===o.value;return(0,O.jsx)(Re,{asChild:!0,...s,focusable:!i,active:u,children:(0,O.jsx)(x.button,{type:`button`,role:`tab`,"aria-selected":u,"aria-controls":l,"data-state":u?`active`:`inactive`,"data-disabled":i?``:void 0,disabled:i,id:c,...a,ref:t,onMouseDown:_(e.onMouseDown,e=>{!i&&e.button===0&&e.ctrlKey===!1?o.onValueChange(r):e.preventDefault()}),onKeyDown:_(e.onKeyDown,e=>{i||e.target!==e.currentTarget||[` `,`Enter`].includes(e.key)&&o.onValueChange(r)}),onFocus:_(e.onFocus,()=>{let e=o.activationMode!==`manual`;!u&&!i&&e&&o.onValueChange(r)})})})}),Xe.displayName=Ye,Ze=`TabsContent`,Qe=D.forwardRef((e,t)=>{let{__scopeTabs:n,value:r,forceMount:i,children:a,...o}=e,s=A(Ze,n),c=Be(s.baseId,r),l=Ve(s.baseId,r),u=r===s.value,d=D.useRef(u);return D.useEffect(()=>{let e=requestAnimationFrame(()=>d.current=!1);return()=>cancelAnimationFrame(e)},[]),(0,O.jsx)(v,{present:i||u,children:({present:n})=>(0,O.jsx)(x.div,{"data-state":u?`active`:`inactive`,"data-orientation":s.orientation,role:`tabpanel`,"aria-labelledby":c,hidden:!n,id:l,tabIndex:0,...o,ref:t,style:{...e.style,animationDuration:d.current?`0s`:void 0},children:n&&a})})}),Qe.displayName=Ze,$e=Ke,et=Je,tt=Xe,nt=Qe})))()}var j,M,N,P,F,I,L,R,z,B;function it(){return(it=t((()=>{j=n(),rt(),p(),m(),M=r(),N=f({slots:{root:`flex flex-col`,list:`z-1 flex shrink-0 overflow-x-auto overflow-y-hidden`,trigger:[`relative cursor-pointer text-sm font-semibold text-text-default-base-secondary no-underline`,`hover:text-text-default-base-primary`,`focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring-button-primary`,`data-disabled:cursor-not-allowed data-disabled:opacity-50`,`data-[state=active]:text-text-default-base-primary`],content:``},variants:{variant:{line:{list:`w-full gap-6 border-b border-border-default-base-primary bg-bg-default-base-primary px-4`,trigger:[`grid h-10 content-center text-text-default-base-tertiary`,`before:absolute before:inset-x-0 before:bottom-0 before:h-0.5 before:bg-text-button-secondary-enable before:opacity-0 before:content-['']`,`data-[state=active]:before:opacity-100`]},enclosed:{list:`inline-grid max-w-full auto-cols-fr grid-flow-col rounded-md bg-bg-default-base-tertiary p-1`,trigger:`flex items-center justify-center rounded-sm px-3 py-1 text-center data-[state=active]:bg-bg-default-base-primary`},button:{list:`gap-2`,trigger:[`flex h-8 items-center gap-2.5 rounded-md px-3 text-sm font-normal text-text-default-base-secondary`,`[&>svg]:-mx-1 [&>svg]:size-4 [&>svg]:fill-icon-default-base-secondary`,`hover:bg-bg-default-base-primary-hover data-[state=active]:bg-bg-default-base-primary-hover`]}},position:{center:{list:`justify-center self-center`},start:{list:`self-start`},end:{list:`justify-end self-end`},full:{list:`w-full self-stretch`}}},compoundVariants:[{variant:`button`,position:`start`,class:{list:`-ml-2.25`}}],defaultVariants:{variant:`line`,position:`start`}}),P=(0,j.createContext)(null),F=()=>{let e=(0,j.use)(P);if(!e)throw Error(`Tabs.List, Tabs.Trigger and Tabs.Content must be used within Tabs.Root`);return e},I=({className:e,variant:t,position:n,...r})=>{let i=N({variant:t,position:n});return(0,M.jsx)(P,{value:i,children:(0,M.jsx)($e,{"data-slot":`tabs-root`,className:h(i.root(),e),...r})})},I.displayName=`Tabs.Root`,L=({className:e,...t})=>{let n=F();return(0,M.jsx)(et,{"data-slot":`tabs-list`,className:h(n.list(),e),...t})},L.displayName=`Tabs.List`,R=({className:e,...t})=>{let n=F();return(0,M.jsx)(tt,{"data-slot":`tabs-trigger`,className:h(n.trigger(),e),...t})},R.displayName=`Tabs.Trigger`,z=({className:e,...t})=>{let n=F();return(0,M.jsx)(nt,{"data-slot":`tabs-content`,className:h(n.content(),e),...t})},z.displayName=`Tabs.Content`,B=({className:e,variant:t,...n})=>{let r=(0,j.use)(P)??N({variant:t});return(0,M.jsx)(`span`,{"data-slot":`tabs-label`,className:h(r.trigger(),`pointer-events-none`,e),...n})},B.displayName=`Tabs.Label`;try{N.displayName=`tabsRecipe`,N.__docgenInfo={description:``,displayName:`tabsRecipe`,filePath:`/home/runner/work/design-system/design-system/src/tabs/tabs.tsx`,methods:[],props:{position:{defaultValue:null,description:``,name:`position`,required:!1,tags:{},type:{name:`enum`,raw:`"center" | "start" | "end" | "full"`,value:[{value:`"center"`},{value:`"start"`},{value:`"end"`},{value:`"full"`}]}},variant:{defaultValue:null,description:``,name:`variant`,required:!1,tags:{},type:{name:`enum`,raw:`"button" | "line" | "enclosed"`,value:[{value:`"button"`},{value:`"line"`},{value:`"enclosed"`}]}},class:{defaultValue:null,declarations:[{fileName:`design-system/node_modules/tailwind-variants/dist/types.d.ts`,name:`TypeLiteral`},{fileName:`design-system/node_modules/tailwind-variants/dist/types.d.ts`,name:`TypeLiteral`}],description:``,name:`class`,required:!1,tags:{},type:{name:`ClassNameValue`}},className:{defaultValue:null,declarations:[{fileName:`design-system/node_modules/tailwind-variants/dist/types.d.ts`,name:`TypeLiteral`},{fileName:`design-system/node_modules/tailwind-variants/dist/types.d.ts`,name:`TypeLiteral`}],description:``,name:`className`,required:!1,tags:{},type:{name:`ClassNameValue`}}},tags:{}}}catch{}try{I.displayName=`Tabs.Root`,I.__docgenInfo={description:"Root of a set of tabs, built on Radix UI's Tabs so keyboard nav, roving focus\nand ARIA come for free. Owns the selected tab (controlled via `value`/\n`onValueChange` or uncontrolled via `defaultValue`) and wraps `List` and\n`Content`s. `variant` picks the look — `line` (default) underlines the active\ntab, `enclosed` renders segmented pills, `button` renders button-like tabs.",displayName:`Tabs.Root`,filePath:`/home/runner/work/design-system/design-system/src/tabs/tabs.tsx`,methods:[],props:{asChild:{defaultValue:null,declarations:[{fileName:`design-system/node_modules/@radix-ui/react-primitive/dist/index.d.mts`,name:`TypeLiteral`}],description:``,name:`asChild`,required:!1,tags:{},type:{name:`boolean`}},position:{defaultValue:null,description:``,name:`position`,required:!1,tags:{},type:{name:`enum`,raw:`"center" | "start" | "end" | "full"`,value:[{value:`"center"`},{value:`"start"`},{value:`"end"`},{value:`"full"`}]}},variant:{defaultValue:null,description:``,name:`variant`,required:!1,tags:{},type:{name:`enum`,raw:`"button" | "line" | "enclosed"`,value:[{value:`"button"`},{value:`"line"`},{value:`"enclosed"`}]}}},tags:{summary:`Root provider for a Tabs group`,example:`\`\`\`tsx
+import { Tabs } from '@agentero/design-system/tabs';
+
+<Tabs.Root defaultValue="overview">
+  <Tabs.List>
+    <Tabs.Trigger value="overview">Overview</Tabs.Trigger>
+    <Tabs.Trigger value="activity">Activity</Tabs.Trigger>
+  </Tabs.List>
+  <Tabs.Content value="overview">…</Tabs.Content>
+  <Tabs.Content value="activity">…</Tabs.Content>
+</Tabs.Root>
+\`\`\``}}}catch{}try{L.displayName=`Tabs.List`,L.__docgenInfo={description:``,displayName:`Tabs.List`,filePath:`/home/runner/work/design-system/design-system/src/tabs/tabs.tsx`,methods:[],props:{asChild:{defaultValue:null,declarations:[{fileName:`design-system/node_modules/@radix-ui/react-primitive/dist/index.d.mts`,name:`TypeLiteral`}],description:``,name:`asChild`,required:!1,tags:{},type:{name:`boolean`}}},tags:{}}}catch{}try{R.displayName=`Tabs.Trigger`,R.__docgenInfo={description:``,displayName:`Tabs.Trigger`,filePath:`/home/runner/work/design-system/design-system/src/tabs/tabs.tsx`,methods:[],props:{asChild:{defaultValue:null,declarations:[{fileName:`design-system/node_modules/@radix-ui/react-primitive/dist/index.d.mts`,name:`TypeLiteral`}],description:``,name:`asChild`,required:!1,tags:{},type:{name:`boolean`}}},tags:{}}}catch{}try{z.displayName=`Tabs.Content`,z.__docgenInfo={description:``,displayName:`Tabs.Content`,filePath:`/home/runner/work/design-system/design-system/src/tabs/tabs.tsx`,methods:[],props:{asChild:{defaultValue:null,declarations:[{fileName:`design-system/node_modules/@radix-ui/react-primitive/dist/index.d.mts`,name:`TypeLiteral`}],description:``,name:`asChild`,required:!1,tags:{},type:{name:`boolean`}}},tags:{}}}catch{}try{B.displayName=`Tabs.Label`,B.__docgenInfo={description:"Non-interactive heading with the exact look of an inactive `Trigger`: it\nrenders the trigger styles without the active data-state, and\n`pointer-events-none` keeps the hover styles from firing. Use it when a\npanel keeps the tab row's visual language but has a single, non-selectable\ntitle — a lone tab would announce a selectable control that isn't one.\nInside a `Root` it picks up the group's variant; standalone, pass `variant`.\nIt renders a plain `span` — wrap it in a heading element when the title\nneeds heading semantics.",displayName:`Tabs.Label`,filePath:`/home/runner/work/design-system/design-system/src/tabs/tabs.tsx`,methods:[],props:{variant:{defaultValue:null,declarations:[{fileName:`design-system/src/tabs/tabs.tsx`,name:`TypeLiteral`}],description:``,name:`variant`,required:!1,tags:{},type:{name:`enum`,raw:`"button" | "line" | "enclosed"`,value:[{value:`"button"`},{value:`"line"`},{value:`"enclosed"`}]}}},tags:{summary:`Text styled as an inactive tab trigger`,example:"```tsx\n<h2>\n  <Tabs.Label>Shared coverages</Tabs.Label>\n</h2>\n```"}}}catch{}})))()}var V;function at(){return(at=t((()=>{it(),V={Root:I,List:L,Trigger:R,Content:z,Label:B}})))()}var H,U,ot,st,ct,lt,W,G,K,q,J,Y,X,Z,Q,$,ut;function dt(){return(dt=t((()=>{at(),H=r(),{expect:U,userEvent:ot,within:st}=__STORYBOOK_MODULE_TEST__,ct={title:`Components/Tabs`,component:V.Root,tags:[`autodocs`],parameters:{docs:{description:{component:"Tabs is a compound built on Radix UI: `Root` owns the selected tab, `List`\nholds the `Trigger`s, and one `Content` renders per tab. `variant` picks the\nlook — `line` (default) underlines the active tab, `enclosed` renders\nsegmented pills, `button` renders button-like tabs.\n\n`Label` is text styled as an inactive trigger, for a single title sitting in\nthe same row as the tabs."}}}},lt=[{value:`overview`,label:`Overview`,body:`A summary of the policy and its coverage.`},{value:`documents`,label:`Documents`,body:`Declarations, endorsements and forms.`},{value:`activity`,label:`Activity`,body:`A timeline of recent changes and events.`}],W=()=>lt.map(({value:e,label:t})=>(0,H.jsx)(V.Trigger,{value:e,children:t},e)),G=()=>lt.map(({value:e,body:t})=>(0,H.jsx)(V.Content,{value:e,className:`p-4 text-sm text-text-default-base-primary`,children:t},e)),K={args:{variant:`line`,defaultValue:`overview`},argTypes:{variant:{control:`radio`,options:[`line`,`enclosed`,`button`],description:`line = underline; enclosed = segmented pills; button = button-like tabs`}},render:e=>(0,H.jsxs)(V.Root,{...e,children:[(0,H.jsx)(V.List,{children:(0,H.jsx)(W,{})}),(0,H.jsx)(G,{})]})},q={render:()=>(0,H.jsxs)(V.Root,{variant:`enclosed`,defaultValue:`overview`,children:[(0,H.jsx)(V.List,{children:(0,H.jsx)(W,{})}),(0,H.jsx)(G,{})]})},J={render:()=>(0,H.jsxs)(V.Root,{variant:`button`,defaultValue:`overview`,children:[(0,H.jsx)(V.List,{children:(0,H.jsx)(W,{})}),(0,H.jsx)(G,{})]})},Y={render:()=>(0,H.jsx)(`div`,{className:`flex flex-col gap-8`,children:[`start`,`center`,`end`].map(e=>(0,H.jsxs)(V.Root,{variant:`enclosed`,position:e,defaultValue:`overview`,children:[(0,H.jsx)(V.List,{children:(0,H.jsx)(W,{})}),(0,H.jsx)(G,{})]},e))})},X={render:()=>(0,H.jsxs)(V.Root,{variant:`enclosed`,position:`full`,defaultValue:`overview`,children:[(0,H.jsx)(V.List,{children:(0,H.jsx)(W,{})}),(0,H.jsx)(G,{})]})},Z={render:()=>(0,H.jsxs)(V.Root,{variant:`line`,defaultValue:`overview`,children:[(0,H.jsx)(V.List,{children:lt.map(({value:e,label:t})=>(0,H.jsx)(V.Trigger,{value:e,asChild:!0,children:(0,H.jsx)(`a`,{href:`#${e}`,children:t})},e))}),(0,H.jsx)(G,{})]}),play:async({canvasElement:e})=>{let t=st(e).getByRole(`tab`,{name:/overview/i});await U(t.tagName).toBe(`A`),await U(getComputedStyle(t).textDecorationLine).toBe(`none`)}},Q={args:{variant:`line`,defaultValue:`overview`},render:e=>(0,H.jsxs)(V.Root,{...e,children:[(0,H.jsx)(V.List,{children:(0,H.jsx)(W,{})}),(0,H.jsx)(G,{})]}),play:async({canvasElement:e})=>{let t=st(e),n=t.getByRole(`tab`,{name:/overview/i}),r=t.getByRole(`tab`,{name:/documents/i});await U(n).toHaveAttribute(`data-state`,`active`),await U(await t.findByText(/summary of the policy/i)).toBeVisible(),await ot.click(r),await U(r).toHaveAttribute(`data-state`,`active`),await U(n).toHaveAttribute(`data-state`,`inactive`),await U(await t.findByText(/declarations, endorsements/i)).toBeVisible()}},$={render:()=>(0,H.jsx)(`div`,{className:`flex flex-col items-start gap-6`,children:[`line`,`enclosed`,`button`].map(e=>(0,H.jsx)(`h2`,{children:(0,H.jsxs)(V.Label,{variant:e,children:[`Shared coverages (`,e,`)`]})},e))}),play:async({canvasElement:e})=>{let t=st(e);await U(t.getAllByRole(`heading`)).toHaveLength(3),await U(t.queryByRole(`tablist`)).not.toBeInTheDocument(),await U(t.queryByRole(`tab`)).not.toBeInTheDocument()}},K.parameters={...K.parameters,docs:{...K.parameters?.docs,source:{originalSource:`{
+  args: {
+    variant: 'line',
+    defaultValue: 'overview'
+  },
+  argTypes: {
+    variant: {
+      control: 'radio',
+      options: ['line', 'enclosed', 'button'],
+      description: 'line = underline; enclosed = segmented pills; button = button-like tabs'
+    }
+  },
+  render: args => <Tabs.Root {...args}>
+            <Tabs.List>
+                <TabItems />
+            </Tabs.List>
+            <TabPanels />
+        </Tabs.Root>
+}`,...K.parameters?.docs?.source},description:{story:"`line` (default): the active tab is marked with an underline.",...K.parameters?.docs?.description}}},q.parameters={...q.parameters,docs:{...q.parameters?.docs,source:{originalSource:`{
+  render: () => <Tabs.Root variant="enclosed" defaultValue="overview">
+            <Tabs.List>
+                <TabItems />
+            </Tabs.List>
+            <TabPanels />
+        </Tabs.Root>
+}`,...q.parameters?.docs?.source},description:{story:"`enclosed` renders segmented pills; the active tab sits on a raised surface.",...q.parameters?.docs?.description}}},J.parameters={...J.parameters,docs:{...J.parameters?.docs,source:{originalSource:`{
+  render: () => <Tabs.Root variant="button" defaultValue="overview">
+            <Tabs.List>
+                <TabItems />
+            </Tabs.List>
+            <TabPanels />
+        </Tabs.Root>
+}`,...J.parameters?.docs?.source},description:{story:"`button` renders button-like tabs, with room for a leading icon per trigger.",...J.parameters?.docs?.description}}},Y.parameters={...Y.parameters,docs:{...Y.parameters?.docs,source:{originalSource:`{
+  render: () => <div className="flex flex-col gap-8">
+            {(['start', 'center', 'end'] as const).map(position => <Tabs.Root key={position} variant="enclosed" position={position} defaultValue="overview">
+                    <Tabs.List>
+                        <TabItems />
+                    </Tabs.List>
+                    <TabPanels />
+                </Tabs.Root>)}
+        </div>
+}`,...Y.parameters?.docs?.source},description:{story:"`position` aligns the tab list within the row (`start` is the default).",...Y.parameters?.docs?.description}}},X.parameters={...X.parameters,docs:{...X.parameters?.docs,source:{originalSource:`{
+  render: () => <Tabs.Root variant="enclosed" position="full" defaultValue="overview">
+            <Tabs.List>
+                <TabItems />
+            </Tabs.List>
+            <TabPanels />
+        </Tabs.Root>
+}`,...X.parameters?.docs?.source},description:{story:'`position="full"` stretches the tab list to fill the available width.',...X.parameters?.docs?.description}}},Z.parameters={...Z.parameters,docs:{...Z.parameters?.docs,source:{originalSource:`{
+  render: () => <Tabs.Root variant="line" defaultValue="overview">
+            <Tabs.List>
+                {TABS.map(({
+        value,
+        label
+      }) => <Tabs.Trigger key={value} value={value} asChild>
+                        <a href={\`#\${value}\`}>{label}</a>
+                    </Tabs.Trigger>)}
+            </Tabs.List>
+            <TabPanels />
+        </Tabs.Root>,
+  play: async ({
+    canvasElement
+  }) => {
+    const canvas = within(canvasElement);
+    const overview = canvas.getByRole('tab', {
+      name: /overview/i
+    });
+    await expect(overview.tagName).toBe('A');
+    await expect(getComputedStyle(overview).textDecorationLine).toBe('none');
+  }
+}`,...Z.parameters?.docs?.source},description:{story:`Triggers accept \`asChild\` to render as another element — e.g. a router link.
+The trigger resets the anchor's default underline, so link-based tabs match
+the button-based ones.`,...Z.parameters?.docs?.description}}},Q.parameters={...Q.parameters,docs:{...Q.parameters?.docs,source:{originalSource:`{
+  args: {
+    variant: 'line',
+    defaultValue: 'overview'
+  },
+  render: args => <Tabs.Root {...args}>
+            <Tabs.List>
+                <TabItems />
+            </Tabs.List>
+            <TabPanels />
+        </Tabs.Root>,
+  play: async ({
+    canvasElement
+  }) => {
+    const canvas = within(canvasElement);
+    const overview = canvas.getByRole('tab', {
+      name: /overview/i
+    });
+    const documents = canvas.getByRole('tab', {
+      name: /documents/i
+    });
+    await expect(overview).toHaveAttribute('data-state', 'active');
+    await expect(await canvas.findByText(/summary of the policy/i)).toBeVisible();
+    await userEvent.click(documents);
+    await expect(documents).toHaveAttribute('data-state', 'active');
+    await expect(overview).toHaveAttribute('data-state', 'inactive');
+    await expect(await canvas.findByText(/declarations, endorsements/i)).toBeVisible();
+  }
+}`,...Q.parameters?.docs?.source},description:{story:`Selecting a tab reveals its panel and hides the others.`,...Q.parameters?.docs?.description}}},$.parameters={...$.parameters,docs:{...$.parameters?.docs,source:{originalSource:`{
+  render: () => <div className="flex flex-col items-start gap-6">
+            {(['line', 'enclosed', 'button'] as const).map(variant => <h2 key={variant}>
+                    <Tabs.Label variant={variant}>Shared coverages ({variant})</Tabs.Label>
+                </h2>)}
+        </div>,
+  play: async ({
+    canvasElement
+  }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getAllByRole('heading')).toHaveLength(3);
+    await expect(canvas.queryByRole('tablist')).not.toBeInTheDocument();
+    await expect(canvas.queryByRole('tab')).not.toBeInTheDocument();
+  }
+}`,...$.parameters?.docs?.source},description:{story:"A standalone `Label` gives a panel with a single, non-interactive title the\ninactive trigger's exact look: outside a `Root` it never gets the active\ndata-state, and `pointer-events-none` keeps hover styles off. It is a plain\n`span`, so wrap it in a heading element for heading semantics. No tab or\ntablist role is announced.",...$.parameters?.docs?.description}}},ut=[`Default`,`Enclosed`,`Buttons`,`Positions`,`FullWidth`,`AsChildLinks`,`SwitchTabs`,`SingleTitle`]})))()}dt();export{Z as AsChildLinks,J as Buttons,K as Default,q as Enclosed,X as FullWidth,Y as Positions,$ as SingleTitle,Q as SwitchTabs,ut as __namedExportsOrder,ct as default};

@@ -588,13 +588,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">44 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/396 story errors</a></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">44 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/399 story errors</a></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>3.6s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>6.0s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -12220,9 +12220,9 @@ enabled, disabled, invalid and read-only, each with one item selected.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Select.Root</h2>
       <div class="badges">
-        <label for="c-34-components-select-props" class="badge ok as-toggle">23 prop types</label>
+        <label for="c-34-components-select-props" class="badge ok as-toggle">13 prop types</label>
         
-        <label for="c-34-components-select-stories" class="badge ok as-toggle">9 stories</label>
+        <label for="c-34-components-select-stories" class="badge ok as-toggle">12 stories</label>
         
         
       </div>
@@ -12234,14 +12234,11 @@ Use it for a pick from a short, known list, where typing would add nothing.
 For a long list or one the user searches, use Combobox; for a handful of
 options that should all stay visible, use RadioGroup. `Root` owns the picked
 value; `Trigger` is the closed field and `Content` the list of `Item`s.</div>
-    <div class="kv"><span class="chip">summary: Root of a single-select dropdown picking from a short list</span><span class="chip">see: {@link https://base-ui.com/react/components/select Base UI Select}</span><span class="chip">example: &lt;Select.Root items={plans} defaultValue=&quot;monthly&quot; name=&quot;plan&quot;&gt;
+    <div class="kv"><span class="chip">summary: Root of a single-select dropdown picking from a short list</span><span class="chip">see: {@link https://www.radix-ui.com/primitives/docs/components/select Radix UI Select}</span><span class="chip">example: &lt;Select.Root defaultValue=&quot;monthly&quot; name=&quot;plan&quot;&gt;
   &lt;Select.Trigger placeholder=&quot;Select a plan&quot; /&gt;
   &lt;Select.Content&gt;
-    {plans.map(plan =&gt; (
-      &lt;Select.Item key={plan.value} value={plan.value}&gt;
-        {plan.label}
-      &lt;/Select.Item&gt;
-    ))}
+    &lt;Select.Item value=&quot;monthly&quot;&gt;Monthly&lt;/Select.Item&gt;
+    &lt;Select.Item value=&quot;yearly&quot;&gt;Yearly&lt;/Select.Item&gt;
   &lt;/Select.Content&gt;
 &lt;/Select.Root&gt;</span></div>
   </div>
@@ -12262,137 +12259,35 @@ value; `Trigger` is the closed field and `Content` the list of `Item`s.</div>
           <div class="note ok">
             <div class="row">
               <span class="ex-name">Prop types <small>(react-component-meta)</small></span>
-              <span class="badge ok">23 prop types</span>
+              <span class="badge ok">13 prop types</span>
             </div>
             <pre><code>Component: src/select/index.ts::Select</code></pre>
             <pre><code>Props:</code></pre>
-            <pre><code>/**
- * A ref to imperative actions.
- * - `unmount`: Manually unmounts the select.
- * Call this after any externally controlled closing animation finishes.
- */
-actionsRef?: RefObject&lt;SelectRootActions | null&gt;
-
-/**
- * Provides a hint to the browser for autofill.
- */
-autoComplete?: string
+            <pre><code>autoComplete?: string
 
 children?: ReactNode
 
-/**
- * Whether the select popup is initially open.
- * 
- * To render a controlled select popup, use the `open` prop instead.
- */
-defaultOpen?: boolean = false
+defaultOpen?: boolean
 
-/**
- * The uncontrolled value of the select when it&#39;s initially rendered.
- * 
- * To render a controlled select, use the `value` prop instead.
- */
-defaultValue?: string | null | undefined
+defaultValue?: string
 
-/**
- * Whether the component should ignore user interaction.
- */
-disabled?: boolean = false
+dir?: &quot;ltr&quot; | &quot;rtl&quot;
 
-/**
- * Identifies the form that owns the hidden input.
- * Useful when the select is rendered outside the form.
- */
+disabled?: boolean
+
 form?: string
 
-/**
- * Whether moving the pointer over items should highlight them.
- * Disabling this prop allows CSS `:hover` to be differentiated from the `:focus` (`data-highlighted`) state.
- */
-highlightItemOnHover?: boolean = true
-
-/**
- * The id of the Select.
- */
-id?: string
-
-/**
- * A ref to access the hidden input element.
- */
-inputRef?: Ref&lt;HTMLInputElement&gt; | undefined
-
-/**
- * Custom comparison logic used to determine if a select item value matches the current selected value. Useful when item values are objects without matching referentially.
- * Defaults to `Object.is` comparison.
- */
-isItemEqualToValue?: (itemValue: string, value: string) =&gt; boolean
-
-/**
- * Data structure of the items rendered in the select popup.
- * When specified, `&lt;Select.Value&gt;` renders the label of the selected item instead of the raw value.
- */
-items?: readonly Group&lt;any&gt;[] | Record&lt;string, ReactNode&gt; | readonly { label: ReactNode; value: any; }[] | undefined
-
-/**
- * When the item values are objects (`&lt;Select.Item value={object}&gt;`), this function converts the object value to a string representation for display in the trigger.
- * If the shape of the object is `{ value, label }`, the label will be used automatically without needing to specify this prop.
- */
-itemToStringLabel?: (itemValue: string) =&gt; string
-
-/**
- * When the item values are objects (`&lt;Select.Item value={object}&gt;`), this function converts the object value to a string representation for form submission.
- * If the shape of the object is `{ value, label }`, the value will be used automatically without needing to specify this prop.
- */
-itemToStringValue?: (itemValue: string) =&gt; string
-
-/**
- * Determines if the select enters a modal state when open.
- * - `true`: user interaction is limited to the select: document page scroll is locked and pointer interactions on outside elements are disabled.
- * - `false`: user interaction with the rest of the document is allowed.
- * 
- * On touch devices, a `true` modal blocks outside taps but leaves the page scrollable unless the popup spans nearly the full viewport width, matching native iOS behavior.
- */
-modal?: boolean = true
-
-/**
- * Identifies the field when a form is submitted.
- */
 name?: string
 
-/**
- * Event handler called when the select popup is opened or closed.
- */
-onOpenChange?: (open: boolean, eventDetails: SelectRootChangeEventDetails) =&gt; void
+onOpenChange?: (open: boolean) =&gt; void
 
-/**
- * Event handler called after any animations complete when the select popup is opened or closed.
- */
-onOpenChangeComplete?: (open: boolean) =&gt; void
+onValueChange?: (value: string) =&gt; void
 
-/**
- * Event handler called when the value of the select changes.
- */
-onValueChange?: (value: string | null, eventDetails: SelectRootChangeEventDetails) =&gt; void
-
-/**
- * Whether the select popup is currently open.
- */
 open?: boolean
 
-/**
- * Whether the user should be unable to choose a different option from the select popup.
- */
-readOnly?: boolean = false
+required?: boolean
 
-/**
- * Whether the user must choose a value before submitting a form.
- */
-required?: boolean = false
-
-/**
- * The value of the select. Use when controlled.
- */
-value?: string | null | undefined</code></pre>
+value?: string</code></pre>
           </div>
         </div>
     
@@ -12404,7 +12299,8 @@ value?: string | null | undefined</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button, Controller, Field, Modal, Popover, Select } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Button, Controller, Field, Modal, Popover, Select } from "@agentero/design-system";
+import { Fragment } from "react";</code></pre>
               </div>
           
           
@@ -12415,10 +12311,10 @@ value?: string | null | undefined</code></pre>
               </div>
               <div>Pick an option from the list</div>
               
-              <pre><code>const Default = () =&gt; &lt;Select.Root size=&quot;md&quot; placeholder=&quot;Select a state&quot; onValueChange={fn()} items={items}&gt;
+              <pre><code>const Default = () =&gt; &lt;Select.Root size=&quot;md&quot; placeholder=&quot;Select a state&quot; onValueChange={fn()}&gt;
     &lt;Select.Trigger aria-label=&quot;State&quot; size={size} placeholder={placeholder} /&gt;
     &lt;Select.Content&gt;
-        {(items as typeof STATES).map(({ value, label }) =&gt; (
+        {STATES.map(({ value, label }) =&gt; (
             &lt;Select.Item key={value} value={value}&gt;
                 {label}
             &lt;/Select.Item&gt;
@@ -12438,7 +12334,7 @@ value?: string | null | undefined</code></pre>
     &lt;div className=&quot;w-full&quot;&gt;
         &lt;Field.Root invalid required&gt;
             &lt;Field.Label&gt;State&lt;/Field.Label&gt;
-            &lt;Select.Root items={STATES}&gt;
+            &lt;Select.Root&gt;
                 &lt;Select.Trigger placeholder=&quot;Select a state&quot; /&gt;
                 &lt;Select.Content&gt;
                     {STATES.map(({ value, label }) =&gt; (
@@ -12460,13 +12356,9 @@ value?: string | null | undefined</code></pre>
                 <span class="badge ok">story ok</span>
               </div>
               <div>One option disabled</div>
-              <div class="hint">`disabled` on one item leaves the rest selectable. The arrow keys still stop
-on it, so it is announced, but neither Enter nor a press picks it.</div>
-              <pre><code>const DisabledItem = () =&gt; &lt;Select.Root
-    size=&quot;md&quot;
-    placeholder=&quot;Select a state&quot;
-    onValueChange={fn()}
-    items={STATES}&gt;
+              <div class="hint">`disabled` on one item leaves the rest selectable. It is announced as
+disabled, a press does not pick it, and the arrow keys skip it.</div>
+              <pre><code>const DisabledItem = () =&gt; &lt;Select.Root size=&quot;md&quot; placeholder=&quot;Select a state&quot; onValueChange={fn()}&gt;
     &lt;Select.Trigger aria-label=&quot;State&quot; placeholder=&quot;Select a state&quot; /&gt;
     &lt;Select.Content&gt;
         {STATES.map(({ value, label }) =&gt; (
@@ -12485,12 +12377,12 @@ on it, so it is announced, but neither Enter nor a press picks it.</div>
               <div>Controlled select whose value is set from outside</div>
               
               <pre><code>const Controlled = () =&gt; {
-    const [state, setState] = useState&lt;string | null&gt;(&#39;CA&#39;);
+    const [state, setState] = useState(&#39;CA&#39;);
 
     return (
         &lt;div className=&quot;flex w-full flex-col items-start gap-6&quot;&gt;
             &lt;div className=&quot;flex gap-3&quot;&gt;
-                &lt;Button variant=&quot;secondary&quot; size=&quot;sm&quot; onClick={() =&gt; setState(null)}&gt;
+                &lt;Button variant=&quot;secondary&quot; size=&quot;sm&quot; onClick={() =&gt; setState(&#39;&#39;)}&gt;
                     Clear
                 &lt;/Button&gt;
                 &lt;Button variant=&quot;secondary&quot; size=&quot;sm&quot; onClick={() =&gt; setState(&#39;NY&#39;)}&gt;
@@ -12498,7 +12390,7 @@ on it, so it is announced, but neither Enter nor a press picks it.</div>
                 &lt;/Button&gt;
             &lt;/div&gt;
             &lt;div className=&quot;w-full&quot;&gt;
-                &lt;Select.Root items={STATES} value={state} onValueChange={setState}&gt;
+                &lt;Select.Root value={state} onValueChange={setState}&gt;
                     &lt;Select.Trigger aria-label=&quot;State&quot; placeholder=&quot;Select a state&quot; /&gt;
                     &lt;Select.Content&gt;
                         {STATES.map(({ value, label }) =&gt; (
@@ -12509,7 +12401,7 @@ on it, so it is announced, but neither Enter nor a press picks it.</div>
                     &lt;/Select.Content&gt;
                 &lt;/Select.Root&gt;
             &lt;/div&gt;
-            &lt;output className=&quot;text-sm&quot;&gt;Selected: {state ?? &#39;none&#39;}&lt;/output&gt;
+            &lt;output className=&quot;text-sm&quot;&gt;Selected: {state || &#39;none&#39;}&lt;/output&gt;
         &lt;/div&gt;
     );
 };</code></pre>
@@ -12533,7 +12425,7 @@ submission until something is picked.</div>
                 setSubmitted(String(new FormData(event.currentTarget).get(&#39;state&#39;)));
             }}&gt;
             &lt;div className=&quot;w-full&quot;&gt;
-                &lt;Select.Root items={STATES} name=&quot;state&quot; required&gt;
+                &lt;Select.Root name=&quot;state&quot; required&gt;
                     &lt;Select.Trigger aria-label=&quot;State&quot; placeholder=&quot;Select a state&quot; /&gt;
                     &lt;Select.Content&gt;
                         {STATES.map(({ value, label }) =&gt; (
@@ -12559,8 +12451,8 @@ submission until something is picked.</div>
               <div class="hint">With react-hook-form, wire the select through `Controller` and put
 `field.ref` on the trigger, so a failed submit focuses it.</div>
               <pre><code>const WithReactHookForm = () =&gt; {
-    const { control, handleSubmit } = useForm&lt;{ state: string | null }&gt;({
-        defaultValues: { state: null }
+    const { control, handleSubmit } = useForm&lt;{ state: string }&gt;({
+        defaultValues: { state: &#39;&#39; }
     });
     const [submitted, setSubmitted] = useState&lt;string | null&gt;(null);
 
@@ -12576,7 +12468,7 @@ submission until something is picked.</div>
                 render={({ field, fieldState }) =&gt; (
                     &lt;Field.Root invalid={fieldState.invalid} required className=&quot;w-full&quot;&gt;
                         &lt;Field.Label&gt;State&lt;/Field.Label&gt;
-                        &lt;Select.Root items={STATES} value={field.value} onValueChange={field.onChange}&gt;
+                        &lt;Select.Root value={field.value} onValueChange={field.onChange}&gt;
                             &lt;Select.Trigger
                                 ref={field.ref}
                                 onBlur={field.onBlur}
@@ -12616,7 +12508,7 @@ and the chevron keeps its place.</div>
 
     return (
         &lt;div className=&quot;w-60&quot;&gt;
-            &lt;Select.Root items={items} defaultValue=&quot;ho3&quot;&gt;
+            &lt;Select.Root defaultValue=&quot;ho3&quot;&gt;
                 &lt;Select.Trigger aria-label=&quot;Policy form&quot; /&gt;
                 &lt;Select.Content&gt;
                     {items.map(({ value, label }) =&gt; (
@@ -12636,20 +12528,109 @@ and the chevron keeps its place.</div>
                 <span class="badge ok">story ok</span>
               </div>
               <div>Long list that scrolls</div>
-              <div class="hint">With more options than fit, the list stops at six rows and scrolls, and it
-opens with the picked option in view. It matches the trigger&#39;s width and
-opens 8px below it. Past a few dozen options, or when
+              <div class="hint">With more options than fit, the list stops at six rows and scrolls, with an
+arrow at each end while there is more to see, and it opens with the picked
+option in view. It matches the trigger&#39;s width and opens 8px below it. Past
+a few dozen options, or when
 people know what they are looking for, a Combobox lets them type instead.</div>
-              <pre><code>const ManyItems = () =&gt; &lt;Select.Root size=&quot;md&quot; placeholder=&quot;Select a state&quot; defaultValue=&quot;Ohio&quot; items={items}&gt;
-    &lt;Select.Trigger aria-label=&quot;State&quot; size={size} placeholder={placeholder} /&gt;
+              <pre><code>const ManyItems = () =&gt; &lt;Select.Root size=&quot;md&quot; placeholder=&quot;Select a state&quot; defaultValue=&quot;Ohio&quot;&gt;
+    &lt;Select.Trigger aria-label=&quot;State&quot; placeholder=&quot;Select a state&quot; /&gt;
     &lt;Select.Content&gt;
-        {(items as typeof STATES).map(({ value, label }) =&gt; (
+        {US_STATES.map(({ value, label }) =&gt; (
             &lt;Select.Item key={value} value={value}&gt;
                 {label}
             &lt;/Select.Item&gt;
         ))}
     &lt;/Select.Content&gt;
 &lt;/Select.Root&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Sections</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Options in sections</div>
+              <div class="hint">Options grouped into sections: each `Group` has a `GroupLabel` as heading,
+with a `Separator` between groups. A single group can carry a heading too.</div>
+              <pre><code>const Sections = () =&gt; (
+    &lt;div className=&quot;grid w-full grid-cols-2 gap-6&quot;&gt;
+        &lt;Select.Root defaultValue=&quot;FL&quot;&gt;
+            &lt;Select.Trigger aria-label=&quot;Region&quot; /&gt;
+            &lt;Select.Content&gt;
+                {REGIONS.map((region, index) =&gt; (
+                    &lt;Fragment key={region.label}&gt;
+                        {index &gt; 0 &amp;&amp; &lt;Select.Separator /&gt;}
+                        &lt;Select.Group&gt;
+                            &lt;Select.GroupLabel&gt;{region.label}&lt;/Select.GroupLabel&gt;
+                            {region.options.map(({ value, label }) =&gt; (
+                                &lt;Select.Item key={value} value={value}&gt;
+                                    {label}
+                                &lt;/Select.Item&gt;
+                            ))}
+                        &lt;/Select.Group&gt;
+                    &lt;/Fragment&gt;
+                ))}
+            &lt;/Select.Content&gt;
+        &lt;/Select.Root&gt;
+        &lt;Select.Root defaultValue=&quot;CA&quot;&gt;
+            &lt;Select.Trigger aria-label=&quot;Recent state&quot; /&gt;
+            &lt;Select.Content&gt;
+                &lt;Select.Group&gt;
+                    &lt;Select.GroupLabel&gt;Recently used&lt;/Select.GroupLabel&gt;
+                    {STATES.slice(0, 3).map(({ value, label }) =&gt; (
+                        &lt;Select.Item key={value} value={value}&gt;
+                            {label}
+                        &lt;/Select.Item&gt;
+                    ))}
+                &lt;/Select.Group&gt;
+            &lt;/Select.Content&gt;
+        &lt;/Select.Root&gt;
+    &lt;/div&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Trailing Text</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Text at the end of a row</div>
+              <div class="hint">`trailing` puts short text at the end of a row, such as a code. It stays in
+the list: the trigger shows only the label.</div>
+              <pre><code>const TrailingText = () =&gt; (
+    &lt;Select.Root defaultValue=&quot;CA&quot;&gt;
+        &lt;Select.Trigger aria-label=&quot;State&quot; /&gt;
+        &lt;Select.Content&gt;
+            {STATES.map(({ value, label }) =&gt; (
+                &lt;Select.Item key={value} value={value} trailing={value}&gt;
+                    {label}
+                &lt;/Select.Item&gt;
+            ))}
+        &lt;/Select.Content&gt;
+    &lt;/Select.Root&gt;
+);</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Opens On Picked Option</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>List opening on the picked option</div>
+              <div class="hint">`position=&quot;item-aligned&quot;` on `Content` opens the list over the trigger, with
+the picked option on top of it, instead of below.</div>
+              <pre><code>const OpensOnPickedOption = () =&gt; (
+    &lt;div className=&quot;pt-24&quot;&gt;
+        &lt;Select.Root defaultValue=&quot;FL&quot;&gt;
+            &lt;Select.Trigger aria-label=&quot;State&quot; /&gt;
+            &lt;Select.Content position=&quot;item-aligned&quot;&gt;
+                {STATES.map(({ value, label }) =&gt; (
+                    &lt;Select.Item key={value} value={value}&gt;
+                        {label}
+                    &lt;/Select.Item&gt;
+                ))}
+            &lt;/Select.Content&gt;
+        &lt;/Select.Root&gt;
+    &lt;/div&gt;
+);</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -12664,13 +12645,12 @@ people know what they are looking for, a Combobox lets them type instead.</div>
             [
                 [&#39;Placeholder&#39;, {}],
                 [&#39;Filled&#39;, { defaultValue: &#39;TX&#39; }],
-                [&#39;Disabled&#39;, { defaultValue: &#39;TX&#39;, disabled: true }],
-                [&#39;Read-only&#39;, { defaultValue: &#39;TX&#39;, readOnly: true }]
+                [&#39;Disabled&#39;, { defaultValue: &#39;TX&#39;, disabled: true }]
             ] as const
         ).map(([title, props]) =&gt; (
             &lt;div key={title} className=&quot;flex flex-col gap-2&quot;&gt;
                 &lt;span className=&quot;text-xs text-text-input-placeholder&quot;&gt;{title}&lt;/span&gt;
-                &lt;Select.Root items={STATES} {...props}&gt;
+                &lt;Select.Root {...props}&gt;
                     &lt;Select.Trigger aria-label={title} placeholder=&quot;Select a state&quot; /&gt;
                     &lt;Select.Content&gt;
                         {STATES.map(({ value, label }) =&gt; (
@@ -12684,7 +12664,7 @@ people know what they are looking for, a Combobox lets them type instead.</div>
         ))}
         &lt;div className=&quot;flex flex-col gap-2&quot;&gt;
             &lt;span className=&quot;text-xs text-text-input-placeholder&quot;&gt;Invalid&lt;/span&gt;
-            &lt;Select.Root items={STATES}&gt;
+            &lt;Select.Root&gt;
                 &lt;Select.Trigger aria-label=&quot;Invalid&quot; aria-invalid placeholder=&quot;Select a state&quot; /&gt;
                 &lt;Select.Content&gt;
                     {STATES.map(({ value, label }) =&gt; (
