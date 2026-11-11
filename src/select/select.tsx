@@ -6,14 +6,11 @@ import {
 	ComponentPropsWithRef,
 	createContext,
 	Dispatch,
-	FocusEvent,
 	ReactNode,
-	RefObject,
 	SetStateAction,
 	use,
 	useEffect,
 	useMemo,
-	useRef,
 	useState
 } from 'react';
 
@@ -45,7 +42,7 @@ export const selectRecipe = tv({
 		],
 		value: 'min-w-0 flex-1 truncate data-placeholder:text-text-input-placeholder',
 		icon: [
-			'flex size-5 shrink-0 items-center justify-center transition-transform duration-150',
+			'flex size-5 shrink-0 items-center justify-center transition-transform duration-150 motion-reduce:transition-none',
 			'[&_path]:fill-icon-input-default group-data-popup-open/select-trigger:rotate-180',
 			'group-disabled/select-trigger:[&_path]:fill-icon-input-disable'
 		],
@@ -75,15 +72,11 @@ const slots = selectRecipe();
 type SelectContextValue = {
 	trigger: HTMLElement | null;
 	setTrigger: Dispatch<SetStateAction<HTMLElement | null>>;
-	triggerBlur: RefObject<((event: FocusEvent<HTMLElement>) => void) | undefined>;
 };
 
 const SelectContext = createContext<SelectContextValue | null>(null);
 
 const LAYER = '[data-slot=modal-content], [data-slot=popover-content]';
-
-const isInList = (element: EventTarget | null) =>
-	element instanceof Element && element.closest('[data-slot=select-content]') !== null;
 
 export type SelectRootProps<Value> = Omit<SelectPrimitive.Root.Props<Value, false>, 'multiple'>;
 
@@ -126,9 +119,6 @@ export type SelectRootProps<Value> = Omit<SelectPrimitive.Root.Props<Value, fals
  * </Select.Root>
  */
 export const Root = <Value,>({
-	value,
-	defaultValue = null,
-	onValueChange,
 	disabled,
 	readOnly,
 	required,
@@ -136,45 +126,26 @@ export const Root = <Value,>({
 }: SelectRootProps<Value>) => {
 	const field = useFieldContext();
 	const [trigger, setTrigger] = useState<HTMLElement | null>(null);
-	const triggerBlur = useRef<((event: FocusEvent<HTMLElement>) => void) | undefined>(undefined);
-	const [initialValue] = useState(defaultValue);
-	const [uncontrolledValue, setUncontrolledValue] = useState<Value | null>(defaultValue);
-	const isControlled = value !== undefined;
+	const [resetKey, setResetKey] = useState(0);
 
-	// A form library's reset hands back `undefined`: clear the pick rather than show the last one.
-	const [previousValue, setPreviousValue] = useState(value);
-	if (value !== previousValue) {
-		setPreviousValue(value);
-		if (value === undefined) setUncontrolledValue(null);
-	}
-
-	const reset = useRef(() => {});
-	reset.current = () => {
-		if (!isControlled) setUncontrolledValue(initialValue);
-	};
-
-	// Base UI ignores a native form reset, so the select listens for it.
+	// Base UI ignores a native form reset; remounting its root brings `defaultValue` back.
 	useEffect(() => {
 		const form = trigger?.closest('form');
 
 		if (!form) return;
 
-		const handleReset = () => reset.current();
+		const handleReset = () => setResetKey(key => key + 1);
 		form.addEventListener('reset', handleReset);
 		return () => form.removeEventListener('reset', handleReset);
 	}, [trigger]);
 
-	const context = useMemo(() => ({ trigger, setTrigger, triggerBlur }), [trigger]);
+	const context = useMemo(() => ({ trigger, setTrigger }), [trigger]);
 
 	return (
 		<SelectContext value={context}>
 			<SelectPrimitive.Root<Value, false>
+				key={resetKey}
 				{...props}
-				value={isControlled ? value : uncontrolledValue}
-				onValueChange={(next, eventDetails) => {
-					onValueChange?.(next, eventDetails);
-					if (!isControlled && !eventDetails.isCanceled) setUncontrolledValue(next);
-				}}
 				disabled={disabled ?? field?.disabled}
 				readOnly={readOnly ?? field?.readOnly}
 				required={required ?? field?.required}
@@ -228,30 +199,22 @@ export const Trigger = ({
 	...props
 }: SelectTriggerProps) => {
 	const field = useFieldContext();
-	const context = use(SelectContext);
-	const setTrigger = context?.setTrigger;
+	const setTrigger = use(SelectContext)?.setTrigger;
 	const mergedRef = useMemo(() => mergeRefs(setTrigger, ref), [setTrigger, ref]);
-	const own = mergeProps(
-		{
-			id: field?.controlId,
-			// Base UI hides the label from assistive technology while the list is open.
-			'aria-labelledby': field && props['aria-label'] === undefined ? field.labelId : undefined,
-			'aria-describedby': field?.describedBy,
-			'aria-invalid': field?.invalid || undefined
-		},
-		props
-	);
-	const { onBlur } = own;
-	if (context) context.triggerBlur.current = onBlur as SelectContextValue['triggerBlur']['current'];
 
 	return (
 		<SelectPrimitive.Trigger
-			{...own}
+			{...mergeProps(
+				{
+					id: field?.controlId,
+					// Base UI names the trigger after its own `Field`'s label; ours isn't Base UI's.
+					'aria-labelledby': field && props['aria-label'] === undefined ? field.labelId : undefined,
+					'aria-describedby': field?.describedBy,
+					'aria-invalid': field?.invalid || undefined
+				},
+				props
+			)}
 			ref={mergedRef}
-			// Focus moving into the list is not a blur; `Content` reports it once focus leaves both.
-			onBlur={event => {
-				if (!isInList(event.relatedTarget)) onBlur?.(event);
-			}}
 			data-slot="select-trigger"
 			data-size={size}
 			className={cn(inputRecipe({ size }), 'group/select-trigger', slots.trigger(), className)}>
@@ -287,9 +250,10 @@ export type SelectContentProps = Omit<
  * `Popover` it renders into that layer instead, so the layer's focus trap and
  * outside press leave the list alone, and Escape closes the list first.
  *
- * Inside a `Field.Root` the list is named after the field's label; outside
- * one it is named "Options". Pass `aria-label` or `aria-labelledby` to name it
- * after the field when a page has more than one select.
+ * Inside a `Field.Root` with a `Field.Label` the list is named after that
+ * label; otherwise it is named "Options". Pass `aria-label` or
+ * `aria-labelledby` to name it after the field when a page has more than one
+ * select.
  *
  * @summary Floating surface holding the options
  * @dataAttribute {string} data-slot - Always set to "select-content"
@@ -302,20 +266,23 @@ export const Content = ({
 	collisionPadding = 8,
 	'aria-label': labelProp,
 	'aria-labelledby': labelledByProp,
-	onBlur,
 	className,
 	children,
 	...props
 }: SelectContentProps) => {
 	const field = useFieldContext();
-	const context = use(SelectContext);
-	const trigger = context?.trigger;
+	const trigger = use(SelectContext)?.trigger;
+
+	// Until the trigger mounts there is no layer to portal into: a `defaultOpen` list would
+	// land on the body first and then jump into the Modal.
+	if (!trigger) return null;
+
 	// Base UI leaves the listbox unnamed; the trigger's id would name it after the picked value.
-	const labelledBy = labelledByProp ?? (labelProp !== undefined ? undefined : field?.labelId);
+	const fieldLabel =
+		field && trigger.ownerDocument.getElementById(field.labelId) ? field.labelId : undefined;
+	const labelledBy = labelledByProp ?? (labelProp !== undefined ? undefined : fieldLabel);
 	const label = labelProp ?? (labelledBy !== undefined ? undefined : 'Options');
-	const layer = trigger?.closest<HTMLElement>(LAYER) ?? undefined;
-	// Portalled away from the trigger, the list would lose a `dir` set around it.
-	const dir = trigger ? getComputedStyle(trigger).direction : undefined;
+	const layer = trigger.closest<HTMLElement>(LAYER) ?? undefined;
 
 	return (
 		<SelectPrimitive.Portal container={layer}>
@@ -332,13 +299,6 @@ export const Content = ({
 				<SelectPrimitive.Popup
 					{...props}
 					data-slot="select-content"
-					dir={dir}
-					onBlur={event => {
-						onBlur?.(event);
-						const next = event.relatedTarget;
-						if (isInList(next) || next === trigger) return;
-						context?.triggerBlur.current?.(event);
-					}}
 					className={cn(slots.content(), className)}>
 					<SelectPrimitive.List
 						data-slot="select-list"

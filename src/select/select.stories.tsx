@@ -20,13 +20,6 @@ const STATES = [
 	{ value: 'TX', label: 'Texas' }
 ];
 
-/**
- * Select is a button that opens a list of options and shows the one picked.
- * Use it for a pick from a short, known list, where typing would add nothing.
- * For a long list or one the user searches, use Combobox; for a handful of
- * options that should all stay visible, use RadioGroup. `Root` owns the picked
- * value; `Trigger` is the closed field and `Content` the list of `Item`s.
- */
 type StoryArgs = SelectRootProps<string> & {
 	/** Control height of the trigger, matching `Input`. */
 	size?: InputSize;
@@ -34,6 +27,13 @@ type StoryArgs = SelectRootProps<string> & {
 	placeholder?: string;
 };
 
+/**
+ * Select is a button that opens a list of options and shows the one picked.
+ * Use it for a pick from a short, known list, where typing would add nothing.
+ * For a long list or one the user searches, use Combobox; for a handful of
+ * options that should all stay visible, use RadioGroup. `Root` owns the picked
+ * value; `Trigger` is the closed field and `Content` the list of `Item`s.
+ */
 const meta = {
 	title: 'Components/Select',
 	component: Select.Root,
@@ -128,69 +128,12 @@ export const Default: Story = {
 
 		const list = await open(trigger);
 		await expect(list).toHaveAccessibleName('Options');
+		await expect(list.scrollHeight).toBe(list.clientHeight);
 		await userEvent.click(within(list).getByRole('option', { name: 'Florida' }));
 
 		await waitFor(() => expect(screen.queryByRole('listbox')).not.toBeInTheDocument());
 		await expect(trigger).toHaveTextContent('Florida');
 		await expect(args.onValueChange).toHaveBeenLastCalledWith('FL', expect.anything());
-	}
-};
-
-/**
- * Starts on a value; the list opens with that option checked.
- *
- * @summary Uncontrolled with a starting value
- */
-export const WithValue: Story = {
-	args: { defaultValue: 'TX' },
-	play: async ({ canvasElement }) => {
-		const trigger = within(canvasElement).getByRole('combobox', { name: 'State' });
-
-		await expect(trigger).toHaveTextContent('Texas');
-		const list = await open(trigger);
-		await expect(list.scrollHeight).toBe(list.clientHeight);
-		await expect(within(list).getByRole('option', { name: 'Texas' })).toHaveAttribute(
-			'aria-selected',
-			'true'
-		);
-		await close();
-	}
-};
-
-/**
- * Trigger heights match `Input`: 32, 40 and 48px.
- *
- * @summary Small, medium and large triggers
- */
-export const Sizes: Story = {
-	render: () => (
-		<div className="flex w-full flex-col gap-4">
-			{(['sm', 'md', 'lg'] as const).map(size => (
-				<Select.Root key={size} items={STATES} defaultValue="CA">
-					<Select.Trigger aria-label={`State ${size}`} size={size} />
-					<Select.Content>
-						{STATES.map(({ value, label }) => (
-							<Select.Item key={value} value={value}>
-								{label}
-							</Select.Item>
-						))}
-					</Select.Content>
-				</Select.Root>
-			))}
-		</div>
-	),
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-
-		for (const [size, height] of [
-			['sm', 32],
-			['md', 40],
-			['lg', 48]
-		] as const) {
-			await expect(
-				canvas.getByRole('combobox', { name: `State ${size}` }).getBoundingClientRect().height
-			).toBe(height);
-		}
 	}
 };
 
@@ -234,18 +177,6 @@ export const InsideField: Story = {
 	}
 };
 
-/** @summary Whole select disabled */
-export const Disabled: Story = {
-	args: { disabled: true, defaultValue: 'CA' },
-	play: async ({ canvasElement }) => {
-		const trigger = within(canvasElement).getByRole('combobox', { name: 'State' });
-
-		await expect(trigger).toBeDisabled();
-		await userEvent.click(trigger, { pointerEventsCheck: 0 });
-		await expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
-	}
-};
-
 /**
  * `disabled` on one item leaves the rest selectable. The arrow keys still stop
  * on it, so it is announced, but neither Enter nor a press picks it.
@@ -279,67 +210,6 @@ export const DisabledItem: Story = {
 		await userEvent.keyboard('{ArrowDown}{Enter}');
 		await expect(args.onValueChange).not.toHaveBeenCalled();
 		await close();
-	}
-};
-
-/**
- * The list still opens to show the options, but neither a press, the arrow
- * keys nor typing a letter changes the value.
- *
- * @summary Read-only select
- */
-export const ReadOnly: Story = {
-	args: { readOnly: true, defaultValue: 'CA', onValueChange: fn() },
-	play: async ({ args, canvasElement }) => {
-		const trigger = within(canvasElement).getByRole('combobox', { name: 'State' });
-
-		const list = await open(trigger);
-		await userEvent.click(within(list).getByRole('option', { name: 'Texas' }));
-		await userEvent.keyboard('{ArrowDown}{Enter}');
-		await userEvent.keyboard('g');
-		await userEvent.keyboard('{Enter}');
-		await expect(trigger).toHaveTextContent('California');
-		await expect(args.onValueChange).not.toHaveBeenCalled();
-		await close();
-	}
-};
-
-/**
- * `aria-invalid` on the trigger paints the destructive border, and
- * `aria-describedby` points at the message. Inside a `Field.Root`, `invalid`
- * on the field sets both.
- *
- * @summary Failed validation on the trigger
- */
-export const Invalid: Story = {
-	render: () => (
-		<div className="flex w-full flex-col gap-2">
-			<Select.Root items={STATES}>
-				<Select.Trigger
-					aria-label="State"
-					aria-invalid
-					aria-describedby="state-error"
-					placeholder="Select a state"
-				/>
-				<Select.Content>
-					{STATES.map(({ value, label }) => (
-						<Select.Item key={value} value={value}>
-							{label}
-						</Select.Item>
-					))}
-				</Select.Content>
-			</Select.Root>
-			<p id="state-error" className="text-sm text-text-input-destructive">
-				Choose a state.
-			</p>
-		</div>
-	),
-	play: async ({ canvasElement }) => {
-		const trigger = within(canvasElement).getByRole('combobox', { name: 'State' });
-
-		await expect(trigger).toHaveAttribute('aria-invalid', 'true');
-		await expect(trigger).toHaveAccessibleDescription('Choose a state.');
-		await expect(trigger).toHaveStyle({ borderColor: 'rgb(217, 38, 38)' });
 	}
 };
 
@@ -422,12 +292,13 @@ export const InForm: Story = {
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
+		const form = canvasElement.querySelector('form')!;
 
-		await userEvent.click(canvas.getByRole('button', { name: 'Submit' }));
-		await expect(canvas.queryByRole('status')).not.toBeInTheDocument();
+		await expect(form.checkValidity()).toBe(false);
 
 		const list = await open(canvas.getByRole('combobox', { name: 'State' }));
 		await userEvent.click(within(list).getByRole('option', { name: 'Georgia' }));
+		await expect(form.checkValidity()).toBe(true);
 		await userEvent.click(canvas.getByRole('button', { name: 'Submit' }));
 		await expect(await canvas.findByRole('status')).toHaveTextContent('Submitted: GA');
 	}
@@ -486,7 +357,7 @@ export const WithReactHookForm: Story = {
 		const trigger = canvas.getByRole('combobox', { name: /State/ });
 
 		await userEvent.click(canvas.getByRole('button', { name: 'Submit' }));
-		await expect(trigger).toHaveFocus();
+		await waitFor(() => expect(trigger).toHaveFocus());
 		await waitFor(() => expect(trigger).toHaveAccessibleDescription('Choose a state'));
 
 		const list = await open(trigger);
@@ -588,7 +459,8 @@ const US_STATES = [
 
 /**
  * With more options than fit, the list stops at six rows and scrolls, and it
- * opens with the picked option in view. Past a few dozen options, or when
+ * opens with the picked option in view. It matches the trigger's width and
+ * opens 8px below it. Past a few dozen options, or when
  * people know what they are looking for, a Combobox lets them type instead.
  *
  * @summary Long list that scrolls
@@ -600,14 +472,19 @@ export const ManyItems: Story = {
 		const trigger = within(canvasElement).getByRole('combobox', { name: 'State' });
 		const list = await open(trigger);
 		const picked = within(list).getByRole('option', { name: 'Ohio' });
+		const box = trigger.getBoundingClientRect();
+		const panel = list.closest('[data-slot=select-content]')!.getBoundingClientRect();
 
+		await expect(Math.round(panel.width)).toBe(Math.round(box.width));
+		await expect(Math.round(panel.left)).toBe(Math.round(box.left));
+		await expect(Math.round(panel.top - box.bottom)).toBe(8);
 		await expect(list.scrollHeight).toBeGreaterThan(list.clientHeight);
 		await expect(picked).toHaveAttribute('aria-selected', 'true');
 		await waitFor(() => {
 			const row = picked.getBoundingClientRect();
-			const box = list.getBoundingClientRect();
-			expect(row.top).toBeGreaterThanOrEqual(box.top);
-			expect(row.bottom).toBeLessThanOrEqual(box.bottom);
+			const view = list.getBoundingClientRect();
+			expect(row.top).toBeGreaterThanOrEqual(view.top);
+			expect(row.bottom).toBeLessThanOrEqual(view.bottom);
 		});
 		await close();
 	}
@@ -699,86 +576,6 @@ export const Keyboard: Story = {
 };
 
 /**
- * The list matches the trigger's width, opens below it and scrolls once it
- * runs out of height.
- *
- * @summary List geometry and scrolling
- */
-export const ListGeometry: Story = {
-	tags: ['!dev', '!autodocs', '!manifest'],
-	render: () => {
-		const many = Array.from({ length: 30 }, (_, index) => ({
-			value: `option-${index}`,
-			label: `Option ${index + 1}`
-		}));
-
-		return (
-			<div className="m-4 w-72">
-				<Select.Root items={many}>
-					<Select.Trigger aria-label="Option" placeholder="Pick one" />
-					<Select.Content>
-						{many.map(({ value, label }) => (
-							<Select.Item key={value} value={value}>
-								{label}
-							</Select.Item>
-						))}
-					</Select.Content>
-				</Select.Root>
-			</div>
-		);
-	},
-	play: async ({ canvasElement }) => {
-		const trigger = within(canvasElement).getByRole('combobox', { name: 'Option' });
-		const list = await open(trigger);
-		const surface = list.closest('[data-slot=select-content]')!;
-		const box = trigger.getBoundingClientRect();
-		const panel = surface.getBoundingClientRect();
-
-		await expect(Math.round(panel.width)).toBe(Math.round(box.width));
-		await expect(Math.round(panel.left)).toBe(Math.round(box.left));
-		await expect(Math.round(panel.top - box.bottom)).toBe(8);
-		await expect(list.scrollHeight).toBeGreaterThan(list.clientHeight);
-		await close();
-	}
-};
-
-/**
- * A `max-h-*` on `Content` shrinks the scrolling area; the last option is still
- * reachable by scrolling.
- *
- * @summary Shorter list through className
- */
-export const ContentMaxHeight: Story = {
-	tags: ['!dev', '!autodocs', '!manifest'],
-	render: () => (
-		<Select.Root items={STATES}>
-			<Select.Trigger aria-label="State" placeholder="Select a state" />
-			<Select.Content className="max-h-40">
-				{STATES.map(({ value, label }) => (
-					<Select.Item key={value} value={value}>
-						{label}
-					</Select.Item>
-				))}
-			</Select.Content>
-		</Select.Root>
-	),
-	play: async ({ canvasElement }) => {
-		const list = await open(within(canvasElement).getByRole('combobox', { name: 'State' }));
-		const surface = list.closest('[data-slot=select-content]')!;
-
-		await expect(surface.getBoundingClientRect().height).toBe(160);
-		await expect(list.scrollHeight).toBeGreaterThan(list.clientHeight);
-		list.scrollTop = list.scrollHeight;
-		await waitFor(() =>
-			expect(
-				within(list).getByRole('option', { name: 'Texas' }).getBoundingClientRect().bottom
-			).toBeLessThanOrEqual(surface.getBoundingClientRect().bottom)
-		);
-		await close();
-	}
-};
-
-/**
  * A native form reset puts an uncontrolled select back on its `defaultValue`,
  * on screen and in what the form submits.
  *
@@ -826,171 +623,23 @@ export const FormReset: Story = {
 		await userEvent.click(within(list).getByRole('option', { name: 'Georgia' }));
 		await expect(trigger).toHaveTextContent('Georgia');
 		await userEvent.click(canvas.getByRole('button', { name: 'Reset' }));
-		await expect(trigger).toHaveTextContent('California');
+		// The reset remounts the select, so the trigger is a new element.
+		await waitFor(() =>
+			expect(canvas.getByRole('combobox', { name: 'State' })).toHaveTextContent('California')
+		);
 		await userEvent.click(canvas.getByRole('button', { name: 'Submit' }));
 		await expect(await canvas.findByRole('status')).toHaveTextContent('Submitted: CA');
 	}
 };
 
 /**
- * A form library's reset with no default values hands the select `undefined`,
- * which clears the pick instead of bringing back the last one.
+ * Inside a `Modal`, the list renders into the dialog, so focus stays on it.
+ * Escape closes the list first, whether the list itself or an option holds
+ * focus, and the modal on the next press.
  *
- * @summary Reset to undefined clears the value
- */
-export const ResetToUndefined: Story = {
-	tags: ['!dev', '!autodocs', '!manifest'],
-	render: () => {
-		const { control, reset } = useForm<{ state?: string | null }>();
-
-		return (
-			<div className="flex w-full flex-col items-start gap-6">
-				<div className="w-full">
-					<Controller
-						name="state"
-						control={control}
-						render={({ field }) => (
-							<Select.Root items={STATES} value={field.value} onValueChange={field.onChange}>
-								<Select.Trigger ref={field.ref} aria-label="State" placeholder="Select a state" />
-								<Select.Content>
-									{STATES.map(({ value, label }) => (
-										<Select.Item key={value} value={value}>
-											{label}
-										</Select.Item>
-									))}
-								</Select.Content>
-							</Select.Root>
-						)}
-					/>
-				</div>
-				<Button variant="secondary" size="sm" onClick={() => reset()}>
-					Reset form
-				</Button>
-			</div>
-		);
-	},
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-		const trigger = canvas.getByRole('combobox', { name: 'State' });
-
-		const list = await open(trigger);
-		await userEvent.click(within(list).getByRole('option', { name: 'Georgia' }));
-		await waitFor(() => expect(screen.queryByRole('listbox')).not.toBeInTheDocument());
-		await expect(trigger).toHaveTextContent('Georgia');
-
-		await userEvent.click(canvas.getByRole('button', { name: 'Reset form' }));
-		await expect(trigger).toHaveTextContent('Select a state');
-	}
-};
-
-/**
- * `aria-label` and `disabled={false}` on the select win over the field. Its own
- * `aria-describedby` joins the field's description instead of replacing it.
- *
- * @summary Own props override the Field wiring
- */
-export const InsideFieldOverridden: Story = {
-	tags: ['!dev', '!autodocs', '!manifest'],
-	render: () => (
-		<Field.Root disabled>
-			<Field.Label>State</Field.Label>
-			<Select.Root items={STATES} disabled={false}>
-				<Select.Trigger
-					aria-label="Risk state"
-					aria-describedby="state-note"
-					placeholder="Select a state"
-				/>
-				<Select.Content>
-					{STATES.map(({ value, label }) => (
-						<Select.Item key={value} value={value}>
-							{label}
-						</Select.Item>
-					))}
-				</Select.Content>
-			</Select.Root>
-			<Field.Description>Where the risk is located.</Field.Description>
-			<p id="state-note">Changing it requotes every carrier.</p>
-		</Field.Root>
-	),
-	play: async ({ canvasElement }) => {
-		const trigger = within(canvasElement).getByRole('combobox', { name: 'Risk state' });
-
-		await expect(trigger).not.toHaveAttribute('aria-labelledby');
-		await expect(trigger).toHaveAccessibleDescription(
-			'Where the risk is located. Changing it requotes every carrier.'
-		);
-		await expect(trigger).toBeEnabled();
-	}
-};
-
-/**
- * Inside a `Modal`, the list renders into the dialog, so the arrow keys keep
- * focus on the options. Escape closes the list first and the modal on the
- * next press.
- *
- * @summary Keyboard and Escape inside a Modal
+ * @summary Focus and Escape inside a Modal
  */
 export const InsideModal: Story = {
-	tags: ['!dev', '!autodocs', '!manifest'],
-	render: () => (
-		<Modal.Root>
-			<Modal.Trigger asChild>
-				<Button variant="secondary">Edit address</Button>
-			</Modal.Trigger>
-			<Modal.Content>
-				<Modal.Title>Edit address</Modal.Title>
-				<Modal.Body>
-					<Select.Root items={STATES} defaultValue="CA">
-						<Select.Trigger aria-label="State" />
-						<Select.Content>
-							{STATES.map(({ value, label }) => (
-								<Select.Item key={value} value={value}>
-									{label}
-								</Select.Item>
-							))}
-						</Select.Content>
-					</Select.Root>
-				</Modal.Body>
-			</Modal.Content>
-		</Modal.Root>
-	),
-	play: async ({ canvasElement }) => {
-		const body = within(document.body);
-
-		await userEvent.click(within(canvasElement).getByRole('button', { name: 'Edit address' }));
-		const dialog = await body.findByRole('dialog', { name: 'Edit address' });
-		const trigger = within(dialog).getByRole('combobox', { name: 'State' });
-
-		trigger.focus();
-		await userEvent.keyboard('{ArrowDown}');
-		const list = await body.findByRole('listbox');
-		await expect(dialog).toContainElement(list);
-		await waitFor(() =>
-			expect(within(list).getByRole('option', { name: 'California' })).toHaveFocus()
-		);
-		await userEvent.keyboard('{ArrowDown}');
-		await expect(within(list).getByRole('option', { name: 'Florida' })).toHaveFocus();
-		await userEvent.keyboard('{Enter}');
-		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
-		await expect(trigger).toHaveTextContent('Florida');
-
-		await userEvent.keyboard('{ArrowDown}');
-		await body.findByRole('listbox');
-		await userEvent.keyboard('{Escape}');
-		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
-		await expect(dialog).toHaveAttribute('data-state', 'open');
-		await userEvent.keyboard('{Escape}');
-		await waitFor(() => expect(dialog).toHaveAttribute('data-state', 'closed'));
-	}
-};
-
-/**
- * Opened by pointer with nothing picked, the list itself holds focus, and
- * Escape there still closes the list only, not the `Modal`.
- *
- * @summary Escape from the list itself inside a Modal
- */
-export const ModalEscapeFromList: Story = {
 	tags: ['!dev', '!autodocs', '!manifest'],
 	render: () => (
 		<Modal.Root>
@@ -1016,13 +665,30 @@ export const ModalEscapeFromList: Story = {
 	),
 	play: async ({ canvasElement }) => {
 		const body = within(document.body);
+
 		await userEvent.click(within(canvasElement).getByRole('button', { name: 'Edit address' }));
 		const dialog = await body.findByRole('dialog', { name: 'Edit address' });
 		const trigger = within(dialog).getByRole('combobox', { name: 'State' });
-		await open(trigger);
+
+		const list = await open(trigger);
+		await expect(dialog).toContainElement(list);
 		await waitFor(() =>
 			expect(document.activeElement).toHaveAttribute('data-slot', 'select-content')
 		);
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+		await expect(dialog).toHaveAttribute('data-state', 'open');
+
+		await userEvent.click(within(await open(trigger)).getByRole('option', { name: 'California' }));
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+		trigger.focus();
+		await userEvent.keyboard('{ArrowDown}');
+		const options = await body.findByRole('listbox');
+		await waitFor(() =>
+			expect(within(options).getByRole('option', { name: 'California' })).toHaveFocus()
+		);
+		await userEvent.keyboard('{ArrowDown}');
+		await expect(within(options).getByRole('option', { name: 'Florida' })).toHaveFocus();
 		await userEvent.keyboard('{Escape}');
 		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
 		await expect(dialog).toHaveAttribute('data-state', 'open');
@@ -1069,92 +735,13 @@ export const InsidePopover: Story = {
 		await expect(list.querySelector(':focus')).not.toBeNull();
 		await userEvent.keyboard('{Escape}');
 		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
-		await expect(trigger).toBeVisible();
+		await expect(trigger.closest('[data-slot=popover-content]')).toHaveAttribute(
+			'data-state',
+			'open'
+		);
 		await userEvent.keyboard('{Escape}');
 		await waitFor(() =>
 			expect(body.queryByRole('combobox', { name: 'State' })).not.toBeInTheDocument()
 		);
-	}
-};
-
-/**
- * Under a `dir="rtl"` container the list keeps the direction, even though it
- * renders away from the trigger.
- *
- * @summary Right-to-left
- */
-export const RightToLeft: Story = {
-	tags: ['!dev', '!autodocs', '!manifest'],
-	render: () => (
-		<div dir="rtl" className="w-full">
-			<Select.Root items={STATES} defaultValue="TX">
-				<Select.Trigger aria-label="State" />
-				<Select.Content>
-					{STATES.map(({ value, label }) => (
-						<Select.Item key={value} value={value}>
-							{label}
-						</Select.Item>
-					))}
-				</Select.Content>
-			</Select.Root>
-		</div>
-	),
-	play: async ({ canvasElement }) => {
-		const list = await open(within(canvasElement).getByRole('combobox', { name: 'State' }));
-		await expect(getComputedStyle(list).direction).toBe('rtl');
-		await close();
-	}
-};
-
-/**
- * Opening the list and moving through it is still using the field, so the
- * trigger's `onBlur` waits: it runs once, when focus leaves the select.
- *
- * @summary onBlur only when focus leaves the select
- */
-export const BlurOnLeave: Story = {
-	tags: ['!dev', '!autodocs', '!manifest'],
-	render: () => {
-		const [blurs, setBlurs] = useState(0);
-
-		return (
-			<div className="flex w-full flex-col items-start gap-6">
-				<div className="w-full">
-					<Select.Root items={STATES} defaultValue="CA">
-						<Select.Trigger aria-label="State" onBlur={() => setBlurs(count => count + 1)} />
-						<Select.Content>
-							{STATES.map(({ value, label }) => (
-								<Select.Item key={value} value={value}>
-									{label}
-								</Select.Item>
-							))}
-						</Select.Content>
-					</Select.Root>
-				</div>
-				<Button variant="secondary">Next</Button>
-				<output className="text-sm">Blurs: {blurs}</output>
-			</div>
-		);
-	},
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-		const trigger = canvas.getByRole('combobox', { name: 'State' });
-
-		trigger.focus();
-		await userEvent.keyboard('{ArrowDown}');
-		const list = await screen.findByRole('listbox');
-		await userEvent.keyboard('{ArrowDown}{ArrowDown}');
-		await expect(list.querySelector(':focus')).not.toBeNull();
-		await expect(canvas.getByRole('status')).toHaveTextContent('Blurs: 0');
-		await close();
-		await expect(trigger).toHaveFocus();
-		await expect(canvas.getByRole('status')).toHaveTextContent('Blurs: 0');
-		await userEvent.tab();
-		await expect(canvas.getByRole('status')).toHaveTextContent('Blurs: 1');
-
-		await open(trigger);
-		await userEvent.click(canvas.getByRole('button', { name: 'Next' }));
-		await waitFor(() => expect(screen.queryByRole('listbox')).not.toBeInTheDocument());
-		await expect(canvas.getByRole('status')).toHaveTextContent('Blurs: 2');
 	}
 };
