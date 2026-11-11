@@ -588,13 +588,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">44 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/401 story errors</a></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">44 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/396 story errors</a></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>6.0s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>3.6s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -12222,34 +12222,18 @@ enabled, disabled, invalid and read-only, each with one item selected.</div>
       <div class="badges">
         <label for="c-34-components-select-props" class="badge ok as-toggle">23 prop types</label>
         
-        <label for="c-34-components-select-stories" class="badge ok as-toggle">14 stories</label>
+        <label for="c-34-components-select-stories" class="badge ok as-toggle">9 stories</label>
         
         
       </div>
     </div>
     <div class="meta" title="./src/select/select.stories.tsx">components-select · ./src/select/select.stories.tsx</div>
     <div>Root of a single-select dropdown picking from a short list</div>
-    <div class="hint">Root of a select: a button that opens a list of options and shows the one
-picked. Use it for a pick from a short, known list, where typing would add
-nothing. For a long list or one the user searches, use
-[Combobox](?path=/docs/components-combobox--docs); for a handful of options
-that should all stay visible, use
-[RadioGroup](?path=/docs/components-radiogroup--docs).
-
-Pass the options as `items` (`{ value, label }`) so the trigger shows the
-picked option&#39;s label rather than its value. With `name`, the form submits
-`name=value`, and `required` blocks the submission until something is picked.
-
-Inside a `Field.Root`, `disabled`, `readOnly` and `required` default to the
-field&#39;s, and the trigger takes its label, description and error. Every Base
-UI root prop is accepted and forwarded — `value`, `defaultValue`,
-`onValueChange`, `open` and so on. A native form reset puts an uncontrolled
-select back on its `defaultValue`.
-
-With react-hook-form, wire it through `Controller` and render the form with
-`noValidate`, as `Form.Root` does: a required select also sets the native
-`required`, and the browser would otherwise block the submit before the
-form library validates.</div>
+    <div class="hint">Select is a button that opens a list of options and shows the one picked.
+Use it for a pick from a short, known list, where typing would add nothing.
+For a long list or one the user searches, use Combobox; for a handful of
+options that should all stay visible, use RadioGroup. `Root` owns the picked
+value; `Trigger` is the closed field and `Content` the list of `Item`s.</div>
     <div class="kv"><span class="chip">summary: Root of a single-select dropdown picking from a short list</span><span class="chip">see: {@link https://base-ui.com/react/components/select Base UI Select}</span><span class="chip">example: &lt;Select.Root items={plans} defaultValue=&quot;monthly&quot; name=&quot;plan&quot;&gt;
   &lt;Select.Trigger placeholder=&quot;Select a plan&quot; /&gt;
   &lt;Select.Content&gt;
@@ -12308,7 +12292,7 @@ defaultOpen?: boolean = false
  * 
  * To render a controlled select, use the `value` prop instead.
  */
-defaultValue?: string | null | undefined = null
+defaultValue?: string | null | undefined
 
 /**
  * Whether the component should ignore user interaction.
@@ -12444,48 +12428,6 @@ value?: string | null | undefined</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">With Value</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Uncontrolled with a starting value</div>
-              <div class="hint">Starts on a value; the list opens with that option checked.</div>
-              <pre><code>const WithValue = () =&gt; &lt;Select.Root size=&quot;md&quot; placeholder=&quot;Select a state&quot; defaultValue=&quot;TX&quot; items={items}&gt;
-    &lt;Select.Trigger aria-label=&quot;State&quot; size={size} placeholder={placeholder} /&gt;
-    &lt;Select.Content&gt;
-        {(items as typeof STATES).map(({ value, label }) =&gt; (
-            &lt;Select.Item key={value} value={value}&gt;
-                {label}
-            &lt;/Select.Item&gt;
-        ))}
-    &lt;/Select.Content&gt;
-&lt;/Select.Root&gt;;</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Sizes</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Small, medium and large triggers</div>
-              <div class="hint">Trigger heights match `Input`: 32, 40 and 48px.</div>
-              <pre><code>const Sizes = () =&gt; (
-    &lt;div className=&quot;flex w-full flex-col gap-4&quot;&gt;
-        {([&#39;sm&#39;, &#39;md&#39;, &#39;lg&#39;] as const).map(size =&gt; (
-            &lt;Select.Root key={size} items={STATES} defaultValue=&quot;CA&quot;&gt;
-                &lt;Select.Trigger aria-label={`State ${size}`} size={size} /&gt;
-                &lt;Select.Content&gt;
-                    {STATES.map(({ value, label }) =&gt; (
-                        &lt;Select.Item key={value} value={value}&gt;
-                            {label}
-                        &lt;/Select.Item&gt;
-                    ))}
-                &lt;/Select.Content&gt;
-            &lt;/Select.Root&gt;
-        ))}
-    &lt;/div&gt;
-);</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
                 <span class="ex-name">Inside Field</span>
                 <span class="badge ok">story ok</span>
               </div>
@@ -12514,29 +12456,6 @@ value?: string | null | undefined</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">Disabled</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Whole select disabled</div>
-              
-              <pre><code>const Disabled = () =&gt; &lt;Select.Root
-    size=&quot;md&quot;
-    placeholder=&quot;Select a state&quot;
-    disabled
-    defaultValue=&quot;CA&quot;
-    items={items}&gt;
-    &lt;Select.Trigger aria-label=&quot;State&quot; size={size} placeholder={placeholder} /&gt;
-    &lt;Select.Content&gt;
-        {(items as typeof STATES).map(({ value, label }) =&gt; (
-            &lt;Select.Item key={value} value={value}&gt;
-                {label}
-            &lt;/Select.Item&gt;
-        ))}
-    &lt;/Select.Content&gt;
-&lt;/Select.Root&gt;;</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
                 <span class="ex-name">Disabled Item</span>
                 <span class="badge ok">story ok</span>
               </div>
@@ -12557,63 +12476,6 @@ on it, so it is announced, but neither Enter nor a press picks it.</div>
         ))}
     &lt;/Select.Content&gt;
 &lt;/Select.Root&gt;;</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Read Only</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Read-only select</div>
-              <div class="hint">The list still opens to show the options, but neither a press, the arrow
-keys nor typing a letter changes the value.</div>
-              <pre><code>const ReadOnly = () =&gt; &lt;Select.Root
-    size=&quot;md&quot;
-    placeholder=&quot;Select a state&quot;
-    readOnly
-    defaultValue=&quot;CA&quot;
-    onValueChange={fn()}
-    items={items}&gt;
-    &lt;Select.Trigger aria-label=&quot;State&quot; size={size} placeholder={placeholder} /&gt;
-    &lt;Select.Content&gt;
-        {(items as typeof STATES).map(({ value, label }) =&gt; (
-            &lt;Select.Item key={value} value={value}&gt;
-                {label}
-            &lt;/Select.Item&gt;
-        ))}
-    &lt;/Select.Content&gt;
-&lt;/Select.Root&gt;;</code></pre>
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Invalid</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Failed validation on the trigger</div>
-              <div class="hint">`aria-invalid` on the trigger paints the destructive border, and
-`aria-describedby` points at the message. Inside a `Field.Root`, `invalid`
-on the field sets both.</div>
-              <pre><code>const Invalid = () =&gt; (
-    &lt;div className=&quot;flex w-full flex-col gap-2&quot;&gt;
-        &lt;Select.Root items={STATES}&gt;
-            &lt;Select.Trigger
-                aria-label=&quot;State&quot;
-                aria-invalid
-                aria-describedby=&quot;state-error&quot;
-                placeholder=&quot;Select a state&quot;
-            /&gt;
-            &lt;Select.Content&gt;
-                {STATES.map(({ value, label }) =&gt; (
-                    &lt;Select.Item key={value} value={value}&gt;
-                        {label}
-                    &lt;/Select.Item&gt;
-                ))}
-            &lt;/Select.Content&gt;
-        &lt;/Select.Root&gt;
-        &lt;p id=&quot;state-error&quot; className=&quot;text-sm text-text-input-destructive&quot;&gt;
-            Choose a state.
-        &lt;/p&gt;
-    &lt;/div&gt;
-);</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
@@ -12775,7 +12637,8 @@ and the chevron keeps its place.</div>
               </div>
               <div>Long list that scrolls</div>
               <div class="hint">With more options than fit, the list stops at six rows and scrolls, and it
-opens with the picked option in view. Past a few dozen options, or when
+opens with the picked option in view. It matches the trigger&#39;s width and
+opens 8px below it. Past a few dozen options, or when
 people know what they are looking for, a Combobox lets them type instead.</div>
               <pre><code>const ManyItems = () =&gt; &lt;Select.Root size=&quot;md&quot; placeholder=&quot;Select a state&quot; defaultValue=&quot;Ohio&quot; items={items}&gt;
     &lt;Select.Trigger aria-label=&quot;State&quot; size={size} placeholder={placeholder} /&gt;
