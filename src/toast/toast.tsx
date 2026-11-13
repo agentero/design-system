@@ -2,18 +2,13 @@
 
 import { ReactNode } from 'react';
 
+import { CircleAlertIcon, CircleCheckIcon, InfoIcon, TriangleAlertIcon, XIcon } from 'lucide-react';
 import { Toaster, toast as sonnerToast } from 'sonner';
 import { tv, VariantProps } from 'tailwind-variants';
 
 import { cn } from '../../lib';
 import { Button } from '../button';
-import {
-	IconCheckCircle,
-	IconCloseSmall,
-	IconErrorOutline,
-	IconInfoFilled,
-	IconWarning
-} from './icons';
+import { legacyIconFill } from '../icons/legacy-fill';
 
 /**
  * Style recipe for Toast using tailwind-variants. Multi-slot recipe whose
@@ -30,7 +25,7 @@ export const toastRecipe = tv({
 	slots: {
 		root: 'w-full flex items-start border border-border-default-base-primary bg-bg-default-base-primary text-text-default-base-primary shadow-xs',
 		iconWrapper: 'shrink-0',
-		icon: 'size-6 [&_svg]:size-6 [&_path]:fill-current',
+		icon: ['size-5 [&_svg]:size-5', legacyIconFill],
 		contentWrapper: 'flex flex-1 min-w-0',
 		leading: 'flex flex-1 min-w-0 text-sm leading-normal',
 		title: 'font-semibold text-text-default-base-primary shrink-0',
@@ -118,11 +113,11 @@ const isActionObject = (action: ToastAction): action is ToastActionObject =>
 	action !== null && typeof action === 'object' && 'onClick' in action;
 
 const iconMap: Record<ToastType, ReactNode> = {
-	neutral: <IconInfoFilled />,
-	success: <IconCheckCircle />,
-	info: <IconInfoFilled />,
-	warning: <IconWarning />,
-	error: <IconErrorOutline />
+	neutral: <InfoIcon />,
+	success: <CircleCheckIcon />,
+	info: <InfoIcon />,
+	warning: <TriangleAlertIcon />,
+	error: <CircleAlertIcon />
 };
 
 type ToastContentProps = {
@@ -194,7 +189,7 @@ const ToastContent = ({
 			</div>
 			{dismissible && (
 				<Button onClick={() => sonnerToast.dismiss(id)} aria-label="Close" variant="ghost" iconOnly>
-					<IconCloseSmall />
+					<XIcon />
 				</Button>
 			)}
 		</div>

@@ -131,9 +131,9 @@ export const Invalid: Story = {
 
 /**
  * The three sizes match Input's: the frame is 32, 40 or 48px tall. The toggle
- * grows with it (a 24px button with a 16px icon at `sm`, 32px with 20px at
- * `md`, 32px with 24px at `lg`) and sits as far from the right edge as from
- * the top and bottom.
+ * icon is 20px at every size, like the other input icons; its button grows
+ * with the frame (24px at `sm`, 32px at `md` and `lg`) and sits as far from
+ * the right edge as from the top and bottom.
  *
  * @summary The three sizes, with the toggle scaled and evenly inset
  */
@@ -162,9 +162,9 @@ export const AllSizes: Story = {
 		});
 
 		await expect(measures).toEqual([
-			{ frame: 32, button: 24, icon: 16, top: 4, bottom: 4, right: 4 },
+			{ frame: 32, button: 24, icon: 20, top: 4, bottom: 4, right: 4 },
 			{ frame: 40, button: 32, icon: 20, top: 4, bottom: 4, right: 4 },
-			{ frame: 48, button: 32, icon: 24, top: 8, bottom: 8, right: 8 }
+			{ frame: 48, button: 32, icon: 20, top: 8, bottom: 8, right: 8 }
 		]);
 	}
 };

@@ -13,6 +13,7 @@ import {
 } from 'react';
 
 import { Combobox as ComboboxPrimitive } from '@base-ui/react/combobox';
+import { ChevronDownIcon, CircleXIcon, SearchIcon } from 'lucide-react';
 import { tv } from 'tailwind-variants';
 
 import { cn } from '../../lib';
@@ -20,7 +21,7 @@ import { useFieldContext } from '../field';
 import { inputRecipe, InputSize } from '../input';
 import { InputGroup } from '../input-group';
 import { Skeleton as SkeletonBlock } from '../skeleton';
-import { IconCancel, IconCheck, IconKeyboardArrowDown, IconSearch } from './icons';
+import { IconCheck } from './icons';
 import { useBaseInputContext } from './input-context';
 
 // Shared by `list` and `skeleton`, and by `item` and `skeletonRow`, so the placeholder rows take
@@ -46,9 +47,9 @@ export const comboboxRecipe = tv({
 		// Clear and trigger share one shape: a bare 24px icon button inside the frame's padding.
 		action: [
 			'flex size-6 shrink-0 cursor-pointer items-center justify-center self-center rounded-sm',
-			'[&>svg>path]:fill-icon-input-default hover:[&>svg>path]:fill-icon-default-base-primary',
+			'text-icon-input-default hover:text-icon-default-base-primary [&>svg]:size-5',
 			'focus-visible:outline-2 focus-visible:outline-border-input-focus',
-			'disabled:cursor-default disabled:[&>svg>path]:fill-icon-input-disable'
+			'disabled:cursor-default disabled:text-icon-input-disable'
 		],
 		trigger: 'data-popup-open:rotate-180',
 		// With a clear button beside it, the chevron gives way to it once there is a value, as in
@@ -504,7 +505,7 @@ export const Input = ({
 			className={variant === 'plain' ? 'px-4' : undefined}>
 			{variant === 'search' && (
 				<InputGroup.Addon>
-					<IconSearch />
+					<SearchIcon />
 				</InputGroup.Addon>
 			)}
 			<ComboboxPrimitive.Input
@@ -519,7 +520,7 @@ export const Input = ({
 					data-slot="combobox-clear"
 					aria-label={clearLabel}
 					className={cn(slots.action(), slots.clear())}>
-					<IconCancel />
+					<CircleXIcon />
 				</ComboboxPrimitive.Clear>
 			)}
 			{variant === 'select' && !multiple && (
@@ -530,7 +531,7 @@ export const Input = ({
 					// alone, the chevron would still open the list and change the value.
 					disabled={rest.disabled}
 					className={cn(slots.action(), slots.trigger(), clearable && slots.triggerReplaced())}>
-					<IconKeyboardArrowDown />
+					<ChevronDownIcon />
 				</ComboboxPrimitive.Trigger>
 			)}
 		</ComboboxPrimitive.InputGroup>

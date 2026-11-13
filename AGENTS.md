@@ -51,6 +51,49 @@ Study `src/avatar/avatar.tsx` before adding new components — it's the canonica
 
 JSDoc and stories are load-bearing here — `react-docgen-typescript` feeds both the Storybook docs page and the MCP manifests consumers rely on. Use the `/document-component <path>` skill for JSDoc and `/story-component <path>` for `.stories.tsx`; those skills encode the MCP-facing conventions (`@summary` tags, required stories, arg controls). Don't hand-roll either.
 
+### Icons
+
+`lucide-react` is a runtime **dependency** of this package, not a peer: the design system owns the icon dependency so consumers never declare or version it. They reach it through the `@agentero/design-system/icons` subpath (`src/icons/index.ts`, a flat `export * from 'lucide-react'`). Always import the `*Icon` form: the flat export also carries lucide's bare names (`Tag`, `Table`, `Command`, `Badge`…) that collide with components here, and an auto-import on the bare name lands on the icon. Inside this repo, import from `lucide-react` directly — component modules must not pull the barrel, or a consumer importing one component drags all ~6300 icon symbols into its module graph.
+
+There is no wrapper component and no size scale. A lucide icon is a plain SVG that takes `className`: `size-*` for size, a `text-*` token for color, `shrink-0` next to text in a flex row.
+
+**Sizes come from the Figma library, per component** (Portal UI library → Icons page, the instance sheet next to the icon masters). The recipes encode them; don't derive a size from the old Material glyph:
+
+| Component | Icon size |
+|---|---|
+| Button with label | `lg`/`md` 20 · `sm`/`xs` 16 |
+| Button icon-only | `lg` 28 · `md` 20 · `sm` 16 · `xs` 12 |
+| Tag (lead/trail) | `md`/`sm` 14 · `xs` 12 — icon-only `md` 16 · `sm` 14 · `xs` 12 |
+| Avatar fallback | `lg` 28 · `md` 20 · `sm` 16 · `xs` 14 (larger sizes keep `1.5em`) |
+| Alert | `md` 20 · `sm` 16; dismiss = icon-only Button of the same size |
+| Toast | 20; dismiss = icon-only Button `sm` (16) |
+| DropdownMenu item | leading 20 · submenu chevron 20 |
+| Field label tooltip, Combobox, Command | 20 |
+| Pagination arrows | 20 · ellipsis 16 (not drawn in Figma; kept from master) |
+| Tabs | 16 |
+| Modal close | 20, overridden on its icon-only Button `sm` (which would draw 16) |
+| InputPassword toggle | `sm` 16 · `md`/`lg` 20 |
+| InputGroup addon | 20, at `-mx-0.5` (the 16px footprint the 24px glyph had at `-mx-1`, so the text does not move) |
+| Combobox / InputSearch clear and chevron | 20 inside the 24px icon button |
+| DataTable sort | 16 (Data table / Header cell) |
+| Accordion chevron | 16 (the Accordion page is empty; kept from master) |
+
+Components Figma doesn't cover (Checkbox, CheckList, Table) keep the size tuned at the lucide migration. The Checkbox check and minus (and the Combobox row check that mirrors them) are not Material: they are cut from the library's Base Checkbox, so they stay as local SVGs in `checkbox/icons.tsx` and `combobox/icons.tsx`. When a Button or Item sizes its icon through `[&_svg]:size-*`, override it on that element with the same variant, never with a `size-*` on the icon — the recipe's compound selector outranks it.
+
+**Stroke is 1.5, set once in `themes/base.css`** (`svg.lucide { stroke-width: 1.5 }` in the base layer): the Figma library draws every lucide icon at 1.5 and lucide ships 2. It reaches consumers through the theme they already import, with no `LucideProvider`. Don't pass `strokeWidth` to an icon — the CSS rule beats the attribute it writes, so the prop does nothing; put a `stroke-*` utility on the icon instead, which beats the base layer.
+
+**Color comes from `text-*`, never `fill-*`.** Lucide paints with `stroke="currentColor"` on a root that carries `fill="none"`, so a `fill-*` rule either does nothing to it or — with `fill-current` — turns its open paths into solid blobs (the Alert warning triangle became a filled wedge that way). A recipe whose icon token differs from its text token scopes a `text-<token>` to the icon: `[&_svg]:text-*` on the DropdownMenu item, `[&>svg]:text-*` on the Tabs trigger, `*:[svg]:text-*` on the InputGroup addon, and on the element itself for the Field label tooltip trigger, which wraps nothing but the icon. Button and Tag set none: every `icon-button-*` and `icon-tag-*` token equals its `text-button-*` / `text-tag-*` twin, so the icon inherits the element's color and a consumer's `text-*` on a Button or Tag reaches the icon too. Consumers still pass filled `@agentero/icons` SVGs, and those need painting, so each such recipe (Button, Tag, Tabs, DropdownMenu, Pagination, Alert, Toast, Field, InputGroup addon) carries two compatibility rules in its base, taken from `src/icons/legacy-fill.ts` (`legacyIconFill`; it lives under `src/` because that is the only directory the consumers' Tailwind scans, so the class text cannot move to `lib/`):
+
+```
+[&_:where(svg:not([fill=none]))]:fill-current   [&_:where(svg_path[fill]:not([fill=none]))]:fill-current
+```
+
+The first paints a legacy icon whose root has no `fill="none"` (a bare `<path>` otherwise renders black — SVG's default — and `text-*` cannot reach it); lucide's root is excluded by the `:not()`. The second repaints a `<path>` that carries its own hardcoded `fill`, which is what `@agentero/icons` ships (root `fill="none"`, path `fill="#434856"`) — CSS inheritance does not beat a presentation attribute on the element itself. Its `:not([fill=none])` skips the transparent mask path some Material glyphs put in front of the drawing, which would otherwise paint as a solid square. Both sit in `:where()` so they keep the class's (0,1,0) specificity and a consumer's own `[&_path]:fill-*` on the icon or on the row still wins: they are a fallback, not a rule. Avatar carries only the first (`legacyIconRootFill`) — a fallback is often a logo whose paths bring their own brand fills. Alert is the one place where the slot class lands on the icon's own `<svg>`, so there the same two rules target the element itself: `[&:where(:not([fill=none]))]:fill-current [&_:where(path[fill]:not([fill=none]))]:fill-current` (`legacyIconSelfFill`) — a `[&_svg…]` variant on the svg matches nothing. `Button/LegacyFilledIcon` renders lucide, bare-path, hardcoded-fill and masked side by side across the variants, `Alert/LegacyFilledIcon` covers the `&` form and `InputGroup/LegacyFilledIcon` the addon; they are the regression fixtures for the rules, so keep them until the consumers finish migrating and the module can go.
+
+Not supported: an SVG whose root carries `fill="none"` and whose `<path>` has neither `fill` nor `stroke`. It paints nothing on its own, no `@agentero/icons` glyph has that shape (the ten with such a root are stroke-drawn pictograms, which a fill rule would wreck), and the only icon that did was the design system's own deleted lightbulb. The recipes do not paint it.
+
+`Foundations/*` stories document a convention rather than a component: they declare no `meta.component` and carry `!manifest`, so they stay out of the manifest (the component catalogue) instead of landing in it as an error entry, which `scripts/check-manifest.mjs` now flags.
+
 ### Theme / tokens
 
 `themes/base.css` is the single source of truth for design tokens, declared as CSS custom properties inside a Tailwind v4 `@theme { ... }` block. Consumers include it via:
