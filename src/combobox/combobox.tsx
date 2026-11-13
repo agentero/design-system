@@ -13,11 +13,12 @@ import {
 } from 'react';
 
 import { Combobox as ComboboxPrimitive } from '@base-ui/react/combobox';
-import { ChevronDownIcon, CircleXIcon, SearchIcon } from 'lucide-react';
+import { ChevronDownIcon, SearchIcon } from 'lucide-react';
 import { tv } from 'tailwind-variants';
 
 import { cn } from '../../lib';
 import { useFieldContext } from '../field';
+import { CircleXFilledIcon } from '../icons/custom';
 import { inputRecipe, InputSize } from '../input';
 import { InputGroup } from '../input-group';
 import { Skeleton as SkeletonBlock } from '../skeleton';
@@ -520,7 +521,7 @@ export const Input = ({
 					data-slot="combobox-clear"
 					aria-label={clearLabel}
 					className={cn(slots.action(), slots.clear())}>
-					<CircleXIcon />
+					<CircleXFilledIcon />
 				</ComboboxPrimitive.Clear>
 			)}
 			{variant === 'select' && !multiple && (
