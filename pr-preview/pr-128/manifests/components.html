@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.6s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>6.2s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -787,7 +787,7 @@ import { ChevronDownIcon } from "lucide-react";</code></pre>
         &lt;Accordion.Item value=&quot;covered&quot;&gt;
             &lt;Accordion.Trigger asChild&gt;
                 &lt;button className=&quot;group flex w-full items-center gap-2 py-4 text-left text-base font-semibold&quot;&gt;
-                    &lt;ChevronDownIcon className=&quot;size-4 shrink-0 transition-transform duration-200 group-data-[state=open]:rotate-180&quot; /&gt;
+                    &lt;ChevronDownIcon className=&quot;size-3.5 shrink-0 transition-transform duration-200 group-data-[state=open]:rotate-180&quot; /&gt;
                     What is covered?
                 &lt;/button&gt;
             &lt;/Accordion.Trigger&gt;
@@ -10071,9 +10071,9 @@ with the input.</div>
               </div>
               <div>The three sizes, with the toggle scaled and evenly inset</div>
               <div class="hint">The three sizes match Input&#39;s: the frame is 32, 40 or 48px tall. The toggle
-grows with it (a 24px button with a 16px icon at `sm`, 32px with a 20px
-icon at `md` and `lg`) and sits as far from the right edge as from the top
-and bottom.</div>
+icon is 20px at every size, like the other input icons; its button grows
+with the frame (24px at `sm`, 32px at `md` and `lg`) and sits as far from
+the right edge as from the top and bottom.</div>
               <pre><code>const AllSizes = () =&gt; &lt;div style={{ display: &#39;grid&#39;, gap: &#39;1rem&#39; }}&gt;
     &lt;InputPassword autoComplete=&quot;current-password&quot; size=&quot;sm&quot; aria-label=&quot;Small&quot; /&gt;
     &lt;InputPassword autoComplete=&quot;current-password&quot; size=&quot;md&quot; aria-label=&quot;Medium&quot; /&gt;

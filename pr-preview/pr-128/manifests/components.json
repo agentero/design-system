@@ -266,7 +266,7 @@
         {
           "id": "components-accordion--custom-trigger",
           "name": "Custom Trigger",
-          "snippet": "const CustomTrigger = () => (\n    <Accordion.Root type=\"single\" collapsible defaultValue=\"covered\">\n        <Accordion.Item value=\"covered\">\n            <Accordion.Trigger asChild>\n                <button className=\"group flex w-full items-center gap-2 py-4 text-left text-base font-semibold\">\n                    <ChevronDownIcon className=\"size-4 shrink-0 transition-transform duration-200 group-data-[state=open]:rotate-180\" />\n                    What is covered?\n                </button>\n            </Accordion.Trigger>\n            <Accordion.Content>{FAQS[0].answer}</Accordion.Content>\n        </Accordion.Item>\n    </Accordion.Root>\n);",
+          "snippet": "const CustomTrigger = () => (\n    <Accordion.Root type=\"single\" collapsible defaultValue=\"covered\">\n        <Accordion.Item value=\"covered\">\n            <Accordion.Trigger asChild>\n                <button className=\"group flex w-full items-center gap-2 py-4 text-left text-base font-semibold\">\n                    <ChevronDownIcon className=\"size-3.5 shrink-0 transition-transform duration-200 group-data-[state=open]:rotate-180\" />\n                    What is covered?\n                </button>\n            </Accordion.Trigger>\n            <Accordion.Content>{FAQS[0].answer}</Accordion.Content>\n        </Accordion.Item>\n    </Accordion.Root>\n);",
           "description": "`asChild` delegates the trigger to a custom element; the built-in chevron is omitted."
         },
         {
@@ -8346,7 +8346,7 @@
           "id": "components-inputpassword--all-sizes",
           "name": "All Sizes",
           "snippet": "const AllSizes = () => <div style={{ display: 'grid', gap: '1rem' }}>\n    <InputPassword autoComplete=\"current-password\" size=\"sm\" aria-label=\"Small\" />\n    <InputPassword autoComplete=\"current-password\" size=\"md\" aria-label=\"Medium\" />\n    <InputPassword autoComplete=\"current-password\" size=\"lg\" aria-label=\"Large\" />\n</div>;",
-          "description": "The three sizes match Input's: the frame is 32, 40 or 48px tall. The toggle\ngrows with it (a 24px button with a 16px icon at `sm`, 32px with a 20px\nicon at `md` and `lg`) and sits as far from the right edge as from the top\nand bottom.",
+          "description": "The three sizes match Input's: the frame is 32, 40 or 48px tall. The toggle\nicon is 20px at every size, like the other input icons; its button grows\nwith the frame (24px at `sm`, 32px at `md` and `lg`) and sits as far from\nthe right edge as from the top and bottom.",
           "summary": "The three sizes, with the toggle scaled and evenly inset"
         },
         {
@@ -12193,6 +12193,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4626
+    "durationMs": 6223
   }
 }
