@@ -129,7 +129,7 @@ export const CustomTrigger: Story = {
 			<Accordion.Item value="covered">
 				<Accordion.Trigger asChild>
 					<button className="group flex w-full items-center gap-2 py-4 text-left text-base font-semibold">
-						<ChevronDownIcon className="size-4 shrink-0 transition-transform duration-200 group-data-[state=open]:rotate-180" />
+						<ChevronDownIcon className="size-3.5 shrink-0 transition-transform duration-200 group-data-[state=open]:rotate-180" />
 						What is covered?
 					</button>
 				</Accordion.Trigger>

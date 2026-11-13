@@ -26,7 +26,7 @@ export const inputPasswordRecipe = tv({
 	},
 	variants: {
 		size: {
-			sm: { toggle: '-me-2.25', button: 'rounded-sm [&_svg]:size-4' },
+			sm: { toggle: '-me-2.25', button: 'rounded-sm [&_svg]:size-5' },
 			md: { toggle: '-me-2.25', button: 'rounded-sm [&_svg]:size-5' },
 			lg: { toggle: '-me-1.25', button: '[&_svg]:size-5' }
 		}

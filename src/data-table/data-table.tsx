@@ -174,7 +174,7 @@ ToolBar.displayName = 'DataTable.ToolBar';
 /* ------------ DataTable Table ------------ */
 
 const orderIconStyles = tv({
-	base: 'size-4 transition-transform duration-200 ease-out-quint motion-reduce:transition-none',
+	base: 'size-3.5 transition-transform duration-200 ease-out-quint motion-reduce:transition-none',
 	variants: {
 		direction: {
 			asc: '',
@@ -268,11 +268,11 @@ export const DataTableTable = ({
 									<>
 										{flexRender(header.column.columnDef.header, header.getContext())}
 										{canSort && (
-											<span className="size-4">
+											<span className="size-3.5">
 												{sorted ? (
 													<ArrowUpIcon className={orderIconStyles({ direction: sorted })} />
 												) : (
-													<ArrowUpDownIcon className="size-4" />
+													<ArrowUpDownIcon className="size-3.5" />
 												)}
 											</span>
 										)}
