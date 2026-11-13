@@ -594,7 +594,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>6.2s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>4.8s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -708,7 +708,8 @@ value?: string | string[] | undefined</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Accordion, IconKeyboardArrowDown } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Accordion } from "@agentero/design-system";
+import { ChevronDownIcon } from "lucide-react";</code></pre>
               </div>
           
           
@@ -786,7 +787,7 @@ value?: string | string[] | undefined</code></pre>
         &lt;Accordion.Item value=&quot;covered&quot;&gt;
             &lt;Accordion.Trigger asChild&gt;
                 &lt;button className=&quot;group flex w-full items-center gap-2 py-4 text-left text-base font-semibold&quot;&gt;
-                    &lt;IconKeyboardArrowDown className=&quot;size-5 shrink-0 transition-transform duration-200 group-data-[state=open]:rotate-180&quot; /&gt;
+                    &lt;ChevronDownIcon className=&quot;size-3.5 shrink-0 transition-transform duration-200 group-data-[state=open]:rotate-180&quot; /&gt;
                     What is covered?
                 &lt;/button&gt;
             &lt;/Accordion.Trigger&gt;
@@ -1302,7 +1303,7 @@ apply.</div>
     size=&quot;sm&quot;
     ghost={false}
     hasIcon
-    icon={IconLightbulb}
+    icon={LightbulbIcon}
     onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
     &lt;Alert.Content&gt;
         &lt;Alert.Title&gt;Title&lt;/Alert.Title&gt;
@@ -1520,7 +1521,7 @@ import { Autocomplete } from &#39;@agentero/design-system/autocomplete&#39;;
 
 &lt;form onSubmit={() =&gt; runPrompt(prompt)}&gt;
   &lt;Autocomplete.Root items={recentPrompts} value={prompt} onValueChange={setPrompt}&gt;
-    &lt;Autocomplete.Input aria-label=&quot;Describe your filters&quot; before={&lt;IconEffects /&gt;} /&gt;
+    &lt;Autocomplete.Input aria-label=&quot;Describe your filters&quot; before={&lt;SparklesIcon /&gt;} /&gt;
     &lt;Autocomplete.Content&gt;
       &lt;Autocomplete.List&gt;
         {(recent: string) =&gt; (
@@ -1758,7 +1759,8 @@ virtualized?: boolean = false</code></pre>
     Loading,
     Modal,
     Tag,
-} from "@agentero/design-system";</code></pre>
+} from "@agentero/design-system";
+import { SearchIcon, SparklesIcon } from "lucide-react";</code></pre>
               </div>
           
           
@@ -1953,7 +1955,7 @@ from the whole frame.</div>
         &lt;Autocomplete.Input
             placeholder=&quot;Carrier&quot;
             aria-label=&quot;Carrier&quot;
-            before={&lt;IconSearch aria-hidden=&quot;true&quot; /&gt;}
+            before={&lt;SearchIcon aria-hidden=&quot;true&quot; /&gt;}
             after={&lt;Tag color=&quot;informative&quot;&gt;Beta&lt;/Tag&gt;}
         /&gt;
         &lt;Autocomplete.Content&gt;
@@ -2263,7 +2265,7 @@ the form&#39;s submit.</div>
                         pending ? (
                             &lt;Loading size=&quot;sm&quot; aria-label=&quot;Translating filters&quot; /&gt;
                         ) : (
-                            &lt;IconStar aria-hidden=&quot;true&quot; /&gt;
+                            &lt;SparklesIcon aria-hidden=&quot;true&quot; /&gt;
                         )
                     }
                     after={&lt;Tag color=&quot;informative&quot;&gt;Beta&lt;/Tag&gt;}
@@ -3060,7 +3062,8 @@ variant?: &quot;link&quot; | &quot;ghost&quot; | &quot;primary&quot; | &quot;sec
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Button } from "@agentero/design-system";
+import { PlusIcon, XIcon } from "lucide-react";</code></pre>
               </div>
           
           
@@ -3146,9 +3149,9 @@ and `data-disabled` on the child instead.</div>
             &lt;Row key={variant}&gt;
                 {SIZES.map(size =&gt; (
                     &lt;Button key={size} variant={variant} size={size}&gt;
-                        &lt;IconAdd /&gt;
+                        &lt;PlusIcon /&gt;
                         {TEXT}
-                        &lt;IconAdd /&gt;
+                        &lt;PlusIcon /&gt;
                     &lt;/Button&gt;
                 ))}
             &lt;/Row&gt;
@@ -3171,7 +3174,7 @@ the link treatment has no padding to accommodate an icon alone.</div>
             &lt;Row key={variant}&gt;
                 {SIZES.map(size =&gt; (
                     &lt;Button key={size} variant={variant} size={size} aria-label=&quot;Close&quot;&gt;
-                        &lt;IconClose /&gt;
+                        &lt;XIcon /&gt;
                     &lt;/Button&gt;
                 ))}
             &lt;/Row&gt;
@@ -3196,7 +3199,7 @@ overlays a spinner that inherits the variant&#39;s text color. Excludes
                 {SIZES.map(size =&gt; (
                     &lt;div key={size} style={{ display: &#39;flex&#39;, gap: &#39;0.5rem&#39;, alignItems: &#39;center&#39; }}&gt;
                         &lt;Button variant={variant} size={size} loading aria-label=&quot;Loading&quot;&gt;
-                            &lt;IconAdd /&gt;
+                            &lt;PlusIcon /&gt;
                         &lt;/Button&gt;
                         &lt;Button variant={variant} size={size} loading&gt;
                             {TEXT}
@@ -3223,9 +3226,9 @@ variant.</div>
         &lt;Row&gt;
             {VARIANTS.map(variant =&gt; (
                 &lt;Button key={variant} variant={variant} status=&quot;danger&quot;&gt;
-                    &lt;IconAdd /&gt;
+                    &lt;PlusIcon /&gt;
                     {TEXT}
-                    &lt;IconAdd /&gt;
+                    &lt;PlusIcon /&gt;
                 &lt;/Button&gt;
             ))}
         &lt;/Row&gt;
@@ -3233,9 +3236,9 @@ variant.</div>
             {VARIANTS.map(variant =&gt; (
                 &lt;Button asChild key={variant} variant={variant} status=&quot;danger&quot; disabled&gt;
                     &lt;a&gt;
-                        &lt;IconAdd /&gt;
+                        &lt;PlusIcon /&gt;
                         {TEXT}
-                        &lt;IconAdd /&gt;
+                        &lt;PlusIcon /&gt;
                     &lt;/a&gt;
                 &lt;/Button&gt;
             ))}
@@ -3257,9 +3260,9 @@ variant.</div>
             &lt;Row key={variant}&gt;
                 {SIZES.map(size =&gt; (
                     &lt;Button key={size} variant={variant} size={size} rounded&gt;
-                        &lt;IconAdd /&gt;
+                        &lt;PlusIcon /&gt;
                         {TEXT}
-                        &lt;IconAdd /&gt;
+                        &lt;PlusIcon /&gt;
                     &lt;/Button&gt;
                 ))}
             &lt;/Row&gt;
@@ -5900,7 +5903,8 @@ state?: Partial&lt;TableState&gt;</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button, DataTable, DropdownMenu, Pagination, Table } from "@agentero/design-system";</code></pre>
+                <pre><code>import { ArrowRightIcon, EllipsisVerticalIcon, HomeIcon } from "lucide-react";
+import { Button, DataTable, DropdownMenu, Pagination, Table } from "@agentero/design-system";</code></pre>
               </div>
           
           
@@ -6643,7 +6647,15 @@ open?: boolean</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button, DropdownMenu } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Button, DropdownMenu } from "@agentero/design-system";
+import {
+    ChevronDownIcon,
+    CopyIcon,
+    FolderInputIcon,
+    ShareIcon,
+    Trash2Icon,
+    UsersIcon,
+} from "lucide-react";</code></pre>
               </div>
           
           
@@ -6661,7 +6673,7 @@ most overflow menus.</div>
         &lt;DropdownMenu.Trigger asChild&gt;
             &lt;Button size=&quot;md&quot; variant=&quot;secondary&quot;&gt;
                 Click me
-                &lt;IconKeyboardArrowDown /&gt;
+                &lt;ChevronDownIcon /&gt;
             &lt;/Button&gt;
         &lt;/DropdownMenu.Trigger&gt;
         &lt;DropdownMenu.Portal&gt;
@@ -6696,7 +6708,7 @@ most overflow menus.</div>
         &lt;DropdownMenu.Trigger asChild&gt;
             &lt;Button size=&quot;md&quot; variant=&quot;secondary&quot;&gt;
                 More Options
-                &lt;IconKeyboardArrowDown /&gt;
+                &lt;ChevronDownIcon /&gt;
             &lt;/Button&gt;
         &lt;/DropdownMenu.Trigger&gt;
         &lt;DropdownMenu.Portal&gt;
@@ -6729,20 +6741,20 @@ pattern when a row should read as destructive.</div>
         &lt;DropdownMenu.Trigger asChild&gt;
             &lt;Button size=&quot;md&quot; variant=&quot;secondary&quot;&gt;
                 Actions
-                &lt;IconKeyboardArrowDown /&gt;
+                &lt;ChevronDownIcon /&gt;
             &lt;/Button&gt;
         &lt;/DropdownMenu.Trigger&gt;
         &lt;DropdownMenu.Portal&gt;
             &lt;DropdownMenu.Content&gt;
                 &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Copy&#39;)}&gt;
-                    &lt;IconContentCopy /&gt;
+                    &lt;CopyIcon /&gt;
                     Copy
                 &lt;/DropdownMenu.Item&gt;
                 &lt;DropdownMenu.Separator /&gt;
                 &lt;DropdownMenu.Item
                     onSelect={() =&gt; console.log(&#39;Delete&#39;)}
-                    className=&quot;data-[highlighted]:bg-red-100&quot;&gt;
-                    &lt;IconDelete className=&quot;[&amp;&gt;path]:fill-red-500&quot; /&gt;
+                    className=&quot;data-[highlighted]:bg-red-100 [&amp;_svg]:text-icon-default-danger-primary&quot;&gt;
+                    &lt;Trash2Icon /&gt;
                     &lt;span className=&quot;text-red-500&quot;&gt;Delete&lt;/span&gt;
                 &lt;/DropdownMenu.Item&gt;
             &lt;/DropdownMenu.Content&gt;
@@ -6764,7 +6776,7 @@ be ambiguous from the item text alone.</div>
         &lt;DropdownMenu.Trigger asChild&gt;
             &lt;Button size=&quot;md&quot; variant=&quot;secondary&quot;&gt;
                 Account Menu
-                &lt;IconKeyboardArrowDown /&gt;
+                &lt;ChevronDownIcon /&gt;
             &lt;/Button&gt;
         &lt;/DropdownMenu.Trigger&gt;
         &lt;DropdownMenu.Portal&gt;
@@ -6812,7 +6824,7 @@ it escapes the parent&#39;s stacking context.</div>
         &lt;DropdownMenu.Trigger asChild&gt;
             &lt;Button size=&quot;md&quot; variant=&quot;secondary&quot;&gt;
                 File Options
-                &lt;IconKeyboardArrowDown /&gt;
+                &lt;ChevronDownIcon /&gt;
             &lt;/Button&gt;
         &lt;/DropdownMenu.Trigger&gt;
         &lt;DropdownMenu.Portal&gt;
@@ -6822,7 +6834,7 @@ it escapes the parent&#39;s stacking context.</div>
                 &lt;DropdownMenu.Separator /&gt;
                 &lt;DropdownMenu.Sub&gt;
                     &lt;DropdownMenu.SubTrigger&gt;
-                        &lt;IconIosShare /&gt;
+                        &lt;ShareIcon /&gt;
                         Share
                     &lt;/DropdownMenu.SubTrigger&gt;
                     &lt;DropdownMenu.Portal&gt;
@@ -6837,7 +6849,7 @@ it escapes the parent&#39;s stacking context.</div>
                 &lt;/DropdownMenu.Sub&gt;
                 &lt;DropdownMenu.Sub&gt;
                     &lt;DropdownMenu.SubTrigger&gt;
-                        &lt;IconDriveFileMove /&gt;
+                        &lt;FolderInputIcon /&gt;
                         Move to
                     &lt;/DropdownMenu.SubTrigger&gt;
                     &lt;DropdownMenu.Portal&gt;
@@ -6855,8 +6867,8 @@ it escapes the parent&#39;s stacking context.</div>
                 &lt;DropdownMenu.Separator /&gt;
                 &lt;DropdownMenu.Item
                     onSelect={() =&gt; console.log(&#39;Delete&#39;)}
-                    className=&quot;data-[highlighted]:bg-red-100&quot;&gt;
-                    &lt;IconDelete className=&quot;[&amp;&gt;path]:fill-red-500&quot; /&gt;
+                    className=&quot;data-[highlighted]:bg-red-100 [&amp;_svg]:text-icon-default-danger-primary&quot;&gt;
+                    &lt;Trash2Icon /&gt;
                     &lt;span className=&quot;text-red-500&quot;&gt;Delete&lt;/span&gt;
                 &lt;/DropdownMenu.Item&gt;
             &lt;/DropdownMenu.Content&gt;
@@ -6878,7 +6890,7 @@ screens once the tree grows past two levels.</div>
         &lt;DropdownMenu.Trigger asChild&gt;
             &lt;Button size=&quot;md&quot; variant=&quot;secondary&quot;&gt;
                 Organization Menu
-                &lt;IconKeyboardArrowDown /&gt;
+                &lt;ChevronDownIcon /&gt;
             &lt;/Button&gt;
         &lt;/DropdownMenu.Trigger&gt;
         &lt;DropdownMenu.Portal&gt;
@@ -6887,7 +6899,7 @@ screens once the tree grows past two levels.</div>
                 &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Dashboard&#39;)}&gt;Dashboard&lt;/DropdownMenu.Item&gt;
                 &lt;DropdownMenu.Sub&gt;
                     &lt;DropdownMenu.SubTrigger&gt;
-                        &lt;IconPeople /&gt;
+                        &lt;UsersIcon /&gt;
                         Teams
                     &lt;/DropdownMenu.SubTrigger&gt;
                     &lt;DropdownMenu.Portal&gt;
@@ -6952,7 +6964,7 @@ actions outright unless the user needs to see them and understand why.</div>
         &lt;DropdownMenu.Trigger asChild&gt;
             &lt;Button size=&quot;md&quot; variant=&quot;secondary&quot;&gt;
                 Document Actions
-                &lt;IconKeyboardArrowDown /&gt;
+                &lt;ChevronDownIcon /&gt;
             &lt;/Button&gt;
         &lt;/DropdownMenu.Trigger&gt;
         &lt;DropdownMenu.Portal&gt;
@@ -6962,7 +6974,7 @@ actions outright unless the user needs to see them and understand why.</div>
                 &lt;DropdownMenu.Separator /&gt;
                 &lt;DropdownMenu.Sub&gt;
                     &lt;DropdownMenu.SubTrigger&gt;
-                        &lt;IconContentCopy /&gt;
+                        &lt;CopyIcon /&gt;
                         Export as
                     &lt;/DropdownMenu.SubTrigger&gt;
                     &lt;DropdownMenu.Portal&gt;
@@ -6978,7 +6990,7 @@ actions outright unless the user needs to see them and understand why.</div>
                 &lt;/DropdownMenu.Sub&gt;
                 &lt;DropdownMenu.Sub&gt;
                     &lt;DropdownMenu.SubTrigger disabled&gt;
-                        &lt;IconIosShare /&gt;
+                        &lt;ShareIcon /&gt;
                         Share (Sign in required)
                     &lt;/DropdownMenu.SubTrigger&gt;
                     &lt;DropdownMenu.Portal&gt;
@@ -9323,13 +9335,12 @@ hands its state to the frame through `:has()`, so focus, `disabled`,
     DropdownMenu,
     Field,
     FieldText,
-    IconKeyboardArrowDown,
-    IconSearch,
     Input,
     InputGroup,
     Label,
     Tag,
-} from "@agentero/design-system";</code></pre>
+} from "@agentero/design-system";
+import { ChevronDownIcon, MailIcon, SearchIcon } from "lucide-react";</code></pre>
               </div>
           
           
@@ -9347,7 +9358,7 @@ clear button and a loading state is
               <pre><code>const Default = () =&gt; (
     &lt;InputGroup.Root&gt;
         &lt;InputGroup.Addon&gt;
-            &lt;IconSearch /&gt;
+            &lt;SearchIcon /&gt;
         &lt;/InputGroup.Addon&gt;
         &lt;Input type=&quot;search&quot; placeholder=&quot;Search agencies&quot; aria-label=&quot;Search agencies&quot; /&gt;
     &lt;/InputGroup.Root&gt;
@@ -9413,7 +9424,7 @@ the corner instead of competing with it.</div>
         &lt;/InputGroup.Root&gt;
         &lt;InputGroup.Root&gt;
             &lt;InputGroup.Addon&gt;
-                &lt;IconSearch /&gt;
+                &lt;SearchIcon /&gt;
             &lt;/InputGroup.Addon&gt;
             &lt;Input placeholder=&quot;Describe your filters&quot; aria-label=&quot;Describe your filters&quot; /&gt;
             &lt;InputGroup.Addon&gt;
@@ -9453,7 +9464,7 @@ and affix — and the frame stops offering the text cursor.</div>
               <pre><code>const Disabled = () =&gt; (
     &lt;InputGroup.Root&gt;
         &lt;InputGroup.Addon&gt;
-            &lt;IconSearch /&gt;
+            &lt;SearchIcon /&gt;
         &lt;/InputGroup.Addon&gt;
         &lt;Input placeholder=&quot;Search agencies&quot; aria-label=&quot;Search agencies&quot; disabled /&gt;
         &lt;InputGroup.Text&gt;USD&lt;/InputGroup.Text&gt;
@@ -9488,7 +9499,7 @@ the ring follows it on focus.</div>
         {SIZES.map(size =&gt; (
             &lt;InputGroup.Root key={size}&gt;
                 &lt;InputGroup.Addon&gt;
-                    &lt;IconSearch /&gt;
+                    &lt;SearchIcon /&gt;
                 &lt;/InputGroup.Addon&gt;
                 &lt;Input size={size} placeholder={`Size ${size}`} aria-label={`Size ${size}`} /&gt;
             &lt;/InputGroup.Root&gt;
@@ -9528,7 +9539,7 @@ to the input.</div>
     &lt;FieldStates label=&quot;Email&quot; required error=&quot;Enter a valid email address.&quot;&gt;
         &lt;InputGroup.Root&gt;
             &lt;InputGroup.Addon&gt;
-                &lt;IconMail /&gt;
+                &lt;MailIcon /&gt;
             &lt;/InputGroup.Addon&gt;
             &lt;Input type=&quot;email&quot; placeholder=&quot;me@email.com&quot; /&gt;
         &lt;/InputGroup.Root&gt;
@@ -10060,9 +10071,9 @@ with the input.</div>
               </div>
               <div>The three sizes, with the toggle scaled and evenly inset</div>
               <div class="hint">The three sizes match Input&#39;s: the frame is 32, 40 or 48px tall. The toggle
-grows with it (a 24px button with a 16px icon at `sm`, 32px with 20px at
-`md`, 32px with 24px at `lg`) and sits as far from the right edge as from
-the top and bottom.</div>
+icon is 20px at every size, like the other input icons; its button grows
+with the frame (24px at `sm`, 32px at `md` and `lg`) and sits as far from
+the right edge as from the top and bottom.</div>
               <pre><code>const AllSizes = () =&gt; &lt;div style={{ display: &#39;grid&#39;, gap: &#39;1rem&#39; }}&gt;
     &lt;InputPassword autoComplete=&quot;current-password&quot; size=&quot;sm&quot; aria-label=&quot;Small&quot; /&gt;
     &lt;InputPassword autoComplete=&quot;current-password&quot; size=&quot;md&quot; aria-label=&quot;Medium&quot; /&gt;
@@ -12610,7 +12621,8 @@ sticky?: &quot;header&quot; | &quot;headerAndFooter&quot;</code></pre>
                   <span class="ex-name">Imports</span>
                 </div>
                 <pre><code>import { Button, DropdownMenu, Switch, Table } from "@agentero/design-system";
-import { Fragment } from "react";</code></pre>
+import { Fragment } from "react";
+import { PencilIcon, Trash2Icon } from "lucide-react";</code></pre>
               </div>
           
           
@@ -12755,7 +12767,7 @@ hands keyboard focus back to the action, so the row keeps that look.</div>
                                     size=&quot;sm&quot;
                                     iconOnly
                                     aria-label={`Actions for ${row.name}`}&gt;
-                                    &lt;IconEdit /&gt;
+                                    &lt;PencilIcon /&gt;
                                 &lt;/Button&gt;
                             &lt;/DropdownMenu.Trigger&gt;
                             &lt;DropdownMenu.Portal&gt;
@@ -13203,7 +13215,8 @@ variant?: &quot;ghost&quot; | &quot;secondary&quot; | &quot;tertiary&quot; | &qu
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Tag } from "@agentero/design-system";</code></pre>
+                <pre><code>import { PlusIcon } from "lucide-react";
+import { Tag } from "@agentero/design-system";</code></pre>
               </div>
           
           
@@ -13238,10 +13251,10 @@ visible.</div>
                         variant=&quot;secondary&quot;
                         role=&quot;img&quot;
                         aria-label={`${size} icon only`}&gt;
-                        &lt;IconAdd /&gt;
+                        &lt;PlusIcon /&gt;
                     &lt;/Tag&gt;
                     &lt;Tag size={size} color=&quot;informative&quot; variant=&quot;secondary&quot;&gt;
-                        &lt;IconAdd /&gt;
+                        &lt;PlusIcon /&gt;
                         {size}
                     &lt;/Tag&gt;
                     &lt;Tag size={size} color=&quot;informative&quot; variant=&quot;secondary&quot;&gt;
@@ -13300,7 +13313,7 @@ right Tags to see it.</div>
         &lt;/Tag&gt;
         &lt;Tag color=&quot;informative&quot; variant=&quot;secondary&quot; asChild aria-label=&quot;add&quot;&gt;
             &lt;button type=&quot;button&quot;&gt;
-                &lt;IconAdd /&gt;
+                &lt;PlusIcon /&gt;
             &lt;/button&gt;
         &lt;/Tag&gt;
     &lt;/Row&gt;
@@ -13421,9 +13434,9 @@ Icons are tinted with each color&#39;s `icon-tag-*` token.</div>
             &lt;Row key={color}&gt;
                 {VARIANTS.map(variant =&gt; (
                     &lt;Tag key={variant} color={color} variant={variant}&gt;
-                        &lt;IconAdd /&gt;
+                        &lt;PlusIcon /&gt;
                         tag
-                        &lt;IconAdd /&gt;
+                        &lt;PlusIcon /&gt;
                     &lt;/Tag&gt;
                 ))}
             &lt;/Row&gt;
@@ -13449,7 +13462,7 @@ icon with a long label clips the label and leaves the icon at full size.</div>
         &lt;/div&gt;
         &lt;div style={{ width: &#39;9rem&#39; }}&gt;
             &lt;Tag truncate color=&quot;informative&quot;&gt;
-                &lt;IconAdd /&gt;
+                &lt;PlusIcon /&gt;
                 Travel insurance limited lines producer
             &lt;/Tag&gt;
         &lt;/div&gt;
@@ -13534,7 +13547,7 @@ leading + trailing icons, and icon-only.</div>
                     &lt;Row&gt;
                         {VARIANTS.map(variant =&gt; (
                             &lt;Tag key={variant} color={color} variant={variant}&gt;
-                                &lt;IconAdd /&gt;
+                                &lt;PlusIcon /&gt;
                                 {variant}
                             &lt;/Tag&gt;
                         ))}
@@ -13549,9 +13562,9 @@ leading + trailing icons, and icon-only.</div>
                     &lt;Row&gt;
                         {VARIANTS.map(variant =&gt; (
                             &lt;Tag key={variant} color={color} variant={variant}&gt;
-                                &lt;IconAdd /&gt;
+                                &lt;PlusIcon /&gt;
                                 {variant}
-                                &lt;IconAdd /&gt;
+                                &lt;PlusIcon /&gt;
                             &lt;/Tag&gt;
                         ))}
                     &lt;/Row&gt;
@@ -13570,7 +13583,7 @@ leading + trailing icons, and icon-only.</div>
                                 variant={variant}
                                 role=&quot;img&quot;
                                 aria-label={`${color} ${variant}`}&gt;
-                                &lt;IconAdd /&gt;
+                                &lt;PlusIcon /&gt;
                             &lt;/Tag&gt;
                         ))}
                     &lt;/Row&gt;
@@ -13905,7 +13918,8 @@ visibleToasts?: number</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button, Toast } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Button, Toast } from "@agentero/design-system";
+import { RefreshCwIcon } from "lucide-react";</code></pre>
               </div>
           
           
@@ -14227,11 +14241,7 @@ action (e.g., a sync icon for a sync-in-progress toast).</div>
         onClick={() =&gt;
             toast.success(&#39;Sync started&#39;, {
                 description: &#39;Data sync is in progress.&#39;,
-                icon: (
-                    &lt;svg viewBox=&quot;0 0 24 24&quot; width=&quot;24&quot; height=&quot;24&quot; fill=&quot;currentColor&quot; aria-hidden&gt;
-                        &lt;path d=&quot;M12 4V1L8 5l4 4V6c3.3 0 6 2.7 6 6 0 1-.3 2-.7 2.8l1.5 1.5C19.5 15 20 13.6 20 12c0-4.4-3.6-8-8-8zm0 14c-3.3 0-6-2.7-6-6 0-1 .3-2 .7-2.8L5.2 7.7C4.5 9 4 10.4 4 12c0 4.4 3.6 8 8 8v3l4-4-4-4v3z&quot; /&gt;
-                    &lt;/svg&gt;
-                )
+                icon: &lt;RefreshCwIcon /&gt;
             })
         }&gt;
         Show toast with custom icon
