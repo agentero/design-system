@@ -5,6 +5,10 @@
 // without anyone noticing (PR #98 and PR #99), because nothing here fails when
 // an entry comes out empty — the Storybook docs page keeps looking fine, since
 // it reads from a different path. This runs after `yarn build-storybook`.
+//
+// Every entry is checked: a story file without `meta.component` lands here as an
+// error entry, so a page that documents a convention (Foundations/*) stays out
+// with the `!manifest` tag instead.
 
 import fs from 'node:fs';
 import path from 'node:path';

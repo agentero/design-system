@@ -3,12 +3,12 @@
 import { ComponentProps, createContext, useContext } from 'react';
 
 import * as DialogPrimitive from '@radix-ui/react-dialog';
+import { XIcon } from 'lucide-react';
 import { type VariantProps, tv } from 'tailwind-variants';
 
 import { cn } from '../../lib';
 import { deferEscapeToCombobox } from '../../lib/combobox-escape';
 import { Button } from '../button';
-import { IconClose } from './icons';
 
 type RootProps = ComponentProps<typeof DialogPrimitive.Root>;
 
@@ -208,8 +208,8 @@ export const Title = ({ className, children, ...props }: TitleProps) => {
 			<DialogPrimitive.Title {...props}>{children}</DialogPrimitive.Title>
 			{variant === 'dialog' && (
 				<DialogPrimitive.Close asChild>
-					<Button variant="ghost" size="sm" aria-label="Close" className="shrink-0">
-						<IconClose />
+					<Button variant="ghost" size="sm" aria-label="Close" className="shrink-0 [&_svg]:size-5">
+						<XIcon />
 					</Button>
 				</DialogPrimitive.Close>
 			)}

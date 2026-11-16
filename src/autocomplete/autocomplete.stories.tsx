@@ -1,6 +1,7 @@
-import { SVGProps, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { SearchIcon, SparklesIcon } from 'lucide-react';
 import { expect, fn, mocked, userEvent, waitFor, within } from 'storybook/test';
 
 import { Autocomplete, type AutocompleteRootProps } from '.';
@@ -51,18 +52,6 @@ const meta: Meta<StoryArgs> = {
 
 export default meta;
 type Story = StoryObj<typeof meta>;
-
-const IconSearch = (props: SVGProps<SVGSVGElement>) => (
-	<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
-		<path d="M9.52 15.615q-2.562 0-4.34-1.777Q3.405 12.062 3.405 9.5T5.18 5.162q1.776-1.777 4.338-1.777t4.339 1.777q1.777 1.776 1.777 4.338 0 1.071-.36 2.046a5.7 5.7 0 0 1-.96 1.696l5.754 5.754q.209.209.213.522a.7.7 0 0 1-.213.532.72.72 0 0 1-.527.217.72.72 0 0 1-.527-.217l-5.753-5.754q-.75.62-1.725.97t-2.018.35m0-1.5q1.933 0 3.273-1.341 1.342-1.34 1.342-3.274 0-1.932-1.342-3.274-1.34-1.341-3.274-1.341-1.932 0-3.274 1.34Q4.904 7.569 4.904 9.5q0 1.933 1.341 3.274 1.342 1.341 3.274 1.341" />
-	</svg>
-);
-
-const IconStar = (props: SVGProps<SVGSVGElement>) => (
-	<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
-		<path d="M12 14.7769L14.6211 16.7615C14.8019 16.8884 14.9843 16.8926 15.1682 16.774C15.3522 16.6554 15.4089 16.4891 15.3384 16.275L14.3461 12.9923L16.9065 11.1716C17.0944 11.0316 17.1515 10.8571 17.0778 10.6481C17.0041 10.4391 16.8573 10.3346 16.6374 10.3346H13.5038L12.4365 6.88658C12.36 6.67246 12.2146 6.5654 12.0003 6.5654C11.786 6.5654 11.6404 6.67246 11.5635 6.88658L10.4961 10.3346H7.36255C7.14265 10.3346 6.99584 10.4391 6.92212 10.6481C6.84841 10.8571 6.90551 11.0316 7.09343 11.1716L9.65383 12.9923L8.66153 16.275C8.59101 16.4891 8.64774 16.6554 8.83173 16.774C9.01569 16.8926 9.19806 16.8884 9.37883 16.7615L12 14.7769ZM12.0016 21.5C10.6877 21.5 9.45268 21.2506 8.29655 20.752C7.1404 20.2533 6.13472 19.5766 5.2795 18.7217C4.42427 17.8669 3.74721 16.8616 3.24833 15.706C2.74944 14.5504 2.5 13.3156 2.5 12.0017C2.5 10.6877 2.74933 9.45271 3.248 8.29658C3.74667 7.14043 4.42342 6.13474 5.27825 5.27953C6.1331 4.42429 7.13834 3.74723 8.29398 3.24835C9.44959 2.74947 10.6844 2.50002 11.9983 2.50002C13.3122 2.50002 14.5473 2.74936 15.7034 3.24803C16.8596 3.74669 17.8652 4.42344 18.7205 5.27828C19.5757 6.13313 20.2527 7.13837 20.7516 8.294C21.2505 9.44962 21.5 10.6844 21.5 11.9983C21.5 13.3123 21.2506 14.5473 20.752 15.7034C20.2533 16.8596 19.5765 17.8653 18.7217 18.7205C17.8669 19.5757 16.8616 20.2528 15.706 20.7517C14.5504 21.2505 13.3156 21.5 12.0016 21.5ZM12 20C14.2166 20 16.1041 19.2208 17.6625 17.6625C19.2208 16.1042 20 14.2167 20 12C20 9.78333 19.2208 7.89583 17.6625 6.3375C16.1041 4.77917 14.2166 4 12 4C9.78331 4 7.89581 4.77917 6.33748 6.3375C4.77914 7.89583 3.99998 9.78333 3.99998 12C3.99998 14.2167 4.77914 16.1042 6.33748 17.6625C7.89581 19.2208 9.78331 20 12 20Z" />
-	</svg>
-);
 
 const CARRIERS = ['Clearcover', 'Hippo', 'Lemonade', 'Openly', 'Progressive', 'Travelers'];
 
@@ -455,7 +444,7 @@ export const WithBeforeAndAfter: Story = {
 			<Autocomplete.Input
 				placeholder="Carrier"
 				aria-label="Carrier"
-				before={<IconSearch aria-hidden="true" />}
+				before={<SearchIcon aria-hidden="true" />}
 				after={<Tag color="informative">Beta</Tag>}
 			/>
 			<Autocomplete.Content>
@@ -968,7 +957,7 @@ export const Prompt: Story = {
 							pending ? (
 								<Loading size="sm" aria-label="Translating filters" />
 							) : (
-								<IconStar aria-hidden="true" />
+								<SparklesIcon aria-hidden="true" />
 							)
 						}
 						after={<Tag color="informative">Beta</Tag>}
