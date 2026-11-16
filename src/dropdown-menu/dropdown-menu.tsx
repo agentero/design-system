@@ -142,6 +142,13 @@ Trigger.displayName = 'DropdownMenu.Trigger';
  */
 export const Portal = DropdownMenuPrimitive.Portal;
 
+// A `Command` draws its own panel, so the menu hands it the chrome instead of nesting a second
+// border, radius and shadow around it. Same rule as `Popover`.
+const commandChrome = [
+	'has-[[data-slot=command-root]]:border-0 has-[[data-slot=command-root]]:bg-transparent',
+	'has-[[data-slot=command-root]]:p-0 has-[[data-slot=command-root]]:shadow-none'
+];
+
 /**
  * Tailwind variant styles for the dropdown menu content.
  * Includes animations for slide-in/out based on the side from which the menu appears.
@@ -150,6 +157,7 @@ const contentStyles = tv({
 	base: [
 		'z-(--z-index-top-layer) flex flex-col rounded-lg bg-bg-default-base-primary p-1 shadow-xl',
 		'border border-border-default-base-primary',
+		commandChrome,
 		'will-change-[transform,opacity]',
 		// Radix computes the exact origin (side + align) so the scale grows from the trigger.
 		'origin-(--radix-dropdown-menu-content-transform-origin)',
@@ -202,7 +210,8 @@ type ContentProps = ComponentProps<typeof DropdownMenuPrimitive.Content> &
  * (direction follows `side`), performs collision detection so the menu
  * stays within the viewport, and — when `hasTriggerWidth` is `true` —
  * matches the trigger's width. Defaults: `sideOffset` is `8`,
- * `hasTriggerWidth` is `false`.
+ * `hasTriggerWidth` is `false`. When it holds a `Command`, it drops its own
+ * border, padding, background and shadow so the search list is the only box.
  *
  * @summary Animated popover surface that contains the menu items
  *
@@ -455,6 +464,7 @@ const subContentStyles = tv({
 	base: [
 		'z-(--z-index-top-layer) flex flex-col rounded-lg bg-bg-default-base-primary p-1 shadow-xl',
 		'border border-border-default-base-primary',
+		commandChrome,
 		'will-change-[transform,opacity]',
 		'origin-(--radix-dropdown-menu-content-transform-origin)',
 		'data-[state=open]:data-[side=bottom]:animate-dropdown-slide-in-from-top',
@@ -490,7 +500,9 @@ type SubContentProps = ComponentProps<typeof DropdownMenuPrimitive.SubContent>;
 /**
  * Floating surface for a submenu's items. Positions itself alongside its
  * `SubTrigger` with sensible defaults (`sideOffset: 2`, `alignOffset: -5`)
- * and animates on open/close just like `Content`.
+ * and animates on open/close just like `Content`. When it holds a `Command`
+ * (a searchable list of options), it drops its own border, padding,
+ * background and shadow so the search list is the only box.
  *
  * @summary Popover surface that renders a submenu's items
  *
