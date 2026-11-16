@@ -3,10 +3,10 @@
 import { ComponentPropsWithRef, ReactNode } from 'react';
 
 import * as SelectPrimitive from '@radix-ui/react-select';
+import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
 import { tv } from 'tailwind-variants';
 
 import { cn } from '../../lib';
-import { IconCheck, IconKeyboardArrowDown } from '../combobox/icons';
 import { useFieldContext } from '../field';
 import { inputRecipe, InputSize } from '../input';
 
@@ -32,8 +32,8 @@ export const selectRecipe = tv({
 			'min-w-0 flex-1 truncate group-data-placeholder/select-trigger:text-text-input-placeholder',
 		icon: [
 			'flex size-5 shrink-0 items-center justify-center transition-transform duration-150 motion-reduce:transition-none',
-			'[&_path]:fill-icon-input-default group-data-[state=open]/select-trigger:-rotate-180',
-			'group-disabled/select-trigger:[&_path]:fill-icon-input-disable'
+			'text-icon-input-default group-data-[state=open]/select-trigger:-rotate-180',
+			'group-disabled/select-trigger:text-icon-input-disable'
 		],
 		content: [
 			'relative z-(--z-index-top-layer) flex flex-col overflow-hidden outline-none',
@@ -42,7 +42,7 @@ export const selectRecipe = tv({
 		viewport: 'scroll-py-1 py-1',
 		scrollButton: [
 			'flex h-6 shrink-0 cursor-default items-center justify-center bg-bg-default-base-primary',
-			'[&_path]:fill-icon-input-default'
+			'text-icon-input-default'
 		],
 		item: [
 			'group/item relative mx-1 flex min-h-10 cursor-pointer items-center rounded-md py-2 ps-4',
@@ -179,7 +179,7 @@ export const Trigger = ({
 				<SelectPrimitive.Value placeholder={placeholder}>{children}</SelectPrimitive.Value>
 			</span>
 			<SelectPrimitive.Icon data-slot="select-icon" className={slots.icon()}>
-				<IconKeyboardArrowDown className="size-5" />
+				<ChevronDownIcon className="size-5" />
 			</SelectPrimitive.Icon>
 		</SelectPrimitive.Trigger>
 	);
@@ -238,7 +238,7 @@ export const Content = ({
 				<SelectPrimitive.ScrollUpButton
 					data-slot="select-scroll-up"
 					className={slots.scrollButton()}>
-					<IconKeyboardArrowDown className="size-4 rotate-180" />
+					<ChevronUpIcon className="size-4" />
 				</SelectPrimitive.ScrollUpButton>
 				<SelectPrimitive.Viewport data-slot="select-list" className={slots.viewport()}>
 					{children}
@@ -246,7 +246,7 @@ export const Content = ({
 				<SelectPrimitive.ScrollDownButton
 					data-slot="select-scroll-down"
 					className={slots.scrollButton()}>
-					<IconKeyboardArrowDown className="size-4" />
+					<ChevronDownIcon className="size-4" />
 				</SelectPrimitive.ScrollDownButton>
 			</SelectPrimitive.Content>
 		</SelectPrimitive.Portal>
@@ -289,7 +289,7 @@ export const Item = ({ trailing, className, children, ...props }: SelectItemProp
 			{/* Always takes its room, so a column of trailing text lines up. */}
 			<span className={styles.indicator()}>
 				<SelectPrimitive.ItemIndicator data-slot="select-item-indicator" className="flex">
-					<IconCheck className="size-5" />
+					<CheckIcon className="size-5" />
 				</SelectPrimitive.ItemIndicator>
 			</span>
 		</SelectPrimitive.Item>
