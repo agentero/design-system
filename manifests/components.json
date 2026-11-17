@@ -288,7 +288,7 @@
           "description": "Without `collapsible`, clicking the already-open item keeps it open."
         }
       ],
-      "import": "import { Accordion } from \"@agentero/design-system\";\nimport { ChevronDownIcon } from \"lucide-react\";"
+      "import": "import { Accordion } from '@agentero/design-system';\nimport { ChevronDownIcon } from 'lucide-react';"
     },
     "components-alert": {
       "id": "components-alert",
@@ -649,7 +649,7 @@
           "summary": "Visual comparison of all Alert colors in ghost mode"
         }
       ],
-      "import": "import { Alert } from \"@agentero/design-system\";"
+      "import": "import { Alert } from '@agentero/design-system';\nimport { fn } from 'storybook/test';\nimport { LightbulbIcon } from 'lucide-react';"
     },
     "components-autocomplete": {
       "id": "components-autocomplete",
@@ -1388,7 +1388,7 @@
           "summary": "AI prompt with recent prompts, a spinner and a tag in the frame"
         }
       ],
-      "import": "import {\n    Autocomplete,\n    Button,\n    Checkbox,\n    Field,\n    FieldText,\n    Input,\n    Label,\n    Loading,\n    Modal,\n    Tag,\n} from \"@agentero/design-system\";\nimport { SearchIcon, SparklesIcon } from \"lucide-react\";"
+      "import": "import {\n  Autocomplete,\n  Button,\n  Checkbox,\n  Field,\n  FieldText,\n  Input,\n  Label,\n  Loading,\n  Modal,\n  Tag,\n} from '@agentero/design-system';\nimport { SearchIcon, SparklesIcon } from 'lucide-react';\nimport { fn } from 'storybook/test';"
     },
     "components-avatargroup": {
       "id": "components-avatargroup",
@@ -1568,7 +1568,7 @@
           "description": "`variant` reshapes every avatar and the overflow bubble together."
         }
       ],
-      "import": "import { Avatar, AvatarGroup } from \"@agentero/design-system\";"
+      "import": "import { Avatar, AvatarGroup } from '@agentero/design-system';"
     },
     "components-avatar": {
       "id": "components-avatar",
@@ -1964,7 +1964,7 @@
           "summary": "All avatar shapes with a profile image"
         }
       ],
-      "import": "import { Avatar, Button } from \"@agentero/design-system\";"
+      "import": "import { Avatar, Button } from '@agentero/design-system';"
     },
     "components-button": {
       "id": "components-button",
@@ -2296,7 +2296,7 @@
         {
           "id": "components-button--default",
           "name": "Default",
-          "snippet": "const Default = () => <Button variant=\"primary\" size=\"sm\">{TEXT}</Button>;",
+          "snippet": "const Default = () => <Button variant=\"primary\" size=\"sm\">Button</Button>;",
           "description": "Args-controlled playground. Toggle `variant`, `size`, `status`, `loading`,\n`disabled`, and `rounded` from the Controls panel to explore every visual\ncombination of the Button.",
           "summary": "Default args playground for Button"
         },
@@ -2371,7 +2371,7 @@
           "summary": "Overlay triggers keep the hover look while their overlay is open"
         }
       ],
-      "import": "import { Button } from \"@agentero/design-system\";\nimport { PlusIcon, XIcon } from \"lucide-react\";"
+      "import": "import { Button } from '@agentero/design-system';\nimport { PlusIcon, XIcon } from 'lucide-react';"
     },
     "components-checklist": {
       "id": "components-checklist",
@@ -2416,7 +2416,7 @@
           "description": "Items accept rich content — links, wrapped text, custom markup."
         }
       ],
-      "import": "import { CheckList } from \"@agentero/design-system\";"
+      "import": "import { CheckList } from '@agentero/design-system';"
     },
     "components-checkboxgroup": {
       "id": "components-checkboxgroup",
@@ -2704,7 +2704,7 @@
           "summary": "Own props override the Field wiring"
         }
       ],
-      "import": "import { CheckboxGroup, Field } from \"@agentero/design-system\";"
+      "import": "import { CheckboxGroup, Field } from '@agentero/design-system';\nimport { fn } from 'storybook/test';"
     },
     "components-checkbox": {
       "id": "components-checkbox",
@@ -3018,7 +3018,7 @@
           "summary": "Checkbox colours across all value and validation states"
         }
       ],
-      "import": "import { Checkbox, Label } from \"@agentero/design-system\";"
+      "import": "import { Checkbox, Label } from '@agentero/design-system';"
     },
     "components-combobox": {
       "id": "components-combobox",
@@ -3983,7 +3983,7 @@
           "description": "Inside a `Modal`, with no `Empty`. When nothing matches there is no list to\nclose, so Base UI lets the first Escape through and it closes the modal."
         }
       ],
-      "import": "import {\n    Avatar,\n    Button,\n    Combobox,\n    Field,\n    FieldText,\n    Label,\n    Modal,\n    Popover,\n    Skeleton,\n    Tag,\n} from \"@agentero/design-system\";"
+      "import": "import { Avatar, Button, Combobox, Field, FieldText, Label, Modal, Popover, Skeleton, Tag } from '@agentero/design-system';"
     },
     "components-command": {
       "id": "components-command",
@@ -4230,7 +4230,7 @@
           "description": "Inside a `Popover`. The popover hands its border, shadow and padding to the `Command`, so the\npicker draws a single panel. cmdk's list is always on screen, so Escape closes the popover."
         }
       ],
-      "import": "import { Button, Command, Popover } from \"@agentero/design-system\";"
+      "import": "import { Button, Command, Popover } from '@agentero/design-system';"
     },
     "components-datatable": {
       "id": "components-datatable",
@@ -5966,7 +5966,7 @@
         {
           "id": "components-datatable--playground",
           "name": "Playground",
-          "snippet": "const Playground = () => <div\n    className={args.enclosed ? 'flex min-h-0 flex-1 flex-col p-4' : 'contents'}>\n    <DataTable.Root data={LEADS} columns={columns}>\n        <DataTable.Table size=\"md\" embed enclosed={false} sticky=\"header\" />\n    </DataTable.Root>\n</div>;",
+          "snippet": "const Playground = (args: ComponentProps<typeof DataTable.Table>) => <div\n    className={args.enclosed ? 'flex min-h-0 flex-1 flex-col p-4' : 'contents'}>\n    <DataTable.Root data={LEADS} columns={columns}>\n        <DataTable.Table size=\"md\" embed enclosed={false} sticky=\"header\" />\n    </DataTable.Root>\n</div>;",
           "description": "Playground for `DataTable.Table` display props — toggle `size`, `embed`,\n`enclosed`, and `sticky` from the controls panel.",
           "summary": "Display props playground (size / embed / enclosed / sticky)"
         },
@@ -5992,7 +5992,7 @@
           "summary": "Loading state dims the table and hides the empty state"
         }
       ],
-      "import": "import { ArrowRightIcon, EllipsisVerticalIcon, HomeIcon } from \"lucide-react\";\nimport { Button, DataTable, DropdownMenu, Pagination, Table } from \"@agentero/design-system\";"
+      "import": "import { ArrowRightIcon, EllipsisVerticalIcon, HomeIcon } from 'lucide-react';\nimport { Button, DataTable, DropdownMenu, Pagination, Table } from '@agentero/design-system';"
     },
     "components-divider": {
       "id": "components-divider",
@@ -6133,7 +6133,7 @@
         {
           "id": "components-divider--default",
           "name": "Default",
-          "snippet": "const Default = () => <div\n    className={cn(\n        'flex gap-4 rounded-lg border border-border-default-base-primary bg-bg-default-base-primary p-6',\n        args.orientation === 'vertical' ? 'h-40 w-lg items-stretch' : 'w-80 flex-col'\n    )}>\n    <div className=\"flex flex-1 flex-col justify-center gap-1\">\n        <h3 className=\"text-base font-semibold text-text-default-base-primary\">First section</h3>\n        <p className=\"text-sm text-text-default-base-secondary\">Content on one side of the divider, visually separated from the other.\n                            </p>\n    </div>\n    <Divider orientation=\"horizontal\" decorative />\n    <div className=\"flex flex-1 flex-col justify-center gap-1\">\n        <h3 className=\"text-base font-semibold text-text-default-base-primary\">Second section</h3>\n        <p className=\"text-sm text-text-default-base-secondary\">Content on the other side of the divider, clearly separated from the first.\n                            </p>\n    </div>\n</div>;",
+          "snippet": "const Default = args => <div\n    className={cn(\n        'flex gap-4 rounded-lg border border-border-default-base-primary bg-bg-default-base-primary p-6',\n        args.orientation === 'vertical' ? 'h-40 w-lg items-stretch' : 'w-80 flex-col'\n    )}>\n    <div className=\"flex flex-1 flex-col justify-center gap-1\">\n        <h3 className=\"text-base font-semibold text-text-default-base-primary\">First section</h3>\n        <p className=\"text-sm text-text-default-base-secondary\">Content on one side of the divider, visually separated from the other.\n                            </p>\n    </div>\n    <Divider orientation=\"horizontal\" decorative />\n    <div className=\"flex flex-1 flex-col justify-center gap-1\">\n        <h3 className=\"text-base font-semibold text-text-default-base-primary\">Second section</h3>\n        <p className=\"text-sm text-text-default-base-secondary\">Content on the other side of the divider, clearly separated from the first.\n                            </p>\n    </div>\n</div>;",
           "description": "The default horizontal, decorative divider — a 1px line that spans the\nparent width. Use this form between stacked content blocks.",
           "summary": "Default horizontal decorative divider"
         },
@@ -6201,7 +6201,7 @@
           "summary": "Vertical dividers separating inline elements"
         }
       ],
-      "import": "import { Button, Divider } from \"@agentero/design-system\";"
+      "import": "import { Button, Divider } from '@agentero/design-system';"
     },
     "components-dropdownmenu": {
       "id": "components-dropdownmenu",
@@ -6420,7 +6420,7 @@
           "summary": "Focus returns to the trigger, with a ring only after a keyboard close"
         }
       ],
-      "import": "import { Button, DropdownMenu } from \"@agentero/design-system\";\nimport {\n    ChevronDownIcon,\n    CopyIcon,\n    FolderInputIcon,\n    ShareIcon,\n    Trash2Icon,\n    UsersIcon,\n} from \"lucide-react\";"
+      "import": "import { Button, DropdownMenu } from '@agentero/design-system';\nimport { ChevronDownIcon, CopyIcon, FolderInputIcon, ShareIcon, Trash2Icon, UsersIcon } from 'lucide-react';"
     },
     "components-fieldtext": {
       "id": "components-fieldtext",
@@ -6629,7 +6629,7 @@
           "summary": "Input controlled and errors supplied from outside the field"
         }
       ],
-      "import": "import { Field, FieldContext, FieldText, Input, InputContext, Label } from \"@agentero/design-system\";"
+      "import": "import { Field, FieldContext, FieldText, Input, InputContext, Label } from '@agentero/design-system';"
     },
     "components-fieldtextarea": {
       "id": "components-fieldtextarea",
@@ -6828,7 +6828,7 @@
           "summary": "TextArea controlled and errors supplied from outside the field"
         }
       ],
-      "import": "import { Field, FieldContext, FieldTextArea, Label, TextArea, TextAreaContext } from \"@agentero/design-system\";"
+      "import": "import { Field, FieldContext, FieldTextArea, Label, TextArea, TextAreaContext } from '@agentero/design-system';"
     },
     "components-field": {
       "id": "components-field",
@@ -7117,7 +7117,7 @@
           "summary": "Errors supplied to a bare Field.Error through context"
         }
       ],
-      "import": "import { Field, FieldContext, Label, Switch } from \"@agentero/design-system\";"
+      "import": "import { Field, FieldContext, Label, Switch } from '@agentero/design-system';"
     },
     "components-formtext": {
       "id": "components-formtext",
@@ -7541,7 +7541,7 @@
           "summary": "setFocus reaches the input through the merged ref"
         }
       ],
-      "import": "import { Button, Field, Form, FormText } from \"@agentero/design-system\";"
+      "import": "import { Button, Field, Form, FormText } from '@agentero/design-system';"
     },
     "components-form": {
       "id": "components-form",
@@ -7650,7 +7650,7 @@
           "summary": "Native required never triggers the browser's validation bubble"
         }
       ],
-      "import": "import { Button, Field, Form, FormText } from \"@agentero/design-system\";"
+      "import": "import { Button, Field, Form, FormText } from '@agentero/design-system';"
     },
     "components-hovercard": {
       "id": "components-hovercard",
@@ -7845,7 +7845,7 @@
           "description": "`openDelay` / `closeDelay` tune the hover latency. Default is a deliberate\n`700ms` open so cards don't flash on incidental passes; drop it to `0` for\ntrigger-dense UIs where an instant preview reads as more responsive."
         }
       ],
-      "import": "import { Avatar, Button, HoverCard } from \"@agentero/design-system\";"
+      "import": "import { Avatar, Button, HoverCard } from '@agentero/design-system';"
     },
     "components-inputgroup": {
       "id": "components-inputgroup",
@@ -7966,7 +7966,7 @@
           "summary": "Phone field with a leading country code picker, valid and invalid"
         }
       ],
-      "import": "import {\n    Button,\n    Divider,\n    DropdownMenu,\n    Field,\n    FieldText,\n    Input,\n    InputGroup,\n    Label,\n    Tag,\n} from \"@agentero/design-system\";\nimport { ChevronDownIcon, MailIcon, SearchIcon } from \"lucide-react\";"
+      "import": "import { Button, Divider, DropdownMenu, Field, FieldText, Input, InputGroup, Label, Tag } from '@agentero/design-system';\nimport { ChevronDownIcon, MailIcon, SearchIcon } from 'lucide-react';"
     },
     "components-inputnumber": {
       "id": "components-inputnumber",
@@ -8211,7 +8211,7 @@
         {
           "id": "components-inputnumber--controlled",
           "name": "Controlled",
-          "snippet": "const Controlled = () => {\n    const [premium, setPremium] = useState<number | string>(1234);\n\n    return (\n        <InputNumber\n            aria-label=\"Premium\"\n            thousandSeparator\n            value={premium}\n            onChange={event => {\n                setPremium(event.target.value);\n                args.onChange?.(event);\n            }} />\n    );\n};",
+          "snippet": "const Controlled = args => {\n    const [premium, setPremium] = useState<number | string>(1234);\n\n    return (\n        <InputNumber\n            aria-label=\"Premium\"\n            thousandSeparator\n            value={premium}\n            onChange={event => {\n                setPremium(event.target.value);\n                args.onChange?.(event);\n            }} />\n    );\n};",
           "description": "A controlled field takes `value` as a number and shows it formatted. The\nstate keeps what `onChange` reports, so it holds the formatted text.",
           "summary": "Controlled field showing a numeric value formatted"
         },
@@ -8251,7 +8251,7 @@
           "summary": "The three sizes side by side"
         }
       ],
-      "import": "import { Controller, Field, FieldText, InputContext, InputGroup, InputNumber, Label } from \"@agentero/design-system\";"
+      "import": "import { Controller } from 'react-hook-form';\nimport { Field, FieldText, InputContext, InputGroup, InputNumber, Label } from '@agentero/design-system';\nimport { fn } from 'storybook/test';\nimport { ChangeEvent } from 'react';"
     },
     "components-inputpassword": {
       "id": "components-inputpassword",
@@ -8357,7 +8357,7 @@
           "summary": "Label and disabled state reaching the input through the frame"
         }
       ],
-      "import": "import { Field, FieldText, InputPassword, Label } from \"@agentero/design-system\";"
+      "import": "import { Field, FieldText, InputPassword, Label } from '@agentero/design-system';"
     },
     "components-debouncedinputsearch": {
       "id": "components-debouncedinputsearch",
@@ -8506,26 +8506,26 @@
         {
           "id": "components-debouncedinputsearch--default",
           "name": "Default",
-          "snippet": "const Default = () => {\n    const [query, setQuery] = useState(args.value);\n\n    return (\n        <div style={{ display: 'grid', gap: '1rem' }}>\n            <DebouncedInputSearch\n                aria-label=\"Search agencies\"\n                value={query}\n                onChange={event => {\n                    setQuery(event.target.value);\n                    args.onChange(event);\n                }} />\n            <output>Filtering by: {query}</output>\n        </div>\n    );\n};",
+          "snippet": "const Default = args => {\n    const [query, setQuery] = useState(args.value);\n\n    return (\n        <div style={{ display: 'grid', gap: '1rem' }}>\n            <DebouncedInputSearch\n                aria-label=\"Search agencies\"\n                value={query}\n                onChange={event => {\n                    setQuery(event.target.value);\n                    args.onChange(event);\n                }} />\n            <output>Filtering by: {query}</output>\n        </div>\n    );\n};",
           "description": "A page filtering by a query it owns, shown below the field. Typing shows up\nin the field at once; `onChange` arrives once the user pauses, with the\nwhole text in `event.target.value`, and only then does the query below\nchange. Clearing the field goes through the same delay.",
           "summary": "Controlled query reported once the user stops typing"
         },
         {
           "id": "components-debouncedinputsearch--external-value",
           "name": "External Value",
-          "snippet": "const ExternalValue = () => {\n    const [query, setQuery] = useState('Acme');\n\n    return (\n        <div style={{ display: 'grid', gap: '1rem' }}>\n            <DebouncedInputSearch\n                aria-label=\"Search agencies\"\n                value={query}\n                onChange={event => {\n                    setQuery(event.target.value);\n                    args.onChange(event);\n                }} />\n            <Button variant=\"secondary\" size=\"sm\" onClick={() => setQuery('Travelers')}>Apply saved search\n                                </Button>\n            <output>Filtering by: {query}</output>\n        </div>\n    );\n};",
+          "snippet": "const ExternalValue = args => {\n    const [query, setQuery] = useState('Acme');\n\n    return (\n        <div style={{ display: 'grid', gap: '1rem' }}>\n            <DebouncedInputSearch\n                aria-label=\"Search agencies\"\n                value={query}\n                onChange={event => {\n                    setQuery(event.target.value);\n                    args.onChange(event);\n                }} />\n            <Button variant=\"secondary\" size=\"sm\" onClick={() => setQuery('Travelers')}>Apply saved search\n                                </Button>\n            <output>Filtering by: {query}</output>\n        </div>\n    );\n};",
           "description": "The field follows `value` when the page changes it from outside, here a\nsaved search applied with a button: nothing is being typed, so the new\nquery replaces the text.",
           "summary": "Field following a value changed from outside while idle"
         },
         {
           "id": "components-debouncedinputsearch--submit-on-enter",
           "name": "Submit On Enter",
-          "snippet": "const SubmitOnEnter = () => {\n    const [query, setQuery] = useState(args.value);\n\n    return (\n        <div style={{ display: 'grid', gap: '1rem' }}>\n            <DebouncedInputSearch\n                aria-label=\"Search agencies\"\n                value={query}\n                onChange={event => {\n                    setQuery(event.target.value);\n                    args.onChange(event);\n                }} />\n            <output>Filtering by: {query}</output>\n        </div>\n    );\n};",
+          "snippet": "const SubmitOnEnter = args => {\n    const [query, setQuery] = useState(args.value);\n\n    return (\n        <div style={{ display: 'grid', gap: '1rem' }}>\n            <DebouncedInputSearch\n                aria-label=\"Search agencies\"\n                value={query}\n                onChange={event => {\n                    setQuery(event.target.value);\n                    args.onChange(event);\n                }} />\n            <output>Filtering by: {query}</output>\n        </div>\n    );\n};",
           "description": "Pressing Enter reports the text at once instead of waiting for the pause.",
           "summary": "Enter reports the pending query without waiting"
         }
       ],
-      "import": "import { Button, DebouncedInputSearch } from \"@agentero/design-system\";"
+      "import": "import { Button, DebouncedInputSearch } from '@agentero/design-system';\nimport { fn } from 'storybook/test';\nimport { ChangeEvent } from 'react';"
     },
     "components-inputsearch": {
       "id": "components-inputsearch",
@@ -8640,7 +8640,7 @@
         {
           "id": "components-inputsearch--default",
           "name": "Default",
-          "snippet": "const Default = () => {\n    const [query, setQuery] = useState('');\n\n    return (\n        <InputSearch\n            aria-label=\"Search agencies\"\n            value={query}\n            onChange={event => {\n                setQuery(event.target.value);\n                args.onChange?.(event);\n            }} />\n    );\n};",
+          "snippet": "const Default = args => {\n    const [query, setQuery] = useState('');\n\n    return (\n        <InputSearch\n            aria-label=\"Search agencies\"\n            value={query}\n            onChange={event => {\n                setQuery(event.target.value);\n                args.onChange?.(event);\n            }} />\n    );\n};",
           "description": "A controlled search. The clear button appears once there is text; pressing\nit calls `onChange` with an empty `event.target.value`, so the state that\nowns the query empties too, and focus goes back to the input. The browser's\nown cancel button is hidden.",
           "summary": "Controlled search with a clear button that empties the query"
         },
@@ -8687,7 +8687,7 @@
           "summary": "Clear button named after what the field searches"
         }
       ],
-      "import": "import { Field, FieldText, InputSearch, Label } from \"@agentero/design-system\";"
+      "import": "import { Field, FieldText, InputSearch, Label } from '@agentero/design-system';\nimport { fn } from 'storybook/test';\nimport { ChangeEvent } from 'react';"
     },
     "components-inputtel": {
       "id": "components-inputtel",
@@ -8767,7 +8767,7 @@
         {
           "id": "components-inputtel--controlled",
           "name": "Controlled",
-          "snippet": "const Controlled = () => {\n    const [phone, setPhone] = useState('');\n\n    return (\n        <InputTel\n            aria-label=\"Phone number\"\n            value={phone}\n            onChange={event => {\n                setPhone(event.target.value);\n                args.onChange?.(event);\n            }} />\n    );\n};",
+          "snippet": "const Controlled = args => {\n    const [phone, setPhone] = useState('');\n\n    return (\n        <InputTel\n            aria-label=\"Phone number\"\n            value={phone}\n            onChange={event => {\n                setPhone(event.target.value);\n                args.onChange?.(event);\n            }} />\n    );\n};",
           "description": "A controlled phone field. The state that owns the value stores what\n`event.target.value` reports, which is already masked, and the input shows\nit back unchanged. A partial number carries the separator that comes before\nthe next digit, so six digits read `(555) 123-`.",
           "summary": "Controlled phone field storing the masked value"
         },
@@ -8835,7 +8835,7 @@
           "summary": "The three sizes side by side"
         }
       ],
-      "import": "import { Button, Field, FieldText, InputContext, InputTel, Label } from \"@agentero/design-system\";"
+      "import": "import { Button, Field, FieldText, InputContext, InputTel, Label } from '@agentero/design-system';\nimport { fn } from 'storybook/test';\nimport { ChangeEvent } from 'react';"
     },
     "components-input": {
       "id": "components-input",
@@ -8965,7 +8965,7 @@
           "summary": "Read-only value that stays focusable and copyable"
         }
       ],
-      "import": "import { Input } from \"@agentero/design-system\";"
+      "import": "import { Input } from '@agentero/design-system';"
     },
     "components-label": {
       "id": "components-label",
@@ -9095,7 +9095,7 @@
           "summary": "Inside a Field the label associates itself; explicit htmlFor wins"
         }
       ],
-      "import": "import { Field, Label } from \"@agentero/design-system\";"
+      "import": "import { Field, Label } from '@agentero/design-system';"
     },
     "components-loading": {
       "id": "components-loading",
@@ -9211,7 +9211,7 @@
           "summary": "Spinner on a dark-background surface"
         }
       ],
-      "import": "import { Loading } from \"@agentero/design-system\";"
+      "import": "import { Loading } from '@agentero/design-system';"
     },
     "components-modal": {
       "id": "components-modal",
@@ -9378,7 +9378,7 @@
           "description": "`variant=\"alert\"` for a decision the user cannot skip: `Escape` and overlay\nclicks are ignored, `Modal.Title` renders no X button, and the surface is\nannounced as an `alertdialog`. Only the footer actions close it."
         }
       ],
-      "import": "import { Button, Modal } from \"@agentero/design-system\";"
+      "import": "import { Button, Modal } from '@agentero/design-system';"
     },
     "components-pagination": {
       "id": "components-pagination",
@@ -9556,7 +9556,7 @@
           "summary": "Interactive controlled example backed by `useState`"
         }
       ],
-      "import": "import { Pagination } from \"@agentero/design-system\";"
+      "import": "import { Pagination } from '@agentero/design-system';\nimport { fn } from 'storybook/test';"
     },
     "components-popover": {
       "id": "components-popover",
@@ -9740,7 +9740,7 @@
           "summary": "Modal opened from inside a Popover paints above it"
         }
       ],
-      "import": "import { Button, Modal, Popover } from \"@agentero/design-system\";"
+      "import": "import { Button, Modal, Popover } from '@agentero/design-system';"
     },
     "components-progress": {
       "id": "components-progress",
@@ -9874,7 +9874,7 @@
           "description": "Out-of-range values are clamped to 0–100."
         }
       ],
-      "import": "import { Progress } from \"@agentero/design-system\";"
+      "import": "import { Progress } from '@agentero/design-system';"
     },
     "components-radiogroup": {
       "id": "components-radiogroup",
@@ -10184,7 +10184,7 @@
           "summary": "Visual comparison of the item states"
         }
       ],
-      "import": "import { Button, Controller, Field, RadioGroup } from \"@agentero/design-system\";"
+      "import": "import { Button, Field, RadioGroup } from '@agentero/design-system';\nimport { Controller } from 'react-hook-form';\nimport { fn } from 'storybook/test';"
     },
     "components-skeleton": {
       "id": "components-skeleton",
@@ -10241,7 +10241,7 @@
           "description": "A card-shaped placeholder: media area, title, and body lines."
         }
       ],
-      "import": "import { Skeleton } from \"@agentero/design-system\";"
+      "import": "import { Skeleton } from '@agentero/design-system';"
     },
     "components-switch": {
       "id": "components-switch",
@@ -10459,7 +10459,7 @@
           "description": "Switch aligned in a labelled settings row."
         }
       ],
-      "import": "import { Switch } from \"@agentero/design-system\";"
+      "import": "import { Switch } from '@agentero/design-system';"
     },
     "components-table": {
       "id": "components-table",
@@ -10672,7 +10672,7 @@
           "summary": "Expandable rows with a detail panel"
         }
       ],
-      "import": "import { Button, DropdownMenu, Switch, Table } from \"@agentero/design-system\";\nimport { Fragment } from \"react\";\nimport { PencilIcon, Trash2Icon } from \"lucide-react\";"
+      "import": "import { Button, DropdownMenu, Switch, Table } from '@agentero/design-system';\nimport { Fragment } from 'react';\nimport { PencilIcon, Trash2Icon } from 'lucide-react';"
     },
     "components-tabs": {
       "id": "components-tabs",
@@ -10963,7 +10963,7 @@
           "description": "A standalone `Label` gives a panel with a single, non-interactive title the\ninactive trigger's exact look: outside a `Root` it never gets the active\ndata-state, and `pointer-events-none` keeps hover styles off. It is a plain\n`span`, so wrap it in a heading element for heading semantics. No tab or\ntablist role is announced."
         }
       ],
-      "import": "import { Tabs } from \"@agentero/design-system\";"
+      "import": "import { Tabs } from '@agentero/design-system';"
     },
     "components-tag": {
       "id": "components-tag",
@@ -11254,7 +11254,7 @@
           "summary": "Variant × color matrix — default, pill, button, and icon layouts"
         }
       ],
-      "import": "import { PlusIcon } from \"lucide-react\";\nimport { Tag } from \"@agentero/design-system\";"
+      "import": "import { PlusIcon } from 'lucide-react';\nimport { Tag } from '@agentero/design-system';"
     },
     "components-textarea": {
       "id": "components-textarea",
@@ -11401,7 +11401,7 @@
           "summary": "Typing past the limit turns the count destructive"
         }
       ],
-      "import": "import { Button, Label, TextArea } from \"@agentero/design-system\";"
+      "import": "import { Button, Label, TextArea } from '@agentero/design-system';"
     },
     "components-toast": {
       "id": "components-toast",
@@ -11760,7 +11760,7 @@
           "summary": "Override the default type-based icon"
         }
       ],
-      "import": "import { Button, Toast } from \"@agentero/design-system\";\nimport { RefreshCwIcon } from \"lucide-react\";"
+      "import": "import { Button, Toast } from '@agentero/design-system';\nimport { RefreshCwIcon } from 'lucide-react';"
     },
     "components-tooltip": {
       "id": "components-tooltip",
@@ -12092,7 +12092,7 @@
           "description": "Content wraps at the `32ch` max width."
         }
       ],
-      "import": "import { Button, Tooltip, TooltipProvider } from \"@agentero/design-system\";"
+      "import": "import { Button, Tooltip, TooltipProvider } from '@agentero/design-system';\nimport { Button } from '../button';"
     },
     "components-validationlist": {
       "id": "components-validationlist",
@@ -12166,33 +12166,33 @@
         {
           "id": "components-validationlist--default",
           "name": "Default",
-          "snippet": "const Default = () => <ValidationList value=\"Password1234.\" rules={rules} />;",
+          "snippet": "const Default = () => <ValidationList\n    value=\"Password1234.\"\n    rules={[\n        { text: 'At least one uppercase letter', pattern: /[A-Z]/ },\n        { text: 'At least one lowercase letter', pattern: /[a-z]/ },\n        { text: 'At least one number', pattern: /[0-9]/ },\n        { text: 'At least one symbol', pattern: /[.,\\-_&%$!/[\\]{}@#|\\\\]/ },\n        { text: 'At least 10 characters', pattern: value => value.length >= 10 }\n    ]} />;",
           "description": "A partially-satisfied value: some rules are active, some are still unmet."
         },
         {
           "id": "components-validationlist--none-met",
           "name": "None Met",
-          "snippet": "const NoneMet = () => <ValidationList value=\"\" rules={rules} />;",
+          "snippet": "const NoneMet = () => <ValidationList\n    value=\"\"\n    rules={[\n        { text: 'At least one uppercase letter', pattern: /[A-Z]/ },\n        { text: 'At least one lowercase letter', pattern: /[a-z]/ },\n        { text: 'At least one number', pattern: /[0-9]/ },\n        { text: 'At least one symbol', pattern: /[.,\\-_&%$!/[\\]{}@#|\\\\]/ },\n        { text: 'At least 10 characters', pattern: value => value.length >= 10 }\n    ]} />;",
           "description": "Empty value: every rule is unmet, so all items render in the tertiary color."
         },
         {
           "id": "components-validationlist--partially-met",
           "name": "Partially Met",
-          "snippet": "const PartiallyMet = () => <ValidationList value=\"Aa1.\" rules={rules} />;",
+          "snippet": "const PartiallyMet = () => <ValidationList\n    value=\"Aa1.\"\n    rules={[\n        { text: 'At least one uppercase letter', pattern: /[A-Z]/ },\n        { text: 'At least one lowercase letter', pattern: /[a-z]/ },\n        { text: 'At least one number', pattern: /[0-9]/ },\n        { text: 'At least one symbol', pattern: /[.,\\-_&%$!/[\\]{}@#|\\\\]/ },\n        { text: 'At least 10 characters', pattern: value => value.length >= 10 }\n    ]} />;",
           "description": "A value that satisfies the regex rules but not the length predicate."
         },
         {
           "id": "components-validationlist--playground",
           "name": "Playground",
-          "snippet": "const Playground = () => {\n    const [value, setValue] = useState('');\n\n    return (\n        <div className=\"flex w-100 flex-col gap-4\">\n            <input\n                type=\"text\"\n                value={value}\n                placeholder=\"Type a password…\"\n                onChange={event => setValue(event.target.value)}\n                className=\"rounded-md border border-border-default-base-primary px-3 py-2 text-sm\" />\n            <ValidationList rules={rules} value={value} />\n        </div>\n    );\n};",
+          "snippet": "const Playground = () => {\n    const [value, setValue] = useState('');\n\n    return (\n        <div className=\"flex w-100 flex-col gap-4\">\n            <input\n                type=\"text\"\n                value={value}\n                placeholder=\"Type a password…\"\n                onChange={event => setValue(event.target.value)}\n                className=\"rounded-md border border-border-default-base-primary px-3 py-2 text-sm\" />\n            <ValidationList\n                rules={[\n                    { text: 'At least one uppercase letter', pattern: /[A-Z]/ },\n                    { text: 'At least one lowercase letter', pattern: /[a-z]/ },\n                    { text: 'At least one number', pattern: /[0-9]/ },\n                    { text: 'At least one symbol', pattern: /[.,\\-_&%$!/[\\]{}@#|\\\\]/ },\n                    { text: 'At least 10 characters', pattern: value => value.length >= 10 }\n                ]}\n                value={value} />\n        </div>\n    );\n};",
           "description": "Wire the value to an input to watch the list update on every keystroke."
         }
       ],
-      "import": "import { ValidationList } from \"@agentero/design-system\";"
+      "import": "import { ValidationList } from '@agentero/design-system';"
     }
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5075
+    "durationMs": 3427
   }
 }
