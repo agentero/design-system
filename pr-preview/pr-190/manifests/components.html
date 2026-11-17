@@ -626,7 +626,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>3.6s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>3.4s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -7245,44 +7245,62 @@ picking one of many options from a menu row. The `Command` draws its own
 panel, so the submenu drops its border, padding, background and shadow and
 the search list shows as a single box. `Content` does the same when it
 holds a `Command`.</div>
-              <pre><code>const SubmenuWithSearch = () =&gt; (
-    &lt;DropdownMenu.Root&gt;
-        &lt;DropdownMenu.Trigger asChild&gt;
-            &lt;Button size=&quot;md&quot; variant=&quot;secondary&quot;&gt;
-                Producers
-                &lt;ChevronDownIcon /&gt;
-            &lt;/Button&gt;
-        &lt;/DropdownMenu.Trigger&gt;
-        &lt;DropdownMenu.Portal&gt;
-            &lt;DropdownMenu.Content&gt;
-                &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Retire with agency&#39;)}&gt;
-                    Retire with agency
-                &lt;/DropdownMenu.Item&gt;
-                &lt;DropdownMenu.Sub&gt;
-                    &lt;DropdownMenu.SubTrigger&gt;
-                        &lt;UsersIcon /&gt;
-                        Move producers to
-                    &lt;/DropdownMenu.SubTrigger&gt;
-                    &lt;DropdownMenu.Portal&gt;
-                        &lt;DropdownMenu.SubContent className=&quot;w-72&quot;&gt;
-                            &lt;Command.Root label=&quot;Agencies&quot; onKeyDown={keepKeysInSearch}&gt;
-                                &lt;Command.Input autoFocus placeholder=&quot;Search agency...&quot; /&gt;
-                                &lt;Command.List aria-label=&quot;Agencies&quot;&gt;
-                                    {agencies.map(agency =&gt; (
-                                        &lt;Command.Item key={agency} onSelect={() =&gt; console.log(agency)}&gt;
-                                            {agency}
-                                        &lt;/Command.Item&gt;
-                                    ))}
-                                &lt;/Command.List&gt;
-                                &lt;Command.Empty&gt;No agencies found&lt;/Command.Empty&gt;
-                            &lt;/Command.Root&gt;
-                        &lt;/DropdownMenu.SubContent&gt;
-                    &lt;/DropdownMenu.Portal&gt;
-                &lt;/DropdownMenu.Sub&gt;
-            &lt;/DropdownMenu.Content&gt;
-        &lt;/DropdownMenu.Portal&gt;
-    &lt;/DropdownMenu.Root&gt;
-);</code></pre>
+              <pre><code>const SubmenuWithSearch = () =&gt; {
+    const [open, setOpen] = useState(false);
+    const searchRef = useRef&lt;HTMLInputElement&gt;(null);
+
+    const pickAgency = (agency: string) =&gt; {
+        console.log(&#39;Move producers to&#39;, agency);
+        // cmdk items are not Radix menu items, so picking one does not close the menu on its own.
+        setOpen(false);
+    };
+
+    // A submenu opened from the keyboard focuses itself, not the search inside it.
+    const focusSearch = (event: ReactFocusEvent&lt;HTMLDivElement&gt;) =&gt; {
+        if (event.target === event.currentTarget) {
+            searchRef.current?.focus();
+        }
+    };
+
+    return (
+        &lt;DropdownMenu.Root open={open} onOpenChange={setOpen}&gt;
+            &lt;DropdownMenu.Trigger asChild&gt;
+                &lt;Button size=&quot;md&quot; variant=&quot;secondary&quot;&gt;
+                    Producers
+                    &lt;ChevronDownIcon /&gt;
+                &lt;/Button&gt;
+            &lt;/DropdownMenu.Trigger&gt;
+            &lt;DropdownMenu.Portal&gt;
+                &lt;DropdownMenu.Content&gt;
+                    &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Retire with agency&#39;)}&gt;
+                        Retire with agency
+                    &lt;/DropdownMenu.Item&gt;
+                    &lt;DropdownMenu.Sub&gt;
+                        &lt;DropdownMenu.SubTrigger&gt;
+                            &lt;UsersIcon /&gt;
+                            Move producers to
+                        &lt;/DropdownMenu.SubTrigger&gt;
+                        &lt;DropdownMenu.Portal&gt;
+                            &lt;DropdownMenu.SubContent className=&quot;w-72&quot; onFocus={focusSearch}&gt;
+                                &lt;Command.Root label=&quot;Agencies&quot; onKeyDown={keepKeysInSearch}&gt;
+                                    &lt;Command.Input ref={searchRef} autoFocus placeholder=&quot;Search agency...&quot; /&gt;
+                                    &lt;Command.List aria-label=&quot;Agencies&quot;&gt;
+                                        {agencies.map(agency =&gt; (
+                                            &lt;Command.Item key={agency} onSelect={() =&gt; pickAgency(agency)}&gt;
+                                                {agency}
+                                            &lt;/Command.Item&gt;
+                                        ))}
+                                    &lt;/Command.List&gt;
+                                    &lt;Command.Empty&gt;No agencies found&lt;/Command.Empty&gt;
+                                &lt;/Command.Root&gt;
+                            &lt;/DropdownMenu.SubContent&gt;
+                        &lt;/DropdownMenu.Portal&gt;
+                    &lt;/DropdownMenu.Sub&gt;
+                &lt;/DropdownMenu.Content&gt;
+            &lt;/DropdownMenu.Portal&gt;
+        &lt;/DropdownMenu.Root&gt;
+    );
+};</code></pre>
               
             </div>
             <div class="note ok">
