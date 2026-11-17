@@ -124,6 +124,8 @@
       #filter-errors:target ~ header .filter-pill[data-k='errors'],
       #filter-infos:target ~ header .filter-pill[data-k='infos'],
       #filter-story-errors:target ~ header .filter-pill[data-k='story-errors'],
+      #filter-story-warnings:target ~ header .filter-pill[data-k='story-warnings'],
+      #filter-no-api:target ~ header .filter-pill[data-k='no-api'],
       #filter-doc-errors:target ~ header .filter-pill[data-k='docs'],
       #filter-docs:target ~ header .filter-pill[data-k='docs'] {
           box-shadow: 0 0 0 var(--active-ring) currentColor;
@@ -135,6 +137,8 @@
       #filter-errors,
       #filter-infos,
       #filter-story-errors,
+      #filter-story-warnings,
+      #filter-no-api,
       #filter-doc-errors,
       #filter-docs {
           display: none;
@@ -160,6 +164,14 @@
           display: flex;
           flex-direction: column;
           gap: 10px;
+          /* Keep a deep-linked card clear of the sticky header when scrolled into view */
+          scroll-margin-top: 110px;
+      }
+
+      /* Highlight the card deep-linked via components.html#<manifest-id> */
+      .card:target {
+          box-shadow: 0 0 0 2px var(--info);
+          border-color: var(--info);
       }
 
       .head {
@@ -241,6 +253,16 @@
           border-color: color-mix(in srgb, var(--err) 55%, var(--border));
       }
 
+      .snippet-warning {
+          margin-top: 8px;
+          padding: 8px 10px;
+          border-radius: 8px;
+          border: 1px solid color-mix(in srgb, var(--info) 45%, var(--border));
+          background: var(--info-bg);
+          color: #b3d9ff;
+          font-size: 12px;
+      }
+
       .as-toggle {
           cursor: pointer;
       }
@@ -300,7 +322,7 @@
           display: grid;
       }
 
-      /* Colored notes for prop type error + info */
+      /* Colored notes for API error + info */
       .note {
           padding: 12px;
           border: 1px solid var(--border);
@@ -456,6 +478,14 @@
           display: none;
       }
 
+      #filter-story-warnings:target ~ main .card:not(.has-story-warning) {
+          display: none;
+      }
+
+      #filter-no-api:target ~ main .card:not(.missing-api) {
+          display: none;
+      }
+
       #filter-doc-errors:target ~ main .card:not(.has-doc-error) {
           display: none;
       }
@@ -583,27 +613,32 @@
 <span id="filter-errors"></span>
 <span id="filter-infos"></span>
 <span id="filter-story-errors"></span>
+<span id="filter-story-warnings"></span>
+<span id="filter-no-api"></span>
 <span id="filter-doc-errors"></span>
 <span id="filter-docs"></span>
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">44 components ok</span><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/399 story errors</a></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">44 components ok</span><a class="filter-pill" data-k="no-api" href="#filter-no-api">3/44 without API description</a><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/399 story errors</a></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.7s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>4.6s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
       
 <article
+  id="components-accordion"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="Accordion.Root">
@@ -689,7 +724,7 @@ onValueChange?: ((value: string) =&gt; void) | ((value: string[]) =&gt; void) | 
 /**
  * The layout in which the Accordion operates.
  */
-orientation?: &quot;horizontal&quot; | &quot;vertical&quot; = vertical
+orientation?: &quot;vertical&quot; | &quot;horizontal&quot; = vertical
 
 type: &quot;single&quot; | &quot;multiple&quot;
 
@@ -708,8 +743,8 @@ value?: string | string[] | undefined</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Accordion } from "@agentero/design-system";
-import { ChevronDownIcon } from "lucide-react";</code></pre>
+                <pre><code>import { Accordion } from '@agentero/design-system';
+import { ChevronDownIcon } from 'lucide-react';</code></pre>
               </div>
           
           
@@ -728,6 +763,7 @@ import { ChevronDownIcon } from "lucide-react";</code></pre>
         &lt;/Accordion.Item&gt;
     ))}
 &lt;/Accordion.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -746,6 +782,7 @@ import { ChevronDownIcon } from "lucide-react";</code></pre>
         ))}
     &lt;/Accordion.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -774,6 +811,7 @@ import { ChevronDownIcon } from "lucide-react";</code></pre>
         &lt;/Accordion.Root&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -795,6 +833,7 @@ import { ChevronDownIcon } from "lucide-react";</code></pre>
         &lt;/Accordion.Item&gt;
     &lt;/Accordion.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -813,6 +852,7 @@ import { ChevronDownIcon } from "lucide-react";</code></pre>
         &lt;/Accordion.Item&gt;
     ))}
 &lt;/Accordion.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -829,6 +869,7 @@ import { ChevronDownIcon } from "lucide-react";</code></pre>
         &lt;/Accordion.Item&gt;
     ))}
 &lt;/Accordion.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -845,6 +886,7 @@ import { ChevronDownIcon } from "lucide-react";</code></pre>
         &lt;/Accordion.Item&gt;
     ))}
 &lt;/Accordion.Root&gt;;</code></pre>
+              
             </div>
         </div>
     
@@ -852,10 +894,13 @@ import { ChevronDownIcon } from "lucide-react";</code></pre>
   </div>
 </article>
 <article
+  id="components-alert"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="Alert">
@@ -965,7 +1010,9 @@ size?: &quot;sm&quot; | &quot;md&quot; = &#39;sm&#39;</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Alert } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Alert } from '@agentero/design-system';
+import { fn } from 'storybook/test';
+import { LightbulbIcon } from 'lucide-react';</code></pre>
               </div>
           
           
@@ -988,6 +1035,7 @@ size?: &quot;sm&quot; | &quot;md&quot; = &#39;sm&#39;</code></pre>
         &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
     &lt;/Alert.Content&gt;
 &lt;/Alert&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -1008,6 +1056,7 @@ for generic inline information.</div>
         &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
     &lt;/Alert.Content&gt;
 &lt;/Alert&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -1028,6 +1077,7 @@ healthy state.</div>
         &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
     &lt;/Alert.Content&gt;
 &lt;/Alert&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -1048,6 +1098,7 @@ attention.</div>
         &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
     &lt;/Alert.Content&gt;
 &lt;/Alert&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -1067,6 +1118,7 @@ attention.</div>
         &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
     &lt;/Alert.Content&gt;
 &lt;/Alert&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -1086,6 +1138,7 @@ attention.</div>
         &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
     &lt;/Alert.Content&gt;
 &lt;/Alert&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -1106,6 +1159,7 @@ onboarding moments.</div>
         &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
     &lt;/Alert.Content&gt;
 &lt;/Alert&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -1126,6 +1180,7 @@ momentum-focused content.</div>
         &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
     &lt;/Alert.Content&gt;
 &lt;/Alert&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -1146,6 +1201,7 @@ content.</div>
         &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
     &lt;/Alert.Content&gt;
 &lt;/Alert&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -1167,6 +1223,7 @@ token ramp for lower visual weight.</div>
         &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
     &lt;/Alert.Content&gt;
 &lt;/Alert&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -1187,6 +1244,7 @@ for inline alerts inside forms, tables, or cards.</div>
         &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
     &lt;/Alert.Content&gt;
 &lt;/Alert&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -1207,6 +1265,7 @@ standalone alerts in empty states, modals, or dedicated feedback regions.</div>
         &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
     &lt;/Alert.Content&gt;
 &lt;/Alert&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -1222,6 +1281,7 @@ with `aria-label=&quot;Dismiss&quot;` that inherits the alert&#39;s color.</div>
         &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
     &lt;/Alert.Content&gt;
 &lt;/Alert&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -1245,6 +1305,7 @@ with `aria-label=&quot;Dismiss&quot;` that inherits the alert&#39;s color.</div>
         &lt;Alert.Button onClick={() =&gt; {}}&gt;Reload&lt;/Alert.Button&gt;
     &lt;/Alert.Actions&gt;
 &lt;/Alert&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -1268,6 +1329,7 @@ to the right edge after the actions.</div>
         &lt;Alert.Button onClick={() =&gt; {}}&gt;Renew session&lt;/Alert.Button&gt;
     &lt;/Alert.Actions&gt;
 &lt;/Alert&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -1288,6 +1350,7 @@ the surrounding context already conveys the semantic intent.</div>
         &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
     &lt;/Alert.Content&gt;
 &lt;/Alert&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -1310,6 +1373,7 @@ apply.</div>
         &lt;Alert.Paragraph&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/Alert.Paragraph&gt;
     &lt;/Alert.Content&gt;
 &lt;/Alert&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -1332,6 +1396,7 @@ string before passing it in.</div>
             html=&quot;Review the &lt;strong&gt;terms&lt;/strong&gt; or &lt;a href=&#39;https://example.com&#39;&gt;read the docs&lt;/a&gt;.&quot; /&gt;
     &lt;/Alert.Content&gt;
 &lt;/Alert&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -1359,6 +1424,7 @@ string before passing it in.</div>
                             &lt;/Alert.Paragraph&gt;
     &lt;/Alert.Content&gt;
 &lt;/Alert&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -1376,6 +1442,7 @@ string before passing it in.</div>
     onDismiss={onDismiss ? () =&gt; {} : undefined}&gt;
     &lt;Alert.Paragraph&gt;This field is required.&lt;/Alert.Paragraph&gt;
 &lt;/Alert&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -1399,6 +1466,7 @@ string before passing it in.</div>
         &lt;/div&gt;
     &lt;/Alert.Content&gt;
 &lt;/Alert&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -1422,6 +1490,7 @@ comparison. Each alert uses the built-in icon mapping for its color.</div>
         ))}
     &lt;/Stack&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -1445,6 +1514,7 @@ lower-weight token ramp and omit background + padding.</div>
         ))}
     &lt;/Stack&gt;
 );</code></pre>
+              
             </div>
         </div>
     
@@ -1452,10 +1522,13 @@ lower-weight token ramp and omit background + padding.</div>
   </div>
 </article>
 <article
+  id="components-autocomplete"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="Autocomplete.Root">
@@ -1558,8 +1631,10 @@ import { Autocomplete } from &#39;@agentero/design-system/autocomplete&#39;;
             <pre><code>Props:</code></pre>
             <pre><code>/**
  * A ref to imperative actions.
- * - `unmount`: Manually unmounts the autocomplete.
- * Call this after any externally controlled closing animation finishes.
+ * - `unmount`: Ends the closing phase of the autocomplete after an externally controlled closing animation finishes.
+ * Call `preventUnmountOnClose()` in `onOpenChange` first, otherwise the autocomplete completes closing on its own.
+ * Whether it leaves the DOM is decided by `keepMounted` on the portal.
+ * - `close`: Closes the autocomplete imperatively when called.
  */
 actionsRef?: RefObject&lt;AutocompleteRootActions | null&gt;
 
@@ -1698,8 +1773,10 @@ name?: string
  * Receives the highlighted item value (or `undefined` if no item is highlighted) and event details with a `reason` property describing why the highlight changed.
  * The `reason` can be:
  * - `&#39;keyboard&#39;`: the highlight changed due to keyboard navigation.
- * - `&#39;pointer&#39;`: the highlight changed due to pointer hovering.
- * - `&#39;none&#39;`: the highlight changed programmatically.
+ * - `&#39;pointer&#39;`: the highlight changed due to pointer hovering. The event may be a `MouseEvent`
+ *   rather than a `PointerEvent`.
+ * - `&#39;none&#39;`: the highlight changed for another reason, such as typing, `autoHighlight`, the
+ *   item list changing, or the popup opening or closing.
  */
 onItemHighlighted?: (highlightedValue: string | undefined, eventDetails: HighlightEventDetails) =&gt; void
 
@@ -1749,18 +1826,19 @@ virtualized?: boolean = false</code></pre>
                   <span class="ex-name">Imports</span>
                 </div>
                 <pre><code>import {
-    Autocomplete,
-    Button,
-    Checkbox,
-    Field,
-    FieldText,
-    Input,
-    Label,
-    Loading,
-    Modal,
-    Tag,
-} from "@agentero/design-system";
-import { SearchIcon, SparklesIcon } from "lucide-react";</code></pre>
+  Autocomplete,
+  Button,
+  Checkbox,
+  Field,
+  FieldText,
+  Input,
+  Label,
+  Loading,
+  Modal,
+  Tag,
+} from '@agentero/design-system';
+import { SearchIcon, SparklesIcon } from 'lucide-react';
+import { fn } from 'storybook/test';</code></pre>
               </div>
           
           
@@ -1787,6 +1865,7 @@ just as valid a value.</div>
         &lt;/Autocomplete.Content&gt;
     &lt;/Autocomplete.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -1813,6 +1892,7 @@ A Combobox would empty it here, since its value must be an option.</div>
         &lt;Button variant=&quot;secondary&quot;&gt;Next&lt;/Button&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -1837,6 +1917,7 @@ input does, and this field&#39;s text is its value.</div>
         &lt;/Autocomplete.Content&gt;
     &lt;/Autocomplete.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -1884,6 +1965,7 @@ fires once.</div>
         &lt;/form&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -1940,6 +2022,7 @@ the search waits for the scope to be confirmed.</div>
         &lt;/form&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -1969,6 +2052,7 @@ from the whole frame.</div>
         &lt;/Autocomplete.Content&gt;
     &lt;/Autocomplete.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -1997,6 +2081,7 @@ the text stays as typed.</div>
         &lt;/Autocomplete.Content&gt;
     &lt;/Autocomplete.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -2026,6 +2111,7 @@ so the name survives the list opening.</div>
         &lt;Field.Error errors={[{ message: &#39;Enter the carrier name&#39; }]} /&gt;
     &lt;/FieldText&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -2101,6 +2187,7 @@ masked one, swapped in through `render`.</div>
         &lt;/div&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -2127,6 +2214,7 @@ suggestion ready for the number in it.</div>
         &lt;/Autocomplete.Root&gt;
     &lt;/FieldText&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -2208,6 +2296,7 @@ stays. Escape on the shut field then closes the dialog.</div>
         &lt;/Modal.Root&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -2301,6 +2390,7 @@ the form&#39;s submit.</div>
         &lt;/form&gt;
     );
 };</code></pre>
+              
             </div>
         </div>
     
@@ -2308,10 +2398,13 @@ the form&#39;s submit.</div>
   </div>
 </article>
 <article
+  id="components-avatar"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="Avatar">
@@ -2398,7 +2491,7 @@ src?: string
  * - `isotype` — a brand or organization icon rendered smaller than the avatar
  *   so it sits centered inside the shape instead of filling it
  */
-type?: &quot;isotype&quot; | &quot;photo&quot; | &quot;initials&quot;
+type?: &quot;photo&quot; | &quot;initials&quot; | &quot;isotype&quot;
 
 /**
  * Shape of the avatar container. Defaults to `&#39;circle&#39;`.
@@ -2419,7 +2512,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Avatar, Button } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Avatar, Button } from '@agentero/design-system';</code></pre>
               </div>
           
           
@@ -2432,6 +2525,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
               <div class="hint">The default avatar with fallback initials. Renders as a medium circle
 when no image source is provided.</div>
               <pre><code>const Default = () =&gt; &lt;Avatar fallback=&quot;JD&quot; size=&quot;md&quot; variant=&quot;circle&quot; type=&quot;photo&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -2448,6 +2542,7 @@ and the fallback is hidden while the image loads successfully.</div>
     type=&quot;photo&quot;
     src=&quot;https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?&amp;w=256&amp;h=256&amp;q=70&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.3&amp;fp-z=1&amp;fit=crop&quot;
     alt=&quot;Alex Morgan&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -2463,6 +2558,7 @@ Pass initials, an icon, or any ReactNode as the `fallback` prop.</div>
     variant=&quot;circle&quot;
     type=&quot;photo&quot;
     src=&quot;https://broken-url.example/photo.jpg&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -2472,6 +2568,7 @@ Pass initials, an icon, or any ReactNode as the `fallback` prop.</div>
               <div>Circle-shaped avatar (default)</div>
               <div class="hint">The circle variant is the default shape, ideal for user profile photos.</div>
               <pre><code>const Circle = () =&gt; &lt;Avatar fallback=&quot;CR&quot; size=&quot;md&quot; variant=&quot;circle&quot; type=&quot;photo&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -2482,6 +2579,7 @@ Pass initials, an icon, or any ReactNode as the `fallback` prop.</div>
               <div class="hint">The square variant uses a rounded rectangle, suitable for workspace,
 team, or organization icons.</div>
               <pre><code>const Square = () =&gt; &lt;Avatar fallback=&quot;WS&quot; size=&quot;md&quot; variant=&quot;square&quot; type=&quot;photo&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -2492,6 +2590,7 @@ team, or organization icons.</div>
               <div class="hint">The pillow variant uses a soft, organic squircle shape for a
 friendly and distinctive appearance.</div>
               <pre><code>const Pillow = () =&gt; &lt;Avatar fallback=&quot;PL&quot; size=&quot;md&quot; variant=&quot;pillow&quot; type=&quot;photo&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -2502,6 +2601,7 @@ friendly and distinctive appearance.</div>
               <div class="hint">The pentagon variant uses a five-sided mask for a unique visual identity.
 Note: the border is hidden in this variant due to the mask shape.</div>
               <pre><code>const Pentagon = () =&gt; &lt;Avatar fallback=&quot;PT&quot; size=&quot;md&quot; variant=&quot;pentagon&quot; type=&quot;photo&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -2518,6 +2618,7 @@ which is ideal for user profile photographs.</div>
     type=&quot;photo&quot;
     src=&quot;https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?&amp;w=256&amp;h=256&amp;q=70&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.3&amp;fp-z=1&amp;fit=crop&quot;
     alt=&quot;Alex Morgan&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -2529,6 +2630,7 @@ which is ideal for user profile photographs.</div>
 stands in for a user with their initials. The fallback text is centered
 within the avatar shape.</div>
               <pre><code>const TypeInitials = () =&gt; &lt;Avatar fallback=&quot;JD&quot; size=&quot;md&quot; variant=&quot;circle&quot; type=&quot;initials&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -2547,6 +2649,7 @@ should remain legible inside the bounding shape.</div>
     type=&quot;isotype&quot;
     src=&quot;https://cdn.simpleicons.org/figma&quot;
     alt=&quot;Figma&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -2576,6 +2679,7 @@ centers text, and `isotype` shrinks a brand icon inside the bounding shape.</div
         /&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -2601,6 +2705,7 @@ to `4xl` (128px).</div>
         ))}
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -2610,6 +2715,7 @@ to `4xl` (128px).</div>
               <div>Extra-small 24px avatar</div>
               <div class="hint">Extra-small avatar (24px) for dense lists and inline indicators.</div>
               <pre><code>const SizeXs = () =&gt; &lt;Avatar fallback=&quot;XS&quot; size=&quot;xs&quot; variant=&quot;circle&quot; type=&quot;photo&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -2619,6 +2725,7 @@ to `4xl` (128px).</div>
               <div>Small 32px avatar</div>
               <div class="hint">Small avatar (32px) for compact layouts and table rows.</div>
               <pre><code>const SizeSm = () =&gt; &lt;Avatar fallback=&quot;SM&quot; size=&quot;sm&quot; variant=&quot;circle&quot; type=&quot;photo&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -2628,6 +2735,7 @@ to `4xl` (128px).</div>
               <div>Large 48px avatar</div>
               <div class="hint">Large avatar (48px) for profile sections and detail views.</div>
               <pre><code>const SizeLg = () =&gt; &lt;Avatar fallback=&quot;LG&quot; size=&quot;lg&quot; variant=&quot;circle&quot; type=&quot;photo&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -2637,6 +2745,7 @@ to `4xl` (128px).</div>
               <div>Extra-large 64px avatar</div>
               <div class="hint">Extra-large avatar (64px) for hero sections and prominent display.</div>
               <pre><code>const SizeXl = () =&gt; &lt;Avatar fallback=&quot;XL&quot; size=&quot;xl&quot; variant=&quot;circle&quot; type=&quot;photo&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -2648,6 +2757,7 @@ to `4xl` (128px).</div>
 to a color from the palette, applying a tinted background and matching
 text color. Useful for distinguishing users in lists without profile photos.</div>
               <pre><code>const Colorized = () =&gt; &lt;Avatar fallback=&quot;JD&quot; size=&quot;md&quot; variant=&quot;circle&quot; type=&quot;photo&quot; colorize=&quot;jane doe&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -2664,6 +2774,7 @@ colors from the palette for visual distinction.</div>
         ))}
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -2680,6 +2791,7 @@ Sizes range from `xs` (24px) to `4xl` (128px).</div>
         ))}
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -2702,6 +2814,7 @@ across the full size range from `xs` (24px) to `4xl` (128px).</div>
         ))}
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -2724,6 +2837,7 @@ friendly branding, and unique identity.</div>
         ))}
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -2748,6 +2862,7 @@ pillow shape render correctly with real imagery.</div>
         ))}
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
         </div>
     
@@ -2755,10 +2870,13 @@ pillow shape render correctly with real imagery.</div>
   </div>
 </article>
 <article
+  id="components-avatargroup"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="AvatarGroup">
@@ -2827,7 +2945,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Avatar, AvatarGroup } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Avatar, AvatarGroup } from '@agentero/design-system';</code></pre>
               </div>
           
           
@@ -2843,6 +2961,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
         &lt;Avatar key={person.colorize} fallback={person.fallback} colorize={person.colorize} /&gt;
     ))}
 &lt;/AvatarGroup&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -2856,6 +2975,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
         &lt;Avatar key={person.colorize} fallback={person.fallback} colorize={person.colorize} /&gt;
     ))}
 &lt;/AvatarGroup&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -2875,6 +2995,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
         ))}
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -2888,6 +3009,7 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
         &lt;Avatar key={person.colorize} fallback={person.fallback} colorize={person.colorize} /&gt;
     ))}
 &lt;/AvatarGroup&gt;;</code></pre>
+              
             </div>
         </div>
     
@@ -2895,10 +3017,13 @@ variant?: &quot;circle&quot; | &quot;square&quot; | &quot;pillow&quot; | &quot;p
   </div>
 </article>
 <article
+  id="components-button"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="Button">
@@ -3062,8 +3187,8 @@ variant?: &quot;link&quot; | &quot;ghost&quot; | &quot;primary&quot; | &quot;sec
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button } from "@agentero/design-system";
-import { PlusIcon, XIcon } from "lucide-react";</code></pre>
+                <pre><code>import { Button } from '@agentero/design-system';
+import { PlusIcon, XIcon } from 'lucide-react';</code></pre>
               </div>
           
           
@@ -3076,7 +3201,8 @@ import { PlusIcon, XIcon } from "lucide-react";</code></pre>
               <div class="hint">Args-controlled playground. Toggle `variant`, `size`, `status`, `loading`,
 `disabled`, and `rounded` from the Controls panel to explore every visual
 combination of the Button.</div>
-              <pre><code>const Default = () =&gt; &lt;Button variant=&quot;primary&quot; size=&quot;sm&quot;&gt;{TEXT}&lt;/Button&gt;;</code></pre>
+              <pre><code>const Default = () =&gt; &lt;Button variant=&quot;primary&quot; size=&quot;sm&quot;&gt;Button&lt;/Button&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -3097,6 +3223,7 @@ for text-only actions.</div>
         ))}
     &lt;/Row&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -3115,6 +3242,7 @@ for text-only actions.</div>
         ))}
     &lt;/Row&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -3135,6 +3263,7 @@ and `data-disabled` on the child instead.</div>
         ))}
     &lt;/Row&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -3158,6 +3287,7 @@ and `data-disabled` on the child instead.</div>
         ))}
     &lt;/Stack&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -3181,6 +3311,7 @@ the link treatment has no padding to accommodate an icon alone.</div>
         ))}
     &lt;/Stack&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -3210,6 +3341,7 @@ overlays a spinner that inherits the variant&#39;s text color. Excludes
         ))}
     &lt;/Stack&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -3245,6 +3377,7 @@ variant.</div>
         &lt;/Row&gt;
     &lt;/Stack&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -3269,6 +3402,7 @@ variant.</div>
         ))}
     &lt;/Stack&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -3294,6 +3428,7 @@ router. In app code, swap the plain `&lt;a&gt;` below for your framework&#39;s L
         &lt;/Button&gt;
     &lt;/Row&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -3330,6 +3465,7 @@ and a disabled or loading trigger keeps its disabled look.</div>
         &lt;/Row&gt;
     &lt;/Stack&gt;
 );</code></pre>
+              
             </div>
         </div>
     
@@ -3337,10 +3473,13 @@ and a disabled or loading trigger keeps its disabled look.</div>
   </div>
 </article>
 <article
+  id="components-checkbox"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="Checkbox">
@@ -3437,7 +3576,7 @@ value?: string | (readonly string[] &amp; string) | undefined</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Checkbox, Label } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Checkbox, Label } from '@agentero/design-system';</code></pre>
               </div>
           
           
@@ -3449,6 +3588,7 @@ value?: string | (readonly string[] &amp; string) | undefined</code></pre>
               <div>Default standalone checkbox</div>
               
               <pre><code>const Default = () =&gt; &lt;Checkbox disabled={false} aria-label=&quot;Select row&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -3458,6 +3598,7 @@ value?: string | (readonly string[] &amp; string) | undefined</code></pre>
               <div>Checked state</div>
               
               <pre><code>const Checked = () =&gt; &lt;Checkbox disabled={false} aria-label=&quot;Select row&quot; defaultChecked /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -3468,6 +3609,7 @@ value?: string | (readonly string[] &amp; string) | undefined</code></pre>
               <div class="hint">A state you set, never one the user clicks into: use it for a parent that
 governs a partially selected group.</div>
               <pre><code>const Indeterminate = () =&gt; &lt;Checkbox disabled={false} aria-label=&quot;Select row&quot; checked=&quot;indeterminate&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -3477,6 +3619,7 @@ governs a partially selected group.</div>
               <div>Uncontrolled checkbox starting in the mixed state</div>
               <div class="hint">Starts mixed without a controlled value, then toggles through checked and unchecked.</div>
               <pre><code>const UncontrolledIndeterminate = () =&gt; &lt;Checkbox disabled={false} aria-label=&quot;Select row&quot; defaultChecked=&quot;indeterminate&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -3492,6 +3635,7 @@ governs a partially selected group.</div>
         &lt;Checkbox disabled checked=&quot;indeterminate&quot; aria-label=&quot;Disabled mixed&quot; /&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -3511,6 +3655,7 @@ governs a partially selected group.</div>
         &lt;/p&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -3525,6 +3670,7 @@ governs a partially selected group.</div>
         &lt;Label htmlFor=&quot;newsletter&quot;&gt;Email me product updates&lt;/Label&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -3547,6 +3693,7 @@ governs a partially selected group.</div>
         &lt;/div&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -3589,6 +3736,7 @@ governs a partially selected group.</div>
         &lt;/div&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -3602,6 +3750,7 @@ governs a partially selected group.</div>
         &lt;Checkbox aria-label=&quot;Select carriers&quot; defaultChecked=&quot;indeterminate&quot; /&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -3632,6 +3781,7 @@ library&#39;s Base Checkbox draws them: a 16px box with a 1.5px border.</div>
         ))}
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
         </div>
     
@@ -3639,10 +3789,13 @@ library&#39;s Base Checkbox draws them: a 16px box with a 1.5px border.</div>
   </div>
 </article>
 <article
+  id="components-checkboxgroup"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="CheckboxGroup.Root">
@@ -3710,7 +3863,7 @@ onValueChange?: (value: string[]) =&gt; void
 /**
  * `vertical` (default) stacks the items; `horizontal` lays them in a row that wraps.
  */
-orientation?: &quot;horizontal&quot; | &quot;vertical&quot; = &#39;vertical&#39;
+orientation?: &quot;vertical&quot; | &quot;horizontal&quot; = &#39;vertical&#39;
 
 /**
  * Keeps every item focusable but stops it from toggling; each checkbox gets `aria-readonly`.
@@ -3732,7 +3885,8 @@ value?: string[]</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { CheckboxGroup, Field } from "@agentero/design-system";</code></pre>
+                <pre><code>import { CheckboxGroup, Field } from '@agentero/design-system';
+import { fn } from 'storybook/test';</code></pre>
               </div>
           
           
@@ -3753,6 +3907,7 @@ value?: string[]</code></pre>
         &lt;/CheckboxGroup.Item&gt;
     ))}
 &lt;/CheckboxGroup.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -3769,6 +3924,7 @@ standalone checkboxes.</div>
         &lt;/CheckboxGroup.Item&gt;
     ))}
 &lt;/CheckboxGroup.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -3793,6 +3949,7 @@ standalone checkboxes.</div>
         ))}
     &lt;/CheckboxGroup.Root&gt;
 &lt;/div&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -3827,6 +3984,7 @@ standalone checkboxes.</div>
         &lt;/div&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -3842,6 +4000,7 @@ standalone checkboxes.</div>
         &lt;/CheckboxGroup.Item&gt;
     ))}
 &lt;/CheckboxGroup.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -3861,6 +4020,7 @@ and each checkbox announces `aria-readonly` (a `group` cannot carry it).</div>
         ))}
     &lt;/CheckboxGroup.Root&gt;
 &lt;/Field.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -3879,6 +4039,7 @@ stays in the value.</div>
                     &lt;/CheckboxGroup.Item&gt;
     &lt;CheckboxGroup.Item value=&quot;renters&quot;&gt;Renters&lt;/CheckboxGroup.Item&gt;
 &lt;/CheckboxGroup.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -3902,6 +4063,7 @@ stays in the value.</div>
     &lt;p id=&quot;lobs-error&quot; className=&quot;text-sm text-text-input-destructive&quot;&gt;Select at least one line of business.
                     &lt;/p&gt;
 &lt;/div&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -3935,6 +4097,7 @@ the selection with `FormData.getAll`.</div>
         &lt;/form&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -3950,6 +4113,7 @@ the selection with `FormData.getAll`.</div>
         &lt;CheckboxGroup.Item value=&quot;auto&quot;&gt;Auto&lt;/CheckboxGroup.Item&gt;
     &lt;/CheckboxGroup.Root&gt;
 &lt;/div&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -3968,6 +4132,7 @@ the selection with `FormData.getAll`.</div>
         &lt;/CheckboxGroup.Item&gt;
     ))}
 &lt;/CheckboxGroup.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -3981,6 +4146,7 @@ the selection with `FormData.getAll`.</div>
                     &lt;/CheckboxGroup.Item&gt;
     &lt;CheckboxGroup.Item value=&quot;auto&quot;&gt;Auto&lt;/CheckboxGroup.Item&gt;
 &lt;/CheckboxGroup.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -4003,6 +4169,7 @@ the selection with `FormData.getAll`.</div>
     &lt;/CheckboxGroup.Root&gt;
     &lt;Field.Error errors={[{ message: &#39;Select at least one line of business&#39; }]} /&gt;
 &lt;/Field.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -4030,6 +4197,7 @@ the selection with `FormData.getAll`.</div>
         ))}
     &lt;/CheckboxGroup.Root&gt;
 &lt;/Field.Root&gt;;</code></pre>
+              
             </div>
         </div>
     
@@ -4037,10 +4205,13 @@ the selection with `FormData.getAll`.</div>
   </div>
 </article>
 <article
+  id="components-checklist"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  missing-api
   no-doc-error"
   role="listitem"
   aria-label="CheckList.Root">
@@ -4048,7 +4219,7 @@ the selection with `FormData.getAll`.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> CheckList.Root</h2>
       <div class="badges">
-        
+        <span class="badge">no API description</span>
         
         <label for="c-8-components-checklist-stories" class="badge ok as-toggle">2 stories</label>
         
@@ -4089,7 +4260,7 @@ import { CheckList } from &#39;@agentero/design-system/check-list&#39;;
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { CheckList } from "@agentero/design-system";</code></pre>
+                <pre><code>import { CheckList } from '@agentero/design-system';</code></pre>
               </div>
           
           
@@ -4107,6 +4278,7 @@ import { CheckList } from &#39;@agentero/design-system/check-list&#39;;
         &lt;CheckList.Item&gt;Available in the Agentero rater&lt;/CheckList.Item&gt;
     &lt;/CheckList.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -4130,6 +4302,7 @@ import { CheckList } from &#39;@agentero/design-system/check-list&#39;;
         &lt;/CheckList.Root&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
         </div>
     
@@ -4137,10 +4310,13 @@ import { CheckList } from &#39;@agentero/design-system/check-list&#39;;
   </div>
 </article>
 <article
+  id="components-combobox"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   has-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="Combobox.Root">
@@ -4199,8 +4375,10 @@ import { Combobox } from &#39;@agentero/design-system/combobox&#39;;
             <pre><code>Props:</code></pre>
             <pre><code>/**
  * A ref to imperative actions.
- * - `unmount`: Manually unmounts the combobox.
- * Call this after any externally controlled closing animation finishes.
+ * - `unmount`: Ends the closing phase of the combobox after an externally controlled closing animation finishes.
+ * Call `preventUnmountOnClose()` in `onOpenChange` first, otherwise the combobox completes closing on its own.
+ * Whether it leaves the DOM is decided by `keepMounted` on the portal.
+ * - `close`: Closes the combobox imperatively when called.
  */
 actionsRef?: RefObject&lt;Actions | null&gt;
 
@@ -4412,15 +4590,17 @@ onInputValueChange?: (inputValue: string, eventDetails: ChangeEventDetails) =&gt
  * Receives the highlighted item value (or `undefined` if no item is highlighted) and event details with a `reason` property describing why the highlight changed.
  * The `reason` can be:
  * - `&#39;keyboard&#39;`: the highlight changed due to keyboard navigation.
- * - `&#39;pointer&#39;`: the highlight changed due to pointer hovering.
- * - `&#39;none&#39;`: the highlight changed programmatically.
+ * - `&#39;pointer&#39;`: the highlight changed due to pointer hovering. The event may be a `MouseEvent`
+ *   rather than a `PointerEvent`.
+ * - `&#39;none&#39;`: the highlight changed for another reason, such as typing, `autoHighlight`, the
+ *   item list changing, or the popup opening or closing.
  */
 onItemHighlighted?: (highlightedValue: unknown, eventDetails: HighlightEventDetails) =&gt; void
 
 /**
  * Event handler called when the popup is opened or closed.
  */
-onOpenChange?: (open: boolean, eventDetails: ChangeEventDetails) =&gt; void
+onOpenChange?: (open: boolean, eventDetails: OpenChangeEventDetails) =&gt; void
 
 /**
  * Event handler called after any animations complete when the popup is opened or closed.
@@ -4470,7 +4650,9 @@ virtualized?: boolean = false</code></pre>
               <div class="row">
                 <span class="ex-name">Inside Popover With Value</span>
                 <span class="badge err">story error</span>
+                
               </div>
+              
               
               
               
@@ -4489,18 +4671,7 @@ virtualized?: boolean = false</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import {
-    Avatar,
-    Button,
-    Combobox,
-    Field,
-    FieldText,
-    Label,
-    Modal,
-    Popover,
-    Skeleton,
-    Tag,
-} from "@agentero/design-system";</code></pre>
+                <pre><code>import { Avatar, Button, Combobox, Field, FieldText, Label, Modal, Popover, Skeleton, Tag } from '@agentero/design-system';</code></pre>
               </div>
           
           
@@ -4529,6 +4700,7 @@ picked — and the list hangs from the whole field. Clearing drops the picked op
         &lt;/Combobox.Content&gt;
     &lt;/Combobox.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -4554,6 +4726,7 @@ matches the field&#39;s width.</div>
         &lt;/Combobox.Content&gt;
     &lt;/Combobox.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -4580,6 +4753,7 @@ opens the list from the keyboard with the arrow keys.</div>
         &lt;/Combobox.Content&gt;
     &lt;/Combobox.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -4606,6 +4780,7 @@ brings the chevron back. Passing `false` drops it from `search`.</div>
         &lt;/Combobox.Content&gt;
     &lt;/Combobox.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -4630,6 +4805,7 @@ cannot open.</div>
         &lt;/Combobox.Content&gt;
     &lt;/Combobox.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -4657,6 +4833,7 @@ opens the list to browse it, and picking a row leaves the value as it was.</div>
         &lt;/Combobox.Root&gt;
     &lt;/FieldText&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -4681,6 +4858,7 @@ children only while nothing matches. It needs `items` on `Root` to know that.</d
         &lt;/Combobox.Content&gt;
     &lt;/Combobox.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -4723,6 +4901,7 @@ here as tags.</div>
         &lt;/div&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -4793,6 +4972,7 @@ no request goes out for a shorter query either.</div>
         &lt;/Combobox.Root&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -4872,6 +5052,7 @@ the agency rows that replace them.</div>
         &lt;/Combobox.Root&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -4911,6 +5092,7 @@ with no value if none was picked: mark the root `required` to block that.</div>
         &lt;/form&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -4949,6 +5131,7 @@ drops the typed query and submits the form. A highlighted row is still picked.</
         &lt;/form&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -4982,6 +5165,7 @@ rest of the page from assistive technology, label included, and a
         &lt;Field.Error errors={[{ message: &#39;Pick an agency from the list&#39; }]} /&gt;
     &lt;/FieldText&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -5016,6 +5200,7 @@ picked, Escape closes the list, then clears the value, then closes the modal.</d
         &lt;/Modal.Body&gt;
     &lt;/Modal.Content&gt;
 &lt;/Modal.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -5047,6 +5232,7 @@ Escape closes the popover.</div>
         &lt;/Popover.Content&gt;
     &lt;/Popover.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -5080,6 +5266,7 @@ close, so Base UI lets the first Escape through and it closes the modal.</div>
         &lt;/Modal.Content&gt;
     &lt;/Modal.Root&gt;
 );</code></pre>
+              
             </div>
         </div>
     
@@ -5087,10 +5274,13 @@ close, so Base UI lets the first Escape through and it closes the modal.</div>
   </div>
 </article>
 <article
+  id="components-command"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="Command.Root">
@@ -5209,7 +5399,7 @@ vimBindings?: boolean</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button, Command, Popover } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Button, Command, Popover } from '@agentero/design-system';</code></pre>
               </div>
           
           
@@ -5231,6 +5421,7 @@ vimBindings?: boolean</code></pre>
         &lt;Command.Empty&gt;No results found.&lt;/Command.Empty&gt;
     &lt;/Command.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -5250,6 +5441,7 @@ vimBindings?: boolean</code></pre>
         &lt;Command.Empty&gt;No results found for your search.&lt;/Command.Empty&gt;
     &lt;/Command.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -5275,6 +5467,7 @@ per usage through the `[cmdk-group-heading]` hook.</div>
         &lt;Command.Empty&gt;No results found.&lt;/Command.Empty&gt;
     &lt;/Command.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -5296,6 +5489,7 @@ and `scroll-py-2` keeps that row off the container edges.</div>
         &lt;Command.Empty&gt;No states found.&lt;/Command.Empty&gt;
     &lt;/Command.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -5314,6 +5508,7 @@ and `scroll-py-2` keeps that row off the container edges.</div>
     &lt;/Command.List&gt;
     &lt;Command.Empty&gt;No results found.&lt;/Command.Empty&gt;
 &lt;/Command.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -5334,6 +5529,7 @@ list does not invite the pointer.</div>
     &lt;/Command.List&gt;
     &lt;Command.Empty&gt;No results found.&lt;/Command.Empty&gt;
 &lt;/Command.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -5351,6 +5547,7 @@ offering to create an agency appears only when the search text matches no existi
         &lt;CreateItem /&gt;
     &lt;/Command.List&gt;
 &lt;/Command.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -5377,6 +5574,7 @@ picker draws a single panel. cmdk&#39;s list is always on screen, so Escape clos
         &lt;/Popover.Content&gt;
     &lt;/Popover.Root&gt;
 );</code></pre>
+              
             </div>
         </div>
     
@@ -5384,10 +5582,13 @@ picker draws a single panel. cmdk&#39;s list is always on screen, so Escape clos
   </div>
 </article>
 <article
+  id="components-datatable"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="DataTable.Root">
@@ -5903,8 +6104,8 @@ state?: Partial&lt;TableState&gt;</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { ArrowRightIcon, EllipsisVerticalIcon, HomeIcon } from "lucide-react";
-import { Button, DataTable, DropdownMenu, Pagination, Table } from "@agentero/design-system";</code></pre>
+                <pre><code>import { ArrowRightIcon, EllipsisVerticalIcon, HomeIcon } from 'lucide-react';
+import { Button, DataTable, DropdownMenu, Pagination, Table } from '@agentero/design-system';</code></pre>
               </div>
           
           
@@ -5916,12 +6117,13 @@ import { Button, DataTable, DropdownMenu, Pagination, Table } from "@agentero/de
               <div>Display props playground (size / embed / enclosed / sticky)</div>
               <div class="hint">Playground for `DataTable.Table` display props — toggle `size`, `embed`,
 `enclosed`, and `sticky` from the controls panel.</div>
-              <pre><code>const Playground = () =&gt; &lt;div
+              <pre><code>const Playground = (args: ComponentProps&lt;typeof DataTable.Table&gt;) =&gt; &lt;div
     className={args.enclosed ? &#39;flex min-h-0 flex-1 flex-col p-4&#39; : &#39;contents&#39;}&gt;
     &lt;DataTable.Root data={LEADS} columns={columns}&gt;
         &lt;DataTable.Table size=&quot;md&quot; embed enclosed={false} sticky=&quot;header&quot; /&gt;
     &lt;/DataTable.Root&gt;
 &lt;/div&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -5977,6 +6179,7 @@ the toolbar, and pagination in the footer.</div>
         &lt;/DataTable.Root&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -5990,6 +6193,7 @@ the toolbar, and pagination in the footer.</div>
         &lt;DataTable.Table /&gt;
     &lt;/DataTable.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -6004,6 +6208,7 @@ in flight.</div>
         &lt;DataTable.Table /&gt;
     &lt;/DataTable.Root&gt;
 );</code></pre>
+              
             </div>
         </div>
     
@@ -6011,10 +6216,13 @@ in flight.</div>
   </div>
 </article>
 <article
+  id="components-debouncedinputsearch"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="DebouncedInputSearch">
@@ -6116,7 +6324,9 @@ value: string</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button, DebouncedInputSearch } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Button, DebouncedInputSearch } from '@agentero/design-system';
+import { fn } from 'storybook/test';
+import { ChangeEvent } from 'react';</code></pre>
               </div>
           
           
@@ -6130,7 +6340,7 @@ value: string</code></pre>
 in the field at once; `onChange` arrives once the user pauses, with the
 whole text in `event.target.value`, and only then does the query below
 change. Clearing the field goes through the same delay.</div>
-              <pre><code>const Default = () =&gt; {
+              <pre><code>const Default = args =&gt; {
     const [query, setQuery] = useState(args.value);
 
     return (
@@ -6146,6 +6356,7 @@ change. Clearing the field goes through the same delay.</div>
         &lt;/div&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -6156,7 +6367,7 @@ change. Clearing the field goes through the same delay.</div>
               <div class="hint">The field follows `value` when the page changes it from outside, here a
 saved search applied with a button: nothing is being typed, so the new
 query replaces the text.</div>
-              <pre><code>const ExternalValue = () =&gt; {
+              <pre><code>const ExternalValue = args =&gt; {
     const [query, setQuery] = useState(&#39;Acme&#39;);
 
     return (
@@ -6174,6 +6385,7 @@ query replaces the text.</div>
         &lt;/div&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -6182,7 +6394,7 @@ query replaces the text.</div>
               </div>
               <div>Enter reports the pending query without waiting</div>
               <div class="hint">Pressing Enter reports the text at once instead of waiting for the pause.</div>
-              <pre><code>const SubmitOnEnter = () =&gt; {
+              <pre><code>const SubmitOnEnter = args =&gt; {
     const [query, setQuery] = useState(args.value);
 
     return (
@@ -6198,6 +6410,7 @@ query replaces the text.</div>
         &lt;/div&gt;
     );
 };</code></pre>
+              
             </div>
         </div>
     
@@ -6205,10 +6418,13 @@ query replaces the text.</div>
   </div>
 </article>
 <article
+  id="components-divider"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="Divider">
@@ -6262,7 +6478,7 @@ When omitted, Divider renders a single line.</span><span class="chip">example: &
 
 /**
  * Whether or not the component is purely decorative. When true, accessibility-related attributes
- * are updated so that that the rendered element is removed from the accessibility tree.
+ * are updated so that the rendered element is removed from the accessibility tree.
  */
 decorative?: boolean = true
 
@@ -6276,7 +6492,7 @@ label?: ReactNode
 /**
  * Either `vertical` or `horizontal`. Defaults to `horizontal`.
  */
-orientation?: &quot;horizontal&quot; | &quot;vertical&quot; = &#39;horizontal&#39;</code></pre>
+orientation?: &quot;vertical&quot; | &quot;horizontal&quot; = &#39;horizontal&#39;</code></pre>
           </div>
         </div>
     
@@ -6288,7 +6504,7 @@ orientation?: &quot;horizontal&quot; | &quot;vertical&quot; = &#39;horizontal&#3
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button, Divider } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Button, Divider } from '@agentero/design-system';</code></pre>
               </div>
           
           
@@ -6300,7 +6516,7 @@ orientation?: &quot;horizontal&quot; | &quot;vertical&quot; = &#39;horizontal&#3
               <div>Default horizontal decorative divider</div>
               <div class="hint">The default horizontal, decorative divider — a 1px line that spans the
 parent width. Use this form between stacked content blocks.</div>
-              <pre><code>const Default = () =&gt; &lt;div
+              <pre><code>const Default = args =&gt; &lt;div
     className={cn(
         &#39;flex gap-4 rounded-lg border border-border-default-base-primary bg-bg-default-base-primary p-6&#39;,
         args.orientation === &#39;vertical&#39; ? &#39;h-40 w-lg items-stretch&#39; : &#39;w-80 flex-col&#39;
@@ -6317,6 +6533,7 @@ parent width. Use this form between stacked content blocks.</div>
                             &lt;/p&gt;
     &lt;/div&gt;
 &lt;/div&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -6331,6 +6548,7 @@ default orientation; use to separate stacked content.</div>
         &lt;Divider /&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -6346,6 +6564,7 @@ to be visible.</div>
         &lt;Divider orientation=&quot;vertical&quot; /&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -6360,6 +6579,7 @@ a common pattern for &quot;or&quot; breaks between authentication options.</div>
     &lt;Divider orientation=&quot;horizontal&quot; decorative label=&quot;or&quot; /&gt;
     &lt;Button variant=&quot;secondary&quot;&gt;Continue with SSO&lt;/Button&gt;
 &lt;/div&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -6381,6 +6601,7 @@ segments; use sparingly — horizontal labelled dividers are more common.</div>
         &lt;p className=&quot;text-xs text-text-default-base-secondary&quot;&gt;Content on the right side&lt;/p&gt;
     &lt;/div&gt;
 &lt;/div&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -6405,6 +6626,7 @@ break rather than a purely visual one.</div>
                             &lt;/p&gt;
     &lt;/section&gt;
 &lt;/div&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -6438,6 +6660,7 @@ weight of a full border on every row.</div>
         &lt;/div&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -6472,6 +6695,7 @@ weight.</div>
         &lt;/Button&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -6505,6 +6729,7 @@ create visual hierarchy in content-heavy pages.</div>
         &lt;/div&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -6529,6 +6754,7 @@ related controls or inline links without visual weight.</div>
         &lt;/Button&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
         </div>
     
@@ -6536,10 +6762,13 @@ related controls or inline links without visual weight.</div>
   </div>
 </article>
 <article
+  id="components-dropdownmenu"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="DropdownMenu.Root">
@@ -6647,15 +6876,8 @@ open?: boolean</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button, DropdownMenu } from "@agentero/design-system";
-import {
-    ChevronDownIcon,
-    CopyIcon,
-    FolderInputIcon,
-    ShareIcon,
-    Trash2Icon,
-    UsersIcon,
-} from "lucide-react";</code></pre>
+                <pre><code>import { Button, DropdownMenu } from '@agentero/design-system';
+import { ChevronDownIcon, CopyIcon, FolderInputIcon, ShareIcon, Trash2Icon, UsersIcon } from 'lucide-react';</code></pre>
               </div>
           
           
@@ -6693,6 +6915,7 @@ most overflow menus.</div>
         &lt;/DropdownMenu.Portal&gt;
     &lt;/DropdownMenu.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -6726,6 +6949,7 @@ most overflow menus.</div>
         &lt;/DropdownMenu.Portal&gt;
     &lt;/DropdownMenu.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -6761,6 +6985,7 @@ pattern when a row should read as destructive.</div>
         &lt;/DropdownMenu.Portal&gt;
     &lt;/DropdownMenu.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -6809,6 +7034,7 @@ be ambiguous from the item text alone.</div>
         &lt;/DropdownMenu.Portal&gt;
     &lt;/DropdownMenu.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -6875,6 +7101,7 @@ it escapes the parent&#39;s stacking context.</div>
         &lt;/DropdownMenu.Portal&gt;
     &lt;/DropdownMenu.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -6949,6 +7176,7 @@ screens once the tree grows past two levels.</div>
         &lt;/DropdownMenu.Portal&gt;
     &lt;/DropdownMenu.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -7004,6 +7232,7 @@ actions outright unless the user needs to see them and understand why.</div>
         &lt;/DropdownMenu.Portal&gt;
     &lt;/DropdownMenu.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -7030,6 +7259,7 @@ shows, so a keyboard user can see where focus went.</div>
         &lt;/DropdownMenu.Portal&gt;
     &lt;/DropdownMenu.Root&gt;
 );</code></pre>
+              
             </div>
         </div>
     
@@ -7037,10 +7267,13 @@ shows, so a keyboard user can see where focus went.</div>
   </div>
 </article>
 <article
+  id="components-field"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="Field.Root">
@@ -7126,7 +7359,7 @@ invalid?: boolean = false
  * needs no particular wrapper. In both, `Field.Content` groups a control with
  * its messages, or a label with its description.
  */
-orientation?: &quot;horizontal&quot; | &quot;vertical&quot; | &quot;responsive&quot; = &#39;vertical&#39;
+orientation?: &quot;vertical&quot; | &quot;horizontal&quot; | &quot;responsive&quot; = &#39;vertical&#39;
 
 /**
  * Makes the control read-only through its context (focusable and copyable,
@@ -7150,7 +7383,7 @@ required?: boolean = false</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Field, FieldContext, Label, Switch } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Field, FieldContext, Label, Switch } from '@agentero/design-system';</code></pre>
               </div>
           
           
@@ -7173,6 +7406,7 @@ explicit `id`.</div>
     &lt;DemoInput placeholder=&quot;you@example.com&quot; /&gt;
     &lt;Field.Description&gt;We only use this to send policy documents.&lt;/Field.Description&gt;
 &lt;/Field.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -7191,6 +7425,7 @@ asterisk and the control receives `required`, both through context.</div>
     &lt;Label&gt;Full name&lt;/Label&gt;
     &lt;DemoInput placeholder=&quot;Jane Doe&quot; /&gt;
 &lt;/Field.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -7209,6 +7444,7 @@ non-required.</div>
     &lt;Label optional&gt;Phone number&lt;/Label&gt;
     &lt;DemoInput type=&quot;tel&quot; placeholder=&quot;+1 (555) 000-0000&quot; /&gt;
 &lt;/Field.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -7228,6 +7464,7 @@ the control, and the control&#39;s name stays clean. It opens on focus too.</div
     &lt;Field.Label tooltip=&quot;Issued by the IRS to identify your business.&quot;&gt;Tax ID&lt;/Field.Label&gt;
     &lt;DemoInput placeholder=&quot;XX-XXXXXXX&quot; /&gt;
 &lt;/Field.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -7249,6 +7486,7 @@ library.</div>
     &lt;DemoInput type=&quot;email&quot; defaultValue=&quot;not-an-email&quot; /&gt;
     &lt;Field.Error errors={[{ message: &#39;Enter a valid email address.&#39; }]} /&gt;
 &lt;/Field.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -7272,6 +7510,7 @@ library.</div>
             { message: &#39;Use at least 8 characters.&#39; }
         ]} /&gt;
 &lt;/Field.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -7305,6 +7544,7 @@ that failed without a message of its own contributes nothing.</div>
             }
         ]} /&gt;
 &lt;/Field.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -7325,6 +7565,7 @@ either, the control carries no `aria-describedby` at all.</div>
     &lt;DemoInput type=&quot;email&quot; /&gt;
     &lt;Field.Error errors={[undefined]} /&gt;
 &lt;/Field.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -7358,6 +7599,7 @@ carries an `id` of its own.</div>
         &lt;/div&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -7377,6 +7619,7 @@ carries an `id` of its own.</div>
     &lt;DemoInput defaultValue=&quot;Acme Insurance&quot; /&gt;
     &lt;Field.Description&gt;Managed by your administrator.&lt;/Field.Description&gt;
 &lt;/Field.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -7397,6 +7640,7 @@ copyable and submitted.</div>
     &lt;DemoInput defaultValue=&quot;POL-2049-118&quot; /&gt;
     &lt;Field.Description&gt;Assigned by the carrier; contact support to change it.&lt;/Field.Description&gt;
 &lt;/Field.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -7441,6 +7685,7 @@ gets one here.</div>
         &lt;/div&gt;
     &lt;/Field.Group&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -7478,6 +7723,7 @@ should only apply once horizontal goes behind `@md/field:`.</div>
         &lt;/div&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -7506,6 +7752,7 @@ its own ids, so several on one page never collide.</div>
         &lt;/Field.Root&gt;
     &lt;/Field.Group&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -7522,6 +7769,7 @@ props alone: `Label` needs its `htmlFor`, `Field.Error` its own `id`.</div>
         &lt;Field.Error id=&quot;standalone-error&quot;&gt;Something went wrong.&lt;/Field.Error&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -7538,6 +7786,7 @@ part wins over what `Field.Root` provides.</div>
         &lt;Field.Description id=&quot;own-description&quot;&gt;Points wherever you say.&lt;/Field.Description&gt;
     &lt;/Field.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -7570,6 +7819,7 @@ form library. `InputContext` extends the same way with `value`, `onChange`,
         &lt;/Field.Root&gt;
     );
 };</code></pre>
+              
             </div>
         </div>
     
@@ -7577,10 +7827,13 @@ form library. `InputContext` extends the same way with `value`, `onChange`,
   </div>
 </article>
 <article
+  id="components-fieldtext"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="FieldText">
@@ -7661,7 +7914,7 @@ invalid?: boolean
  * needs no particular wrapper. In both, `Field.Content` groups a control with
  * its messages, or a label with its description.
  */
-orientation?: &quot;horizontal&quot; | &quot;vertical&quot; | &quot;responsive&quot;
+orientation?: &quot;vertical&quot; | &quot;horizontal&quot; | &quot;responsive&quot;
 
 /**
  * Makes the control read-only through its context (focusable and copyable,
@@ -7685,7 +7938,7 @@ required?: boolean</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Field, FieldContext, FieldText, Input, InputContext, Label } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Field, FieldContext, FieldText, Input, InputContext, Label } from '@agentero/design-system';</code></pre>
               </div>
           
           
@@ -7708,6 +7961,7 @@ text, all through context.</div>
     &lt;Input type=&quot;email&quot; placeholder=&quot;you@example.com&quot; /&gt;
     &lt;Field.Description&gt;We only use this to send policy documents.&lt;/Field.Description&gt;
 &lt;/FieldText&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -7726,6 +7980,7 @@ text, all through context.</div>
     &lt;Label&gt;Full name&lt;/Label&gt;
     &lt;Input placeholder=&quot;Jane Doe&quot; /&gt;
 &lt;/FieldText&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -7745,6 +8000,7 @@ destructive border, and the error is announced with the input.</div>
     &lt;Input type=&quot;email&quot; defaultValue=&quot;not-an-email&quot; /&gt;
     &lt;Field.Error errors={[{ message: &#39;Enter a valid email address.&#39; }]} /&gt;
 &lt;/FieldText&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -7762,6 +8018,7 @@ destructive border, and the error is announced with the input.</div>
     &lt;Label&gt;Agency&lt;/Label&gt;
     &lt;Input defaultValue=&quot;Acme Insurance&quot; /&gt;
 &lt;/FieldText&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -7781,6 +8038,7 @@ focusable, copyable and submitted, and the input looks like any other.</div>
     &lt;Input defaultValue=&quot;POL-2049-118&quot; /&gt;
     &lt;Field.Description&gt;Assigned by the carrier; contact support to change it.&lt;/Field.Description&gt;
 &lt;/FieldText&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -7805,6 +8063,7 @@ through untouched.</div>
     &lt;p id=&quot;website-hint&quot; className=&quot;text-sm&quot;&gt;Shown on your public profile.
                     &lt;/p&gt;
 &lt;/div&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -7840,6 +8099,7 @@ The input&#39;s own `onChange` still runs, chained after the provider&#39;s.</di
         &lt;/FieldText&gt;
     );
 };</code></pre>
+              
             </div>
         </div>
     
@@ -7847,10 +8107,13 @@ The input&#39;s own `onChange` still runs, chained after the provider&#39;s.</di
   </div>
 </article>
 <article
+  id="components-fieldtextarea"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="FieldTextArea">
@@ -7945,7 +8208,7 @@ required?: boolean</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Field, FieldContext, FieldTextArea, Label, TextArea, TextAreaContext } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Field, FieldContext, FieldTextArea, Label, TextArea, TextAreaContext } from '@agentero/design-system';</code></pre>
               </div>
           
           
@@ -7963,6 +8226,7 @@ by the text, all through context.</div>
     &lt;TextArea placeholder=&quot;Anything the underwriter should know&quot; /&gt;
     &lt;Field.Description&gt;Shared with the carrier along with the request.&lt;/Field.Description&gt;
 &lt;/FieldTextArea&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -7976,6 +8240,7 @@ by the text, all through context.</div>
     &lt;Label&gt;Reason&lt;/Label&gt;
     &lt;TextArea placeholder=&quot;Tell us in your own words&quot; /&gt;
 &lt;/FieldTextArea&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -7990,6 +8255,7 @@ destructive border, and the error is announced with the control.</div>
     &lt;TextArea defaultValue=&quot;n/a&quot; /&gt;
     &lt;Field.Error errors={[{ message: &#39;Tell us why you are cancelling.&#39; }]} /&gt;
 &lt;/FieldTextArea&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -8002,6 +8268,7 @@ destructive border, and the error is announced with the control.</div>
     &lt;Label&gt;Notes&lt;/Label&gt;
     &lt;TextArea defaultValue=&quot;Locked once the request is submitted.&quot; /&gt;
 &lt;/FieldTextArea&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -8017,6 +8284,7 @@ other.</div>
     &lt;TextArea defaultValue=&quot;Approved subject to a roof inspection.&quot; /&gt;
     &lt;Field.Description&gt;Written by the carrier; contact them to change it.&lt;/Field.Description&gt;
 &lt;/FieldTextArea&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -8036,6 +8304,7 @@ through untouched.</div>
     &lt;p id=&quot;message-hint&quot; className=&quot;text-sm text-text-input-placeholder&quot;&gt;Markdown is not rendered.
                     &lt;/p&gt;
 &lt;/div&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -8051,6 +8320,7 @@ row under it, wrapping as in any field. A screen reader hears both.</div>
     &lt;Field.Description&gt;Shared with the carrier along with the request, and kept on the policy file for audits.
                     &lt;/Field.Description&gt;
 &lt;/FieldTextArea&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -8068,6 +8338,7 @@ error where the description goes.</div>
         defaultValue=&quot;Roof replaced in 2024 after hail damage, garage added.&quot; /&gt;
     &lt;Field.Error errors={[{ message: &#39;Keep it brief&#39; }]} /&gt;
 &lt;/FieldTextArea&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -8082,6 +8353,7 @@ destructive, and shows its error under the box.</div>
     &lt;TextArea limit={500} /&gt;
     &lt;Field.Error errors={[{ message: &#39;This field is required&#39; }]} /&gt;
 &lt;/FieldTextArea&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -8118,6 +8390,7 @@ provider&#39;s.</div>
         &lt;/FieldTextArea&gt;
     );
 };</code></pre>
+              
             </div>
         </div>
     
@@ -8125,10 +8398,13 @@ provider&#39;s.</div>
   </div>
 </article>
 <article
+  id="components-form"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="Form.Root">
@@ -8220,7 +8496,7 @@ onSubmit?: SubmitHandler&lt;AgencyValues&gt;</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button, Field, Form, FormText } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Button, Field, Form, FormText } from '@agentero/design-system';</code></pre>
               </div>
           
           
@@ -8262,6 +8538,7 @@ receives the typed values.</div>
         &lt;/Form.Root&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -8287,6 +8564,7 @@ Validation is react-hook-form&#39;s alone.</div>
         &lt;/Form.Root&gt;
     );
 };</code></pre>
+              
             </div>
         </div>
     
@@ -8294,10 +8572,13 @@ Validation is react-hook-form&#39;s alone.</div>
   </div>
 </article>
 <article
+  id="components-formtext"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="FormText">
@@ -8420,7 +8701,7 @@ optional?: boolean
  * needs no particular wrapper. In both, `Field.Content` groups a control with
  * its messages, or a label with its description.
  */
-orientation?: &quot;horizontal&quot; | &quot;vertical&quot; | &quot;responsive&quot;
+orientation?: &quot;vertical&quot; | &quot;horizontal&quot; | &quot;responsive&quot;
 
 /**
  * Makes the control read-only through its context (focusable and copyable,
@@ -8474,7 +8755,7 @@ tooltipSide?: &quot;top&quot; | &quot;bottom&quot; | &quot;left&quot; | &quot;ri
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button, Field, Form, FormText } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Button, Field, Form, FormText } from '@agentero/design-system';</code></pre>
               </div>
           
           
@@ -8510,6 +8791,7 @@ clears both and the value reaches `onSubmit`.</div>
         &lt;/Form.Root&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -8536,6 +8818,7 @@ name stays the label text.</div>
         &lt;/Form.Root&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -8555,6 +8838,7 @@ appends a muted suffix to the label and leaves the input without the
         &lt;/Form.Root&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -8587,6 +8871,7 @@ not mark the field required: that stays an explicit `required` prop.</div>
         &lt;/Form.Root&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -8616,6 +8901,7 @@ Screen readers announce them in the same order.</div>
         &lt;/Form.Root&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -8657,6 +8943,7 @@ stories.</div>
         &lt;/Form.Root&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -8687,6 +8974,7 @@ value.</div>
         &lt;/Form.Root&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -8725,6 +9013,7 @@ The `Input` is full-width by default, so a settings row gives it a width.
         &lt;/Form.Root&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -8754,6 +9043,7 @@ drops it. Use `readOnly` for a value the user can copy but not edit.</div>
         &lt;/Form.Root&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -8784,6 +9074,7 @@ hand.</div>
         &lt;/Form.Root&gt;
     );
 };</code></pre>
+              
             </div>
         </div>
     
@@ -8791,10 +9082,13 @@ hand.</div>
   </div>
 </article>
 <article
+  id="components-hovercard"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="HoverCard.Root">
@@ -8875,7 +9169,7 @@ openDelay?: number</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Avatar, Button, HoverCard } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Avatar, Button, HoverCard } from '@agentero/design-system';</code></pre>
               </div>
           
           
@@ -8896,6 +9190,7 @@ openDelay?: number</code></pre>
         &lt;/HoverCard.Content&gt;
     &lt;/HoverCard.Portal&gt;
 &lt;/HoverCard.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -8918,6 +9213,7 @@ on its way out.</div>
         &lt;/HoverCard.Content&gt;
     &lt;/HoverCard.Portal&gt;
 &lt;/HoverCard.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -8939,6 +9235,7 @@ never put essential actions there.</div>
         &lt;/HoverCard.Content&gt;
     &lt;/HoverCard.Portal&gt;
 &lt;/HoverCard.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -8967,6 +9264,7 @@ never put essential actions there.</div>
         ))}
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9011,6 +9309,7 @@ main path to something it isn&#39;t. The trigger still has to stand on its own.<
         &lt;/HoverCard.Content&gt;
     &lt;/HoverCard.Portal&gt;
 &lt;/HoverCard.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9032,6 +9331,7 @@ the card and the point read as one shape on any background.</div>
         &lt;/HoverCard.Content&gt;
     &lt;/HoverCard.Portal&gt;
 &lt;/HoverCard.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9068,6 +9368,7 @@ trigger-dense UIs where an instant preview reads as more responsive.</div>
         &lt;/HoverCard.Root&gt;
     &lt;/div&gt;)
 );</code></pre>
+              
             </div>
         </div>
     
@@ -9075,10 +9376,13 @@ trigger-dense UIs where an instant preview reads as more responsive.</div>
   </div>
 </article>
 <article
+  id="components-input"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="Input">
@@ -9147,7 +9451,7 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Input } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Input } from '@agentero/design-system';</code></pre>
               </div>
           
           
@@ -9159,6 +9463,7 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
               <div>Default standalone input</div>
               <div class="hint">The default control at `md`, usable anywhere without a surrounding field.</div>
               <pre><code>const Default = () =&gt; &lt;Input type=&quot;text&quot; placeholder=&quot;Insert value&quot; aria-label=&quot;Value&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9168,6 +9473,7 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
               <div>Small 32px control for dense layouts</div>
               <div class="hint">`sm` (32px) keeps dense layouts compact where vertical space is tight.</div>
               <pre><code>const Small = () =&gt; &lt;Input type=&quot;text&quot; placeholder=&quot;Insert value&quot; aria-label=&quot;Value&quot; size=&quot;sm&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9177,6 +9483,7 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
               <div>Medium 40px control, the default</div>
               <div class="hint">`md` (40px) is the default and covers standard form density.</div>
               <pre><code>const Medium = () =&gt; &lt;Input type=&quot;text&quot; placeholder=&quot;Insert value&quot; aria-label=&quot;Value&quot; size=&quot;md&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9187,6 +9494,7 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
               <div class="hint">`lg` (48px) suits low-density forms and larger touch targets. It also raises
 the text to `base` and the corner radius to `lg`.</div>
               <pre><code>const Large = () =&gt; &lt;Input type=&quot;text&quot; placeholder=&quot;Insert value&quot; aria-label=&quot;Value&quot; size=&quot;lg&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9200,6 +9508,7 @@ the text to `base` and the corner radius to `lg`.</div>
     &lt;Input type=&quot;text&quot; size=&quot;md&quot; aria-label=&quot;Medium input&quot; placeholder=&quot;md — 40px&quot; /&gt;
     &lt;Input type=&quot;text&quot; size=&quot;lg&quot; aria-label=&quot;Large input&quot; placeholder=&quot;lg — 48px&quot; /&gt;
 &lt;/div&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9217,6 +9526,7 @@ yourself.</div>
     &lt;Input type=&quot;number&quot; aria-label=&quot;Amount&quot; placeholder=&quot;0&quot; /&gt;
     &lt;Input type=&quot;date&quot; aria-label=&quot;Date&quot; placeholder=&quot;&quot; /&gt;
 &lt;/div&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9237,6 +9547,7 @@ never disagree with what assistive technology announces. Point
         defaultValue=&quot;not-an-email&quot; /&gt;
     &lt;span id=&quot;email-error&quot;&gt;Enter a valid email address.&lt;/span&gt;
 &lt;/div&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9252,6 +9563,7 @@ shadow and leaves the tab order.</div>
     aria-label=&quot;Value&quot;
     disabled
     defaultValue=&quot;Cannot be edited&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9268,6 +9580,7 @@ they cannot change.</div>
     aria-label=&quot;Value&quot;
     readOnly
     defaultValue=&quot;Copy me, but do not change me&quot; /&gt;;</code></pre>
+              
             </div>
         </div>
     
@@ -9275,10 +9588,13 @@ they cannot change.</div>
   </div>
 </article>
 <article
+  id="components-inputgroup"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  missing-api
   no-doc-error"
   role="listitem"
   aria-label="InputGroup.Root">
@@ -9286,7 +9602,7 @@ they cannot change.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> InputGroup.Root</h2>
       <div class="badges">
-        
+        <span class="badge">no API description</span>
         
         <label for="c-22-components-inputgroup-stories" class="badge ok as-toggle">12 stories</label>
         
@@ -9329,18 +9645,8 @@ hands its state to the frame through `:has()`, so focus, `disabled`,
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import {
-    Button,
-    Divider,
-    DropdownMenu,
-    Field,
-    FieldText,
-    Input,
-    InputGroup,
-    Label,
-    Tag,
-} from "@agentero/design-system";
-import { ChevronDownIcon, MailIcon, SearchIcon } from "lucide-react";</code></pre>
+                <pre><code>import { Button, Divider, DropdownMenu, Field, FieldText, Input, InputGroup, Label, Tag } from '@agentero/design-system';
+import { ChevronDownIcon, MailIcon, SearchIcon } from 'lucide-react';</code></pre>
               </div>
           
           
@@ -9363,6 +9669,7 @@ clear button and a loading state is
         &lt;Input type=&quot;search&quot; placeholder=&quot;Search agencies&quot; aria-label=&quot;Search agencies&quot; /&gt;
     &lt;/InputGroup.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9379,6 +9686,7 @@ not read them as part of the value — so the unit is also in the label.</div>
         &lt;InputGroup.Text&gt;USD&lt;/InputGroup.Text&gt;
     &lt;/InputGroup.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9404,6 +9712,7 @@ frame, meeting its border at both ends.</div>
         &lt;InputGroup.Text&gt;.com&lt;/InputGroup.Text&gt;
     &lt;/InputGroup.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9433,6 +9742,7 @@ the corner instead of competing with it.</div>
         &lt;/InputGroup.Root&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9452,6 +9762,7 @@ the corner instead of competing with it.</div>
         &lt;/InputGroup.Addon&gt;
     &lt;/InputGroup.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9470,6 +9781,7 @@ and affix — and the frame stops offering the text cursor.</div>
         &lt;InputGroup.Text&gt;USD&lt;/InputGroup.Text&gt;
     &lt;/InputGroup.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9485,6 +9797,7 @@ the ring follows it on focus.</div>
         &lt;Input defaultValue=&quot;-40&quot; aria-invalid aria-label=&quot;Premium in US dollars&quot; /&gt;
     &lt;/InputGroup.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9506,6 +9819,7 @@ the ring follows it on focus.</div>
         ))}
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9526,6 +9840,7 @@ describes it with no ids written by hand. The frame is not in the way.</div>
         &lt;Field.Description&gt;Shown on your public profile.&lt;/Field.Description&gt;
     &lt;/FieldText&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9545,6 +9860,7 @@ to the input.</div>
         &lt;/InputGroup.Root&gt;
     &lt;/FieldStates&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9561,6 +9877,7 @@ focus ring.</div>
         &lt;PriceInput /&gt;
     &lt;/FieldStates&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9576,6 +9893,7 @@ button&#39;s start corners with the frame.</div>
         &lt;PhoneInput /&gt;
     &lt;/FieldStates&gt;
 );</code></pre>
+              
             </div>
         </div>
     
@@ -9583,10 +9901,13 @@ button&#39;s start corners with the frame.</div>
   </div>
 </article>
 <article
+  id="components-inputnumber"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="InputNumber">
@@ -9700,7 +10021,10 @@ value?: string | number | null | undefined</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Controller, Field, FieldText, InputContext, InputGroup, InputNumber, Label } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Controller } from 'react-hook-form';
+import { Field, FieldText, InputContext, InputGroup, InputNumber, Label } from '@agentero/design-system';
+import { fn } from 'storybook/test';
+import { ChangeEvent } from 'react';</code></pre>
               </div>
           
           
@@ -9717,6 +10041,7 @@ points at the `&lt;input&gt;` element.</div>
     aria-label=&quot;Premium&quot;
     onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)}
     ref={inputRef} /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9731,6 +10056,7 @@ follows `inputMode`.</div>
     aria-label=&quot;NPN&quot;
     onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)}
     type=&quot;tel&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9744,6 +10070,7 @@ user types, and the commas are part of what `onChange` reports.</div>
     aria-label=&quot;Premium&quot;
     onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)}
     thousandSeparator /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9768,6 +10095,7 @@ digits-only keypad.</div>
         &lt;/FieldText&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9782,6 +10110,7 @@ called for it.</div>
     aria-label=&quot;Commission rate&quot;
     onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)}
     maxNumber={100} /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9809,6 +10138,7 @@ with `thousandSeparator` is an amount, so it turns them off unless
         &lt;Field.Description&gt;Drops leading zeros on blur: 0001234 becomes 1,234.&lt;/Field.Description&gt;
     &lt;/FieldText&gt;
 &lt;/div&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9818,7 +10148,7 @@ with `thousandSeparator` is an amount, so it turns them off unless
               <div>Controlled field showing a numeric value formatted</div>
               <div class="hint">A controlled field takes `value` as a number and shows it formatted. The
 state keeps what `onChange` reports, so it holds the formatted text.</div>
-              <pre><code>const Controlled = () =&gt; {
+              <pre><code>const Controlled = args =&gt; {
     const [premium, setPremium] = useState&lt;number | string&gt;(1234);
 
     return (
@@ -9832,6 +10162,7 @@ state keeps what `onChange` reports, so it holds the formatted text.</div>
             }} /&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9849,6 +10180,7 @@ frame takes its focus, disabled and invalid states from the input.</div>
         thousandSeparator
         placeholder=&quot;0&quot; /&gt;
 &lt;/InputGroup.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9877,6 +10209,7 @@ destructive border, and `disabled` reaches the input the same way.</div>
         &lt;/FieldText&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9891,6 +10224,7 @@ destructive border, and `disabled` reaches the input the same way.</div>
     disabled
     thousandSeparator
     defaultValue={12500} /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9905,6 +10239,7 @@ plain `Input`.</div>
     onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)}
     aria-invalid
     defaultValue={0} /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -9933,6 +10268,7 @@ plain `Input`.</div>
         size=&quot;lg&quot;
         aria-label=&quot;Large&quot; /&gt;
 &lt;/div&gt;;</code></pre>
+              
             </div>
         </div>
     
@@ -9940,10 +10276,13 @@ plain `Input`.</div>
   </div>
 </article>
 <article
+  id="components-inputpassword"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="InputPassword">
@@ -10010,7 +10349,7 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Field, FieldText, InputPassword, Label } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Field, FieldText, InputPassword, Label } from '@agentero/design-system';</code></pre>
               </div>
           
           
@@ -10023,6 +10362,7 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
               <div class="hint">The value starts hidden. The toggle shows it as plain text and hides it
 again; pressing it leaves focus and the caret in the input.</div>
               <pre><code>const Default = () =&gt; &lt;InputPassword aria-label=&quot;Password&quot; autoComplete=&quot;current-password&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -10042,6 +10382,7 @@ itself or comes from a `&lt;fieldset disabled&gt;` around it.</div>
         &lt;InputPassword aria-label=&quot;New password&quot; autoComplete=&quot;new-password&quot; /&gt;
     &lt;/fieldset&gt;
 &lt;/div&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -10063,6 +10404,7 @@ with the input.</div>
         &lt;Field.Error errors={[{ message: &#39;Use at least 8 characters.&#39; }]} /&gt;
     &lt;/FieldText&gt;
 &lt;/div&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -10079,6 +10421,7 @@ the right edge as from the top and bottom.</div>
     &lt;InputPassword autoComplete=&quot;current-password&quot; size=&quot;md&quot; aria-label=&quot;Medium&quot; /&gt;
     &lt;InputPassword autoComplete=&quot;current-password&quot; size=&quot;lg&quot; aria-label=&quot;Large&quot; /&gt;
 &lt;/div&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -10101,6 +10444,7 @@ the field through the frame. A disabled field removes the toggle too.</div>
         &lt;/FieldText&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
         </div>
     
@@ -10108,10 +10452,13 @@ the field through the frame. A disabled field removes the toggle too.</div>
   </div>
 </article>
 <article
+  id="components-inputsearch"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="InputSearch">
@@ -10194,7 +10541,9 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Field, FieldText, InputSearch, Label } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Field, FieldText, InputSearch, Label } from '@agentero/design-system';
+import { fn } from 'storybook/test';
+import { ChangeEvent } from 'react';</code></pre>
               </div>
           
           
@@ -10208,7 +10557,7 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
 it calls `onChange` with an empty `event.target.value`, so the state that
 owns the query empties too, and focus goes back to the input. The browser&#39;s
 own cancel button is hidden.</div>
-              <pre><code>const Default = () =&gt; {
+              <pre><code>const Default = args =&gt; {
     const [query, setQuery] = useState(&#39;&#39;);
 
     return (
@@ -10221,6 +10570,7 @@ own cancel button is hidden.</div>
             }} /&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -10235,6 +10585,7 @@ text in the field.</div>
     onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)}
     isLoading
     defaultValue=&quot;Acme&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -10248,6 +10599,7 @@ is in the field, and clearing still calls `onChange` with an empty value.</div>
     aria-label=&quot;Search agencies&quot;
     onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)}
     defaultValue=&quot;Acme Insurance&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -10270,6 +10622,7 @@ input itself or comes from a `&lt;fieldset disabled&gt;` around it.</div>
             defaultValue=&quot;Travelers&quot; /&gt;
     &lt;/fieldset&gt;
 &lt;/div&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -10295,6 +10648,7 @@ input itself or comes from a `&lt;fieldset disabled&gt;` around it.</div>
         aria-label=&quot;Large&quot;
         defaultValue=&quot;Acme&quot; /&gt;
 &lt;/div&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -10317,6 +10671,7 @@ the field through the frame. A disabled field removes the clear button too.</div
         &lt;/FieldText&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -10331,6 +10686,7 @@ several search fields does not read &quot;Clear search&quot; twice.</div>
     onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)}
     defaultValue=&quot;Acme&quot;
     clearLabel=&quot;Clear agency search&quot; /&gt;;</code></pre>
+              
             </div>
         </div>
     
@@ -10338,10 +10694,13 @@ several search fields does not read &quot;Clear search&quot; twice.</div>
   </div>
 </article>
 <article
+  id="components-inputtel"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="InputTel">
@@ -10408,7 +10767,9 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button, Field, FieldText, InputContext, InputTel, Label } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Button, Field, FieldText, InputContext, InputTel, Label } from '@agentero/design-system';
+import { fn } from 'storybook/test';
+import { ChangeEvent } from 'react';</code></pre>
               </div>
           
           
@@ -10424,6 +10785,7 @@ text in `event.target.value`; the prefix never enters the value.</div>
               <pre><code>const Default = () =&gt; &lt;InputTel
     aria-label=&quot;Phone number&quot;
     onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)} /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -10435,7 +10797,7 @@ text in `event.target.value`; the prefix never enters the value.</div>
 `event.target.value` reports, which is already masked, and the input shows
 it back unchanged. A partial number carries the separator that comes before
 the next digit, so six digits read `(555) 123-`.</div>
-              <pre><code>const Controlled = () =&gt; {
+              <pre><code>const Controlled = args =&gt; {
     const [phone, setPhone] = useState(&#39;&#39;);
 
     return (
@@ -10448,6 +10810,7 @@ the next digit, so six digits read `(555) 123-`.</div>
             }} /&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -10461,6 +10824,7 @@ the digit just typed instead of jumping to the end.</div>
               <pre><code>const CaretInTheMiddle = () =&gt; &lt;InputTel
     aria-label=&quot;Phone number&quot;
     onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)} /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -10474,6 +10838,7 @@ under the caret instead of leaving a dangling `) `.</div>
               <pre><code>const BackspaceOverMaskCharacters = () =&gt; &lt;InputTel
     aria-label=&quot;Phone number&quot;
     onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)} /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -10486,6 +10851,7 @@ under the caret instead of leaving a dangling `) `.</div>
               <pre><code>const Paste = () =&gt; &lt;InputTel
     aria-label=&quot;Phone number&quot;
     onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)} /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -10499,6 +10865,7 @@ national digits: `+1 (555) 123-4567` ends up as `(555) 123-4567`.</div>
               <pre><code>const PasteWithCountryCode = () =&gt; &lt;InputTel
     aria-label=&quot;Phone number&quot;
     onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)} /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -10515,6 +10882,7 @@ the field, and the masked value still reaches a handler the field provides.</div
         &lt;Field.Description&gt;We only call about your account.&lt;/Field.Description&gt;
     &lt;/FieldText&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -10540,6 +10908,7 @@ the field, and the masked value still reaches a handler the field provides.</div
         &lt;/form&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -10553,6 +10922,7 @@ the field, and the masked value still reaches a handler the field provides.</div
     onChange={fn((event: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; event.target.value)}
     disabled
     defaultValue=&quot;(555) 123-4567&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -10570,6 +10940,7 @@ with the input.</div>
         &lt;Field.Error errors={[{ message: &#39;Enter a 10-digit phone number.&#39; }]} /&gt;
     &lt;/FieldText&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -10595,6 +10966,7 @@ with the input.</div>
         aria-label=&quot;Large&quot;
         defaultValue=&quot;(555) 123-4567&quot; /&gt;
 &lt;/div&gt;;</code></pre>
+              
             </div>
         </div>
     
@@ -10602,10 +10974,13 @@ with the input.</div>
   </div>
 </article>
 <article
+  id="components-label"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="Label">
@@ -10674,7 +11049,7 @@ required?: boolean = false</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Field, Label } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Field, Label } from '@agentero/design-system';</code></pre>
               </div>
           
           
@@ -10689,6 +11064,7 @@ required?: boolean = false</code></pre>
     &lt;Label htmlFor=&quot;email&quot;&gt;Email&lt;/Label&gt;
     &lt;input id=&quot;email&quot; placeholder=&quot;you@example.com&quot; className={inputRecipe()} /&gt;
 &lt;/&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -10702,6 +11078,7 @@ suffix is real text, so it is part of the control&#39;s accessible name.</div>
     &lt;Label optional htmlFor=&quot;phone&quot;&gt;Phone number&lt;/Label&gt;
     &lt;input id=&quot;phone&quot; type=&quot;tel&quot; className={inputRecipe()} /&gt;
 &lt;/&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -10712,6 +11089,7 @@ suffix is real text, so it is part of the control&#39;s accessible name.</div>
               <div class="hint">Appends an asterisk. It is `aria-hidden`, so the control still needs its own
 `required` attribute for assistive technology.</div>
               <pre><code>const Required = () =&gt; &lt;Label required&gt;Full name&lt;/Label&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -10722,6 +11100,7 @@ suffix is real text, so it is part of the control&#39;s accessible name.</div>
               <div class="hint">Contradictory props do not throw — `required` wins and the optional suffix is
 dropped, so a mistake never takes the page down.</div>
               <pre><code>const RequiredWinsOverOptional = () =&gt; &lt;Label optional required&gt;Agency name&lt;/Label&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -10744,6 +11123,7 @@ field&#39;s control with no `htmlFor`. An explicit `htmlFor` still wins.</div>
         &lt;/Field.Root&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
         </div>
     
@@ -10751,10 +11131,13 @@ field&#39;s control with no `htmlFor`. An explicit `htmlFor` still wins.</div>
   </div>
 </article>
 <article
+  id="components-loading"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="Loading">
@@ -10817,7 +11200,7 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Loading } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Loading } from '@agentero/design-system';</code></pre>
               </div>
           
           
@@ -10831,6 +11214,7 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
 text color. Matches the out-of-the-box behavior when Loading is dropped
 into any layout.</div>
               <pre><code>const Default = () =&gt; &lt;Loading size=&quot;sm&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -10841,6 +11225,7 @@ into any layout.</div>
               <div class="hint">Small spinner (1em diameter) — the default. Ideal for inline indicators,
 buttons, and compact layouts where the spinner needs to sit next to text.</div>
               <pre><code>const SizeSm = () =&gt; &lt;Loading size=&quot;sm&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -10851,6 +11236,7 @@ buttons, and compact layouts where the spinner needs to sit next to text.</div>
               <div class="hint">Medium spinner (1.5em diameter). Use for cards, panels, and standalone
 loading states where the spinner is the primary visual signal.</div>
               <pre><code>const SizeMd = () =&gt; &lt;Loading size=&quot;md&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -10861,6 +11247,7 @@ loading states where the spinner is the primary visual signal.</div>
               <div class="hint">Large spinner (2em diameter). Use for page-level or section-level loading
 where the spinner needs more visual weight.</div>
               <pre><code>const SizeLg = () =&gt; &lt;Loading size=&quot;lg&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -10877,6 +11264,7 @@ where the spinner needs more visual weight.</div>
         ))}
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -10900,6 +11288,7 @@ Loading itself — and the spinner adopts that color without extra props.</div>
         &lt;/div&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -10917,6 +11306,7 @@ against the dark background.</div>
         &lt;Loading size=&quot;lg&quot; /&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
         </div>
     
@@ -10924,10 +11314,13 @@ against the dark background.</div>
   </div>
 </article>
 <article
+  id="components-modal"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="Modal.Root">
@@ -11020,7 +11413,7 @@ open?: boolean</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button, Modal } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Button, Modal } from '@agentero/design-system';</code></pre>
               </div>
           
           
@@ -11050,6 +11443,7 @@ open?: boolean</code></pre>
         &lt;/Modal.Content&gt;
     &lt;/Modal.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -11075,6 +11469,7 @@ open?: boolean</code></pre>
         &lt;/Modal.Content&gt;
     &lt;/Modal.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -11107,6 +11502,7 @@ open?: boolean</code></pre>
         &lt;/&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -11128,6 +11524,7 @@ open?: boolean</code></pre>
         &lt;/Modal.Content&gt;
     &lt;/Modal.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -11159,6 +11556,7 @@ open?: boolean</code></pre>
         &lt;/Modal.Content&gt;
     &lt;/Modal.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -11188,6 +11586,7 @@ announced as an `alertdialog`. Only the footer actions close it.</div>
         &lt;/Modal.Content&gt;
     &lt;/Modal.Root&gt;
 );</code></pre>
+              
             </div>
         </div>
     
@@ -11195,10 +11594,13 @@ announced as an `alertdialog`. Only the footer actions close it.</div>
   </div>
 </article>
 <article
+  id="components-pagination"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="Pagination">
@@ -11275,7 +11677,8 @@ totalCount: number</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Pagination } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Pagination } from '@agentero/design-system';
+import { fn } from 'storybook/test';</code></pre>
               </div>
           
           
@@ -11289,6 +11692,7 @@ totalCount: number</code></pre>
 time — renders pages 1–5, an ellipsis, and the last page (100), with the
 previous-page button disabled because we&#39;re on page 1.</div>
               <pre><code>const Default = () =&gt; &lt;Pagination currentPage={1} totalCount={1000} pageSize={10} onPageChange={fn()} /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -11304,6 +11708,7 @@ rendered. Exercises the `totalPageNumbers &gt;= totalPageCount` branch in
     totalCount={30}
     pageSize={10}
     onPageChange={(page: number) =&gt; console.log(&#39;onPageChange&#39;, page)} /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -11318,6 +11723,7 @@ right ellipsis is shown, and the last page button anchors the right edge.</div>
     totalCount={1000}
     pageSize={10}
     onPageChange={(page: number) =&gt; console.log(&#39;onPageChange&#39;, page)} /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -11332,6 +11738,7 @@ ellipsis is hidden, and the first page button anchors the left edge.</div>
     totalCount={1000}
     pageSize={10}
     onPageChange={(page: number) =&gt; console.log(&#39;onPageChange&#39;, page)} /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -11346,6 +11753,7 @@ with the first and last page buttons anchoring each edge.</div>
     totalCount={1000}
     pageSize={10}
     onPageChange={(page: number) =&gt; console.log(&#39;onPageChange&#39;, page)} /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -11356,6 +11764,7 @@ with the first and last page buttons anchoring each edge.</div>
               <div class="hint">Last page selected — the next-page button is disabled and the active page
 indicator sits on the trailing number.</div>
               <pre><code>const LastPage = () =&gt; &lt;Pagination currentPage={100} totalCount={1000} pageSize={10} onPageChange={fn()} /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -11378,6 +11787,7 @@ entries summary follow along.</div>
         /&gt;
     );
 };</code></pre>
+              
             </div>
         </div>
     
@@ -11385,10 +11795,13 @@ entries summary follow along.</div>
   </div>
 </article>
 <article
+  id="components-popover"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="Popover.Root">
@@ -11464,7 +11877,7 @@ open?: boolean</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button, Modal, Popover } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Button, Modal, Popover } from '@agentero/design-system';</code></pre>
               </div>
           
           
@@ -11488,6 +11901,7 @@ click and dismisses on outside click or Escape.</div>
         &lt;/Popover.Content&gt;
     &lt;/Popover.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -11517,6 +11931,7 @@ ring shows, so a keyboard user can see where focus went.</div>
         &lt;/Popover.Root&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -11544,6 +11959,7 @@ blur.</div>
         &lt;/div&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -11566,6 +11982,7 @@ blur.</div>
         ))}
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -11599,6 +12016,7 @@ Tooltip. A `Close` inside the surface dismisses it after submitting.</div>
         &lt;/Popover.Content&gt;
     &lt;/Popover.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -11623,6 +12041,7 @@ useful when the visual anchor differs from the toggle button.</div>
         &lt;/Popover.Content&gt;
     &lt;/Popover.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -11667,6 +12086,7 @@ focus returning to its trigger once the modal closes.</div>
         &lt;/Popover.Content&gt;
     &lt;/Popover.Root&gt;
 );</code></pre>
+              
             </div>
         </div>
     
@@ -11674,10 +12094,13 @@ focus returning to its trigger once the modal closes.</div>
   </div>
 </article>
 <article
+  id="components-progress"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="Progress">
@@ -11755,7 +12178,7 @@ percentage: number</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Progress } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Progress } from '@agentero/design-system';</code></pre>
               </div>
           
           
@@ -11767,6 +12190,7 @@ percentage: number</code></pre>
               
               <div class="hint">Default near-black bar; exposes `role=&quot;progressbar&quot;` with the current value.</div>
               <pre><code>const Default = () =&gt; &lt;Progress percentage={62} /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -11776,6 +12200,7 @@ percentage: number</code></pre>
               
               <div class="hint">`label` renders above the bar with the percentage value on the right.</div>
               <pre><code>const WithLabel = () =&gt; &lt;Progress percentage={62} label=&quot;Profile completion&quot; className=&quot;text-brand-400&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -11799,6 +12224,7 @@ percentage: number</code></pre>
         ))}
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -11808,6 +12234,7 @@ percentage: number</code></pre>
               
               <div class="hint">Out-of-range values are clamped to 0–100.</div>
               <pre><code>const Clamped = () =&gt; &lt;Progress percentage={150} /&gt;;</code></pre>
+              
             </div>
         </div>
     
@@ -11815,10 +12242,13 @@ percentage: number</code></pre>
   </div>
 </article>
 <article
+  id="components-radiogroup"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="RadioGroup.Root">
@@ -11893,7 +12323,7 @@ onValueChange?: (value: string) =&gt; void
 /**
  * `vertical` (default) stacks the items; `horizontal` lays them in a row that wraps.
  */
-orientation?: &quot;horizontal&quot; | &quot;vertical&quot; = &#39;vertical&#39;
+orientation?: &quot;vertical&quot; | &quot;horizontal&quot; = &#39;vertical&#39;
 
 /**
  * Keeps the items focusable but stops the selection from changing.
@@ -11923,7 +12353,9 @@ value?: string | null | undefined</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button, Controller, Field, RadioGroup } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Button, Field, RadioGroup } from '@agentero/design-system';
+import { Controller } from 'react-hook-form';
+import { fn } from 'storybook/test';</code></pre>
               </div>
           
           
@@ -11941,6 +12373,7 @@ value?: string | null | undefined</code></pre>
         &lt;/RadioGroup.Item&gt;
     ))}
 &lt;/RadioGroup.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -11956,6 +12389,7 @@ value?: string | null | undefined</code></pre>
         &lt;/RadioGroup.Item&gt;
     ))}
 &lt;/RadioGroup.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -11979,6 +12413,7 @@ value?: string | null | undefined</code></pre>
     &lt;/RadioGroup.Root&gt;
     &lt;Field.Error errors={[{ message: &#39;Choose a payment plan&#39; }]} /&gt;
 &lt;/Field.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -11998,6 +12433,7 @@ value?: string | null | undefined</code></pre>
         &lt;/RadioGroup.Item&gt;
     ))}
 &lt;/RadioGroup.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -12013,6 +12449,7 @@ it.</div>
                     &lt;/RadioGroup.Item&gt;
     &lt;RadioGroup.Item value=&quot;annual&quot;&gt;Annual&lt;/RadioGroup.Item&gt;
 &lt;/RadioGroup.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -12033,6 +12470,7 @@ by keyboard.</div>
         &lt;/RadioGroup.Item&gt;
     ))}
 &lt;/RadioGroup.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -12057,6 +12495,7 @@ every radio paints the destructive border from it.</div>
     &lt;p id=&quot;plan-error&quot; className=&quot;text-sm text-text-input-destructive&quot;&gt;Choose a payment plan.
                     &lt;/p&gt;
 &lt;/div&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -12089,6 +12528,7 @@ every radio paints the destructive border from it.</div>
         &lt;/div&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -12120,6 +12560,7 @@ every radio paints the destructive border from it.</div>
         &lt;/form&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -12165,6 +12606,7 @@ would reach.</div>
         &lt;/form&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -12181,6 +12623,7 @@ line.</div>
         &lt;RadioGroup.Item value=&quot;annual&quot;&gt;Annual&lt;/RadioGroup.Item&gt;
     &lt;/RadioGroup.Root&gt;
 &lt;/div&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -12213,6 +12656,7 @@ enabled, disabled, invalid and read-only, each with one item selected.</div>
         ))}
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
         </div>
     
@@ -12220,10 +12664,13 @@ enabled, disabled, invalid and read-only, each with one item selected.</div>
   </div>
 </article>
 <article
+  id="components-select"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="Select.Root">
@@ -12310,8 +12757,10 @@ value?: string</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button, Controller, Field, Modal, Popover, Select } from "@agentero/design-system";
-import { Fragment } from "react";</code></pre>
+                <pre><code>import { Button, Field, Modal, Popover, Select } from '@agentero/design-system';
+import { Controller } from 'react-hook-form';
+import { Fragment } from 'react';
+import { fn } from 'storybook/test';</code></pre>
               </div>
           
           
@@ -12332,6 +12781,7 @@ import { Fragment } from "react";</code></pre>
         ))}
     &lt;/Select.Content&gt;
 &lt;/Select.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -12360,6 +12810,7 @@ import { Fragment } from "react";</code></pre>
         &lt;/Field.Root&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -12379,6 +12830,7 @@ disabled, a press does not pick it, and the arrow keys skip it.</div>
         ))}
     &lt;/Select.Content&gt;
 &lt;/Select.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -12416,6 +12868,7 @@ disabled, a press does not pick it, and the arrow keys skip it.</div>
         &lt;/div&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -12452,6 +12905,7 @@ submission until something is picked.</div>
         &lt;/form&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -12502,6 +12956,7 @@ submission until something is picked.</div>
         &lt;/form&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -12532,6 +12987,7 @@ and the chevron keeps its place.</div>
         &lt;/div&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -12554,6 +13010,7 @@ people know what they are looking for, a Combobox lets them type instead.</div>
         ))}
     &lt;/Select.Content&gt;
 &lt;/Select.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -12598,6 +13055,7 @@ with a `Separator` between groups. A single group can carry a heading too.</div>
         &lt;/Select.Root&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -12619,6 +13077,7 @@ the list: the trigger shows only the label.</div>
         &lt;/Select.Content&gt;
     &lt;/Select.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -12642,6 +13101,7 @@ the picked option on top of it, instead of below.</div>
         &lt;/Select.Root&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -12688,6 +13148,7 @@ the picked option on top of it, instead of below.</div>
         &lt;/div&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
         </div>
     
@@ -12695,10 +13156,13 @@ the picked option on top of it, instead of below.</div>
   </div>
 </article>
 <article
+  id="components-skeleton"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  missing-api
   no-doc-error"
   role="listitem"
   aria-label="Skeleton">
@@ -12706,7 +13170,7 @@ the picked option on top of it, instead of below.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Skeleton</h2>
       <div class="badges">
-        
+        <span class="badge">no API description</span>
         
         <label for="c-35-components-skeleton-stories" class="badge ok as-toggle">4 stories</label>
         
@@ -12743,7 +13207,7 @@ shape it with Tailwind classes to mirror the content it stands in for.</div>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Skeleton } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Skeleton } from '@agentero/design-system';</code></pre>
               </div>
           
           
@@ -12755,6 +13219,7 @@ shape it with Tailwind classes to mirror the content it stands in for.</div>
               
               <div class="hint">Default placeholder box, sized via `className`; hidden from assistive technologies.</div>
               <pre><code>const Default = () =&gt; &lt;Skeleton className=&quot;h-4 w-40&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -12770,6 +13235,7 @@ shape it with Tailwind classes to mirror the content it stands in for.</div>
         &lt;Skeleton className=&quot;h-4 w-2/3&quot; /&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -12787,6 +13253,7 @@ shape it with Tailwind classes to mirror the content it stands in for.</div>
         &lt;/div&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -12803,6 +13270,7 @@ shape it with Tailwind classes to mirror the content it stands in for.</div>
         &lt;Skeleton className=&quot;h-4 w-2/3&quot; /&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
         </div>
     
@@ -12810,10 +13278,13 @@ shape it with Tailwind classes to mirror the content it stands in for.</div>
   </div>
 </article>
 <article
+  id="components-switch"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="Switch">
@@ -12887,7 +13358,7 @@ size?: &quot;sm&quot; | &quot;md&quot;</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Switch } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Switch } from '@agentero/design-system';</code></pre>
               </div>
           
           
@@ -12899,6 +13370,7 @@ size?: &quot;sm&quot; | &quot;md&quot;</code></pre>
               
               
               <pre><code>const Default = () =&gt; &lt;Switch size=&quot;md&quot; disabled={false} defaultChecked aria-label=&quot;Toggle setting&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -12923,6 +13395,7 @@ size?: &quot;sm&quot; | &quot;md&quot;</code></pre>
         &lt;/div&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -12935,6 +13408,7 @@ size?: &quot;sm&quot; | &quot;md&quot;</code></pre>
     &lt;Switch size=&quot;md&quot; disabled={false} defaultChecked={false} aria-label=&quot;Off&quot; /&gt;
     &lt;Switch size=&quot;md&quot; disabled={false} defaultChecked aria-label=&quot;On&quot; /&gt;
 &lt;/div&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -12949,6 +13423,7 @@ size?: &quot;sm&quot; | &quot;md&quot;</code></pre>
         &lt;Switch disabled defaultChecked aria-label=&quot;Disabled on&quot; /&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -12969,6 +13444,7 @@ size?: &quot;sm&quot; | &quot;md&quot;</code></pre>
         &lt;/div&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -12984,6 +13460,7 @@ size?: &quot;sm&quot; | &quot;md&quot;</code></pre>
         &lt;Switch id=&quot;with-label-reverse&quot; label=&quot;SMS&quot; reverse /&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -13005,6 +13482,7 @@ size?: &quot;sm&quot; | &quot;md&quot;</code></pre>
         &lt;Switch id=&quot;marketing&quot; defaultChecked /&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
         </div>
     
@@ -13012,10 +13490,13 @@ size?: &quot;sm&quot; | &quot;md&quot;</code></pre>
   </div>
 </article>
 <article
+  id="components-table"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="Table.Root">
@@ -13095,9 +13576,9 @@ sticky?: &quot;header&quot; | &quot;headerAndFooter&quot;</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button, DropdownMenu, Switch, Table } from "@agentero/design-system";
-import { Fragment } from "react";
-import { PencilIcon, Trash2Icon } from "lucide-react";</code></pre>
+                <pre><code>import { Button, DropdownMenu, Switch, Table } from '@agentero/design-system';
+import { Fragment } from 'react';
+import { PencilIcon, Trash2Icon } from 'lucide-react';</code></pre>
               </div>
           
           
@@ -13109,6 +13590,7 @@ import { PencilIcon, Trash2Icon } from "lucide-react";</code></pre>
               <div>Default table</div>
               <div class="hint">Default args playground.</div>
               <pre><code>const Default = args =&gt; renderTable(args);</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -13127,6 +13609,7 @@ import { PencilIcon, Trash2Icon } from "lucide-react";</code></pre>
         ))}
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -13136,6 +13619,7 @@ import { PencilIcon, Trash2Icon } from "lucide-react";</code></pre>
               <div>sticky=&quot;header&quot; with a scrolling body</div>
               <div class="hint">`sticky=&quot;header&quot;` pins the header while the body scrolls. Needs a bounded-height parent.</div>
               <pre><code>const StickyHeader = args =&gt; renderTable(args);</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -13145,6 +13629,7 @@ import { PencilIcon, Trash2Icon } from "lucide-react";</code></pre>
               <div>sticky=&quot;headerAndFooter&quot; with a pinned totals row</div>
               <div class="hint">`sticky=&quot;headerAndFooter&quot;` pins the header and the last body row (totals here).</div>
               <pre><code>const StickyHeaderAndFooter = args =&gt; renderTable(args, { totals: true });</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -13154,6 +13639,7 @@ import { PencilIcon, Trash2Icon } from "lucide-react";</code></pre>
               <div>embed — no row dividers, 1rem edge gutter</div>
               <div class="hint">`embed` drops the per-row dividers and tightens the edge gutter to 1rem.</div>
               <pre><code>const Embed = args =&gt; renderTable(args);</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -13164,6 +13650,7 @@ import { PencilIcon, Trash2Icon } from "lucide-react";</code></pre>
               <div class="hint">`enclosed` wraps the table in a bordered, rounded container — the standalone
 &quot;card&quot; look, as opposed to a full-bleed page table.</div>
               <pre><code>const Enclosed = args =&gt; renderTable(args);</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -13173,6 +13660,7 @@ import { PencilIcon, Trash2Icon } from "lucide-react";</code></pre>
               <div>Selectable rows with a collapsing checkbox column</div>
               <div class="hint">A leading checkbox column; checkbox cells collapse to zero width.</div>
               <pre><code>const WithCheckbox = args =&gt; renderTable(args, { checkbox: true });</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -13198,6 +13686,7 @@ keeps its padding.</div>
         &lt;/Table.Body&gt;
     &lt;/Table.Root&gt;
 &lt;/form&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -13207,6 +13696,7 @@ keeps its padding.</div>
               <div>Hover-revealed row actions</div>
               <div class="hint">Hover-revealed row actions pinned to the trailing edge.</div>
               <pre><code>const WithRowActions = args =&gt; renderTable(args, { actions: true });</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -13258,6 +13748,7 @@ hands keyboard focus back to the action, so the row keeps that look.</div>
         ))}
     &lt;/Table.Body&gt;
 &lt;/Table.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -13288,6 +13779,7 @@ keeps the menu open.</div>
         ))}
     &lt;/Table.Body&gt;
 &lt;/Table.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -13341,6 +13833,7 @@ keeps the menu open.</div>
         &lt;/Table.Root&gt;
     );
 };</code></pre>
+              
             </div>
         </div>
     
@@ -13348,10 +13841,13 @@ keeps the menu open.</div>
   </div>
 </article>
 <article
+  id="components-tabs"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="Tabs.Root">
@@ -13435,7 +13931,7 @@ onValueChange?: (value: string) =&gt; void
  * The orientation the tabs are layed out.
  * Mainly so arrow navigation is done accordingly (left &amp; right vs. up &amp; down)
  */
-orientation?: &quot;horizontal&quot; | &quot;vertical&quot; = horizontal
+orientation?: &quot;vertical&quot; | &quot;horizontal&quot; = horizontal
 
 position?: &quot;center&quot; | &quot;start&quot; | &quot;end&quot; | &quot;full&quot;
 
@@ -13456,7 +13952,7 @@ variant?: &quot;enclosed&quot; | &quot;button&quot; | &quot;line&quot;</code></p
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Tabs } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Tabs } from '@agentero/design-system';</code></pre>
               </div>
           
           
@@ -13473,6 +13969,7 @@ variant?: &quot;enclosed&quot; | &quot;button&quot; | &quot;line&quot;</code></p
     &lt;/Tabs.List&gt;
     &lt;TabPanels /&gt;
 &lt;/Tabs.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -13489,6 +13986,7 @@ variant?: &quot;enclosed&quot; | &quot;button&quot; | &quot;line&quot;</code></p
         &lt;TabPanels /&gt;
     &lt;/Tabs.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -13505,6 +14003,7 @@ variant?: &quot;enclosed&quot; | &quot;button&quot; | &quot;line&quot;</code></p
         &lt;TabPanels /&gt;
     &lt;/Tabs.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -13525,6 +14024,7 @@ variant?: &quot;enclosed&quot; | &quot;button&quot; | &quot;line&quot;</code></p
         ))}
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -13541,6 +14041,7 @@ variant?: &quot;enclosed&quot; | &quot;button&quot; | &quot;line&quot;</code></p
         &lt;TabPanels /&gt;
     &lt;/Tabs.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -13563,6 +14064,7 @@ the button-based ones.</div>
         &lt;TabPanels /&gt;
     &lt;/Tabs.Root&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -13577,6 +14079,7 @@ the button-based ones.</div>
     &lt;/Tabs.List&gt;
     &lt;TabPanels /&gt;
 &lt;/Tabs.Root&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -13598,6 +14101,7 @@ tablist role is announced.</div>
         ))}
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
         </div>
     
@@ -13605,10 +14109,13 @@ tablist role is announced.</div>
   </div>
 </article>
 <article
+  id="components-tag"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="Tag">
@@ -13690,8 +14197,8 @@ variant?: &quot;ghost&quot; | &quot;secondary&quot; | &quot;tertiary&quot; | &qu
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { PlusIcon } from "lucide-react";
-import { Tag } from "@agentero/design-system";</code></pre>
+                <pre><code>import { PlusIcon } from 'lucide-react';
+import { Tag } from '@agentero/design-system';</code></pre>
               </div>
           
           
@@ -13704,6 +14211,7 @@ import { Tag } from "@agentero/design-system";</code></pre>
               <div class="hint">Args-controlled playground. Toggle `color`, `variant`, `size`, `pill`, and
 `truncate` from the Controls panel to explore every visual combination.</div>
               <pre><code>const Default = () =&gt; &lt;Tag color=&quot;neutral&quot; variant=&quot;secondary&quot; size=&quot;sm&quot;&gt;Default&lt;/Tag&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -13740,6 +14248,7 @@ visible.</div>
         ))}
     &lt;/Stack&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -13767,6 +14276,7 @@ rounded (bottom row), shown across every fill variant.</div>
         &lt;/Row&gt;
     &lt;/Stack&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -13793,6 +14303,7 @@ right Tags to see it.</div>
         &lt;/Tag&gt;
     &lt;/Row&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -13812,6 +14323,7 @@ together with `aria-haspopup`, which Radix and Base UI triggers set for you.</di
         &lt;/Tag&gt;
     &lt;/Row&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -13830,6 +14342,7 @@ across every color.</div>
         ))}
     &lt;/Row&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -13848,6 +14361,7 @@ across every color.</div>
         ))}
     &lt;/Row&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -13866,6 +14380,7 @@ color.</div>
         ))}
     &lt;/Row&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -13894,6 +14409,7 @@ Tags via `asChild` with a `&lt;button&gt;` child.</div>
         &lt;/Row&gt;
     &lt;/Stack&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -13918,6 +14434,7 @@ Icons are tinted with each color&#39;s `icon-tag-*` token.</div>
         ))}
     &lt;/Stack&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -13943,6 +14460,7 @@ icon with a long label clips the label and leaves the icon at full size.</div>
         &lt;/div&gt;
     &lt;/Stack&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -13961,6 +14479,7 @@ lines and spilling out of the fixed-height box.</div>
         &lt;/Tag&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -14067,6 +14586,7 @@ leading + trailing icons, and icon-only.</div>
         &lt;/Stack&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
         </div>
     
@@ -14074,10 +14594,13 @@ leading + trailing icons, and icon-only.</div>
   </div>
 </article>
 <article
+  id="components-textarea"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="TextArea">
@@ -14147,7 +14670,7 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button, Label, TextArea } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Button, Label, TextArea } from '@agentero/design-system';</code></pre>
               </div>
           
           
@@ -14160,6 +14683,7 @@ size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;</code></pre>
               <div class="hint">The default control at `md`: three rows at rest and a vertical resize handle
 the user can drag to make it taller.</div>
               <pre><code>const Default = () =&gt; &lt;TextArea placeholder=&quot;Anything the underwriter should know&quot; aria-label=&quot;Notes&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -14174,6 +14698,7 @@ size and the minimum height shows three rows.</div>
     &lt;TextArea size=&quot;md&quot; aria-label=&quot;Medium&quot; placeholder=&quot;md — 84px, three rows&quot; /&gt;
     &lt;TextArea size=&quot;lg&quot; aria-label=&quot;Large&quot; placeholder=&quot;lg — 96px, three rows&quot; /&gt;
 &lt;/div&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -14186,6 +14711,7 @@ size and the minimum height shows three rows.</div>
     placeholder=&quot;Six rows visible before scrolling&quot;
     aria-label=&quot;Notes&quot;
     rows={6} /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -14205,6 +14731,7 @@ size and the minimum height shows three rows.</div>
     &lt;span id=&quot;reason-error&quot; className=&quot;text-sm text-text-input-destructive&quot;&gt;Tell us why you are cancelling.
                     &lt;/span&gt;
 &lt;/div&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -14218,6 +14745,7 @@ size and the minimum height shows three rows.</div>
     aria-label=&quot;Notes&quot;
     disabled
     defaultValue=&quot;Cannot be edited&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -14231,6 +14759,7 @@ size and the minimum height shows three rows.</div>
     aria-label=&quot;Notes&quot;
     readOnly
     defaultValue=&quot;Copy me, but do not change me&quot; /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -14245,6 +14774,7 @@ hears &quot;0 of 140 characters&quot; with the field instead of on every keystro
     placeholder=&quot;Anything the underwriter should know&quot;
     aria-label=&quot;Notes&quot;
     limit={140} /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -14258,6 +14788,7 @@ instead of scrolling, and has no resize handle.</div>
     placeholder=&quot;Anything the underwriter should know&quot;
     aria-label=&quot;Notes&quot;
     limit={500} /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -14272,6 +14803,7 @@ form&#39;s validation can reject it.</div>
     placeholder=&quot;Anything the underwriter should know&quot;
     aria-label=&quot;Notes&quot;
     limit={10} /&gt;;</code></pre>
+              
             </div>
         </div>
     
@@ -14279,10 +14811,13 @@ form&#39;s validation can reject it.</div>
   </div>
 </article>
 <article
+  id="components-toast"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="Toast">
@@ -14393,8 +14928,8 @@ visibleToasts?: number</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button, Toast } from "@agentero/design-system";
-import { RefreshCwIcon } from "lucide-react";</code></pre>
+                <pre><code>import { Button, Toast } from '@agentero/design-system';
+import { RefreshCwIcon } from 'lucide-react';</code></pre>
               </div>
           
           
@@ -14414,6 +14949,7 @@ defaults.</div>
         &lt;/Button&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -14459,6 +14995,7 @@ Use for short acknowledgments that don&#39;t need a colored rail.</div>
         &lt;/Button&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -14523,6 +15060,7 @@ description on its own line or a trailing action button.</div>
         &lt;/Button&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -14546,6 +15084,7 @@ auto-dismisses afterward.</div>
         Show toast with action
     &lt;/Button&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -14572,6 +15111,7 @@ secondary Button doesn&#39;t fit.</div>
         Show toast with link action
     &lt;/Button&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -14595,6 +15135,7 @@ next to the action; its handler runs and the toast auto-dismisses.</div>
         Show toast with action + cancel
     &lt;/Button&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -14617,6 +15158,7 @@ programmatically via `toast.dismiss(id)`.</div>
         Show non-dismissible toast
     &lt;/Button&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -14638,6 +15180,7 @@ long-running operations stay visible until they&#39;re relevant.</div>
         Show 10s toast
     &lt;/Button&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -14668,6 +15211,7 @@ to `toast.dismiss(id)` to clear it before its duration elapses.</div>
         &lt;/div&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -14700,6 +15244,7 @@ save/submit flows where the outcome feeds back into the same toast.</div>
         &lt;/Button&gt;
     );
 };</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -14722,6 +15267,7 @@ action (e.g., a sync icon for a sync-in-progress toast).</div>
         Show toast with custom icon
     &lt;/Button&gt;
 );</code></pre>
+              
             </div>
         </div>
     
@@ -14729,10 +15275,13 @@ action (e.g., a sync icon for a sync-in-progress toast).</div>
   </div>
 </article>
 <article
+  id="components-tooltip"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="Tooltip">
@@ -14839,7 +15388,8 @@ sideOffset?: number = 4</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button, Tooltip, TooltipProvider } from "@agentero/design-system";</code></pre>
+                <pre><code>import { Button, Tooltip, TooltipProvider } from '@agentero/design-system';
+import { Button } from '../button';</code></pre>
               </div>
           
           
@@ -14853,6 +15403,7 @@ sideOffset?: number = 4</code></pre>
               <pre><code>const Default = () =&gt; &lt;Tooltip content=&quot;Archive this carrier&quot; side=&quot;top&quot; asChild&gt;
     &lt;Button variant=&quot;secondary&quot;&gt;Hover me&lt;/Button&gt;
 &lt;/Tooltip&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -14864,6 +15415,7 @@ sideOffset?: number = 4</code></pre>
               <pre><code>const OpensOnFocus = () =&gt; &lt;Tooltip content=&quot;Archive this carrier&quot; side=&quot;top&quot; asChild&gt;
     &lt;Button variant=&quot;secondary&quot;&gt;Focus me&lt;/Button&gt;
 &lt;/Tooltip&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -14884,6 +15436,7 @@ sideOffset?: number = 4</code></pre>
         &lt;/div&gt;
     &lt;/TooltipProvider&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -14908,6 +15461,7 @@ sideOffset?: number = 4</code></pre>
         &lt;/Tooltip&gt;
     &lt;/div&gt;
 );</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -14924,6 +15478,7 @@ sideOffset?: number = 4</code></pre>
         className=&quot;text-text-default-base-primary underline&quot;&gt;Docs
                     &lt;/a&gt;
 &lt;/Tooltip&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -14938,6 +15493,7 @@ sideOffset?: number = 4</code></pre>
     asChild&gt;
     &lt;Button variant=&quot;secondary&quot;&gt;Why is this disabled?&lt;/Button&gt;
 &lt;/Tooltip&gt;;</code></pre>
+              
             </div>
         </div>
     
@@ -14945,10 +15501,13 @@ sideOffset?: number = 4</code></pre>
   </div>
 </article>
 <article
+  id="components-validationlist"
   class="card 
-  no-error 
-  no-info 
+  no-error
+  no-info
   no-story-error
+  no-story-warning
+  
   no-doc-error"
   role="listitem"
   aria-label="ValidationList">
@@ -15010,7 +15569,7 @@ value: string</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { ValidationList } from "@agentero/design-system";</code></pre>
+                <pre><code>import { ValidationList } from '@agentero/design-system';</code></pre>
               </div>
           
           
@@ -15021,7 +15580,16 @@ value: string</code></pre>
               </div>
               
               <div class="hint">A partially-satisfied value: some rules are active, some are still unmet.</div>
-              <pre><code>const Default = () =&gt; &lt;ValidationList value=&quot;Password1234.&quot; rules={rules} /&gt;;</code></pre>
+              <pre><code>const Default = () =&gt; &lt;ValidationList
+    value=&quot;Password1234.&quot;
+    rules={[
+        { text: &#39;At least one uppercase letter&#39;, pattern: /[A-Z]/ },
+        { text: &#39;At least one lowercase letter&#39;, pattern: /[a-z]/ },
+        { text: &#39;At least one number&#39;, pattern: /[0-9]/ },
+        { text: &#39;At least one symbol&#39;, pattern: /[.,\-_&amp;%$!/[\]{}@#|\\]/ },
+        { text: &#39;At least 10 characters&#39;, pattern: value =&gt; value.length &gt;= 10 }
+    ]} /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -15030,7 +15598,16 @@ value: string</code></pre>
               </div>
               
               <div class="hint">Empty value: every rule is unmet, so all items render in the tertiary color.</div>
-              <pre><code>const NoneMet = () =&gt; &lt;ValidationList value=&quot;&quot; rules={rules} /&gt;;</code></pre>
+              <pre><code>const NoneMet = () =&gt; &lt;ValidationList
+    value=&quot;&quot;
+    rules={[
+        { text: &#39;At least one uppercase letter&#39;, pattern: /[A-Z]/ },
+        { text: &#39;At least one lowercase letter&#39;, pattern: /[a-z]/ },
+        { text: &#39;At least one number&#39;, pattern: /[0-9]/ },
+        { text: &#39;At least one symbol&#39;, pattern: /[.,\-_&amp;%$!/[\]{}@#|\\]/ },
+        { text: &#39;At least 10 characters&#39;, pattern: value =&gt; value.length &gt;= 10 }
+    ]} /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -15039,7 +15616,16 @@ value: string</code></pre>
               </div>
               
               <div class="hint">A value that satisfies the regex rules but not the length predicate.</div>
-              <pre><code>const PartiallyMet = () =&gt; &lt;ValidationList value=&quot;Aa1.&quot; rules={rules} /&gt;;</code></pre>
+              <pre><code>const PartiallyMet = () =&gt; &lt;ValidationList
+    value=&quot;Aa1.&quot;
+    rules={[
+        { text: &#39;At least one uppercase letter&#39;, pattern: /[A-Z]/ },
+        { text: &#39;At least one lowercase letter&#39;, pattern: /[a-z]/ },
+        { text: &#39;At least one number&#39;, pattern: /[0-9]/ },
+        { text: &#39;At least one symbol&#39;, pattern: /[.,\-_&amp;%$!/[\]{}@#|\\]/ },
+        { text: &#39;At least 10 characters&#39;, pattern: value =&gt; value.length &gt;= 10 }
+    ]} /&gt;;</code></pre>
+              
             </div>
             <div class="note ok">
               <div class="row">
@@ -15059,10 +15645,19 @@ value: string</code></pre>
                 placeholder=&quot;Type a password…&quot;
                 onChange={event =&gt; setValue(event.target.value)}
                 className=&quot;rounded-md border border-border-default-base-primary px-3 py-2 text-sm&quot; /&gt;
-            &lt;ValidationList rules={rules} value={value} /&gt;
+            &lt;ValidationList
+                rules={[
+                    { text: &#39;At least one uppercase letter&#39;, pattern: /[A-Z]/ },
+                    { text: &#39;At least one lowercase letter&#39;, pattern: /[a-z]/ },
+                    { text: &#39;At least one number&#39;, pattern: /[0-9]/ },
+                    { text: &#39;At least one symbol&#39;, pattern: /[.,\-_&amp;%$!/[\]{}@#|\\]/ },
+                    { text: &#39;At least 10 characters&#39;, pattern: value =&gt; value.length &gt;= 10 }
+                ]}
+                value={value} /&gt;
         &lt;/div&gt;
     );
 };</code></pre>
+              
             </div>
         </div>
     
