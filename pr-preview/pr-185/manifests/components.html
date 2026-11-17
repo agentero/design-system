@@ -620,13 +620,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">44 components ok</span><a class="filter-pill" data-k="no-api" href="#filter-no-api">3/44 without API description</a><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/399 story errors</a></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">44 components ok</span><a class="filter-pill" data-k="no-api" href="#filter-no-api">3/44 without API description</a><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/401 story errors</a></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.6s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>3.8s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -6778,7 +6778,7 @@ related controls or inline links without visual weight.</div>
       <div class="badges">
         <label for="c-14-components-dropdownmenu-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-14-components-dropdownmenu-stories" class="badge ok as-toggle">8 stories</label>
+        <label for="c-14-components-dropdownmenu-stories" class="badge ok as-toggle">9 stories</label>
         
         
       </div>
@@ -6876,7 +6876,7 @@ open?: boolean</code></pre>
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button, DropdownMenu } from '@agentero/design-system';
+                <pre><code>import { Button, Command, DropdownMenu } from '@agentero/design-system';
 import { ChevronDownIcon, CopyIcon, FolderInputIcon, ShareIcon, Trash2Icon, UsersIcon } from 'lucide-react';</code></pre>
               </div>
           
@@ -7232,6 +7232,75 @@ actions outright unless the user needs to see them and understand why.</div>
         &lt;/DropdownMenu.Portal&gt;
     &lt;/DropdownMenu.Root&gt;
 );</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Submenu With Search</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Submenu whose content is a searchable `Command` list</div>
+              <div class="hint">A `SubContent` that holds a `Command` search list instead of `Item`s, for
+picking one of many options from a menu row. The `Command` draws its own
+panel, so the submenu drops its border, padding, background and shadow and
+the search list shows as a single box. `Content` does the same when it
+holds a `Command`.</div>
+              <pre><code>const SubmenuWithSearch = () =&gt; {
+    const [open, setOpen] = useState(false);
+    const searchRef = useRef&lt;HTMLInputElement&gt;(null);
+
+    const pickAgency = (agency: string) =&gt; {
+        console.log(&#39;Move producers to&#39;, agency);
+        // cmdk items are not Radix menu items, so picking one does not close the menu on its own.
+        setOpen(false);
+    };
+
+    // A submenu opened from the keyboard focuses itself, not the search inside it.
+    const focusSearch = (event: ReactFocusEvent&lt;HTMLDivElement&gt;) =&gt; {
+        if (event.target === event.currentTarget) {
+            searchRef.current?.focus();
+        }
+    };
+
+    return (
+        &lt;DropdownMenu.Root open={open} onOpenChange={setOpen}&gt;
+            &lt;DropdownMenu.Trigger asChild&gt;
+                &lt;Button size=&quot;md&quot; variant=&quot;secondary&quot;&gt;
+                    Producers
+                    &lt;ChevronDownIcon /&gt;
+                &lt;/Button&gt;
+            &lt;/DropdownMenu.Trigger&gt;
+            &lt;DropdownMenu.Portal&gt;
+                &lt;DropdownMenu.Content&gt;
+                    &lt;DropdownMenu.Item onSelect={() =&gt; console.log(&#39;Retire with agency&#39;)}&gt;
+                        Retire with agency
+                    &lt;/DropdownMenu.Item&gt;
+                    &lt;DropdownMenu.Sub&gt;
+                        &lt;DropdownMenu.SubTrigger&gt;
+                            &lt;UsersIcon /&gt;
+                            Move producers to
+                        &lt;/DropdownMenu.SubTrigger&gt;
+                        &lt;DropdownMenu.Portal&gt;
+                            &lt;DropdownMenu.SubContent className=&quot;w-72&quot; onFocus={focusSearch}&gt;
+                                &lt;Command.Root label=&quot;Agencies&quot; onKeyDown={keepKeysInSearch}&gt;
+                                    &lt;Command.Input ref={searchRef} autoFocus placeholder=&quot;Search agency...&quot; /&gt;
+                                    &lt;Command.List aria-label=&quot;Agencies&quot;&gt;
+                                        {agencies.map(agency =&gt; (
+                                            &lt;Command.Item key={agency} onSelect={() =&gt; pickAgency(agency)}&gt;
+                                                {agency}
+                                            &lt;/Command.Item&gt;
+                                        ))}
+                                    &lt;/Command.List&gt;
+                                    &lt;Command.Empty&gt;No agencies found&lt;/Command.Empty&gt;
+                                &lt;/Command.Root&gt;
+                            &lt;/DropdownMenu.SubContent&gt;
+                        &lt;/DropdownMenu.Portal&gt;
+                    &lt;/DropdownMenu.Sub&gt;
+                &lt;/DropdownMenu.Content&gt;
+            &lt;/DropdownMenu.Portal&gt;
+        &lt;/DropdownMenu.Root&gt;
+    );
+};</code></pre>
               
             </div>
             <div class="note ok">
@@ -12680,7 +12749,7 @@ enabled, disabled, invalid and read-only, each with one item selected.</div>
       <div class="badges">
         <label for="c-34-components-select-props" class="badge ok as-toggle">13 prop types</label>
         
-        <label for="c-34-components-select-stories" class="badge ok as-toggle">12 stories</label>
+        <label for="c-34-components-select-stories" class="badge ok as-toggle">13 stories</label>
         
         
       </div>
@@ -12807,6 +12876,31 @@ import { fn } from 'storybook/test';</code></pre>
             &lt;/Select.Root&gt;
             &lt;Field.Description&gt;Where the risk is located.&lt;/Field.Description&gt;
             &lt;Field.Error errors={[{ message: &#39;Choose a state&#39; }]} /&gt;
+        &lt;/Field.Root&gt;
+    &lt;/div&gt;
+);</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Inside Field Without Label</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Inside a Field with no label</div>
+              <div class="hint">A `Field.Root` without a `Field.Label` still gives the list a name.</div>
+              <pre><code>const InsideFieldWithoutLabel = () =&gt; (
+    &lt;div className=&quot;w-full&quot;&gt;
+        &lt;Field.Root&gt;
+            &lt;Select.Root&gt;
+                &lt;Select.Trigger aria-label=&quot;State&quot; placeholder=&quot;Select a state&quot; /&gt;
+                &lt;Select.Content&gt;
+                    {STATES.map(({ value, label }) =&gt; (
+                        &lt;Select.Item key={value} value={value}&gt;
+                            {label}
+                        &lt;/Select.Item&gt;
+                    ))}
+                &lt;/Select.Content&gt;
+            &lt;/Select.Root&gt;
         &lt;/Field.Root&gt;
     &lt;/div&gt;
 );</code></pre>

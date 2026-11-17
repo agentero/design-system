@@ -6413,6 +6413,13 @@
           "summary": "Submenu with `disabled` items and a disabled `SubTrigger`"
         },
         {
+          "id": "components-dropdownmenu--submenu-with-search",
+          "name": "Submenu With Search",
+          "snippet": "const SubmenuWithSearch = () => {\n    const [open, setOpen] = useState(false);\n    const searchRef = useRef<HTMLInputElement>(null);\n\n    const pickAgency = (agency: string) => {\n        console.log('Move producers to', agency);\n        // cmdk items are not Radix menu items, so picking one does not close the menu on its own.\n        setOpen(false);\n    };\n\n    // A submenu opened from the keyboard focuses itself, not the search inside it.\n    const focusSearch = (event: ReactFocusEvent<HTMLDivElement>) => {\n        if (event.target === event.currentTarget) {\n            searchRef.current?.focus();\n        }\n    };\n\n    return (\n        <DropdownMenu.Root open={open} onOpenChange={setOpen}>\n            <DropdownMenu.Trigger asChild>\n                <Button size=\"md\" variant=\"secondary\">\n                    Producers\n                    <ChevronDownIcon />\n                </Button>\n            </DropdownMenu.Trigger>\n            <DropdownMenu.Portal>\n                <DropdownMenu.Content>\n                    <DropdownMenu.Item onSelect={() => console.log('Retire with agency')}>\n                        Retire with agency\n                    </DropdownMenu.Item>\n                    <DropdownMenu.Sub>\n                        <DropdownMenu.SubTrigger>\n                            <UsersIcon />\n                            Move producers to\n                        </DropdownMenu.SubTrigger>\n                        <DropdownMenu.Portal>\n                            <DropdownMenu.SubContent className=\"w-72\" onFocus={focusSearch}>\n                                <Command.Root label=\"Agencies\" onKeyDown={keepKeysInSearch}>\n                                    <Command.Input ref={searchRef} autoFocus placeholder=\"Search agency...\" />\n                                    <Command.List aria-label=\"Agencies\">\n                                        {agencies.map(agency => (\n                                            <Command.Item key={agency} onSelect={() => pickAgency(agency)}>\n                                                {agency}\n                                            </Command.Item>\n                                        ))}\n                                    </Command.List>\n                                    <Command.Empty>No agencies found</Command.Empty>\n                                </Command.Root>\n                            </DropdownMenu.SubContent>\n                        </DropdownMenu.Portal>\n                    </DropdownMenu.Sub>\n                </DropdownMenu.Content>\n            </DropdownMenu.Portal>\n        </DropdownMenu.Root>\n    );\n};",
+          "description": "A `SubContent` that holds a `Command` search list instead of `Item`s, for\npicking one of many options from a menu row. The `Command` draws its own\npanel, so the submenu drops its border, padding, background and shadow and\nthe search list shows as a single box. `Content` does the same when it\nholds a `Command`.",
+          "summary": "Submenu whose content is a searchable `Command` list"
+        },
+        {
           "id": "components-dropdownmenu--focus-return",
           "name": "Focus Return",
           "snippet": "const FocusReturn = () => (\n    <DropdownMenu.Root>\n        <DropdownMenu.Trigger asChild>\n            <Button size=\"md\" variant=\"secondary\">\n                Contract actions\n            </Button>\n        </DropdownMenu.Trigger>\n        <DropdownMenu.Portal>\n            <DropdownMenu.Content>\n                <DropdownMenu.Item>Download contract</DropdownMenu.Item>\n                <DropdownMenu.Item>Mark as pending</DropdownMenu.Item>\n            </DropdownMenu.Content>\n        </DropdownMenu.Portal>\n    </DropdownMenu.Root>\n);",
@@ -6420,7 +6427,7 @@
           "summary": "Focus returns to the trigger, with a ring only after a keyboard close"
         }
       ],
-      "import": "import { Button, DropdownMenu } from '@agentero/design-system';\nimport { ChevronDownIcon, CopyIcon, FolderInputIcon, ShareIcon, Trash2Icon, UsersIcon } from 'lucide-react';"
+      "import": "import { Button, Command, DropdownMenu } from '@agentero/design-system';\nimport { ChevronDownIcon, CopyIcon, FolderInputIcon, ShareIcon, Trash2Icon, UsersIcon } from 'lucide-react';"
     },
     "components-fieldtext": {
       "id": "components-fieldtext",
@@ -10494,6 +10501,13 @@
           "summary": "Wired to a surrounding Field"
         },
         {
+          "id": "components-select--inside-field-without-label",
+          "name": "Inside Field Without Label",
+          "snippet": "const InsideFieldWithoutLabel = () => (\n    <div className=\"w-full\">\n        <Field.Root>\n            <Select.Root>\n                <Select.Trigger aria-label=\"State\" placeholder=\"Select a state\" />\n                <Select.Content>\n                    {STATES.map(({ value, label }) => (\n                        <Select.Item key={value} value={value}>\n                            {label}\n                        </Select.Item>\n                    ))}\n                </Select.Content>\n            </Select.Root>\n        </Field.Root>\n    </div>\n);",
+          "description": "A `Field.Root` without a `Field.Label` still gives the list a name.",
+          "summary": "Inside a Field with no label"
+        },
+        {
           "id": "components-select--disabled-item",
           "name": "Disabled Item",
           "snippet": "const DisabledItem = () => <Select.Root size=\"md\" placeholder=\"Select a state\" onValueChange={fn()}>\n    <Select.Trigger aria-label=\"State\" placeholder=\"Select a state\" />\n    <Select.Content>\n        {STATES.map(({ value, label }) => (\n            <Select.Item key={value} value={value} disabled={value === 'FL'}>\n                {label}\n            </Select.Item>\n        ))}\n    </Select.Content>\n</Select.Root>;",
@@ -12573,6 +12587,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4633
+    "durationMs": 3842
   }
 }
