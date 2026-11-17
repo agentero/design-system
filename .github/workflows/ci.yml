@@ -28,6 +28,12 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: '🔍 Run lint'
         run: pnpm lint
+      # Two copies of Radix's layer stack don't see each other: a Select inside a
+      # Modal leaves the body locked. Bump every @radix-ui package together.
+      - name: '🧩 One Radix layer stack'
+        run: |
+          count=$(grep -c "^  '@radix-ui/react-dismissable-layer@[^(]*':$" pnpm-lock.yaml)
+          [ "$count" -eq 1 ] || { echo "pnpm-lock.yaml has $count versions of @radix-ui/react-dismissable-layer"; exit 1; }
 
   typecheck:
     name: '💊 Typecheck'
