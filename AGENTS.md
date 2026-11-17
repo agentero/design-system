@@ -4,17 +4,17 @@ This file provides guidance to AI agents when working with code in this reposito
 
 ## Commands
 
-- `yarn dev` — Vite dev server for the library itself (rarely used; prefer Storybook).
-- `yarn storybook` — runs Storybook on port 6006. Primary development loop.
-- `yarn build-storybook` — builds `storybook-static/`, including the MCP manifests at `storybook-static/manifests/components.json`. **Must be run before `yarn build` if you want the MCP server bundled into `dist/`.**
-- `yarn build` — production library build (see Build pipeline below).
-- `yarn tsc` — typecheck via `tsgo` (`@typescript/native-preview`), not stock `tsc`.
-- `yarn lint` — runs `oxlint src/ lib/` then `oxfmt --check src/ lib/`. Both must pass.
-- `yarn lint:format` — just the `oxfmt` check. There is no `format:write` script; run `yarn oxfmt src/ lib/` directly to apply formatting.
-- `yarn check:manifest` — validates `storybook-static/manifests/components.json` (description, `@summary`, props and import line per entry). Needs `yarn build-storybook` first; CI runs both in the `manifest` job.
-- `yarn test` — runs both Vitest projects declared in `vite.config.ts`: `storybook` (story files as tests, via `@storybook/addon-vitest` + Playwright/Chromium) and `unit` (plain node tests, `src/**/*.test.ts`). `yarn test:storybook` runs only the story suite; `yarn vitest run <file>` runs a single one.
+- `pnpm dev` — Vite dev server for the library itself (rarely used; prefer Storybook).
+- `pnpm storybook` — runs Storybook on port 6006. Primary development loop.
+- `pnpm build-storybook` — builds `storybook-static/`, including the MCP manifests at `storybook-static/manifests/components.json`. **Must be run before `pnpm build` if you want the MCP server bundled into `dist/`.**
+- `pnpm build` — production library build (see Build pipeline below).
+- `pnpm tsc` — typecheck via `tsgo` (`@typescript/native-preview`), not stock `tsc`.
+- `pnpm lint` — runs `oxlint src/ lib/` then `oxfmt --check src/ lib/`. Both must pass.
+- `pnpm lint:format` — just the `oxfmt` check. There is no `format:write` script; run `pnpm oxfmt src/ lib/` directly to apply formatting.
+- `pnpm check:manifest` — validates `storybook-static/manifests/components.json` (description, `@summary`, props and import line per entry). Needs `pnpm build-storybook` first; CI runs both in the `manifest` job.
+- `pnpm test` — runs both Vitest projects declared in `vite.config.ts`: `storybook` (story files as tests, via `@storybook/addon-vitest` + Playwright/Chromium) and `unit` (plain node tests, `src/**/*.test.ts`). `pnpm test:storybook` runs only the story suite; `pnpm vitest run <file>` runs a single one.
 
-CI (`.github/workflows/ci.yml`) runs `yarn lint`, `yarn tsc`, `yarn test`, `yarn build` and the `manifest` job (`yarn build-storybook` + `yarn check:manifest`) on PRs to `master` — nothing else gates merges. The `build` job is what makes the `cleanDist` guard (see Build pipeline) fail the PR instead of the publish.
+CI (`.github/workflows/ci.yml`) runs `pnpm lint`, `pnpm tsc`, `pnpm test`, `pnpm build` and the `manifest` job (`pnpm build-storybook` + `pnpm check:manifest`) on PRs to `master` — nothing else gates merges. The `build` job is what makes the `cleanDist` guard (see Build pipeline) fail the PR instead of the publish.
 
 ## Architecture
 
@@ -22,7 +22,7 @@ CI (`.github/workflows/ci.yml`) runs `yarn lint`, `yarn tsc`, `yarn test`, `yarn
 
 `@agentero/design-system` is a React 19 / Tailwind v4 / Radix UI component library. Each component is **individually importable** via a subpath export (`@agentero/design-system/avatar`, `/lib`, `/theme`). Consumers import only what they use; `sideEffects: false` lets bundlers tree-shake aggressively.
 
-In the repo's `package.json`, exports point directly at source files (`./src/avatar/index.ts`) so `yarn link` works without a watcher — the consumer's bundler picks up edits via HMR. The published `package.json` is **different** and is generated at build time (see Build pipeline).
+In the repo's `package.json`, exports point directly at source files (`./src/avatar/index.ts`) so `pnpm link` works without a watcher — the consumer's bundler picks up edits via HMR. The published `package.json` is **different** and is generated at build time (see Build pipeline).
 
 ### Component layout
 
@@ -109,18 +109,18 @@ Components reference tokens either through Tailwind utility classes Tailwind gen
 
 ### Build pipeline (`vite.config.ts`)
 
-`yarn build` runs Vite in library mode with four custom plugins, in order:
+`pnpm build` runs Vite in library mode with four custom plugins, in order:
 
 1. **`vite-plugin-dts`** emits `.d.ts` files alongside each entry, excluding `*.stories.*` and `*.test.*`.
 2. **`generatePackageJson`** writes a *different* `package.json` into `dist/`. The shipped exports map points at compiled `.js` + `.d.ts`, not the source TS. It also adds `exports['./theme.css']`, an `./mcp` entry, and a `bin` for `design-system-mcp`.
-3. **`bundleMcpServer`** uses esbuild to bundle `mcp/server.ts` → `dist/mcp/server.mjs` and copies `storybook-static/manifests/*` into `dist/mcp/manifests/`. **Silently skipped** if the manifests don't exist — always run `yarn build-storybook` before `yarn build` when preparing a release, or the published package will be missing the MCP server.
+3. **`bundleMcpServer`** uses esbuild to bundle `mcp/server.ts` → `dist/mcp/server.mjs` and copies `storybook-static/manifests/*` into `dist/mcp/manifests/`. **Silently skipped** if the manifests don't exist — always run `pnpm build-storybook` before `pnpm build` when preparing a release, or the published package will be missing the MCP server.
 4. **`cleanDist`** removes the `dist/_virtual` directory Rollup sometimes leaves behind with `preserveModules: true`, and **fails the build** if `dist/node_modules` exists, naming the packages in it (see below).
 
 Rollup externals include all peer deps and all runtime deps, along with their subpaths (`react/jsx-runtime`, `@base-ui/react/combobox`). Anything else gets bundled under `dist/node_modules`, which npm never publishes, so the import would break in the app; `cleanDist` fails the build when that happens. `preserveModules: true` keeps the output file structure aligned with source paths, so subpath imports resolve correctly.
 
 ### MCP server (`mcp/server.ts`)
 
-Uses `@storybook/mcp` to expose three tools — `list-all-documentation`, `get-documentation`, `get-documentation-for-story` — backed by the manifests Storybook emits. The runtime server reads manifests from a directory sibling to the bundled `server.mjs`; **do not** hardcode paths relative to CWD. When adding new MCP tools, follow the existing `tmcp` + Valibot adapter pattern.
+Uses `@storybook/mcp` to expose three tools — `docs-list`, `docs-show`, `docs-show-story` — backed by the manifests Storybook emits. The runtime server reads manifests from a directory sibling to the bundled `server.mjs`; **do not** hardcode paths relative to CWD. The `manifestProvider` reaches the tools only through `transport.listen(context)`: the stdio transport sets the custom context on every message, so assigning `server.ctx.custom` is overwritten and every tool falls back to the HTTP provider and fails. When adding new MCP tools, follow the existing `tmcp` + Valibot adapter pattern.
 
 ### Publishing
 
@@ -132,4 +132,7 @@ Uses `@storybook/mcp` to expose three tools — `list-all-documentation`, `get-d
 - **Formatter is `oxfmt`, not Prettier.** Config lives in `.oxfmtrc.json`. Tabs (width 2), single quotes, `bracketSameLine: true`, `trailingComma: none`, `arrowParens: 'avoid'`, and a custom import-sort order: `server-only` → `react` → `builtin` → `external` → `@agentero/*` → `lib/*`/`modules/*` → relative → style → unknown. Respect this — sorting or quoting the Prettier way will produce a diff CI rejects.
 - **Linter is `oxlint`, not ESLint.** Config in `.oxlintrc.json`. Plugin set is `typescript` / `react` / `jest` and only the `correctness` category is enforced as errors.
 - **Typechecker is `tsgo`** (TypeScript native preview). Behavior is ~equivalent to `tsc --noEmit`, but the binary is different — don't swap it back to `tsc` in scripts.
-- **Yarn classic** (lockfile is `yarn.lock`, `--frozen-lockfile` in CI). Node 24.
+- **pnpm 11**, pinned in `packageManager` (`brew install pnpm` once; it switches to the pinned version). Lockfile is `pnpm-lock.yaml`, `--frozen-lockfile` in CI. Node 24.
+- Every pnpm setting lives in `pnpm-workspace.yaml` (this repo is not a workspace): `minimumReleaseAge`, the `allowBuilds` list of dependencies that may run install scripts, and the security `overrides`. Do not add `resolutions` to `package.json`; pnpm ignores it.
+- The layout is strict: an import works only if `package.json` declares the package. Something that arrives only through another dependency fails in the build and in `tsgo`, so declare it.
+- pnpm rejects versions published less than a day ago (`minimumReleaseAge: 1440`), also with `--frozen-lockfile`. Wait a day or pin the previous version; do not lower the setting.

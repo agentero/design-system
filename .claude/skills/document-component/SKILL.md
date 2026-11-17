@@ -92,7 +92,7 @@ After applying all documentation, **re-read the modified file** and verify again
 | 8 | Exported hooks have JSDoc with `@summary` | Search for exported hooks — confirm documentation |
 | 9 | No `@param` or `@type` tags added | Search for `@param` and `@type` — must find none that were added |
 | 10 | No runtime code was modified | Diff only shows JSDoc comment additions/changes |
-| 11 | TypeScript compiles without errors | Run `yarn tsc` and confirm clean output |
+| 11 | TypeScript compiles without errors | Run `pnpm tsc` and confirm clean output |
 | 12 | Every redeclared native attribute has a different type here | For each prop that also exists on the native element, confirm its type differs; otherwise remove it and move any design-system note to the component JSDoc |
 | 13 | Component JSDoc states native forwarding | If the type extends a native element, find the "accepted and forwarded" sentence on the component JSDoc |
 

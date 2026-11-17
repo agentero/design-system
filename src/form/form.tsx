@@ -55,7 +55,7 @@ const noop = () => {};
  * `react-hook-form` is an optional peer dependency: the design system never
  * bundles its own copy, because `FormProvider` and the fields must share one
  * React context. Two copies in an app (a nested version under a workspace,
- * say) make every field throw from `useController`; `yarn why react-hook-form`
+ * say) make every field throw from `useController`; `pnpm why react-hook-form`
  * should list a single instance.
  *
  * @summary Form element bound to a react-hook-form instance, shared with its fields

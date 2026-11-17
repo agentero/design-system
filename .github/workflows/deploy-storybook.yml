@@ -22,23 +22,20 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: '📦 Setup pnpm'
+        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+
       - name: '🟢 Setup Node'
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 24
-          cache: yarn
-
-      - name: '💾 Cache dependencies'
-        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
-        with:
-          path: node_modules
-          key: deps-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+          cache: pnpm
 
       - name: '📦 Install dependencies'
-        run: yarn install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: '🔨 Build Storybook'
-        run: yarn build-storybook
+        run: pnpm build-storybook
 
       - name: '🚀 Deploy Storybook'
         uses: JamesIves/github-pages-deploy-action@d92aa235d04922e8f08b40ce78cc5442fcfbfa2f # v4
