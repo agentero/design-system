@@ -620,13 +620,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">43 components ok</span><a class="filter-pill" data-k="no-api" href="#filter-no-api">3/43 without API description</a><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/388 story errors</a></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">44 components ok</span><a class="filter-pill" data-k="no-api" href="#filter-no-api">3/44 without API description</a><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/401 story errors</a></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>3.6s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>6.5s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -12733,6 +12733,523 @@ enabled, disabled, invalid and read-only, each with one item selected.</div>
   </div>
 </article>
 <article
+  id="components-select"
+  class="card 
+  no-error
+  no-info
+  no-story-error
+  no-story-warning
+  
+  no-doc-error"
+  role="listitem"
+  aria-label="Select.Root">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Select.Root</h2>
+      <div class="badges">
+        <label for="c-34-components-select-props" class="badge ok as-toggle">13 prop types</label>
+        
+        <label for="c-34-components-select-stories" class="badge ok as-toggle">13 stories</label>
+        
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/select/select.stories.tsx">components-select · ./src/select/select.stories.tsx</div>
+    <div>Root of a single-select dropdown picking from a short list</div>
+    <div class="hint">Select is a button that opens a list of options and shows the one picked.
+Use it for a pick from a short, known list, where typing would add nothing.
+For a long list or one the user searches, use Combobox; for a handful of
+options that should all stay visible, use RadioGroup. `Root` owns the picked
+value; `Trigger` is the closed field and `Content` the list of `Item`s.</div>
+    <div class="kv"><span class="chip">summary: Root of a single-select dropdown picking from a short list</span><span class="chip">see: {@link https://www.radix-ui.com/primitives/docs/components/select Radix UI Select}</span><span class="chip">example: &lt;Select.Root defaultValue=&quot;monthly&quot; name=&quot;plan&quot;&gt;
+  &lt;Select.Trigger placeholder=&quot;Select a plan&quot; /&gt;
+  &lt;Select.Content&gt;
+    &lt;Select.Item value=&quot;monthly&quot;&gt;Monthly&lt;/Select.Item&gt;
+    &lt;Select.Item value=&quot;yearly&quot;&gt;Yearly&lt;/Select.Item&gt;
+  &lt;/Select.Content&gt;
+&lt;/Select.Root&gt;</span></div>
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-34-components-select-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+  <input id="c-34-components-select-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-component-meta)</small></span>
+              <span class="badge ok">13 prop types</span>
+            </div>
+            <pre><code>Component: src/select/index.ts::Select</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>autoComplete?: string
+
+children?: ReactNode
+
+defaultOpen?: boolean
+
+defaultValue?: string
+
+dir?: &quot;ltr&quot; | &quot;rtl&quot;
+
+disabled?: boolean
+
+form?: string
+
+name?: string
+
+onOpenChange?: (open: boolean) =&gt; void
+
+onValueChange?: (value: string) =&gt; void
+
+open?: boolean
+
+required?: boolean
+
+value?: string</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Button, Field, Modal, Popover, Select } from '@agentero/design-system';
+import { Controller } from 'react-hook-form';
+import { Fragment } from 'react';
+import { fn } from 'storybook/test';</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Pick an option from the list</div>
+              
+              <pre><code>const Default = () =&gt; &lt;Select.Root size=&quot;md&quot; placeholder=&quot;Select a state&quot; onValueChange={fn()}&gt;
+    &lt;Select.Trigger aria-label=&quot;State&quot; size={size} placeholder={placeholder} /&gt;
+    &lt;Select.Content&gt;
+        {STATES.map(({ value, label }) =&gt; (
+            &lt;Select.Item key={value} value={value}&gt;
+                {label}
+            &lt;/Select.Item&gt;
+        ))}
+    &lt;/Select.Content&gt;
+&lt;/Select.Root&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Inside Field</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Wired to a surrounding Field</div>
+              <div class="hint">Inside a `Field.Root`, the label, description, error, `invalid` and
+`required` reach the trigger with nothing wired by hand.</div>
+              <pre><code>const InsideField = () =&gt; (
+    &lt;div className=&quot;w-full&quot;&gt;
+        &lt;Field.Root invalid required&gt;
+            &lt;Field.Label&gt;State&lt;/Field.Label&gt;
+            &lt;Select.Root&gt;
+                &lt;Select.Trigger placeholder=&quot;Select a state&quot; /&gt;
+                &lt;Select.Content&gt;
+                    {STATES.map(({ value, label }) =&gt; (
+                        &lt;Select.Item key={value} value={value}&gt;
+                            {label}
+                        &lt;/Select.Item&gt;
+                    ))}
+                &lt;/Select.Content&gt;
+            &lt;/Select.Root&gt;
+            &lt;Field.Description&gt;Where the risk is located.&lt;/Field.Description&gt;
+            &lt;Field.Error errors={[{ message: &#39;Choose a state&#39; }]} /&gt;
+        &lt;/Field.Root&gt;
+    &lt;/div&gt;
+);</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Inside Field Without Label</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Inside a Field with no label</div>
+              <div class="hint">A `Field.Root` without a `Field.Label` still gives the list a name.</div>
+              <pre><code>const InsideFieldWithoutLabel = () =&gt; (
+    &lt;div className=&quot;w-full&quot;&gt;
+        &lt;Field.Root&gt;
+            &lt;Select.Root&gt;
+                &lt;Select.Trigger aria-label=&quot;State&quot; placeholder=&quot;Select a state&quot; /&gt;
+                &lt;Select.Content&gt;
+                    {STATES.map(({ value, label }) =&gt; (
+                        &lt;Select.Item key={value} value={value}&gt;
+                            {label}
+                        &lt;/Select.Item&gt;
+                    ))}
+                &lt;/Select.Content&gt;
+            &lt;/Select.Root&gt;
+        &lt;/Field.Root&gt;
+    &lt;/div&gt;
+);</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Disabled Item</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>One option disabled</div>
+              <div class="hint">`disabled` on one item leaves the rest selectable. It is announced as
+disabled, a press does not pick it, and the arrow keys skip it.</div>
+              <pre><code>const DisabledItem = () =&gt; &lt;Select.Root size=&quot;md&quot; placeholder=&quot;Select a state&quot; onValueChange={fn()}&gt;
+    &lt;Select.Trigger aria-label=&quot;State&quot; placeholder=&quot;Select a state&quot; /&gt;
+    &lt;Select.Content&gt;
+        {STATES.map(({ value, label }) =&gt; (
+            &lt;Select.Item key={value} value={value} disabled={value === &#39;FL&#39;}&gt;
+                {label}
+            &lt;/Select.Item&gt;
+        ))}
+    &lt;/Select.Content&gt;
+&lt;/Select.Root&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Controlled</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Controlled select whose value is set from outside</div>
+              
+              <pre><code>const Controlled = () =&gt; {
+    const [state, setState] = useState(&#39;CA&#39;);
+
+    return (
+        &lt;div className=&quot;flex w-full flex-col items-start gap-6&quot;&gt;
+            &lt;div className=&quot;flex gap-3&quot;&gt;
+                &lt;Button variant=&quot;secondary&quot; size=&quot;sm&quot; onClick={() =&gt; setState(&#39;&#39;)}&gt;
+                    Clear
+                &lt;/Button&gt;
+                &lt;Button variant=&quot;secondary&quot; size=&quot;sm&quot; onClick={() =&gt; setState(&#39;NY&#39;)}&gt;
+                    Choose New York
+                &lt;/Button&gt;
+            &lt;/div&gt;
+            &lt;div className=&quot;w-full&quot;&gt;
+                &lt;Select.Root value={state} onValueChange={setState}&gt;
+                    &lt;Select.Trigger aria-label=&quot;State&quot; placeholder=&quot;Select a state&quot; /&gt;
+                    &lt;Select.Content&gt;
+                        {STATES.map(({ value, label }) =&gt; (
+                            &lt;Select.Item key={value} value={value}&gt;
+                                {label}
+                            &lt;/Select.Item&gt;
+                        ))}
+                    &lt;/Select.Content&gt;
+                &lt;/Select.Root&gt;
+            &lt;/div&gt;
+            &lt;output className=&quot;text-sm&quot;&gt;Selected: {state || &#39;none&#39;}&lt;/output&gt;
+        &lt;/div&gt;
+    );
+};</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">In Form</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Native form submission</div>
+              <div class="hint">With `name`, the form submits `name=value`, and `required` blocks the
+submission until something is picked.</div>
+              <pre><code>const InForm = () =&gt; {
+    const [submitted, setSubmitted] = useState&lt;string | null&gt;(null);
+
+    return (
+        &lt;form
+            className=&quot;flex w-full flex-col items-start gap-6&quot;
+            onSubmit={event =&gt; {
+                event.preventDefault();
+                setSubmitted(String(new FormData(event.currentTarget).get(&#39;state&#39;)));
+            }}&gt;
+            &lt;div className=&quot;w-full&quot;&gt;
+                &lt;Select.Root name=&quot;state&quot; required&gt;
+                    &lt;Select.Trigger aria-label=&quot;State&quot; placeholder=&quot;Select a state&quot; /&gt;
+                    &lt;Select.Content&gt;
+                        {STATES.map(({ value, label }) =&gt; (
+                            &lt;Select.Item key={value} value={value}&gt;
+                                {label}
+                            &lt;/Select.Item&gt;
+                        ))}
+                    &lt;/Select.Content&gt;
+                &lt;/Select.Root&gt;
+            &lt;/div&gt;
+            &lt;Button type=&quot;submit&quot;&gt;Submit&lt;/Button&gt;
+            {submitted &amp;&amp; &lt;output className=&quot;text-sm&quot;&gt;Submitted: {submitted}&lt;/output&gt;}
+        &lt;/form&gt;
+    );
+};</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With React Hook Form</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>React Hook Form through Controller</div>
+              <div class="hint">With react-hook-form, wire the select through `Controller` and put
+`field.ref` on the trigger, so a failed submit focuses it.</div>
+              <pre><code>const WithReactHookForm = () =&gt; {
+    const { control, handleSubmit } = useForm&lt;{ state: string }&gt;({
+        defaultValues: { state: &#39;&#39; }
+    });
+    const [submitted, setSubmitted] = useState&lt;string | null&gt;(null);
+
+    return (
+        &lt;form
+            noValidate
+            className=&quot;flex w-full flex-col items-start gap-6&quot;
+            onSubmit={handleSubmit(data =&gt; setSubmitted(data.state))}&gt;
+            &lt;Controller
+                name=&quot;state&quot;
+                control={control}
+                rules={{ required: &#39;Choose a state&#39; }}
+                render={({ field, fieldState }) =&gt; (
+                    &lt;Field.Root invalid={fieldState.invalid} required className=&quot;w-full&quot;&gt;
+                        &lt;Field.Label&gt;State&lt;/Field.Label&gt;
+                        &lt;Select.Root value={field.value} onValueChange={field.onChange}&gt;
+                            &lt;Select.Trigger
+                                ref={field.ref}
+                                onBlur={field.onBlur}
+                                placeholder=&quot;Select a state&quot;
+                            /&gt;
+                            &lt;Select.Content&gt;
+                                {STATES.map(({ value, label }) =&gt; (
+                                    &lt;Select.Item key={value} value={value}&gt;
+                                        {label}
+                                    &lt;/Select.Item&gt;
+                                ))}
+                            &lt;/Select.Content&gt;
+                        &lt;/Select.Root&gt;
+                        &lt;Field.Error errors={[fieldState.error]} /&gt;
+                    &lt;/Field.Root&gt;
+                )}
+            /&gt;
+            &lt;Button type=&quot;submit&quot;&gt;Submit&lt;/Button&gt;
+            {submitted &amp;&amp; &lt;output className=&quot;text-sm&quot;&gt;Submitted: {submitted}&lt;/output&gt;}
+        &lt;/form&gt;
+    );
+};</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Long Label</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Long labels truncate</div>
+              <div class="hint">A long option label is cut with an ellipsis in the trigger and in its row,
+and the chevron keeps its place.</div>
+              <pre><code>const LongLabel = () =&gt; {
+    const items = [
+        { value: &#39;ho3&#39;, label: &#39;Homeowners HO-3, special form, including dwelling and contents&#39; },
+        { value: &#39;ho6&#39;, label: &#39;Condo unit owners HO-6&#39; }
+    ];
+
+    return (
+        &lt;div className=&quot;w-60&quot;&gt;
+            &lt;Select.Root defaultValue=&quot;ho3&quot;&gt;
+                &lt;Select.Trigger aria-label=&quot;Policy form&quot; /&gt;
+                &lt;Select.Content&gt;
+                    {items.map(({ value, label }) =&gt; (
+                        &lt;Select.Item key={value} value={value}&gt;
+                            {label}
+                        &lt;/Select.Item&gt;
+                    ))}
+                &lt;/Select.Content&gt;
+            &lt;/Select.Root&gt;
+        &lt;/div&gt;
+    );
+};</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Many Items</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Long list that scrolls</div>
+              <div class="hint">With more options than fit, the list stops at six rows and scrolls, with an
+arrow at each end while there is more to see, and it opens with the picked
+option in view. It matches the trigger&#39;s width and opens 8px below it. Past
+a few dozen options, or when
+people know what they are looking for, a Combobox lets them type instead.</div>
+              <pre><code>const ManyItems = () =&gt; &lt;Select.Root size=&quot;md&quot; placeholder=&quot;Select a state&quot; defaultValue=&quot;Ohio&quot;&gt;
+    &lt;Select.Trigger aria-label=&quot;State&quot; placeholder=&quot;Select a state&quot; /&gt;
+    &lt;Select.Content&gt;
+        {US_STATES.map(({ value, label }) =&gt; (
+            &lt;Select.Item key={value} value={value}&gt;
+                {label}
+            &lt;/Select.Item&gt;
+        ))}
+    &lt;/Select.Content&gt;
+&lt;/Select.Root&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Sections</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Options in sections</div>
+              <div class="hint">Options grouped into sections: each `Group` has a `GroupLabel` as heading,
+with a `Separator` between groups. A single group can carry a heading too.</div>
+              <pre><code>const Sections = () =&gt; (
+    &lt;div className=&quot;grid w-full grid-cols-2 gap-6&quot;&gt;
+        &lt;Select.Root defaultValue=&quot;FL&quot;&gt;
+            &lt;Select.Trigger aria-label=&quot;Region&quot; /&gt;
+            &lt;Select.Content&gt;
+                {REGIONS.map((region, index) =&gt; (
+                    &lt;Fragment key={region.label}&gt;
+                        {index &gt; 0 &amp;&amp; &lt;Select.Separator /&gt;}
+                        &lt;Select.Group&gt;
+                            &lt;Select.GroupLabel&gt;{region.label}&lt;/Select.GroupLabel&gt;
+                            {region.options.map(({ value, label }) =&gt; (
+                                &lt;Select.Item key={value} value={value}&gt;
+                                    {label}
+                                &lt;/Select.Item&gt;
+                            ))}
+                        &lt;/Select.Group&gt;
+                    &lt;/Fragment&gt;
+                ))}
+            &lt;/Select.Content&gt;
+        &lt;/Select.Root&gt;
+        &lt;Select.Root defaultValue=&quot;CA&quot;&gt;
+            &lt;Select.Trigger aria-label=&quot;Recent state&quot; /&gt;
+            &lt;Select.Content&gt;
+                &lt;Select.Group&gt;
+                    &lt;Select.GroupLabel&gt;Recently used&lt;/Select.GroupLabel&gt;
+                    {STATES.slice(0, 3).map(({ value, label }) =&gt; (
+                        &lt;Select.Item key={value} value={value}&gt;
+                            {label}
+                        &lt;/Select.Item&gt;
+                    ))}
+                &lt;/Select.Group&gt;
+            &lt;/Select.Content&gt;
+        &lt;/Select.Root&gt;
+    &lt;/div&gt;
+);</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Trailing Text</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Text at the end of a row</div>
+              <div class="hint">`trailing` puts short text at the end of a row, such as a code. It stays in
+the list: the trigger shows only the label.</div>
+              <pre><code>const TrailingText = () =&gt; (
+    &lt;Select.Root defaultValue=&quot;CA&quot;&gt;
+        &lt;Select.Trigger aria-label=&quot;State&quot; /&gt;
+        &lt;Select.Content&gt;
+            {STATES.map(({ value, label }) =&gt; (
+                &lt;Select.Item key={value} value={value} trailing={value}&gt;
+                    {label}
+                &lt;/Select.Item&gt;
+            ))}
+        &lt;/Select.Content&gt;
+    &lt;/Select.Root&gt;
+);</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Opens On Picked Option</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>List opening on the picked option</div>
+              <div class="hint">`position=&quot;item-aligned&quot;` on `Content` opens the list over the trigger, with
+the picked option on top of it, instead of below.</div>
+              <pre><code>const OpensOnPickedOption = () =&gt; (
+    &lt;div className=&quot;pt-24&quot;&gt;
+        &lt;Select.Root defaultValue=&quot;FL&quot;&gt;
+            &lt;Select.Trigger aria-label=&quot;State&quot; /&gt;
+            &lt;Select.Content position=&quot;item-aligned&quot;&gt;
+                {STATES.map(({ value, label }) =&gt; (
+                    &lt;Select.Item key={value} value={value}&gt;
+                        {label}
+                    &lt;/Select.Item&gt;
+                ))}
+            &lt;/Select.Content&gt;
+        &lt;/Select.Root&gt;
+    &lt;/div&gt;
+);</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">All States</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Visual comparison of the trigger states</div>
+              <div class="hint">Every state of the trigger side by side, for checking against the design.</div>
+              <pre><code>const AllStates = () =&gt; (
+    &lt;div className=&quot;grid w-full grid-cols-2 gap-6&quot;&gt;
+        {(
+            [
+                [&#39;Placeholder&#39;, {}],
+                [&#39;Filled&#39;, { defaultValue: &#39;TX&#39; }],
+                [&#39;Disabled&#39;, { defaultValue: &#39;TX&#39;, disabled: true }]
+            ] as const
+        ).map(([title, props]) =&gt; (
+            &lt;div key={title} className=&quot;flex flex-col gap-2&quot;&gt;
+                &lt;span className=&quot;text-xs text-text-input-placeholder&quot;&gt;{title}&lt;/span&gt;
+                &lt;Select.Root {...props}&gt;
+                    &lt;Select.Trigger aria-label={title} placeholder=&quot;Select a state&quot; /&gt;
+                    &lt;Select.Content&gt;
+                        {STATES.map(({ value, label }) =&gt; (
+                            &lt;Select.Item key={value} value={value}&gt;
+                                {label}
+                            &lt;/Select.Item&gt;
+                        ))}
+                    &lt;/Select.Content&gt;
+                &lt;/Select.Root&gt;
+            &lt;/div&gt;
+        ))}
+        &lt;div className=&quot;flex flex-col gap-2&quot;&gt;
+            &lt;span className=&quot;text-xs text-text-input-placeholder&quot;&gt;Invalid&lt;/span&gt;
+            &lt;Select.Root&gt;
+                &lt;Select.Trigger aria-label=&quot;Invalid&quot; aria-invalid placeholder=&quot;Select a state&quot; /&gt;
+                &lt;Select.Content&gt;
+                    {STATES.map(({ value, label }) =&gt; (
+                        &lt;Select.Item key={value} value={value}&gt;
+                            {label}
+                        &lt;/Select.Item&gt;
+                    ))}
+                &lt;/Select.Content&gt;
+            &lt;/Select.Root&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+);</code></pre>
+              
+            </div>
+        </div>
+    
+    
+  </div>
+</article>
+<article
   id="components-skeleton"
   class="card 
   no-error
@@ -12749,7 +13266,7 @@ enabled, disabled, invalid and read-only, each with one item selected.</div>
       <div class="badges">
         <span class="badge">no API description</span>
         
-        <label for="c-34-components-skeleton-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-35-components-skeleton-stories" class="badge ok as-toggle">4 stories</label>
         
         
       </div>
@@ -12766,7 +13283,7 @@ shape it with Tailwind classes to mirror the content it stands in for.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-34-components-skeleton-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-35-components-skeleton-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
   
@@ -12869,9 +13386,9 @@ shape it with Tailwind classes to mirror the content it stands in for.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Switch</h2>
       <div class="badges">
-        <label for="c-35-components-switch-props" class="badge ok as-toggle">8 prop types</label>
+        <label for="c-36-components-switch-props" class="badge ok as-toggle">8 prop types</label>
         
-        <label for="c-35-components-switch-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-36-components-switch-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -12887,10 +13404,10 @@ a Checkbox for a single boolean that applies instantly, and pair it with a
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-35-components-switch-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-36-components-switch-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-35-components-switch-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-36-components-switch-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -13081,9 +13598,9 @@ size?: &quot;sm&quot; | &quot;md&quot;</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Table.Root</h2>
       <div class="badges">
-        <label for="c-36-components-table-props" class="badge ok as-toggle">6 prop types</label>
+        <label for="c-37-components-table-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-36-components-table-stories" class="badge ok as-toggle">12 stories</label>
+        <label for="c-37-components-table-stories" class="badge ok as-toggle">12 stories</label>
         
         
       </div>
@@ -13114,10 +13631,10 @@ import { Table } from &#39;@agentero/design-system/table&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-36-components-table-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-37-components-table-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-36-components-table-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-37-components-table-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -13432,9 +13949,9 @@ keeps the menu open.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tabs.Root</h2>
       <div class="badges">
-        <label for="c-37-components-tabs-props" class="badge ok as-toggle">9 prop types</label>
+        <label for="c-38-components-tabs-props" class="badge ok as-toggle">9 prop types</label>
         
-        <label for="c-37-components-tabs-stories" class="badge ok as-toggle">8 stories</label>
+        <label for="c-38-components-tabs-stories" class="badge ok as-toggle">8 stories</label>
         
         
       </div>
@@ -13465,10 +13982,10 @@ import { Tabs } from &#39;@agentero/design-system/tabs&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-37-components-tabs-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-38-components-tabs-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-37-components-tabs-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-38-components-tabs-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -13700,9 +14217,9 @@ tablist role is announced.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tag</h2>
       <div class="badges">
-        <label for="c-38-components-tag-props" class="badge ok as-toggle">8 prop types</label>
+        <label for="c-39-components-tag-props" class="badge ok as-toggle">8 prop types</label>
         
-        <label for="c-38-components-tag-stories" class="badge ok as-toggle">13 stories</label>
+        <label for="c-39-components-tag-stories" class="badge ok as-toggle">13 stories</label>
         
         
       </div>
@@ -13721,10 +14238,10 @@ it an interactive link or button, which adds the pointer cursor and hover fill.<
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-38-components-tag-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-39-components-tag-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-38-components-tag-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-39-components-tag-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -14185,9 +14702,9 @@ leading + trailing icons, and icon-only.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> TextArea</h2>
       <div class="badges">
-        <label for="c-39-components-textarea-props" class="badge ok as-toggle">2 prop types</label>
+        <label for="c-40-components-textarea-props" class="badge ok as-toggle">2 prop types</label>
         
-        <label for="c-39-components-textarea-stories" class="badge ok as-toggle">9 stories</label>
+        <label for="c-40-components-textarea-stories" class="badge ok as-toggle">9 stories</label>
         
         
       </div>
@@ -14204,10 +14721,10 @@ states. It wires nothing on its own: `id`, `aria-invalid` and
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-39-components-textarea-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-40-components-textarea-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-39-components-textarea-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-40-components-textarea-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -14402,9 +14919,9 @@ form&#39;s validation can reject it.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Toast</h2>
       <div class="badges">
-        <label for="c-40-components-toast-props" class="badge ok as-toggle">11 prop types</label>
+        <label for="c-41-components-toast-props" class="badge ok as-toggle">11 prop types</label>
         
-        <label for="c-40-components-toast-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-41-components-toast-stories" class="badge ok as-toggle">11 stories</label>
         
         
       </div>
@@ -14423,10 +14940,10 @@ common feedback patterns.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-40-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-41-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-40-components-toast-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-41-components-toast-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -14866,9 +15383,9 @@ action (e.g., a sync icon for a sync-in-progress toast).</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tooltip</h2>
       <div class="badges">
-        <label for="c-41-components-tooltip-props" class="badge ok as-toggle">12 prop types</label>
+        <label for="c-42-components-tooltip-props" class="badge ok as-toggle">12 prop types</label>
         
-        <label for="c-41-components-tooltip-stories" class="badge ok as-toggle">6 stories</label>
+        <label for="c-42-components-tooltip-stories" class="badge ok as-toggle">6 stories</label>
         
         
       </div>
@@ -14887,10 +15404,10 @@ on hover or focus.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-41-components-tooltip-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-42-components-tooltip-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-41-components-tooltip-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-42-components-tooltip-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -15092,9 +15609,9 @@ import { Button } from '../button';</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> ValidationList</h2>
       <div class="badges">
-        <label for="c-42-components-validationlist-props" class="badge ok as-toggle">2 prop types</label>
+        <label for="c-43-components-validationlist-props" class="badge ok as-toggle">2 prop types</label>
         
-        <label for="c-42-components-validationlist-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-43-components-validationlist-stories" class="badge ok as-toggle">4 stories</label>
         
         
       </div>
@@ -15115,10 +15632,10 @@ your form validation; it does not own the input or block submission.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-42-components-validationlist-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-43-components-validationlist-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-42-components-validationlist-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-43-components-validationlist-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
