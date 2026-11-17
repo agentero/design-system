@@ -73,9 +73,9 @@ npx @agentero/design-system-mcp
 
 The server exposes three tools:
 
-- **list-all-documentation** — discover all available components and docs
-- **get-documentation** — get full docs, props, and usage examples for a component
-- **get-documentation-for-story** — get details for a specific story variant
+- **docs-list** — discover all available components and docs
+- **docs-show** — get full docs, props, and usage examples for a component
+- **docs-show-story** — get details for a specific story variant
 
 ## Local development
 
