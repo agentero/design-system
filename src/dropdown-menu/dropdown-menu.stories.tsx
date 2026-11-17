@@ -1,3 +1,5 @@
+import { type FocusEvent as ReactFocusEvent, type KeyboardEvent, useRef, useState } from 'react';
+
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import {
 	ChevronDownIcon,
@@ -11,6 +13,7 @@ import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { DropdownMenu } from '.';
 import { Button } from '../button';
+import { Command } from '../command';
 
 /**
  * DropdownMenu is a compound overlay for secondary actions, bulk operations,
@@ -375,6 +378,143 @@ export const SubmenuWithDisabledItems: Story = {
 			</DropdownMenu.Portal>
 		</DropdownMenu.Root>
 	)
+};
+
+const agencies = [
+	'Harbor Point Insurance',
+	'Summit Ridge Agency',
+	'Blue Mesa Insurance Group',
+	'Cedar Lane Risk Partners',
+	'Northgate Coverage'
+];
+
+// Tailwind composes `box-shadow` from several layers, so `shadow-none` computes to a list of
+// transparent layers rather than `none`.
+const drawsShadow = (element: HTMLElement) =>
+	getComputedStyle(element)
+		.boxShadow.split(/,(?![^(]*\))/)
+		.some(layer => layer !== 'none' && !layer.trim().startsWith('rgba(0, 0, 0, 0)'));
+
+// Radix menus treat letters and arrows as typeahead and item navigation, which would pull focus
+// out of the search. Escape and Tab still reach the menu so it can close.
+const keepKeysInSearch = (event: KeyboardEvent) => {
+	if (event.key !== 'Escape' && event.key !== 'Tab') {
+		event.stopPropagation();
+	}
+};
+
+/**
+ * A `SubContent` that holds a `Command` search list instead of `Item`s, for
+ * picking one of many options from a menu row. The `Command` draws its own
+ * panel, so the submenu drops its border, padding, background and shadow and
+ * the search list shows as a single box. `Content` does the same when it
+ * holds a `Command`.
+ *
+ * @summary Submenu whose content is a searchable `Command` list
+ */
+export const SubmenuWithSearch: Story = {
+	render: () => {
+		const [open, setOpen] = useState(false);
+		const searchRef = useRef<HTMLInputElement>(null);
+
+		const pickAgency = (agency: string) => {
+			console.log('Move producers to', agency);
+			// cmdk items are not Radix menu items, so picking one does not close the menu on its own.
+			setOpen(false);
+		};
+
+		// A submenu opened from the keyboard focuses itself, not the search inside it.
+		const focusSearch = (event: ReactFocusEvent<HTMLDivElement>) => {
+			if (event.target === event.currentTarget) {
+				searchRef.current?.focus();
+			}
+		};
+
+		return (
+			<DropdownMenu.Root open={open} onOpenChange={setOpen}>
+				<DropdownMenu.Trigger asChild>
+					<Button size="md" variant="secondary">
+						Producers
+						<ChevronDownIcon />
+					</Button>
+				</DropdownMenu.Trigger>
+				<DropdownMenu.Portal>
+					<DropdownMenu.Content>
+						<DropdownMenu.Item onSelect={() => console.log('Retire with agency')}>
+							Retire with agency
+						</DropdownMenu.Item>
+						<DropdownMenu.Sub>
+							<DropdownMenu.SubTrigger>
+								<UsersIcon />
+								Move producers to
+							</DropdownMenu.SubTrigger>
+							<DropdownMenu.Portal>
+								<DropdownMenu.SubContent className="w-72" onFocus={focusSearch}>
+									<Command.Root label="Agencies" onKeyDown={keepKeysInSearch}>
+										<Command.Input ref={searchRef} autoFocus placeholder="Search agency..." />
+										<Command.List aria-label="Agencies">
+											{agencies.map(agency => (
+												<Command.Item key={agency} onSelect={() => pickAgency(agency)}>
+													{agency}
+												</Command.Item>
+											))}
+										</Command.List>
+										<Command.Empty>No agencies found</Command.Empty>
+									</Command.Root>
+								</DropdownMenu.SubContent>
+							</DropdownMenu.Portal>
+						</DropdownMenu.Sub>
+					</DropdownMenu.Content>
+				</DropdownMenu.Portal>
+			</DropdownMenu.Root>
+		);
+	},
+	play: async ({ canvasElement }) => {
+		const body = within(document.body);
+		await userEvent.click(within(canvasElement).getByRole('button', { name: 'Producers' }));
+		await userEvent.click(await body.findByRole('menuitem', { name: 'Move producers to' }));
+
+		const search = await body.findByRole('combobox', { name: 'Agencies' });
+		const subContent = search.closest<HTMLElement>('[data-slot=dropdown-menu-sub-content]')!;
+		const commandRoot = search.closest<HTMLElement>('[data-slot=command-root]')!;
+		const subStyle = getComputedStyle(subContent);
+		const commandStyle = getComputedStyle(commandRoot);
+
+		await expect(subStyle.borderTopWidth).toBe('0px');
+		await expect(drawsShadow(subContent)).toBe(false);
+		await expect(subStyle.paddingTop).toBe('0px');
+		await expect(subStyle.backgroundColor).toBe('rgba(0, 0, 0, 0)');
+		await expect(commandStyle.borderTopWidth).toBe('1px');
+		await expect(drawsShadow(commandRoot)).toBe(true);
+
+		await userEvent.type(search, 'cedar');
+		await waitFor(() =>
+			expect(body.getAllByRole('option').map(option => option.textContent)).toEqual([
+				'Cedar Lane Risk Partners'
+			])
+		);
+
+		// Picking an agency closes the whole menu.
+		await userEvent.click(body.getByRole('option', { name: 'Cedar Lane Risk Partners' }));
+		await waitFor(() => expect(body.queryByRole('menu')).not.toBeInTheDocument());
+
+		// Keyboard: the submenu hands focus to the search, and letters and arrows stay in it.
+		await userEvent.keyboard('{Enter}');
+		await body.findByRole('menu');
+		await userEvent.keyboard('{ArrowDown}');
+		await expect(body.getByRole('menuitem', { name: 'Move producers to' })).toHaveFocus();
+		await userEvent.keyboard('{ArrowRight}');
+		const keyboardSearch = await body.findByRole('combobox', { name: 'Agencies' });
+		await waitFor(() => expect(keyboardSearch).toHaveFocus());
+		await userEvent.keyboard('north{ArrowLeft}');
+		await expect(keyboardSearch).toHaveFocus();
+		await expect(body.getAllByRole('option').map(option => option.textContent)).toEqual([
+			'Northgate Coverage'
+		]);
+
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(body.queryByRole('menu')).not.toBeInTheDocument());
+	}
 };
 
 /**
