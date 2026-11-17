@@ -215,13 +215,12 @@ export const Content = ({
 	...props
 }: SelectContentProps) => {
 	const field = useFieldContext();
-	// Radix leaves the listbox unnamed.
+	// Radix leaves the listbox unnamed. A Field without a `Field.Label` points
+	// `aria-labelledby` at a missing id, which is ignored, so "Options" still names it.
 	const name =
 		props['aria-label'] || props['aria-labelledby']
 			? {}
-			: field
-				? { 'aria-labelledby': field.labelId }
-				: { 'aria-label': 'Options' };
+			: { 'aria-labelledby': field?.labelId, 'aria-label': 'Options' };
 
 	return (
 		<SelectPrimitive.Portal>
@@ -270,7 +269,9 @@ export type SelectItemProps = ComponentPropsWithRef<typeof SelectPrimitive.Item>
  * @dataAttribute {string} data-highlighted - Present on the row under the pointer or the keyboard
  */
 export const Item = ({ trailing, className, children, ...props }: SelectItemProps) => {
-	const styles = selectRecipe({ trailing: trailing !== undefined });
+	// `count > 0 && count` passes `false`, which renders nothing.
+	const hasTrailing = trailing != null && trailing !== false;
+	const styles = selectRecipe({ trailing: hasTrailing });
 
 	return (
 		<SelectPrimitive.Item
@@ -281,7 +282,7 @@ export const Item = ({ trailing, className, children, ...props }: SelectItemProp
 			<span className="min-w-0 flex-1 truncate">
 				<SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
 			</span>
-			{trailing !== undefined && (
+			{hasTrailing && (
 				<span data-slot="select-item-trailing" className={slots.trailing()}>
 					{trailing}
 				</span>

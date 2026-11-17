@@ -181,6 +181,35 @@ export const InsideField: Story = {
 };
 
 /**
+ * A `Field.Root` without a `Field.Label` still gives the list a name.
+ *
+ * @summary Inside a Field with no label
+ */
+export const InsideFieldWithoutLabel: Story = {
+	render: () => (
+		<div className="w-full">
+			<Field.Root>
+				<Select.Root>
+					<Select.Trigger aria-label="State" placeholder="Select a state" />
+					<Select.Content>
+						{STATES.map(({ value, label }) => (
+							<Select.Item key={value} value={value}>
+								{label}
+							</Select.Item>
+						))}
+					</Select.Content>
+				</Select.Root>
+			</Field.Root>
+		</div>
+	),
+	play: async ({ canvasElement }) => {
+		const list = await open(within(canvasElement).getByRole('combobox', { name: 'State' }));
+		await expect(list).toHaveAccessibleName('Options');
+		await close();
+	}
+};
+
+/**
  * `disabled` on one item leaves the rest selectable. It is announced as
  * disabled, a press does not pick it, and the arrow keys skip it.
  *
