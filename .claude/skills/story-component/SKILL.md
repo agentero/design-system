@@ -174,7 +174,7 @@ After writing the stories file, **re-read it** and verify against this checklist
 | 12 | Args use realistic values | Scan all `args` — no "foo", "test", "lorem ipsum", or placeholder values |
 | 13 | Imports from local barrel, not deep paths | Check import path matches `./component-name` pattern |
 | 14 | Stories are grouped logically | Order is: Default > Variants > Features > Edge cases > Showcases |
-| 15 | TypeScript compiles without errors | Run `npx tsc --noEmit` and confirm clean output |
+| 15 | TypeScript compiles without errors | Run `pnpm tsc` and confirm clean output |
 
 If any check fails, fix the issue and re-verify before reporting completion.
 

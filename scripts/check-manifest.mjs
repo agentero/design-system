@@ -4,7 +4,7 @@
 // component's purpose, props and import line come from. It has degraded twice
 // without anyone noticing (PR #98 and PR #99), because nothing here fails when
 // an entry comes out empty — the Storybook docs page keeps looking fine, since
-// it reads from a different path. This runs after `yarn build-storybook`.
+// it reads from a different path. This runs after `pnpm build-storybook`.
 //
 // Every entry is checked: a story file without `meta.component` lands here as an
 // error entry, so a page that documents a convention (Foundations/*) stays out
@@ -23,7 +23,7 @@ const NO_OWN_PROPS = new Set([
 ]);
 
 if (!fs.existsSync(MANIFEST)) {
-	console.error(`✗ ${MANIFEST} not found — run \`yarn build-storybook\` first.`);
+	console.error(`✗ ${MANIFEST} not found — run \`pnpm build-storybook\` first.`);
 	process.exit(1);
 }
 

@@ -7,7 +7,7 @@ A React component library built with [Tailwind CSS v4](https://tailwindcss.com/)
 ## Installation
 
 ```bash
-yarn add @agentero/design-system
+pnpm add @agentero/design-system
 ```
 
 ### Peer dependencies
@@ -15,7 +15,7 @@ yarn add @agentero/design-system
 This package requires the following peer dependencies:
 
 ```bash
-yarn add react react-dom tailwindcss
+pnpm add react react-dom tailwindcss
 ```
 
 ## Setup
@@ -82,12 +82,11 @@ The server exposes three tools:
 To develop the design system alongside a consumer app without a build process, link the package locally:
 
 ```bash
-# In the design system directory
-yarn link
-
-# In the consumer app directory
-yarn link @agentero/design-system
+# In the consumer app directory, with the path to your design-system checkout
+pnpm link ../design-system
 ```
+
+pnpm writes the link into `package.json`, `pnpm-workspace.yaml` and `pnpm-lock.yaml` (the workspace root's in a monorepo). Do not commit those changes.
 
 The root `package.json` exports point directly to TypeScript source files, so the consumer's bundler (Vite, Next.js, etc.) picks up changes instantly via HMR — no build step or watcher needed.
 
@@ -101,9 +100,10 @@ transpilePackages: ['@agentero/design-system'],
 
 ```bash
 # In the consumer app directory
-yarn unlink @agentero/design-system
-yarn install --force
+pnpm unlink @agentero/design-system
 ```
+
+This reverts the three files and reinstalls the published version.
 
 ## License
 
