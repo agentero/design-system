@@ -13,6 +13,7 @@
   "bugs": {
     "url": "https://github.com/agentero/design-system/issues"
   },
+  "packageManager": "pnpm@11.28.9",
   "keywords": [
     "react",
     "design-system",
@@ -71,7 +72,7 @@
     "dev": "vite dev",
     "build": "vite build",
     "tsc": "tsgo",
-    "lint": "oxlint src/ lib/ && yarn lint:format",
+    "lint": "oxlint src/ lib/ && pnpm lint:format",
     "lint:format": "oxfmt --check src/ lib/",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
@@ -128,9 +129,12 @@
     "oxfmt": "^0.73.0",
     "oxlint": "^1.56.0",
     "playwright": "^1.60.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "react-hook-form": "7.88.0",
     "storybook": "^10.6.7",
     "tailwindcss": "^4.3.5",
+    "tinyglobby": "^0.2.17",
     "tmcp": "^1.19.3",
     "vite": "^8.3.8",
     "vite-plugin-dts": "^4.5.4",
@@ -150,10 +154,5 @@
     "react-hook-form": {
       "optional": true
     }
-  },
-  "resolutions": {
-    "lodash": "^4.18.1",
-    "esbuild": "^0.28.2",
-    "minimatch": "^11.0.9"
   }
 }
