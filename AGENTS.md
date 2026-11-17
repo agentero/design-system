@@ -120,7 +120,7 @@ Rollup externals include all peer deps and all runtime deps, along with their su
 
 ### MCP server (`mcp/server.ts`)
 
-Uses `@storybook/mcp` to expose three tools — `list-all-documentation`, `get-documentation`, `get-documentation-for-story` — backed by the manifests Storybook emits. The runtime server reads manifests from a directory sibling to the bundled `server.mjs`; **do not** hardcode paths relative to CWD. When adding new MCP tools, follow the existing `tmcp` + Valibot adapter pattern.
+Uses `@storybook/mcp` to expose three tools — `docs-list`, `docs-show`, `docs-show-story` — backed by the manifests Storybook emits. The runtime server reads manifests from a directory sibling to the bundled `server.mjs`; **do not** hardcode paths relative to CWD. The `manifestProvider` reaches the tools only through `transport.listen(context)`: the stdio transport sets the custom context on every message, so assigning `server.ctx.custom` is overwritten and every tool falls back to the HTTP provider and fails. When adding new MCP tools, follow the existing `tmcp` + Valibot adapter pattern.
 
 ### Publishing
 

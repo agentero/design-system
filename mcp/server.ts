@@ -35,7 +35,7 @@ const server = new McpServer(
 	},
 ).withContext<StorybookContext>();
 
-server.ctx.custom = {
+const context: StorybookContext = {
 	manifestProvider: async (_request: Request | undefined, manifestPath: string) => {
 		const fileName = path.basename(manifestPath);
 		return await fs.readFile(path.resolve(manifestsDir, fileName), 'utf-8');
@@ -47,4 +47,4 @@ await addGetDocumentationTool(server);
 await addGetStoryDocumentationTool(server);
 
 const transport = new StdioTransport(server);
-transport.listen();
+transport.listen(context);
