@@ -143,10 +143,11 @@ Trigger.displayName = 'DropdownMenu.Trigger';
 export const Portal = DropdownMenuPrimitive.Portal;
 
 // A `Command` draws its own panel, so the menu hands it the chrome instead of nesting a second
-// border, radius and shadow around it. Same rule as `Popover`.
+// border, radius and shadow around it. Child, not descendant like `Popover`: a `SubContent`
+// rendered without a `Portal` sits inside its parent `Content`, which would match its `Command`.
 const commandChrome = [
-	'has-[[data-slot=command-root]]:border-0 has-[[data-slot=command-root]]:bg-transparent',
-	'has-[[data-slot=command-root]]:p-0 has-[[data-slot=command-root]]:shadow-none'
+	'has-[>[data-slot=command-root]]:border-0 has-[>[data-slot=command-root]]:bg-transparent',
+	'has-[>[data-slot=command-root]]:p-0 has-[>[data-slot=command-root]]:shadow-none'
 ];
 
 /**
