@@ -130,7 +130,7 @@ Uses `@storybook/mcp` to expose three tools — `docs-list`, `docs-show`, `docs-
 ## Tooling notes
 
 - **Formatter is `oxfmt`, not Prettier.** Config lives in `.oxfmtrc.json`. Tabs (width 2), single quotes, `bracketSameLine: true`, `trailingComma: none`, `arrowParens: 'avoid'`, and a custom import-sort order: `server-only` → `react` → `builtin` → `external` → `@agentero/*` → `lib/*`/`modules/*` → relative → style → unknown. Respect this — sorting or quoting the Prettier way will produce a diff CI rejects.
-- **Linter is `oxlint`, not ESLint.** Config in `.oxlintrc.json`. Plugin set is `typescript` / `react` / `jest` and only the `correctness` category is enforced as errors.
+- **Linter is `oxlint`, not ESLint.** Config in `.oxlintrc.json`. Plugin set is `typescript` / `react` / `jest` and only the `correctness` category is enforced as errors. That category includes the React Compiler checks (no ref read or written during render, no synchronous `setState` in an effect). When the pattern is deliberate, disable that one line with `// oxlint-disable-next-line react/<rule> -- <why>`.
 - **Typechecker is `tsgo`** (TypeScript native preview). Behavior is ~equivalent to `tsc --noEmit`, but the binary is different — don't swap it back to `tsc` in scripts.
 - **pnpm 11**, pinned in `packageManager` (`brew install pnpm` once; it switches to the pinned version). Lockfile is `pnpm-lock.yaml`, `--frozen-lockfile` in CI. Node 24.
 - Every pnpm setting lives in `pnpm-workspace.yaml` (this repo is not a workspace): `minimumReleaseAge`, the `allowBuilds` list of dependencies that may run install scripts, and the security `overrides`. Do not add `resolutions` to `package.json`; pnpm ignores it.

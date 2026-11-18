@@ -38,9 +38,7 @@
     "typescript/no-empty-function": "off",
     "typescript/no-use-before-define": "off",
 
-    "react/jsx-uses-vars": "error",
     "react/no-unescaped-entities": "off",
-    "react/prop-types": "off",
     "react/display-name": "off",
     "react/no-unknown-property": ["error", { "ignore": ["css"] }]
   },
