@@ -18,6 +18,10 @@ overrides:
   # floor per major would leave it a second, older copy.
   'esbuild@<0.28.2': ^0.28.2
   'lodash@<4.18.1': ^4.18.1
-  # The exception: minimatch 7 to 10 have no release that fixes GHSA-g3hv-75wg-m249, so they
+  'valibot@<1.4.2': ^1.4.2
+  # The exceptions: minimatch 7 to 10 have no release that fixes GHSA-g3hv-75wg-m249, so they
   # move up to 11.
   'minimatch@>=7 <11': ^11.0.1
+  # Same for glob: nothing below 14.0.2 fixes GHSA-3g3m-2fjr-6pw4. Storybook's docgen plugin asks for
+  # ^13 and only calls globSync, which glob 14 keeps.
+  'glob@>=9 <14.0.2': ^14.0.2
