@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["typescript", "react", "jest"],
+  "plugins": ["typescript", "react", "vitest"],
   "categories": {
     "correctness": "error"
   },
@@ -8,7 +8,7 @@
     "browser": true,
     "node": true,
     "es6": true,
-    "jest": true
+    "vitest": true
   },
   "globals": {
     "React": "readonly",
@@ -40,8 +40,18 @@
 
     "react/no-unescaped-entities": "off",
     "react/display-name": "off",
-    "react/no-unknown-property": ["error", { "ignore": ["css"] }]
+    "react/no-unknown-property": "error",
+    "react/rules-of-hooks": "error",
+    "react/exhaustive-deps": "error"
   },
+  "overrides": [
+    {
+      "files": ["**/*.stories.tsx"],
+      "rules": {
+        "react/rules-of-hooks": "off"
+      }
+    }
+  ],
   "ignorePatterns": ["**/node_modules", "**/build/"],
   "settings": {
     "react": {
