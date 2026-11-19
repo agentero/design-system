@@ -249,7 +249,7 @@ export const Root = ({
 
 		if (!form) return;
 
-		const handleReset = () => setTimeout(resetToTarget);
+		const handleReset = () => setTimeout(() => resetToTarget());
 
 		form.addEventListener('reset', handleReset);
 		return () => form.removeEventListener('reset', handleReset);
