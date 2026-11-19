@@ -139,7 +139,7 @@
     "tinyglobby": "^0.2.17",
     "tmcp": "^1.20.1",
     "vite": "^8.3.8",
-    "vite-plugin-dts": "^4.5.4",
+    "vite-plugin-dts": "^5.1.2",
     "vitest": "^5.1.1"
   },
   "peerDependencies": {
