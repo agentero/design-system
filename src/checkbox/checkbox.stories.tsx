@@ -135,11 +135,11 @@ export const Controlled: Story = {
 		return (
 			<div className="flex items-center gap-2">
 				<Checkbox
-					id="controlled"
+					id="auto-renew"
 					checked={accepted}
 					onCheckedChange={value => setAccepted(value === true)}
 				/>
-				<Label htmlFor="controlled">Auto-renew policy {accepted ? '(on)' : '(off)'}</Label>
+				<Label htmlFor="auto-renew">Auto-renew policy {accepted ? '(on)' : '(off)'}</Label>
 			</div>
 		);
 	}
@@ -156,11 +156,11 @@ export const SelectAll: Story = {
 			<div className="flex flex-col gap-3">
 				<div className="flex items-center gap-2">
 					<Checkbox
-						id="select-all"
+						id="all-carriers"
 						checked={allSelected ? true : selected.length > 0 ? 'indeterminate' : false}
 						onCheckedChange={value => setSelected(value === true ? carriers : [])}
 					/>
-					<Label htmlFor="select-all">Select all carriers</Label>
+					<Label htmlFor="all-carriers">Select all carriers</Label>
 				</div>
 				<div className="ms-6 flex flex-col gap-2">
 					{carriers.map(carrier => (
