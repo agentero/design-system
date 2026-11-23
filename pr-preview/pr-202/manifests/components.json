@@ -7307,19 +7307,11 @@
           "summary": "Picked file previewed, with Replace file"
         },
         {
-          "id": "components-filedrop--stored-file",
-          "name": "Stored File",
-          "snippet": "const StoredFile = () => <FileDrop\n    accept=\"application/pdf\"\n    onFileChange={fn()}\n    onFileReject={fn()}\n    value={{ url: storedW9Url }} />;",
-          "description": "A file stored earlier comes in as `value.url` and previews from that\naddress, so an edit form opens on the current document.",
-          "summary": "Stored file previewed from its URL",
-          "warning": "Incomplete snippet: `storedW9Url` could not be resolved statically."
-        },
-        {
           "id": "components-filedrop--removable",
           "name": "Removable",
           "snippet": "const Removable = () => <ControlledFileDrop\n    accept=\"application/pdf\"\n    onFileChange={fn()}\n    onFileReject={fn()}\n    value={{ url: storedW9Url }}\n    onFileRemove={fn()} />;",
-          "description": "`onFileRemove` adds a \"Remove\" button beside \"Replace file\"; clearing the\nvalue there brings the drop zone back, with focus on it. The input is\nemptied too, so the same file can be picked again.",
-          "summary": "Remove button that brings the drop zone back",
+          "description": "A file stored earlier comes in as `value.url` and previews from that\naddress, so an edit form opens on the current document. `onFileRemove` adds\na \"Remove\" button beside \"Replace file\"; clearing the value there brings the\ndrop zone back, with focus on it. The input is emptied too, so the same file\ncan be picked again.",
+          "summary": "Stored file with a Remove button",
           "warning": "Incomplete snippet: `storedW9Url` could not be resolved statically."
         },
         {
@@ -7332,45 +7324,17 @@
         {
           "id": "components-filedrop--alternative-source",
           "name": "Alternative Source",
-          "snippet": "const AlternativeSource = () => <FileDrop\n    accept=\"application/pdf\"\n    onFileChange={fn()}\n    onFileReject={fn()}\n    showAcceptedFormats={false}>(<Button type=\"button\" variant=\"secondary\" size=\"md\">Choose from agency\n                        <ChevronDownIcon />\n    </Button>)</FileDrop>;",
-          "description": "`children` offer another way to supply the file, rendered in the empty zone\nunder an \"or\". Their clicks are their own: they never open the picker.\n`showAcceptedFormats={false}` drops the formats line.",
+          "snippet": "const AlternativeSource = () => {\n    const [value, setValue] = useState<FileDropValue | null>(null);\n\n    return (\n        <FileDrop\n            accept=\"application/pdf\"\n            onFileChange={fn()}\n            onFileReject={fn()}\n            showAcceptedFormats={false}\n            value={value}\n            onFileRemove={() => setValue(null)}>\n            <DropdownMenu.Root>\n                <DropdownMenu.Trigger asChild>\n                    <Button type=\"button\" variant=\"secondary\" size=\"md\">Choose from agency\n                                                    <ChevronDownIcon />\n                    </Button>\n                </DropdownMenu.Trigger>\n                <DropdownMenu.Portal>\n                    <DropdownMenu.Content>\n                        <DropdownMenu.Item\n                            onSelect={() => setValue({ url: storedW9Url, name: 'w9-northside-insurance.pdf' })}>W-9 · Northside Insurance\n                                                        </DropdownMenu.Item>\n                        <DropdownMenu.Item\n                            onSelect={() => setValue({ url: storedW9Url, name: 'w9-lakeside-agency.pdf' })}>W-9 · Lakeside Agency\n                                                        </DropdownMenu.Item>\n                    </DropdownMenu.Content>\n                </DropdownMenu.Portal>\n            </DropdownMenu.Root>\n        </FileDrop>\n    );\n};",
+          "description": "`children` offer another way to supply the file, rendered in the empty zone\nunder an \"or\": here a menu of the files the agency already stored, as\nproducerflow's \"Choose from agency\" does. Their clicks are their own: they\nnever open the picker, and picking a file sets the value like a drop would.\n`showAcceptedFormats={false}` drops the formats line.",
           "summary": "Another way to supply the file inside the zone"
-        },
-        {
-          "id": "components-filedrop--inside-label",
-          "name": "Inside Label",
-          "snippet": "const InsideLabel = () => <Label className=\"flex-col flex-nowrap gap-2\">W-9\n                <FileDrop accept=\"application/pdf\" onFileChange={fn()} onFileReject={fn()} />\n</Label>;",
-          "description": "Wrapped in a `<label>` instead of named by one, a click on the zone still\nopens the picker once: the zone cancels the label's own click on the input.",
-          "summary": "Inside a label, a click opens the picker once"
         },
         {
           "id": "components-filedrop--without-preview",
           "name": "Without Preview",
           "snippet": "const WithoutPreview = () => <FileDrop\n    accept=\".csv\"\n    onFileChange={fn()}\n    onFileReject={fn()}\n    value={{ file: csv() }} />;",
-          "description": "A file the frame cannot show (a spreadsheet, an empty file, an image over\n10 MB, or HTML and SVG, whose scripts would run in the app) keeps the box\nwith a placeholder instead.",
-          "summary": "File without a preview shows a placeholder",
+          "description": "A file the frame cannot show (a spreadsheet, an empty file, an image over\n10 MB, or HTML and SVG, whose scripts would run in the app) keeps the box\nwith its name over a placeholder instead.",
+          "summary": "File without a preview shows its name and a placeholder",
           "warning": "Incomplete snippet: `csv` could not be resolved statically."
-        },
-        {
-          "id": "components-filedrop--name-only",
-          "name": "Name Only",
-          "snippet": "const NameOnly = () => <FileDrop\n    accept=\"application/pdf\"\n    onFileChange={fn()}\n    onFileReject={fn()}\n    value={{ name: 'w9-northside-insurance.pdf' }} />;",
-          "description": "A file known only by its `name`, copied from another record with neither\nthe `File` nor a URL to show, prints the name over the placeholder.",
-          "summary": "File known only by its name"
-        },
-        {
-          "id": "components-filedrop--drag-feedback",
-          "name": "Drag Feedback",
-          "snippet": "const DragFeedback = () => <FileDrop accept=\"application/pdf\" onFileChange={fn()} onFileReject={fn()} />;",
-          "description": "Dragging over the zone tints it by whether `accept` allows the file, and\nleaving clears the tint. A dragged link or text gets none. Mid-drag the browser gives only the MIME type, so\nan `accept` made of extensions shows the rejected tint until the drop.",
-          "summary": "Drag feedback for accepted and rejected files"
-        },
-        {
-          "id": "components-filedrop--drop",
-          "name": "Drop",
-          "snippet": "const Drop = () => <FileDrop accept=\"application/pdf\" onFileChange={fn()} onFileReject={fn()} />;",
-          "description": "A dropped file is checked against `accept` like a picked one: a match goes\nto `onFileChange`, anything else to `onFileReject`, so the field can show\nthe error. The picker already filters by `accept`; a drop does not.",
-          "summary": "Dropped files reported or rejected by accept"
         },
         {
           "id": "components-filedrop--invalid",
@@ -7395,13 +7359,6 @@
           "warning": "Incomplete snippet: `storedW9Url` could not be resolved statically."
         },
         {
-          "id": "components-filedrop--read-only-empty",
-          "name": "Read Only Empty",
-          "snippet": "const ReadOnlyEmpty = () => <FileDrop accept=\"application/pdf\" onFileChange={fn()} onFileReject={fn()} readOnly />;",
-          "description": "Read-only with no file renders nothing: there is no document to look at and\nnone can be added.",
-          "summary": "Read-only without a file renders nothing"
-        },
-        {
           "id": "components-filedrop--custom-height",
           "name": "Custom Height",
           "snippet": "const CustomHeight = () => <ControlledFileDrop\n    accept=\"application/pdf\"\n    onFileChange={fn()}\n    onFileReject={fn()}\n    className=\"[--file-drop-min-height:18.75rem]\" />;",
@@ -7409,7 +7366,7 @@
           "summary": "Taller zone through className"
         }
       ],
-      "import": "import { Button, FileDrop, Label } from '@agentero/design-system';\nimport { ChevronDownIcon } from 'lucide-react';\nimport { fn } from 'storybook/test';\nimport { Button } from '../button';"
+      "import": "import { Button, DropdownMenu, FileDrop, Label } from '@agentero/design-system';\nimport { ChevronDownIcon } from 'lucide-react';\nimport { fn } from 'storybook/test';"
     },
     "components-formtext": {
       "id": "components-formtext",
@@ -12872,6 +12829,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5049
+    "durationMs": 4363
   }
 }
