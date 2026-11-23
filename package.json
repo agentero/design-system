@@ -13,7 +13,7 @@
   "bugs": {
     "url": "https://github.com/agentero/design-system/issues"
   },
-  "packageManager": "pnpm@11.28.9",
+  "packageManager": "pnpm@11.28.12",
   "keywords": [
     "react",
     "design-system",
