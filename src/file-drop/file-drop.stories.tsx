@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { ChevronDownIcon } from 'lucide-react';
 import { expect, fn, spyOn, userEvent, waitFor, within } from 'storybook/test';
 
 import { Button } from '../button';
@@ -100,16 +101,17 @@ const meta = {
 		'aria-invalid': { control: 'boolean' }
 	},
 	args: {
-		id: 'w9',
 		accept: 'application/pdf',
 		onFileChange: fn(),
 		onFileReject: fn()
 	},
 	decorators: [
-		Story => (
+		// The story's own id names the input, so the Docs page, which renders every
+		// story at once, has no two labels pointing at the same input.
+		(Story, { id, args, parameters }) => (
 			<div className="flex max-w-120 flex-col gap-2">
-				<Label htmlFor="w9">W-9</Label>
-				<Story />
+				{parameters.label !== false && <Label htmlFor={id}>W-9</Label>}
+				<Story args={{ ...args, id }} />
 			</div>
 		)
 	]
@@ -135,7 +137,7 @@ export const Default: Story = {
 		await expect(input).toHaveAttribute('type', 'file');
 		await expect(zone).toHaveAttribute('data-state', 'empty');
 		await expect(canvas.getByText('Accepted formats: PDF')).toBeVisible();
-		await expect(zone.getBoundingClientRect().height).toBe(400);
+		await expect(zone.getBoundingClientRect().height).toBe(200);
 
 		const openPicker = spyOn(input, 'click').mockImplementation(() => {});
 		await userEvent.click(zone);
@@ -151,17 +153,23 @@ export const Default: Story = {
 
 /**
  * Once the state holds the file, the box shows it: PDFs, plain text and
- * images in a frame, under a "Replace file" button that opens the picker
- * again. The box keeps the zone's height, so the page does not jump; focus
- * moves to the button, since the input leaves the tab order; and a file
- * dropped on the preview is swallowed instead of opening in place of the page.
+ * images in a frame as tall as the zone was, under a "Replace file" button
+ * that opens the picker again. Focus moves to the button, since the input
+ * leaves the tab order; `required` stops holding, since the file never
+ * reaches the input; and a file dropped on the preview is swallowed instead of
+ * opening in place of the page.
  *
  * @summary Picked file previewed, with Replace file
  */
 export const PickedFile: Story = {
+	args: {
+		required: true
+	},
 	render: args => <ControlledFileDrop {...args} />,
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
+
+		await expect(canvas.getByLabelText('W-9')).toBeRequired();
 
 		// After the native picker closes, focus is back on the input it opened from.
 		canvas.getByLabelText('W-9').focus();
@@ -173,12 +181,13 @@ export const PickedFile: Story = {
 
 		await expect(frame.getAttribute('src')).toMatch(/^blob:/);
 		await expect(getZone(canvasElement)).toHaveAttribute('data-state', 'filled');
-		await expect(getZone(canvasElement).getBoundingClientRect().height).toBe(400);
+		await expect(frame.getBoundingClientRect().height).toBe(200);
 
 		const input = canvas.getByLabelText<HTMLInputElement>('W-9');
 		const openPicker = spyOn(input, 'click').mockImplementation(() => {});
 
 		await expect(input).toHaveAttribute('tabindex', '-1');
+		await expect(input).not.toBeRequired();
 
 		const stray = dragEvent('drop', pdf('other.pdf', 'Other'));
 		getZone(canvasElement).dispatchEvent(stray);
@@ -209,7 +218,8 @@ export const StoredFile: Story = {
 
 /**
  * `onFileRemove` adds a "Remove" button beside "Replace file"; clearing the
- * value there brings the drop zone back, with focus on it.
+ * value there brings the drop zone back, with focus on it. The input is
+ * emptied too, so the same file can be picked again.
  *
  * @summary Remove button that brings the drop zone back
  */
@@ -221,12 +231,19 @@ export const Removable: Story = {
 	render: args => <ControlledFileDrop {...args} />,
 	play: async ({ args, canvasElement }) => {
 		const canvas = within(canvasElement);
+		const input = canvas.getByLabelText<HTMLInputElement>('W-9');
 
 		await userEvent.click(canvas.getByRole('button', { name: 'Remove' }));
 
 		await expect(args.onFileRemove).toHaveBeenCalledOnce();
 		await expect(getZone(canvasElement)).toHaveAttribute('data-state', 'empty');
-		await expect(canvas.getByLabelText('W-9')).toHaveFocus();
+		await expect(input).toHaveFocus();
+
+		await userEvent.upload(input, pdf('w9.pdf', 'Form W-9'));
+		await userEvent.click(await canvas.findByRole('button', { name: 'Remove' }));
+
+		await expect(getZone(canvasElement)).toHaveAttribute('data-state', 'empty');
+		await expect(input).toHaveValue('');
 	}
 };
 
@@ -261,8 +278,9 @@ export const AlternativeSource: Story = {
 	args: {
 		showAcceptedFormats: false,
 		children: (
-			<Button type="button" variant="secondary" size="sm">
+			<Button type="button" variant="secondary" size="md">
 				Choose from agency
+				<ChevronDownIcon />
 			</Button>
 		)
 	},
@@ -277,6 +295,32 @@ export const AlternativeSource: Story = {
 		await userEvent.click(canvas.getByRole('button', { name: 'Choose from agency' }));
 		await expect(openPicker).not.toHaveBeenCalled();
 		openPicker.mockRestore();
+	}
+};
+
+/**
+ * Wrapped in a `<label>` instead of named by one, a click on the zone still
+ * opens the picker once: the zone cancels the label's own click on the input.
+ *
+ * @summary Inside a label, a click opens the picker once
+ */
+export const InsideLabel: Story = {
+	parameters: { label: false },
+	render: args => (
+		<Label className="flex-col flex-nowrap gap-2">
+			W-9
+			<FileDrop {...args} />
+		</Label>
+	),
+	play: async ({ canvasElement }) => {
+		const input = within(canvasElement).getByLabelText<HTMLInputElement>(/^W-9/);
+		const opened = fn((event: Event) => event.preventDefault());
+
+		input.addEventListener('click', opened);
+		await userEvent.click(getZone(canvasElement).querySelector('svg')!.parentElement!);
+		input.removeEventListener('click', opened);
+
+		await expect(opened).toHaveBeenCalledOnce();
 	}
 };
 
@@ -473,20 +517,25 @@ export const ReadOnlyEmpty: Story = {
 };
 
 /**
- * `className` lands on the box, so a `min-h-*` resizes the zone and the
- * preview alike, here for a short CSV import.
+ * `className` lands on the box, so setting `--file-drop-min-height` there
+ * resizes the zone and the preview alike, here to 300px for a longer document.
  *
- * @summary Shorter zone through className
+ * @summary Taller zone through className
  */
 export const CustomHeight: Story = {
 	args: {
-		accept: '.csv',
-		className: 'min-h-50'
+		className: '[--file-drop-min-height:18.75rem]'
 	},
+	render: args => <ControlledFileDrop {...args} />,
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 
-		await expect(getZone(canvasElement).getBoundingClientRect().height).toBe(200);
-		await expect(canvas.getByText('Accepted formats: CSV')).toBeVisible();
+		await expect(getZone(canvasElement).getBoundingClientRect().height).toBe(300);
+
+		await userEvent.upload(canvas.getByLabelText('W-9'), pdf('w9.pdf', 'Form W-9'));
+
+		await expect((await canvas.findByTitle('File preview')).getBoundingClientRect().height).toBe(
+			300
+		);
 	}
 };

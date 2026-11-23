@@ -95,29 +95,36 @@ const extensionsFor = (type: string): string[] => {
 /**
  * The formats an `accept` string allows, as the uppercase extensions the drop
  * zone prints: `application/pdf,.csv` reads `['PDF', 'CSV']`, and a group like
- * `image/*` lists every extension of the group. A MIME type missing from the
+ * `image/*` lists every extension of the group. Each prints once, so
+ * `image/jpeg,.jpg` reads `['JPEG', 'JPG']`. A MIME type missing from the
  * table prints nothing, but `isAccepted` still allows it.
  */
-export const getAcceptedFormats = (accept: string): string[] =>
-	splitAccept(accept)
-		.flatMap(extensionsFor)
-		.map(extension => extension.replace('.', '').toUpperCase());
+export const getAcceptedFormats = (accept: string): string[] => [
+	...new Set(
+		splitAccept(accept)
+			.flatMap(extensionsFor)
+			.map(extension => extension.replace('.', '').toUpperCase())
+	)
+];
 
 /**
  * Whether a file matches an `accept` string the way the native picker reads
  * it: an extension (`.csv`) against the name, a group (`image/*`) against the
- * MIME type's first half, and a MIME type against the whole of it. An empty
- * `accept` allows anything.
+ * MIME type's first half, and a MIME type against the whole of it. An
+ * `accept` with no entries (missing, empty, or only commas and spaces) allows
+ * anything, as the picker does.
  */
 export const isAccepted = (file: Pick<File, 'name' | 'type'>, accept: string | undefined) => {
-	if (!accept) {
+	const types = splitAccept(accept ?? '');
+
+	if (types.length === 0) {
 		return true;
 	}
 
 	const name = file.name.toLowerCase();
 	const mimeType = file.type.toLowerCase();
 
-	return splitAccept(accept).some(type => {
+	return types.some(type => {
 		if (type.startsWith('.')) {
 			return name.endsWith(type);
 		}

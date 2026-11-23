@@ -27,13 +27,17 @@ import { useFileDropContext } from './context';
  * Style recipe for FileDrop. `filled` swaps the dashed drop zone for the
  * preview box; `tone` is the zone's feedback, where a file dragged over it
  * (`accept`/`reject`) wins over the field's `invalid` state; `disabled` greys
- * the zone out.
+ * the zone out. `--file-drop-min-height` (200px) is the least height of the
+ * zone and of the preview, which the header sits on top of.
  *
  * @summary tailwind-variants recipe backing the FileDrop component styles
  */
 export const fileDropRecipe = tv({
 	slots: {
-		root: 'relative flex min-h-100 flex-col rounded-md border border-border-default-base-primary',
+		root: [
+			'relative flex flex-col rounded-md border border-border-default-base-primary',
+			'[--file-drop-min-height:12.5rem]'
+		],
 		// The zone's children ignore the pointer so none of them becomes a drag
 		// target: a `dragleave` fired by one would clear the tone mid-drag, and
 		// WebKit gives no `relatedTarget` to tell it apart from leaving the zone.
@@ -46,20 +50,22 @@ export const fileDropRecipe = tv({
 			'flex items-center justify-end gap-2 p-3',
 			'border-b border-border-default-base-primary bg-bg-default-base-primary'
 		],
-		frame: 'w-full flex-1 bg-bg-default-base-secondary',
+		frame: 'min-h-(--file-drop-min-height) w-full flex-1 bg-bg-default-base-secondary',
 		fallback: [
-			'flex flex-1 flex-col items-center justify-center gap-2 p-10',
+			'flex min-h-(--file-drop-min-height) flex-1 flex-col items-center justify-center gap-2 p-10',
 			'text-xs text-text-input-placeholder'
 		],
 		fallbackIcon: 'size-16 text-icon-default-base-secondary',
 		fallbackName: 'text-text-default-base-primary',
-		loading: 'flex-1 rounded-none'
+		loading: 'flex min-h-(--file-drop-min-height) flex-1',
+		skeleton: 'flex-1 rounded-none'
 	},
 	variants: {
 		filled: {
 			false: {
 				root: [
-					'cursor-pointer items-center justify-center gap-2 border-dashed p-6 transition-colors',
+					'min-h-(--file-drop-min-height) cursor-pointer items-center justify-center gap-2',
+					'border-dashed p-6 transition-colors',
 					'border-icon-default-base-secondary bg-bg-default-base-secondary',
 					// What takes focus is the sr-only input, so the ring goes on the zone.
 					'has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-offset-2',
@@ -103,6 +109,11 @@ export type FileDropVariants = VariantProps<typeof fileDropRecipe>;
  */
 export type FileDropValue = {
 	file?: File;
+	/**
+	 * Framed as it is, whatever its type, so it must point at a file you trust,
+	 * on another origin such as the file store's: an HTML or SVG file served
+	 * from the app's own origin would run its script inside the app.
+	 */
 	url?: string;
 	name?: string;
 };
@@ -183,8 +194,8 @@ const FilePreview = ({
 
 	if (!file && !url && loading) {
 		return (
-			<div role="status" aria-label="Loading file preview" className="flex flex-1">
-				<Skeleton className={styles.loading()} />
+			<div role="status" aria-label="Loading file preview" className={styles.loading()}>
+				<Skeleton className={styles.skeleton()} />
 			</div>
 		);
 	}
@@ -226,9 +237,10 @@ const ignoreDrop = (event: DragEvent<HTMLDivElement>) => {
  * through `onFileChange`, or through `onFileReject` when `accept` does not
  * allow it, so the field can show the error. Nothing is uploaded here; the
  * consumer owns the `File`. The zone lists the accepted formats from `accept`
- * (unless `showAcceptedFormats` is `false`), and the box keeps its height when
- * a file arrives (`min-h-100` by default, changed through `className`, which
- * lands on the box). `onFileRemove` adds a "Remove" button, `previewLoading`
+ * (unless `showAcceptedFormats` is `false`). The zone, and the preview under
+ * its header, are at least 200px tall; `className` lands on the box, so
+ * `[--file-drop-min-height:18.75rem]` there makes both 300px. `onFileRemove`
+ * adds a "Remove" button, `previewLoading`
  * holds a placeholder while a stored file's `url` arrives, and `children`
  * offer another way to supply the file inside the empty zone.
  *
@@ -238,7 +250,10 @@ const ignoreDrop = (event: DragEvent<HTMLDivElement>) => {
  * `FileDropContext` it takes that wiring from it, and its own props always win.
  * `aria-invalid` paints the zone in the destructive tone, `disabled` greys it
  * out, and `readOnly` shows the file without its buttons, ignores picks and
- * drops, and renders nothing when there is no file.
+ * drops, and renders nothing when there is no file. `required` holds only
+ * while the zone is empty, since a dropped or stored file never reaches the
+ * input. "Replace file" carries the input's `aria-describedby`, so the field's
+ * error is read on the control that keeps the focus.
  *
  * @summary Base single-file upload control: drop zone, picker and preview
  *
@@ -265,6 +280,7 @@ export const FileDrop = (props: FileDropProps) => {
 		className,
 		disabled,
 		readOnly,
+		required,
 		ref,
 		tabIndex,
 		onClick,
@@ -296,10 +312,16 @@ export const FileDrop = (props: FileDropProps) => {
 			replaceRef.current?.focus();
 		}
 
-		// "Remove" leaves with the preview, so focus goes to the zone it brings back.
-		if (!filled && focusInput.current) {
-			focusInput.current = false;
-			inputRef.current?.focus();
+		if (!filled && inputRef.current) {
+			// A file removed or reset from outside leaves the input too, or picking
+			// the same file again would fire no `change`.
+			inputRef.current.value = '';
+
+			// "Remove" leaves with the preview, so focus goes to the zone it brings back.
+			if (focusInput.current) {
+				focusInput.current = false;
+				inputRef.current.focus();
+			}
 		}
 	}, [filled]);
 
@@ -385,6 +407,8 @@ export const FileDrop = (props: FileDropProps) => {
 			return;
 		}
 
+		// Inside a `<label>` for the input, the label would click it a second time.
+		event.preventDefault();
 		inputRef.current?.click();
 	};
 
@@ -398,6 +422,7 @@ export const FileDrop = (props: FileDropProps) => {
 			accept={accept}
 			disabled={disabled}
 			readOnly={readOnly}
+			required={required && !filled}
 			tabIndex={filled ? -1 : tabIndex}
 			className="sr-only"
 			onClick={onInputClick}
@@ -424,6 +449,7 @@ export const FileDrop = (props: FileDropProps) => {
 							type="button"
 							variant="secondary"
 							disabled={disabled}
+							aria-describedby={inputProps['aria-describedby']}
 							onClick={() => inputRef.current?.click()}>
 							<UploadIcon />
 							Replace file

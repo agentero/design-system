@@ -33,6 +33,10 @@ describe('getAcceptedFormats', () => {
 		expect(getAcceptedFormats('application/pdf, image/gif,.png,')).toEqual(['PDF', 'GIF', 'PNG']);
 	});
 
+	it('should print each format once', () => {
+		expect(getAcceptedFormats('image/jpeg,.jpg,.JPEG')).toEqual(['JPEG', 'JPG']);
+	});
+
 	it('should print nothing for a MIME type it does not know', () => {
 		expect(getAcceptedFormats('application/x-agentero')).toEqual([]);
 	});
@@ -42,6 +46,10 @@ describe('isAccepted', () => {
 	it('should accept anything without an accept string', () => {
 		expect(isAccepted(file('notes.txt', 'text/plain'), undefined)).toBe(true);
 		expect(isAccepted(file('notes.txt', 'text/plain'), '')).toBe(true);
+	});
+
+	it('should accept anything when the accept string has no entries', () => {
+		expect(isAccepted(file('notes.txt', 'text/plain'), ' , ')).toBe(true);
 	});
 
 	it('should match a MIME type against the whole type', () => {
