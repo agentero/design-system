@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { getAcceptedFormats, isAccepted, isDragAccepted } from './accept';
+import { getAcceptedFormats, isAccepted } from './accept';
 
 const file = (name: string, type: string) => ({ name, type });
 
@@ -69,25 +69,5 @@ describe('isAccepted', () => {
 
 	it('should accept a file matching any of the entries', () => {
 		expect(isAccepted(file('appetite.md', ''), 'application/pdf, .md')).toBe(true);
-	});
-});
-
-describe('isDragAccepted', () => {
-	it('should match MIME types and groups as isAccepted does', () => {
-		expect(isDragAccepted('application/pdf', 'application/pdf')).toBe(true);
-		expect(isDragAccepted('image/png', 'image/*')).toBe(true);
-		expect(isDragAccepted('text/csv', 'application/pdf')).toBe(false);
-	});
-
-	it('should match an extension through the extensions of the type', () => {
-		expect(isDragAccepted('text/csv', '.csv')).toBe(true);
-		expect(isDragAccepted('image/jpeg', '.jpg')).toBe(true);
-		expect(isDragAccepted('application/pdf', '.csv')).toBe(false);
-	});
-
-	it('should not tell when the type is missing or unknown to the table', () => {
-		expect(isDragAccepted('', '.csv')).toBeUndefined();
-		expect(isDragAccepted('', 'application/pdf')).toBeUndefined();
-		expect(isDragAccepted('application/x-agentero', '.agentero')).toBeUndefined();
 	});
 });

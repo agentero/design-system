@@ -20,7 +20,7 @@ import { tv, VariantProps } from 'tailwind-variants';
 import { cn, mergeRefs } from '../../lib';
 import { Button } from '../button';
 import { Skeleton } from '../skeleton';
-import { getAcceptedFormats, isAccepted, isDragAccepted } from './accept';
+import { getAcceptedFormats, isAccepted } from './accept';
 import { useFileDropContext } from './context';
 
 /**
@@ -400,10 +400,12 @@ export const FileDrop = (props: FileDropProps) => {
 			return;
 		}
 
+		// Mid-drag only the MIME type is known, the name arrives with the drop, so an
+		// extension-only `accept` reads as a rejection until the drop judges the file.
 		const item = event.dataTransfer.items[0];
-		const allowed = item ? isDragAccepted(item.type, accept) : true;
+		const allowed = !item || isAccepted({ name: '', type: item.type }, accept);
 
-		setDragTone(allowed === undefined ? undefined : allowed ? 'accept' : 'reject');
+		setDragTone(allowed ? 'accept' : 'reject');
 	};
 
 	const onDragOver = (event: DragEvent<HTMLDivElement>) => {

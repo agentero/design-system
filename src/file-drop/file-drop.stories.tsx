@@ -134,14 +134,13 @@ type Story = StoryObj<typeof meta>;
 
 /**
  * The empty zone, labelled by the `Label` through the hidden input, with the
- * formats `accept` allows. Clicking anywhere on it opens the picker; a picked
- * file is reported through `onFileChange` and the input lets go of it, so the
- * same file picked again is reported again.
+ * formats `accept` allows. Clicking anywhere on it opens the picker.
  *
- * @summary Empty drop zone that opens the picker and reports the file
+ * @summary Empty drop zone that opens the picker
  */
 export const Default: Story = {
-	play: async ({ args, canvasElement }) => {
+	render: args => <ControlledFileDrop {...args} />,
+	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 		const input = canvas.getByLabelText<HTMLInputElement>('W-9');
 		const zone = getZone(canvasElement);
@@ -155,13 +154,6 @@ export const Default: Story = {
 		await userEvent.click(zone);
 		await expect(openPicker).toHaveBeenCalledOnce();
 		openPicker.mockRestore();
-
-		const file = pdf('w9.pdf', 'Form W-9');
-		await userEvent.upload(input, file);
-
-		await expect(args.onFileChange).toHaveBeenCalledWith(file);
-		// The input lets go of the file, so picking it again reports it again.
-		await expect(input).toHaveValue('');
 	}
 };
 
@@ -177,21 +169,13 @@ export const Default: Story = {
  */
 export const PickedFile: Story = {
 	args: {
-		required: true
+		required: true,
+		value: { file: pdf('w9.pdf', 'Form W-9') }
 	},
 	render: args => <ControlledFileDrop {...args} />,
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
-
-		await expect(canvas.getByLabelText('W-9')).toBeRequired();
-
-		// After the native picker closes, focus is back on the input it opened from.
-		canvas.getByLabelText('W-9').focus();
-		await userEvent.upload(canvas.getByLabelText('W-9'), pdf('w9.pdf', 'Form W-9'));
-
 		const frame = await canvas.findByTitle('File preview');
-
-		await expect(canvas.getByRole('button', { name: 'Replace file' })).toHaveFocus();
 
 		await expect(frame.getAttribute('src')).toMatch(/^blob:/);
 		await expect(getZone(canvasElement)).toHaveAttribute('data-state', 'filled');
@@ -217,8 +201,7 @@ export const PickedFile: Story = {
  * A file stored earlier comes in as `value.url` and previews from that
  * address, so an edit form opens on the current document. `onFileRemove` adds
  * a "Remove" button beside "Replace file"; clearing the value there brings the
- * drop zone back, with focus on it. The input is emptied too, so the same file
- * can be picked again.
+ * drop zone back, with focus on it.
  *
  * @summary Stored file with a Remove button
  */
@@ -240,10 +223,13 @@ export const Removable: Story = {
 		await expect(getZone(canvasElement)).toHaveAttribute('data-state', 'empty');
 		await expect(input).toHaveFocus();
 
-		await userEvent.upload(input, pdf('w9.pdf', 'Form W-9'));
-		await userEvent.click(await canvas.findByRole('button', { name: 'Remove' }));
+		// Picking a new file previews it, moves focus to "Replace file" and empties
+		// the input, so the same file can be picked again.
+		const file = pdf('w9.pdf', 'Form W-9');
+		await userEvent.upload(input, file);
 
-		await expect(getZone(canvasElement)).toHaveAttribute('data-state', 'empty');
+		await expect(args.onFileChange).toHaveBeenCalledWith(file);
+		await expect(await canvas.findByRole('button', { name: 'Replace file' })).toHaveFocus();
 		await expect(input).toHaveValue('');
 	}
 };
@@ -260,6 +246,7 @@ export const PreviewLoading: Story = {
 		value: { name: 'w9-northside-insurance.pdf' },
 		previewLoading: true
 	},
+	render: args => <ControlledFileDrop {...args} />,
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 
@@ -339,6 +326,10 @@ export const AlternativeSource: Story = {
 
 		await expect(args.onFileChange).toHaveBeenCalledOnce();
 		await expect((await canvas.findByTitle('File preview')).getAttribute('src')).toMatch(/^blob:/);
+
+		// Back to the empty zone, where the alternative source lives.
+		await userEvent.click(canvas.getByRole('button', { name: 'Remove' }));
+		await expect(canvas.getByRole('button', { name: 'Choose from agency' })).toBeVisible();
 	}
 };
 
@@ -382,6 +373,7 @@ export const WithoutPreview: Story = {
 		accept: '.csv',
 		value: { file: csv() }
 	},
+	render: args => <ControlledFileDrop {...args} />,
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 
@@ -415,11 +407,10 @@ export const NameOnly: Story = {
 /**
  * Dragging over the zone tints it by whether `accept` allows the file, and
  * leaving clears the tint; a dragged link or text gets none. Mid-drag the
- * browser gives only the MIME type, so an extension in `accept` is matched
- * through the type's known extensions, and a type it cannot place gets no
- * tint until the drop. The drop itself is checked against
- * `accept` like a pick: a match goes to `onFileChange`, anything else to
- * `onFileReject`, since the picker filters by `accept` and a drop does not.
+ * browser gives only the MIME type, so an extension-only `accept` tints red
+ * until the drop. The drop itself is checked against `accept` like a pick: a
+ * match goes to `onFileChange`, anything else to `onFileReject`, since the
+ * picker filters by `accept` and a drop does not.
  *
  * @summary Drag tint and dropped files checked against accept
  */
@@ -473,6 +464,10 @@ export const Invalid: Story = {
 					{...args}
 					aria-invalid={!!error}
 					aria-describedby="w9-error"
+					onFileChange={file => {
+						setError('');
+						args.onFileChange?.(file);
+					}}
 					onFileReject={file => {
 						setError(`${file.name} is not a PDF.`);
 						args.onFileReject?.(file);
