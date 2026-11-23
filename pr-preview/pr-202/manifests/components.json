@@ -7154,6 +7154,82 @@
           ]
         },
         "props": {
+          "accept": {
+            "name": "accept",
+            "required": false,
+            "type": {
+              "name": "string"
+            },
+            "description": "The formats the zone takes, as in the native attribute: MIME types,\nwildcards (`image/*`) and extensions (`.csv`), comma-separated. The\npicker filters by it and a dropped file is checked against it; empty\nallows anything. It also writes the \"Accepted formats\" line.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FileDropProps",
+              "fileName": "src/file-drop/file-drop.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/file-drop/file-drop.tsx"
+              }
+            ]
+          },
+          "disabled": {
+            "name": "disabled",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Greys the zone out and disables the input: clicks and drops do nothing.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FileDropProps",
+              "fileName": "src/file-drop/file-drop.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/file-drop/file-drop.tsx"
+              }
+            ]
+          },
+          "readOnly": {
+            "name": "readOnly",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Shows the file without \"Replace file\" or \"Remove\", and takes no drop.\nWith no file it renders nothing.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FileDropProps",
+              "fileName": "src/file-drop/file-drop.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/file-drop/file-drop.tsx"
+              }
+            ]
+          },
+          "aria-invalid": {
+            "name": "aria-invalid",
+            "required": false,
+            "type": {
+              "name": "boolean | \"true\" | \"false\" | \"grammar\" | \"spelling\" | undefined"
+            },
+            "description": "Paints the zone in the destructive tone. Point `aria-describedby` at the\nerror message so it is read with the control.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FileDropProps",
+              "fileName": "src/file-drop/file-drop.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/file-drop/file-drop.tsx"
+              }
+            ]
+          },
           "value": {
             "name": "value",
             "required": false,
@@ -7276,7 +7352,7 @@
             "type": {
               "name": "ReactNode"
             },
-            "description": "Another way to supply the file, such as picking one from another\nrecord: rendered in the empty zone under an \"or\", and gone once there is\na file. Clicks inside it do not open the picker.",
+            "description": "Another way to supply the file, such as picking one from another\nrecord: rendered in the empty zone under an \"or\", and gone once there is\na file. Clicks inside it do not open the picker. With `disabled` it goes\ninert; pass `disabled` to its controls too, so they look it.",
             "defaultValue": null,
             "parent": {
               "name": "FileDropProps",
@@ -7296,7 +7372,7 @@
           "id": "components-filedrop--default",
           "name": "Default",
           "snippet": "const Default = () => <FileDrop accept=\"application/pdf\" onFileChange={fn()} onFileReject={fn()} />;",
-          "description": "The empty zone, labelled by the `Label` through the hidden input, with the\nformats `accept` allows. Clicking anywhere on it opens the picker; a picked\nfile is reported through `onFileChange`.",
+          "description": "The empty zone, labelled by the `Label` through the hidden input, with the\nformats `accept` allows. Clicking anywhere on it opens the picker; a picked\nfile is reported through `onFileChange` and the input lets go of it, so the\nsame file picked again is reported again.",
           "summary": "Empty drop zone that opens the picker and reports the file"
         },
         {
@@ -7324,8 +7400,8 @@
         {
           "id": "components-filedrop--alternative-source",
           "name": "Alternative Source",
-          "snippet": "const AlternativeSource = () => {\n    const [value, setValue] = useState<FileDropValue | null>(null);\n\n    return (\n        <FileDrop\n            accept=\"application/pdf\"\n            onFileChange={fn()}\n            onFileReject={fn()}\n            showAcceptedFormats={false}\n            value={value}\n            onFileRemove={() => setValue(null)}>\n            <DropdownMenu.Root>\n                <DropdownMenu.Trigger asChild>\n                    <Button type=\"button\" variant=\"secondary\" size=\"md\">Choose from agency\n                                                    <ChevronDownIcon />\n                    </Button>\n                </DropdownMenu.Trigger>\n                <DropdownMenu.Portal>\n                    <DropdownMenu.Content>\n                        <DropdownMenu.Item\n                            onSelect={() => setValue({ url: storedW9Url, name: 'w9-northside-insurance.pdf' })}>W-9 · Northside Insurance\n                                                        </DropdownMenu.Item>\n                        <DropdownMenu.Item\n                            onSelect={() => setValue({ url: storedW9Url, name: 'w9-lakeside-agency.pdf' })}>W-9 · Lakeside Agency\n                                                        </DropdownMenu.Item>\n                    </DropdownMenu.Content>\n                </DropdownMenu.Portal>\n            </DropdownMenu.Root>\n        </FileDrop>\n    );\n};",
-          "description": "`children` offer another way to supply the file, rendered in the empty zone\nunder an \"or\": here a menu of the files the agency already stored, as\nproducerflow's \"Choose from agency\" does. Their clicks are their own: they\nnever open the picker, and picking a file sets the value like a drop would.\n`showAcceptedFormats={false}` drops the formats line.",
+          "snippet": "const AlternativeSource = args => {\n    const [value, setValue] = useState<FileDropValue | null>(null);\n\n    return (\n        <FileDrop\n            accept=\"application/pdf\"\n            onFileReject={fn()}\n            showAcceptedFormats={false}\n            value={value}\n            onFileChange={file => {\n                setValue({ file });\n                args.onFileChange?.(file);\n            }}\n            onFileRemove={() => setValue(null)}>\n            <DropdownMenu.Root>\n                <DropdownMenu.Trigger asChild>\n                    <Button type=\"button\" variant=\"secondary\" size=\"md\">Choose from agency\n                                                    <ChevronDownIcon />\n                    </Button>\n                </DropdownMenu.Trigger>\n                <DropdownMenu.Portal>\n                    <DropdownMenu.Content>\n                        <DropdownMenu.Item\n                            onSelect={() => setValue({ url: storedW9Url, name: 'w9-northside-insurance.pdf' })}>W-9 · Northside Insurance\n                                                        </DropdownMenu.Item>\n                        <DropdownMenu.Item\n                            onSelect={() => setValue({ url: storedW9Url, name: 'w9-lakeside-agency.pdf' })}>W-9 · Lakeside Agency\n                                                        </DropdownMenu.Item>\n                    </DropdownMenu.Content>\n                </DropdownMenu.Portal>\n            </DropdownMenu.Root>\n        </FileDrop>\n    );\n};",
+          "description": "`children` offer another way to supply the file, rendered in the empty zone\nunder an \"or\": here a menu of the files the agency already stored, as\nproducerflow's \"Choose from agency\" does. Their clicks are their own: they\nnever open the picker, and picking a file sets the value like a drop would,\nwhile browsing and dropping keep working. `showAcceptedFormats={false}`\ndrops the formats line.",
           "summary": "Another way to supply the file inside the zone"
         },
         {
@@ -12829,6 +12905,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4363
+    "durationMs": 4580
   }
 }

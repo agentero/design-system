@@ -626,7 +626,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.4s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>4.6s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -8481,7 +8481,7 @@ provider&#39;s.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> FileDrop</h2>
       <div class="badges">
-        <label for="c-18-components-filedrop-props" class="badge ok as-toggle">7 prop types</label>
+        <label for="c-18-components-filedrop-props" class="badge ok as-toggle">11 prop types</label>
         
         <label for="c-18-components-filedrop-stories" class="badge ok as-toggle">10 stories · 3 incomplete</label>
         
@@ -8520,16 +8520,36 @@ control is a hidden `&lt;input type=&quot;file&quot;&gt;` a `Label` names.</div>
           <div class="note ok">
             <div class="row">
               <span class="ex-name">Prop types <small>(react-component-meta)</small></span>
-              <span class="badge ok">7 prop types</span>
+              <span class="badge ok">11 prop types</span>
             </div>
             <pre><code>Component: src/file-drop/file-drop.tsx::FileDrop</code></pre>
             <pre><code>Props:</code></pre>
             <pre><code>/**
+ * The formats the zone takes, as in the native attribute: MIME types,
+ * wildcards (`image/*`) and extensions (`.csv`), comma-separated. The
+ * picker filters by it and a dropped file is checked against it; empty
+ * allows anything. It also writes the &quot;Accepted formats&quot; line.
+ */
+accept?: string
+
+/**
+ * Paints the zone in the destructive tone. Point `aria-describedby` at the
+ * error message so it is read with the control.
+ */
+aria-invalid?: boolean | &quot;true&quot; | &quot;false&quot; | &quot;grammar&quot; | &quot;spelling&quot; | undefined
+
+/**
  * Another way to supply the file, such as picking one from another
  * record: rendered in the empty zone under an &quot;or&quot;, and gone once there is
- * a file. Clicks inside it do not open the picker.
+ * a file. Clicks inside it do not open the picker. With `disabled` it goes
+ * inert; pass `disabled` to its controls too, so they look it.
  */
 children?: ReactNode
+
+/**
+ * Greys the zone out and disables the input: clicks and drops do nothing.
+ */
+disabled?: boolean
 
 /**
  * Called with the file picked or dropped when `accept` allows it.
@@ -8553,6 +8573,12 @@ onFileRemove?: () =&gt; void
  * `url` is on its way, instead of &quot;No preview available&quot;.
  */
 previewLoading?: boolean
+
+/**
+ * Shows the file without &quot;Replace file&quot; or &quot;Remove&quot;, and takes no drop.
+ * With no file it renders nothing.
+ */
+readOnly?: boolean
 
 /**
  * Lists the formats `accept` allows under the prompt. Defaults to `true`.
@@ -8590,7 +8616,8 @@ import { fn } from 'storybook/test';</code></pre>
               <div>Empty drop zone that opens the picker and reports the file</div>
               <div class="hint">The empty zone, labelled by the `Label` through the hidden input, with the
 formats `accept` allows. Clicking anywhere on it opens the picker; a picked
-file is reported through `onFileChange`.</div>
+file is reported through `onFileChange` and the input lets go of it, so the
+same file picked again is reported again.</div>
               <pre><code>const Default = () =&gt; &lt;FileDrop accept=&quot;application/pdf&quot; onFileChange={fn()} onFileReject={fn()} /&gt;;</code></pre>
               
             </div>
@@ -8654,18 +8681,22 @@ available&quot;. Until then the value carries only the file&#39;s `name`.</div>
               <div class="hint">`children` offer another way to supply the file, rendered in the empty zone
 under an &quot;or&quot;: here a menu of the files the agency already stored, as
 producerflow&#39;s &quot;Choose from agency&quot; does. Their clicks are their own: they
-never open the picker, and picking a file sets the value like a drop would.
-`showAcceptedFormats={false}` drops the formats line.</div>
-              <pre><code>const AlternativeSource = () =&gt; {
+never open the picker, and picking a file sets the value like a drop would,
+while browsing and dropping keep working. `showAcceptedFormats={false}`
+drops the formats line.</div>
+              <pre><code>const AlternativeSource = args =&gt; {
     const [value, setValue] = useState&lt;FileDropValue | null&gt;(null);
 
     return (
         &lt;FileDrop
             accept=&quot;application/pdf&quot;
-            onFileChange={fn()}
             onFileReject={fn()}
             showAcceptedFormats={false}
             value={value}
+            onFileChange={file =&gt; {
+                setValue({ file });
+                args.onFileChange?.(file);
+            }}
             onFileRemove={() =&gt; setValue(null)}&gt;
             &lt;DropdownMenu.Root&gt;
                 &lt;DropdownMenu.Trigger asChild&gt;
