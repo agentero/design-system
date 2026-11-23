@@ -138,6 +138,7 @@ export const Root = <TData extends RowData>({
 
 	return (
 		<DataTableContext
+			// oxlint-disable-next-line react/jsx-no-constructed-context-values -- `table` keeps its reference when sorting or paging changes it, so a memoized value would stop the consumers from updating
 			value={{
 				table: table as TableType<RowData>,
 				isLoading,

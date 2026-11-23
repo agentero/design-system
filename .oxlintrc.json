@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["typescript", "react", "vitest"],
+  "plugins": ["typescript", "react", "vitest", "jsx-a11y"],
   "categories": {
     "correctness": "error"
   },
@@ -41,7 +41,10 @@
     "react/no-unescaped-entities": "off",
     "react/display-name": "off",
     "react/no-unknown-property": "error",
-    "react/rules-of-hooks": "error"
+    "react/rules-of-hooks": "error",
+    "react/jsx-no-constructed-context-values": "error",
+
+    "jsx-a11y/prefer-tag-over-role": "off"
   },
   "overrides": [
     {

@@ -193,7 +193,7 @@ export const Root = ({
 	...props
 }: RadioGroupRootProps) => {
 	const field = useFieldContext();
-	const styles = radioGroupRecipe({ orientation });
+	const styles = useMemo(() => radioGroupRecipe({ orientation }), [orientation]);
 	const labelledBy =
 		labelledByProp ?? (props['aria-label'] !== undefined ? undefined : field?.labelId);
 	const disabled = disabledProp ?? (field?.disabled || undefined);
@@ -230,6 +230,11 @@ export const Root = ({
 	}, []);
 	const enabled = radios.filter(radio => !radio.disabled);
 	const stop = enabled.find(radio => radio.value === selected) ?? enabled[0];
+	const tabStop = stop?.value;
+	const context = useMemo(
+		() => ({ styles, disabled, tabStop, register }),
+		[styles, disabled, tabStop, register]
+	);
 
 	useImperativeHandle(controlRef, () => ({ focus: () => stop?.element.focus() }), [stop]);
 
@@ -256,7 +261,7 @@ export const Root = ({
 	}, []);
 
 	return (
-		<RadioGroupContext value={{ styles, disabled, tabStop: stop?.value, register }}>
+		<RadioGroupContext value={context}>
 			<RadioGroupPrimitive<string | null>
 				{...props}
 				ref={mergedRef}
@@ -339,6 +344,7 @@ export const Item = ({
 					{/* Base UI's default <span> passes `id` to its hidden input, so no <label> names it. */}
 					<RadioPrimitive.Root
 						nativeButton
+						// oxlint-disable-next-line jsx-a11y/control-has-associated-label -- the wrapping <label htmlFor={id}> names it
 						render={<button type="button" />}
 						ref={radioRef}
 						id={id}

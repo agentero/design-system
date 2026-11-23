@@ -10,7 +10,8 @@ import {
 	ReactNode,
 	SVGProps,
 	use,
-	useId
+	useId,
+	useMemo
 } from 'react';
 
 import {
@@ -534,10 +535,14 @@ export const Alert = ({
 	className,
 	...props
 }: PropsWithChildren<AlertProps>) => {
-	const slotsStyles = alertRecipe({ color, size, ghost });
+	const slotsStyles = useMemo(() => alertRecipe({ color, size, ghost }), [color, size, ghost]);
 	const rootId = useId();
 	const titleId = `${rootId}-title`;
 	const descId = `${rootId}-desc`;
+	const context = useMemo(
+		() => ({ size, slotsStyles, titleId, descId }),
+		[size, slotsStyles, titleId, descId]
+	);
 
 	const hasTitle = containsComponent(children, AlertTitle as ComponentType<unknown>);
 	const hasDescription =
@@ -548,7 +553,7 @@ export const Alert = ({
 	const shouldRenderIcon = icon ? true : hasIcon;
 
 	return (
-		<AlertContext value={{ size, slotsStyles, titleId, descId }}>
+		<AlertContext value={context}>
 			<div
 				role="alert"
 				aria-labelledby={hasTitle ? titleId : undefined}

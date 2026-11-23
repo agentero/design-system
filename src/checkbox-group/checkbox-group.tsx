@@ -1,6 +1,14 @@
 'use client';
 
-import { ComponentPropsWithRef, createContext, ReactNode, use, useId, useState } from 'react';
+import {
+	ComponentPropsWithRef,
+	createContext,
+	ReactNode,
+	use,
+	useId,
+	useMemo,
+	useState
+} from 'react';
 
 import { tv, VariantProps } from 'tailwind-variants';
 
@@ -115,7 +123,7 @@ export const Root = ({
 	...props
 }: CheckboxGroupRootProps) => {
 	const field = useFieldContext();
-	const styles = checkboxGroupRecipe({ orientation });
+	const styles = useMemo(() => checkboxGroupRecipe({ orientation }), [orientation]);
 	const labelledBy =
 		labelledByProp ?? (props['aria-label'] !== undefined ? undefined : field?.labelId);
 	const disabled = disabledProp ?? (field?.disabled || undefined);
@@ -129,19 +137,23 @@ export const Root = ({
 		{ 'aria-describedby': describedByProp }
 	)['aria-describedby'];
 
-	const toggle = (itemValue: string, checked: boolean) => {
-		if (readOnly) return;
+	const context = useMemo(() => {
+		const toggle = (itemValue: string, checked: boolean) => {
+			if (readOnly) return;
 
-		const next = checked
-			? [...value.filter(v => v !== itemValue), itemValue]
-			: value.filter(v => v !== itemValue);
+			const next = checked
+				? [...value.filter(v => v !== itemValue), itemValue]
+				: value.filter(v => v !== itemValue);
 
-		if (valueProp === undefined) setUncontrolledValue(next);
-		onValueChange?.(next);
-	};
+			if (valueProp === undefined) setUncontrolledValue(next);
+			onValueChange?.(next);
+		};
+
+		return { value, toggle, styles, name, disabled, readOnly, invalid };
+	}, [value, valueProp, onValueChange, styles, name, disabled, readOnly, invalid]);
 
 	return (
-		<CheckboxGroupContext value={{ value, toggle, styles, name, disabled, readOnly, invalid }}>
+		<CheckboxGroupContext value={context}>
 			<div
 				{...props}
 				role="group"

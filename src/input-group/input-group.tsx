@@ -155,6 +155,7 @@ export const Addon = ({ className, variant, onMouseDown, ...props }: InputGroupA
 	};
 
 	return (
+		// oxlint-disable-next-line jsx-a11y/no-static-element-interactions -- only forwards a pointer press to the input, which keyboard users reach directly
 		<div
 			data-slot="input-group-addon"
 			className={cn(inputGroupRecipe({ variant }).addon(), className)}

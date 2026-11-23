@@ -1,6 +1,6 @@
 'use client';
 
-import { ComponentPropsWithRef, createContext, ReactNode, use, useState } from 'react';
+import { ComponentPropsWithRef, createContext, ReactNode, use, useMemo, useState } from 'react';
 
 import * as AvatarPrimitive from '@radix-ui/react-avatar';
 import { tv, VariantProps } from 'tailwind-variants';
@@ -195,11 +195,17 @@ export const useAvatar = () => {
 type AvatarRootProps = ComponentPropsWithRef<typeof AvatarPrimitive.Root> & AvatarVariants;
 
 const AvatarRoot = ({ size, variant, type, ...props }: AvatarRootProps) => {
-	const styles = avatarRecipe({ size, variant, type });
+	const context = useMemo(
+		() => ({ size, variant, type, slotsStyles: avatarRecipe({ size, variant, type }) }),
+		[size, variant, type]
+	);
 
 	return (
-		<AvatarContext value={{ size, variant, type, slotsStyles: styles }}>
-			<AvatarPrimitive.Root {...props} className={cn(styles.root(), props.className)} />
+		<AvatarContext value={context}>
+			<AvatarPrimitive.Root
+				{...props}
+				className={cn(context.slotsStyles.root(), props.className)}
+			/>
 		</AvatarContext>
 	);
 };

@@ -7,7 +7,8 @@ import {
 	PropsWithChildren,
 	Ref,
 	TdHTMLAttributes,
-	use
+	use,
+	useMemo
 } from 'react';
 
 import { ChevronDownIcon } from 'lucide-react';
@@ -116,24 +117,34 @@ export type TableRootProps = TableVariants & {
  * </Table.Root>
  * ```
  */
-export const Root = ({ children, ref, ...variants }: PropsWithChildren<TableRootProps>) => {
-	const { size, sticky, embed } = variants;
-	const styles = tableRecipe(variants);
-	const slots: TableSlotClasses = {
-		header: headerStyles({ sticky: isHeaderSticky(sticky) }),
-		cell: cellStyles({ size }),
-		headRow: rowStyles({ body: false }),
-		bodyRow: rowStyles({
-			body: true,
-			// `embed` also drops the row dividers (the recipe only retunes the gutter).
-			divider: !embed,
-			stickyFooter: isFooterSticky(sticky)
-		})
-	};
+export const Root = ({
+	children,
+	ref,
+	size,
+	sticky,
+	embed,
+	enclosed
+}: PropsWithChildren<TableRootProps>) => {
+	const slots = useMemo<TableSlotClasses>(
+		() => ({
+			header: headerStyles({ sticky: isHeaderSticky(sticky) }),
+			cell: cellStyles({ size }),
+			headRow: rowStyles({ body: false }),
+			bodyRow: rowStyles({
+				body: true,
+				// `embed` also drops the row dividers (the recipe only retunes the gutter).
+				divider: !embed,
+				stickyFooter: isFooterSticky(sticky)
+			})
+		}),
+		[size, sticky, embed]
+	);
+	const styles = tableRecipe({ size, sticky, embed, enclosed });
 
 	return (
 		<TableContext value={slots}>
 			<div data-slot="table-root" className={styles.root()}>
+				{/* oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- a scrollable region has to take focus to scroll by keyboard */}
 				<div data-slot="table-scroll" ref={ref} tabIndex={0} className={styles.scroll()}>
 					<table data-slot="table" className={styles.table()}>
 						{children}
