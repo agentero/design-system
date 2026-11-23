@@ -620,13 +620,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">45 components ok</span><a class="filter-pill" data-k="no-api" href="#filter-no-api">3/45 without API description</a><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/416 story errors</a><a class="filter-pill info" data-k="story-warnings" href="#filter-story-warnings">4/416 incomplete snippets</a></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">45 components ok</span><a class="filter-pill" data-k="no-api" href="#filter-no-api">3/45 without API description</a><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/417 story errors</a><a class="filter-pill info" data-k="story-warnings" href="#filter-story-warnings">4/417 incomplete snippets</a></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.7s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>5.0s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -8483,7 +8483,7 @@ provider&#39;s.</div>
       <div class="badges">
         <label for="c-18-components-filedrop-props" class="badge ok as-toggle">7 prop types</label>
         
-        <label for="c-18-components-filedrop-stories" class="badge ok as-toggle">15 stories · 4 incomplete</label>
+        <label for="c-18-components-filedrop-stories" class="badge ok as-toggle">16 stories · 4 incomplete</label>
         
         
       </div>
@@ -8577,6 +8577,7 @@ value?: FileDropValue | null | undefined</code></pre>
                   <span class="ex-name">Imports</span>
                 </div>
                 <pre><code>import { Button, FileDrop, Label } from '@agentero/design-system';
+import { ChevronDownIcon } from 'lucide-react';
 import { fn } from 'storybook/test';
 import { Button } from '../button';</code></pre>
               </div>
@@ -8591,7 +8592,7 @@ import { Button } from '../button';</code></pre>
               <div class="hint">The empty zone, labelled by the `Label` through the hidden input, with the
 formats `accept` allows. Clicking anywhere on it opens the picker; a picked
 file is reported through `onFileChange`.</div>
-              <pre><code>const Default = () =&gt; &lt;FileDrop id=&quot;w9&quot; accept=&quot;application/pdf&quot; onFileChange={fn()} onFileReject={fn()} /&gt;;</code></pre>
+              <pre><code>const Default = () =&gt; &lt;FileDrop accept=&quot;application/pdf&quot; onFileChange={fn()} onFileReject={fn()} /&gt;;</code></pre>
               
             </div>
             <div class="note ok">
@@ -8601,11 +8602,12 @@ file is reported through `onFileChange`.</div>
               </div>
               <div>Picked file previewed, with Replace file</div>
               <div class="hint">Once the state holds the file, the box shows it: PDFs, plain text and
-images in a frame, under a &quot;Replace file&quot; button that opens the picker
-again. The box keeps the zone&#39;s height, so the page does not jump; focus
-moves to the button, since the input leaves the tab order; and a file
-dropped on the preview is swallowed instead of opening in place of the page.</div>
-              <pre><code>const PickedFile = () =&gt; &lt;ControlledFileDrop id=&quot;w9&quot; accept=&quot;application/pdf&quot; onFileChange={fn()} onFileReject={fn()} /&gt;;</code></pre>
+images in a frame as tall as the zone was, under a &quot;Replace file&quot; button
+that opens the picker again. Focus moves to the button, since the input
+leaves the tab order; `required` stops holding, since the file never
+reaches the input; and a file dropped on the preview is swallowed instead of
+opening in place of the page.</div>
+              <pre><code>const PickedFile = () =&gt; &lt;ControlledFileDrop accept=&quot;application/pdf&quot; onFileChange={fn()} onFileReject={fn()} required /&gt;;</code></pre>
               
             </div>
             <div class="note ok">
@@ -8617,7 +8619,6 @@ dropped on the preview is swallowed instead of opening in place of the page.</di
               <div class="hint">A file stored earlier comes in as `value.url` and previews from that
 address, so an edit form opens on the current document.</div>
               <pre><code>const StoredFile = () =&gt; &lt;FileDrop
-    id=&quot;w9&quot;
     accept=&quot;application/pdf&quot;
     onFileChange={fn()}
     onFileReject={fn()}
@@ -8631,9 +8632,9 @@ address, so an edit form opens on the current document.</div>
               </div>
               <div>Remove button that brings the drop zone back</div>
               <div class="hint">`onFileRemove` adds a &quot;Remove&quot; button beside &quot;Replace file&quot;; clearing the
-value there brings the drop zone back, with focus on it.</div>
+value there brings the drop zone back, with focus on it. The input is
+emptied too, so the same file can be picked again.</div>
               <pre><code>const Removable = () =&gt; &lt;ControlledFileDrop
-    id=&quot;w9&quot;
     accept=&quot;application/pdf&quot;
     onFileChange={fn()}
     onFileReject={fn()}
@@ -8651,7 +8652,6 @@ value there brings the drop zone back, with focus on it.</div>
 way (a signed URL fetched on demand, say), instead of &quot;No preview
 available&quot;. Until then the value carries only the file&#39;s `name`.</div>
               <pre><code>const PreviewLoading = () =&gt; &lt;FileDrop
-    id=&quot;w9&quot;
     accept=&quot;application/pdf&quot;
     onFileChange={fn()}
     onFileReject={fn()}
@@ -8669,12 +8669,25 @@ available&quot;. Until then the value carries only the file&#39;s `name`.</div>
 under an &quot;or&quot;. Their clicks are their own: they never open the picker.
 `showAcceptedFormats={false}` drops the formats line.</div>
               <pre><code>const AlternativeSource = () =&gt; &lt;FileDrop
-    id=&quot;w9&quot;
     accept=&quot;application/pdf&quot;
     onFileChange={fn()}
     onFileReject={fn()}
-    showAcceptedFormats={false}&gt;(&lt;Button type=&quot;button&quot; variant=&quot;secondary&quot; size=&quot;sm&quot;&gt;Choose from agency
-                    &lt;/Button&gt;)&lt;/FileDrop&gt;;</code></pre>
+    showAcceptedFormats={false}&gt;(&lt;Button type=&quot;button&quot; variant=&quot;secondary&quot; size=&quot;md&quot;&gt;Choose from agency
+                        &lt;ChevronDownIcon /&gt;
+    &lt;/Button&gt;)&lt;/FileDrop&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Inside Label</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Inside a label, a click opens the picker once</div>
+              <div class="hint">Wrapped in a `&lt;label&gt;` instead of named by one, a click on the zone still
+opens the picker once: the zone cancels the label&#39;s own click on the input.</div>
+              <pre><code>const InsideLabel = () =&gt; &lt;Label className=&quot;flex-col flex-nowrap gap-2&quot;&gt;W-9
+                &lt;FileDrop accept=&quot;application/pdf&quot; onFileChange={fn()} onFileReject={fn()} /&gt;
+&lt;/Label&gt;;</code></pre>
               
             </div>
             <div class="note ok">
@@ -8687,7 +8700,6 @@ under an &quot;or&quot;. Their clicks are their own: they never open the picker.
 10 MB, or HTML and SVG, whose scripts would run in the app) keeps the box
 with a placeholder instead.</div>
               <pre><code>const WithoutPreview = () =&gt; &lt;FileDrop
-    id=&quot;w9&quot;
     accept=&quot;.csv&quot;
     onFileChange={fn()}
     onFileReject={fn()}
@@ -8703,7 +8715,6 @@ with a placeholder instead.</div>
               <div class="hint">A file known only by its `name`, copied from another record with neither
 the `File` nor a URL to show, prints the name over the placeholder.</div>
               <pre><code>const NameOnly = () =&gt; &lt;FileDrop
-    id=&quot;w9&quot;
     accept=&quot;application/pdf&quot;
     onFileChange={fn()}
     onFileReject={fn()}
@@ -8719,7 +8730,7 @@ the `File` nor a URL to show, prints the name over the placeholder.</div>
               <div class="hint">Dragging over the zone tints it by whether `accept` allows the file, and
 leaving clears the tint. A dragged link or text gets none. Mid-drag the browser gives only the MIME type, so
 an `accept` made of extensions shows the rejected tint until the drop.</div>
-              <pre><code>const DragFeedback = () =&gt; &lt;FileDrop id=&quot;w9&quot; accept=&quot;application/pdf&quot; onFileChange={fn()} onFileReject={fn()} /&gt;;</code></pre>
+              <pre><code>const DragFeedback = () =&gt; &lt;FileDrop accept=&quot;application/pdf&quot; onFileChange={fn()} onFileReject={fn()} /&gt;;</code></pre>
               
             </div>
             <div class="note ok">
@@ -8731,7 +8742,7 @@ an `accept` made of extensions shows the rejected tint until the drop.</div>
               <div class="hint">A dropped file is checked against `accept` like a picked one: a match goes
 to `onFileChange`, anything else to `onFileReject`, so the field can show
 the error. The picker already filters by `accept`; a drop does not.</div>
-              <pre><code>const Drop = () =&gt; &lt;FileDrop id=&quot;w9&quot; accept=&quot;application/pdf&quot; onFileChange={fn()} onFileReject={fn()} /&gt;;</code></pre>
+              <pre><code>const Drop = () =&gt; &lt;FileDrop accept=&quot;application/pdf&quot; onFileChange={fn()} onFileReject={fn()} /&gt;;</code></pre>
               
             </div>
             <div class="note ok">
@@ -8749,7 +8760,6 @@ error comes from `onFileReject`.</div>
     return (
         &lt;&gt;
             &lt;ControlledFileDrop
-                id=&quot;w9&quot;
                 accept=&quot;application/pdf&quot;
                 onFileChange={fn()}
                 aria-invalid={!!error}
@@ -8776,12 +8786,7 @@ error comes from `onFileReject`.</div>
               <div>Disabled zone that takes no file</div>
               <div class="hint">`disabled` greys the zone out and disables the input: clicks open nothing
 and drops are ignored.</div>
-              <pre><code>const Disabled = () =&gt; &lt;FileDrop
-    id=&quot;w9&quot;
-    accept=&quot;application/pdf&quot;
-    onFileChange={fn()}
-    onFileReject={fn()}
-    disabled /&gt;;</code></pre>
+              <pre><code>const Disabled = () =&gt; &lt;FileDrop accept=&quot;application/pdf&quot; onFileChange={fn()} onFileReject={fn()} disabled /&gt;;</code></pre>
               
             </div>
             <div class="note ok">
@@ -8793,7 +8798,6 @@ and drops are ignored.</div>
               <div class="hint">`readOnly` shows the file with no &quot;Replace file&quot; button, and neither the
 label nor a drop changes it: a document to look at, not to edit.</div>
               <pre><code>const ReadOnly = () =&gt; &lt;FileDrop
-    id=&quot;w9&quot;
     accept=&quot;application/pdf&quot;
     onFileChange={fn()}
     onFileReject={fn()}
@@ -8809,12 +8813,7 @@ label nor a drop changes it: a document to look at, not to edit.</div>
               <div>Read-only without a file renders nothing</div>
               <div class="hint">Read-only with no file renders nothing: there is no document to look at and
 none can be added.</div>
-              <pre><code>const ReadOnlyEmpty = () =&gt; &lt;FileDrop
-    id=&quot;w9&quot;
-    accept=&quot;application/pdf&quot;
-    onFileChange={fn()}
-    onFileReject={fn()}
-    readOnly /&gt;;</code></pre>
+              <pre><code>const ReadOnlyEmpty = () =&gt; &lt;FileDrop accept=&quot;application/pdf&quot; onFileChange={fn()} onFileReject={fn()} readOnly /&gt;;</code></pre>
               
             </div>
             <div class="note ok">
@@ -8822,15 +8821,14 @@ none can be added.</div>
                 <span class="ex-name">Custom Height</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Shorter zone through className</div>
-              <div class="hint">`className` lands on the box, so a `min-h-*` resizes the zone and the
-preview alike, here for a short CSV import.</div>
-              <pre><code>const CustomHeight = () =&gt; &lt;FileDrop
-    id=&quot;w9&quot;
-    accept=&quot;.csv&quot;
+              <div>Taller zone through className</div>
+              <div class="hint">`className` lands on the box, so setting `--file-drop-min-height` there
+resizes the zone and the preview alike, here to 300px for a longer document.</div>
+              <pre><code>const CustomHeight = () =&gt; &lt;ControlledFileDrop
+    accept=&quot;application/pdf&quot;
     onFileChange={fn()}
     onFileReject={fn()}
-    className=&quot;min-h-50&quot; /&gt;;</code></pre>
+    className=&quot;[--file-drop-min-height:18.75rem]&quot; /&gt;;</code></pre>
               
             </div>
         </div>

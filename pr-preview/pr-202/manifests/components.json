@@ -7144,7 +7144,7 @@
         "displayName": "FileDrop",
         "exportName": "FileDrop",
         "filePath": "/home/runner/work/design-system/design-system/src/file-drop/file-drop.tsx",
-        "description": "FileDrop is the design system's base control for uploading one file: a\ndashed zone that takes a file dropped on it or opens the picker on click,\nand once there is a file, a preview of it (PDF, plain text and images) with\na \"Replace file\" button.\n\nIt is controlled: it shows `value` and reports a picked or dropped file\nthrough `onFileChange`, or through `onFileReject` when `accept` does not\nallow it, so the field can show the error. Nothing is uploaded here; the\nconsumer owns the `File`. The zone lists the accepted formats from `accept`\n(unless `showAcceptedFormats` is `false`), and the box keeps its height when\na file arrives (`min-h-100` by default, changed through `className`, which\nlands on the box). `onFileRemove` adds a \"Remove\" button, `previewLoading`\nholds a placeholder while a stored file's `url` arrives, and `children`\noffer another way to supply the file inside the empty zone.\n\nThe real control is a visually hidden `<input type=\"file\">`, so a `Label`\nnames it and every other `<input>` attribute (`id`, `name`, `required`,\n`aria-*`, `onBlur`, `ref`) is forwarded to it. When a container provides\n`FileDropContext` it takes that wiring from it, and its own props always win.\n`aria-invalid` paints the zone in the destructive tone, `disabled` greys it\nout, and `readOnly` shows the file without its buttons, ignores picks and\ndrops, and renders nothing when there is no file.",
+        "description": "FileDrop is the design system's base control for uploading one file: a\ndashed zone that takes a file dropped on it or opens the picker on click,\nand once there is a file, a preview of it (PDF, plain text and images) with\na \"Replace file\" button.\n\nIt is controlled: it shows `value` and reports a picked or dropped file\nthrough `onFileChange`, or through `onFileReject` when `accept` does not\nallow it, so the field can show the error. Nothing is uploaded here; the\nconsumer owns the `File`. The zone lists the accepted formats from `accept`\n(unless `showAcceptedFormats` is `false`). The zone, and the preview under\nits header, are at least 200px tall; `className` lands on the box, so\n`[--file-drop-min-height:18.75rem]` there makes both 300px. `onFileRemove`\nadds a \"Remove\" button, `previewLoading`\nholds a placeholder while a stored file's `url` arrives, and `children`\noffer another way to supply the file inside the empty zone.\n\nThe real control is a visually hidden `<input type=\"file\">`, so a `Label`\nnames it and every other `<input>` attribute (`id`, `name`, `required`,\n`aria-*`, `onBlur`, `ref`) is forwarded to it. When a container provides\n`FileDropContext` it takes that wiring from it, and its own props always win.\n`aria-invalid` paints the zone in the destructive tone, `disabled` greys it\nout, and `readOnly` shows the file without its buttons, ignores picks and\ndrops, and renders nothing when there is no file. `required` holds only\nwhile the zone is empty, since a dropped or stored file never reaches the\ninput. \"Replace file\" carries the input's `aria-describedby`, so the field's\nerror is read on the control that keeps the focus.",
         "jsDocTags": {
           "summary": [
             "Base single-file upload control: drop zone, picker and preview"
@@ -7295,21 +7295,21 @@
         {
           "id": "components-filedrop--default",
           "name": "Default",
-          "snippet": "const Default = () => <FileDrop id=\"w9\" accept=\"application/pdf\" onFileChange={fn()} onFileReject={fn()} />;",
+          "snippet": "const Default = () => <FileDrop accept=\"application/pdf\" onFileChange={fn()} onFileReject={fn()} />;",
           "description": "The empty zone, labelled by the `Label` through the hidden input, with the\nformats `accept` allows. Clicking anywhere on it opens the picker; a picked\nfile is reported through `onFileChange`.",
           "summary": "Empty drop zone that opens the picker and reports the file"
         },
         {
           "id": "components-filedrop--picked-file",
           "name": "Picked File",
-          "snippet": "const PickedFile = () => <ControlledFileDrop id=\"w9\" accept=\"application/pdf\" onFileChange={fn()} onFileReject={fn()} />;",
-          "description": "Once the state holds the file, the box shows it: PDFs, plain text and\nimages in a frame, under a \"Replace file\" button that opens the picker\nagain. The box keeps the zone's height, so the page does not jump; focus\nmoves to the button, since the input leaves the tab order; and a file\ndropped on the preview is swallowed instead of opening in place of the page.",
+          "snippet": "const PickedFile = () => <ControlledFileDrop accept=\"application/pdf\" onFileChange={fn()} onFileReject={fn()} required />;",
+          "description": "Once the state holds the file, the box shows it: PDFs, plain text and\nimages in a frame as tall as the zone was, under a \"Replace file\" button\nthat opens the picker again. Focus moves to the button, since the input\nleaves the tab order; `required` stops holding, since the file never\nreaches the input; and a file dropped on the preview is swallowed instead of\nopening in place of the page.",
           "summary": "Picked file previewed, with Replace file"
         },
         {
           "id": "components-filedrop--stored-file",
           "name": "Stored File",
-          "snippet": "const StoredFile = () => <FileDrop\n    id=\"w9\"\n    accept=\"application/pdf\"\n    onFileChange={fn()}\n    onFileReject={fn()}\n    value={{ url: storedW9Url }} />;",
+          "snippet": "const StoredFile = () => <FileDrop\n    accept=\"application/pdf\"\n    onFileChange={fn()}\n    onFileReject={fn()}\n    value={{ url: storedW9Url }} />;",
           "description": "A file stored earlier comes in as `value.url` and previews from that\naddress, so an edit form opens on the current document.",
           "summary": "Stored file previewed from its URL",
           "warning": "Incomplete snippet: `storedW9Url` could not be resolved statically."
@@ -7317,29 +7317,36 @@
         {
           "id": "components-filedrop--removable",
           "name": "Removable",
-          "snippet": "const Removable = () => <ControlledFileDrop\n    id=\"w9\"\n    accept=\"application/pdf\"\n    onFileChange={fn()}\n    onFileReject={fn()}\n    value={{ url: storedW9Url }}\n    onFileRemove={fn()} />;",
-          "description": "`onFileRemove` adds a \"Remove\" button beside \"Replace file\"; clearing the\nvalue there brings the drop zone back, with focus on it.",
+          "snippet": "const Removable = () => <ControlledFileDrop\n    accept=\"application/pdf\"\n    onFileChange={fn()}\n    onFileReject={fn()}\n    value={{ url: storedW9Url }}\n    onFileRemove={fn()} />;",
+          "description": "`onFileRemove` adds a \"Remove\" button beside \"Replace file\"; clearing the\nvalue there brings the drop zone back, with focus on it. The input is\nemptied too, so the same file can be picked again.",
           "summary": "Remove button that brings the drop zone back",
           "warning": "Incomplete snippet: `storedW9Url` could not be resolved statically."
         },
         {
           "id": "components-filedrop--preview-loading",
           "name": "Preview Loading",
-          "snippet": "const PreviewLoading = () => <FileDrop\n    id=\"w9\"\n    accept=\"application/pdf\"\n    onFileChange={fn()}\n    onFileReject={fn()}\n    value={{ name: 'w9-northside-insurance.pdf' }}\n    previewLoading />;",
+          "snippet": "const PreviewLoading = () => <FileDrop\n    accept=\"application/pdf\"\n    onFileChange={fn()}\n    onFileReject={fn()}\n    value={{ name: 'w9-northside-insurance.pdf' }}\n    previewLoading />;",
           "description": "`previewLoading` holds a placeholder while the stored file's `url` is on its\nway (a signed URL fetched on demand, say), instead of \"No preview\navailable\". Until then the value carries only the file's `name`.",
           "summary": "Placeholder while the stored file's URL loads"
         },
         {
           "id": "components-filedrop--alternative-source",
           "name": "Alternative Source",
-          "snippet": "const AlternativeSource = () => <FileDrop\n    id=\"w9\"\n    accept=\"application/pdf\"\n    onFileChange={fn()}\n    onFileReject={fn()}\n    showAcceptedFormats={false}>(<Button type=\"button\" variant=\"secondary\" size=\"sm\">Choose from agency\n                    </Button>)</FileDrop>;",
+          "snippet": "const AlternativeSource = () => <FileDrop\n    accept=\"application/pdf\"\n    onFileChange={fn()}\n    onFileReject={fn()}\n    showAcceptedFormats={false}>(<Button type=\"button\" variant=\"secondary\" size=\"md\">Choose from agency\n                        <ChevronDownIcon />\n    </Button>)</FileDrop>;",
           "description": "`children` offer another way to supply the file, rendered in the empty zone\nunder an \"or\". Their clicks are their own: they never open the picker.\n`showAcceptedFormats={false}` drops the formats line.",
           "summary": "Another way to supply the file inside the zone"
         },
         {
+          "id": "components-filedrop--inside-label",
+          "name": "Inside Label",
+          "snippet": "const InsideLabel = () => <Label className=\"flex-col flex-nowrap gap-2\">W-9\n                <FileDrop accept=\"application/pdf\" onFileChange={fn()} onFileReject={fn()} />\n</Label>;",
+          "description": "Wrapped in a `<label>` instead of named by one, a click on the zone still\nopens the picker once: the zone cancels the label's own click on the input.",
+          "summary": "Inside a label, a click opens the picker once"
+        },
+        {
           "id": "components-filedrop--without-preview",
           "name": "Without Preview",
-          "snippet": "const WithoutPreview = () => <FileDrop\n    id=\"w9\"\n    accept=\".csv\"\n    onFileChange={fn()}\n    onFileReject={fn()}\n    value={{ file: csv() }} />;",
+          "snippet": "const WithoutPreview = () => <FileDrop\n    accept=\".csv\"\n    onFileChange={fn()}\n    onFileReject={fn()}\n    value={{ file: csv() }} />;",
           "description": "A file the frame cannot show (a spreadsheet, an empty file, an image over\n10 MB, or HTML and SVG, whose scripts would run in the app) keeps the box\nwith a placeholder instead.",
           "summary": "File without a preview shows a placeholder",
           "warning": "Incomplete snippet: `csv` could not be resolved statically."
@@ -7347,42 +7354,42 @@
         {
           "id": "components-filedrop--name-only",
           "name": "Name Only",
-          "snippet": "const NameOnly = () => <FileDrop\n    id=\"w9\"\n    accept=\"application/pdf\"\n    onFileChange={fn()}\n    onFileReject={fn()}\n    value={{ name: 'w9-northside-insurance.pdf' }} />;",
+          "snippet": "const NameOnly = () => <FileDrop\n    accept=\"application/pdf\"\n    onFileChange={fn()}\n    onFileReject={fn()}\n    value={{ name: 'w9-northside-insurance.pdf' }} />;",
           "description": "A file known only by its `name`, copied from another record with neither\nthe `File` nor a URL to show, prints the name over the placeholder.",
           "summary": "File known only by its name"
         },
         {
           "id": "components-filedrop--drag-feedback",
           "name": "Drag Feedback",
-          "snippet": "const DragFeedback = () => <FileDrop id=\"w9\" accept=\"application/pdf\" onFileChange={fn()} onFileReject={fn()} />;",
+          "snippet": "const DragFeedback = () => <FileDrop accept=\"application/pdf\" onFileChange={fn()} onFileReject={fn()} />;",
           "description": "Dragging over the zone tints it by whether `accept` allows the file, and\nleaving clears the tint. A dragged link or text gets none. Mid-drag the browser gives only the MIME type, so\nan `accept` made of extensions shows the rejected tint until the drop.",
           "summary": "Drag feedback for accepted and rejected files"
         },
         {
           "id": "components-filedrop--drop",
           "name": "Drop",
-          "snippet": "const Drop = () => <FileDrop id=\"w9\" accept=\"application/pdf\" onFileChange={fn()} onFileReject={fn()} />;",
+          "snippet": "const Drop = () => <FileDrop accept=\"application/pdf\" onFileChange={fn()} onFileReject={fn()} />;",
           "description": "A dropped file is checked against `accept` like a picked one: a match goes\nto `onFileChange`, anything else to `onFileReject`, so the field can show\nthe error. The picker already filters by `accept`; a drop does not.",
           "summary": "Dropped files reported or rejected by accept"
         },
         {
           "id": "components-filedrop--invalid",
           "name": "Invalid",
-          "snippet": "const Invalid = args => {\n    const [error, setError] = useState('Upload the signed W-9.');\n\n    return (\n        <>\n            <ControlledFileDrop\n                id=\"w9\"\n                accept=\"application/pdf\"\n                onFileChange={fn()}\n                aria-invalid={!!error}\n                aria-describedby=\"w9-error\"\n                onFileReject={file => {\n                    setError(`${file.name} is not a PDF.`);\n                    args.onFileReject?.(file);\n                }} />\n            {error && (\n                <p id=\"w9-error\" role=\"alert\" className=\"text-sm text-text-input-destructive\">\n                    {error}\n                </p>\n            )}\n        </>\n    );\n};",
+          "snippet": "const Invalid = args => {\n    const [error, setError] = useState('Upload the signed W-9.');\n\n    return (\n        <>\n            <ControlledFileDrop\n                accept=\"application/pdf\"\n                onFileChange={fn()}\n                aria-invalid={!!error}\n                aria-describedby=\"w9-error\"\n                onFileReject={file => {\n                    setError(`${file.name} is not a PDF.`);\n                    args.onFileReject?.(file);\n                }} />\n            {error && (\n                <p id=\"w9-error\" role=\"alert\" className=\"text-sm text-text-input-destructive\">\n                    {error}\n                </p>\n            )}\n        </>\n    );\n};",
           "description": "`aria-invalid` paints the zone in the destructive tone; point\n`aria-describedby` at the message so it is read with the control. Here the\nerror comes from `onFileReject`.",
           "summary": "Invalid zone with its error message"
         },
         {
           "id": "components-filedrop--disabled",
           "name": "Disabled",
-          "snippet": "const Disabled = () => <FileDrop\n    id=\"w9\"\n    accept=\"application/pdf\"\n    onFileChange={fn()}\n    onFileReject={fn()}\n    disabled />;",
+          "snippet": "const Disabled = () => <FileDrop accept=\"application/pdf\" onFileChange={fn()} onFileReject={fn()} disabled />;",
           "description": "`disabled` greys the zone out and disables the input: clicks open nothing\nand drops are ignored.",
           "summary": "Disabled zone that takes no file"
         },
         {
           "id": "components-filedrop--read-only",
           "name": "Read Only",
-          "snippet": "const ReadOnly = () => <FileDrop\n    id=\"w9\"\n    accept=\"application/pdf\"\n    onFileChange={fn()}\n    onFileReject={fn()}\n    readOnly\n    value={{ url: storedW9Url }} />;",
+          "snippet": "const ReadOnly = () => <FileDrop\n    accept=\"application/pdf\"\n    onFileChange={fn()}\n    onFileReject={fn()}\n    readOnly\n    value={{ url: storedW9Url }} />;",
           "description": "`readOnly` shows the file with no \"Replace file\" button, and neither the\nlabel nor a drop changes it: a document to look at, not to edit.",
           "summary": "Read-only preview without Replace file",
           "warning": "Incomplete snippet: `storedW9Url` could not be resolved statically."
@@ -7390,19 +7397,19 @@
         {
           "id": "components-filedrop--read-only-empty",
           "name": "Read Only Empty",
-          "snippet": "const ReadOnlyEmpty = () => <FileDrop\n    id=\"w9\"\n    accept=\"application/pdf\"\n    onFileChange={fn()}\n    onFileReject={fn()}\n    readOnly />;",
+          "snippet": "const ReadOnlyEmpty = () => <FileDrop accept=\"application/pdf\" onFileChange={fn()} onFileReject={fn()} readOnly />;",
           "description": "Read-only with no file renders nothing: there is no document to look at and\nnone can be added.",
           "summary": "Read-only without a file renders nothing"
         },
         {
           "id": "components-filedrop--custom-height",
           "name": "Custom Height",
-          "snippet": "const CustomHeight = () => <FileDrop\n    id=\"w9\"\n    accept=\".csv\"\n    onFileChange={fn()}\n    onFileReject={fn()}\n    className=\"min-h-50\" />;",
-          "description": "`className` lands on the box, so a `min-h-*` resizes the zone and the\npreview alike, here for a short CSV import.",
-          "summary": "Shorter zone through className"
+          "snippet": "const CustomHeight = () => <ControlledFileDrop\n    accept=\"application/pdf\"\n    onFileChange={fn()}\n    onFileReject={fn()}\n    className=\"[--file-drop-min-height:18.75rem]\" />;",
+          "description": "`className` lands on the box, so setting `--file-drop-min-height` there\nresizes the zone and the preview alike, here to 300px for a longer document.",
+          "summary": "Taller zone through className"
         }
       ],
-      "import": "import { Button, FileDrop, Label } from '@agentero/design-system';\nimport { fn } from 'storybook/test';\nimport { Button } from '../button';"
+      "import": "import { Button, FileDrop, Label } from '@agentero/design-system';\nimport { ChevronDownIcon } from 'lucide-react';\nimport { fn } from 'storybook/test';\nimport { Button } from '../button';"
     },
     "components-formtext": {
       "id": "components-formtext",
@@ -12865,6 +12872,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4674
+    "durationMs": 5049
   }
 }
