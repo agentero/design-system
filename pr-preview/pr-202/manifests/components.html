@@ -620,13 +620,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">45 components ok</span><a class="filter-pill" data-k="no-api" href="#filter-no-api">3/45 without API description</a><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/411 story errors</a><a class="filter-pill info" data-k="story-warnings" href="#filter-story-warnings">3/411 incomplete snippets</a></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">45 components ok</span><a class="filter-pill" data-k="no-api" href="#filter-no-api">3/45 without API description</a><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/411 story errors</a><a class="filter-pill info" data-k="story-warnings" href="#filter-story-warnings">4/411 incomplete snippets</a></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.6s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>3.8s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -8483,7 +8483,7 @@ provider&#39;s.</div>
       <div class="badges">
         <label for="c-18-components-filedrop-props" class="badge ok as-toggle">11 prop types</label>
         
-        <label for="c-18-components-filedrop-stories" class="badge ok as-toggle">10 stories · 3 incomplete</label>
+        <label for="c-18-components-filedrop-stories" class="badge ok as-toggle">10 stories · 4 incomplete</label>
         
         
       </div>
@@ -8613,18 +8613,16 @@ import { fn } from 'storybook/test';</code></pre>
                 <span class="ex-name">Default</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Empty drop zone that opens the picker and reports the file</div>
+              <div>Empty drop zone that opens the picker</div>
               <div class="hint">The empty zone, labelled by the `Label` through the hidden input, with the
-formats `accept` allows. Clicking anywhere on it opens the picker; a picked
-file is reported through `onFileChange` and the input lets go of it, so the
-same file picked again is reported again.</div>
-              <pre><code>const Default = () =&gt; &lt;FileDrop accept=&quot;application/pdf&quot; onFileChange={fn()} onFileReject={fn()} /&gt;;</code></pre>
+formats `accept` allows. Clicking anywhere on it opens the picker.</div>
+              <pre><code>const Default = () =&gt; &lt;ControlledFileDrop accept=&quot;application/pdf&quot; onFileChange={fn()} onFileReject={fn()} /&gt;;</code></pre>
               
             </div>
             <div class="note ok">
               <div class="row">
                 <span class="ex-name">Picked File</span>
-                <span class="badge ok">story ok</span>
+                <span class="badge info">incomplete example</span>
               </div>
               <div>Picked file previewed, with Replace file</div>
               <div class="hint">Once the state holds the file, the box shows it: PDFs, plain text and
@@ -8633,8 +8631,13 @@ that opens the picker again. Focus moves to the button, since the input
 leaves the tab order; `required` stops holding, since the file never
 reaches the input; and a file dropped on the preview is swallowed instead of
 opening in place of the page.</div>
-              <pre><code>const PickedFile = () =&gt; &lt;ControlledFileDrop accept=&quot;application/pdf&quot; onFileChange={fn()} onFileReject={fn()} required /&gt;;</code></pre>
-              
+              <pre><code>const PickedFile = () =&gt; &lt;ControlledFileDrop
+    accept=&quot;application/pdf&quot;
+    onFileChange={fn()}
+    onFileReject={fn()}
+    required
+    value={{ file: pdf(&#39;w9.pdf&#39;, &#39;Form W-9&#39;) }} /&gt;;</code></pre>
+              <div class="snippet-warning">Incomplete snippet: `pdf` could not be resolved statically.</div>
             </div>
             <div class="note ok">
               <div class="row">
@@ -8645,8 +8648,7 @@ opening in place of the page.</div>
               <div class="hint">A file stored earlier comes in as `value.url` and previews from that
 address, so an edit form opens on the current document. `onFileRemove` adds
 a &quot;Remove&quot; button beside &quot;Replace file&quot;; clearing the value there brings the
-drop zone back, with focus on it. The input is emptied too, so the same file
-can be picked again.</div>
+drop zone back, with focus on it.</div>
               <pre><code>const Removable = () =&gt; &lt;ControlledFileDrop
     accept=&quot;application/pdf&quot;
     onFileChange={fn()}
@@ -8664,7 +8666,7 @@ can be picked again.</div>
               <div class="hint">`previewLoading` holds a placeholder while the stored file&#39;s `url` is on its
 way (a signed URL fetched on demand, say), instead of &quot;No preview
 available&quot;. Until then the value carries only the file&#39;s `name`.</div>
-              <pre><code>const PreviewLoading = () =&gt; &lt;FileDrop
+              <pre><code>const PreviewLoading = () =&gt; &lt;ControlledFileDrop
     accept=&quot;application/pdf&quot;
     onFileChange={fn()}
     onFileReject={fn()}
@@ -8729,7 +8731,7 @@ drops the formats line.</div>
               <div class="hint">A file the frame cannot show (a spreadsheet, an empty file, an image over
 10 MB, or HTML and SVG, whose scripts would run in the app) keeps the box
 with its name over a placeholder instead.</div>
-              <pre><code>const WithoutPreview = () =&gt; &lt;FileDrop
+              <pre><code>const WithoutPreview = () =&gt; &lt;ControlledFileDrop
     accept=&quot;.csv&quot;
     onFileChange={fn()}
     onFileReject={fn()}
@@ -8752,9 +8754,12 @@ error comes from `onFileReject`.</div>
         &lt;&gt;
             &lt;ControlledFileDrop
                 accept=&quot;application/pdf&quot;
-                onFileChange={fn()}
                 aria-invalid={!!error}
                 aria-describedby=&quot;w9-error&quot;
+                onFileChange={file =&gt; {
+                    setError(&#39;&#39;);
+                    args.onFileChange?.(file);
+                }}
                 onFileReject={file =&gt; {
                     setError(`${file.name} is not a PDF.`);
                     args.onFileReject?.(file);
