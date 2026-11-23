@@ -43,6 +43,7 @@
     "./file-drop": "./src/file-drop/index.ts",
     "./form": "./src/form/index.ts",
     "./form-text": "./src/form-text/index.ts",
+    "./form-textarea": "./src/form-textarea/index.ts",
     "./hover-card": "./src/hover-card/index.ts",
     "./icons": "./src/icons/index.ts",
     "./input": "./src/input/index.ts",
