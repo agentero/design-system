@@ -201,10 +201,12 @@ const FilePreview = ({
 	}
 
 	if (file ? !canPreview(file) : !url) {
+		const shownName = name ?? file?.name;
+
 		return (
 			<div className={styles.fallback()}>
 				<FileTextIcon className={styles.fallbackIcon()} />
-				{name && <span className={styles.fallbackName()}>{name}</span>}
+				{shownName && <span className={styles.fallbackName()}>{shownName}</span>}
 				(No preview available)
 			</div>
 		);
