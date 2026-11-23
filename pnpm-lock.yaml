@@ -5,9 +5,6 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  esbuild@<0.28.2: ^0.28.2
-  lodash@<4.18.1: ^4.18.1
-  valibot@<1.4.2: ^1.4.2
   minimatch@>=7 <11: ^11.0.1
   glob@>=9 <14.0.2: ^14.0.2
 
@@ -1942,7 +1939,7 @@ packages:
     resolution: {integrity: sha512-MkY4yiyx6k/eeft7Ktnp3RSWrflwWF2PvhmVBSSSGjclJLdIOhhIY1wgp7LVKWwHKiYjOnaL8fQqx1kfdk4xkA==}
     peerDependencies:
       tmcp: ^1.17.0 || ^1.20.0-next.0
-      valibot: ^1.4.2
+      valibot: ^1.1.0
 
   '@tmcp/session-manager@0.2.2':
     resolution: {integrity: sha512-UrCRpTsxh5XnMbplspvftEYboiZWgAiXqqAUbyFTHoHMJ0LoNDy8bQd0+7qtxtT4S5Qsnv650gvs/Nbec5NTCQ==}
@@ -3003,7 +3000,7 @@ packages:
       '@microsoft/api-extractor': '>=7'
       '@rspack/core': ^1
       '@vue/language-core': ^3.1.5
-      esbuild: ^0.28.2
+      esbuild: '*'
       rolldown: '*'
       rollup: '>=3'
       typescript: '>=4'
@@ -3100,7 +3097,7 @@ packages:
     peerDependencies:
       '@types/node': ^20.19.0 || >=22.12.0
       '@vitejs/devtools': ^0.7.1 || ^0.8.0
-      esbuild: ^0.28.2
+      esbuild: ^0.27.0 || ^0.28.0
       jiti: '>=1.21.0'
       less: ^4.0.0
       sass: ^1.70.0
