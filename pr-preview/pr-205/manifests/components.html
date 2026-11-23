@@ -626,7 +626,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.6s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>3.9s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -3258,6 +3258,7 @@ and `data-disabled` on the child instead.</div>
     &lt;Row&gt;
         {VARIANTS.map(variant =&gt; (
             &lt;Button asChild key={variant} variant={variant} disabled&gt;
+                {/* oxlint-disable-next-line jsx-a11y/anchor-is-valid -- a disabled link has no href */}
                 &lt;a&gt;{TEXT}&lt;/a&gt;
             &lt;/Button&gt;
         ))}
@@ -3367,6 +3368,7 @@ variant.</div>
         &lt;Row&gt;
             {VARIANTS.map(variant =&gt; (
                 &lt;Button asChild key={variant} variant={variant} status=&quot;danger&quot; disabled&gt;
+                    {/* oxlint-disable-next-line jsx-a11y/anchor-is-valid -- a disabled link has no href */}
                     &lt;a&gt;
                         &lt;PlusIcon /&gt;
                         {TEXT}
@@ -7283,6 +7285,7 @@ holds a `Command`.</div>
                         &lt;DropdownMenu.Portal&gt;
                             &lt;DropdownMenu.SubContent className=&quot;w-72&quot; onFocus={focusSearch}&gt;
                                 &lt;Command.Root label=&quot;Agencies&quot; onKeyDown={keepKeysInSearch}&gt;
+                                    {/* oxlint-disable-next-line jsx-a11y/no-autofocus -- opening the submenu moves focus to its search, as a menu does */}
                                     &lt;Command.Input ref={searchRef} autoFocus placeholder=&quot;Search agency...&quot; /&gt;
                                     &lt;Command.List aria-label=&quot;Agencies&quot;&gt;
                                         {agencies.map(agency =&gt; (
