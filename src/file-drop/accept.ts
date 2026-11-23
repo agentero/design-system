@@ -136,3 +136,30 @@ export const isAccepted = (file: Pick<File, 'name' | 'type'>, accept: string | u
 		return mimeType === type;
 	});
 };
+
+/**
+ * Whether a file still being dragged matches `accept`. Mid-drag the browser
+ * gives only the MIME type, so an extension in `accept` is matched through
+ * the extensions the table knows for that type: `.csv` takes a `text/csv`
+ * drag. `undefined` when it cannot tell (no type, or a type the table does
+ * not know against an `accept` with extensions), so the zone shows no verdict
+ * and the drop decides.
+ */
+export const isDragAccepted = (mimeType: string, accept: string | undefined) => {
+	if (isAccepted({ name: '', type: mimeType }, accept)) {
+		return true;
+	}
+
+	const extensions = splitAccept(accept ?? '').filter(type => type.startsWith('.'));
+	const known = extensionsByMimeType[mimeType.toLowerCase()];
+
+	if (extensions.length === 0) {
+		return mimeType ? false : undefined;
+	}
+
+	if (!known) {
+		return undefined;
+	}
+
+	return known.some(extension => extensions.includes(extension));
+};

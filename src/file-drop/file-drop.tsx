@@ -20,7 +20,7 @@ import { tv, VariantProps } from 'tailwind-variants';
 import { cn, mergeRefs } from '../../lib';
 import { Button } from '../button';
 import { Skeleton } from '../skeleton';
-import { getAcceptedFormats, isAccepted } from './accept';
+import { getAcceptedFormats, isAccepted, isDragAccepted } from './accept';
 import { useFileDropContext } from './context';
 
 /**
@@ -120,8 +120,37 @@ export type FileDropValue = {
 
 export type FileDropProps = Omit<
 	ComponentPropsWithRef<'input'>,
-	'type' | 'value' | 'defaultValue' | 'onChange' | 'multiple' | 'size' | 'children'
+	| 'type'
+	| 'value'
+	| 'defaultValue'
+	| 'onChange'
+	| 'multiple'
+	| 'size'
+	| 'children'
+	| 'accept'
+	| 'disabled'
+	| 'readOnly'
+	| 'aria-invalid'
 > & {
+	/**
+	 * The formats the zone takes, as in the native attribute: MIME types,
+	 * wildcards (`image/*`) and extensions (`.csv`), comma-separated. The
+	 * picker filters by it and a dropped file is checked against it; empty
+	 * allows anything. It also writes the "Accepted formats" line.
+	 */
+	accept?: string;
+	/** Greys the zone out and disables the input: clicks and drops do nothing. */
+	disabled?: boolean;
+	/**
+	 * Shows the file without "Replace file" or "Remove", and takes no drop.
+	 * With no file it renders nothing.
+	 */
+	readOnly?: boolean;
+	/**
+	 * Paints the zone in the destructive tone. Point `aria-describedby` at the
+	 * error message so it is read with the control.
+	 */
+	'aria-invalid'?: ComponentPropsWithRef<'input'>['aria-invalid'];
 	/**
 	 * The file to preview. Empty (no `file`, `url` or `name`) shows the drop
 	 * zone. Any object with those keys fits, so a form's upload value can be
@@ -148,7 +177,8 @@ export type FileDropProps = Omit<
 	/**
 	 * Another way to supply the file, such as picking one from another
 	 * record: rendered in the empty zone under an "or", and gone once there is
-	 * a file. Clicks inside it do not open the picker.
+	 * a file. Clicks inside it do not open the picker. With `disabled` it goes
+	 * inert; pass `disabled` to its controls too, so they look it.
 	 */
 	children?: ReactNode;
 };
@@ -314,16 +344,10 @@ export const FileDrop = (props: FileDropProps) => {
 			replaceRef.current?.focus();
 		}
 
-		if (!filled && inputRef.current) {
-			// A file removed or reset from outside leaves the input too, or picking
-			// the same file again would fire no `change`.
-			inputRef.current.value = '';
-
-			// "Remove" leaves with the preview, so focus goes to the zone it brings back.
-			if (focusInput.current) {
-				focusInput.current = false;
-				inputRef.current.focus();
-			}
+		// "Remove" leaves with the preview, so focus goes to the zone it brings back.
+		if (!filled && focusInput.current) {
+			focusInput.current = false;
+			inputRef.current?.focus();
 		}
 	}, [filled]);
 
@@ -338,6 +362,12 @@ export const FileDrop = (props: FileDropProps) => {
 	const handleFile = (file: File | undefined) => {
 		setDragTone(undefined);
 
+		// The file lives in `value` from here on, never in the input: picking the
+		// same file again fires `change` even when the consumer turned it down.
+		if (inputRef.current) {
+			inputRef.current.value = '';
+		}
+
 		if (!file || !interactive) {
 			return;
 		}
@@ -348,10 +378,6 @@ export const FileDrop = (props: FileDropProps) => {
 		}
 
 		onFileReject?.(file);
-
-		if (inputRef.current) {
-			inputRef.current.value = '';
-		}
 	};
 
 	const onInputClick = (event: MouseEvent<HTMLInputElement>) => {
@@ -374,12 +400,10 @@ export const FileDrop = (props: FileDropProps) => {
 			return;
 		}
 
-		// Mid-drag only the MIME type is known, the name arrives with the drop, so an
-		// extension-only `accept` reads as a rejection until the drop judges the file.
 		const item = event.dataTransfer.items[0];
-		const allowed = !item || isAccepted({ name: '', type: item.type }, accept);
+		const allowed = item ? isDragAccepted(item.type, accept) : true;
 
-		setDragTone(allowed ? 'accept' : 'reject');
+		setDragTone(allowed === undefined ? undefined : allowed ? 'accept' : 'reject');
 	};
 
 	const onDragOver = (event: DragEvent<HTMLDivElement>) => {
@@ -415,7 +439,7 @@ export const FileDrop = (props: FileDropProps) => {
 	};
 
 	// First in both states, so the same input survives the swap between them
-	// and keeps focus and its picked file.
+	// and keeps focus.
 	const input = (
 		<input
 			{...inputProps}
@@ -510,7 +534,11 @@ export const FileDrop = (props: FileDropProps) => {
 			</div>
 			{children && (
 				// Its own controls act on their own: a click here never opens the picker.
-				<div data-slot="file-drop-alternative" onClick={event => event.stopPropagation()}>
+				// Disabled, they go inert with the zone: no click, focus or keyboard.
+				<div
+					data-slot="file-drop-alternative"
+					inert={disabled || undefined}
+					onClick={event => event.stopPropagation()}>
 					{children}
 				</div>
 			)}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { type ReactNode, useId, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ChevronDownIcon } from 'lucide-react';
@@ -85,6 +85,12 @@ const ControlledFileDrop = ({
 	);
 };
 
+const LabelledFrame = ({ children }: { children: (id: string) => ReactNode }) => {
+	const id = useId();
+
+	return <div className="flex max-w-120 flex-col gap-2">{children(id)}</div>;
+};
+
 /**
  * FileDrop uploads one file: a dashed zone that takes a dropped file or opens
  * the picker, and a preview with "Replace file" once there is one. It is
@@ -107,13 +113,17 @@ const meta = {
 		onFileReject: fn()
 	},
 	decorators: [
-		// The story's own id names the input, so the Docs page, which renders every
-		// story at once, has no two labels pointing at the same input.
-		(Story, { id, args, parameters }) => (
-			<div className="flex max-w-120 flex-col gap-2">
-				{parameters.label !== false && <Label htmlFor={id}>W-9</Label>}
-				<Story args={{ ...args, id }} />
-			</div>
+		// Each render gets its own input id: the Docs page shows Default twice (at
+		// the top and in the list), so the story's id would name two inputs.
+		(Story, { args, parameters }) => (
+			<LabelledFrame>
+				{id => (
+					<>
+						{parameters.label !== false && <Label htmlFor={id}>W-9</Label>}
+						<Story args={{ ...args, id }} />
+					</>
+				)}
+			</LabelledFrame>
 		)
 	]
 } satisfies Meta<typeof FileDrop>;
@@ -125,7 +135,8 @@ type Story = StoryObj<typeof meta>;
 /**
  * The empty zone, labelled by the `Label` through the hidden input, with the
  * formats `accept` allows. Clicking anywhere on it opens the picker; a picked
- * file is reported through `onFileChange`.
+ * file is reported through `onFileChange` and the input lets go of it, so the
+ * same file picked again is reported again.
  *
  * @summary Empty drop zone that opens the picker and reports the file
  */
@@ -149,6 +160,8 @@ export const Default: Story = {
 		await userEvent.upload(input, file);
 
 		await expect(args.onFileChange).toHaveBeenCalledWith(file);
+		// The input lets go of the file, so picking it again reports it again.
+		await expect(input).toHaveValue('');
 	}
 };
 
@@ -259,8 +272,9 @@ export const PreviewLoading: Story = {
  * `children` offer another way to supply the file, rendered in the empty zone
  * under an "or": here a menu of the files the agency already stored, as
  * producerflow's "Choose from agency" does. Their clicks are their own: they
- * never open the picker, and picking a file sets the value like a drop would.
- * `showAcceptedFormats={false}` drops the formats line.
+ * never open the picker, and picking a file sets the value like a drop would,
+ * while browsing and dropping keep working. `showAcceptedFormats={false}`
+ * drops the formats line.
  *
  * @summary Another way to supply the file inside the zone
  */
@@ -272,7 +286,14 @@ export const AlternativeSource: Story = {
 		const [value, setValue] = useState<FileDropValue | null>(null);
 
 		return (
-			<FileDrop {...args} value={value} onFileRemove={() => setValue(null)}>
+			<FileDrop
+				{...args}
+				value={value}
+				onFileChange={file => {
+					setValue({ file });
+					args.onFileChange?.(file);
+				}}
+				onFileRemove={() => setValue(null)}>
 				<DropdownMenu.Root>
 					<DropdownMenu.Trigger asChild>
 						<Button type="button" variant="secondary" size="md">
@@ -296,7 +317,7 @@ export const AlternativeSource: Story = {
 			</FileDrop>
 		);
 	},
-	play: async ({ canvasElement }) => {
+	play: async ({ args, canvasElement }) => {
 		const canvas = within(canvasElement);
 		const page = within(canvasElement.ownerDocument.body);
 		const input = canvas.getByLabelText<HTMLInputElement>('W-9');
@@ -312,6 +333,12 @@ export const AlternativeSource: Story = {
 		openPicker.mockRestore();
 
 		await expect(await canvas.findByTitle('File preview')).toHaveAttribute('src', storedW9Url);
+
+		await userEvent.click(canvas.getByRole('button', { name: 'Remove' }));
+		await userEvent.upload(input, pdf('w9.pdf', 'Form W-9'));
+
+		await expect(args.onFileChange).toHaveBeenCalledOnce();
+		await expect((await canvas.findByTitle('File preview')).getAttribute('src')).toMatch(/^blob:/);
 	}
 };
 
@@ -388,8 +415,9 @@ export const NameOnly: Story = {
 /**
  * Dragging over the zone tints it by whether `accept` allows the file, and
  * leaving clears the tint; a dragged link or text gets none. Mid-drag the
- * browser gives only the MIME type, so an `accept` made of extensions shows
- * the rejected tint until the drop. The drop itself is checked against
+ * browser gives only the MIME type, so an extension in `accept` is matched
+ * through the type's known extensions, and a type it cannot place gets no
+ * tint until the drop. The drop itself is checked against
  * `accept` like a pick: a match goes to `onFileChange`, anything else to
  * `onFileReject`, since the picker filters by `accept` and a drop does not.
  *
@@ -419,6 +447,7 @@ export const DragAndDrop: Story = {
 
 		zone.dispatchEvent(dragEvent('drop', rejected));
 		await waitFor(() => expect(args.onFileReject).toHaveBeenCalledWith(rejected));
+		await waitFor(() => expect(zone).not.toHaveAttribute('data-dragging'));
 		await expect(args.onFileChange).not.toHaveBeenCalled();
 
 		zone.dispatchEvent(dragEvent('drop', accepted));
@@ -493,6 +522,33 @@ export const Disabled: Story = {
 
 		zone.dispatchEvent(dragEvent('drop', pdf('w9.pdf', 'Form W-9')));
 		await expect(args.onFileChange).not.toHaveBeenCalled();
+	}
+};
+
+/**
+ * Disabled, the alternative source goes inert with the zone: its controls take
+ * no focus, click or key, even when the consumer forgets to disable them.
+ *
+ * @summary Disabled zone makes its alternative source inert
+ */
+export const DisabledAlternativeSource: Story = {
+	// Runs as a test only: it looks the same as Disabled with a button inside.
+	tags: ['!dev', '!autodocs', '!manifest'],
+	args: {
+		disabled: true,
+		children: (
+			<Button type="button" variant="secondary" size="md">
+				Choose from agency
+			</Button>
+		)
+	},
+	play: async ({ canvasElement }) => {
+		const button = within(canvasElement).getByRole('button', { name: 'Choose from agency' });
+
+		await expect(button.closest('[data-slot=file-drop-alternative]')).toHaveAttribute('inert');
+
+		button.focus();
+		await expect(button).not.toHaveFocus();
 	}
 };
 
