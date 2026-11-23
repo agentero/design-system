@@ -193,7 +193,7 @@ export const Root = ({
 	...props
 }: RadioGroupRootProps) => {
 	const field = useFieldContext();
-	const styles = useMemo(() => radioGroupRecipe({ orientation }), [orientation]);
+	const styles = radioGroupRecipe({ orientation });
 	const labelledBy =
 		labelledByProp ?? (props['aria-label'] !== undefined ? undefined : field?.labelId);
 	const disabled = disabledProp ?? (field?.disabled || undefined);
@@ -230,11 +230,6 @@ export const Root = ({
 	}, []);
 	const enabled = radios.filter(radio => !radio.disabled);
 	const stop = enabled.find(radio => radio.value === selected) ?? enabled[0];
-	const tabStop = stop?.value;
-	const context = useMemo(
-		() => ({ styles, disabled, tabStop, register }),
-		[styles, disabled, tabStop, register]
-	);
 
 	useImperativeHandle(controlRef, () => ({ focus: () => stop?.element.focus() }), [stop]);
 
@@ -261,7 +256,7 @@ export const Root = ({
 	}, []);
 
 	return (
-		<RadioGroupContext value={context}>
+		<RadioGroupContext value={{ styles, disabled, tabStop: stop?.value, register }}>
 			<RadioGroupPrimitive<string | null>
 				{...props}
 				ref={mergedRef}

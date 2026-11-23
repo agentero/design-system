@@ -7,8 +7,7 @@ import {
 	PropsWithChildren,
 	Ref,
 	TdHTMLAttributes,
-	use,
-	useMemo
+	use
 } from 'react';
 
 import { ChevronDownIcon } from 'lucide-react';
@@ -117,29 +116,20 @@ export type TableRootProps = TableVariants & {
  * </Table.Root>
  * ```
  */
-export const Root = ({
-	children,
-	ref,
-	size,
-	sticky,
-	embed,
-	enclosed
-}: PropsWithChildren<TableRootProps>) => {
-	const slots = useMemo<TableSlotClasses>(
-		() => ({
-			header: headerStyles({ sticky: isHeaderSticky(sticky) }),
-			cell: cellStyles({ size }),
-			headRow: rowStyles({ body: false }),
-			bodyRow: rowStyles({
-				body: true,
-				// `embed` also drops the row dividers (the recipe only retunes the gutter).
-				divider: !embed,
-				stickyFooter: isFooterSticky(sticky)
-			})
-		}),
-		[size, sticky, embed]
-	);
-	const styles = tableRecipe({ size, sticky, embed, enclosed });
+export const Root = ({ children, ref, ...variants }: PropsWithChildren<TableRootProps>) => {
+	const { size, sticky, embed } = variants;
+	const styles = tableRecipe(variants);
+	const slots: TableSlotClasses = {
+		header: headerStyles({ sticky: isHeaderSticky(sticky) }),
+		cell: cellStyles({ size }),
+		headRow: rowStyles({ body: false }),
+		bodyRow: rowStyles({
+			body: true,
+			// `embed` also drops the row dividers (the recipe only retunes the gutter).
+			divider: !embed,
+			stickyFooter: isFooterSticky(sticky)
+		})
+	};
 
 	return (
 		<TableContext value={slots}>
