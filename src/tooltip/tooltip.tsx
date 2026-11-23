@@ -115,6 +115,9 @@ export const Tooltip = ({
 			delayDuration={delayDuration}>
 			<TooltipPrimitive.Trigger
 				asChild={asChild}
+				// The wrapping <button> only reveals the hint: without a type it would submit a form around it.
+				// With asChild the child keeps its own type.
+				type={asChild ? undefined : 'button'}
 				data-slot="tooltip-trigger"
 				data-testid="tooltip-trigger"
 				className="align-middle">

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, userEvent, waitFor, within } from 'storybook/test';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { Button } from '../button';
 import { Tooltip, TooltipProvider } from './tooltip';
@@ -174,6 +174,29 @@ export const AsChild: Story = {
 		await userEvent.hover(link);
 		const tooltips = await body.findAllByText(/opens in a new tab/i);
 		await expect(tooltips.length).toBeGreaterThan(0);
+	}
+};
+
+const onSubmit = fn((event: React.FormEvent) => event.preventDefault());
+
+/** Without `asChild` the trigger is a `type="button"`, so a tooltip inside a form never submits it. */
+export const InsideAForm: Story = {
+	render: args => (
+		<form onSubmit={onSubmit}>
+			<Tooltip {...args} content="Rated through ITC" asChild={false}>
+				<span className="rounded-sm border border-border-default-base-primary px-1.5 text-xs">
+					RATER
+				</span>
+			</Tooltip>
+		</form>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const trigger = canvas.getByRole('button', { name: /rater/i });
+
+		await expect(trigger).toHaveAttribute('type', 'button');
+		await userEvent.click(trigger);
+		await expect(onSubmit).not.toHaveBeenCalled();
 	}
 };
 
