@@ -339,6 +339,7 @@ export const Item = ({
 					{/* Base UI's default <span> passes `id` to its hidden input, so no <label> names it. */}
 					<RadioPrimitive.Root
 						nativeButton
+						// oxlint-disable-next-line jsx-a11y/control-has-associated-label -- the wrapping <label htmlFor={id}> names it
 						render={<button type="button" />}
 						ref={radioRef}
 						id={id}

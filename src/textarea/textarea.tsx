@@ -300,6 +300,7 @@ export const TextArea = (props: TextAreaProps) => {
 	};
 
 	return (
+		// oxlint-disable-next-line jsx-a11y/no-static-element-interactions -- only forwards a pointer press to the textarea, which keyboard users reach directly
 		<span
 			data-slot="textarea-root"
 			className={cn('group/textarea', counter ? counterFrameClassName : 'contents')}

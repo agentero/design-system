@@ -387,6 +387,7 @@ export type ButtonProps = ButtonBaseProps &
 const ButtonLoading = () => (
 	<span
 		aria-label="loading"
+		// oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- a live region on a span, not a form <output>
 		role="status"
 		className={cn(
 			'absolute inset-0 grid place-items-center',

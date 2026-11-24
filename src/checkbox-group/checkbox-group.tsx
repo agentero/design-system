@@ -144,6 +144,7 @@ export const Root = ({
 		<CheckboxGroupContext value={{ value, toggle, styles, name, disabled, readOnly, invalid }}>
 			<div
 				{...props}
+				// oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- a <fieldset> would need a <legend>; aria-labelledby names the group
 				role="group"
 				data-slot="checkbox-group"
 				data-orientation={orientation}

@@ -160,6 +160,7 @@ export const Disabled: Story = {
 		<Row>
 			{VARIANTS.map(variant => (
 				<Button asChild key={variant} variant={variant} disabled>
+					{/* oxlint-disable-next-line jsx-a11y/anchor-is-valid -- a disabled link has no href */}
 					<a>{TEXT}</a>
 				</Button>
 			))}
@@ -346,6 +347,7 @@ export const Status: Story = {
 			<Row>
 				{VARIANTS.map(variant => (
 					<Button asChild key={variant} variant={variant} status="danger" disabled>
+						{/* oxlint-disable-next-line jsx-a11y/anchor-is-valid -- a disabled link has no href */}
 						<a>
 							<PlusIcon />
 							{TEXT}
