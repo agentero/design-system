@@ -12316,7 +12316,7 @@
             "type": {
               "name": "boolean"
             },
-            "description": "Merge Radix's behavior onto an already-interactive child instead of wrapping it in a `<button>`. Defaults to `false`.",
+            "description": "Merge Radix's behavior onto an already-interactive child instead of wrapping it in a `<button>`. Defaults to `false`.\nThe child keeps its own `type`, and `Button` has no default one, so inside a form give it `type=\"button\"` or it submits.",
             "defaultValue": {
               "value": "false"
             },
@@ -12482,7 +12482,7 @@
         {
           "id": "components-tooltip--inside-a-form",
           "name": "Inside A Form",
-          "snippet": "const InsideAForm = () => <form onSubmit={onSubmit}>\n    <Tooltip side=\"top\" content=\"Rated through ITC\" asChild={false}>\n        <span\n            className=\"rounded-sm border border-border-default-base-primary px-1.5 text-xs\">RATER\n                            </span>\n    </Tooltip>\n</form>;",
+          "snippet": "const InsideAForm = () => <form onSubmit={onSubmit}>\n    <Tooltip side=\"top\" asChild={false} content=\"Rated through ITC\">\n        <span\n            className=\"rounded-sm border border-border-default-base-primary px-1.5 text-xs\">RATER\n                            </span>\n    </Tooltip>\n</form>;",
           "description": "Without `asChild` the trigger is a `type=\"button\"`, so a tooltip inside a form never submits it."
         },
         {
@@ -12593,6 +12593,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5015
+    "durationMs": 4037
   }
 }
