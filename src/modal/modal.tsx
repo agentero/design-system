@@ -244,6 +244,7 @@ type BodyProps = ComponentProps<'div'>;
  * @summary Scrollable modal content area
  */
 export const Body = ({ className, ...props }: BodyProps) => (
+	// oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- a scrollable region has to take focus to scroll by keyboard
 	<div data-slot="modal-body" tabIndex={0} className={slots.body({ className })} {...props} />
 );
 Body.displayName = 'Modal.Body';

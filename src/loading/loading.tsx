@@ -86,6 +86,7 @@ export type LoadingProps = ComponentProps<'span'> & {
 export const Loading = ({ className, size, ...props }: LoadingProps) => (
 	<span
 		data-slot="loading"
+		// oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- a live region on a span, not a form <output>
 		role="status"
 		aria-label="Loading"
 		className={cn(loadingRecipe({ size }), className)}

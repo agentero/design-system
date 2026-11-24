@@ -451,6 +451,7 @@ export const SubmenuWithSearch: Story = {
 							<DropdownMenu.Portal>
 								<DropdownMenu.SubContent className="w-72" onFocus={focusSearch}>
 									<Command.Root label="Agencies" onKeyDown={keepKeysInSearch}>
+										{/* oxlint-disable-next-line jsx-a11y/no-autofocus -- opening the submenu moves focus to its search, as a menu does */}
 										<Command.Input ref={searchRef} autoFocus placeholder="Search agency..." />
 										<Command.List aria-label="Agencies">
 											{agencies.map(agency => (

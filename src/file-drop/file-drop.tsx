@@ -232,6 +232,7 @@ const FilePreview = ({
 
 	if (!file && !url && loading) {
 		return (
+			// oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- a live region around the skeleton, not a form <output>
 			<div role="status" aria-label="Loading file preview" className={styles.loading()}>
 				<Skeleton className={styles.skeleton()} />
 			</div>
@@ -557,6 +558,7 @@ export const FileDrop = (props: FileDropProps) => {
 				// Its own controls act on their own: a click here never opens the picker.
 				// Disabled, they go inert with the zone: no click, focus or keyboard.
 				<div
+					role="presentation"
 					data-slot="file-drop-alternative"
 					className={styles.alternative()}
 					inert={disabled || undefined}
