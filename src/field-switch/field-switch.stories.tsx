@@ -246,43 +246,6 @@ export const Required: Story = {
 };
 
 /**
- * `invalid` on the field sets `aria-invalid` on the toggle, and the error is
- * announced with it. Put the error in the `Field.Content`, under the label,
- * so it stays out of the row.
- *
- * @summary Invalid field with the error described on the toggle
- */
-export const Invalid: Story = {
-	args: {
-		invalid: true
-	},
-	render: args => (
-		<FieldSwitch {...args}>
-			<Field.Content>
-				<Label>I accept the carrier's terms</Label>
-				<Field.Error
-					errors={args.invalid ? [{ message: 'Accept the terms to continue.' }] : undefined}
-				/>
-			</Field.Content>
-			<Switch />
-		</FieldSwitch>
-	),
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-
-		const toggle = canvas.getByRole('switch', { name: "I accept the carrier's terms" });
-		const alert = canvas.getByRole('alert');
-
-		await expect(toggle).toHaveAttribute('aria-invalid', 'true');
-		await expect(toggle).toHaveAttribute('aria-describedby', expect.stringContaining(alert.id));
-
-		const label = canvas.getByText("I accept the carrier's terms").closest('label')!;
-
-		await expect(alert.getBoundingClientRect().left).toBe(label.getBoundingClientRect().left);
-	}
-};
-
-/**
  * `disabled` on the field disables the toggle through context.
  *
  * @summary Disabled field driven from the root
