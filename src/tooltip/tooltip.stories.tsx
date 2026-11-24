@@ -1,3 +1,5 @@
+import type { SubmitEvent } from 'react';
+
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
@@ -177,13 +179,14 @@ export const AsChild: Story = {
 	}
 };
 
-const onSubmit = fn((event: React.FormEvent) => event.preventDefault());
+const onSubmit = fn((event: SubmitEvent) => event.preventDefault());
 
 /** Without `asChild` the trigger is a `type="button"`, so a tooltip inside a form never submits it. */
 export const InsideAForm: Story = {
+	args: { asChild: false },
 	render: args => (
 		<form onSubmit={onSubmit}>
-			<Tooltip {...args} content="Rated through ITC" asChild={false}>
+			<Tooltip {...args} content="Rated through ITC">
 				<span className="rounded-sm border border-border-default-base-primary px-1.5 text-xs">
 					RATER
 				</span>
