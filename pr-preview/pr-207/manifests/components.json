@@ -6628,13 +6628,6 @@
           "summary": "Required field driven from the root alone"
         },
         {
-          "id": "components-fieldswitch--invalid",
-          "name": "Invalid",
-          "snippet": "const Invalid = args => <FieldSwitch\n    orientation=\"horizontal\"\n    invalid\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Field.Content>\n        <Label>I accept the carrier's terms</Label>\n        <Field.Error\n            errors={args.invalid ? [{ message: 'Accept the terms to continue.' }] : undefined} />\n    </Field.Content>\n    <Switch />\n</FieldSwitch>;",
-          "description": "`invalid` on the field sets `aria-invalid` on the toggle, and the error is\nannounced with it. Put the error in the `Field.Content`, under the label,\nso it stays out of the row.",
-          "summary": "Invalid field with the error described on the toggle"
-        },
-        {
           "id": "components-fieldswitch--disabled",
           "name": "Disabled",
           "snippet": "const Disabled = () => <FieldSwitch\n    orientation=\"horizontal\"\n    invalid={false}\n    disabled\n    readOnly={false}\n    required={false}>\n    <Label>Quote alerts by text</Label>\n    <Switch defaultChecked />\n</FieldSwitch>;",
@@ -13160,6 +13153,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4893
+    "durationMs": 5104
   }
 }

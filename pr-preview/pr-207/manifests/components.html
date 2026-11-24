@@ -620,13 +620,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">46 components ok</span><a class="filter-pill" data-k="no-api" href="#filter-no-api">3/46 without API description</a><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/422 story errors</a><a class="filter-pill info" data-k="story-warnings" href="#filter-story-warnings">4/422 incomplete snippets</a></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">46 components ok</span><a class="filter-pill" data-k="no-api" href="#filter-no-api">3/46 without API description</a><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/421 story errors</a><a class="filter-pill info" data-k="story-warnings" href="#filter-story-warnings">4/421 incomplete snippets</a></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.9s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>5.1s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -7912,7 +7912,7 @@ form library. `InputContext` extends the same way with `value`, `onChange`,
       <div class="badges">
         <label for="c-16-components-fieldswitch-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-16-components-fieldswitch-stories" class="badge ok as-toggle">9 stories</label>
+        <label for="c-16-components-fieldswitch-stories" class="badge ok as-toggle">8 stories</label>
         
         
       </div>
@@ -8132,30 +8132,6 @@ fields. Use it when the switch sits in a form column next to other fields.</div>
     readOnly={false}
     required&gt;
     &lt;Label&gt;Accept the carrier terms&lt;/Label&gt;
-    &lt;Switch /&gt;
-&lt;/FieldSwitch&gt;;</code></pre>
-              
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Invalid</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Invalid field with the error described on the toggle</div>
-              <div class="hint">`invalid` on the field sets `aria-invalid` on the toggle, and the error is
-announced with it. Put the error in the `Field.Content`, under the label,
-so it stays out of the row.</div>
-              <pre><code>const Invalid = args =&gt; &lt;FieldSwitch
-    orientation=&quot;horizontal&quot;
-    invalid
-    disabled={false}
-    readOnly={false}
-    required={false}&gt;
-    &lt;Field.Content&gt;
-        &lt;Label&gt;I accept the carrier&#39;s terms&lt;/Label&gt;
-        &lt;Field.Error
-            errors={args.invalid ? [{ message: &#39;Accept the terms to continue.&#39; }] : undefined} /&gt;
-    &lt;/Field.Content&gt;
     &lt;Switch /&gt;
 &lt;/FieldSwitch&gt;;</code></pre>
               
