@@ -1,0 +1,1 @@
+import{t as e}from"./iframe-BC37ib20.js";e();

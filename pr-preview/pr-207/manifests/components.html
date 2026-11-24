@@ -620,13 +620,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">46 components ok</span><a class="filter-pill" data-k="no-api" href="#filter-no-api">3/46 without API description</a><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/425 story errors</a><a class="filter-pill info" data-k="story-warnings" href="#filter-story-warnings">4/425 incomplete snippets</a></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">46 components ok</span><a class="filter-pill" data-k="no-api" href="#filter-no-api">3/46 without API description</a><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/422 story errors</a><a class="filter-pill info" data-k="story-warnings" href="#filter-story-warnings">4/422 incomplete snippets</a></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>3.8s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>4.9s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -7912,7 +7912,7 @@ form library. `InputContext` extends the same way with `value`, `onChange`,
       <div class="badges">
         <label for="c-16-components-fieldswitch-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-16-components-fieldswitch-stories" class="badge ok as-toggle">12 stories</label>
+        <label for="c-16-components-fieldswitch-stories" class="badge ok as-toggle">9 stories</label>
         
         
       </div>
@@ -7923,13 +7923,12 @@ form library. `InputContext` extends the same way with `value`, `onChange`,
 `SwitchContext`, so the `Switch` inside associates itself with the label and
 the messages and takes `invalid`, `required`, `disabled` and `readOnly` from
 the field — no `id`, `htmlFor` or `aria-describedby` written by hand. It
-defaults to one row, the toggle (`sm`, as in the design) 16px after the
-text.
+defaults to one row, with the small toggle next to the text.
 
 It knows nothing about form libraries, and its contexts compose: a provider
 nested inside it can extend `SwitchContext` with `checked`,
 `onCheckedChange`, `onBlur` and `name`, and `FieldContext` with the errors,
-as the last story shows.</div>
+which is how `FormSwitch` will bind it.</div>
     <div class="kv"><span class="chip">summary: Field for an on/off toggle, wiring the Switch inside it</span><span class="chip">example: &lt;FieldSwitch&gt;
   &lt;Field.Content&gt;
     &lt;Label&gt;Email notifications&lt;/Label&gt;
@@ -8018,8 +8017,7 @@ required?: boolean</code></pre>
               <div>Label and Switch on one row, wired with no ids</div>
               <div class="hint">The composition consumers write: a label and the design system&#39;s `Switch`.
 The label names the toggle through context, and clicking it flips the
-toggle like clicking the toggle itself. The toggle is the design&#39;s 30×16,
-16px after the text rather than pushed to the far edge.</div>
+toggle like clicking the toggle itself.</div>
               <pre><code>const Default = () =&gt; &lt;FieldSwitch
     orientation=&quot;horizontal&quot;
     invalid={false}
@@ -8037,9 +8035,9 @@ toggle like clicking the toggle itself. The toggle is the design&#39;s 30×16,
                 <span class="badge ok">story ok</span>
               </div>
               <div>Label and description stacked beside the toggle</div>
-              <div class="hint">A `Field.Content` keeps the label and its description together before the
-toggle; the description is announced with it. The toggle stays centred on
-the label&#39;s 24px first line, not on the whole block.</div>
+              <div class="hint">A `Field.Content` keeps the label and its description together, and the
+description is announced with the toggle. The toggle lines up with the
+label, not with the middle of the block.</div>
               <pre><code>const WithDescription = () =&gt; &lt;FieldSwitch
     orientation=&quot;horizontal&quot;
     invalid={false}
@@ -8060,8 +8058,8 @@ the label&#39;s 24px first line, not on the whole block.</div>
                 <span class="badge ok">story ok</span>
               </div>
               <div>Toggle first, then the label and its description</div>
-              <div class="hint">The toggle can lead instead: written before the `Field.Content`, it sits on
-the label&#39;s first line with 16px to the text, as Figma&#39;s switch-first field.</div>
+              <div class="hint">The toggle can lead instead: write it before the `Field.Content`. Use this
+order in lists of settings, where the toggles line up on the left.</div>
               <pre><code>const SwitchFirst = () =&gt; &lt;FieldSwitch
     orientation=&quot;horizontal&quot;
     invalid={false}
@@ -8082,8 +8080,8 @@ the label&#39;s first line with 16px to the text, as Figma&#39;s switch-first fi
                 <span class="badge ok">story ok</span>
               </div>
               <div>Label with the optional suffix and an info tooltip</div>
-              <div class="hint">Figma&#39;s full label row: `Field.Label` with `optional` and a `tooltip`. The
-info button sits beside the label, outside it, so it has its own name and
+              <div class="hint">`Field.Label` takes `optional` and a `tooltip` here as in any field. The info
+button sits beside the label, outside it, so it has its own name and
 opening the hint never flips the toggle.</div>
               <pre><code>const WithTooltip = () =&gt; &lt;FieldSwitch
     orientation=&quot;horizontal&quot;
@@ -8102,26 +8100,21 @@ opening the hint never flips the toggle.</div>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">Narrow With Long Label</span>
+                <span class="ex-name">Vertical</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Long label in a narrow column keeps the toggle whole</div>
-              <div class="hint">In a narrow column the label wraps and the description follows it; the
-toggle keeps its size and stays on the label&#39;s first line.</div>
-              <pre><code>const NarrowWithLongLabel = () =&gt; &lt;div className=&quot;w-56&quot;&gt;
-    &lt;FieldSwitch
-        orientation=&quot;horizontal&quot;
-        invalid={false}
-        disabled={false}
-        readOnly={false}
-        required={false}&gt;
-        &lt;Field.Content&gt;
-            &lt;Label&gt;Paperless billing for every policy on this agency account&lt;/Label&gt;
-            &lt;Field.Description&gt;Invoices arrive by email only.&lt;/Field.Description&gt;
-        &lt;/Field.Content&gt;
-        &lt;Switch /&gt;
-    &lt;/FieldSwitch&gt;
-&lt;/div&gt;;</code></pre>
+              <div>Label above the toggle</div>
+              <div class="hint">`orientation=&quot;vertical&quot;` stacks the label above the toggle, as in the other
+fields. Use it when the switch sits in a form column next to other fields.</div>
+              <pre><code>const Vertical = () =&gt; &lt;FieldSwitch
+    orientation=&quot;vertical&quot;
+    invalid={false}
+    disabled={false}
+    readOnly={false}
+    required={false}&gt;
+    &lt;Label&gt;Skip the one-year license check&lt;/Label&gt;
+    &lt;Switch /&gt;
+&lt;/FieldSwitch&gt;;</code></pre>
               
             </div>
             <div class="note ok">
@@ -8145,33 +8138,14 @@ toggle keeps its size and stays on the label&#39;s first line.</div>
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">Vertical</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Label above the toggle</div>
-              <div class="hint">`orientation=&quot;vertical&quot;` stacks the label above the toggle, as in the other
-fields; the toggle keeps its width instead of stretching to the field&#39;s.</div>
-              <pre><code>const Vertical = () =&gt; &lt;FieldSwitch
-    orientation=&quot;vertical&quot;
-    invalid={false}
-    disabled={false}
-    readOnly={false}
-    required={false}&gt;
-    &lt;Label&gt;Skip the one-year license check&lt;/Label&gt;
-    &lt;Switch /&gt;
-&lt;/FieldSwitch&gt;;</code></pre>
-              
-            </div>
-            <div class="note ok">
-              <div class="row">
                 <span class="ex-name">Invalid</span>
                 <span class="badge ok">story ok</span>
               </div>
               <div>Invalid field with the error described on the toggle</div>
               <div class="hint">`invalid` on the field sets `aria-invalid` on the toggle, and the error is
-announced with it. The error goes in the `Field.Content`, under the label,
-so it does not join the row.</div>
-              <pre><code>const Invalid = () =&gt; &lt;FieldSwitch
+announced with it. Put the error in the `Field.Content`, under the label,
+so it stays out of the row.</div>
+              <pre><code>const Invalid = args =&gt; &lt;FieldSwitch
     orientation=&quot;horizontal&quot;
     invalid
     disabled={false}
@@ -8179,7 +8153,8 @@ so it does not join the row.</div>
     required={false}&gt;
     &lt;Field.Content&gt;
         &lt;Label&gt;I accept the carrier&#39;s terms&lt;/Label&gt;
-        &lt;Field.Error errors={[{ message: &#39;Accept the terms to continue.&#39; }]} /&gt;
+        &lt;Field.Error
+            errors={args.invalid ? [{ message: &#39;Accept the terms to continue.&#39; }] : undefined} /&gt;
     &lt;/Field.Content&gt;
     &lt;Switch /&gt;
 &lt;/FieldSwitch&gt;;</code></pre>
@@ -8198,7 +8173,7 @@ so it does not join the row.</div>
     disabled
     readOnly={false}
     required={false}&gt;
-    &lt;Label&gt;Has vetting&lt;/Label&gt;
+    &lt;Label&gt;Quote alerts by text&lt;/Label&gt;
     &lt;Switch defaultChecked /&gt;
 &lt;/FieldSwitch&gt;;</code></pre>
               
@@ -8220,65 +8195,6 @@ read-only, but neither a click nor a key flips it.</div>
     &lt;Label&gt;Instant appointments&lt;/Label&gt;
     &lt;Switch defaultChecked /&gt;
 &lt;/FieldSwitch&gt;;</code></pre>
-              
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Own Props Win</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Switch&#39;s own props merge with, and win over, the field&#39;s context</div>
-              <div class="hint">The context is a default, never an override: an extra `aria-describedby` is
-concatenated with the field&#39;s ids and `size=&quot;md&quot;` replaces the field&#39;s `sm`.</div>
-              <pre><code>const OwnPropsWin = () =&gt; &lt;div className=&quot;flex flex-col gap-2&quot;&gt;
-    &lt;FieldSwitch
-        orientation=&quot;horizontal&quot;
-        invalid={false}
-        disabled={false}
-        readOnly={false}
-        required={false}&gt;
-        &lt;Field.Content&gt;
-            &lt;Label&gt;Carrier news&lt;/Label&gt;
-            &lt;Field.Description&gt;Shown on the home page.&lt;/Field.Description&gt;
-        &lt;/Field.Content&gt;
-        &lt;Switch size=&quot;md&quot; aria-describedby=&quot;news-hint&quot; /&gt;
-    &lt;/FieldSwitch&gt;
-    &lt;p id=&quot;news-hint&quot; className=&quot;text-sm&quot;&gt;You can change it later.
-                    &lt;/p&gt;
-&lt;/div&gt;;</code></pre>
-              
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Controlled From Context</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>Switch controlled and errors supplied from outside the field</div>
-              <div class="hint">The contexts are an extension point: a provider nested in the field adds
-`name`, `checked` and `onCheckedChange` to `SwitchContext`, so a bare
-`&lt;Switch /&gt;` becomes controlled, and the errors to `FieldContext`, so a
-bare `&lt;Field.Error /&gt;` renders them — here with `useState` and no form
-library. The switch&#39;s own `onCheckedChange` still runs, chained after the
-provider&#39;s.</div>
-              <pre><code>const ControlledFromContext = () =&gt; {
-    const [checked, setChecked] = useState(false);
-
-    const errors = checked ? undefined : [{ message: &#39;Turn it on to continue.&#39; }];
-
-    return (
-        &lt;FieldSwitch invalid={!!errors}&gt;
-            &lt;ContextExtension
-                switchProps={{ name: &#39;terms&#39;, checked, onCheckedChange: setChecked }}
-                errors={errors}&gt;
-                &lt;Field.Content&gt;
-                    &lt;Label&gt;I accept the terms&lt;/Label&gt;
-                    &lt;Field.Error /&gt;
-                &lt;/Field.Content&gt;
-                &lt;Switch onCheckedChange={onOwnCheckedChange} /&gt;
-            &lt;/ContextExtension&gt;
-        &lt;/FieldSwitch&gt;
-    );
-};</code></pre>
               
             </div>
         </div>
