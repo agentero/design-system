@@ -9,6 +9,7 @@ import {
 	ReactNode,
 	useEffect,
 	useCallback,
+	useId,
 	useMemo,
 	useRef,
 	useState
@@ -46,6 +47,8 @@ export const fileDropRecipe = tv({
 		prompt: 'text-sm font-semibold text-text-default-base-primary',
 		formats: 'text-xs text-text-input-placeholder',
 		separator: 'pointer-events-none text-xs text-text-input-placeholder',
+		// Its controls take clicks, so it lets the pointer through only mid-drag.
+		alternative: 'in-data-dragging:pointer-events-none',
 		header: [
 			'flex items-center justify-end gap-2 p-3',
 			'border-b border-border-default-base-primary bg-bg-default-base-primary'
@@ -56,7 +59,7 @@ export const fileDropRecipe = tv({
 			'text-xs text-text-input-placeholder'
 		],
 		fallbackIcon: 'size-16 text-icon-default-base-secondary',
-		fallbackName: 'text-text-default-base-primary',
+		fallbackName: 'text-text-default-base-primary wrap-anywhere',
 		loading: 'flex min-h-(--file-drop-min-height) flex-1',
 		skeleton: 'flex-1 rounded-none'
 	},
@@ -91,7 +94,12 @@ export const fileDropRecipe = tv({
 		}
 	},
 	compoundVariants: [
-		{ filled: false, tone: 'invalid', class: { root: 'bg-bg-alert-primary-danger' } }
+		{
+			filled: false,
+			tone: 'invalid',
+			disabled: false,
+			class: { root: 'bg-bg-alert-primary-danger' }
+		}
 	],
 	defaultVariants: {
 		filled: false,
@@ -231,7 +239,7 @@ const FilePreview = ({
 	}
 
 	if (file ? !canPreview(file) : !url) {
-		const shownName = name ?? file?.name;
+		const shownName = file?.name ?? name;
 
 		return (
 			<div className={styles.fallback()}>
@@ -323,6 +331,7 @@ export const FileDrop = (props: FileDropProps) => {
 	const [dragTone, setDragTone] = useState<DragTone>();
 	const inputRef = useRef<HTMLInputElement>(null);
 	const replaceRef = useRef<HTMLButtonElement>(null);
+	const formatsId = useId();
 	const focusInput = useRef(false);
 	const mergedRef = useMemo(() => mergeRefs(inputRef, ref), [ref]);
 
@@ -344,10 +353,14 @@ export const FileDrop = (props: FileDropProps) => {
 			replaceRef.current?.focus();
 		}
 
-		// "Remove" leaves with the preview, so focus goes to the zone it brings back.
+		// "Remove" leaves with the preview, so focus goes to the zone it brings back,
+		// unless it already went elsewhere (the value was cleared later, if at all).
 		if (!filled && focusInput.current) {
 			focusInput.current = false;
-			inputRef.current?.focus();
+
+			if (document.activeElement === document.body) {
+				inputRef.current?.focus();
+			}
 		}
 	}, [filled]);
 
@@ -411,7 +424,7 @@ export const FileDrop = (props: FileDropProps) => {
 	const onDragOver = (event: DragEvent<HTMLDivElement>) => {
 		allowDrop(event);
 
-		if (!interactive) {
+		if (!interactive || !event.dataTransfer.types.includes('Files')) {
 			event.dataTransfer.dropEffect = 'none';
 		}
 	};
@@ -440,11 +453,17 @@ export const FileDrop = (props: FileDropProps) => {
 		inputRef.current?.click();
 	};
 
+	const formats = !filled && showAcceptedFormats && accept ? getAcceptedFormats(accept) : [];
+	const describedBy =
+		[inputProps['aria-describedby'], formats.length > 0 && formatsId].filter(Boolean).join(' ') ||
+		undefined;
+
 	// First in both states, so the same input survives the swap between them
 	// and keeps focus.
 	const input = (
 		<input
 			{...inputProps}
+			aria-describedby={describedBy}
 			ref={mergedRef}
 			type="file"
 			accept={accept}
@@ -506,8 +525,6 @@ export const FileDrop = (props: FileDropProps) => {
 		return null;
 	}
 
-	const formats = showAcceptedFormats && accept ? getAcceptedFormats(accept) : [];
-
 	return (
 		// A pointer convenience only: the input inside is the labelled control.
 		<div
@@ -530,7 +547,9 @@ export const FileDrop = (props: FileDropProps) => {
 					Drag &amp; drop files or <span className="underline">Browse</span>
 				</span>
 				{formats.length > 0 && (
-					<span className={styles.formats()}>Accepted formats: {formats.join(', ')}</span>
+					<span id={formatsId} className={styles.formats()}>
+						Accepted formats: {formats.join(', ')}
+					</span>
 				)}
 				{children && <span className={styles.separator()}>or</span>}
 			</div>
@@ -539,6 +558,7 @@ export const FileDrop = (props: FileDropProps) => {
 				// Disabled, they go inert with the zone: no click, focus or keyboard.
 				<div
 					data-slot="file-drop-alternative"
+					className={styles.alternative()}
 					inert={disabled || undefined}
 					onClick={event => event.stopPropagation()}>
 					{children}

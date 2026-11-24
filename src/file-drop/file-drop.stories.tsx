@@ -425,6 +425,8 @@ export const DragAndDrop: Story = {
 
 		link.setData('text/uri-list', 'https://www.irs.gov/forms-pubs/about-form-w-9');
 		zone.dispatchEvent(new DragEvent('dragenter', { bubbles: true, dataTransfer: link }));
+		// A drag event renders on a later task, so the check waits for it first.
+		await new Promise(resolve => setTimeout(resolve, 100));
 		await expect(zone).not.toHaveAttribute('data-dragging');
 
 		zone.dispatchEvent(dragEvent('dragenter', accepted));
@@ -486,7 +488,7 @@ export const Invalid: Story = {
 		const input = canvas.getByLabelText('W-9');
 
 		await expect(getZone(canvasElement)).toHaveAttribute('data-invalid');
-		await expect(input).toHaveAccessibleDescription('Upload the signed W-9.');
+		await expect(input).toHaveAccessibleDescription('Upload the signed W-9. Accepted formats: PDF');
 
 		getZone(canvasElement).dispatchEvent(dragEvent('drop', csv()));
 
