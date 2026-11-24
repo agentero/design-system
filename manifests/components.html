@@ -620,13 +620,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">44 components ok</span><a class="filter-pill" data-k="no-api" href="#filter-no-api">3/44 without API description</a><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/401 story errors</a></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">44 components ok</span><a class="filter-pill" data-k="no-api" href="#filter-no-api">3/44 without API description</a><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/402 story errors</a></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>3.7s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>4.7s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -15385,7 +15385,7 @@ action (e.g., a sync icon for a sync-in-progress toast).</div>
       <div class="badges">
         <label for="c-42-components-tooltip-props" class="badge ok as-toggle">12 prop types</label>
         
-        <label for="c-42-components-tooltip-stories" class="badge ok as-toggle">6 stories</label>
+        <label for="c-42-components-tooltip-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -15428,6 +15428,7 @@ align?: &quot;center&quot; | &quot;start&quot; | &quot;end&quot;
 
 /**
  * Merge Radix&#39;s behavior onto an already-interactive child instead of wrapping it in a `&lt;button&gt;`. Defaults to `false`.
+ * The child keeps its own `type`, and `Button` has no default one, so inside a form give it `type=&quot;button&quot;` or it submits.
  */
 asChild?: boolean = false
 
@@ -15572,6 +15573,22 @@ import { Button } from '../button';</code></pre>
         className=&quot;text-text-default-base-primary underline&quot;&gt;Docs
                     &lt;/a&gt;
 &lt;/Tooltip&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Inside A Form</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Without `asChild` the trigger is a `type=&quot;button&quot;`, so a tooltip inside a form never submits it.</div>
+              <pre><code>const InsideAForm = () =&gt; &lt;form onSubmit={onSubmit}&gt;
+    &lt;Tooltip side=&quot;top&quot; asChild={false} content=&quot;Rated through ITC&quot;&gt;
+        &lt;span
+            className=&quot;rounded-sm border border-border-default-base-primary px-1.5 text-xs&quot;&gt;RATER
+                            &lt;/span&gt;
+    &lt;/Tooltip&gt;
+&lt;/form&gt;;</code></pre>
               
             </div>
             <div class="note ok">
