@@ -13,7 +13,7 @@
   "bugs": {
     "url": "https://github.com/agentero/design-system/issues"
   },
-  "packageManager": "pnpm@11.28.12",
+  "packageManager": "pnpm@11.28.13",
   "keywords": [
     "react",
     "design-system",
@@ -101,7 +101,7 @@
     "@radix-ui/react-tooltip": "^1.4.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
-    "lucide-react": "^1.77.0",
+    "lucide-react": "^1.78.0",
     "react-number-format": "5.4.5",
     "sonner": "^2.0.8",
     "tailwind-merge": "^3.7.1",
