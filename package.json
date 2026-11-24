@@ -39,6 +39,7 @@
     "./field": "./src/field/index.ts",
     "./field-text": "./src/field-text/index.ts",
     "./field-textarea": "./src/field-textarea/index.ts",
+    "./file-drop": "./src/file-drop/index.ts",
     "./form": "./src/form/index.ts",
     "./form-text": "./src/form-text/index.ts",
     "./hover-card": "./src/hover-card/index.ts",
