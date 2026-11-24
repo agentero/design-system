@@ -262,6 +262,7 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 	// A ref, not state: Base UI reports the new text before it asks to open on that same
 	// keystroke, so the check has to see it before React re-renders.
 	const query = useRef(String(props.inputValue ?? props.defaultInputValue ?? ''));
+	// oxlint-disable-next-line react/refs -- the controlled text has to be in the ref before Base UI's next event
 	if (props.inputValue !== undefined) query.current = String(props.inputValue);
 	const isShort = (value: string) => value.trim().length < minInputLength;
 	// Once the list has closed, Base UI writes the selected label back into the input — or

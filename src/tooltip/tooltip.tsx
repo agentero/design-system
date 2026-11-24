@@ -64,7 +64,10 @@ export type TooltipProps = {
 	align?: TooltipPrimitive.TooltipContentProps['align'];
 	/** Distance in pixels between the tooltip and its trigger. Defaults to `4`. */
 	sideOffset?: number;
-	/** Merge Radix's behavior onto an already-interactive child instead of wrapping it in a `<button>`. Defaults to `false`. */
+	/**
+	 * Merge Radix's behavior onto an already-interactive child instead of wrapping it in a `<button>`. Defaults to `false`.
+	 * The child keeps its own `type`, and `Button` has no default one, so inside a form give it `type="button"` or it submits.
+	 */
 	asChild?: boolean;
 	/** Hide the tooltip when the trigger is clipped away (e.g. scrolled out of an `overflow` container). */
 	hideWhenDetached?: boolean;
@@ -115,6 +118,7 @@ export const Tooltip = ({
 			delayDuration={delayDuration}>
 			<TooltipPrimitive.Trigger
 				asChild={asChild}
+				type={asChild ? undefined : 'button'}
 				data-slot="tooltip-trigger"
 				data-testid="tooltip-trigger"
 				className="align-middle">

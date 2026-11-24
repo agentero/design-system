@@ -8,6 +8,7 @@ import {
 	use,
 	useCallback,
 	useEffect,
+	useEffectEvent,
 	useId,
 	useImperativeHandle,
 	useLayoutEffect,
@@ -234,8 +235,12 @@ export const Root = ({
 
 	const rootRef = useRef<HTMLDivElement>(null);
 	const mergedRef = useMemo(() => mergeRefs(rootRef, ref), [ref]);
-	const resetTarget = useRef({ isControlled, selected, initialValue });
-	resetTarget.current = { isControlled, selected, initialValue };
+	const resetToTarget = useEffectEvent(() => {
+		const target = isControlled ? selected : initialValue;
+
+		if (!isControlled) setUncontrolledValue(initialValue);
+		for (const input of getInputs(rootRef.current)) input.checked = input.value === target;
+	});
 
 	// A native reset rewrites the radio inputs behind Base UI's back, after the `reset` event. Once
 	// it is done, go back to the starting (or controlled) value and make the inputs match it.
@@ -244,14 +249,7 @@ export const Root = ({
 
 		if (!form) return;
 
-		const handleReset = () =>
-			setTimeout(() => {
-				const { isControlled, selected, initialValue } = resetTarget.current;
-				const target = isControlled ? selected : initialValue;
-
-				if (!isControlled) setUncontrolledValue(initialValue);
-				for (const input of getInputs(rootRef.current)) input.checked = input.value === target;
-			});
+		const handleReset = () => setTimeout(() => resetToTarget());
 
 		form.addEventListener('reset', handleReset);
 		return () => form.removeEventListener('reset', handleReset);

@@ -587,15 +587,15 @@ const formatFein = (value: string) => {
 
 // The lookup answers a moment after the last keystroke, as a request would.
 const useAgencyLookup = (fein: string) => {
-	const [agency, setAgency] = useState<string | null>(null);
+	const [answer, setAnswer] = useState<{ fein: string; agency: string | null }>();
 
 	useEffect(() => {
-		setAgency(null);
-		const timeout = setTimeout(() => setAgency(AGENCIES[fein] ?? null), 150);
+		const timeout = setTimeout(() => setAnswer({ fein, agency: AGENCIES[fein] ?? null }), 150);
 		return () => clearTimeout(timeout);
 	}, [fein]);
 
-	return agency;
+	// An answer for an earlier FEIN is stale while the new lookup runs.
+	return answer?.fein === fein ? answer.agency : null;
 };
 
 /**

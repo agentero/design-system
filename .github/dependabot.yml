@@ -1,0 +1,43 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    # pnpm rejects versions younger than a day (minimumReleaseAge in pnpm-workspace.yaml),
+    # so a same-day bump would fail its own install.
+    cooldown:
+      default-days: 1
+    # One weekly PR for every minor and patch instead of one per package. Majors still come one by
+    # one, since each needs its own review.
+    groups:
+      npm-minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+    # Updates we can't take yet, so Dependabot stops opening PRs that only get closed.
+    ignore:
+      # The portal pins tailwind-variants 3 in its overrides; move both together.
+      - dependency-name: "tailwind-variants"
+        update-types: ["version-update:semver-major"]
+      # A peer of the apps that use DataTable, and 9 changes its API.
+      - dependency-name: "@tanstack/react-table"
+        update-types: ["version-update:semver-major"]
+      # Follows the Node major we run (24).
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+      # Pinned to 1.1.21: 1.2 shows the focus ring on click.
+      - dependency-name: "@radix-ui/react-tabs"
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    # A release waits a week before Dependabot proposes it: a SHA pin stops a moved tag, not a bad new release.
+    cooldown:
+      default-days: 7
+    groups:
+      actions-minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"

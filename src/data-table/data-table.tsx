@@ -129,6 +129,7 @@ export const Root = <TData extends RowData>({
 	linkComponent = 'a',
 	...tableOptions
 }: PropsWithChildren<DataTableRootProps<TData>>) => {
+	// oxlint-disable-next-line react/incompatible-library -- TanStack Table 8 returns a mutable instance, so the compiler skips this component
 	const table = useReactTable<TData>({
 		...tableOptions,
 		getCoreRowModel: getCoreRowModel()
