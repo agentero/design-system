@@ -3258,6 +3258,7 @@ and `data-disabled` on the child instead.</div>
     &lt;Row&gt;
         {VARIANTS.map(variant =&gt; (
             &lt;Button asChild key={variant} variant={variant} disabled&gt;
+                {/* oxlint-disable-next-line jsx-a11y/anchor-is-valid -- a disabled link has no href */}
                 &lt;a&gt;{TEXT}&lt;/a&gt;
             &lt;/Button&gt;
         ))}
@@ -3367,6 +3368,7 @@ variant.</div>
         &lt;Row&gt;
             {VARIANTS.map(variant =&gt; (
                 &lt;Button asChild key={variant} variant={variant} status=&quot;danger&quot; disabled&gt;
+                    {/* oxlint-disable-next-line jsx-a11y/anchor-is-valid -- a disabled link has no href */}
                     &lt;a&gt;
                         &lt;PlusIcon /&gt;
                         {TEXT}
@@ -4657,13 +4659,13 @@ virtualized?: boolean = false</code></pre>
               
               
               <pre><code>Expected render to be an arrow function or function expression
-  1172 |  */
-  1173 | export const InsidePopoverWithValue: Story = {
-&gt; 1174 | 	render: InsidePopover.render,
+  1174 |  */
+  1175 | export const InsidePopoverWithValue: Story = {
+&gt; 1176 | 	render: InsidePopover.render,
        | 	           ^^^^^^^^^^^^^^^^^^^^
-  1175 | 	play: async ({ canvasElement }) =&gt; {
-  1176 | 		const body = within(document.body);
-  1177 | 		const trigger = within(canvasElement).getByRole(&#39;button&#39;, { name: /filter by state/i });</code></pre>
+  1177 | 	play: async ({ canvasElement }) =&gt; {
+  1178 | 		const body = within(document.body);
+  1179 | 		const trigger = within(canvasElement).getByRole(&#39;button&#39;, { name: /filter by state/i });</code></pre>
             </div>
           
           
@@ -5085,6 +5087,7 @@ with no value if none was picked: mark the root `required` to block that.</div>
             &lt;/Combobox.Root&gt;
             &lt;div className=&quot;flex items-center gap-4&quot;&gt;
                 &lt;Button type=&quot;submit&quot;&gt;Save&lt;/Button&gt;
+                {/* oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- a live region on a paragraph, not a form &lt;output&gt; */}
                 &lt;p role=&quot;status&quot; className=&quot;text-sm text-text-default-base-secondary&quot;&gt;
                     {status}
                 &lt;/p&gt;
@@ -5124,6 +5127,7 @@ drops the typed query and submits the form. A highlighted row is still picked.</
             &lt;/Combobox.Root&gt;
             &lt;div className=&quot;flex items-center gap-4&quot;&gt;
                 &lt;Button type=&quot;submit&quot;&gt;Save&lt;/Button&gt;
+                {/* oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- a live region on a paragraph, not a form &lt;output&gt; */}
                 &lt;p role=&quot;status&quot; className=&quot;text-sm text-text-default-base-secondary&quot;&gt;
                     {status}
                 &lt;/p&gt;
@@ -7283,6 +7287,7 @@ holds a `Command`.</div>
                         &lt;DropdownMenu.Portal&gt;
                             &lt;DropdownMenu.SubContent className=&quot;w-72&quot; onFocus={focusSearch}&gt;
                                 &lt;Command.Root label=&quot;Agencies&quot; onKeyDown={keepKeysInSearch}&gt;
+                                    {/* oxlint-disable-next-line jsx-a11y/no-autofocus -- opening the submenu moves focus to its search, as a menu does */}
                                     &lt;Command.Input ref={searchRef} autoFocus placeholder=&quot;Search agency...&quot; /&gt;
                                     &lt;Command.List aria-label=&quot;Agencies&quot;&gt;
                                         {agencies.map(agency =&gt; (
@@ -14681,6 +14686,7 @@ visible.</div>
                         size={size}
                         color=&quot;informative&quot;
                         variant=&quot;secondary&quot;
+                        // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- an icon-only tag is named as an image; an &lt;img&gt; cannot hold the svg
                         role=&quot;img&quot;
                         aria-label={`${size} icon only`}&gt;
                         &lt;PlusIcon /&gt;
@@ -15024,6 +15030,7 @@ leading + trailing icons, and icon-only.</div>
                                 key={variant}
                                 color={color}
                                 variant={variant}
+                                // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- an icon-only tag is named as an image; an &lt;img&gt; cannot hold the svg
                                 role=&quot;img&quot;
                                 aria-label={`${color} ${variant}`}&gt;
                                 &lt;PlusIcon /&gt;
