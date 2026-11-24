@@ -849,6 +849,7 @@ export const InsideForm: Story = {
 				</Combobox.Root>
 				<div className="flex items-center gap-4">
 					<Button type="submit">Save</Button>
+					{/* oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- a live region on a paragraph, not a form <output> */}
 					<p role="status" className="text-sm text-text-default-base-secondary">
 						{status}
 					</p>
@@ -928,6 +929,7 @@ export const SubmitOnEnter: Story = {
 				</Combobox.Root>
 				<div className="flex items-center gap-4">
 					<Button type="submit">Save</Button>
+					{/* oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- a live region on a paragraph, not a form <output> */}
 					<p role="status" className="text-sm text-text-default-base-secondary">
 						{status}
 					</p>

@@ -90,6 +90,7 @@ export const Sizes: Story = {
 							size={size}
 							color="informative"
 							variant="secondary"
+							// oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- an icon-only tag is named as an image; an <img> cannot hold the svg
 							role="img"
 							aria-label={`${size} icon only`}>
 							<PlusIcon />
@@ -489,6 +490,7 @@ export const Colors: Story = {
 									key={variant}
 									color={color}
 									variant={variant}
+									// oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- an icon-only tag is named as an image; an <img> cannot hold the svg
 									role="img"
 									aria-label={`${color} ${variant}`}>
 									<PlusIcon />

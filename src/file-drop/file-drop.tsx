@@ -232,6 +232,7 @@ const FilePreview = ({
 
 	if (!file && !url && loading) {
 		return (
+			// oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- a live region around the skeleton, not a form <output>
 			<div role="status" aria-label="Loading file preview" className={styles.loading()}>
 				<Skeleton className={styles.skeleton()} />
 			</div>

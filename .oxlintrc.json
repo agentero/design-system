@@ -41,9 +41,7 @@
     "react/no-unescaped-entities": "off",
     "react/display-name": "off",
     "react/no-unknown-property": "error",
-    "react/rules-of-hooks": "error",
-
-    "jsx-a11y/prefer-tag-over-role": "off"
+    "react/rules-of-hooks": "error"
   },
   "overrides": [
     {
