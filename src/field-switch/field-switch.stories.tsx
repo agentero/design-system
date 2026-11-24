@@ -13,13 +13,12 @@ import { Switch, SwitchContext, type SwitchContextValue } from '../switch';
  * `SwitchContext`, so the `Switch` inside associates itself with the label and
  * the messages and takes `invalid`, `required`, `disabled` and `readOnly` from
  * the field — no `id`, `htmlFor` or `aria-describedby` written by hand. It
- * defaults to one row, the toggle (`sm`, as in the design) 16px after the
- * text.
+ * defaults to one row, with the small toggle next to the text.
  *
  * It knows nothing about form libraries, and its contexts compose: a provider
  * nested inside it can extend `SwitchContext` with `checked`,
  * `onCheckedChange`, `onBlur` and `name`, and `FieldContext` with the errors,
- * as the last story shows.
+ * which is how `FormSwitch` will bind it.
  */
 const meta = {
 	title: 'Components/FieldSwitch',
@@ -60,8 +59,7 @@ type Story = StoryObj<typeof meta>;
 /**
  * The composition consumers write: a label and the design system's `Switch`.
  * The label names the toggle through context, and clicking it flips the
- * toggle like clicking the toggle itself. The toggle is the design's 30×16,
- * 16px after the text rather than pushed to the far edge.
+ * toggle like clicking the toggle itself.
  *
  * @summary Label and Switch on one row, wired with no ids
  */
@@ -94,9 +92,9 @@ export const Default: Story = {
 };
 
 /**
- * A `Field.Content` keeps the label and its description together before the
- * toggle; the description is announced with it. The toggle stays centred on
- * the label's 24px first line, not on the whole block.
+ * A `Field.Content` keeps the label and its description together, and the
+ * description is announced with the toggle. The toggle lines up with the
+ * label, not with the middle of the block.
  *
  * @summary Label and description stacked beside the toggle
  */
@@ -127,8 +125,8 @@ export const WithDescription: Story = {
 };
 
 /**
- * The toggle can lead instead: written before the `Field.Content`, it sits on
- * the label's first line with 16px to the text, as Figma's switch-first field.
+ * The toggle can lead instead: write it before the `Field.Content`. Use this
+ * order in lists of settings, where the toggles line up on the left.
  *
  * @summary Toggle first, then the label and its description
  */
@@ -158,8 +156,8 @@ export const SwitchFirst: Story = {
 };
 
 /**
- * Figma's full label row: `Field.Label` with `optional` and a `tooltip`. The
- * info button sits beside the label, outside it, so it has its own name and
+ * `Field.Label` takes `optional` and a `tooltip` here as in any field. The info
+ * button sits beside the label, outside it, so it has its own name and
  * opening the hint never flips the toggle.
  *
  * @summary Label with the optional suffix and an info tooltip
@@ -192,37 +190,32 @@ export const WithTooltip: Story = {
 };
 
 /**
- * In a narrow column the label wraps and the description follows it; the
- * toggle keeps its size and stays on the label's first line.
+ * `orientation="vertical"` stacks the label above the toggle, as in the other
+ * fields. Use it when the switch sits in a form column next to other fields.
  *
- * @summary Long label in a narrow column keeps the toggle whole
+ * @summary Label above the toggle
  */
-export const NarrowWithLongLabel: Story = {
+export const Vertical: Story = {
+	args: {
+		orientation: 'vertical'
+	},
 	render: args => (
-		<div className="w-56">
-			<FieldSwitch {...args}>
-				<Field.Content>
-					<Label>Paperless billing for every policy on this agency account</Label>
-					<Field.Description>Invoices arrive by email only.</Field.Description>
-				</Field.Content>
-				<Switch />
-			</FieldSwitch>
-		</div>
+		<FieldSwitch {...args}>
+			<Label>Skip the one-year license check</Label>
+			<Switch />
+		</FieldSwitch>
 	),
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
-		const toggle = canvas.getByRole('switch', { name: /Paperless billing/ });
-		const root = canvasElement.querySelector('[data-slot=field]')!.getBoundingClientRect();
-		const box = toggle.getBoundingClientRect();
-		const label = canvas
-			.getByText(/Paperless billing/)
-			.closest('label')!
-			.getBoundingClientRect();
 
-		await expect(label.height).toBeGreaterThan(24);
-		await expect([box.width, box.height]).toEqual([30, 16]);
-		await expect(box.top - root.top).toBe(4);
-		await expect(box.right).toBeLessThanOrEqual(root.right);
+		await expect(canvasElement.querySelector('[data-slot=field]')).toHaveAttribute(
+			'data-orientation',
+			'vertical'
+		);
+		const toggle = canvas.getByRole('switch', { name: 'Skip the one-year license check' });
+
+		await expect(toggle).toBeVisible();
+		await expect(toggle.getBoundingClientRect().width).toBe(30);
 	}
 };
 
@@ -253,39 +246,9 @@ export const Required: Story = {
 };
 
 /**
- * `orientation="vertical"` stacks the label above the toggle, as in the other
- * fields; the toggle keeps its width instead of stretching to the field's.
- *
- * @summary Label above the toggle
- */
-export const Vertical: Story = {
-	args: {
-		orientation: 'vertical'
-	},
-	render: args => (
-		<FieldSwitch {...args}>
-			<Label>Skip the one-year license check</Label>
-			<Switch />
-		</FieldSwitch>
-	),
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-
-		await expect(canvasElement.querySelector('[data-slot=field]')).toHaveAttribute(
-			'data-orientation',
-			'vertical'
-		);
-		const toggle = canvas.getByRole('switch', { name: 'Skip the one-year license check' });
-
-		await expect(toggle).toBeVisible();
-		await expect(toggle.getBoundingClientRect().width).toBe(30);
-	}
-};
-
-/**
  * `invalid` on the field sets `aria-invalid` on the toggle, and the error is
- * announced with it. The error goes in the `Field.Content`, under the label,
- * so it does not join the row.
+ * announced with it. Put the error in the `Field.Content`, under the label,
+ * so it stays out of the row.
  *
  * @summary Invalid field with the error described on the toggle
  */
@@ -297,7 +260,9 @@ export const Invalid: Story = {
 		<FieldSwitch {...args}>
 			<Field.Content>
 				<Label>I accept the carrier's terms</Label>
-				<Field.Error errors={[{ message: 'Accept the terms to continue.' }]} />
+				<Field.Error
+					errors={args.invalid ? [{ message: 'Accept the terms to continue.' }] : undefined}
+				/>
 			</Field.Content>
 			<Switch />
 		</FieldSwitch>
@@ -328,14 +293,14 @@ export const Disabled: Story = {
 	},
 	render: args => (
 		<FieldSwitch {...args}>
-			<Label>Has vetting</Label>
+			<Label>Quote alerts by text</Label>
 			<Switch defaultChecked />
 		</FieldSwitch>
 	),
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 
-		await expect(canvas.getByRole('switch', { name: 'Has vetting' })).toBeDisabled();
+		await expect(canvas.getByRole('switch', { name: 'Quote alerts by text' })).toBeDisabled();
 	}
 };
 
@@ -373,12 +338,49 @@ export const ReadOnly: Story = {
 };
 
 /**
+ * In a narrow column the label wraps and the description follows it; the
+ * toggle keeps its size and stays on the label's first line.
+ *
+ * @summary Long label in a narrow column keeps the toggle whole
+ */
+export const NarrowWithLongLabel: Story = {
+	tags: ['!dev', '!autodocs', '!manifest'],
+	render: args => (
+		<div className="w-56">
+			<FieldSwitch {...args}>
+				<Field.Content>
+					<Label>Paperless billing for every policy on this agency account</Label>
+					<Field.Description>Invoices arrive by email only.</Field.Description>
+				</Field.Content>
+				<Switch />
+			</FieldSwitch>
+		</div>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const toggle = canvas.getByRole('switch', { name: /Paperless billing/ });
+		const root = canvasElement.querySelector('[data-slot=field]')!.getBoundingClientRect();
+		const box = toggle.getBoundingClientRect();
+		const label = canvas
+			.getByText(/Paperless billing/)
+			.closest('label')!
+			.getBoundingClientRect();
+
+		await expect(label.height).toBeGreaterThan(24);
+		await expect([box.width, box.height]).toEqual([30, 16]);
+		await expect(box.top - root.top).toBe(4);
+		await expect(box.right).toBeLessThanOrEqual(root.right);
+	}
+};
+
+/**
  * The context is a default, never an override: an extra `aria-describedby` is
  * concatenated with the field's ids and `size="md"` replaces the field's `sm`.
  *
  * @summary Switch's own props merge with, and win over, the field's context
  */
 export const OwnPropsWin: Story = {
+	tags: ['!dev', '!autodocs', '!manifest'],
 	render: args => (
 		<div className="flex flex-col gap-2">
 			<FieldSwitch {...args}>
@@ -443,6 +445,7 @@ const onOwnCheckedChange = fn();
  * @summary Switch controlled and errors supplied from outside the field
  */
 export const ControlledFromContext: Story = {
+	tags: ['!dev', '!autodocs', '!manifest'],
 	render: () => {
 		const [checked, setChecked] = useState(false);
 
