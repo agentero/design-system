@@ -1,8 +1,10 @@
+import type { SubmitEvent } from 'react';
+
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, userEvent, waitFor, within } from 'storybook/test';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { Button } from '../button';
-import { Tooltip } from './tooltip';
+import { Tooltip, TooltipProvider } from './tooltip';
 
 /**
  * Tooltip reveals a short, non-essential hint anchored to a trigger element
@@ -101,6 +103,38 @@ export const OpensOnFocus: Story = {
 	}
 };
 
+/**
+ * Inside a `TooltipProvider`, the first tooltip waits for the hover delay; the next one opens at once.
+ *
+ * @summary Shared provider: only the first tooltip waits for the hover delay
+ */
+export const SharedProvider: Story = {
+	render: () => (
+		<TooltipProvider>
+			<div className="flex gap-2">
+				<Tooltip content="Edit carrier" asChild>
+					<Button variant="secondary">Edit</Button>
+				</Tooltip>
+				<Tooltip content="Archive carrier" asChild>
+					<Button variant="secondary">Archive</Button>
+				</Tooltip>
+			</div>
+		</TooltipProvider>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const edit = canvas.getByRole('button', { name: 'Edit' });
+		const archive = canvas.getByRole('button', { name: 'Archive' });
+
+		await userEvent.hover(edit);
+		await waitFor(() => expect(edit).toHaveAttribute('data-state', 'delayed-open'));
+
+		await userEvent.unhover(edit);
+		await userEvent.hover(archive);
+		await waitFor(() => expect(archive).toHaveAttribute('data-state', 'instant-open'));
+	}
+};
+
 /** `side` sets the preferred placement; it flips on viewport collision. */
 export const Sides: Story = {
 	render: () => (
@@ -142,6 +176,30 @@ export const AsChild: Story = {
 		await userEvent.hover(link);
 		const tooltips = await body.findAllByText(/opens in a new tab/i);
 		await expect(tooltips.length).toBeGreaterThan(0);
+	}
+};
+
+const onSubmit = fn((event: SubmitEvent) => event.preventDefault());
+
+/** Without `asChild` the trigger is a `type="button"`, so a tooltip inside a form never submits it. */
+export const InsideAForm: Story = {
+	args: { asChild: false },
+	render: args => (
+		<form onSubmit={onSubmit}>
+			<Tooltip {...args} content="Rated through ITC">
+				<span className="rounded-sm border border-border-default-base-primary px-1.5 text-xs">
+					RATER
+				</span>
+			</Tooltip>
+		</form>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const trigger = canvas.getByRole('button', { name: /rater/i });
+
+		await expect(trigger).toHaveAttribute('type', 'button');
+		await userEvent.click(trigger);
+		await expect(onSubmit).not.toHaveBeenCalled();
 	}
 };
 

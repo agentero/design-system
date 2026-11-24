@@ -2,24 +2,42 @@
 
 // Stays: `@base-ui/react/combobox` is `export * as Combobox`, so its parts hang off one
 // export like cmdk's — without the directive they arrive `undefined` (see `command.tsx`).
-import { ComponentPropsWithRef, createContext, use, useEffect, useRef, useState } from 'react';
+import {
+	ComponentPropsWithRef,
+	createContext,
+	ReactNode,
+	use,
+	useEffect,
+	useRef,
+	useState
+} from 'react';
 
 import { Combobox as ComboboxPrimitive } from '@base-ui/react/combobox';
+import { ChevronDownIcon, SearchIcon } from 'lucide-react';
 import { tv } from 'tailwind-variants';
 
-import { cn, useMergeProps } from '../../lib';
+import { cn } from '../../lib';
 import { useFieldContext } from '../field';
-import { InputContext, inputRecipe, InputSize } from '../input';
+import { CircleXFilledIcon } from '../icons/custom';
+import { inputRecipe, InputSize } from '../input';
 import { InputGroup } from '../input-group';
-import { InputSearch, InputSearchProps } from '../input-search';
-import { IconCancel, IconCheck, IconKeyboardArrowDown, IconSearch } from './icons';
+import { Skeleton as SkeletonBlock } from '../skeleton';
+import { IconCheck } from './icons';
+import { useBaseInputContext } from './input-context';
+
+// Shared by `list` and `skeleton`, and by `item` and `skeletonRow`, so the placeholder rows take
+// the list's height and an item's size and layout without a copy of either.
+const LIST_BOX = 'max-h-[min(10.25rem,var(--available-height))] py-2';
+const ROW_BOX = 'mx-2 my-px flex items-center gap-2 px-3 py-2 text-sm';
 
 /**
  * Style recipe for Combobox. Slots: `action` and `trigger` (the clear and
  * chevron buttons inside the input's frame, which is `InputGroup`'s),
+ * `clear` (hides the clear button while the input is disabled or read-only),
  * `triggerReplaced` (hides the chevron once the clear button has a value to
- * clear), `content`,
- * `list`, `item`, `indicator` and `message`. The surface carries its
+ * clear), `content`, `list`, `item`, `skeleton` and `skeletonRow` (the
+ * placeholder rows, on the list's and the item's geometry), `indicator` and
+ * `message`. The surface carries its
  * own chrome — border, background and shadow — because the list it holds is
  * plain content.
  *
@@ -30,54 +48,49 @@ export const comboboxRecipe = tv({
 		// Clear and trigger share one shape: a bare 24px icon button inside the frame's padding.
 		action: [
 			'flex size-6 shrink-0 cursor-pointer items-center justify-center self-center rounded-sm',
-			'[&>svg>path]:fill-icon-input-default hover:[&>svg>path]:fill-icon-default-base-primary',
+			'text-icon-input-default hover:text-icon-default-base-primary [&>svg]:size-5',
 			'focus-visible:outline-2 focus-visible:outline-border-input-focus',
-			'disabled:cursor-default disabled:[&>svg>path]:fill-icon-input-disable'
+			'disabled:cursor-default disabled:text-icon-input-disable'
 		],
-		trigger:
-			'transition-[rotate] duration-100 data-popup-open:rotate-180 motion-reduce:transition-none',
+		trigger: 'data-popup-open:rotate-180',
 		// With a clear button beside it, the chevron gives way to it once there is a value, as in
 		// Base UI's own example. Base UI marks the frame `data-placeholder` while there is none.
-		triggerReplaced: '[[data-slot=combobox-field]:not([data-placeholder])_&]:hidden',
+		// A disabled or read-only input matches `:read-only` whichever part locked it — `Root`, a
+		// `FieldText`, the input itself or a `<fieldset>` — and has nothing to clear.
+		clear: 'group-has-[input:read-only]/input-group:hidden',
+		triggerReplaced:
+			'[[data-slot=combobox-field]:not([data-placeholder]):not(:has(input:read-only))_&]:hidden',
 		content: [
 			'w-(--anchor-width) max-h-(--available-height) overflow-hidden rounded-md',
 			'border border-border-default-base-primary bg-bg-default-base-primary shadow-lg',
-			// Not Base UI's `--transform-origin`: with `align="start"` it puts the origin on the left
-			// corner, and this surface is as wide as the input, so it has to grow from the edge it hangs from.
-			'data-[side=bottom]:origin-top data-[side=top]:origin-bottom',
-			// The legacy Datalist's own timing — a 100ms fade over a 0.95 scale — driven off Base UI's
-			// start/end attributes rather than the shared dropdown keyframes, whose 0.9 scale and
-			// translate read as a slow start on a surface this wide.
-			// `scale`, not `transform`: Tailwind v4 scale utilities set the standalone scale property.
-			'transition-[scale,opacity] duration-100 ease-in-out',
-			// Bracketed on purpose: Tailwind does not emit a rule for the bare `data-starting-style:`
-			// form, so the surface would appear with no transition at all.
-			'data-[starting-style]:scale-95 data-[starting-style]:opacity-0',
-			'data-[ending-style]:scale-95 data-[ending-style]:opacity-0',
-			'motion-reduce:transition-none'
+			// With no row and no `Empty` to show, the border alone would read as a stray line.
+			'[&:not(:has(>:not(:empty)))]:hidden'
 		],
 		// Never taller than the room left: the surface clips there and would hide the last rows.
 		// When empty, its padding alone would be a 16px band under `Empty`. `:empty`, not Base UI's
 		// `data-empty`: that one tracks the root's `items`, so a list whose rows are rendered by hand
 		// (a server search with no `items`) is always flagged empty and loses its padding.
-		list: [
-			'max-h-[min(10.25rem,var(--available-height))] overflow-y-auto scroll-py-2 py-2 outline-none',
-			'empty:py-0'
-		],
+		list: [LIST_BOX, 'overflow-y-auto scroll-py-2 outline-none', 'empty:py-0'],
 		item: [
+			ROW_BOX,
 			// Panel radius minus the 2px gap, so the row reads as concentric with the panel.
-			'group/item mx-2 my-px flex cursor-pointer items-center rounded-[calc(var(--radius-md)-2px)]',
-			'px-3 py-2 text-sm text-text-default-base-primary select-none',
+			'group/item cursor-pointer rounded-[calc(var(--radius-md)-2px)]',
+			'text-text-default-base-primary select-none',
 			// `data-highlighted` covers pointer and keyboard alike; no `hover:` needed.
 			'data-highlighted:bg-bg-default-base-primary-hover',
 			'data-disabled:cursor-default data-disabled:text-text-default-base-tertiary'
 		],
+		// `Skeleton`: the list's box around rows with an item's, so each row is as tall as the item
+		// that replaces it. The minimum height is a one-line item, a `text-sm` line plus the `py-2` of
+		// `ROW_BOX`; taller content sets the height, as it does in an item.
+		skeleton: [LIST_BOX, 'overflow-hidden'],
+		skeletonRow: [ROW_BOX, 'min-h-[calc(1lh+1rem)]'],
 		// A checkbox lookalike on the same tokens as `Checkbox`, so a multi-select row reads as the
 		// legacy checkbox row did. Presentational: the row itself is the option, so a real checkbox
 		// here would nest one control inside another.
 		indicator: [
-			'mr-2 flex size-4 shrink-0 items-center justify-center rounded-sm',
-			'border border-border-input-default bg-bg-input-normal',
+			'flex size-4 shrink-0 items-center justify-center rounded-sm',
+			'border-[1.5px] border-border-checkbox-default bg-bg-input-normal',
 			'text-text-default-base-inverse-primary transition-colors duration-150',
 			'data-selected:border-bg-checkbox-selected data-selected:bg-bg-checkbox-selected',
 			'[&>svg]:hidden data-selected:[&>svg]:block',
@@ -97,15 +110,27 @@ const slots = comboboxRecipe();
 // a private store.
 const MultipleContext = createContext(false);
 
-// The root's `loading`, for `Content` to mark busy and for `Empty` to hold back. It stays
-// `undefined` for a root that never opted in.
+// The root's `loading`, for `Content` to mark busy, for `Empty` to hold back and for `Skeleton`
+// to show. It stays `undefined` for a root that never opted in.
 const LoadingContext = createContext<boolean | undefined>(undefined);
+
+// Whether the list is open, for `Empty` to hold back. It drops as soon as the list starts closing,
+// while the surface is still mounted: a search that empties its rows on that keystroke would
+// otherwise flash its "no results" on the way out. It stays `undefined` outside this `Root`, under
+// `Autocomplete`, which borrows these parts.
+const OpenContext = createContext<boolean | undefined>(undefined);
 
 // How long a request runs before its label is announced. VoiceOver cuts off whatever it is saying
 // to echo the key just typed and, when the list opens, to read out its new expanded state; both
 // start about 100ms after the keystroke. A label that lands later queues behind them instead of
 // being dropped. A request that answers sooner has no wait worth announcing.
 const LOADING_ANNOUNCE_DELAY = 500;
+
+// Base UI's `'always'` mode: the first row is highlighted as soon as the list has one, so Enter
+// picks what the user sees. `true` only highlights after typing and misses rows that arrive later
+// through `filteredItems`. The Combobox types only list the boolean; the mode is the one
+// Autocomplete documents, read by the same `AriaCombobox` underneath.
+const HIGHLIGHT_FIRST = 'always' as unknown as boolean;
 
 // The label for the live region: set once the list has been open and loading for the delay, and
 // cleared as soon as either stops.
@@ -146,14 +171,14 @@ export type ComboboxRootProps<
 	 * renders next to the field, so it is in place before the list opens. On a search
 	 * against an API, pass it from the first render, as `false` while idle: a root
 	 * that leaves it out gets no live region. A list filtered in memory never
-	 * waits and leaves it out. While loading with no rows yet, the surface shows
-	 * whatever placeholder `Content` holds — `Empty` stays quiet.
+	 * waits and leaves it out. While loading with no rows yet, `Skeleton` draws
+	 * placeholder rows — `Empty` stays quiet.
 	 */
 	loading?: boolean;
 	/**
-	 * What a screen reader hears when `loading` turns `true`. Announced only; any
-	 * loading visuals — placeholder rows, a spinner — are yours to render inside
-	 * `Content`, hidden from assistive technology. Defaults to `'Loading…'`.
+	 * What a screen reader hears when `loading` turns `true`. Announced only: the
+	 * placeholder rows `Skeleton` draws are hidden from assistive technology.
+	 * Defaults to `'Loading…'`.
 	 */
 	loadingLabel?: string;
 };
@@ -177,11 +202,25 @@ export type ComboboxRootProps<
  * `value`, `onValueChange` and so on. `open` stays the consumer's to control;
  * `minInputLength` only refuses to open below the minimum.
  *
+ * `disabled` and `readOnly` belong here, not on `Input`: the input, the clear
+ * button and the chevron all read them from the root. `disabled` locks the
+ * whole field; `readOnly` locks the value but still lets the list open and be
+ * browsed. Inside a `FieldText` both default to the field's.
+ *
+ * The first row is highlighted as soon as the list shows one, so Enter picks
+ * it without the arrow keys; pass `autoHighlight={false}` to start with
+ * nothing highlighted. The highlight follows `items` (and `filteredItems`):
+ * rows rendered without them, by a child that loads its own data, are only
+ * highlighted once the query changes. See `Input` for what Enter does in a form.
+ *
  * With `multiple`, the value is an array and picking a row toggles it. The list
  * stays open and keeps the typed query between picks, so several rows can be
  * ticked from one search; closing the list (Escape, a click outside) still resets
  * the query. Each row then shows whether it is selected — see `Item`. Nothing is
- * written back into the input: render the selection next to the field.
+ * written back into the input: render the selection next to the field. For the
+ * same reason Escape on a closed list leaves the selection alone, where Base UI
+ * would empty it, and `onValueChange` is not called. It still clears the text, and
+ * only an Escape on an empty field reaches an enclosing `Modal`.
  *
  * @summary Root provider for an input-triggered filterable list
  * @see {@link https://base-ui.com/react/components/combobox|Base UI Combobox}
@@ -205,19 +244,25 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 	minInputLength = 0,
 	loading,
 	loadingLabel = 'Loading…',
+	autoHighlight,
 	open: openProp,
 	defaultOpen = false,
 	onOpenChange,
 	onOpenChangeComplete,
 	onInputValueChange,
+	onValueChange,
 	children,
 	...props
 }: ComboboxRootProps<Value, Multiple, Item>) => {
+	const field = useFieldContext();
 	const multiple = Boolean(props.multiple);
+	const disabled = props.disabled ?? field?.disabled;
+	const readOnly = props.readOnly ?? field?.readOnly;
 	const [openState, setOpenState] = useState(defaultOpen);
 	// A ref, not state: Base UI reports the new text before it asks to open on that same
 	// keystroke, so the check has to see it before React re-renders.
 	const query = useRef(String(props.inputValue ?? props.defaultInputValue ?? ''));
+	// oxlint-disable-next-line react/refs -- the controlled text has to be in the ref before Base UI's next event
 	if (props.inputValue !== undefined) query.current = String(props.inputValue);
 	const isShort = (value: string) => value.trim().length < minInputLength;
 	// Once the list has closed, Base UI writes the selected label back into the input — or
@@ -225,6 +270,9 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 	// it, the user is still typing that query, so this write is skipped.
 	const closedForMinimum = useRef(false);
 	const skipCloseReset = useRef(false);
+	// Escape on a closed list clears the text, then the value, on the same event; the value
+	// handler needs to know whether there was text to clear.
+	const escapeClearedText = useRef(false);
 
 	const handleOpenChange: typeof onOpenChange = (open, eventDetails) => {
 		if (open && isShort(query.current)) {
@@ -257,6 +305,7 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 			eventDetails.cancel();
 			return;
 		}
+		escapeClearedText.current = eventDetails.reason === 'escape-key' && query.current !== '';
 		query.current = value;
 		onInputValueChange?.(value, eventDetails);
 		// Base UI only closes the list once the text is empty, so a minimum closes it here.
@@ -266,12 +315,25 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 		}
 	};
 
+	// Escape on a closed list empties the value, which a multi-select never shows in the input:
+	// the whole selection, disabled rows included, would go with no sign. It keeps it here. If
+	// the key cleared some text it stops there; if nothing changed, it reaches whatever is
+	// around the field, a `Modal` say.
+	const handleValueChange: typeof onValueChange = (value, eventDetails) => {
+		if (multiple && eventDetails.reason === 'escape-key') {
+			eventDetails.cancel();
+			if (!escapeClearedText.current) eventDetails.allowPropagation();
+			return;
+		}
+		onValueChange?.(value, eventDetails);
+	};
+
 	// Without a minimum, Base UI keeps its own open state, as it always has.
 	const open = openProp ?? (minInputLength > 0 ? openState : undefined);
-	const announcement = useLoadingAnnouncement(
-		Boolean(loading) && (openProp ?? openState),
-		loadingLabel
-	);
+	// Every open change, Base UI's own included, goes through `handleOpenChange`, so `openState`
+	// follows the list even where Base UI keeps the open state itself.
+	const isOpen = openProp ?? openState;
+	const announcement = useLoadingAnnouncement(Boolean(loading) && isOpen, loadingLabel);
 
 	return (
 		<MultipleContext value={multiple}>
@@ -282,8 +344,12 @@ export const Root = <Value, Multiple extends boolean | undefined = false, Item =
 					onOpenChange={handleOpenChange}
 					onOpenChangeComplete={handleOpenChangeComplete}
 					onInputValueChange={handleInputValueChange}
-					{...props}>
-					{children}
+					onValueChange={handleValueChange}
+					autoHighlight={autoHighlight ?? HIGHLIGHT_FIRST}
+					{...props}
+					disabled={disabled}
+					readOnly={readOnly}>
+					<OpenContext value={isOpen}>{children}</OpenContext>
 					{loading !== undefined && (
 						// Next to the field, not inside `Content`: the surface mounts on the keystroke that
 						// starts the request, and a live region that appears already filled in is skipped.
@@ -312,8 +378,7 @@ type InputProps = Omit<ComponentPropsWithRef<typeof ComboboxPrimitive.Input>, 's
 	 */
 	variant?: 'search' | 'plain' | 'select';
 	/**
-	 * Whether a clear button follows the input: on `search` once there is text,
-	 * on the others once an option is picked.
+	 * Whether a clear button follows the input once an option is picked.
 	 * Defaults to `true` for `search` and `false` for `plain` and `select`; pass
 	 * it to override the variant. On a `select` it replaces the chevron while
 	 * there is a value. Ignored under a `multiple` root, which never
@@ -327,26 +392,13 @@ type InputProps = Omit<ComponentPropsWithRef<typeof ComboboxPrimitive.Input>, 's
 	clearLabel?: string;
 	/** Accessible name for the chevron of the `select` variant. Defaults to `'Show options'`. */
 	triggerLabel?: string;
-};
-
-// `Root` owns the text through `inputValue`; a form adapter's copies would fight it.
-const ROOT_OWNED_KEYS = new Set(['value', 'defaultValue', 'onChange']);
-
-const useComboboxInputContext = (props: InputProps) => {
-	const context = use(InputContext);
-	const field = useFieldContext();
-	const wiring = context
-		? Object.fromEntries(Object.entries(context).filter(([key]) => !ROOT_OWNED_KEYS.has(key)))
-		: null;
-
-	// The field's `<label for>` is not enough here: while the list is open, Base UI hides
-	// everything but the input and the list from assistive technology, label included, and
-	// Chrome then drops it from the name. A direct `aria-labelledby` reference survives that.
-	// Only as a default: a name the consumer gave, either way, wins.
-	const named = 'aria-label' in props || 'aria-labelledby' in props;
-	const labelledBy = !named && field ? { 'aria-labelledby': field.labelId } : null;
-
-	return useMergeProps({ ...wiring, ...labelledBy } as Partial<InputProps> | null, props);
+	/**
+	 * Whether Enter, pressed while the list is open and no row is highlighted,
+	 * closes the list and submits the surrounding form, as in a plain input.
+	 * Defaults to `false`: Enter then does nothing, and neither does it while
+	 * `Root` is `loading`.
+	 */
+	submitOnEnter?: boolean;
 };
 
 /**
@@ -374,12 +426,14 @@ const useComboboxInputContext = (props: InputProps) => {
  *   the user may want to browse before typing.
  *
  * Only `search` carries a clear button by default; `showClear` adds it to the
- * other two or drops it from `search`. The `search` field is an
- * [InputSearch](?path=/docs/components-inputsearch--docs): its clear button
- * shows as soon as there is text, typed or picked, and pressing it empties the
- * text, which drops the picked option and closes the list. On a `select`, the
- * clear button takes the chevron's place once an option is picked; the list
- * still opens from the input. Name it with `clearLabel`, and the chevron with
+ * other two or drops it from `search`. It shows once an option is picked, on
+ * every variant: text typed without a pick is not a value, and closing the
+ * list drops it, as Escape does. Pressing it empties the text and drops the
+ * picked option. It is out of the tab order; from the keyboard, selecting the
+ * text and deleting it drops the option too. A `disabled` or `readOnly` field
+ * has none, as there is nothing to clear. On a `select`, the clear button
+ * takes the chevron's place once an option is picked; the list still opens
+ * from the input. Name it with `clearLabel`, and the chevron with
  * `triggerLabel`, when a page has more than one combobox.
  *
  * Under a `multiple` root there is neither: the list stays open between picks,
@@ -388,10 +442,22 @@ const useComboboxInputContext = (props: InputProps) => {
  * typed". The selection is rendered outside the field, with its own way to
  * remove each entry.
  *
+ * The typed text is a query, never the value, so while the list is open Enter
+ * does not submit a surrounding form: it picks the highlighted row — the first
+ * one, unless the user moved the highlight — and with none highlighted, as
+ * while the list is empty, it does nothing. While `Root` is `loading` it does
+ * nothing either: the rows on screen answer the previous query, and the top
+ * match for the one just typed has not arrived. A click still picks any row.
+ * With the list closed, Enter submits as in any input, and with a modifier
+ * held — Cmd+Enter — it is always the form's. `submitOnEnter` restores Base
+ * UI's default: with no row highlighted, Enter closes the list and submits
+ * the form.
+ *
  * Every native input attribute is accepted and forwarded to the `<input>` —
- * `placeholder`, `disabled`, `autoComplete`. `className` styles the `<input>`
- * too, except on the `search` field with a clear button, where it styles the
- * frame, as on InputSearch.
+ * `placeholder`, `autoComplete` — and so is `className`. Pass `disabled` and
+ * `readOnly` to `Root` instead; on the input alone, `disabled` still hides the
+ * clear button and disables the chevron, but `readOnly` leaves the chevron free
+ * to change the value.
  *
  * @summary Search, plain or select field that opens and filters the list
  * @dataAttribute {string} data-slot - Always set to "combobox-input"
@@ -401,36 +467,32 @@ export const Input = ({
 	showClear = variant === 'search',
 	clearLabel = 'Clear',
 	triggerLabel = 'Show options',
+	submitOnEnter = false,
 	...props
 }: InputProps) => {
-	const { className, size = 'md', ...rest } = useComboboxInputContext(props);
+	const { className, size = 'md', onKeyDown, ...rest } = useBaseInputContext(props);
 	const multiple = use(MultipleContext);
+	const loading = use(LoadingContext);
+	const clearable = showClear && !multiple;
 
-	// The search field with a clear button is InputSearch: Base UI's props reach its
-	// `<input>` through `render`, and emptying the text — which its clear button does
-	// through a real change event — is what makes Base UI drop a single selection.
-	// The null context keeps InputSearch's own `Input` from merging the field's wiring
-	// a second time; it was merged above.
-	if (variant === 'search' && showClear && !multiple) {
-		return (
-			<ComboboxPrimitive.InputGroup render={<div />} data-slot="combobox-field">
-				<InputContext value={null}>
-					<ComboboxPrimitive.Input
-						data-slot="combobox-input"
-						className={className}
-						{...rest}
-						render={inputProps => (
-							<InputSearch
-								{...(inputProps as InputSearchProps)}
-								size={size}
-								clearLabel={clearLabel}
-							/>
-						)}
-					/>
-				</InputContext>
-			</ComboboxPrimitive.InputGroup>
-		);
-	}
+	// With no row highlighted, Base UI closes the list and lets Enter through to the form, as a
+	// plain input would. Here the text is only a query, never the value, so Enter does nothing.
+	// While loading, the highlighted row is the previous query's top match, so it is not picked.
+	// A modifier is left alone, as Base UI does, so Cmd+Enter still reaches the form.
+	const handleKeyDown: InputProps['onKeyDown'] = event => {
+		onKeyDown?.(event);
+		const input = event.currentTarget;
+		if (submitOnEnter || event.key !== 'Enter' || event.defaultPrevented) return;
+		if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+		if (event.nativeEvent.isComposing || input.getAttribute('aria-expanded') !== 'true') return;
+
+		// The list's own document: the global one misses it when the field renders in an iframe.
+		const list = input.ownerDocument.getElementById(input.getAttribute('aria-controls') ?? '');
+		if (!loading && list?.querySelector('[data-highlighted]')) return;
+
+		event.preventDefault();
+		event.preventBaseUIHandler();
+	};
 
 	return (
 		// Base UI's part, so the list anchors to the whole frame — icon and buttons included —
@@ -438,11 +500,14 @@ export const Input = ({
 		<ComboboxPrimitive.InputGroup
 			render={<InputGroup.Root />}
 			data-slot="combobox-field"
+			// Base UI opens the list on a press on the frame unless `Root` is disabled; with
+			// `disabled` on the input alone, a click on the padding would still open it.
+			onMouseDown={rest.disabled ? event => event.preventBaseUIHandler() : undefined}
 			// Alone in the frame, the text keeps a plain `Input`'s inset rather than the group's.
 			className={variant === 'plain' ? 'px-4' : undefined}>
 			{variant === 'search' && (
 				<InputGroup.Addon>
-					<IconSearch />
+					<SearchIcon />
 				</InputGroup.Addon>
 			)}
 			<ComboboxPrimitive.Input
@@ -450,21 +515,25 @@ export const Input = ({
 				data-size={size}
 				className={cn(inputRecipe({ size }), className)}
 				{...rest}
+				onKeyDown={handleKeyDown}
 			/>
-			{showClear && !multiple && (
+			{clearable && (
 				<ComboboxPrimitive.Clear
 					data-slot="combobox-clear"
 					aria-label={clearLabel}
-					className={slots.action()}>
-					<IconCancel />
+					className={cn(slots.action(), slots.clear())}>
+					<CircleXFilledIcon />
 				</ComboboxPrimitive.Clear>
 			)}
 			{variant === 'select' && !multiple && (
 				<ComboboxPrimitive.Trigger
 					data-slot="combobox-trigger"
 					aria-label={triggerLabel}
-					className={cn(slots.action(), slots.trigger(), showClear && slots.triggerReplaced())}>
-					<IconKeyboardArrowDown />
+					// `disabled` belongs on `Root`, where Base UI's `Trigger` reads it; passed to the input
+					// alone, the chevron would still open the list and change the value.
+					disabled={rest.disabled}
+					className={cn(slots.action(), slots.trigger(), clearable && slots.triggerReplaced())}>
+					<ChevronDownIcon />
 				</ComboboxPrimitive.Trigger>
 			)}
 		</ComboboxPrimitive.InputGroup>
@@ -590,7 +659,7 @@ export const Item = ({ className, children, ...props }: ItemProps) => {
 					keepMounted
 					data-slot="combobox-item-indicator"
 					className={slots.indicator()}>
-					<IconCheck className="size-3.5" />
+					<IconCheck className="size-4 shrink-0" />
 				</ComboboxPrimitive.ItemIndicator>
 			)}
 			{children}
@@ -598,6 +667,78 @@ export const Item = ({ className, children, ...props }: ItemProps) => {
 	);
 };
 Item.displayName = 'Combobox.Item';
+
+type SkeletonProps = Omit<ComponentPropsWithRef<'div'>, 'children'> & {
+	/**
+	 * What one placeholder row holds, shaped like the rows that replace it — an
+	 * avatar, a name and a secondary line for rows that show those. A function
+	 * receives the row's index, to vary widths from one row to the next. Each row
+	 * already has an item's padding and height, so only its content needs
+	 * drawing. Defaults to one line of text, alternating between two widths.
+	 */
+	children?: ReactNode | ((index: number) => ReactNode);
+	/**
+	 * How many placeholder rows to draw. Defaults to `5`, more than the list
+	 * shows before it scrolls, so the block fills the surface as a full list
+	 * would.
+	 */
+	rows?: number;
+};
+
+const lineRow = (index: number) => (
+	<SkeletonBlock className={cn('h-4', index % 2 === 0 ? 'w-2/5' : 'w-3/5')} />
+);
+
+/**
+ * Placeholder rows for a search against an API, shown while the root is
+ * `loading` and the list has no rows to show: the wait `Empty` keeps quiet
+ * through. Rows already on screen stay through a wait, so it shows nothing
+ * then, nor once the list starts closing; render it inside `Content` as it is,
+ * before `Empty` and `List`, with no condition of your own. Like `Empty`, it
+ * needs `items` on `Root` to know whether rows are on screen. The block takes
+ * the list's height and padding, and each row is as tall as the item that
+ * replaces it, so a full list lands without the surface changing size; give it
+ * children shaped like the rows when they hold more than a line of text. It is
+ * hidden from assistive technology, since `loadingLabel` on `Root` announces
+ * the wait. A list filtered in memory never waits and has no use for it. Each
+ * row carries `data-slot="combobox-skeleton-row"`. Every native `div`
+ * attribute is accepted and forwarded to the block, such as `className`, `id`
+ * or `style`.
+ *
+ * @summary Placeholder rows that hold the list's place while results load
+ * @dataAttribute {string} data-slot - Always set to "combobox-skeleton"
+ * @example
+ * <Combobox.Content>
+ *   <Combobox.Skeleton />
+ *   <Combobox.Empty>No agencies found</Combobox.Empty>
+ *   <Combobox.List>
+ *     {(agency: Agency) => <Combobox.Item value={agency}>{agency.name}</Combobox.Item>}
+ *   </Combobox.List>
+ * </Combobox.Content>
+ */
+export const Skeleton = ({ className, children = lineRow, rows = 5, ...props }: SkeletonProps) => {
+	const loading = use(LoadingContext);
+	const open = use(OpenContext);
+	const shown = ComboboxPrimitive.useFilteredItems().length;
+	// Rows on screen stay through the wait, and a list on its way out draws nothing new, as with
+	// `Empty`.
+	if (!loading || open === false || shown > 0) return null;
+
+	return (
+		<div
+			data-slot="combobox-skeleton"
+			aria-hidden="true"
+			className={cn(slots.skeleton(), className)}
+			{...props}>
+			{Array.from({ length: rows }, (_, index) => (
+				<div key={index} data-slot="combobox-skeleton-row" className={slots.skeletonRow()}>
+					{typeof children === 'function' ? children(index) : children}
+				</div>
+			))}
+		</div>
+	);
+};
+Skeleton.displayName = 'Combobox.Skeleton';
 
 type EmptyProps = ComponentPropsWithRef<typeof ComboboxPrimitive.Empty>;
 
@@ -607,21 +748,24 @@ type EmptyProps = ComponentPropsWithRef<typeof ComboboxPrimitive.Empty>;
  * change its children rather than rendering it conditionally. While the root is
  * `loading` it shows nothing: the list is empty because the results have not
  * arrived yet, not because there are none. With no rows to show either, the
- * surface would open as an empty frame, so render placeholder rows inside
- * `Content` for the wait.
+ * surface would open as an empty frame, so render `Skeleton` inside `Content`
+ * for the wait. Once the list starts closing it shows nothing
+ * either, so a search that clears its rows as the query drops under
+ * `minInputLength` does not flash its message on the way out.
  *
  * @summary Message shown when no item matches the query
  * @dataAttribute {string} data-slot - Always set to "combobox-empty"
  */
 export const Empty = ({ className, children, ...props }: EmptyProps) => {
 	const loading = use(LoadingContext);
+	const open = use(OpenContext);
 
 	return (
 		<ComboboxPrimitive.Empty
 			data-slot="combobox-empty"
 			className={cn(slots.message(), className)}
 			{...props}>
-			{loading ? null : children}
+			{loading || open === false ? null : children}
 		</ComboboxPrimitive.Empty>
 	);
 };

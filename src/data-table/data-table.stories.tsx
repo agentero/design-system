@@ -1,7 +1,8 @@
-import { ComponentProps, SVGProps, useMemo, useState } from 'react';
+import { ComponentProps, useMemo, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { createColumnHelper, getSortedRowModel, type SortingState } from '@tanstack/react-table';
+import { ArrowRightIcon, EllipsisVerticalIcon, HomeIcon } from 'lucide-react';
 import { expect, userEvent, within } from 'storybook/test';
 
 import { DataTable } from '.';
@@ -14,33 +15,6 @@ import { Table } from '../table';
 /* Inline icons / badges that stand in for application-provided components in   */
 /* these stories. The DataTable itself ships none.                             */
 /* -------------------------------------------------------------------------- */
-
-const IconMoreVert = (props: SVGProps<SVGSVGElement>) => (
-	<svg width="24" height="24" viewBox="0 0 24 24" fill="none" {...props}>
-		<path
-			fill="currentColor"
-			d="M12 19.27q-.619 0-1.06-.441a1.45 1.45 0 0 1-.44-1.06q0-.618.44-1.06.442-.44 1.06-.44t1.06.44q.44.442.44 1.06 0 .62-.44 1.06-.441.44-1.06.44m0-5.77q-.619 0-1.06-.44A1.44 1.44 0 0 1 10.5 12q0-.619.44-1.06.442-.44 1.06-.44t1.06.44q.44.442.44 1.06t-.44 1.06q-.441.44-1.06.44m0-5.77q-.619 0-1.06-.44a1.44 1.44 0 0 1-.44-1.06q0-.618.44-1.059.442-.44 1.06-.44t1.06.44q.44.44.44 1.06 0 .618-.44 1.06-.441.44-1.06.44"
-		/>
-	</svg>
-);
-
-const IconArrowForward = (props: SVGProps<SVGSVGElement>) => (
-	<svg width="24" height="24" viewBox="0 0 24 24" fill="none" {...props}>
-		<path
-			fill="currentColor"
-			d="M16.627 12.75H5.25a.73.73 0 0 1-.535-.215A.73.73 0 0 1 4.5 12q0-.32.215-.535a.73.73 0 0 1 .535-.215h11.377l-5.17-5.17a.7.7 0 0 1-.22-.521q.003-.3.236-.532A.78.78 0 0 1 12 4.802a.7.7 0 0 1 .527.225l6.34 6.34a.83.83 0 0 1 .256.633.828.828 0 0 1-.256.633l-6.34 6.34a.72.72 0 0 1-.514.213.75.75 0 0 1-.54-.213.74.74 0 0 1-.233-.534q0-.303.233-.535z"
-		/>
-	</svg>
-);
-
-const IconHome = (props: SVGProps<SVGSVGElement>) => (
-	<svg width="24" height="24" viewBox="0 0 24 24" fill="none" {...props}>
-		<path
-			fill="currentColor"
-			d="M6 19h3v-6h6v6h3v-9l-6-4.5L6 10zm-1.5 1.5V9.25L12 3.5l7.5 5.75V20.5h-6v-6h-3v6z"
-		/>
-	</svg>
-);
 
 type LeadStatus = 'quoted' | 'readyToQuote';
 
@@ -162,7 +136,7 @@ const columns = [
 		meta: { style: { width: '10rem' } },
 		cell: ({ row }) => (
 			<div className="flex items-center gap-1">
-				<IconHome className="size-5 shrink-0 text-icon-default-base-secondary" />
+				<HomeIcon className="size-5 shrink-0 text-icon-default-base-secondary" />
 				<span className="truncate text-sm font-bold">{row.original.insuranceType}</span>
 			</div>
 		)
@@ -189,7 +163,7 @@ const columns = [
 			<Table.RowActions>
 				<Button asChild variant="ghost" size="sm" iconOnly aria-label="View lead details">
 					<a href={`/leads/${row.original.leadId}`}>
-						<IconArrowForward />
+						<ArrowRightIcon />
 					</a>
 				</Button>
 				<DropdownMenu.Root>
@@ -200,7 +174,7 @@ const columns = [
 							data-slot="button"
 							aria-label="Lead actions"
 							className="data-[state=open]:opacity-100">
-							<IconMoreVert />
+							<EllipsisVerticalIcon />
 						</Button>
 					</DropdownMenu.Trigger>
 					<DropdownMenu.Portal>

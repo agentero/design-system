@@ -2,13 +2,14 @@
 
 import { ChangeEvent, use, useMemo, useRef, useState } from 'react';
 
+import { SearchIcon } from 'lucide-react';
 import { tv } from 'tailwind-variants';
 
 import { chain, mergeRefs } from '../../lib';
+import { CircleXFilledIcon } from '../icons/custom';
 import { Input, InputContext, InputProps } from '../input';
 import { InputGroup } from '../input-group';
 import { Loading } from '../loading';
-import { IconCancel, IconSearch } from './icons';
 
 /**
  * Style recipe for InputSearch. Slots: `input` (hides the browser's own
@@ -24,9 +25,9 @@ export const inputSearchRecipe = tv({
 			'[&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none',
 		clear: [
 			'flex size-6 shrink-0 cursor-pointer items-center justify-center self-center rounded-sm',
-			'[&>svg>path]:fill-icon-input-default hover:[&>svg>path]:fill-icon-default-base-primary',
+			'text-icon-input-default hover:text-icon-default-base-primary [&>svg]:size-5',
 			'focus-visible:outline-2 focus-visible:outline-border-input-focus',
-			'disabled:cursor-default disabled:[&>svg>path]:fill-icon-input-disable',
+			'disabled:cursor-default disabled:text-icon-input-disable',
 			'group-has-[input:disabled]/input-group:hidden'
 		]
 	}
@@ -74,8 +75,8 @@ export type InputSearchProps = Omit<InputProps, 'type'> & {
  * destructive border.
  *
  * Do not use it to pick a value from a list; that is
- * [Combobox](?path=/docs/components-combobox--docs), whose `search` field is
- * drawn by InputSearch. For a filter that should
+ * [Combobox](?path=/docs/components-combobox--docs), whose `search` field
+ * looks the same but clears only a picked option. For a filter that should
  * run only once the user pauses typing, use `DebouncedInputSearch`.
  *
  * @summary Search input with a leading icon, a clear button and a loading slot
@@ -136,7 +137,7 @@ export const InputSearch = ({
 	return (
 		<InputGroup.Root data-slot="input-search" className={className}>
 			<InputGroup.Addon>
-				<IconSearch />
+				<SearchIcon />
 			</InputGroup.Addon>
 			<Input
 				ref={mergedRef}
@@ -154,7 +155,7 @@ export const InputSearch = ({
 				showClear && (
 					<InputGroup.Addon>
 						<button type="button" className={slots.clear()} aria-label={clearLabel} onClick={clear}>
-							<IconCancel />
+							<CircleXFilledIcon />
 						</button>
 					</InputGroup.Addon>
 				)

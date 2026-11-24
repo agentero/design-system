@@ -251,13 +251,12 @@ export const WithRules: Story = {
 };
 
 /**
- * The error sits right under the input and the description stays below it, so
- * the message lands next to the value it is about. Screen readers announce
- * them in the same order.
+ * The description sits right under the input and the error appears below it.
+ * Screen readers announce them in the same order.
  *
- * @summary Error under the input, above the helper text
+ * @summary Helper text under the input, above the error
  */
-export const ErrorAndDescription: Story = {
+export const DescriptionAndError: Story = {
 	render: () => {
 		const methods = useForm<TaxValues>({ defaultValues: { taxId: '' } });
 
@@ -289,10 +288,10 @@ export const ErrorAndDescription: Story = {
 		const alert = await canvas.findByRole('alert');
 		const description = canvas.getByText('Nine digits, with or without the dash.');
 
-		await expect(input.nextElementSibling).toBe(alert);
-		await expect(alert.nextElementSibling).toBe(description);
+		await expect(input.nextElementSibling).toBe(description);
+		await expect(description.nextElementSibling).toBe(alert);
 		await expect(input).toHaveAccessibleDescription(
-			'Enter the tax ID. Nine digits, with or without the dash.'
+			'Nine digits, with or without the dash. Enter the tax ID.'
 		);
 		await expect(onSubmit).not.toHaveBeenCalled();
 	}

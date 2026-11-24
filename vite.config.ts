@@ -85,7 +85,7 @@ function bundleMcpServer(): Plugin {
 			if (!fs.existsSync(path.join(manifestsSrc, 'components.json'))) {
 				console.warn(
 					'\n⚠ Skipping MCP server: storybook-static/manifests/components.json not found.' +
-						'\n  Run "yarn build-storybook" first to include the MCP server in the build.\n'
+						'\n  Run "pnpm build-storybook" first to include the MCP server in the build.\n'
 				);
 				return;
 			}

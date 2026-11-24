@@ -3,12 +3,12 @@
 import { ReactNode } from 'react';
 
 import { Field, type FieldRootProps, useFieldContext } from '../field';
-import { InputContext, type InputProps } from '../input';
+import { InputContext, type InputContextValue } from '../input';
 
 const InputProvider = ({ children }: { children: ReactNode }) => {
 	const field = useFieldContext();
 
-	const value: Partial<InputProps> | null = field && {
+	const value: InputContextValue | null = field && {
 		id: field.controlId,
 		'aria-describedby': field.describedBy,
 		'aria-invalid': field.invalid || undefined,
@@ -40,8 +40,8 @@ export type FieldTextProps = FieldRootProps;
  * <FieldText invalid={!!error} required>
  *   <Label>Email</Label>
  *   <Input type="email" />
- *   <Field.Error errors={[error]} />
  *   <Field.Description>We only use this for policy documents.</Field.Description>
+ *   <Field.Error errors={[error]} />
  * </FieldText>
  */
 export const FieldText = ({ children, ...props }: FieldTextProps) => (

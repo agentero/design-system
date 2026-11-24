@@ -1,10 +1,13 @@
+'use client';
+
 import { ComponentProps } from 'react';
 
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
+import { ChevronRightIcon } from 'lucide-react';
 import { type VariantProps, tv } from 'tailwind-variants';
 
-import { cn } from '../../lib';
-import { IconArrowRight } from './icons';
+import { cn, hideFocusRingAfterPointerClose } from '../../lib';
+import { legacyIconFill } from '../icons/legacy-fill';
 
 /**
  * Props for the DropdownMenu Root component.
@@ -139,6 +142,14 @@ Trigger.displayName = 'DropdownMenu.Trigger';
  */
 export const Portal = DropdownMenuPrimitive.Portal;
 
+// A `Command` draws its own panel, so the menu hands it the chrome instead of nesting a second
+// border, radius and shadow around it. Child, not descendant like `Popover`: a `SubContent`
+// rendered without a `Portal` sits inside its parent `Content`, which would match its `Command`.
+const commandChrome = [
+	'has-[>[data-slot=command-root]]:border-0 has-[>[data-slot=command-root]]:bg-transparent',
+	'has-[>[data-slot=command-root]]:p-0 has-[>[data-slot=command-root]]:shadow-none'
+];
+
 /**
  * Tailwind variant styles for the dropdown menu content.
  * Includes animations for slide-in/out based on the side from which the menu appears.
@@ -147,6 +158,7 @@ const contentStyles = tv({
 	base: [
 		'z-(--z-index-top-layer) flex flex-col rounded-lg bg-bg-default-base-primary p-1 shadow-xl',
 		'border border-border-default-base-primary',
+		commandChrome,
 		'will-change-[transform,opacity]',
 		// Radix computes the exact origin (side + align) so the scale grows from the trigger.
 		'origin-(--radix-dropdown-menu-content-transform-origin)',
@@ -199,7 +211,8 @@ type ContentProps = ComponentProps<typeof DropdownMenuPrimitive.Content> &
  * (direction follows `side`), performs collision detection so the menu
  * stays within the viewport, and — when `hasTriggerWidth` is `true` —
  * matches the trigger's width. Defaults: `sideOffset` is `8`,
- * `hasTriggerWidth` is `false`.
+ * `hasTriggerWidth` is `false`. When it holds a `Command`, it drops its own
+ * border, padding, background and shadow so the search list is the only box.
  *
  * @summary Animated popover surface that contains the menu items
  *
@@ -215,12 +228,17 @@ export const Content = ({
 	className,
 	hasTriggerWidth = false,
 	sideOffset = 8,
+	onCloseAutoFocus,
 	...props
 }: ContentProps) => (
 	<DropdownMenuPrimitive.Content
 		data-slot="dropdown-menu-content"
 		sideOffset={sideOffset}
 		className={contentStyles({ hasTriggerWidth, className })}
+		onCloseAutoFocus={event => {
+			onCloseAutoFocus?.(event);
+			hideFocusRingAfterPointerClose(event);
+		}}
 		{...props}
 	/>
 );
@@ -242,7 +260,7 @@ type ItemProps = ComponentProps<typeof DropdownMenuPrimitive.Item>;
 /**
  * Selectable row inside the menu. Fires `onSelect` on click or keyboard
  * activation; passing `disabled` greys the row and blocks interaction. Any
- * leading `<svg>` is sized to 24px and tinted with the tertiary icon token.
+ * leading `<svg>` is sized to 20px and tinted with the tertiary icon token.
  *
  * @summary Selectable menu row with hover + disabled styling
  *
@@ -270,8 +288,9 @@ export const Item = ({ className, ...props }: ItemProps) => (
 			'data-disabled:pointer-events-none data-disabled:cursor-not-allowed',
 			'data-disabled:text-text-default-disable-primary',
 			'data-disabled:active:bg-bg-default-base-primary',
-			'[&>svg]:h-6',
-			'[&_path]:fill-icon-default-base-tertiary',
+			'[&>svg]:size-5',
+			'[&_svg]:text-icon-default-base-tertiary',
+			legacyIconFill,
 			className
 		)}
 		{...props}
@@ -426,13 +445,14 @@ export const SubTrigger = ({ className, children, ...props }: SubTriggerProps) =
 			'data-[state=open]:bg-bg-default-base-primary-hover',
 			'data-disabled:pointer-events-none data-disabled:cursor-not-allowed',
 			'data-disabled:text-text-default-disable-primary',
-			'[&>svg]:h-6',
-			'[&_path]:fill-icon-default-base-tertiary',
+			'[&>svg]:size-5',
+			'[&_svg]:text-icon-default-base-tertiary',
+			legacyIconFill,
 			className
 		)}
 		{...props}>
 		{children}
-		<IconArrowRight className="ml-auto h-4 w-4 [&>path]:fill-icon-default-base-tertiary" />
+		<ChevronRightIcon className="ml-auto size-5 text-icon-default-base-tertiary" />
 	</DropdownMenuPrimitive.SubTrigger>
 );
 SubTrigger.displayName = 'DropdownMenu.SubTrigger';
@@ -445,6 +465,7 @@ const subContentStyles = tv({
 	base: [
 		'z-(--z-index-top-layer) flex flex-col rounded-lg bg-bg-default-base-primary p-1 shadow-xl',
 		'border border-border-default-base-primary',
+		commandChrome,
 		'will-change-[transform,opacity]',
 		'origin-(--radix-dropdown-menu-content-transform-origin)',
 		'data-[state=open]:data-[side=bottom]:animate-dropdown-slide-in-from-top',
@@ -480,7 +501,9 @@ type SubContentProps = ComponentProps<typeof DropdownMenuPrimitive.SubContent>;
 /**
  * Floating surface for a submenu's items. Positions itself alongside its
  * `SubTrigger` with sensible defaults (`sideOffset: 2`, `alignOffset: -5`)
- * and animates on open/close just like `Content`.
+ * and animates on open/close just like `Content`. When it holds a `Command`
+ * (a searchable list of options), it drops its own border, padding,
+ * background and shadow so the search list is the only box.
  *
  * @summary Popover surface that renders a submenu's items
  *

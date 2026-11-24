@@ -48,8 +48,8 @@ export type FieldContextValue = {
 	/**
 	 * Adds a message element to `describedBy` and returns the function that
 	 * removes it. `Field.Description` and `Field.Error` call it from a layout
-	 * effect; a custom message element can do the same. Errors are listed first,
-	 * then descriptions, then messages registered without a `kind`, each in the
+	 * effect; a custom message element can do the same. Descriptions are listed
+	 * first, then errors, then messages registered without a `kind`, each in the
 	 * order they registered.
 	 */
 	registerMessage: (id: string, kind?: FieldMessageKind) => () => void;

@@ -1,14 +1,16 @@
-import { Suspense, use, useDeferredValue, useRef, useState } from 'react';
+import { SubmitEvent, useRef, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { configure, expect, getConfig, userEvent, waitFor, within } from 'storybook/test';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { Combobox } from '.';
+import { Avatar } from '../avatar';
 import { Button } from '../button';
 import { Field } from '../field';
 import { FieldText } from '../field-text';
 import { Label } from '../label';
 import { Modal } from '../modal';
+import { Popover } from '../popover';
 import { Skeleton } from '../skeleton';
 import { Tag } from '../tag';
 
@@ -44,7 +46,7 @@ type Story = StoryObj<typeof meta>;
 const STATES = ['California', 'Colorado', 'Connecticut', 'Florida', 'Texas', 'Washington'];
 
 // The list anchors to the whole field, not the bare input: as wide as the frame, from its left
-// edge. Synchronous, for `waitFor`: the surface grows in from 0.95 scale over 100ms.
+// edge. Synchronous, for `waitFor`.
 const expectListAlignedWithField = (canvasElement: HTMLElement) => {
 	const field = canvasElement
 		.querySelector('[data-slot="combobox-field"]')!
@@ -60,8 +62,8 @@ const expectListAlignedWithField = (canvasElement: HTMLElement) => {
 /**
  * The common case: options are already in memory and Base UI filters them against
  * what you type. Selecting a row fills the input and closes the list. The field is
- * a search out of the box — a magnifier in front, a clear button once there is
- * text — and the list hangs from the whole field. Clearing drops the picked option.
+ * a search out of the box — a magnifier in front, a clear button once something is
+ * picked — and the list hangs from the whole field. Clearing drops the picked option.
  *
  * @summary Search field with a magnifier and clear button over an in-memory list
  */
@@ -104,8 +106,7 @@ export const Default: Story = {
 		await userEvent.type(input, 'co');
 		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(2));
 
-		// The clear button follows the text, so it is there before anything is picked.
-		await expect(canvas.getByRole('button', { name: /clear/i })).toBeInTheDocument();
+		await expect(canvas.queryByRole('button', { name: /clear/i })).not.toBeInTheDocument();
 
 		await userEvent.click(body.getByRole('option', { name: 'Colorado' }));
 		await waitFor(() => expect(input).toHaveValue('Colorado'));
@@ -122,7 +123,6 @@ export const Default: Story = {
 		);
 		await userEvent.keyboard('{Escape}');
 
-		// The surface stays mounted through its exit animation, so wait it out.
 		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
 	}
 };
@@ -266,6 +266,121 @@ export const SelectWithClear: Story = {
 };
 
 /**
+ * `disabled` goes on `Root`, or on the surrounding `FieldText`. The field keeps
+ * its value, shows no clear button, and its chevron is disabled, so the list
+ * cannot open.
+ *
+ * @summary Disabled field that keeps its value
+ */
+export const Disabled: Story = {
+	render: () => (
+		<Combobox.Root items={STATES} defaultValue="Florida" disabled>
+			<Combobox.Input variant="select" showClear aria-label="State" />
+			<Combobox.Content>
+				<Combobox.List>
+					{(state: string) => (
+						<Combobox.Item key={state} value={state}>
+							{state}
+						</Combobox.Item>
+					)}
+				</Combobox.List>
+			</Combobox.Content>
+		</Combobox.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const trigger = canvas.getByRole('button', { name: 'Show options' });
+
+		await expect(canvas.getByRole('combobox', { name: 'State' })).toHaveValue('Florida');
+		await expect(canvas.queryByRole('button', { name: /clear/i })).not.toBeInTheDocument();
+		// With no clear button to stand in for it, the chevron stays in place.
+		await expect(trigger).toBeVisible();
+		await expect(trigger).toBeDisabled();
+	}
+};
+
+/**
+ * `readOnly` goes on `Root`, or on the surrounding `FieldText` as here. It locks
+ * the value, not the list: there is no clear button, but the chevron still
+ * opens the list to browse it, and picking a row leaves the value as it was.
+ *
+ * @summary Read-only field whose list can be browsed but not picked from
+ */
+export const ReadOnly: Story = {
+	render: () => (
+		<FieldText readOnly>
+			<Label>State</Label>
+			<Combobox.Root items={STATES} defaultValue="Texas">
+				<Combobox.Input variant="select" showClear />
+				<Combobox.Content>
+					<Combobox.List>
+						{(state: string) => (
+							<Combobox.Item key={state} value={state}>
+								{state}
+							</Combobox.Item>
+						)}
+					</Combobox.List>
+				</Combobox.Content>
+			</Combobox.Root>
+		</FieldText>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const body = within(document.body);
+		const input = canvas.getByRole('combobox', { name: 'State' });
+		const trigger = canvas.getByRole('button', { name: 'Show options' });
+
+		await expect(canvas.queryByRole('button', { name: /clear/i })).not.toBeInTheDocument();
+		await expect(trigger).toBeVisible();
+
+		await userEvent.click(trigger);
+		await waitFor(() => expect(body.getByRole('listbox')).toBeInTheDocument());
+		await userEvent.click(body.getByRole('option', { name: 'Florida' }));
+		await expect(input).toHaveValue('Texas');
+	}
+};
+
+/**
+ * Regression check, kept out of the manifest: `disabled` passed to the input
+ * alone, not to `Root`, still hides the clear button and disables the chevron,
+ * and a press on the frame does not open the list, so the value cannot change.
+ *
+ * @summary Chevron disabled when only the input is disabled
+ */
+export const DisabledOnInput: Story = {
+	tags: ['!manifest'],
+	// Base UI calls `onOpenChange` inside the press handler, so the spy reports an opening
+	// at once, where the listbox would only mount a few frames later.
+	args: { onOpenChange: fn() },
+	render: args => (
+		<Combobox.Root items={STATES} defaultValue="Florida" onOpenChange={args.onOpenChange}>
+			<Combobox.Input variant="select" showClear disabled aria-label="State" />
+			<Combobox.Content>
+				<Combobox.List>
+					{(state: string) => (
+						<Combobox.Item key={state} value={state}>
+							{state}
+						</Combobox.Item>
+					)}
+				</Combobox.List>
+			</Combobox.Content>
+		</Combobox.Root>
+	),
+	play: async ({ args, canvasElement }) => {
+		const canvas = within(canvasElement);
+		const trigger = canvas.getByRole('button', { name: 'Show options' });
+
+		await expect(canvas.queryByRole('button', { name: /clear/i })).not.toBeInTheDocument();
+		await expect(trigger).toBeVisible();
+		await expect(trigger).toBeDisabled();
+		await userEvent.click(trigger);
+		await userEvent.click(canvasElement.querySelector('[data-slot="combobox-field"]')!);
+		await expect(args.onOpenChange).not.toHaveBeenCalled();
+		await expect(canvas.getByRole('combobox', { name: 'State' })).toHaveValue('Florida');
+	}
+};
+
+/**
  * `Empty` stays mounted so screen readers announce the change; it renders its
  * children only while nothing matches. It needs `items` on `Root` to know that.
  */
@@ -351,8 +466,9 @@ export const MultipleSelection: Story = {
 		await expect(indicator).not.toHaveAttribute('data-selected');
 		await expect(colorado).toHaveAttribute('aria-selected', 'false');
 
-		// Keyboard: arrow onto a row and press Enter. The list stays open and the query stays put.
-		await userEvent.keyboard('{ArrowDown}{Enter}');
+		// Keyboard: the first row is highlighted already, so Enter picks it. The list stays open and
+		// the query stays put.
+		await userEvent.keyboard('{Enter}');
 		await waitFor(() => expect(colorado).toHaveAttribute('aria-selected', 'true'));
 		await expect(indicator).toHaveAttribute('data-selected');
 		await expect(input).toHaveValue('co');
@@ -390,13 +506,13 @@ export const MultipleSelection: Story = {
 	}
 };
 
-type Agency = { id: string; name: string };
+type Agency = { id: string; name: string; state: string };
 
 const ALL_AGENCIES: Agency[] = [
-	{ id: 'acme', name: 'Acme Insurance' },
-	{ id: 'anchor', name: 'Anchor Brokers' },
-	{ id: 'beacon', name: 'Beacon Risk' },
-	{ id: 'cardinal', name: 'Cardinal Agency' }
+	{ id: 'acme', name: 'Acme Insurance', state: 'CA' },
+	{ id: 'anchor', name: 'Anchor Brokers', state: 'TX' },
+	{ id: 'beacon', name: 'Beacon Risk', state: 'NY' },
+	{ id: 'cardinal', name: 'Cardinal Agency', state: 'FL' }
 ];
 
 const searchAgencies = (query: string) =>
@@ -407,150 +523,19 @@ const searchAgencies = (query: string) =>
 		);
 	});
 
-// Placeholder rows with an item's exact height, so the surface keeps its size while the results
-// land instead of collapsing to a status line and growing back.
-const SkeletonRows = () => (
-	<div data-slot="combobox-skeleton" className="py-2" aria-hidden="true">
-		{['w-28', 'w-36', 'w-32'].map(width => (
-			<div key={width} className="mx-2 my-px flex items-center px-3 py-2">
-				<Skeleton className={`h-5 ${width}`} />
-			</div>
-		))}
-	</div>
-);
-
-// Stand-in for react-query: one promise per query, reused across renders so `use()` can suspend
-// on it. Keyed by query, a late response for an older query settles into an entry nobody renders
-// any more — the same guard against out-of-order responses that a query key gives the apps.
-const agencyRequests = new Map<string, Promise<Agency[]>>();
-const loadAgencies = (query: string) => {
-	let request = agencyRequests.get(query);
-	if (!request) {
-		request = searchAgencies(query);
-		agencyRequests.set(query, request);
-	}
-	return request;
-};
-
-// `Combobox.Empty` needs `items` on `Root`, which this pattern never has: the rows are the
-// suspended child's, so the empty message is its as well.
-const AgencyItems = ({ query }: { query: string }) => {
-	const agencies = use(loadAgencies(query));
-
-	if (agencies.length === 0) {
-		return (
-			<div className="mx-2 my-px px-3 py-2 text-sm text-text-default-base-tertiary">
-				No agencies found
-			</div>
-		);
-	}
-
-	return (
-		<Combobox.List>
-			{agencies.map(agency => (
-				<Combobox.Item key={agency.id} value={agency}>
-					{agency.name}
-				</Combobox.Item>
-			))}
-		</Combobox.List>
-	);
-};
-
-/**
- * Options fetched as you type, the way the apps load data: the rows are a component
- * that suspends on the request, so a `Suspense` boundary inside `Content` shows
- * placeholder rows until the first results land. The rows read a deferred copy of
- * the query, so a new search keeps the previous rows on screen while it loads, and
- * passing that staleness as `loading` announces the wait and marks `Content` busy
- * until they are replaced; the placeholders never come back. Nothing tracks a
- * request by hand, and reading the data by query is what
- * makes out-of-order responses harmless. With react-query, drop a
- * `useSuspenseQuery` where `use()` is, or use `placeholderData: keepPreviousData`
- * with a plain `useQuery` for the same behaviour.
- */
-export const AsyncSearch: Story = {
-	render: () => {
-		const [query, setQuery] = useState('');
-		// The rows read the deferred query: while the new one suspends, React keeps rendering the
-		// old rows instead of falling back to the placeholders.
-		const deferredQuery = useDeferredValue(query);
-		const isStale = query !== deferredQuery;
-
-		return (
-			// No `items` and `filter={null}`: the server did the filtering, the child renders what came
-			// back, and `isItemEqualToValue` keeps a re-fetched copy counting as the selected one.
-			<Combobox.Root
-				filter={null}
-				itemToStringLabel={(agency: Agency) => agency.name}
-				isItemEqualToValue={(a: Agency, b: Agency) => a.id === b.id}
-				loading={isStale}
-				loadingLabel="Searching agencies…"
-				onInputValueChange={(value, { reason }) => {
-					// Picking a row writes its label into the input; that is not a new search.
-					if (reason !== 'item-press') setQuery(value);
-				}}>
-				<Combobox.Input placeholder="Search agencies" aria-label="Search agencies" />
-				<Combobox.Content>
-					<Suspense fallback={<SkeletonRows />}>
-						<AgencyItems query={deferredQuery} />
-					</Suspense>
-				</Combobox.Content>
-			</Combobox.Root>
-		);
-	},
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-		const body = within(document.body);
-		const input = canvas.getByRole('combobox', { name: /search agencies/i });
-		const skeleton = () => document.body.querySelector('[data-slot="combobox-skeleton"]');
-		const content = () => document.body.querySelector('[data-slot="combobox-content"]');
-
-		// Focus opens the surface and the first request goes out for the empty query: no
-		// `minInputLength` here — see `AsyncSearchWithLoading` for a search that waits for one.
-		await userEvent.click(input);
-
-		// Placeholder rows on the first load, and no options yet.
-		await waitFor(() => expect(skeleton()).toBeInTheDocument());
-		await expect(body.queryByRole('option')).not.toBeInTheDocument();
-		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(4));
-		await expect(content()).not.toHaveAttribute('aria-busy');
-
-		// A new search keeps the previous rows, marked busy, until its own land. Storybook wraps each
-		// event in an `act()` it does not await, and a deferred render that suspends inside one is
-		// never retried; typing outside it lets React schedule the retry the way it does in the app.
-		const { eventWrapper } = getConfig();
-		configure({ eventWrapper: event => event() });
-		try {
-			await userEvent.type(input, 'b');
-		} finally {
-			configure({ eventWrapper });
-		}
-		await waitFor(() => expect(content()).toHaveAttribute('aria-busy', 'true'));
-		await waitFor(() => expect(body.getByText(/searching agencies/i)).toBeInTheDocument());
-		await expect(skeleton()).not.toBeInTheDocument();
-		await expect(body.getAllByRole('option')).toHaveLength(4);
-		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(2));
-		await expect(content()).not.toHaveAttribute('aria-busy');
-		await expect(skeleton()).not.toBeInTheDocument();
-
-		await userEvent.keyboard('{Escape}');
-		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
-	}
-};
-
 // What the apps wait for before asking the API.
 const MIN_QUERY_LENGTH = 2;
 
 /**
- * The same search without Suspense, for a consumer that gets a `loading` flag from
- * its data layer instead: `filter={null}`, the rows arrive through `filteredItems`,
- * and the flag goes to `Root` as `loading`. That is all the wiring the wait needs:
+ * Options fetched from an API as you type: `filter={null}`, the rows arrive
+ * through `items` and `filteredItems`, and the data layer's `loading` flag goes
+ * to `Root`. That is all the wiring the wait needs:
  * `Content` is marked busy, `loadingLabel` is announced once when the request
- * starts, and `Empty` holds back "no results" until the answer is in. Placeholder
- * rows show only while there is nothing to show yet, hidden from assistive
- * technology since the label already speaks for them; after that, the previous
- * rows stay until the new ones replace them. A request that is no longer the
- * latest is dropped.
+ * starts, and `Empty` holds back "no results" until the answer is in.
+ * `Skeleton` draws placeholder rows only while there are no rows to show,
+ * hidden from assistive technology since the label already speaks for them;
+ * after that, the previous rows stay until the new ones replace them. A request
+ * that is no longer the latest is dropped.
  *
  * `minInputLength` keeps the list shut until two characters are typed — focusing
  * the field opens nothing, and deleting back under the minimum closes it — and
@@ -596,7 +581,7 @@ export const AsyncSearchWithLoading: Story = {
 				onInputValueChange={onInputValueChange}>
 				<Combobox.Input placeholder="Search agencies" aria-label="Search agencies" />
 				<Combobox.Content>
-					{isLoading && results.length === 0 && <SkeletonRows />}
+					<Combobox.Skeleton />
 					<Combobox.Empty>No agencies found</Combobox.Empty>
 					<Combobox.List>
 						{(agency: Agency) => (
@@ -626,6 +611,12 @@ export const AsyncSearchWithLoading: Story = {
 		await expect(body.queryByRole('listbox')).not.toBeInTheDocument();
 
 		await userEvent.type(input, 'n');
+		const placeholder = await waitFor(() => {
+			const row = document.body.querySelector('[data-slot="combobox-skeleton-row"]');
+			expect(row).toBeInTheDocument();
+			return row;
+		});
+		const placeholderHeight = placeholder?.getBoundingClientRect().height;
 
 		// One live region speaks for the wait; the placeholder rows and `Empty` stay silent.
 		await waitFor(() => expect(region).toHaveTextContent(/searching agencies/i));
@@ -636,8 +627,14 @@ export const AsyncSearchWithLoading: Story = {
 		await expect(speaking).toEqual([region]);
 		await expect(body.queryByText(/no agencies found/i)).not.toBeInTheDocument();
 		await expect(body.queryByRole('option')).not.toBeInTheDocument();
+		// The placeholder rows are as tall as the rows that replace them.
 		await waitFor(() => expect(body.getAllByRole('option').length).toBeGreaterThan(0));
+		await expect(body.getAllByRole('option')[0]?.getBoundingClientRect().height).toBe(
+			placeholderHeight
+		);
 		await expect(content).not.toHaveAttribute('aria-busy');
+		// Rows that arrive after the query are highlighted too, so Enter picks the first.
+		await waitFor(() => expect(body.getAllByRole('option')[0]).toHaveAttribute('data-highlighted'));
 		await expect(body.queryByText(/searching agencies/i)).not.toBeInTheDocument();
 
 		await expect(
@@ -653,21 +650,306 @@ export const AsyncSearchWithLoading: Story = {
 		await expect(
 			document.body.querySelector('[data-slot="combobox-skeleton"]')
 		).not.toBeInTheDocument();
+		// The highlighted row answers the previous query, so Enter waits for the new one.
+		await expect(body.getAllByRole('option')[0]).toHaveAttribute('data-highlighted');
+		await userEvent.keyboard('{Enter}');
+		await expect(input).toHaveValue('anch');
+		await expect(input).toHaveAttribute('aria-expanded', 'true');
 		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(1));
 		await expect(content).not.toHaveAttribute('aria-busy');
 
-		// Deleting back under the minimum closes the list.
+		// Deleting back under the minimum closes the list. The search clears its rows on that same
+		// keystroke, and the closing list never says "no agencies found" on its way out.
+		// From the records, not the live DOM: text added and cleared before the callback runs counts too.
+		const emptyShown: string[] = [];
+		const watcher = new MutationObserver(records => {
+			for (const { target, addedNodes } of records) {
+				if (!(target instanceof Element) || !target.closest('[data-slot="combobox-empty"]'))
+					continue;
+				for (const node of addedNodes) if (node.textContent) emptyShown.push(node.textContent);
+			}
+		});
+		watcher.observe(document.body, { childList: true, subtree: true });
 		await userEvent.type(input, '{Backspace}{Backspace}{Backspace}');
 		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+		watcher.disconnect();
+		await expect(emptyShown).toEqual([]);
 		await expect(input).toHaveAttribute('aria-expanded', 'false');
 		// What is left of the query stays: the user is still typing it.
 		await expect(input).toHaveValue('a');
+
+		// An answer with no rows still says so, once it lands.
+		await userEvent.type(input, 'zz');
+		await expect(document.body.querySelector('[data-slot="combobox-content"]')).toHaveAttribute(
+			'aria-busy',
+			'true'
+		);
+		await expect(body.queryByText(/no agencies found/i)).not.toBeInTheDocument();
+		await expect(await body.findByText(/no agencies found/i, {}, { timeout: 2000 })).toBeVisible();
+		await userEvent.type(input, '{Backspace}{Backspace}');
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
 
 		await userEvent.type(input, 'nch');
 		await userEvent.click(await body.findByRole('option', { name: 'Anchor Brokers' }));
 		await waitFor(() => expect(input).toHaveValue('Anchor Brokers'));
 		await userEvent.keyboard('{Escape}');
 		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+	}
+};
+
+/**
+ * Placeholder rows shaped like the rows that replace them. Each agency row
+ * shows an avatar, the name and its state, so `Skeleton` gets the same three
+ * pieces as its children; as a function, it receives the row's index to vary
+ * the name's width. Its rows take an item's padding, so they come out as tall as
+ * the agency rows that replace them.
+ *
+ * @summary Placeholder rows shaped like the results they stand in for
+ */
+export const SkeletonShapedLikeTheRows: Story = {
+	render: () => {
+		const [results, setResults] = useState<Agency[]>([]);
+		const [isLoading, setIsLoading] = useState(false);
+		const latestRequest = useRef(0);
+
+		const onInputValueChange = async (query: string) => {
+			const request = ++latestRequest.current;
+			if (query.trim().length < MIN_QUERY_LENGTH) {
+				setResults([]);
+				setIsLoading(false);
+				return;
+			}
+
+			setIsLoading(true);
+			const agencies = await searchAgencies(query);
+			if (request !== latestRequest.current) return;
+
+			setResults(agencies);
+			setIsLoading(false);
+		};
+
+		return (
+			<Combobox.Root
+				items={results}
+				filteredItems={results}
+				filter={null}
+				minInputLength={MIN_QUERY_LENGTH}
+				loading={isLoading}
+				loadingLabel="Searching agencies…"
+				itemToStringLabel={(agency: Agency) => agency.name}
+				isItemEqualToValue={(a: Agency, b: Agency) => a.id === b.id}
+				onInputValueChange={onInputValueChange}>
+				<Combobox.Input placeholder="Search agencies" aria-label="Search agencies" />
+				<Combobox.Content>
+					<Combobox.Skeleton>
+						{index => (
+							<>
+								<Skeleton className="size-6 shrink-0 rounded-[38.5%]" />
+								<Skeleton className={index % 2 === 0 ? 'h-4 w-2/5' : 'h-4 w-3/5'} />
+								<Skeleton className="ml-auto h-3 w-6 shrink-0" />
+							</>
+						)}
+					</Combobox.Skeleton>
+					<Combobox.Empty>No agencies found</Combobox.Empty>
+					<Combobox.List>
+						{(agency: Agency) => (
+							<Combobox.Item key={agency.id} value={agency}>
+								<Avatar
+									fallback={agency.name
+										.split(' ')
+										.map(word => word[0])
+										.join('')}
+									size="xs"
+									variant="pillow"
+									aria-hidden="true"
+								/>
+								<span className="truncate">{agency.name}</span>
+								<span className="ml-auto text-xs text-text-default-base-secondary">
+									{agency.state}
+								</span>
+							</Combobox.Item>
+						)}
+					</Combobox.List>
+				</Combobox.Content>
+			</Combobox.Root>
+		);
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const body = within(document.body);
+		const input = canvas.getByRole('combobox', { name: /search agencies/i });
+
+		// While the first search runs, each placeholder row holds an avatar, a name and a state.
+		await userEvent.type(input, 'an');
+		const rows = await waitFor(() => {
+			const placeholders = document.body.querySelectorAll('[data-slot="combobox-skeleton-row"]');
+			expect(placeholders).toHaveLength(5);
+			return placeholders;
+		});
+		await expect(rows[0]?.children).toHaveLength(3);
+		const rowHeight = rows[0]?.getBoundingClientRect().height;
+
+		// The agency rows replace them at the same height.
+		const acme = await body.findByRole('option', { name: /acme insurance/i }, { timeout: 2000 });
+		await expect(
+			document.body.querySelector('[data-slot="combobox-skeleton"]')
+		).not.toBeInTheDocument();
+		await expect(acme.getBoundingClientRect().height).toBe(rowHeight);
+
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+	}
+};
+
+// Counts the form's submits and reads the picked state from its data, so a story shows when Enter
+// reaches the form and what it sent.
+const useSubmissions = () => {
+	const [submissions, setSubmissions] = useState<{ count: number; state: string }>();
+
+	const onSubmit = (event: SubmitEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		const state = String(new FormData(event.currentTarget).get('state') ?? '');
+		setSubmissions(previous => ({ count: (previous?.count ?? 0) + 1, state }));
+	};
+
+	const status = submissions
+		? `Submitted ${submissions.count}× — state: ${submissions.state || 'none'}`
+		: 'Not submitted';
+
+	return { onSubmit, status };
+};
+
+/**
+ * Inside a form, Enter in an open list picks the highlighted row instead of
+ * submitting. The first row is highlighted as soon as the list shows one, so
+ * typing a search and pressing Enter picks the top match. With no match, Enter
+ * does nothing. Once the list is closed, Enter submits the form as in any input,
+ * with no value if none was picked: mark the root `required` to block that.
+ *
+ * @summary Enter picks the highlighted row while the list is open, submits once closed
+ */
+export const InsideForm: Story = {
+	render: () => {
+		const { onSubmit, status } = useSubmissions();
+
+		return (
+			<form className="flex flex-col items-start gap-4" onSubmit={onSubmit}>
+				<Combobox.Root items={STATES} name="state">
+					<Combobox.Input placeholder="Search states" aria-label="State" />
+					<Combobox.Content>
+						<Combobox.Empty>No matches found</Combobox.Empty>
+						<Combobox.List>
+							{(state: string) => (
+								<Combobox.Item key={state} value={state}>
+									{state}
+								</Combobox.Item>
+							)}
+						</Combobox.List>
+					</Combobox.Content>
+				</Combobox.Root>
+				<div className="flex items-center gap-4">
+					<Button type="submit">Save</Button>
+					<p role="status" className="text-sm text-text-default-base-secondary">
+						{status}
+					</p>
+				</div>
+			</form>
+		);
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const body = within(document.body);
+		const input = canvas.getByRole('combobox', { name: 'State' });
+		const status = canvas.getByRole('status');
+
+		await userEvent.click(input);
+		await waitFor(() =>
+			expect(body.getByRole('option', { name: 'California' })).toHaveAttribute('data-highlighted')
+		);
+		await userEvent.type(input, 'co');
+		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(2));
+		await expect(body.getByRole('option', { name: 'Colorado' })).toHaveAttribute(
+			'data-highlighted'
+		);
+
+		await userEvent.keyboard('{Enter}');
+		await waitFor(() => expect(input).toHaveValue('Colorado'));
+		await expect(status).toHaveTextContent('Not submitted');
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+
+		// With the list closed, Enter is the form's again.
+		await userEvent.keyboard('{Enter}');
+		await expect(status).toHaveTextContent('Submitted 1× — state: Colorado');
+
+		// Nothing to pick: Enter leaves the query and the list as they are.
+		await userEvent.clear(input);
+		await userEvent.type(input, 'zz');
+		await waitFor(() => expect(body.getByText('No matches found')).toBeVisible());
+		await userEvent.keyboard('{Enter}');
+		await expect(status).toHaveTextContent('Submitted 1× — state: Colorado');
+		await expect(input).toHaveValue('zz');
+		await expect(input).toHaveAttribute('aria-expanded', 'true');
+
+		// A modifier leaves Enter to the form, as Base UI does with a row highlighted.
+		await userEvent.keyboard('{Meta>}{Enter}{/Meta}');
+		await expect(status).toHaveTextContent(/Submitted 2×/);
+
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+	}
+};
+
+/**
+ * `autoHighlight={false}` on the root and `submitOnEnter` on the input bring
+ * back Base UI's defaults: nothing is highlighted until the arrow keys or the
+ * pointer move onto a row, and with no row highlighted, Enter closes the list,
+ * drops the typed query and submits the form. A highlighted row is still picked.
+ *
+ * @summary Enter submits the form when no row is highlighted
+ */
+export const SubmitOnEnter: Story = {
+	render: () => {
+		const { onSubmit, status } = useSubmissions();
+
+		return (
+			<form className="flex flex-col items-start gap-4" onSubmit={onSubmit}>
+				<Combobox.Root items={STATES} name="state" autoHighlight={false}>
+					<Combobox.Input submitOnEnter placeholder="Search states" aria-label="State" />
+					<Combobox.Content>
+						<Combobox.Empty>No matches found</Combobox.Empty>
+						<Combobox.List>
+							{(state: string) => (
+								<Combobox.Item key={state} value={state}>
+									{state}
+								</Combobox.Item>
+							)}
+						</Combobox.List>
+					</Combobox.Content>
+				</Combobox.Root>
+				<div className="flex items-center gap-4">
+					<Button type="submit">Save</Button>
+					<p role="status" className="text-sm text-text-default-base-secondary">
+						{status}
+					</p>
+				</div>
+			</form>
+		);
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const body = within(document.body);
+		const input = canvas.getByRole('combobox', { name: 'State' });
+		const status = canvas.getByRole('status');
+
+		await userEvent.click(input);
+		await userEvent.type(input, 'co');
+		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(2));
+
+		// The typed query is not a value: the form goes out with no state.
+		await userEvent.keyboard('{Enter}');
+		await expect(status).toHaveTextContent('Submitted 1× — state: none');
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+		await expect(input).not.toHaveValue('Colorado');
 	}
 };
 
@@ -696,8 +978,8 @@ export const InsideFieldText: Story = {
 					</Combobox.List>
 				</Combobox.Content>
 			</Combobox.Root>
-			<Field.Error errors={[{ message: 'Pick an agency from the list' }]} />
 			<Field.Description>The agency this agent will be added to.</Field.Description>
+			<Field.Error errors={[{ message: 'Pick an agency from the list' }]} />
 		</FieldText>
 	),
 	play: async ({ canvasElement }) => {
@@ -708,7 +990,7 @@ export const InsideFieldText: Story = {
 		await expect(input).toBeRequired();
 		await expect(input).toHaveAttribute('aria-invalid', 'true');
 		await expect(input).toHaveAccessibleDescription(
-			'Pick an agency from the list The agency this agent will be added to.'
+			'The agency this agent will be added to. Pick an agency from the list'
 		);
 
 		// Named through a direct reference to the label as well as its `for`. The JS matcher
@@ -730,10 +1012,11 @@ export const InsideFieldText: Story = {
 /**
  * Inside a `Modal`, which is a Radix Dialog. The surface portals to the body, so
  * this checks that the dialog's modal layer neither blocks pointer events on the
- * list nor treats a click in it as a click outside and closes.
+ * list nor treats a click in it as a click outside and closes. With a value
+ * picked, Escape closes the list, then clears the value, then closes the modal.
  */
 export const InsideModal: Story = {
-	render: () => (
+	render: args => (
 		<Modal.Root>
 			<Modal.Trigger asChild>
 				<Button variant="secondary">Assign agency</Button>
@@ -741,7 +1024,7 @@ export const InsideModal: Story = {
 			<Modal.Content>
 				<Modal.Title>Assign agency</Modal.Title>
 				<Modal.Body>
-					<Combobox.Root items={STATES}>
+					<Combobox.Root {...args} items={STATES}>
 						<Combobox.Input placeholder="Search states" aria-label="Search states" />
 						<Combobox.Content>
 							<Combobox.Empty>No matches found</Combobox.Empty>
@@ -775,5 +1058,186 @@ export const InsideModal: Story = {
 		// The dialog must survive the click on the portalled list — still open, not exiting.
 		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
 		await expect(dialog).toHaveAttribute('data-state', 'open');
+
+		// With a value picked, each Escape undoes one thing: the list, then the value, then the dialog.
+		await userEvent.keyboard('{ArrowDown}');
+		await body.findByRole('listbox');
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+		await expect(input).toHaveValue('Florida');
+		await expect(dialog).toHaveAttribute('data-state', 'open');
+		await userEvent.keyboard('{Escape}');
+		await expect(input).toHaveValue('');
+		await expect(dialog).toHaveAttribute('data-state', 'open');
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(dialog).toHaveAttribute('data-state', 'closed'));
+	}
+};
+
+/**
+ * Regression check, kept out of the manifest: a multi-select inside a `Modal`.
+ * Escape on the closed list clears a short query and stops there; on the empty
+ * field it closes the modal. Neither touches the selection or calls
+ * `onValueChange`.
+ *
+ * @summary Escape on a closed multi-select keeps the selection
+ */
+export const InsideModalMultiple: Story = {
+	...InsideModal,
+	tags: ['!manifest'],
+	args: {
+		multiple: true,
+		defaultValue: ['Colorado', 'Texas'],
+		minInputLength: 2,
+		onValueChange: fn()
+	},
+	play: async ({ args, canvasElement }) => {
+		const canvas = within(canvasElement);
+		const body = within(document.body);
+
+		await userEvent.click(canvas.getByRole('button', { name: /assign agency/i }));
+		const dialog = await body.findByRole('dialog', { name: /assign agency/i });
+		const input = within(dialog).getByRole('combobox', { name: /search states/i });
+
+		// One character is under the minimum, so the list stays shut with text in the field.
+		await userEvent.type(input, 'c');
+		await expect(body.queryByRole('listbox')).not.toBeInTheDocument();
+		await userEvent.keyboard('{Escape}');
+		await expect(input).toHaveValue('');
+		await expect(dialog).toHaveAttribute('data-state', 'open');
+
+		await userEvent.type(input, 'xas');
+		await expect(await body.findByRole('option', { name: 'Texas' })).toHaveAttribute(
+			'aria-selected',
+			'true'
+		);
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+		await expect(dialog).toHaveAttribute('data-state', 'open');
+
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(dialog).toHaveAttribute('data-state', 'closed'));
+		await expect(args.onValueChange).not.toHaveBeenCalled();
+	}
+};
+
+/**
+ * Inside a `Popover`. Escape on the open list closes the list only, and the next
+ * Escape closes the popover.
+ */
+export const InsidePopover: Story = {
+	render: () => (
+		<Popover.Root>
+			<Popover.Trigger asChild>
+				<Button variant="secondary">Filter by state</Button>
+			</Popover.Trigger>
+			<Popover.Content aria-label="Filter by state">
+				<Combobox.Root items={STATES}>
+					<Combobox.Input placeholder="Search states" aria-label="Search states" />
+					<Combobox.Content>
+						<Combobox.Empty>No matches found</Combobox.Empty>
+						<Combobox.List>
+							{(state: string) => (
+								<Combobox.Item key={state} value={state}>
+									{state}
+								</Combobox.Item>
+							)}
+						</Combobox.List>
+					</Combobox.Content>
+				</Combobox.Root>
+			</Popover.Content>
+		</Popover.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const body = within(document.body);
+		const trigger = within(canvasElement).getByRole('button', { name: /filter by state/i });
+
+		await userEvent.click(trigger);
+		const input = await body.findByRole('combobox', { name: /search states/i });
+		await userEvent.click(input);
+		await body.findByRole('listbox');
+
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+		await expect(trigger).toHaveAttribute('data-state', 'open');
+
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(trigger).toHaveAttribute('data-state', 'closed'));
+	}
+};
+
+/**
+ * Inside a `Popover`, with a value picked. Base UI clears the value on an Escape
+ * from the closed list, so it takes three: the list, the value, then the popover.
+ */
+export const InsidePopoverWithValue: Story = {
+	render: InsidePopover.render,
+	play: async ({ canvasElement }) => {
+		const body = within(document.body);
+		const trigger = within(canvasElement).getByRole('button', { name: /filter by state/i });
+
+		await userEvent.click(trigger);
+		const input = await body.findByRole('combobox', { name: /search states/i });
+		await userEvent.click(input);
+		await userEvent.click(await body.findByRole('option', { name: 'Texas' }));
+		await waitFor(() => expect(input).toHaveValue('Texas'));
+
+		await userEvent.keyboard('{ArrowDown}');
+		await body.findByRole('listbox');
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+		await expect(input).toHaveValue('Texas');
+
+		await userEvent.keyboard('{Escape}');
+		await expect(input).toHaveValue('');
+		await expect(trigger).toHaveAttribute('data-state', 'open');
+
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(trigger).toHaveAttribute('data-state', 'closed'));
+	}
+};
+
+/**
+ * Inside a `Modal`, with no `Empty`. When nothing matches there is no list to
+ * close, so Base UI lets the first Escape through and it closes the modal.
+ */
+export const InsideModalWithoutEmpty: Story = {
+	render: () => (
+		<Modal.Root>
+			<Modal.Trigger asChild>
+				<Button variant="secondary">Assign agency</Button>
+			</Modal.Trigger>
+			<Modal.Content>
+				<Modal.Title>Assign agency</Modal.Title>
+				<Modal.Body>
+					<Combobox.Root items={STATES}>
+						<Combobox.Input placeholder="Search states" aria-label="Search states" />
+						<Combobox.Content>
+							<Combobox.List>
+								{(state: string) => (
+									<Combobox.Item key={state} value={state}>
+										{state}
+									</Combobox.Item>
+								)}
+							</Combobox.List>
+						</Combobox.Content>
+					</Combobox.Root>
+				</Modal.Body>
+			</Modal.Content>
+		</Modal.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const body = within(document.body);
+
+		await userEvent.click(within(canvasElement).getByRole('button', { name: /assign agency/i }));
+		const dialog = await body.findByRole('dialog', { name: /assign agency/i });
+		const input = within(dialog).getByRole('combobox', { name: /search states/i });
+
+		await userEvent.type(input, 'zzz');
+		await expect(body.queryByRole('option')).not.toBeInTheDocument();
+		await expect(document.querySelector('[data-slot="combobox-content"]')).not.toBeVisible();
+
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(dialog).toHaveAttribute('data-state', 'closed'));
 	}
 };

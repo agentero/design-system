@@ -4,6 +4,7 @@ import { Slot, Slottable } from '@radix-ui/react-slot';
 import { tv, VariantProps } from 'tailwind-variants';
 
 import { cn } from '../../lib';
+import { legacyIconFill } from '../icons/legacy-fill';
 
 /**
  * Style recipe for Tag. Each color maps to its dedicated `*-tag-*` semantic
@@ -17,29 +18,23 @@ export const tagRecipe = tv({
 		'inline-flex w-fit min-w-fit items-center gap-1',
 		'rounded-md border border-solid border-transparent px-2',
 		'font-normal leading-normal whitespace-nowrap no-underline',
-		'transition-[background-color,opacity] duration-200',
+		'transition-[background-color,opacity] duration-150',
 		// shrink-0: an icon is a flex item, so without it a narrow Tag squashes it
 		// horizontally instead of clipping the label.
-		'[&_svg]:size-3.5 [&_svg]:shrink-0'
+		'[&_svg]:size-3.5 [&_svg]:shrink-0',
+		legacyIconFill
 	],
 	variants: {
 		color: {
-			neutral:
-				'bg-bg-tag-neutral-enable text-text-tag-neutral border-border-tag-neutral [&_svg_path]:fill-icon-tag-neutral',
-			positive:
-				'bg-bg-tag-positive-enable text-text-tag-positive border-border-tag-positive [&_svg_path]:fill-icon-tag-positive',
-			danger:
-				'bg-bg-tag-danger-enable text-text-tag-danger border-border-tag-danger [&_svg_path]:fill-icon-tag-danger',
-			warning:
-				'bg-bg-tag-warning-enable text-text-tag-warning border-border-tag-warning [&_svg_path]:fill-icon-tag-warning',
+			neutral: 'bg-bg-tag-neutral-enable text-text-tag-neutral border-border-tag-neutral',
+			positive: 'bg-bg-tag-positive-enable text-text-tag-positive border-border-tag-positive',
+			danger: 'bg-bg-tag-danger-enable text-text-tag-danger border-border-tag-danger',
+			warning: 'bg-bg-tag-warning-enable text-text-tag-warning border-border-tag-warning',
 			informative:
-				'bg-bg-tag-informative-enable text-text-tag-informative border-border-tag-informative [&_svg_path]:fill-icon-tag-informative',
-			creative:
-				'bg-bg-tag-creative-enable text-text-tag-creative border-border-tag-creative [&_svg_path]:fill-icon-tag-creative',
-			dynamic:
-				'bg-bg-tag-dynamic-enable text-text-tag-dynamic border-border-tag-dynamic [&_svg_path]:fill-icon-tag-dynamic',
-			playful:
-				'bg-bg-tag-playful-enable text-text-tag-playful border-border-tag-playful [&_svg_path]:fill-icon-tag-playful'
+				'bg-bg-tag-informative-enable text-text-tag-informative border-border-tag-informative',
+			creative: 'bg-bg-tag-creative-enable text-text-tag-creative border-border-tag-creative',
+			dynamic: 'bg-bg-tag-dynamic-enable text-text-tag-dynamic border-border-tag-dynamic',
+			playful: 'bg-bg-tag-playful-enable text-text-tag-playful border-border-tag-playful'
 		},
 		variant: {
 			secondary: '',
@@ -75,16 +70,49 @@ export const tagRecipe = tv({
 		{ hasOnlyIcon: true, size: 'xs', class: 'size-5' },
 		{ hasOnlyIcon: true, size: 'sm', class: 'size-6' },
 		{ hasOnlyIcon: true, size: 'md', class: 'size-8 [&_svg]:size-4' },
-		// Hover only applies when the Tag is interactive (asChild); a static badge has none.
-		{ color: 'neutral', interactive: true, class: 'hover:bg-bg-tag-neutral-hover' },
-		{ color: 'positive', interactive: true, class: 'hover:bg-bg-tag-positive-hover' },
-		{ color: 'danger', interactive: true, class: 'hover:bg-bg-tag-danger-hover' },
-		{ color: 'warning', interactive: true, class: 'hover:bg-bg-tag-warning-hover' },
-		{ color: 'informative', interactive: true, class: 'hover:bg-bg-tag-informative-hover' },
-		{ color: 'creative', interactive: true, class: 'hover:bg-bg-tag-creative-hover' },
-		{ color: 'dynamic', interactive: true, class: 'hover:bg-bg-tag-dynamic-hover' },
-		{ color: 'playful', interactive: true, class: 'hover:bg-bg-tag-playful-hover' },
-		{ variant: 'invisible', interactive: true, class: 'hover:opacity-100' }
+		// Hover, and the open look of a menu or popover trigger, only apply when the Tag is
+		// interactive (asChild); a static badge has none.
+		{
+			color: 'neutral',
+			interactive: true,
+			class: 'hover:bg-bg-tag-neutral-hover overlay-open:bg-bg-tag-neutral-hover'
+		},
+		{
+			color: 'positive',
+			interactive: true,
+			class: 'hover:bg-bg-tag-positive-hover overlay-open:bg-bg-tag-positive-hover'
+		},
+		{
+			color: 'danger',
+			interactive: true,
+			class: 'hover:bg-bg-tag-danger-hover overlay-open:bg-bg-tag-danger-hover'
+		},
+		{
+			color: 'warning',
+			interactive: true,
+			class: 'hover:bg-bg-tag-warning-hover overlay-open:bg-bg-tag-warning-hover'
+		},
+		{
+			color: 'informative',
+			interactive: true,
+			class: 'hover:bg-bg-tag-informative-hover overlay-open:bg-bg-tag-informative-hover'
+		},
+		{
+			color: 'creative',
+			interactive: true,
+			class: 'hover:bg-bg-tag-creative-hover overlay-open:bg-bg-tag-creative-hover'
+		},
+		{
+			color: 'dynamic',
+			interactive: true,
+			class: 'hover:bg-bg-tag-dynamic-hover overlay-open:bg-bg-tag-dynamic-hover'
+		},
+		{
+			color: 'playful',
+			interactive: true,
+			class: 'hover:bg-bg-tag-playful-hover overlay-open:bg-bg-tag-playful-hover'
+		},
+		{ variant: 'invisible', interactive: true, class: 'hover:opacity-100 overlay-open:opacity-100' }
 	],
 	defaultVariants: {
 		color: 'neutral',

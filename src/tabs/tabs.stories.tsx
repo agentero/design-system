@@ -42,7 +42,7 @@ const TabPanels = () =>
 		</Tabs.Content>
 	));
 
-/** `line` (default): the active tab is marked with an animated underline. */
+/** `line` (default): the active tab is marked with an underline. */
 export const Default: Story = {
 	args: {
 		variant: 'line',

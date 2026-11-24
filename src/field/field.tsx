@@ -9,9 +9,11 @@ import {
 	useState
 } from 'react';
 
+import { InfoIcon } from 'lucide-react';
 import { tv, VariantProps } from 'tailwind-variants';
 
 import { cn } from '../../lib';
+import { legacyIconFill } from '../icons/legacy-fill';
 import { Label as BaseLabel, LabelContext, type LabelProps } from '../label';
 import { Tooltip, type TooltipProps } from '../tooltip';
 import {
@@ -23,7 +25,6 @@ import {
 	type FieldMessageKind,
 	useFieldContext
 } from './context';
-import { IconInfoOutline } from './icons';
 
 /**
  * Style recipe for Field. Slots: `group`, `root`, `content`, `label`,
@@ -38,12 +39,13 @@ export const fieldRecipe = tv({
 		root: 'group/field flex w-full gap-2',
 		content: [
 			'flex flex-col gap-2 leading-snug',
-			'[&>:is([data-slot=label],[data-slot=field-label])+[data-slot=field-description]]:-mt-1.5'
+			'[&>:is([data-slot=label],[data-slot=field-label])+[data-slot=field-description]]:-mt-2'
 		],
 		label: 'flex flex-wrap items-center gap-1',
 		labelTooltip: [
 			'inline-flex shrink-0 cursor-pointer items-center justify-center rounded-sm',
-			'text-icon-default-base-secondary [&_svg]:size-5 [&_path]:fill-current',
+			'text-icon-input-default [&_svg]:size-5',
+			legacyIconFill,
 			'focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring-button-primary'
 		],
 		description: [
@@ -101,7 +103,7 @@ export const fieldRecipe = tv({
 const slots = fieldRecipe();
 
 const messageRank = (kind?: FieldMessageKind) =>
-	kind === 'error' ? 0 : kind === 'description' ? 1 : 2;
+	kind === 'description' ? 0 : kind === 'error' ? 1 : 2;
 
 export type FieldVariants = VariantProps<typeof fieldRecipe>;
 
@@ -177,8 +179,8 @@ export type FieldRootProps = ComponentPropsWithRef<'div'> & {
  * <Field.Root invalid={!!error} required>
  *   <Field.Label>Email</Field.Label>
  *   <Input type="email" />
- *   <Field.Error errors={[error]} />
  *   <Field.Description>We only use this for policy documents.</Field.Description>
+ *   <Field.Error errors={[error]} />
  * </Field.Root>
  */
 export const Root = ({
@@ -211,7 +213,7 @@ export const Root = ({
 		return () => setMessages(registered => registered.filter(message => message.id !== id));
 	}, []);
 
-	// The error reads before the description, as it sits above it, whatever the
+	// The description reads before the error, as it sits above it, whatever the
 	// order they mounted in.
 	const describedBy =
 		[...messages]
@@ -298,7 +300,7 @@ export const Label = ({ tooltip, tooltipSide, ...props }: FieldLabelProps) => (
 					data-slot="field-label-tooltip"
 					aria-label="More information"
 					className={slots.labelTooltip()}>
-					<IconInfoOutline />
+					<InfoIcon />
 				</button>
 			</Tooltip>
 		)}
@@ -359,9 +361,9 @@ const toMessages = (error: FieldErrorLike): string[] => {
 
 /**
  * Validation feedback for the field, announced as an alert when it appears.
- * Place it right after the control, before `Field.Description`: the control's
- * `aria-describedby` reads the error first as well. Renders nothing without a
- * message, so it can stay mounted unconditionally;
+ * Place it after `Field.Description`: the control's `aria-describedby` reads
+ * the description first as well. Renders nothing without a message, so it can
+ * stay mounted unconditionally;
  * set `invalid` on `Field.Root` alongside it. Takes `children` or an `errors`
  * array, and a form adapter can supply `errors` through `FieldContext` so a
  * bare `<Field.Error />` renders them. One per field: it takes the field's

@@ -1,0 +1,27 @@
+# pnpm reads its settings only from this file. This repo is a single package, not a workspace.
+
+# Reject versions published less than a day ago; most malicious releases are pulled within hours.
+minimumReleaseAge: 1440
+
+# The default installs peers that nothing here declares. react and react-dom are devDependencies
+# so Storybook, the tests and the build resolve one copy.
+autoInstallPeers: false
+
+# Dependencies allowed to run install scripts. pnpm fails the install on any other.
+allowBuilds:
+  esbuild: true
+
+overrides:
+  # Security floors. Each selector lifts only a vulnerable range to the first patched
+  # release of the same major, so no dependent is forced onto a major it does not ask for.
+  # One esbuild at the floor the Yarn resolution set. Storybook accepts ^0.18 to ^0.28, so a
+  # floor per major would leave it a second, older copy.
+  'esbuild@<0.28.2': ^0.28.2
+  'lodash@<4.18.1': ^4.18.1
+  'valibot@<1.4.2': ^1.4.2
+  # The exceptions: minimatch 7 to 10 have no release that fixes GHSA-g3hv-75wg-m249, so they
+  # move up to 11.
+  'minimatch@>=7 <11': ^11.0.1
+  # Same for glob: nothing below 14.0.2 fixes GHSA-3g3m-2fjr-6pw4. Storybook's docgen plugin asks for
+  # ^13 and only calls globSync, which glob 14 keeps.
+  'glob@>=9 <14.0.2': ^14.0.2

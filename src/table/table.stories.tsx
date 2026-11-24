@@ -1,11 +1,16 @@
-import { Fragment, SVGProps, useState } from 'react';
+import { Fragment, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, within } from 'storybook/test';
+import { PencilIcon, Trash2Icon } from 'lucide-react';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { Table, type TableRootProps } from '.';
 import { Button } from '../button';
+import { DropdownMenu } from '../dropdown-menu';
 import { Switch } from '../switch';
+
+const runningTransitions = (element: Element) =>
+	element.getAnimations({ subtree: true }).filter(animation => animation instanceof CSSTransition);
 
 type Row = { id: string; name: string; email: string; role: string; amount: string };
 
@@ -19,24 +24,6 @@ const ROWS: Row[] = [
 	{ id: '7', name: 'George Hill', email: 'george@example.com', role: 'User', amount: '$1,890' },
 	{ id: '8', name: 'Hannah Scott', email: 'hannah@example.com', role: 'Editor', amount: '$430' }
 ];
-
-const IconEdit = (props: SVGProps<SVGSVGElement>) => (
-	<svg width="24" height="24" viewBox="0 0 24 24" fill="none" {...props}>
-		<path
-			fill="currentColor"
-			d="M5.154 19H6.39l9.26-9.26-1.237-1.236-9.26 9.26zM4.558 20.5a.88.88 0 0 1-.646-.259.88.88 0 0 1-.258-.645v-2.094q0-.18.065-.344a.9.9 0 0 1 .206-.304L15.483 5.156q.222-.202.49-.312a1.5 1.5 0 0 1 .562-.11q.291 0 .555.11.264.11.46.33l1.207 1.221q.22.197.323.461.103.264.103.552 0 .291-.106.556a1.4 1.4 0 0 1-.32.49L7.3 20.229a1.3 1.3 0 0 1-.304.206 1.4 1.4 0 0 1-.344.065z"
-		/>
-	</svg>
-);
-
-const IconDelete = (props: SVGProps<SVGSVGElement>) => (
-	<svg width="24" height="24" viewBox="0 0 24 24" fill="none" {...props}>
-		<path
-			fill="currentColor"
-			d="M7.308 20.5q-.749 0-1.278-.53a1.74 1.74 0 0 1-.53-1.278V6h-.25a.73.73 0 0 1-.535-.215.73.73 0 0 1-.215-.535q0-.32.215-.535A.73.73 0 0 1 5.25 4.5H9q0-.367.259-.626a.85.85 0 0 1 .626-.259h4.23q.368 0 .626.26A.85.85 0 0 1 15 4.5h3.75q.32 0 .535.215a.73.73 0 0 1 .215.535.73.73 0 0 1-.215.535.73.73 0 0 1-.535.215h-.25v12.692q0 .749-.53 1.278-.53.53-1.278.53zM17 6H7v12.692a.3.3 0 0 0 .087.221.3.3 0 0 0 .22.087h9.385a.3.3 0 0 0 .221-.087.3.3 0 0 0 .087-.22z"
-		/>
-	</svg>
-);
 
 /** Builds a standard table from the Root args; `extras` toggles optional columns. */
 const renderTable = (
@@ -79,10 +66,10 @@ const renderTable = (
 							<Table.Cell style={{ width: '0.0625rem', position: 'sticky', right: 0 }}>
 								<Table.RowActions>
 									<Button variant="ghost" size="sm" iconOnly aria-label={`Edit ${row.name}`}>
-										<IconEdit />
+										<PencilIcon />
 									</Button>
 									<Button variant="ghost" size="sm" iconOnly aria-label={`Delete ${row.name}`}>
-										<IconDelete />
+										<Trash2Icon />
 									</Button>
 								</Table.RowActions>
 							</Table.Cell>
@@ -294,6 +281,171 @@ export const WithRowActions: Story = {
 		// Controls are present in the DOM (hidden until row hover, a visual-only behavior).
 		await expect(canvas.getAllByRole('button', { name: /Edit / })).toHaveLength(ROWS.length);
 		await expect(canvas.getAllByRole('button', { name: /Delete / })).toHaveLength(ROWS.length);
+	}
+};
+
+/**
+ * A row keeps its hover look, and its actions stay visible, while a menu
+ * opened from one of those actions is open. The pointer leaves the row for the
+ * menu, so without it the actions would fade out under the open menu. Escape
+ * hands keyboard focus back to the action, so the row keeps that look.
+ *
+ * @summary Row stays highlighted while its actions menu is open
+ */
+export const WithRowActionsMenu: Story = {
+	render: args => (
+		<Table.Root {...args}>
+			<Table.Head>
+				<Table.Row>
+					<Table.Header>Name</Table.Header>
+					<Table.Header>Email</Table.Header>
+					<Table.Header>
+						<span className="sr-only">Actions</span>
+					</Table.Header>
+				</Table.Row>
+			</Table.Head>
+			<Table.Body>
+				{ROWS.slice(0, 3).map(row => (
+					<Table.Row key={row.id}>
+						<Table.Cell className="font-bold">{row.name}</Table.Cell>
+						<Table.Cell className="text-text-default-base-secondary">{row.email}</Table.Cell>
+						<Table.Cell style={{ width: '0.0625rem', position: 'sticky', right: 0 }}>
+							<Table.RowActions>
+								<DropdownMenu.Root>
+									<DropdownMenu.Trigger asChild>
+										<Button
+											variant="ghost"
+											size="sm"
+											iconOnly
+											aria-label={`Actions for ${row.name}`}>
+											<PencilIcon />
+										</Button>
+									</DropdownMenu.Trigger>
+									<DropdownMenu.Portal>
+										<DropdownMenu.Content align="end">
+											<DropdownMenu.Item>Edit</DropdownMenu.Item>
+											<DropdownMenu.Item>Delete</DropdownMenu.Item>
+										</DropdownMenu.Content>
+									</DropdownMenu.Portal>
+								</DropdownMenu.Root>
+							</Table.RowActions>
+						</Table.Cell>
+					</Table.Row>
+				))}
+			</Table.Body>
+		</Table.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const trigger = canvas.getByRole('button', { name: `Actions for ${ROWS[0]!.name}` });
+		const actions = trigger.closest<HTMLElement>('[data-slot=table-row-actions]')!;
+		const row = trigger.closest('tr')!;
+		const idleRow = canvas
+			.getByRole('button', { name: `Actions for ${ROWS[1]!.name}` })
+			.closest('tr')!;
+		await expect(getComputedStyle(actions).opacity).toBe('0');
+
+		await userEvent.click(trigger);
+		await within(document.body).findByRole('menu');
+
+		await waitFor(() => expect(runningTransitions(row)).toHaveLength(0));
+		await expect(getComputedStyle(actions).opacity).toBe('1');
+		const rowOpenBackground = getComputedStyle(row).backgroundColor;
+		await expect(rowOpenBackground).not.toBe(getComputedStyle(idleRow).backgroundColor);
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(within(document.body).queryByRole('menu')).not.toBeInTheDocument());
+		await expect(trigger).toHaveFocus();
+		await waitFor(() => expect(runningTransitions(row)).toHaveLength(0));
+		await expect(getComputedStyle(actions).opacity).toBe('1');
+		await expect(getComputedStyle(row).backgroundColor).toBe(rowOpenBackground);
+	}
+};
+
+const ArchiveRowActions = ({ name }: { name: string }) => {
+	const [isArchiving, setIsArchiving] = useState(false);
+
+	return (
+		<Table.RowActions>
+			<DropdownMenu.Root>
+				<DropdownMenu.Trigger asChild>
+					<Button
+						variant="ghost"
+						size="sm"
+						iconOnly
+						loading={isArchiving}
+						aria-label={`Actions for ${name}`}>
+						<PencilIcon />
+					</Button>
+				</DropdownMenu.Trigger>
+				<DropdownMenu.Portal>
+					<DropdownMenu.Content align="end">
+						<DropdownMenu.Item
+							onSelect={event => {
+								event.preventDefault();
+								setIsArchiving(true);
+							}}>
+							Archive
+						</DropdownMenu.Item>
+					</DropdownMenu.Content>
+				</DropdownMenu.Portal>
+			</DropdownMenu.Root>
+		</Table.RowActions>
+	);
+};
+
+/**
+ * The row stays highlighted while its menu is open even when the trigger turns
+ * `loading`, and with it disabled, because the menu item that started the work
+ * keeps the menu open.
+ *
+ * @summary Row stays highlighted while a loading trigger's menu is open
+ */
+export const WithLoadingRowActionsMenu: Story = {
+	render: args => (
+		<Table.Root {...args}>
+			<Table.Head>
+				<Table.Row>
+					<Table.Header>Name</Table.Header>
+					<Table.Header>
+						<span className="sr-only">Actions</span>
+					</Table.Header>
+				</Table.Row>
+			</Table.Head>
+			<Table.Body>
+				{ROWS.slice(0, 2).map(row => (
+					<Table.Row key={row.id}>
+						<Table.Cell className="font-bold">{row.name}</Table.Cell>
+						<Table.Cell style={{ width: '0.0625rem', position: 'sticky', right: 0 }}>
+							<ArchiveRowActions name={row.name} />
+						</Table.Cell>
+					</Table.Row>
+				))}
+			</Table.Body>
+		</Table.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const body = within(document.body);
+		const trigger = canvas.getByRole('button', { name: `Actions for ${ROWS[0]!.name}` });
+		const actions = trigger.closest<HTMLElement>('[data-slot=table-row-actions]')!;
+		const row = trigger.closest('tr')!;
+		const idleRow = canvas
+			.getByRole('button', { name: `Actions for ${ROWS[1]!.name}` })
+			.closest('tr')!;
+
+		await userEvent.click(trigger);
+		await userEvent.click(await body.findByRole('menuitem', { name: 'Archive' }));
+
+		await waitFor(() => expect(trigger).toBeDisabled());
+		await expect(body.getByRole('menu')).toBeInTheDocument();
+		await waitFor(() => expect(runningTransitions(row)).toHaveLength(0));
+		await expect(getComputedStyle(actions).opacity).toBe('1');
+		await expect(getComputedStyle(row).backgroundColor).not.toBe(
+			getComputedStyle(idleRow).backgroundColor
+		);
+
+		await userEvent.keyboard('{Escape}');
+		await waitFor(() => expect(body.queryByRole('menu')).not.toBeInTheDocument());
 	}
 };
 

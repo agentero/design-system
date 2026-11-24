@@ -13,18 +13,19 @@ import {
 	useId
 } from 'react';
 
+import {
+	CircleAlertIcon,
+	CircleCheckIcon,
+	InfoIcon,
+	StarIcon,
+	TriangleAlertIcon,
+	XIcon
+} from 'lucide-react';
 import { tv, VariantProps } from 'tailwind-variants';
 
 import { cn } from '../../lib';
 import { Button } from '../button';
-import {
-	IconCheckCircle,
-	IconClose,
-	IconErrorOutline,
-	IconInfoOutline,
-	IconStar,
-	IconWarning
-} from './icons';
+import { legacyIconSelfFill } from '../icons/legacy-fill';
 
 /**
  * Style recipe for Alert using tailwind-variants. Exposes five slots
@@ -48,7 +49,7 @@ export const alertRecipe = tv({
 		title: 'font-semibold',
 		paragraph: '',
 		content: 'flex flex-col h-full self-start',
-		icon: '[&_path]:fill-current'
+		icon: ['shrink-0', legacyIconSelfFill]
 	},
 	variants: {
 		color: {
@@ -67,14 +68,14 @@ export const alertRecipe = tv({
 				title: 'text-sm',
 				paragraph: 'text-xs',
 				content: 'gap-1',
-				icon: 'size-5'
+				icon: 'size-4 mt-px'
 			},
 			md: {
 				root: 'px-8 py-6 gap-4',
 				title: 'text-lg',
 				paragraph: 'text-sm',
 				content: 'gap-2',
-				icon: 'size-6'
+				icon: 'size-5 mt-1'
 			}
 		},
 		ghost: {
@@ -276,14 +277,14 @@ export const useAlert = () => {
 const iconMapping: {
 	[key in AlertColorType]: ComponentType<SVGProps<SVGSVGElement>>;
 } = {
-	neutral: IconInfoOutline,
-	success: IconCheckCircle,
-	danger: IconErrorOutline,
-	warning: IconWarning,
-	info: IconInfoOutline,
-	creative: IconStar,
-	dynamic: IconInfoOutline,
-	playful: IconInfoOutline
+	neutral: InfoIcon,
+	success: CircleCheckIcon,
+	danger: CircleAlertIcon,
+	warning: TriangleAlertIcon,
+	info: InfoIcon,
+	creative: StarIcon,
+	dynamic: InfoIcon,
+	playful: InfoIcon
 };
 
 /* --------------- Sub-components --------------- */
@@ -566,9 +567,10 @@ export const Alert = ({
 							size={size}
 							iconOnly
 							aria-label="Dismiss"
+							// `text-current` replaces the ghost text token, so the X follows the alert's color.
 							className="text-current"
 							onClick={onDismiss}>
-							<IconClose className="[&_path]:fill-current" />
+							<XIcon />
 						</Button>
 					</div>
 				)}
