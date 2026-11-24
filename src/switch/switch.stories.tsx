@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, userEvent, within } from 'storybook/test';
 
 import { Switch } from './switch';
 
@@ -98,6 +99,26 @@ export const WithLabel: Story = {
 			<Switch id="with-label-reverse" label="SMS" reverse />
 		</div>
 	)
+};
+
+/**
+ * `readOnly` keeps the toggle focusable and announced as read-only, but
+ * neither a click nor a key flips it. Use it to show a setting the viewer
+ * cannot change; `disabled` takes it out of the tab order instead.
+ *
+ * @summary Focusable toggle that does not flip
+ */
+export const ReadOnly: Story = {
+	render: () => <Switch id="read-only" label="Instant appointments" defaultChecked readOnly />,
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		const toggle = canvas.getByRole('switch', { name: 'Instant appointments' });
+
+		await expect(toggle).toHaveAttribute('aria-readonly', 'true');
+		await userEvent.click(toggle);
+		await expect(toggle).toBeChecked();
+	}
 };
 
 /** Switch aligned in a labelled settings row. */

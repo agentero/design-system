@@ -6,14 +6,16 @@ import * as SwitchPrimitive from '@radix-ui/react-switch';
 import { tv, VariantProps } from 'tailwind-variants';
 
 import { cn } from '../../lib';
+import { useSwitchContext } from './context';
 
 export const switchRecipe = tv({
 	slots: {
 		wrapper: 'inline-flex items-center gap-2.5',
 		root: [
 			'peer inline-flex shrink-0 cursor-pointer items-center rounded-full transition-colors',
-			'bg-slate-200 enabled:hover:bg-slate-300',
-			'enabled:data-[state=checked]:bg-slate-700 enabled:data-[state=checked]:hover:bg-slate-900',
+			'bg-slate-200 enabled:not-data-readonly:hover:bg-slate-300',
+			'enabled:data-[state=checked]:bg-slate-700 enabled:data-[state=checked]:not-data-readonly:hover:bg-slate-900',
+			'data-readonly:cursor-default',
 			'focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring-button-primary',
 			'disabled:cursor-not-allowed disabled:bg-slate-100'
 		],
@@ -27,11 +29,13 @@ export const switchRecipe = tv({
 	variants: {
 		size: {
 			sm: {
-				root: 'h-4 w-7.5 p-0.5',
+				// `max-w-*` keeps the width when a container stretches its children
+				// (a vertical `Field.Root` gives them `w-full`).
+				root: 'h-4 w-7.5 max-w-7.5 p-0.5',
 				thumb: 'size-3 data-[state=checked]:translate-x-3.5'
 			},
 			md: {
-				root: 'h-6 w-12 p-0.75',
+				root: 'h-6 w-12 max-w-12 p-0.75',
 				thumb: 'size-4.5 data-[state=checked]:translate-x-6'
 			}
 		},
@@ -56,6 +60,12 @@ export type SwitchProps = ComponentPropsWithRef<typeof SwitchPrimitive.Root> &
 		 * the toggle headless and supply your own `<label htmlFor>`.
 		 */
 		label?: string;
+		/**
+		 * Keeps the switch focusable and announced (`aria-readonly`) but stops a
+		 * click or a key from flipping it. Not a native `<button>` attribute,
+		 * hence declared here. Inside a `FieldSwitch` it comes from the field.
+		 */
+		readOnly?: boolean;
 	};
 
 /**
@@ -64,7 +74,11 @@ export type SwitchProps = ComponentPropsWithRef<typeof SwitchPrimitive.Root> &
  *
  * Renders only the toggle by default — pair it with a `<label htmlFor>` for an
  * accessible name. Pass `label` (with an `id`) to render an associated text
- * label beside the toggle; `reverse` places the label before it.
+ * label beside the toggle; `reverse` places the label before it. Inside a
+ * `FieldSwitch` it takes its wiring from the field instead (`id`,
+ * `aria-describedby`, `aria-invalid`, `required`, `disabled`, `readOnly`) and
+ * a default `size`, so the field's `Label` names it with no `id` written by
+ * hand; its own props still win. Every native `<button>` attribute is forwarded to the toggle.
  *
  * @summary Instant-effect on/off toggle built on Radix Switch
  *
@@ -73,7 +87,9 @@ export type SwitchProps = ComponentPropsWithRef<typeof SwitchPrimitive.Root> &
  * @example
  * <Switch id="email-notifications" label="Email" checked={on} onCheckedChange={setOn} />
  */
-export const Switch = ({ className, size, reverse, label, id, ref, ...props }: SwitchProps) => {
+export const Switch = (props: SwitchProps) => {
+	const { className, size, reverse, label, id, readOnly, onClick, ref, ...rest } =
+		useSwitchContext(props);
 	const generatedId = useId();
 	// Only synthesize an id when a label needs one to associate; headless usage
 	// keeps whatever `id` (or none) the caller passed.
@@ -85,8 +101,16 @@ export const Switch = ({ className, size, reverse, label, id, ref, ...props }: S
 			ref={ref}
 			id={controlId}
 			data-slot="switch"
+			data-size={size ?? 'md'}
+			data-readonly={readOnly || undefined}
+			aria-readonly={readOnly || undefined}
 			className={cn(styles.root(), className)}
-			{...props}>
+			// A prevented click skips Radix's own handler, so the state does not flip.
+			onClick={event => {
+				onClick?.(event);
+				if (readOnly) event.preventDefault();
+			}}
+			{...rest}>
 			<SwitchPrimitive.Thumb data-slot="switch-thumb" className={styles.thumb()} />
 		</SwitchPrimitive.Root>
 	);
