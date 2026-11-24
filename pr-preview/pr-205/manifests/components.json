@@ -7126,6 +7126,325 @@
       ],
       "import": "import { Field, FieldContext, Label, Switch } from '@agentero/design-system';"
     },
+    "components-filedrop": {
+      "id": "components-filedrop",
+      "name": "FileDrop",
+      "path": "./src/file-drop/file-drop.stories.tsx",
+      "jsDocTags": {
+        "summary": [
+          "Base single-file upload control: drop zone, picker and preview"
+        ],
+        "example": [
+          "<Label htmlFor=\"w9\">W-9</Label>\n<FileDrop\n  id=\"w9\"\n  accept=\"application/pdf\"\n  value={{ file }}\n  onFileChange={setFile}\n  onFileReject={() => setError('Only PDF files are accepted')}\n/>"
+        ]
+      },
+      "description": "FileDrop uploads one file: a dashed zone that takes a dropped file or opens\nthe picker, and a preview with \"Replace file\" once there is one. It is\ncontrolled through `value`, `onFileChange` and `onFileReject`, and its real\ncontrol is a hidden `<input type=\"file\">` a `Label` names.",
+      "summary": "Base single-file upload control: drop zone, picker and preview",
+      "reactComponentMeta": {
+        "displayName": "FileDrop",
+        "exportName": "FileDrop",
+        "filePath": "/home/runner/work/design-system/design-system/src/file-drop/file-drop.tsx",
+        "description": "FileDrop is the design system's base control for uploading one file: a\ndashed zone that takes a file dropped on it or opens the picker on click,\nand once there is a file, a preview of it (PDF, plain text and images) with\na \"Replace file\" button.\n\nIt is controlled: it shows `value` and reports a picked or dropped file\nthrough `onFileChange`, or through `onFileReject` when `accept` does not\nallow it, so the field can show the error. Nothing is uploaded here; the\nconsumer owns the `File`. The zone lists the accepted formats from `accept`\n(unless `showAcceptedFormats` is `false`). The zone, and the preview under\nits header, are at least 200px tall; `className` lands on the box, so\n`[--file-drop-min-height:18.75rem]` there makes both 300px. `onFileRemove`\nadds a \"Remove\" button, `previewLoading`\nholds a placeholder while a stored file's `url` arrives, and `children`\noffer another way to supply the file inside the empty zone.\n\nThe real control is a visually hidden `<input type=\"file\">`, so a `Label`\nnames it and every other `<input>` attribute (`id`, `name`, `required`,\n`aria-*`, `onBlur`, `ref`) is forwarded to it. When a container provides\n`FileDropContext` it takes that wiring from it, and its own props always win.\n`aria-invalid` paints the zone in the destructive tone, `disabled` greys it\nout, and `readOnly` shows the file without its buttons, ignores picks and\ndrops, and renders nothing when there is no file. `required` holds only\nwhile the zone is empty, since a dropped or stored file never reaches the\ninput. \"Replace file\" carries the input's `aria-describedby`, so the field's\nerror is read on the control that keeps the focus.",
+        "jsDocTags": {
+          "summary": [
+            "Base single-file upload control: drop zone, picker and preview"
+          ],
+          "example": [
+            "<Label htmlFor=\"w9\">W-9</Label>\n<FileDrop\n  id=\"w9\"\n  accept=\"application/pdf\"\n  value={{ file }}\n  onFileChange={setFile}\n  onFileReject={() => setError('Only PDF files are accepted')}\n/>"
+          ]
+        },
+        "props": {
+          "accept": {
+            "name": "accept",
+            "required": false,
+            "type": {
+              "name": "string"
+            },
+            "description": "The formats the zone takes, as in the native attribute: MIME types,\nwildcards (`image/*`) and extensions (`.csv`), comma-separated. The\npicker filters by it and a dropped file is checked against it; empty\nallows anything. It also writes the \"Accepted formats\" line.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FileDropProps",
+              "fileName": "src/file-drop/file-drop.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/file-drop/file-drop.tsx"
+              }
+            ]
+          },
+          "disabled": {
+            "name": "disabled",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Greys the zone out and disables the input: clicks and drops do nothing.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FileDropProps",
+              "fileName": "src/file-drop/file-drop.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/file-drop/file-drop.tsx"
+              }
+            ]
+          },
+          "readOnly": {
+            "name": "readOnly",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Shows the file without \"Replace file\" or \"Remove\", and takes no drop.\nWith no file it renders nothing.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FileDropProps",
+              "fileName": "src/file-drop/file-drop.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/file-drop/file-drop.tsx"
+              }
+            ]
+          },
+          "aria-invalid": {
+            "name": "aria-invalid",
+            "required": false,
+            "type": {
+              "name": "boolean | \"true\" | \"false\" | \"grammar\" | \"spelling\" | undefined"
+            },
+            "description": "Paints the zone in the destructive tone. Point `aria-describedby` at the\nerror message so it is read with the control.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FileDropProps",
+              "fileName": "src/file-drop/file-drop.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/file-drop/file-drop.tsx"
+              }
+            ]
+          },
+          "value": {
+            "name": "value",
+            "required": false,
+            "type": {
+              "name": "FileDropValue | null | undefined"
+            },
+            "description": "The file to preview. Empty (no `file`, `url` or `name`) shows the drop\nzone. Any object with those keys fits, so a form's upload value can be\npassed as it is.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FileDropProps",
+              "fileName": "src/file-drop/file-drop.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/file-drop/file-drop.tsx"
+              }
+            ]
+          },
+          "onFileChange": {
+            "name": "onFileChange",
+            "required": false,
+            "type": {
+              "name": "(file: File) => void"
+            },
+            "description": "Called with the file picked or dropped when `accept` allows it.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FileDropProps",
+              "fileName": "src/file-drop/file-drop.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/file-drop/file-drop.tsx"
+              }
+            ]
+          },
+          "onFileReject": {
+            "name": "onFileReject",
+            "required": false,
+            "type": {
+              "name": "(file: File) => void"
+            },
+            "description": "Called with the file picked or dropped when `accept` rejects it.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FileDropProps",
+              "fileName": "src/file-drop/file-drop.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/file-drop/file-drop.tsx"
+              }
+            ]
+          },
+          "onFileRemove": {
+            "name": "onFileRemove",
+            "required": false,
+            "type": {
+              "name": "() => void"
+            },
+            "description": "Adds a \"Remove\" button next to \"Replace file\" and is called when it is\npressed; clear the `value` there to bring the drop zone back. Without it\nthere is no button and a file can only be replaced.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FileDropProps",
+              "fileName": "src/file-drop/file-drop.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/file-drop/file-drop.tsx"
+              }
+            ]
+          },
+          "previewLoading": {
+            "name": "previewLoading",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Shows a placeholder in place of the preview while the stored file's\n`url` is on its way, instead of \"No preview available\".",
+            "defaultValue": null,
+            "parent": {
+              "name": "FileDropProps",
+              "fileName": "src/file-drop/file-drop.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/file-drop/file-drop.tsx"
+              }
+            ]
+          },
+          "showAcceptedFormats": {
+            "name": "showAcceptedFormats",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Lists the formats `accept` allows under the prompt. Defaults to `true`.",
+            "defaultValue": {
+              "value": "true"
+            },
+            "parent": {
+              "name": "FileDropProps",
+              "fileName": "src/file-drop/file-drop.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/file-drop/file-drop.tsx"
+              }
+            ]
+          },
+          "children": {
+            "name": "children",
+            "required": false,
+            "type": {
+              "name": "ReactNode"
+            },
+            "description": "Another way to supply the file, such as picking one from another\nrecord: rendered in the empty zone under an \"or\", and gone once there is\na file. Clicks inside it do not open the picker. With `disabled` it goes\ninert; pass `disabled` to its controls too, so they look it.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FileDropProps",
+              "fileName": "src/file-drop/file-drop.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/file-drop/file-drop.tsx"
+              }
+            ]
+          }
+        }
+      },
+      "stories": [
+        {
+          "id": "components-filedrop--default",
+          "name": "Default",
+          "snippet": "const Default = () => <ControlledFileDrop accept=\"application/pdf\" onFileChange={fn()} onFileReject={fn()} />;",
+          "description": "The empty zone, labelled by the `Label` through the hidden input, with the\nformats `accept` allows. Clicking anywhere on it opens the picker.",
+          "summary": "Empty drop zone that opens the picker"
+        },
+        {
+          "id": "components-filedrop--picked-file",
+          "name": "Picked File",
+          "snippet": "const PickedFile = () => <ControlledFileDrop\n    accept=\"application/pdf\"\n    onFileChange={fn()}\n    onFileReject={fn()}\n    required\n    value={{ file: pdf('w9.pdf', 'Form W-9') }} />;",
+          "description": "Once the state holds the file, the box shows it: PDFs, plain text and\nimages in a frame as tall as the zone was, under a \"Replace file\" button\nthat opens the picker again. Focus moves to the button, since the input\nleaves the tab order; `required` stops holding, since the file never\nreaches the input; and a file dropped on the preview is swallowed instead of\nopening in place of the page.",
+          "summary": "Picked file previewed, with Replace file",
+          "warning": "Incomplete snippet: `pdf` could not be resolved statically."
+        },
+        {
+          "id": "components-filedrop--removable",
+          "name": "Removable",
+          "snippet": "const Removable = () => <ControlledFileDrop\n    accept=\"application/pdf\"\n    onFileChange={fn()}\n    onFileReject={fn()}\n    value={{ url: storedW9Url }}\n    onFileRemove={fn()} />;",
+          "description": "A file stored earlier comes in as `value.url` and previews from that\naddress, so an edit form opens on the current document. `onFileRemove` adds\na \"Remove\" button beside \"Replace file\"; clearing the value there brings the\ndrop zone back, with focus on it.",
+          "summary": "Stored file with a Remove button",
+          "warning": "Incomplete snippet: `storedW9Url` could not be resolved statically."
+        },
+        {
+          "id": "components-filedrop--preview-loading",
+          "name": "Preview Loading",
+          "snippet": "const PreviewLoading = () => <ControlledFileDrop\n    accept=\"application/pdf\"\n    onFileChange={fn()}\n    onFileReject={fn()}\n    value={{ name: 'w9-northside-insurance.pdf' }}\n    previewLoading />;",
+          "description": "`previewLoading` holds a placeholder while the stored file's `url` is on its\nway (a signed URL fetched on demand, say), instead of \"No preview\navailable\". Until then the value carries only the file's `name`.",
+          "summary": "Placeholder while the stored file's URL loads"
+        },
+        {
+          "id": "components-filedrop--alternative-source",
+          "name": "Alternative Source",
+          "snippet": "const AlternativeSource = args => {\n    const [value, setValue] = useState<FileDropValue | null>(null);\n\n    return (\n        <FileDrop\n            accept=\"application/pdf\"\n            onFileReject={fn()}\n            showAcceptedFormats={false}\n            value={value}\n            onFileChange={file => {\n                setValue({ file });\n                args.onFileChange?.(file);\n            }}\n            onFileRemove={() => setValue(null)}>\n            <DropdownMenu.Root>\n                <DropdownMenu.Trigger asChild>\n                    <Button type=\"button\" variant=\"secondary\" size=\"md\">Choose from agency\n                                                    <ChevronDownIcon />\n                    </Button>\n                </DropdownMenu.Trigger>\n                <DropdownMenu.Portal>\n                    <DropdownMenu.Content>\n                        <DropdownMenu.Item\n                            onSelect={() => setValue({ url: storedW9Url, name: 'w9-northside-insurance.pdf' })}>W-9 · Northside Insurance\n                                                        </DropdownMenu.Item>\n                        <DropdownMenu.Item\n                            onSelect={() => setValue({ url: storedW9Url, name: 'w9-lakeside-agency.pdf' })}>W-9 · Lakeside Agency\n                                                        </DropdownMenu.Item>\n                    </DropdownMenu.Content>\n                </DropdownMenu.Portal>\n            </DropdownMenu.Root>\n        </FileDrop>\n    );\n};",
+          "description": "`children` offer another way to supply the file, rendered in the empty zone\nunder an \"or\": here a menu of the files the agency already stored, as\nproducerflow's \"Choose from agency\" does. Their clicks are their own: they\nnever open the picker, and picking a file sets the value like a drop would,\nwhile browsing and dropping keep working. `showAcceptedFormats={false}`\ndrops the formats line.",
+          "summary": "Another way to supply the file inside the zone"
+        },
+        {
+          "id": "components-filedrop--without-preview",
+          "name": "Without Preview",
+          "snippet": "const WithoutPreview = () => <ControlledFileDrop\n    accept=\".csv\"\n    onFileChange={fn()}\n    onFileReject={fn()}\n    value={{ file: csv() }} />;",
+          "description": "A file the frame cannot show (a spreadsheet, an empty file, an image over\n10 MB, or HTML and SVG, whose scripts would run in the app) keeps the box\nwith its name over a placeholder instead.",
+          "summary": "File without a preview shows its name and a placeholder",
+          "warning": "Incomplete snippet: `csv` could not be resolved statically."
+        },
+        {
+          "id": "components-filedrop--invalid",
+          "name": "Invalid",
+          "snippet": "const Invalid = args => {\n    const [error, setError] = useState('Upload the signed W-9.');\n\n    return (\n        <>\n            <ControlledFileDrop\n                accept=\"application/pdf\"\n                aria-invalid={!!error}\n                aria-describedby=\"w9-error\"\n                onFileChange={file => {\n                    setError('');\n                    args.onFileChange?.(file);\n                }}\n                onFileReject={file => {\n                    setError(`${file.name} is not a PDF.`);\n                    args.onFileReject?.(file);\n                }} />\n            {error && (\n                <p id=\"w9-error\" role=\"alert\" className=\"text-sm text-text-input-destructive\">\n                    {error}\n                </p>\n            )}\n        </>\n    );\n};",
+          "description": "`aria-invalid` paints the zone in the destructive tone; point\n`aria-describedby` at the message so it is read with the control. Here the\nerror comes from `onFileReject`.",
+          "summary": "Invalid zone with its error message"
+        },
+        {
+          "id": "components-filedrop--disabled",
+          "name": "Disabled",
+          "snippet": "const Disabled = () => <FileDrop accept=\"application/pdf\" onFileChange={fn()} onFileReject={fn()} disabled />;",
+          "description": "`disabled` greys the zone out and disables the input: clicks open nothing\nand drops are ignored.",
+          "summary": "Disabled zone that takes no file"
+        },
+        {
+          "id": "components-filedrop--read-only",
+          "name": "Read Only",
+          "snippet": "const ReadOnly = () => <FileDrop\n    accept=\"application/pdf\"\n    onFileChange={fn()}\n    onFileReject={fn()}\n    readOnly\n    value={{ url: storedW9Url }} />;",
+          "description": "`readOnly` shows the file with no \"Replace file\" button, and neither the\nlabel nor a drop changes it: a document to look at, not to edit.",
+          "summary": "Read-only preview without Replace file",
+          "warning": "Incomplete snippet: `storedW9Url` could not be resolved statically."
+        },
+        {
+          "id": "components-filedrop--custom-height",
+          "name": "Custom Height",
+          "snippet": "const CustomHeight = () => <ControlledFileDrop\n    accept=\"application/pdf\"\n    onFileChange={fn()}\n    onFileReject={fn()}\n    className=\"[--file-drop-min-height:18.75rem]\" />;",
+          "description": "`className` lands on the box, so setting `--file-drop-min-height` there\nresizes the zone and the preview alike, here to 300px for a longer document.",
+          "summary": "Taller zone through className"
+        }
+      ],
+      "import": "import { Button, DropdownMenu, FileDrop, Label } from '@agentero/design-system';\nimport { ChevronDownIcon } from 'lucide-react';\nimport { fn } from 'storybook/test';"
+    },
     "components-formtext": {
       "id": "components-formtext",
       "name": "FormText",
@@ -12316,7 +12635,7 @@
             "type": {
               "name": "boolean"
             },
-            "description": "Merge Radix's behavior onto an already-interactive child instead of wrapping it in a `<button>`. Defaults to `false`.",
+            "description": "Merge Radix's behavior onto an already-interactive child instead of wrapping it in a `<button>`. Defaults to `false`.\nThe child keeps its own `type`, and `Button` has no default one, so inside a form give it `type=\"button\"` or it submits.",
             "defaultValue": {
               "value": "false"
             },
@@ -12480,6 +12799,12 @@
           "description": "`asChild` decorates an already-interactive trigger instead of wrapping it in a `<button>`."
         },
         {
+          "id": "components-tooltip--inside-a-form",
+          "name": "Inside A Form",
+          "snippet": "const InsideAForm = () => <form onSubmit={onSubmit}>\n    <Tooltip side=\"top\" asChild={false} content=\"Rated through ITC\">\n        <span\n            className=\"rounded-sm border border-border-default-base-primary px-1.5 text-xs\">RATER\n                            </span>\n    </Tooltip>\n</form>;",
+          "description": "Without `asChild` the trigger is a `type=\"button\"`, so a tooltip inside a form never submits it."
+        },
+        {
           "id": "components-tooltip--long-content",
           "name": "Long Content",
           "snippet": "const LongContent = () => <Tooltip\n    content=\"This carrier requires a completed appointment before you can request quotes for this line of business.\"\n    side=\"top\"\n    asChild>\n    <Button variant=\"secondary\">Why is this disabled?</Button>\n</Tooltip>;",
@@ -12587,6 +12912,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5257
+    "durationMs": 3376
   }
 }
