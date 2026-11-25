@@ -126,6 +126,7 @@ Uses `@storybook/mcp` to expose three tools — `docs-list`, `docs-show`, `docs-
 
 - `publish.yml` auto-publishes to npm on push to `master` (patch/minor bumps driven by commits).
 - `publish-major.yml` is triggered manually; use the `/publish-major` slash command which dispatches the workflow and reports back the run URL.
+- Both publish through npm trusted publishing (OIDC), so there is no npm token. Each workflow file has its own trusted publisher in the package settings on npmjs.com, tied to the workflow filename and the `npm` environment and allowed to run `npm publish`. Renaming either stops publishing, and a new publish workflow cannot publish, until the publishers on npmjs.com match.
 
 ## Tooling notes
 
