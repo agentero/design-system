@@ -234,6 +234,7 @@ export const Playground: Story = {
 		<div className={args.enclosed ? 'flex min-h-0 flex-1 flex-col p-4' : 'contents'}>
 			<DataTable.Root data={LEADS} columns={columns}>
 				<DataTable.Table
+					aria-label="Leads"
 					size={args.size}
 					embed={args.embed}
 					enclosed={args.enclosed}

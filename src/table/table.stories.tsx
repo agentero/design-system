@@ -117,7 +117,7 @@ const meta = {
 			options: [undefined, 'header', 'headerAndFooter']
 		}
 	},
-	args: { size: 'md', embed: false },
+	args: { size: 'md', embed: false, 'aria-label': 'Team members' },
 	render: args => renderTable(args)
 } satisfies Meta<typeof Table.Root>;
 
@@ -135,6 +135,13 @@ export const Default: Story = {
 		const canvas = within(canvasElement);
 		await expect(canvas.getByText('Alice Williams')).toBeInTheDocument();
 		await expect(canvas.getByRole('columnheader', { name: 'Name' })).toBeInTheDocument();
+
+		// The scroll viewport takes keyboard focus, so it needs a name and a visible
+		// ring, which the root draws so sticky rows can't cover it.
+		const region = canvas.getByRole('region', { name: 'Team members' });
+		await userEvent.tab();
+		await expect(region).toHaveFocus();
+		await expect(region.parentElement).toHaveStyle({ outlineStyle: 'solid' });
 	}
 };
 

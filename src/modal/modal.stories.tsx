@@ -171,7 +171,21 @@ export const ScrollableBody: Story = {
 				</Modal.Footer>
 			</Modal.Content>
 		</Modal.Root>
-	)
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const body = within(document.body);
+
+		await userEvent.click(canvas.getByRole('button', { name: /open scrollable/i }));
+		await body.findByRole('dialog', { name: 'Terms and conditions' });
+
+		// Focus starts on the X button; the next stop is the body, announced by the title.
+		await userEvent.tab();
+		await expect(body.getByRole('region', { name: 'Terms and conditions' })).toHaveFocus();
+
+		await userEvent.click(body.getByRole('button', { name: /accept/i }));
+		await waitFor(() => expect(body.queryByRole('dialog')).not.toBeInTheDocument());
+	}
 };
 
 /**
