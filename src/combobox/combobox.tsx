@@ -106,7 +106,7 @@ export const comboboxRecipe = tv({
 const slots = comboboxRecipe();
 
 // Whether the nearest `Root` holds several values. `Item` reads it to show the selection
-// indicator and `Input` to drop the clear button and the chevron; Base UI keeps its own selection mode in
+// indicator and `Input` to drop the clear button; Base UI keeps its own selection mode in
 // a private store.
 const MultipleContext = createContext(false);
 
@@ -436,11 +436,12 @@ type InputProps = Omit<ComponentPropsWithRef<typeof ComboboxPrimitive.Input>, 's
  * from the input. Name it with `clearLabel`, and the chevron with
  * `triggerLabel`, when a page has more than one combobox.
  *
- * Under a `multiple` root there is neither: the list stays open between picks,
- * so a chevron has nothing to toggle, and Base UI's clear button would drop the
- * whole selection while a cross inside a search field reads as "clear what I
+ * Under a `multiple` root there is no clear button: Base UI's would drop the
+ * whole selection, while a cross inside a search field reads as "clear what I
  * typed". The selection is rendered outside the field, with its own way to
- * remove each entry.
+ * remove each entry. A `select` keeps its chevron there: the list stays open
+ * between picks, and the chevron both marks the field as a dropdown and closes
+ * the list once the user is done.
  *
  * The typed text is a query, never the value, so while the list is open Enter
  * does not submit a surrounding form: it picks the highlighted row — the first
@@ -525,7 +526,7 @@ export const Input = ({
 					<CircleXFilledIcon />
 				</ComboboxPrimitive.Clear>
 			)}
-			{variant === 'select' && !multiple && (
+			{variant === 'select' && (
 				<ComboboxPrimitive.Trigger
 					data-slot="combobox-trigger"
 					aria-label={triggerLabel}
