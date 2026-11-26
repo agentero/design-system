@@ -36,9 +36,13 @@ export const tableRecipe = tv({
 	slots: {
 		root: [
 			'flex min-h-0 flex-1 flex-col overflow-hidden',
+			// The scroll viewport's focus ring, drawn inside the root by an overlay above the sticky
+			// rows: on the viewport they would cover it, and outside the root a clipping parent would.
+			'relative after:pointer-events-none after:absolute after:inset-0 after:z-[2] after:rounded-[inherit] after:content-[""]',
+			'has-[>[data-slot=table-scroll]:focus-visible]:after:outline-2 has-[>[data-slot=table-scroll]:focus-visible]:after:-outline-offset-2 has-[>[data-slot=table-scroll]:focus-visible]:after:outline-focus-ring-button-primary',
 			'[--table-cell-padding-inline:1.25rem] [--table-cell-padding-inline-ends:1.25rem]'
 		],
-		scroll: 'min-h-0 flex-1 overflow-auto focus-visible:outline-none',
+		scroll: 'min-h-0 flex-1 overflow-auto outline-none',
 		table: 'w-full has-[[data-slot=table-empty-state]]:h-full'
 	},
 	variants: {
@@ -81,7 +85,11 @@ const isHeaderSticky = (s: TableVariants['sticky']) => s === 'header' || s === '
 const isFooterSticky = (s: TableVariants['sticky']) => s === 'headerAndFooter';
 
 export type TableRootProps = TableVariants & {
-	ref?: Ref<HTMLDivElement>;
+	ref?: Ref<HTMLElement>;
+	/** Names the scroll region, which takes keyboard focus so the table can scroll by keyboard. */
+	'aria-label'?: string;
+	/** Id of a visible heading that names the scroll region. Prefer it over `aria-label`. */
+	'aria-labelledby'?: string;
 };
 
 /**
@@ -116,9 +124,16 @@ export type TableRootProps = TableVariants & {
  * </Table.Root>
  * ```
  */
-export const Root = ({ children, ref, ...variants }: PropsWithChildren<TableRootProps>) => {
+export const Root = ({
+	children,
+	ref,
+	'aria-label': ariaLabel,
+	'aria-labelledby': ariaLabelledby,
+	...variants
+}: PropsWithChildren<TableRootProps>) => {
 	const { size, sticky, embed } = variants;
 	const styles = tableRecipe(variants);
+
 	const slots: TableSlotClasses = {
 		header: headerStyles({ sticky: isHeaderSticky(sticky) }),
 		cell: cellStyles({ size }),
@@ -134,12 +149,18 @@ export const Root = ({ children, ref, ...variants }: PropsWithChildren<TableRoot
 	return (
 		<TableContext value={slots}>
 			<div data-slot="table-root" className={styles.root()}>
-				{/* oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- a scrollable region has to take focus to scroll by keyboard */}
-				<div data-slot="table-scroll" ref={ref} tabIndex={0} className={styles.scroll()}>
+				<section
+					data-slot="table-scroll"
+					ref={ref}
+					aria-label={ariaLabel}
+					aria-labelledby={ariaLabelledby}
+					// oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- a scrollable region has to take focus to scroll by keyboard
+					tabIndex={0}
+					className={styles.scroll()}>
 					<table data-slot="table" className={styles.table()}>
 						{children}
 					</table>
-				</div>
+				</section>
 			</div>
 		</TableContext>
 	);
