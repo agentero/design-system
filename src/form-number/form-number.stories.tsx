@@ -212,6 +212,60 @@ export const MaxNumber: Story = {
 	}
 };
 
+const onValidate = fn(() => true);
+
+/**
+ * With `thousandSeparator` the zeros typed in front are dropped once the field
+ * loses focus: `0001234` becomes `1,234`, in the field and in the form. The
+ * trimmed value reaches react-hook-form before its blur, so a rule run on
+ * blur (`mode: 'onBlur'`) already reads `"1,234"`.
+ *
+ * @summary Leading zeros dropped on blur, in the field and in the form
+ */
+export const LeadingZerosOnBlur: Story = {
+	render: () => {
+		const methods = useForm<PolicyValues>({
+			mode: 'onBlur',
+			defaultValues: { annualPremium: '' }
+		});
+
+		return (
+			<Form.Root
+				methods={methods}
+				onSubmit={onSubmit}
+				aria-label="Policy"
+				className="flex flex-col items-start gap-7">
+				<FormNumber
+					name="annualPremium"
+					label="Annual premium"
+					rules={{ validate: onValidate }}
+					inputProps={{ thousandSeparator: true }}
+				/>
+				<Button type="submit">Save</Button>
+			</Form.Root>
+		);
+	},
+	play: async ({ canvasElement }) => {
+		onSubmit.mockClear();
+		onValidate.mockClear();
+		const canvas = within(canvasElement);
+
+		const input = canvas.getByRole('textbox', { name: 'Annual premium' });
+
+		await userEvent.type(input, '0001234');
+		await userEvent.tab();
+
+		await expect(input).toHaveValue('1,234');
+		await waitFor(() => expect(onValidate).toHaveBeenLastCalledWith('1,234', expect.anything()));
+
+		await userEvent.click(canvas.getByRole('button', { name: 'Save' }));
+
+		await waitFor(() =>
+			expect(onSubmit).toHaveBeenCalledWith({ annualPremium: '1,234' }, expect.anything())
+		);
+	}
+};
+
 /**
  * A value the form writes — `defaultValues`, `reset`, `setValue` — is shown
  * formatted. Write it in the shape the field stores, the formatted text, so
