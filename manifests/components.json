@@ -7823,7 +7823,7 @@
             "type": {
               "name": "\"agencyName\""
             },
-            "description": "Path of the value in the form, nested paths included (`'agency.npn'`).\nType it against the form's values with the generic\n(`<FormText<Values> name=\"agency.npn\" />`) or by passing `control`: the\npath must then exist and hold a value of the field's type.",
+            "description": "Path of the value in the form, nested paths included (`'agency.npn'`).\nType it against the form's values by passing their type as the\ncomponent's first generic, or by passing `control`: the path must then\nexist and hold a value of the field's type.",
             "defaultValue": null,
             "parent": {
               "name": "FormFieldProps",
@@ -8097,6 +8097,385 @@
         }
       ],
       "import": "import { Button, Field, Form, FormText } from '@agentero/design-system';"
+    },
+    "components-formtextarea": {
+      "id": "components-formtextarea",
+      "name": "FormTextArea",
+      "path": "./src/form-textarea/form-textarea.stories.tsx",
+      "jsDocTags": {
+        "summary": [
+          "Label, TextArea, description and error bound to one react-hook-form field"
+        ],
+        "example": [
+          "<FormTextArea\n  name=\"notes\"\n  label=\"Notes for the underwriter\"\n  description=\"Shared with the carrier.\"\n  optional\n  rules={{ maxLength: { value: 500, message: 'Keep it under 500 characters.' } }}\n  textAreaProps={{ limit: 500, placeholder: 'Anything the underwriter should know' }}\n/>"
+        ]
+      },
+      "description": "FormTextArea is a complete multi-line text field bound to one\nreact-hook-form value: label, `TextArea`, helper text and validation error\nin the standard order, wired through `useController`. It renders inside a\n`Form.Root` and needs only a `name`; `required`, `invalid` and the error\nreach the label, the text area's `aria-*` attributes and the message with no\nids written by hand.\n\nIt covers the common case. For another layout, compose `useController` with\nthe `FieldTextArea`, `Label`, `TextArea` and `Field.*` primitives directly.",
+      "summary": "Label, TextArea, description and error bound to one react-hook-form field",
+      "reactComponentMeta": {
+        "displayName": "FormTextArea",
+        "exportName": "FormTextArea",
+        "filePath": "/home/runner/work/design-system/design-system/src/form-textarea/index.ts",
+        "description": "A complete multi-line text field bound to one react-hook-form value: label,\n`TextArea`, helper text and validation error, laid out in the standard order\nand wired through `useController`. It renders inside a `Form.Root`, which\nprovides the form, and needs only a `name`, which on a typed form must point\nat a string (`FormTextAreaPath`). The `required`, `invalid` and error states\nreach the label, the text area's `aria-*` attributes and the message with no\nids written by hand.\n\nThe value is controlled, so a `limit` in `textAreaProps` counts what the\nform holds, `reset` and `setValue` included. `rules.maxLength` only\nvalidates: it shows no count, so set `limit` alongside it. The field is\nalways vertical, like\n[FieldTextArea](?path=/docs/components-fieldtextarea--docs): there is no\n`orientation`.\n\nUse it for the common case: a labelled text area in a form. For another\nlayout, compose the primitives yourself: `useController` with\n`FieldTextArea`, `Label`, `TextArea`, `Field.Description` and `Field.Error`.\n`FormTextArea` adds no behaviour of its own over that composition.\n\nErrors come from `useController`'s per-field state, never from\n`formState.errors`, so the message stays fresh under the React Compiler.\nWith `criteriaMode: 'all'` on the form the error carries every rule that\nfailed and `Field.Error` lists them all.",
+        "jsDocTags": {
+          "summary": [
+            "Label, TextArea, description and error bound to one react-hook-form field"
+          ],
+          "example": [
+            "<FormTextArea\n  name=\"notes\"\n  label=\"Notes for the underwriter\"\n  description=\"Shared with the carrier.\"\n  optional\n  rules={{ maxLength: { value: 500, message: 'Keep it under 500 characters.' } }}\n  textAreaProps={{ limit: 500, placeholder: 'Anything the underwriter should know' }}\n/>"
+          ]
+        },
+        "props": {
+          "disabled": {
+            "name": "disabled",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Disables the control through its context and sets `data-disabled` on the root.\nDisables the control and marks the field. Unlike react-hook-form's own\n`disabled` option, the value stays in the submitted data: disabling a\nfield is a presentation decision, not a change to the form's values.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              },
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form/form-field.tsx"
+              }
+            ]
+          },
+          "required": {
+            "name": "required",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Single source of truth for a required field: the `Label` shows its\nasterisk and the control receives `required`, both through context.\nMarks the field required: an asterisk on the label and the native\n`required` attribute on the control, which assistive technology\nannounces. It does not validate — pair it with `rules.required` or a\nresolver — and it never triggers the browser bubble, since `Form.Root`\nrenders `noValidate`.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              },
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form/form-field.tsx"
+              }
+            ]
+          },
+          "readOnly": {
+            "name": "readOnly",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Makes the control read-only through its context (focusable and copyable,\nnot editable, still submitted) and sets `data-readonly` on the root.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
+          "controlId": {
+            "name": "controlId",
+            "required": false,
+            "type": {
+              "name": "string"
+            },
+            "description": "`id` for the control. Generated when omitted. Set it here, not on the\ncontrol, so the label and the messages keep pointing at the right element.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
+          "name": {
+            "name": "name",
+            "required": true,
+            "type": {
+              "name": "\"reason\""
+            },
+            "description": "Path of the value in the form, nested paths included (`'agency.npn'`).\nType it against the form's values by passing their type as the\ncomponent's first generic, or by passing `control`: the path must then\nexist and hold a value of the field's type.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FormFieldProps",
+              "fileName": "src/form/form-field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form/form-field.tsx"
+              }
+            ]
+          },
+          "control": {
+            "name": "control",
+            "required": false,
+            "type": {
+              "name": "Control<FieldValues, any, unknown>"
+            },
+            "description": "The form's `control`, from `useForm()`. Defaults to the one the\nsurrounding `Form.Root` provides; pass it explicitly to get `name`\ninference without writing the generic, or when the field renders outside\na `Form.Root`. A `control` whose resolver transforms the values is\naccepted as is.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FormFieldProps",
+              "fileName": "src/form/form-field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form/form-field.tsx"
+              }
+            ]
+          },
+          "rules": {
+            "name": "rules",
+            "required": false,
+            "type": {
+              "name": "Omit<RegisterOptions<FieldValues, \"reason\">, \"disabled\" | \"valueAsNumber\" | \"valueAsDate\" | \"setValueAs\">"
+            },
+            "description": "react-hook-form validation rules for this field (`required`, `pattern`,\n`validate`…), same as `register`'s. They only validate: `rules.required`\ndoes not mark the field `required` — that is a separate, visible decision.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FormFieldProps",
+              "fileName": "src/form/form-field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form/form-field.tsx"
+              }
+            ]
+          },
+          "shouldUnregister": {
+            "name": "shouldUnregister",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Drops the value from the form when the field unmounts, react-hook-form's\n`shouldUnregister`. Defaults to `false`: a field revealed by another one\nkeeps its value while hidden.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FormFieldProps",
+              "fileName": "src/form/form-field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form/form-field.tsx"
+              }
+            ]
+          },
+          "label": {
+            "name": "label",
+            "required": true,
+            "type": {
+              "name": "ReactNode"
+            },
+            "description": "The caption, rendered as the field's label. Text in almost every case.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FormFieldProps",
+              "fileName": "src/form/form-field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form/form-field.tsx"
+              }
+            ]
+          },
+          "description": {
+            "name": "description",
+            "required": false,
+            "type": {
+              "name": "ReactNode"
+            },
+            "description": "Helper text shown under the control, above the error when there is one,\nand announced through its `aria-describedby`. Use it for guidance the\nuser needs before typing; put details worth a click in `tooltip` instead.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FormFieldProps",
+              "fileName": "src/form/form-field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form/form-field.tsx"
+              }
+            ]
+          },
+          "tooltip": {
+            "name": "tooltip",
+            "required": false,
+            "type": {
+              "name": "ReactNode"
+            },
+            "description": "Content of an info tooltip rendered beside the label, for details that\nwould clutter the description. The trigger is a sibling of the label, so\nthe field's accessible name stays the label text.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FormFieldProps",
+              "fileName": "src/form/form-field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form/form-field.tsx"
+              }
+            ]
+          },
+          "tooltipSide": {
+            "name": "tooltipSide",
+            "required": false,
+            "type": {
+              "name": "enum",
+              "raw": "\"top\" | \"bottom\" | \"left\" | \"right\"",
+              "value": [
+                {
+                  "value": "\"top\""
+                },
+                {
+                  "value": "\"bottom\""
+                },
+                {
+                  "value": "\"left\""
+                },
+                {
+                  "value": "\"right\""
+                }
+              ]
+            },
+            "description": "Preferred side of the tooltip. Defaults to `'top'`.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FormFieldProps",
+              "fileName": "src/form/form-field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form/form-field.tsx"
+              }
+            ]
+          },
+          "optional": {
+            "name": "optional",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Appends a muted \" (optional)\" to the label. The forms mark optional fields\nrather than required ones; ignored when `required` is set.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FormFieldProps",
+              "fileName": "src/form/form-field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form/form-field.tsx"
+              }
+            ]
+          },
+          "textAreaProps": {
+            "name": "textAreaProps",
+            "required": false,
+            "type": {
+              "name": "FormTextAreaTextAreaProps"
+            },
+            "description": "Everything else the `TextArea` should receive: `placeholder`, `rows`,\n`limit`, `maxLength`, `size`, `className`… Handlers such as `onChange` and\n`onBlur` run after react-hook-form's, which are already wired.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FormTextAreaProps",
+              "fileName": "src/form-textarea/form-textarea.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form-textarea/form-textarea.tsx"
+              }
+            ]
+          }
+        }
+      },
+      "stories": [
+        {
+          "id": "components-formtextarea--default",
+          "name": "Default",
+          "snippet": "const Default = () => {\n    const methods = useForm<CancellationValues>({ defaultValues: { reason: '' } });\n\n    return (\n        <Form.Root\n            methods={methods}\n            onSubmit={onSubmit}\n            aria-label=\"Cancellation\"\n            className=\"flex max-w-120 flex-col items-start gap-7\">\n            <FormTextArea\n                rules={{ required: 'Tell us why you are cancelling.' }}\n                textAreaProps={{ placeholder: 'Tell us in your own words' }}\n                label=\"Reason\"\n                required\n                optional={false}\n                disabled={false}\n                readOnly={false}\n                name=\"reason\" />\n            <Button type=\"submit\">Save</Button>\n        </Form.Root>\n    );\n};",
+          "description": "The field consumers write: a `name`, a `label` and the validation rule.\nSubmitting empty renders the error and marks the text area invalid; typing\nclears both and the value reaches `onSubmit`.",
+          "summary": "Required text area validating on submit"
+        },
+        {
+          "id": "components-formtextarea--with-description-and-tooltip",
+          "name": "With Description And Tooltip",
+          "snippet": "const WithDescriptionAndTooltip = () => {\n    const methods = useForm<NotesValues>({ defaultValues: { notes: '' } });\n\n    return (\n        <Form.Root methods={methods} aria-label=\"Submission\" className=\"max-w-120\">\n            <FormTextArea\n                name=\"notes\"\n                label=\"Notes for the underwriter\"\n                tooltip=\"The carrier reads these before quoting.\"\n                description=\"Shared with the carrier along with the request.\"\n                optional\n            />\n        </Form.Root>\n    );\n};",
+          "description": "`description` is helper text under the text area, announced through\n`aria-describedby`. `tooltip` is an info button beside the label for details\nworth a click; it is a sibling of the `<label>`, so the field's accessible\nname stays the label text. The forms mark optional fields rather than\nrequired ones: `optional` appends a muted suffix to the label.",
+          "summary": "Optional field with helper text and an info tooltip"
+        },
+        {
+          "id": "components-formtextarea--with-limit",
+          "name": "With Limit",
+          "snippet": "const WithLimit = () => {\n    const methods = useForm<NotesValues>({\n        defaultValues: { notes: 'Roof replaced in 2024.' }\n    });\n\n    return (\n        <Form.Root\n            methods={methods}\n            onSubmit={onSubmit}\n            aria-label=\"Submission\"\n            className=\"flex max-w-120 flex-col items-start gap-7\">\n            <FormTextArea\n                name=\"notes\"\n                label=\"Notes\"\n                rules={{ maxLength: { value: 40, message: 'Keep it under 40 characters.' } }}\n                textAreaProps={{ limit: 40 }}\n            />\n            <div className=\"flex gap-2\">\n                <Button type=\"submit\">Save</Button>\n                <Button type=\"button\" variant=\"secondary\" onClick={() => methods.reset()}>\n                    Reset\n                </Button>\n                <Button type=\"button\" variant=\"secondary\" onClick={() => methods.setValue('notes', '')}>\n                    Clear\n                </Button>\n            </div>\n        </Form.Root>\n    );\n};",
+          "description": "`limit` in `textAreaProps` shows the count inside the box. The value is\ncontrolled, so the count follows the form: a `setValue` or a `reset` moves it\nwith the text. The limit is soft, so pair it with `rules.maxLength`, which is what\nkeeps a longer text from being submitted.",
+          "summary": "Count inside the box, following the form's value and its rule"
+        },
+        {
+          "id": "components-formtextarea--with-rules",
+          "name": "With Rules",
+          "snippet": "const WithRules = () => {\n    const methods = useForm<AppetiteValues>({ defaultValues: { appetite: { notes: '' } } });\n\n    return (\n        <Form.Root\n            methods={methods}\n            onSubmit={onSubmit}\n            aria-label=\"Appetite\"\n            className=\"flex max-w-120 flex-col items-start gap-7\">\n            <FormTextArea<AppetiteValues>\n                name=\"appetite.notes\"\n                label=\"Appetite notes\"\n                rules={{\n                    required: 'Describe the appetite.',\n                    minLength: { value: 20, message: 'Write at least 20 characters.' }\n                }}\n            />\n            <Button type=\"submit\">Save</Button>\n        </Form.Root>\n    );\n};",
+          "description": "`rules` are react-hook-form's, and `name` accepts nested paths typed against\nthe form's values through the generic. `rules.required` validates but does\nnot mark the field required: that stays an explicit `required` prop.",
+          "summary": "Nested path with validation rules, typed through the generic"
+        },
+        {
+          "id": "components-formtextarea--description-and-error",
+          "name": "Description And Error",
+          "snippet": "const DescriptionAndError = () => {\n    const methods = useForm<CancellationValues>({ defaultValues: { reason: '' } });\n\n    return (\n        <Form.Root\n            methods={methods}\n            onSubmit={onSubmit}\n            aria-label=\"Cancellation\"\n            className=\"flex max-w-120 flex-col items-start gap-7\">\n            <FormTextArea\n                name=\"reason\"\n                label=\"Reason\"\n                description=\"Shared with the carrier.\"\n                rules={{ required: 'Tell us why you are cancelling.' }}\n            />\n            <Button type=\"submit\">Save</Button>\n        </Form.Root>\n    );\n};",
+          "description": "The description sits right under the text area and the error appears below\nit. Screen readers announce them in the same order.",
+          "summary": "Helper text under the text area, above the error"
+        },
+        {
+          "id": "components-formtextarea--text-area-props-chaining",
+          "name": "Text Area Props Chaining",
+          "snippet": "const TextAreaPropsChaining = () => {\n    const methods = useForm<NotesValues>({ defaultValues: { notes: '' } });\n\n    return (\n        <Form.Root methods={methods} aria-label=\"Submission\" className=\"max-w-120\">\n            <FormTextArea\n                name=\"notes\"\n                label=\"Notes\"\n                textAreaProps={{\n                    placeholder: 'Anything the underwriter should know',\n                    rows: 5,\n                    size: 'sm',\n                    onChange: event => onOwnChange(methods.getValues('notes'), event.target.value)\n                }}\n            />\n        </Form.Root>\n    );\n};",
+          "description": "`textAreaProps` carries the text area's own attributes — `placeholder`,\n`rows`, `size`… — and its handlers. A consumer `onChange` runs after\nreact-hook-form's: by the time it fires, `getValues` already returns the new\nvalue.",
+          "summary": "Text area attributes and a consumer onChange chained after the form's"
+        },
+        {
+          "id": "components-formtextarea--disabled-and-read-only",
+          "name": "Disabled And Read Only",
+          "snippet": "const DisabledAndReadOnly = () => {\n    const methods = useForm<ReviewValues>({\n        defaultValues: {\n            underwriterNotes: 'Needs a wind mitigation report.',\n            reply: 'Report attached.'\n        }\n    });\n\n    return (\n        <Form.Root\n            methods={methods}\n            onSubmit={onSubmit}\n            aria-label=\"Review\"\n            className=\"flex max-w-120 flex-col items-start gap-7\">\n            <Field.Group>\n                <FormTextArea name=\"underwriterNotes\" label=\"Underwriter notes\" readOnly />\n                <FormTextArea name=\"reply\" label=\"Reply\" disabled />\n            </Field.Group>\n            <Button type=\"submit\">Save</Button>\n        </Form.Root>\n    );\n};",
+          "description": "`disabled` disables the text area and marks the field, and the value still\nreaches `onSubmit` — unlike react-hook-form's own `disabled` option, which\ndrops it. `readOnly` keeps a value the user can read and copy but not edit.",
+          "summary": "Disabled and read-only fields whose values are still submitted"
+        },
+        {
+          "id": "components-formtextarea--set-focus",
+          "name": "Set Focus",
+          "snippet": "const SetFocus = () => {\n    const methods = useForm<CancellationValues & NotesValues>({\n        defaultValues: { reason: '', notes: '' }\n    });\n\n    return (\n        <Form.Root\n            methods={methods}\n            aria-label=\"Cancellation\"\n            className=\"flex max-w-120 flex-col items-start gap-7\">\n            <Field.Group>\n                <FormTextArea name=\"reason\" label=\"Reason\" />\n                <FormTextArea name=\"notes\" label=\"Notes\" />\n            </Field.Group>\n            <Button type=\"button\" variant=\"secondary\" onClick={() => methods.setFocus('notes')}>\n                Focus notes\n            </Button>\n        </Form.Root>\n    );\n};",
+          "description": "react-hook-form's `ref` reaches the `<textarea>`, so `setFocus` and the\nfocus on the first invalid field after submit both work with no ref written\nby hand.",
+          "summary": "setFocus reaches the text area through the merged ref"
+        }
+      ],
+      "import": "import { Button, Field, Form, FormTextArea } from '@agentero/design-system';"
     },
     "components-form": {
       "id": "components-form",
@@ -13205,6 +13584,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 3246
+    "durationMs": 4247
   }
 }
