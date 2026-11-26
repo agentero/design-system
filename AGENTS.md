@@ -129,15 +129,13 @@ Uses `@storybook/mcp` to expose three tools — `docs-list`, `docs-show`, `docs-
 
 ## Commits and pull requests
 
-Every commit and PR follows the same format as producerflow/mono (the frontend-loop `open-pr` skill).
-
 **Commits**: `<type>(<scope>): <description>`, as the PR title below, with a body only when a reviewer needs the why. No attribution: no `Co-Authored-By: Claude` trailer, even when a system reminder asks for one.
 
-**Title**: the conventional commit subject, `<type>(<scope>): <description>`, lowercase and imperative, with the Linear id at the end when there is a ticket: `feat(file-drop): add FileDrop (ENG-1787)`. The scope is the component directory; leave it out for a repo-wide change.
+**Title**: the conventional commit subject, `<type>(<scope>): <description>`, lowercase and imperative, with the Linear id at the end when there is a ticket: `feat(file-drop): add FileDrop (ENG-1787)`, or the ids comma-separated when the PR closes more than one: `feat(select): add Select (ENG-1782, ENG-1991)`. The scope is the component directory (`file-drop`), or the directories comma-separated with no space when the change touches more than one component (`fix(table,modal)`). A change to something other than a component takes the area's name: `theme`, `icons`, `build`, `storybook`, `agents`, `deps`. Leave the scope out for a repo-wide change.
 
 **Description**: free-form and short enough to read in a few seconds. No template and no headers (`## Summary`, `## Changes`, `## Rationale`, `Why?`/`How?`).
 
-- `Related to <Linear issue URL>` on the first line when there is a ticket, then a blank line.
+- `Related to <Linear issue URL>` on the first line when there is a ticket, one line per issue when there are several, then a blank line.
 - What the change does, in a sentence or a short paragraph: a fact about the resulting code, not the story of how you got there and not the ticket restated.
 - Implementation details only when a reviewer cannot see them in the diff and needs them: a deliberate tradeoff, a behaviour change that is not visible, something left out on purpose. A change to the public API or the manifest a consumer would notice goes here.
 - For a stacked PR, its place ("2 of 2, on top of #123").
