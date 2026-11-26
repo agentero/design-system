@@ -285,7 +285,7 @@ export const Leads: Story = {
 					</Button>
 				</DataTable.ToolBar>
 
-				<DataTable.Table />
+				<DataTable.Table aria-label="Leads" />
 
 				<DataTable.Footer>
 					<Pagination
@@ -318,7 +318,7 @@ export const Leads: Story = {
 export const Empty: Story = {
 	render: () => (
 		<DataTable.Root data={[] as Lead[]} columns={columns}>
-			<DataTable.Table />
+			<DataTable.Table aria-label="Leads" />
 		</DataTable.Root>
 	),
 	play: async ({ canvasElement }) => {
@@ -336,7 +336,7 @@ export const Empty: Story = {
 export const Loading: Story = {
 	render: () => (
 		<DataTable.Root data={[] as Lead[]} columns={columns} isLoading>
-			<DataTable.Table />
+			<DataTable.Table aria-label="Leads" />
 		</DataTable.Root>
 	),
 	play: async ({ canvasElement }) => {

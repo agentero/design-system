@@ -1,6 +1,6 @@
 'use client';
 
-import { ComponentProps, createContext, useContext, useId } from 'react';
+import { ComponentProps, createContext, useContext, useId, useLayoutEffect, useState } from 'react';
 
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { XIcon } from 'lucide-react';
@@ -82,8 +82,17 @@ Trigger.displayName = 'Modal.Trigger';
 
 type ModalVariant = 'dialog' | 'alert';
 
-/** The variant, and the id `Modal.Body` reads to take its name from `Modal.Title`. */
-const ModalContext = createContext<{ variant: ModalVariant; titleId?: string }>({
+/**
+ * The variant, and what `Modal.Body` reads to take its name from `Modal.Title`.
+ * The title registers itself through `setHasTitle`, so a titleless modal
+ * leaves the body unnamed instead of pointing it at a missing id.
+ */
+const ModalContext = createContext<{
+	variant: ModalVariant;
+	titleId?: string;
+	hasTitle?: boolean;
+	setHasTitle?: (hasTitle: boolean) => void;
+}>({
 	variant: 'dialog'
 });
 
@@ -168,9 +177,10 @@ export const Content = ({
 	const styles = modalRecipe({ size });
 	const isAlert = variant === 'alert';
 	const titleId = useId();
+	const [hasTitle, setHasTitle] = useState(false);
 
 	return (
-		<ModalContext.Provider value={{ variant, titleId }}>
+		<ModalContext.Provider value={{ variant, titleId, hasTitle, setHasTitle }}>
 			<DialogPrimitive.Portal>
 				<DialogPrimitive.Overlay data-slot="modal-overlay" className={styles.overlay()} />
 				<DialogPrimitive.Content
@@ -195,7 +205,9 @@ export const Content = ({
 };
 Content.displayName = 'Modal.Content';
 
-type TitleProps = ComponentProps<typeof DialogPrimitive.Title>;
+// No `asChild`: Slot would clone the inner `<span id>` and its id would replace
+// the one Radix names the dialog with.
+type TitleProps = Omit<ComponentProps<typeof DialogPrimitive.Title>, 'asChild'>;
 
 /**
  * Heading row of the modal with a built-in close (X) button. Radix wires it
@@ -205,7 +217,12 @@ type TitleProps = ComponentProps<typeof DialogPrimitive.Title>;
  * @summary Modal heading with built-in close button
  */
 export const Title = ({ className, children, ...props }: TitleProps) => {
-	const { variant, titleId } = useContext(ModalContext);
+	const { variant, titleId, setHasTitle } = useContext(ModalContext);
+
+	useLayoutEffect(() => {
+		setHasTitle?.(true);
+		return () => setHasTitle?.(false);
+	}, [setHasTitle]);
 
 	return (
 		<div data-slot="modal-title" className={slots.title({ className })}>
@@ -246,17 +263,18 @@ type BodyProps = ComponentProps<'section'>;
 /**
  * Scrollable content area of the modal. Focusable (`tabIndex 0`) so keyboard
  * users can scroll overflowing content with the arrow keys, and a region named
- * after `Modal.Title` so that focus stop is announced.
+ * after `Modal.Title` so that focus stop is announced. In a modal without a
+ * `Modal.Title` it stays unnamed.
  *
  * @summary Scrollable modal content area
  */
 export const Body = ({ className, ...props }: BodyProps) => {
-	const { titleId } = useContext(ModalContext);
+	const { titleId, hasTitle } = useContext(ModalContext);
 
 	return (
 		<section
 			data-slot="modal-body"
-			aria-labelledby={titleId}
+			aria-labelledby={hasTitle ? titleId : undefined}
 			// oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- a scrollable region has to take focus to scroll by keyboard
 			tabIndex={0}
 			className={slots.body({ className })}

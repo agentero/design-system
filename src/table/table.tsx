@@ -36,8 +36,10 @@ export const tableRecipe = tv({
 	slots: {
 		root: [
 			'flex min-h-0 flex-1 flex-col overflow-hidden',
-			// The scroll viewport's focus ring: drawn on the viewport itself, sticky rows would cover it.
-			'has-[>[data-slot=table-scroll]:focus-visible]:outline-2 has-[>[data-slot=table-scroll]:focus-visible]:outline-offset-2 has-[>[data-slot=table-scroll]:focus-visible]:outline-focus-ring-button-primary',
+			// The scroll viewport's focus ring, drawn inside the root by an overlay above the sticky
+			// rows: on the viewport they would cover it, and outside the root a clipping parent would.
+			'relative after:pointer-events-none after:absolute after:inset-0 after:z-[2] after:rounded-[inherit] after:content-[""]',
+			'has-[>[data-slot=table-scroll]:focus-visible]:after:outline-2 has-[>[data-slot=table-scroll]:focus-visible]:after:-outline-offset-2 has-[>[data-slot=table-scroll]:focus-visible]:after:outline-focus-ring-button-primary',
 			'[--table-cell-padding-inline:1.25rem] [--table-cell-padding-inline-ends:1.25rem]'
 		],
 		scroll: 'min-h-0 flex-1 overflow-auto outline-none',
@@ -131,6 +133,7 @@ export const Root = ({
 }: PropsWithChildren<TableRootProps>) => {
 	const { size, sticky, embed } = variants;
 	const styles = tableRecipe(variants);
+
 	const slots: TableSlotClasses = {
 		header: headerStyles({ sticky: isHeaderSticky(sticky) }),
 		cell: cellStyles({ size }),
