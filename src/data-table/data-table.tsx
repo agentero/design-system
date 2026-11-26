@@ -43,7 +43,7 @@ export type DataTableColumnMeta = HTMLAttributes<HTMLTableCellElement> & {
 type DataTableContextValue<TData extends RowData> = {
 	table: TableType<TData>;
 	isLoading: boolean;
-	scrollRef: RefObject<HTMLDivElement | null>;
+	scrollRef: RefObject<HTMLElement | null>;
 	onRowClick?: (row: TData) => void;
 	rowHref?: (row: TData) => string;
 	linkComponent: ElementType;
@@ -134,7 +134,7 @@ export const Root = <TData extends RowData>({
 		...tableOptions,
 		getCoreRowModel: getCoreRowModel()
 	});
-	const scrollRef = useRef<HTMLDivElement>(null);
+	const scrollRef = useRef<HTMLElement>(null);
 
 	return (
 		<DataTableContext
@@ -212,13 +212,17 @@ type DataTableTableProps = PropsWithChildren<{
 	embed?: TableRootProps['embed'];
 	/** Wrap the table in a bordered, rounded container (standalone "card" look). Defaults to `false`. */
 	enclosed?: TableRootProps['enclosed'];
+	/** Names the table's scroll region. Forwards to `Table.Root`. */
+	'aria-label'?: TableRootProps['aria-label'];
+	/** Id of a visible heading that names the table's scroll region. Forwards to `Table.Root`. */
+	'aria-labelledby'?: TableRootProps['aria-labelledby'];
 }>;
 
 /**
  * Renders the headers and rows from the table instance. Sortable columns toggle
  * sorting on click; rows become clickable when `onRowClick` or `rowHref` is set.
- * Pass a custom empty state as children. `size`/`sticky`/`embed` forward to
- * `Table.Root`.
+ * Pass a custom empty state as children. `size`/`sticky`/`embed` and the
+ * scroll region's `aria-label`/`aria-labelledby` forward to `Table.Root`.
  *
  * @summary Renders headers and rows, with sorting and row navigation
  *
@@ -234,7 +238,9 @@ export const DataTableTable = ({
 	size = 'md',
 	sticky = 'header',
 	embed = true,
-	enclosed = false
+	enclosed = false,
+	'aria-label': ariaLabel,
+	'aria-labelledby': ariaLabelledby
 }: DataTableTableProps) => {
 	const {
 		table,
@@ -253,7 +259,14 @@ export const DataTableTable = ({
 				'flex min-h-0 flex-1 flex-col transition-opacity duration-150',
 				isLoading && 'opacity-50'
 			)}>
-			<Table.Root size={size} sticky={sticky} embed={embed} enclosed={enclosed} ref={scrollRef}>
+			<Table.Root
+				size={size}
+				sticky={sticky}
+				embed={embed}
+				enclosed={enclosed}
+				aria-label={ariaLabel}
+				aria-labelledby={ariaLabelledby}
+				ref={scrollRef}>
 				<Table.Head>
 					{table.getHeaderGroups().map(headerGroup => (
 						<Table.Row key={headerGroup.id}>

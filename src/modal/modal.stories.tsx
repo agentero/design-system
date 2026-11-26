@@ -171,7 +171,51 @@ export const ScrollableBody: Story = {
 				</Modal.Footer>
 			</Modal.Content>
 		</Modal.Root>
-	)
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const body = within(document.body);
+
+		await userEvent.click(canvas.getByRole('button', { name: 'Open scrollable' }));
+		await body.findByRole('dialog', { name: 'Terms and conditions' });
+
+		// Focus starts on the X button; the next stop is the body, announced by the title.
+		await userEvent.tab();
+		await expect(body.getByRole('region', { name: 'Terms and conditions' })).toHaveFocus();
+
+		await userEvent.click(body.getByRole('button', { name: 'Accept' }));
+		await waitFor(() => expect(body.queryByRole('dialog')).not.toBeInTheDocument());
+	}
+};
+
+/**
+ * A modal named by `aria-label` on `Content`, with no `Modal.Title`: the body
+ * stays an unnamed focus stop instead of pointing at a title that isn't there.
+ */
+export const WithoutTitle: Story = {
+	tags: ['!dev', '!autodocs', '!manifest'],
+	render: () => (
+		<Modal.Root>
+			<Modal.Trigger asChild>
+				<Button variant="secondary">Open untitled</Button>
+			</Modal.Trigger>
+			<Modal.Content aria-label="Carrier details" aria-describedby={undefined}>
+				<Modal.Body>
+					<p>Appointed in 12 states.</p>
+				</Modal.Body>
+			</Modal.Content>
+		</Modal.Root>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const body = within(document.body);
+
+		await userEvent.click(canvas.getByRole('button', { name: 'Open untitled' }));
+		await body.findByRole('dialog', { name: 'Carrier details' });
+
+		const section = body.getByText('Appointed in 12 states.').closest('[data-slot="modal-body"]');
+		await expect(section).not.toHaveAttribute('aria-labelledby');
+	}
 };
 
 /**
