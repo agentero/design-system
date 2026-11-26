@@ -16,13 +16,14 @@ new `Field<X>` is the presentational layer underneath, with no form library in
 it — reach for it only when the layout is not the standard one and you are
 wiring `useController` yourself.
 
-| Legacy                             | Here                                                    |
-| ---------------------------------- | ------------------------------------------------------- |
-| `Form.Root` (wraps `FormProvider`) | `Form.Root` from `@agentero/design-system/form`         |
-| `FieldText`                        | `FormText` from `@agentero/design-system/form-text`     |
-| `FieldPhoneNumber`                 | `FormTel` from `@agentero/design-system/form-tel`       |
-| `FieldNumber`                      | `FormNumber` from `@agentero/design-system/form-number` |
-| Other `Field<X>`                   | their `Form<X>`, as each control lands                  |
+| Legacy                             | Here                                                        |
+| ---------------------------------- | ----------------------------------------------------------- |
+| `Form.Root` (wraps `FormProvider`) | `Form.Root` from `@agentero/design-system/form`             |
+| `FieldText`                        | `FormText` from `@agentero/design-system/form-text`         |
+| `FieldPhoneNumber`                 | `FormTel` from `@agentero/design-system/form-tel`           |
+| `FieldNumber`                      | `FormNumber` from `@agentero/design-system/form-number`     |
+| `FieldPassword`                    | `FormPassword` from `@agentero/design-system/form-password` |
+| Other `Field<X>`                   | their `Form<X>`, as each control lands                      |
 
 ## Prop mapping for `FieldText` → `FormText`
 
@@ -192,3 +193,26 @@ amount: z.string()
   `inputProps.maxNumber` or with a `validate` rule that strips the commas:
   `validate: value => Number(value.replaceAll(',', '')) >= 100 || 'Enter at least 100.'`.
   A plain `Number(value)` is `NaN` on `"1,000"` too.
+
+## `FieldPassword` → `FormPassword`
+
+`FormPassword` is `FormText` with an `InputPassword` in place of the `Input`.
+What is specific to the password field:
+
+| Legacy                                     | Here              | Note                                                               |
+| ------------------------------------------ | ----------------- | ------------------------------------------------------------------ |
+| `autoComplete`, `autoFocus`, `placeholder` | `inputProps`      | set `autoComplete` to `current-password` or `new-password`         |
+| `size`                                     | `inputProps.size` | defaults to `md`; `agentero/mono`'s legacy field defaulted to `sm` |
+
+**Stored value.** The text as typed, as before. The show/hide toggle only
+changes what the input displays.
+
+**A field that picks its control at runtime.** The carrier credentials forms
+in `agentero/mono` render `isHidden ? FieldPassword : FieldText`. The same
+switch works here, `isHidden ? FormPassword : FormText`, since both take the
+same field props and `inputProps`; leave `type` out of `inputProps`, which
+`FormPassword` does not accept.
+
+**Password inputs wired by hand.** Besides `FieldPassword`, `agentero/mono`
+spreads `register` into a bare `InputPassword` next to its own `Label` and
+error message. Each of those becomes one `FormPassword`.
