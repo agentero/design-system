@@ -40,7 +40,7 @@ import { ComponentName } from '@agentero/design-system/ComponentName';
 
 ### `cn`
 
-A class name merging utility combining `clsx` and `tailwind-merge`. Useful for conditionally joining Tailwind classes without conflicts.
+A class name merging utility: joins like `clsx` and merges conflicting Tailwind classes with the same engine as `tv` (tailwind-variants). Useful for conditionally joining Tailwind classes without conflicts.
 
 ```tsx
 import { cn } from '@agentero/design-system/lib';
