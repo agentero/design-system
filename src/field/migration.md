@@ -213,6 +213,11 @@ switch works here, `isHidden ? FormPassword : FormText`, since both take the
 same field props and `inputProps`; leave `type` out of `inputProps`, which
 `FormPassword` does not accept.
 
-**Password inputs wired by hand.** Besides `FieldPassword`, `agentero/mono`
-spreads `register` into a bare `InputPassword` next to its own `Label` and
-error message. Each of those becomes one `FormPassword`.
+**Password inputs wired by hand.** Besides `FieldPassword`, both monos spread
+`register` into a bare `InputPassword` next to their own `Label` and error
+message: the sign-in, activation and password-change forms in `agentero/mono`,
+and the sign-up `PasswordForm` in `producerflow/mono`. Each of those becomes
+one `FormPassword`. The sign-up form shows only the required error under the
+field and lists the strength rules in a separate checklist. The checklist can
+stay as it is, or the rules move into `rules.validate` with
+`criteriaMode: 'all'` and the field lists the ones that failed.

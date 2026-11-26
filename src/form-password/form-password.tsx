@@ -51,7 +51,8 @@ export type FormPasswordProps<
 		 * Everything else the `InputPassword` should receive: `autoComplete`,
 		 * `placeholder`, `maxLength`, `size`, `className` (which styles the
 		 * frame)… Handlers such as `onChange` and `onBlur` run after
-		 * react-hook-form's, which are already wired.
+		 * react-hook-form's, which are already wired. `type` is not accepted:
+		 * the show/hide toggle owns it.
 		 */
 		inputProps?: FormPasswordInputProps;
 	};
@@ -73,7 +74,8 @@ export type FormPasswordProps<
  * It is [FormText](?path=/docs/components-formtext--docs) with an
  * [InputPassword](?path=/docs/components-inputpassword--docs) in place of the
  * `Input`: same props, same layout, the same `required`, `invalid` and error
- * wiring. Every root prop of
+ * wiring. The one difference is `inputProps.type`, which `FormText` accepts
+ * and `FormPassword` does not, because the toggle owns it. Every root prop of
  * [FieldText](?path=/docs/components-fieldtext--docs) is accepted and
  * forwarded, such as `orientation`, `className` or `controlId`.
  *

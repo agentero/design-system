@@ -15,7 +15,8 @@ import { FormText } from '../form-text';
  * renders inside a `Form.Root` and needs only a `name`.
  *
  * It is `FormText` with an `InputPassword` in place of the `Input`: same
- * props, same layout, same wiring.
+ * props, same layout, same wiring. Only `inputProps.type` is left out,
+ * because the toggle owns it.
  */
 const meta = {
 	title: 'Components/FormPassword',
@@ -187,6 +188,125 @@ export const NewPassword: Story = {
 		await waitFor(() =>
 			expect(onSubmit).toHaveBeenCalledWith({ newPassword: 'Str0ngPassw0rd' }, expect.anything())
 		);
+	}
+};
+
+const onOwnChange = fn();
+const onOwnBlur = fn();
+
+/**
+ * `inputProps` carries the input's own attributes — `placeholder`,
+ * `autoComplete`, `size`… — and its handlers. A consumer `onChange` runs after
+ * react-hook-form's and reads the typed text, both from the event and from
+ * `getValues`; a consumer `onBlur` runs once the field is already touched. An
+ * `aria-describedby` of its own joins the field's description instead of
+ * replacing it.
+ *
+ * @summary Input attributes, chained handlers and an extra aria-describedby
+ */
+export const InputPropsChaining: Story = {
+	render: () => {
+		const methods = useForm<SignInValues>({ defaultValues: { email: '', password: '' } });
+
+		return (
+			<Form.Root methods={methods} aria-label="Sign in" className="flex flex-col gap-2">
+				<FormPassword
+					name="password"
+					label="Password"
+					description="The one you set when you activated your account."
+					inputProps={{
+						placeholder: 'Enter your password',
+						autoComplete: 'current-password',
+						size: 'lg',
+						'aria-describedby': 'password-reset',
+						onChange: event => onOwnChange(methods.getValues('password'), event.target.value),
+						onBlur: () => onOwnBlur(methods.getFieldState('password').isTouched)
+					}}
+				/>
+				<p id="password-reset">Forgot it? Ask your admin for a reset link.</p>
+			</Form.Root>
+		);
+	},
+	play: async ({ canvasElement }) => {
+		onOwnChange.mockClear();
+		onOwnBlur.mockClear();
+		const canvas = within(canvasElement);
+
+		const input = canvas.getByLabelText('Password');
+
+		await expect(input).toHaveAttribute('placeholder', 'Enter your password');
+		await expect(input).toHaveAttribute('autocomplete', 'current-password');
+		await expect(input).toHaveAttribute('data-size', 'lg');
+		await expect(input).toHaveAccessibleDescription(
+			'The one you set when you activated your account. Forgot it? Ask your admin for a reset link.'
+		);
+
+		await userEvent.type(input, 'Str0ng');
+
+		await expect(onOwnChange).toHaveBeenCalledTimes(6);
+		await expect(onOwnChange).toHaveBeenLastCalledWith('Str0ng', 'Str0ng');
+
+		await userEvent.tab();
+
+		await expect(onOwnBlur).toHaveBeenCalledTimes(1);
+		await expect(onOwnBlur).toHaveBeenLastCalledWith(true);
+	}
+};
+
+type ChangePasswordValues = {
+	currentPassword: string;
+	newPassword: string;
+};
+
+/**
+ * Root props pass through: `orientation="horizontal"` lays the label and the
+ * password frame in a row, with the description under the control.
+ *
+ * @summary Horizontal orientation through the root props
+ */
+export const Horizontal: Story = {
+	render: () => {
+		const methods = useForm<ChangePasswordValues>({
+			defaultValues: { currentPassword: '', newPassword: '' }
+		});
+
+		return (
+			<Form.Root methods={methods} aria-label="Change password" className="w-[40rem]">
+				<Field.Group>
+					<FormPassword
+						name="currentPassword"
+						label="Current password"
+						orientation="horizontal"
+						inputProps={{ autoComplete: 'current-password', className: 'w-72' }}
+					/>
+					<FormPassword
+						name="newPassword"
+						label="New password"
+						description="At least 10 characters."
+						orientation="horizontal"
+						inputProps={{ autoComplete: 'new-password', className: 'w-72' }}
+						data-testid="new-password"
+					/>
+				</Field.Group>
+			</Form.Root>
+		);
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const rect = (element: Element) => element.getBoundingClientRect();
+
+		const field = canvas.getByTestId('new-password');
+		const input = canvas.getByLabelText('New password');
+		const frame = field.querySelector('[data-slot=input-password]') as HTMLElement;
+		const description = field.querySelector('[data-slot=field-description]') as HTMLElement;
+
+		await expect(field).toHaveAttribute('data-orientation', 'horizontal');
+		await expect(frame).toHaveClass('w-72');
+		await expect(rect(canvas.getByText('New password')).right).toBeLessThanOrEqual(
+			rect(frame).left
+		);
+		await expect(rect(description).top).toBeGreaterThanOrEqual(rect(frame).bottom);
+		await expect(input).toHaveAccessibleDescription('At least 10 characters.');
 	}
 };
 
