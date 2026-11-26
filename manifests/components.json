@@ -7708,7 +7708,7 @@
             "type": {
               "name": "boolean"
             },
-            "description": "Disables the control through its context and sets `data-disabled` on the root.\nDisables the input and marks the field. Unlike react-hook-form's own\n`disabled` option, the value stays in the submitted data: disabling a\nfield is a presentation decision, not a change to the form's values.",
+            "description": "Disables the control through its context and sets `data-disabled` on the root.\nDisables the control and marks the field. Unlike react-hook-form's own\n`disabled` option, the value stays in the submitted data: disabling a\nfield is a presentation decision, not a change to the form's values.",
             "defaultValue": null,
             "parent": {
               "name": "FieldRootProps",
@@ -7721,7 +7721,7 @@
               },
               {
                 "name": "TypeLiteral",
-                "fileName": "src/form-text/form-text.tsx"
+                "fileName": "src/form/form-field.tsx"
               }
             ]
           },
@@ -7762,7 +7762,7 @@
             "type": {
               "name": "boolean"
             },
-            "description": "Single source of truth for a required field: the `Label` shows its\nasterisk and the control receives `required`, both through context.\nMarks the field required: an asterisk on the label and the native\n`required` attribute on the input, which assistive technology announces.\nIt does not validate — pair it with `rules.required` or a resolver — and it\nnever triggers the browser bubble, since `Form.Root` renders `noValidate`.",
+            "description": "Single source of truth for a required field: the `Label` shows its\nasterisk and the control receives `required`, both through context.\nMarks the field required: an asterisk on the label and the native\n`required` attribute on the control, which assistive technology\nannounces. It does not validate — pair it with `rules.required` or a\nresolver — and it never triggers the browser bubble, since `Form.Root`\nrenders `noValidate`.",
             "defaultValue": null,
             "parent": {
               "name": "FieldRootProps",
@@ -7775,7 +7775,7 @@
               },
               {
                 "name": "TypeLiteral",
-                "fileName": "src/form-text/form-text.tsx"
+                "fileName": "src/form/form-field.tsx"
               }
             ]
           },
@@ -7823,16 +7823,16 @@
             "type": {
               "name": "\"agencyName\""
             },
-            "description": "Path of the value in the form, nested paths included (`'agency.npn'`).\nType it against the form's values with the generic\n(`<FormText<Values> name=\"agency.npn\" />`) or by passing `control`: the\npath must then exist and hold a string (`FormTextPath`).",
+            "description": "Path of the value in the form, nested paths included (`'agency.npn'`).\nType it against the form's values with the generic\n(`<FormText<Values> name=\"agency.npn\" />`) or by passing `control`: the\npath must then exist and hold a value of the field's type.",
             "defaultValue": null,
             "parent": {
-              "name": "FormTextProps",
-              "fileName": "src/form-text/form-text.tsx"
+              "name": "FormFieldProps",
+              "fileName": "src/form/form-field.tsx"
             },
             "declarations": [
               {
                 "name": "TypeLiteral",
-                "fileName": "src/form-text/form-text.tsx"
+                "fileName": "src/form/form-field.tsx"
               }
             ]
           },
@@ -7845,13 +7845,13 @@
             "description": "The form's `control`, from `useForm()`. Defaults to the one the\nsurrounding `Form.Root` provides; pass it explicitly to get `name`\ninference without writing the generic, or when the field renders outside\na `Form.Root`. A `control` whose resolver transforms the values is\naccepted as is.",
             "defaultValue": null,
             "parent": {
-              "name": "FormTextProps",
-              "fileName": "src/form-text/form-text.tsx"
+              "name": "FormFieldProps",
+              "fileName": "src/form/form-field.tsx"
             },
             "declarations": [
               {
                 "name": "TypeLiteral",
-                "fileName": "src/form-text/form-text.tsx"
+                "fileName": "src/form/form-field.tsx"
               }
             ]
           },
@@ -7864,13 +7864,13 @@
             "description": "react-hook-form validation rules for this field (`required`, `pattern`,\n`validate`…), same as `register`'s. They only validate: `rules.required`\ndoes not mark the field `required` — that is a separate, visible decision.",
             "defaultValue": null,
             "parent": {
-              "name": "FormTextProps",
-              "fileName": "src/form-text/form-text.tsx"
+              "name": "FormFieldProps",
+              "fileName": "src/form/form-field.tsx"
             },
             "declarations": [
               {
                 "name": "TypeLiteral",
-                "fileName": "src/form-text/form-text.tsx"
+                "fileName": "src/form/form-field.tsx"
               }
             ]
           },
@@ -7883,13 +7883,13 @@
             "description": "Drops the value from the form when the field unmounts, react-hook-form's\n`shouldUnregister`. Defaults to `false`: a field revealed by another one\nkeeps its value while hidden.",
             "defaultValue": null,
             "parent": {
-              "name": "FormTextProps",
-              "fileName": "src/form-text/form-text.tsx"
+              "name": "FormFieldProps",
+              "fileName": "src/form/form-field.tsx"
             },
             "declarations": [
               {
                 "name": "TypeLiteral",
-                "fileName": "src/form-text/form-text.tsx"
+                "fileName": "src/form/form-field.tsx"
               }
             ]
           },
@@ -7902,13 +7902,13 @@
             "description": "The caption, rendered as the field's label. Text in almost every case.",
             "defaultValue": null,
             "parent": {
-              "name": "FormTextProps",
-              "fileName": "src/form-text/form-text.tsx"
+              "name": "FormFieldProps",
+              "fileName": "src/form/form-field.tsx"
             },
             "declarations": [
               {
                 "name": "TypeLiteral",
-                "fileName": "src/form-text/form-text.tsx"
+                "fileName": "src/form/form-field.tsx"
               }
             ]
           },
@@ -7921,13 +7921,13 @@
             "description": "Helper text shown under the control, above the error when there is one,\nand announced through its `aria-describedby`. Use it for guidance the\nuser needs before typing; put details worth a click in `tooltip` instead.",
             "defaultValue": null,
             "parent": {
-              "name": "FormTextProps",
-              "fileName": "src/form-text/form-text.tsx"
+              "name": "FormFieldProps",
+              "fileName": "src/form/form-field.tsx"
             },
             "declarations": [
               {
                 "name": "TypeLiteral",
-                "fileName": "src/form-text/form-text.tsx"
+                "fileName": "src/form/form-field.tsx"
               }
             ]
           },
@@ -7940,13 +7940,13 @@
             "description": "Content of an info tooltip rendered beside the label, for details that\nwould clutter the description. The trigger is a sibling of the label, so\nthe field's accessible name stays the label text.",
             "defaultValue": null,
             "parent": {
-              "name": "FormTextProps",
-              "fileName": "src/form-text/form-text.tsx"
+              "name": "FormFieldProps",
+              "fileName": "src/form/form-field.tsx"
             },
             "declarations": [
               {
                 "name": "TypeLiteral",
-                "fileName": "src/form-text/form-text.tsx"
+                "fileName": "src/form/form-field.tsx"
               }
             ]
           },
@@ -7974,13 +7974,13 @@
             "description": "Preferred side of the tooltip. Defaults to `'top'`.",
             "defaultValue": null,
             "parent": {
-              "name": "FormTextProps",
-              "fileName": "src/form-text/form-text.tsx"
+              "name": "FormFieldProps",
+              "fileName": "src/form/form-field.tsx"
             },
             "declarations": [
               {
                 "name": "TypeLiteral",
-                "fileName": "src/form-text/form-text.tsx"
+                "fileName": "src/form/form-field.tsx"
               }
             ]
           },
@@ -7993,13 +7993,13 @@
             "description": "Appends a muted \" (optional)\" to the label. The forms mark optional fields\nrather than required ones; ignored when `required` is set.",
             "defaultValue": null,
             "parent": {
-              "name": "FormTextProps",
-              "fileName": "src/form-text/form-text.tsx"
+              "name": "FormFieldProps",
+              "fileName": "src/form/form-field.tsx"
             },
             "declarations": [
               {
                 "name": "TypeLiteral",
-                "fileName": "src/form-text/form-text.tsx"
+                "fileName": "src/form/form-field.tsx"
               }
             ]
           },
@@ -13205,6 +13205,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4180
+    "durationMs": 3246
   }
 }
