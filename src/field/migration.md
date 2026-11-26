@@ -20,6 +20,7 @@ wiring `useController` yourself.
 | ---------------------------------- | --------------------------------------------------- |
 | `Form.Root` (wraps `FormProvider`) | `Form.Root` from `@agentero/design-system/form`     |
 | `FieldText`                        | `FormText` from `@agentero/design-system/form-text` |
+| `FieldPhoneNumber`                 | `FormTel` from `@agentero/design-system/form-tel`   |
 | Other `Field<X>`                   | their `Form<X>`, as each control lands              |
 
 ## Prop mapping for `FieldText` → `FormText`
@@ -103,3 +104,31 @@ Two shapes are worth knowing:
   declared without a `path` that points at a leaf — lands on that path's
   `error.root` and belongs to no field, so no `FormText` renders it. Give the
   refinement a leaf `path`, or render a `Field.Error` where the group lives.
+
+## `FieldPhoneNumber` → `FormTel`
+
+`FormTel` is `FormText` with an `InputTel` in place of the `Input`, so the
+`FieldText` mapping above holds for every prop the two share. What is specific
+to the phone field:
+
+| Legacy                        | Here                        | Note                                                               |
+| ----------------------------- | --------------------------- | ------------------------------------------------------------------ |
+| `registerOptions`             | `rules`                     | react-hook-form's rules, same shape                                |
+| `defaultValue`                | `useForm`'s `defaultValues` | written masked, `(555) 123-4567`                                   |
+| `placeholder`, `autoFocus`    | `inputProps`                |                                                                    |
+| `size`                        | `inputProps.size`           | defaults to `md`; `agentero/mono`'s legacy field defaulted to `sm` |
+| `type`                        | —                           | `InputTel` owns it: always `tel`                                   |
+| `displayErrorMessage={false}` | —                           | not in v1, as for `FormText`                                       |
+
+**Stored value.** The form holds the masked text, `(555) 123-4567`, as the
+legacy field did; a partial number keeps the separator before the next digit
+(`(555) 123-`). Schemas that validate the legacy value keep working unchanged.
+
+**What changes.**
+
+- The `+1` prefix is part of `InputTel`. `producerflow/mono`'s legacy field
+  drew it around its own input; nothing to do at the call site.
+- A value the form writes (`defaultValues`, `reset`, `setValue`) is shown as
+  given: the mask only runs on what the user types or pastes. The legacy field
+  behaved the same way, so a call site that loads bare digits from the API was
+  already showing them unmasked.
