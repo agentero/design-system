@@ -23,19 +23,18 @@ export const switchRecipe = tv({
 			'block translate-x-0 rounded-full bg-bg-default-base-primary shadow-sm transition-transform motion-reduce:transition-none',
 		label: [
 			'cursor-pointer text-sm text-text-default-base-primary select-none',
+			'peer-data-readonly:cursor-default',
 			'peer-disabled:cursor-not-allowed peer-disabled:opacity-50'
 		]
 	},
 	variants: {
 		size: {
 			sm: {
-				// `max-w-*` keeps the width when a container stretches its children
-				// (a vertical `Field.Root` gives them `w-full`).
-				root: 'h-4 w-7.5 max-w-7.5 p-0.5',
+				root: 'h-4 w-7.5 p-0.5',
 				thumb: 'size-3 data-[state=checked]:translate-x-3.5'
 			},
 			md: {
-				root: 'h-6 w-12 max-w-12 p-0.75',
+				root: 'h-6 w-12 p-0.75',
 				thumb: 'size-4.5 data-[state=checked]:translate-x-6'
 			}
 		},

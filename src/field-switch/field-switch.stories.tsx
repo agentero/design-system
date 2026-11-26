@@ -92,6 +92,125 @@ export const Default: Story = {
 };
 
 /**
+ * `required` on the field reaches both the label's asterisk and the toggle's
+ * `aria-required`.
+ *
+ * @summary Required field driven from the root alone
+ */
+export const Required: Story = {
+	args: {
+		required: true
+	},
+	render: args => (
+		<FieldSwitch {...args}>
+			<Label>Accept the carrier terms</Label>
+			<Switch />
+		</FieldSwitch>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		await expect(canvas.getByRole('switch', { name: /Accept the carrier terms/ })).toHaveAttribute(
+			'aria-required',
+			'true'
+		);
+	}
+};
+
+/**
+ * `disabled` on the field disables the toggle through context.
+ *
+ * @summary Disabled field driven from the root
+ */
+export const Disabled: Story = {
+	args: {
+		disabled: true
+	},
+	render: args => (
+		<FieldSwitch {...args}>
+			<Label>Quote alerts by text</Label>
+			<Switch defaultChecked />
+		</FieldSwitch>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		await expect(canvas.getByRole('switch', { name: 'Quote alerts by text' })).toBeDisabled();
+	}
+};
+
+/**
+ * `readOnly` on the field keeps the toggle focusable and announced as
+ * read-only, but neither a click nor a key flips it.
+ *
+ * @summary Read-only field: focusable, but it does not flip
+ */
+export const ReadOnly: Story = {
+	args: {
+		readOnly: true
+	},
+	render: args => (
+		<FieldSwitch {...args}>
+			<Label>Instant appointments</Label>
+			<Switch defaultChecked />
+		</FieldSwitch>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		const toggle = canvas.getByRole('switch', { name: 'Instant appointments' });
+
+		await expect(toggle).toHaveAttribute('aria-readonly', 'true');
+		await expect(toggle).not.toBeDisabled();
+		await expect(toggle).toBeChecked();
+
+		await userEvent.click(toggle);
+		await expect(toggle).toBeChecked();
+
+		await userEvent.click(canvas.getByText('Instant appointments'));
+		await expect(toggle).toBeChecked();
+
+		await userEvent.keyboard(' ');
+		await expect(toggle).toHaveFocus();
+		await expect(toggle).toBeChecked();
+	}
+};
+
+/**
+ * The context is a default, never an override: an extra `aria-describedby` is
+ * concatenated with the field's ids and `size="md"` replaces the field's `sm`.
+ *
+ * @summary Switch's own props merge with, and win over, the field's context
+ */
+export const OwnPropsWin: Story = {
+	render: args => (
+		<div className="flex flex-col gap-2">
+			<FieldSwitch {...args}>
+				<Field.Content>
+					<Label>Carrier news</Label>
+					<Field.Description>Shown on the home page.</Field.Description>
+				</Field.Content>
+				<Switch size="md" aria-describedby="news-hint" />
+			</FieldSwitch>
+			<p id="news-hint" className="text-sm">
+				You can change it later.
+			</p>
+		</div>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		const toggle = canvas.getByRole('switch', { name: 'Carrier news' });
+
+		await expect(toggle).toHaveAccessibleDescription(
+			'Shown on the home page. You can change it later.'
+		);
+		await expect(toggle).toHaveAttribute('data-size', 'md');
+		await expect(toggle).toHaveClass('h-6');
+	}
+};
+
+/**
  * A `Field.Content` keeps the label and its description together, and the
  * description is announced with the toggle. The toggle lines up with the
  * label, not with the middle of the block.
@@ -220,87 +339,6 @@ export const Vertical: Story = {
 };
 
 /**
- * `required` on the field reaches both the label's asterisk and the toggle's
- * `aria-required`.
- *
- * @summary Required field driven from the root alone
- */
-export const Required: Story = {
-	args: {
-		required: true
-	},
-	render: args => (
-		<FieldSwitch {...args}>
-			<Label>Accept the carrier terms</Label>
-			<Switch />
-		</FieldSwitch>
-	),
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-
-		await expect(canvas.getByRole('switch', { name: /Accept the carrier terms/ })).toHaveAttribute(
-			'aria-required',
-			'true'
-		);
-	}
-};
-
-/**
- * `disabled` on the field disables the toggle through context.
- *
- * @summary Disabled field driven from the root
- */
-export const Disabled: Story = {
-	args: {
-		disabled: true
-	},
-	render: args => (
-		<FieldSwitch {...args}>
-			<Label>Quote alerts by text</Label>
-			<Switch defaultChecked />
-		</FieldSwitch>
-	),
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-
-		await expect(canvas.getByRole('switch', { name: 'Quote alerts by text' })).toBeDisabled();
-	}
-};
-
-/**
- * `readOnly` on the field keeps the toggle focusable and announced as
- * read-only, but neither a click nor a key flips it.
- *
- * @summary Read-only field: focusable, but it does not flip
- */
-export const ReadOnly: Story = {
-	args: {
-		readOnly: true
-	},
-	render: args => (
-		<FieldSwitch {...args}>
-			<Label>Instant appointments</Label>
-			<Switch defaultChecked />
-		</FieldSwitch>
-	),
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-
-		const toggle = canvas.getByRole('switch', { name: 'Instant appointments' });
-
-		await expect(toggle).toHaveAttribute('aria-readonly', 'true');
-		await expect(toggle).not.toBeDisabled();
-
-		await userEvent.click(toggle);
-		await expect(toggle).toBeChecked();
-
-		await userEvent.keyboard(' ');
-		await expect(toggle).toHaveFocus();
-		await expect(toggle).toBeChecked();
-	}
-};
-
-/**
  * In a narrow column the label wraps and the description follows it; the
  * toggle keeps its size and stays on the label's first line.
  *
@@ -333,41 +371,6 @@ export const NarrowWithLongLabel: Story = {
 		await expect([box.width, box.height]).toEqual([30, 16]);
 		await expect(box.top - root.top).toBe(4);
 		await expect(box.right).toBeLessThanOrEqual(root.right);
-	}
-};
-
-/**
- * The context is a default, never an override: an extra `aria-describedby` is
- * concatenated with the field's ids and `size="md"` replaces the field's `sm`.
- *
- * @summary Switch's own props merge with, and win over, the field's context
- */
-export const OwnPropsWin: Story = {
-	tags: ['!dev', '!autodocs', '!manifest'],
-	render: args => (
-		<div className="flex flex-col gap-2">
-			<FieldSwitch {...args}>
-				<Field.Content>
-					<Label>Carrier news</Label>
-					<Field.Description>Shown on the home page.</Field.Description>
-				</Field.Content>
-				<Switch size="md" aria-describedby="news-hint" />
-			</FieldSwitch>
-			<p id="news-hint" className="text-sm">
-				You can change it later.
-			</p>
-		</div>
-	),
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-
-		const toggle = canvas.getByRole('switch', { name: 'Carrier news' });
-
-		await expect(toggle).toHaveAccessibleDescription(
-			'Shown on the home page. You can change it later.'
-		);
-		await expect(toggle).toHaveAttribute('data-size', 'md');
-		await expect(toggle).toHaveClass('h-6');
 	}
 };
 
@@ -408,7 +411,6 @@ const onOwnCheckedChange = fn();
  * @summary Switch controlled and errors supplied from outside the field
  */
 export const ControlledFromContext: Story = {
-	tags: ['!dev', '!autodocs', '!manifest'],
 	render: () => {
 		const [checked, setChecked] = useState(false);
 

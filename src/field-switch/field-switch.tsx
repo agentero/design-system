@@ -24,11 +24,14 @@ const SwitchProvider = ({ children }: { children: ReactNode }) => {
 
 // Figma's Switch field: the toggle 16px from its text instead of pushed to the
 // far edge by the field's row, and centred on the label's 24px first line
-// however many lines the text below it takes.
+// however many lines the text below it takes. Stacked, the field stretches its
+// children (`w-full`), so the toggle is capped at its own width.
 const rowClassName = [
 	'data-[orientation=horizontal]:items-start data-[orientation=horizontal]:gap-4',
 	'data-[orientation=horizontal]:[&>:first-child]:flex-initial',
-	'data-[orientation=horizontal]:[&>[data-slot=switch][data-size=sm]]:mt-1'
+	'data-[orientation=horizontal]:[&>[data-slot=switch][data-size=sm]]:mt-1',
+	'data-[orientation=vertical]:[&>[data-slot=switch][data-size=sm]]:max-w-7.5',
+	'data-[orientation=vertical]:[&>[data-slot=switch][data-size=md]]:max-w-12'
 ];
 
 export type FieldSwitchProps = Omit<FieldRootProps, 'orientation'> & {

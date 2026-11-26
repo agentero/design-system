@@ -116,7 +116,13 @@ export const ReadOnly: Story = {
 		const toggle = canvas.getByRole('switch', { name: 'Instant appointments' });
 
 		await expect(toggle).toHaveAttribute('aria-readonly', 'true');
+		await expect(toggle).toBeChecked();
+
 		await userEvent.click(toggle);
+		await expect(toggle).toBeChecked();
+
+		await userEvent.keyboard(' ');
+		await expect(toggle).toHaveFocus();
 		await expect(toggle).toBeChecked();
 	}
 };
