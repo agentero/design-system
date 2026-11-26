@@ -6447,7 +6447,7 @@
         "displayName": "FieldSwitch",
         "exportName": "FieldSwitch",
         "filePath": "/home/runner/work/design-system/design-system/src/field-switch/index.ts",
-        "description": "A `Field.Root` for an on/off toggle: it provides `SwitchContext`, so the\n`Switch` inside associates itself with the label and the messages and takes\n`invalid`, `required`, `disabled` and `readOnly` from the field, plus the\n`sm` size of the design. Every other part (`Label`, `Field.Content`,\n`Field.Description`, `Field.Error`) works as in any field.\n\nUnlike the other fields it defaults to `orientation=\"horizontal\"`: the\nlabel and the toggle read as one row, the toggle 16px after the text and\ncentred on the label's first line. Wrap the label with its description and\nits error in a `Field.Content`, so they stack together beside the toggle\ninstead of joining the row. Pass `vertical` to put the toggle under the\nlabel.\n\nForm-library agnostic, and its contexts compose: a provider nested inside it\ncan extend `SwitchContext` with `name`, `checked`, `onCheckedChange`,\n`onBlur` and `ref` to control the `Switch`, and `FieldContext` with the\nerrors, on top of the wiring `FieldSwitch` already set.",
+        "description": "A `Field.Root` for an on/off toggle: it provides `SwitchContext`, so the\n`Switch` inside associates itself with the label and the messages and takes\n`invalid`, `required`, `disabled` and `readOnly` from the field, plus the\n`sm` size of the design. Every other part (`Label`, `Field.Content`,\n`Field.Description`, `Field.Error`) works as in any field. `invalid` only\nsets `aria-invalid` on the toggle, which looks the same as in a valid field\n(the design draws no invalid switch): `Field.Error` is what shows the error.\n\nUnlike the other fields it defaults to `orientation=\"horizontal\"`: the\nlabel and the toggle read as one row, the toggle 16px after the text and\ncentred on the label's first line. Wrap the label with its description and\nits error in a `Field.Content`, so they stack together beside the toggle\ninstead of joining the row. Pass `vertical` to put the toggle under the\nlabel.\n\nForm-library agnostic, and its contexts compose: a provider nested inside it\ncan extend `SwitchContext` with `name`, `checked`, `onCheckedChange`,\n`onBlur` and `ref` to control the `Switch`, and `FieldContext` with the\nerrors, on top of the wiring `FieldSwitch` already set.",
         "jsDocTags": {
           "summary": [
             "Field for an on/off toggle, wiring the Switch inside it"
@@ -13167,6 +13167,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4155
+    "durationMs": 3427
   }
 }
