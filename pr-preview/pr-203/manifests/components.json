@@ -8435,8 +8435,8 @@
         {
           "id": "components-formtextarea--with-limit",
           "name": "With Limit",
-          "snippet": "const WithLimit = () => {\n    const methods = useForm<NotesValues>({\n        defaultValues: { notes: 'Roof replaced in 2024.' }\n    });\n\n    return (\n        <Form.Root\n            methods={methods}\n            onSubmit={onSubmit}\n            aria-label=\"Submission\"\n            className=\"flex max-w-120 flex-col items-start gap-7\">\n            <FormTextArea\n                name=\"notes\"\n                label=\"Notes\"\n                rules={{ maxLength: { value: 40, message: 'Keep it under 40 characters.' } }}\n                textAreaProps={{ limit: 40 }}\n            />\n            <div className=\"flex gap-2\">\n                <Button type=\"submit\">Save</Button>\n                <Button type=\"button\" variant=\"secondary\" onClick={() => methods.reset()}>\n                    Reset\n                </Button>\n            </div>\n        </Form.Root>\n    );\n};",
-          "description": "`limit` in `textAreaProps` shows the count inside the box. The value is\ncontrolled, so the count follows the form: a `reset` brings it back with the\ntext. The limit is soft, so pair it with `rules.maxLength`, which is what\nkeeps a longer text from being submitted.",
+          "snippet": "const WithLimit = () => {\n    const methods = useForm<NotesValues>({\n        defaultValues: { notes: 'Roof replaced in 2024.' }\n    });\n\n    return (\n        <Form.Root\n            methods={methods}\n            onSubmit={onSubmit}\n            aria-label=\"Submission\"\n            className=\"flex max-w-120 flex-col items-start gap-7\">\n            <FormTextArea\n                name=\"notes\"\n                label=\"Notes\"\n                rules={{ maxLength: { value: 40, message: 'Keep it under 40 characters.' } }}\n                textAreaProps={{ limit: 40 }}\n            />\n            <div className=\"flex gap-2\">\n                <Button type=\"submit\">Save</Button>\n                <Button type=\"button\" variant=\"secondary\" onClick={() => methods.reset()}>\n                    Reset\n                </Button>\n                <Button type=\"button\" variant=\"secondary\" onClick={() => methods.setValue('notes', '')}>\n                    Clear\n                </Button>\n            </div>\n        </Form.Root>\n    );\n};",
+          "description": "`limit` in `textAreaProps` shows the count inside the box. The value is\ncontrolled, so the count follows the form: a `setValue` or a `reset` moves it\nwith the text. The limit is soft, so pair it with `rules.maxLength`, which is what\nkeeps a longer text from being submitted.",
           "summary": "Count inside the box, following the form's value and its rule"
         },
         {
@@ -13584,6 +13584,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4258
+    "durationMs": 5008
   }
 }

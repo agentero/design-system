@@ -626,7 +626,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.3s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>5.0s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -10097,8 +10097,8 @@ required ones: `optional` appends a muted suffix to the label.</div>
               </div>
               <div>Count inside the box, following the form&#39;s value and its rule</div>
               <div class="hint">`limit` in `textAreaProps` shows the count inside the box. The value is
-controlled, so the count follows the form: a `reset` brings it back with the
-text. The limit is soft, so pair it with `rules.maxLength`, which is what
+controlled, so the count follows the form: a `setValue` or a `reset` moves it
+with the text. The limit is soft, so pair it with `rules.maxLength`, which is what
 keeps a longer text from being submitted.</div>
               <pre><code>const WithLimit = () =&gt; {
     const methods = useForm&lt;NotesValues&gt;({
@@ -10121,6 +10121,9 @@ keeps a longer text from being submitted.</div>
                 &lt;Button type=&quot;submit&quot;&gt;Save&lt;/Button&gt;
                 &lt;Button type=&quot;button&quot; variant=&quot;secondary&quot; onClick={() =&gt; methods.reset()}&gt;
                     Reset
+                &lt;/Button&gt;
+                &lt;Button type=&quot;button&quot; variant=&quot;secondary&quot; onClick={() =&gt; methods.setValue(&#39;notes&#39;, &#39;&#39;)}&gt;
+                    Clear
                 &lt;/Button&gt;
             &lt;/div&gt;
         &lt;/Form.Root&gt;
