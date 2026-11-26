@@ -234,6 +234,7 @@ export const Playground: Story = {
 		<div className={args.enclosed ? 'flex min-h-0 flex-1 flex-col p-4' : 'contents'}>
 			<DataTable.Root data={LEADS} columns={columns}>
 				<DataTable.Table
+					aria-label="Leads"
 					size={args.size}
 					embed={args.embed}
 					enclosed={args.enclosed}
@@ -284,7 +285,7 @@ export const Leads: Story = {
 					</Button>
 				</DataTable.ToolBar>
 
-				<DataTable.Table />
+				<DataTable.Table aria-label="Leads" />
 
 				<DataTable.Footer>
 					<Pagination
@@ -317,7 +318,7 @@ export const Leads: Story = {
 export const Empty: Story = {
 	render: () => (
 		<DataTable.Root data={[] as Lead[]} columns={columns}>
-			<DataTable.Table />
+			<DataTable.Table aria-label="Leads" />
 		</DataTable.Root>
 	),
 	play: async ({ canvasElement }) => {
@@ -335,7 +336,7 @@ export const Empty: Story = {
 export const Loading: Story = {
 	render: () => (
 		<DataTable.Root data={[] as Lead[]} columns={columns} isLoading>
-			<DataTable.Table />
+			<DataTable.Table aria-label="Leads" />
 		</DataTable.Root>
 	),
 	play: async ({ canvasElement }) => {

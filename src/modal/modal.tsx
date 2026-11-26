@@ -1,6 +1,6 @@
 'use client';
 
-import { ComponentProps, createContext, useContext } from 'react';
+import { ComponentProps, createContext, useContext, useId, useLayoutEffect, useState } from 'react';
 
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { XIcon } from 'lucide-react';
@@ -82,7 +82,19 @@ Trigger.displayName = 'Modal.Trigger';
 
 type ModalVariant = 'dialog' | 'alert';
 
-const ModalVariantContext = createContext<ModalVariant>('dialog');
+/**
+ * The variant, and what `Modal.Body` reads to take its name from `Modal.Title`.
+ * The title registers itself through `setHasTitle`, so a titleless modal
+ * leaves the body unnamed instead of pointing it at a missing id.
+ */
+const ModalContext = createContext<{
+	variant: ModalVariant;
+	titleId?: string;
+	hasTitle?: boolean;
+	setHasTitle?: (hasTitle: boolean) => void;
+}>({
+	variant: 'dialog'
+});
 
 // `motion-reduce:animate-none!` — the `!` outranks the higher-specificity data-[state=…] rules
 export const modalRecipe = tv({
@@ -164,9 +176,11 @@ export const Content = ({
 }: ContentProps) => {
 	const styles = modalRecipe({ size });
 	const isAlert = variant === 'alert';
+	const titleId = useId();
+	const [hasTitle, setHasTitle] = useState(false);
 
 	return (
-		<ModalVariantContext.Provider value={variant}>
+		<ModalContext.Provider value={{ variant, titleId, hasTitle, setHasTitle }}>
 			<DialogPrimitive.Portal>
 				<DialogPrimitive.Overlay data-slot="modal-overlay" className={styles.overlay()} />
 				<DialogPrimitive.Content
@@ -186,12 +200,14 @@ export const Content = ({
 					{children}
 				</DialogPrimitive.Content>
 			</DialogPrimitive.Portal>
-		</ModalVariantContext.Provider>
+		</ModalContext.Provider>
 	);
 };
 Content.displayName = 'Modal.Content';
 
-type TitleProps = ComponentProps<typeof DialogPrimitive.Title>;
+// No `asChild`: Slot would clone the inner `<span id>` and its id would replace
+// the one Radix names the dialog with.
+type TitleProps = Omit<ComponentProps<typeof DialogPrimitive.Title>, 'asChild'>;
 
 /**
  * Heading row of the modal with a built-in close (X) button. Radix wires it
@@ -201,11 +217,18 @@ type TitleProps = ComponentProps<typeof DialogPrimitive.Title>;
  * @summary Modal heading with built-in close button
  */
 export const Title = ({ className, children, ...props }: TitleProps) => {
-	const variant = useContext(ModalVariantContext);
+	const { variant, titleId, setHasTitle } = useContext(ModalContext);
+
+	useLayoutEffect(() => {
+		setHasTitle?.(true);
+		return () => setHasTitle?.(false);
+	}, [setHasTitle]);
 
 	return (
 		<div data-slot="modal-title" className={slots.title({ className })}>
-			<DialogPrimitive.Title {...props}>{children}</DialogPrimitive.Title>
+			<DialogPrimitive.Title {...props}>
+				<span id={titleId}>{children}</span>
+			</DialogPrimitive.Title>
 			{variant === 'dialog' && (
 				<DialogPrimitive.Close asChild>
 					<Button variant="ghost" size="sm" aria-label="Close" className="shrink-0 [&_svg]:size-5">
@@ -235,18 +258,30 @@ export const Description = ({ className, ...props }: DescriptionProps) => (
 );
 Description.displayName = 'Modal.Description';
 
-type BodyProps = ComponentProps<'div'>;
+type BodyProps = ComponentProps<'section'>;
 
 /**
  * Scrollable content area of the modal. Focusable (`tabIndex 0`) so keyboard
- * users can scroll overflowing content with the arrow keys.
+ * users can scroll overflowing content with the arrow keys, and a region named
+ * after `Modal.Title` so that focus stop is announced. In a modal without a
+ * `Modal.Title` it stays unnamed.
  *
  * @summary Scrollable modal content area
  */
-export const Body = ({ className, ...props }: BodyProps) => (
-	// oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- a scrollable region has to take focus to scroll by keyboard
-	<div data-slot="modal-body" tabIndex={0} className={slots.body({ className })} {...props} />
-);
+export const Body = ({ className, ...props }: BodyProps) => {
+	const { titleId, hasTitle } = useContext(ModalContext);
+
+	return (
+		<section
+			data-slot="modal-body"
+			aria-labelledby={hasTitle ? titleId : undefined}
+			// oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- a scrollable region has to take focus to scroll by keyboard
+			tabIndex={0}
+			className={slots.body({ className })}
+			{...props}
+		/>
+	);
+};
 Body.displayName = 'Modal.Body';
 
 type FooterProps = ComponentProps<'div'>;
