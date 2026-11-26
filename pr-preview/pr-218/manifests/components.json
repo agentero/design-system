@@ -8047,6 +8047,13 @@
           "summary": "Maximum enforced while typing"
         },
         {
+          "id": "components-formnumber--leading-zeros-on-blur",
+          "name": "Leading Zeros On Blur",
+          "snippet": "const LeadingZerosOnBlur = () => {\n    const methods = useForm<PolicyValues>({\n        mode: 'onBlur',\n        defaultValues: { annualPremium: '' }\n    });\n\n    return (\n        <Form.Root\n            methods={methods}\n            onSubmit={onSubmit}\n            aria-label=\"Policy\"\n            className=\"flex flex-col items-start gap-7\">\n            <FormNumber\n                name=\"annualPremium\"\n                label=\"Annual premium\"\n                rules={{ validate: onValidate }}\n                inputProps={{ thousandSeparator: true }}\n            />\n            <Button type=\"submit\">Save</Button>\n        </Form.Root>\n    );\n};",
+          "description": "With `thousandSeparator` the zeros typed in front are dropped once the field\nloses focus: `0001234` becomes `1,234`, in the field and in the form. The\ntrimmed value reaches react-hook-form before its blur, so a rule run on\nblur (`mode: 'onBlur'`) already reads `\"1,234\"`.",
+          "summary": "Leading zeros dropped on blur, in the field and in the form"
+        },
+        {
           "id": "components-formnumber--with-default-value",
           "name": "With Default Value",
           "snippet": "const WithDefaultValue = () => {\n    const methods = useForm<PolicyValues>({ defaultValues: { annualPremium: '12,500' } });\n\n    return (\n        <Form.Root methods={methods} aria-label=\"Policy\" className=\"flex flex-col items-start gap-7\">\n            <FormNumber\n                name=\"annualPremium\"\n                label=\"Annual premium\"\n                inputProps={{ thousandSeparator: true }}\n            />\n            <Button\n                type=\"button\"\n                variant=\"secondary\"\n                onClick={() => methods.reset({ annualPremium: '8,250' })}>\n                Load last year\n            </Button>\n        </Form.Root>\n    );\n};",
@@ -14011,6 +14018,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 4995
+    "durationMs": 4373
   }
 }
