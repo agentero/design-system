@@ -121,8 +121,9 @@ to the phone field:
 | `displayErrorMessage={false}` | —                           | not in v1, as for `FormText`                                       |
 
 **Stored value.** The form holds the masked text, `(555) 123-4567`, as the
-legacy field did; a partial number keeps the separator before the next digit
-(`(555) 123-`). Schemas that validate the legacy value keep working unchanged.
+legacy field did. A partial number may end in a separator: typing leaves the
+one before the next digit (`(555) 123-`), deleting trims it (`(555) 123`).
+Schemas that validate the legacy value keep working unchanged.
 
 **What changes.**
 

@@ -64,9 +64,10 @@ export type FormTelProps<
  * must point at a string (`FormTelPath`).
  *
  * The form stores the number as the user sees it, masked: `(555) 123-4567`,
- * never the bare digits, and a partial number keeps the separator that comes
- * before the next digit (`(555) 123-`). Validate the full format with a rule
- * such as `pattern: /^\(\d{3}\) \d{3}-\d{4}$/`. A value the form writes
+ * never the bare digits. A partial number may end in a separator: typing
+ * leaves the one before the next digit (`(555) 123-`), deleting trims it
+ * (`(555) 123`). Validate the full format with a rule such as
+ * `pattern: /^\(\d{3}\) \d{3}-\d{4}$/`. A value the form writes
  * itself, through `defaultValues`, `reset` or `setValue`, is shown as it is
  * given, so write it masked too.
  *

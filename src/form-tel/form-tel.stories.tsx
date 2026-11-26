@@ -207,36 +207,44 @@ export const WithDefaultValue: Story = {
 };
 
 const onOwnChange = fn();
+const onOwnBlur = fn();
 
 /**
  * `inputProps` carries the input's own attributes — `placeholder`,
  * `autoComplete`, `size`… — and its handlers. A consumer `onChange` runs after
  * react-hook-form's and reads the masked value, both from the event and from
- * `getValues`.
+ * `getValues`; a consumer `onBlur` runs once the field is already touched. An
+ * `aria-describedby` of its own joins the field's description instead of
+ * replacing it.
  *
- * @summary Input attributes and a consumer onChange reading the masked value
+ * @summary Input attributes, chained handlers and an extra aria-describedby
  */
 export const InputPropsChaining: Story = {
 	render: () => {
 		const methods = useForm<ContactValues>({ defaultValues: { phone: '' } });
 
 		return (
-			<Form.Root methods={methods} aria-label="Contact">
+			<Form.Root methods={methods} aria-label="Contact" className="flex flex-col gap-2">
 				<FormTel
 					name="phone"
 					label="Phone number"
+					description="We call this number about your policy."
 					inputProps={{
 						placeholder: '(555) 000-0000',
 						autoComplete: 'tel-national',
 						size: 'lg',
-						onChange: event => onOwnChange(methods.getValues('phone'), event.target.value)
+						'aria-describedby': 'phone-hours',
+						onChange: event => onOwnChange(methods.getValues('phone'), event.target.value),
+						onBlur: () => onOwnBlur(methods.getFieldState('phone').isTouched)
 					}}
 				/>
+				<p id="phone-hours">Calls go out on weekdays, 9am to 5pm.</p>
 			</Form.Root>
 		);
 	},
 	play: async ({ canvasElement }) => {
 		onOwnChange.mockClear();
+		onOwnBlur.mockClear();
 		const canvas = within(canvasElement);
 
 		const input = canvas.getByRole('textbox', { name: 'Phone number' });
@@ -244,11 +252,19 @@ export const InputPropsChaining: Story = {
 		await expect(input).toHaveAttribute('placeholder', '(555) 000-0000');
 		await expect(input).toHaveAttribute('autocomplete', 'tel-national');
 		await expect(input).toHaveAttribute('data-size', 'lg');
+		await expect(input).toHaveAccessibleDescription(
+			'We call this number about your policy. Calls go out on weekdays, 9am to 5pm.'
+		);
 
 		await userEvent.type(input, '5551');
 
 		await expect(onOwnChange).toHaveBeenCalledTimes(4);
 		await expect(onOwnChange).toHaveBeenLastCalledWith('(555) 1', '(555) 1');
+
+		await userEvent.tab();
+
+		await expect(onOwnBlur).toHaveBeenCalledTimes(1);
+		await expect(onOwnBlur).toHaveBeenLastCalledWith(true);
 	}
 };
 
