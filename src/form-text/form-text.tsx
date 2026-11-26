@@ -103,12 +103,7 @@ export const FormText = <
 	inputProps,
 	...props
 }: FormTextProps<TFieldValues, TName, TTransformedValues>) => {
-	const { field, rootProps, shellProps } = useFormField<
-		TFieldValues,
-		TName,
-		TTransformedValues,
-		typeof props
-	>(props);
+	const { field, rootProps, shellProps } = useFormField(props);
 
 	// `field.value` is `undefined` until the form holds a value for `name`, and
 	// an `<input value={undefined}>` starts uncontrolled; the empty string keeps

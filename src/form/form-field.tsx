@@ -105,7 +105,7 @@ export const useFormField = <
 	TFieldValues extends FieldValues,
 	TName extends FieldPath<TFieldValues>,
 	TTransformedValues,
-	TProps extends FormFieldProps<TFieldValues, TName, TTransformedValues>
+	TRest extends object
 >({
 	name,
 	control,
@@ -118,7 +118,7 @@ export const useFormField = <
 	tooltipSide,
 	optional,
 	...root
-}: TProps) => {
+}: FormFieldProps<TFieldValues, TName, TTransformedValues> & TRest) => {
 	// `disabled` stays out of `useController` on purpose: react-hook-form drops
 	// a disabled field's value from the submitted data, and a disabled control
 	// here keeps submitting its value.
@@ -152,6 +152,12 @@ export type FormFieldShellProps = Pick<
  * The parts of a `Form<X>` field around its control, in the standard order:
  * label, control, description, error. Render it inside the field root, which
  * provides the context every part reads.
+ *
+ * It fits a field with a single control and its label above it. A group of
+ * controls (radio group, checkbox group) is named by a title through
+ * `aria-labelledby`, not by a `<label for>`, and a checkbox puts its label
+ * beside the control: those entries lay out their own parts and use only
+ * `useFormField`.
  */
 export const FormFieldShell = ({
 	label,
