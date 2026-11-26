@@ -16,12 +16,13 @@ new `Field<X>` is the presentational layer underneath, with no form library in
 it — reach for it only when the layout is not the standard one and you are
 wiring `useController` yourself.
 
-| Legacy                             | Here                                                |
-| ---------------------------------- | --------------------------------------------------- |
-| `Form.Root` (wraps `FormProvider`) | `Form.Root` from `@agentero/design-system/form`     |
-| `FieldText`                        | `FormText` from `@agentero/design-system/form-text` |
-| `FieldPhoneNumber`                 | `FormTel` from `@agentero/design-system/form-tel`   |
-| Other `Field<X>`                   | their `Form<X>`, as each control lands              |
+| Legacy                             | Here                                                    |
+| ---------------------------------- | ------------------------------------------------------- |
+| `Form.Root` (wraps `FormProvider`) | `Form.Root` from `@agentero/design-system/form`         |
+| `FieldText`                        | `FormText` from `@agentero/design-system/form-text`     |
+| `FieldPhoneNumber`                 | `FormTel` from `@agentero/design-system/form-tel`       |
+| `FieldNumber`                      | `FormNumber` from `@agentero/design-system/form-number` |
+| Other `Field<X>`                   | their `Form<X>`, as each control lands                  |
 
 ## Prop mapping for `FieldText` → `FormText`
 
@@ -135,3 +136,42 @@ Schemas that validate the legacy value keep working unchanged.
   behaved the same way, so a call site that loads bare digits from the API was
   already showing them unmasked. Those digits look filled in but fail a
   `pattern` rule for the masked format on submit, so mask them before writing.
+
+## `FieldNumber` → `FormNumber`
+
+`FormNumber` is `FormText` with an `InputNumber` in place of the `Input`. What
+is specific to the numeric field:
+
+| Legacy                                                          | Here                        | Note                                                                                                      |
+| --------------------------------------------------------------- | --------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `registerOptions`                                               | `rules`                     | react-hook-form's rules, same shape                                                                       |
+| `defaultValue`                                                  | `useForm`'s `defaultValues` | the legacy prop set the input only, not the form                                                          |
+| `thousandSeparator`, `allowLeadingZeros`                        | `inputProps`                | `thousandSeparator` now defaults to `false`, see below                                                    |
+| `placeholder`, `autoFocus`, `maxLength`, `onFocus`, `onKeyDown` | `inputProps`                |                                                                                                           |
+| `inputClassName` (`producerflow/mono`)                          | `inputProps.className`      |                                                                                                           |
+| `size`                                                          | `inputProps.size`           | defaults to `md`; `agentero/mono`'s legacy field defaulted to `sm`                                        |
+| `maxValue`                                                      | `inputProps.maxNumber`      | the legacy `max` attribute did nothing on a text input; `maxNumber` blocks the keystroke                  |
+| `minValue`                                                      | `rules.validate`            | parse the text there; see below                                                                           |
+| `type`                                                          | —                           | drop it: `tel` was the legacy default and behaves as `text`; keep `inputProps.type: 'password'` for a PIN |
+| `status` (`producerflow/mono`)                                  | —                           | the field's validation state drives the border                                                            |
+| `displayErrorMessage={false}`                                   | —                           | not in v1, as for `FormText`                                                                              |
+
+**Stored value.** The form holds the formatted text, as the legacy field did:
+`"1,234"` with a separator, `"001234"` for an identifier, `""` when empty.
+Parse it where the number is used. A form that types the path as `number` does
+not compile against `FormNumberPath`: type it as a string and parse it in the
+resolver or on submit.
+
+**What changes.**
+
+- `thousandSeparator` defaults to `false`; the legacy default was `true`. An
+  amount field that relied on it passes `inputProps={{ thousandSeparator: true }}`.
+  An identifier field (NPN, ZIP code) drops the `thousandSeparator={false}` it
+  had to pass.
+- With `thousandSeparator` set, leading zeros are dropped. The legacy field
+  showed `0,001,234`.
+- The keypad defaults to `inputMode="decimal"`. An identifier field can pass
+  `inputProps.inputMode: 'numeric'` for a digits-only one.
+- react-hook-form's `min` and `max` rules read the text as a number and pass
+  silently on `"1,234"`, since the separator makes it `NaN`. Bound an amount
+  with `inputProps.maxNumber` or with a `validate` rule that strips the commas.
