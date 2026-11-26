@@ -8068,6 +8068,13 @@
           "summary": "Consumer onChange reading the formatted value"
         },
         {
+          "id": "components-formnumber--horizontal",
+          "name": "Horizontal",
+          "snippet": "const Horizontal = () => {\n    const methods = useForm<PolicyAmountsValues>({\n        defaultValues: { annualPremium: '', deductible: '' }\n    });\n\n    return (\n        <Form.Root methods={methods} aria-label=\"Policy amounts\" className=\"w-[40rem]\">\n            <Field.Group>\n                <FormNumber\n                    name=\"annualPremium\"\n                    label=\"Annual premium\"\n                    orientation=\"horizontal\"\n                    inputProps={{ thousandSeparator: true, className: 'w-72' }}\n                />\n                <FormNumber\n                    name=\"deductible\"\n                    label=\"Deductible\"\n                    description=\"Paid by the insured before coverage starts.\"\n                    orientation=\"horizontal\"\n                    inputProps={{ thousandSeparator: true, className: 'w-72' }}\n                    data-testid=\"deductible\"\n                />\n            </Field.Group>\n        </Form.Root>\n    );\n};",
+          "description": "Root props pass through: `orientation=\"horizontal\"` lays the label and the\ninput in a row, with the description under the control.",
+          "summary": "Horizontal orientation through the root props"
+        },
+        {
           "id": "components-formnumber--disabled",
           "name": "Disabled",
           "snippet": "const Disabled = () => {\n    const methods = useForm<PolicyValues>({ defaultValues: { annualPremium: '12,500' } });\n\n    return (\n        <Form.Root\n            methods={methods}\n            onSubmit={onSubmit}\n            aria-label=\"Policy\"\n            className=\"flex flex-col items-start gap-7\">\n            <FormNumber\n                name=\"annualPremium\"\n                label=\"Annual premium\"\n                disabled\n                inputProps={{ thousandSeparator: true }}\n            />\n            <Button type=\"submit\">Save</Button>\n        </Form.Root>\n    );\n};",
@@ -14018,6 +14025,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5318
+    "durationMs": 4843
   }
 }

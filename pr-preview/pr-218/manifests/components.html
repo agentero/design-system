@@ -620,13 +620,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">48 components ok</span><a class="filter-pill" data-k="no-api" href="#filter-no-api">3/48 without API description</a><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/438 story errors</a><a class="filter-pill info" data-k="story-warnings" href="#filter-story-warnings">4/438 incomplete snippets</a></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">48 components ok</span><a class="filter-pill" data-k="no-api" href="#filter-no-api">3/48 without API description</a><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/439 story errors</a><a class="filter-pill info" data-k="story-warnings" href="#filter-story-warnings">4/439 incomplete snippets</a></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>5.3s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>4.8s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -9359,7 +9359,7 @@ Validation is react-hook-form&#39;s alone.</div>
       <div class="badges">
         <label for="c-21-components-formnumber-props" class="badge ok as-toggle">15 prop types</label>
         
-        <label for="c-21-components-formnumber-stories" class="badge ok as-toggle">8 stories</label>
+        <label for="c-21-components-formnumber-stories" class="badge ok as-toggle">9 stories</label>
         
         
       </div>
@@ -9707,6 +9707,42 @@ the formatted text, both from the event and from `getValues`.</div>
                     onChange: event =&gt; onOwnChange(methods.getValues(&#39;annualPremium&#39;), event.target.value)
                 }}
             /&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Horizontal</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Horizontal orientation through the root props</div>
+              <div class="hint">Root props pass through: `orientation=&quot;horizontal&quot;` lays the label and the
+input in a row, with the description under the control.</div>
+              <pre><code>const Horizontal = () =&gt; {
+    const methods = useForm&lt;PolicyAmountsValues&gt;({
+        defaultValues: { annualPremium: &#39;&#39;, deductible: &#39;&#39; }
+    });
+
+    return (
+        &lt;Form.Root methods={methods} aria-label=&quot;Policy amounts&quot; className=&quot;w-[40rem]&quot;&gt;
+            &lt;Field.Group&gt;
+                &lt;FormNumber
+                    name=&quot;annualPremium&quot;
+                    label=&quot;Annual premium&quot;
+                    orientation=&quot;horizontal&quot;
+                    inputProps={{ thousandSeparator: true, className: &#39;w-72&#39; }}
+                /&gt;
+                &lt;FormNumber
+                    name=&quot;deductible&quot;
+                    label=&quot;Deductible&quot;
+                    description=&quot;Paid by the insured before coverage starts.&quot;
+                    orientation=&quot;horizontal&quot;
+                    inputProps={{ thousandSeparator: true, className: &#39;w-72&#39; }}
+                    data-testid=&quot;deductible&quot;
+                /&gt;
+            &lt;/Field.Group&gt;
         &lt;/Form.Root&gt;
     );
 };</code></pre>
