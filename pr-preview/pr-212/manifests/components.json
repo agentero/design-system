@@ -6429,6 +6429,235 @@
       ],
       "import": "import { Button, Command, DropdownMenu } from '@agentero/design-system';\nimport { ChevronDownIcon, CopyIcon, FolderInputIcon, ShareIcon, Trash2Icon, UsersIcon } from 'lucide-react';"
     },
+    "components-fieldswitch": {
+      "id": "components-fieldswitch",
+      "name": "FieldSwitch",
+      "path": "./src/field-switch/field-switch.stories.tsx",
+      "jsDocTags": {
+        "summary": [
+          "Field for an on/off toggle, wiring the Switch inside it"
+        ],
+        "example": [
+          "<FieldSwitch>\n  <Field.Content>\n    <Label>Email notifications</Label>\n    <Field.Description>Get an email when a quote is ready.</Field.Description>\n  </Field.Content>\n  <Switch checked={enabled} onCheckedChange={setEnabled} />\n</FieldSwitch>"
+        ]
+      },
+      "description": "FieldSwitch is a `Field.Root` for an on/off toggle. It provides\n`SwitchContext`, so the `Switch` inside associates itself with the label and\nthe messages and takes `invalid`, `required`, `disabled` and `readOnly` from\nthe field — no `id`, `htmlFor` or `aria-describedby` written by hand. It\ndefaults to one row, with the small toggle next to the text.\n\nIt knows nothing about form libraries, and its contexts compose: a provider\nnested inside it can extend `SwitchContext` with `checked`,\n`onCheckedChange`, `onBlur` and `name`, and `FieldContext` with the errors,\nwhich is how `FormSwitch` will bind it.",
+      "summary": "Field for an on/off toggle, wiring the Switch inside it",
+      "reactComponentMeta": {
+        "displayName": "FieldSwitch",
+        "exportName": "FieldSwitch",
+        "filePath": "/home/runner/work/design-system/design-system/src/field-switch/index.ts",
+        "description": "A `Field.Root` for an on/off toggle: it provides `SwitchContext`, so the\n`Switch` inside associates itself with the label and the messages and takes\n`invalid`, `required`, `disabled` and `readOnly` from the field, plus the\n`sm` size of the design. Every other part (`Label`, `Field.Content`,\n`Field.Description`, `Field.Error`) works as in any field. `invalid` only\nsets `aria-invalid` on the toggle, which looks the same as in a valid field\n(the design draws no invalid switch): `Field.Error` is what shows the error.\n\nUnlike the other fields it defaults to `orientation=\"horizontal\"`: the\nlabel and the toggle read as one row, the toggle 16px after the text and\ncentred on the label's first line. Wrap the label with its description and\nits error in a `Field.Content`, so they stack together beside the toggle\ninstead of joining the row. Pass `vertical` to put the toggle under the\nlabel.\n\nForm-library agnostic, and its contexts compose: a provider nested inside it\ncan extend `SwitchContext` with `name`, `checked`, `onCheckedChange`,\n`onBlur` and `ref` to control the `Switch`, and `FieldContext` with the\nerrors, on top of the wiring `FieldSwitch` already set.",
+        "jsDocTags": {
+          "summary": [
+            "Field for an on/off toggle, wiring the Switch inside it"
+          ],
+          "example": [
+            "<FieldSwitch>\n  <Field.Content>\n    <Label>Email notifications</Label>\n    <Field.Description>Get an email when a quote is ready.</Field.Description>\n  </Field.Content>\n  <Switch checked={enabled} onCheckedChange={setEnabled} />\n</FieldSwitch>"
+          ]
+        },
+        "props": {
+          "disabled": {
+            "name": "disabled",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Disables the control through its context and sets `data-disabled` on the root.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
+          "required": {
+            "name": "required",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Single source of truth for a required field: the `Label` shows its\nasterisk and the control receives `required`, both through context.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
+          "readOnly": {
+            "name": "readOnly",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Makes the control read-only through its context (focusable and copyable,\nnot editable, still submitted) and sets `data-readonly` on the root.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
+          "invalid": {
+            "name": "invalid",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Marks the field as failing validation: sets `data-invalid` on the root and\n`aria-invalid` on the control through its context, which drives the\ncontrol's destructive border. The label keeps its color by design.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
+          "controlId": {
+            "name": "controlId",
+            "required": false,
+            "type": {
+              "name": "string"
+            },
+            "description": "`id` for the control. Generated when omitted. Set it here, not on the\ncontrol, so the label and the messages keep pointing at the right element.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
+          "orientation": {
+            "name": "orientation",
+            "required": false,
+            "type": {
+              "name": "enum",
+              "raw": "\"vertical\" | \"horizontal\"",
+              "value": [
+                {
+                  "value": "\"vertical\""
+                },
+                {
+                  "value": "\"horizontal\""
+                }
+              ]
+            },
+            "description": "`horizontal` (default) puts the label, or a `Field.Content` with the\nlabel, its description and its error, on one row with the toggle beside\nit; `vertical` stacks the toggle under the label.",
+            "defaultValue": {
+              "value": "'horizontal'"
+            },
+            "parent": {
+              "name": "FieldSwitchProps",
+              "fileName": "src/field-switch/field-switch.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field-switch/field-switch.tsx"
+              }
+            ]
+          }
+        }
+      },
+      "stories": [
+        {
+          "id": "components-fieldswitch--default",
+          "name": "Default",
+          "snippet": "const Default = () => <FieldSwitch\n    orientation=\"horizontal\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Label>Auto-appointment requests</Label>\n    <Switch />\n</FieldSwitch>;",
+          "description": "The composition consumers write: a label and the design system's `Switch`.\nThe label names the toggle through context, and clicking it flips the\ntoggle like clicking the toggle itself.",
+          "summary": "Label and Switch on one row, wired with no ids"
+        },
+        {
+          "id": "components-fieldswitch--required",
+          "name": "Required",
+          "snippet": "const Required = () => <FieldSwitch\n    orientation=\"horizontal\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required>\n    <Label>Accept the carrier terms</Label>\n    <Switch />\n</FieldSwitch>;",
+          "description": "`required` on the field reaches both the label's asterisk and the toggle's\n`aria-required`.",
+          "summary": "Required field driven from the root alone"
+        },
+        {
+          "id": "components-fieldswitch--disabled",
+          "name": "Disabled",
+          "snippet": "const Disabled = () => <FieldSwitch\n    orientation=\"horizontal\"\n    invalid={false}\n    disabled\n    readOnly={false}\n    required={false}>\n    <Label>Quote alerts by text</Label>\n    <Switch defaultChecked />\n</FieldSwitch>;",
+          "description": "`disabled` on the field disables the toggle through context.",
+          "summary": "Disabled field driven from the root"
+        },
+        {
+          "id": "components-fieldswitch--read-only",
+          "name": "Read Only",
+          "snippet": "const ReadOnly = () => <FieldSwitch\n    orientation=\"horizontal\"\n    invalid={false}\n    disabled={false}\n    readOnly\n    required={false}>\n    <Label>Instant appointments</Label>\n    <Switch defaultChecked />\n</FieldSwitch>;",
+          "description": "`readOnly` on the field keeps the toggle focusable and announced as\nread-only, but neither a click nor a key flips it.",
+          "summary": "Read-only field: focusable, but it does not flip"
+        },
+        {
+          "id": "components-fieldswitch--own-props-win",
+          "name": "Own Props Win",
+          "snippet": "const OwnPropsWin = () => <div className=\"flex flex-col gap-2\">\n    <FieldSwitch\n        orientation=\"horizontal\"\n        invalid={false}\n        disabled={false}\n        readOnly={false}\n        required={false}>\n        <Field.Content>\n            <Label>Carrier news</Label>\n            <Field.Description>Shown on the home page.</Field.Description>\n        </Field.Content>\n        <Switch size=\"md\" aria-describedby=\"news-hint\" />\n    </FieldSwitch>\n    <p id=\"news-hint\" className=\"text-sm\">You can change it later.\n                    </p>\n</div>;",
+          "description": "The context is a default, never an override: an extra `aria-describedby` is\nconcatenated with the field's ids and `size=\"md\"` replaces the field's `sm`.",
+          "summary": "Switch's own props merge with, and win over, the field's context"
+        },
+        {
+          "id": "components-fieldswitch--with-description",
+          "name": "With Description",
+          "snippet": "const WithDescription = () => <FieldSwitch\n    orientation=\"horizontal\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Field.Content>\n        <Label>Email notifications</Label>\n        <Field.Description>Get an email when a carrier returns a quote.</Field.Description>\n    </Field.Content>\n    <Switch defaultChecked />\n</FieldSwitch>;",
+          "description": "A `Field.Content` keeps the label and its description together, and the\ndescription is announced with the toggle. The toggle lines up with the\nlabel, not with the middle of the block.",
+          "summary": "Label and description stacked beside the toggle"
+        },
+        {
+          "id": "components-fieldswitch--switch-first",
+          "name": "Switch First",
+          "snippet": "const SwitchFirst = () => <FieldSwitch\n    orientation=\"horizontal\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Switch />\n    <Field.Content>\n        <Label>Paperless billing</Label>\n        <Field.Description>Invoices arrive by email only.</Field.Description>\n    </Field.Content>\n</FieldSwitch>;",
+          "description": "The toggle can lead instead: write it before the `Field.Content`. Use this\norder in lists of settings, where the toggles line up on the left.",
+          "summary": "Toggle first, then the label and its description"
+        },
+        {
+          "id": "components-fieldswitch--with-tooltip",
+          "name": "With Tooltip",
+          "snippet": "const WithTooltip = () => <FieldSwitch\n    orientation=\"horizontal\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Switch />\n    <Field.Content>\n        <Field.Label optional tooltip=\"Policies stop printing once this is on.\">Paperless billing\n                            </Field.Label>\n        <Field.Description>Invoices arrive by email only.</Field.Description>\n    </Field.Content>\n</FieldSwitch>;",
+          "description": "`Field.Label` takes `optional` and a `tooltip` here as in any field. The info\nbutton sits beside the label, outside it, so it has its own name and\nopening the hint never flips the toggle.",
+          "summary": "Label with the optional suffix and an info tooltip"
+        },
+        {
+          "id": "components-fieldswitch--vertical",
+          "name": "Vertical",
+          "snippet": "const Vertical = () => <FieldSwitch\n    orientation=\"vertical\"\n    invalid={false}\n    disabled={false}\n    readOnly={false}\n    required={false}>\n    <Label>Skip the one-year license check</Label>\n    <Switch />\n</FieldSwitch>;",
+          "description": "`orientation=\"vertical\"` stacks the label above the toggle, as in the other\nfields. Use it when the switch sits in a form column next to other fields.",
+          "summary": "Label above the toggle"
+        },
+        {
+          "id": "components-fieldswitch--controlled-from-context",
+          "name": "Controlled From Context",
+          "snippet": "const ControlledFromContext = () => {\n    const [checked, setChecked] = useState(false);\n\n    const errors = checked ? undefined : [{ message: 'Turn it on to continue.' }];\n\n    return (\n        <FieldSwitch invalid={!!errors}>\n            <ContextExtension\n                switchProps={{ name: 'terms', checked, onCheckedChange: setChecked }}\n                errors={errors}>\n                <Field.Content>\n                    <Label>I accept the terms</Label>\n                    <Field.Error />\n                </Field.Content>\n                <Switch onCheckedChange={onOwnCheckedChange} />\n            </ContextExtension>\n        </FieldSwitch>\n    );\n};",
+          "description": "The contexts are an extension point: a provider nested in the field adds\n`name`, `checked` and `onCheckedChange` to `SwitchContext`, so a bare\n`<Switch />` becomes controlled, and the errors to `FieldContext`, so a\nbare `<Field.Error />` renders them — here with `useState` and no form\nlibrary. The switch's own `onCheckedChange` still runs, chained after the\nprovider's.",
+          "summary": "Switch controlled and errors supplied from outside the field"
+        }
+      ],
+      "import": "import { Field, FieldContext, FieldSwitch, Label, Switch, SwitchContext } from '@agentero/design-system';"
+    },
     "components-fieldtext": {
       "id": "components-fieldtext",
       "name": "FieldText",
@@ -10975,7 +11204,7 @@
         "displayName": "Switch",
         "exportName": "Switch",
         "filePath": "/home/runner/work/design-system/design-system/src/switch/switch.tsx",
-        "description": "Instant-effect on/off toggle built on Radix Switch. Reach for it over a\nCheckbox when flipping a single boolean that applies immediately.\n\nRenders only the toggle by default — pair it with a `<label htmlFor>` for an\naccessible name. Pass `label` (with an `id`) to render an associated text\nlabel beside the toggle; `reverse` places the label before it.",
+        "description": "Instant-effect on/off toggle built on Radix Switch. Reach for it over a\nCheckbox when flipping a single boolean that applies immediately.\n\nRenders only the toggle by default — pair it with a `<label htmlFor>` for an\naccessible name. Pass `label` (with an `id`) to render an associated text\nlabel beside the toggle; `reverse` places the label before it. Inside a\n`FieldSwitch` it takes its wiring from the field instead (`id`,\n`aria-describedby`, `aria-invalid`, `required`, `disabled`, `readOnly`) and\na default `size`, so the field's `Label` names it with no `id` written by\nhand; its own props still win. Every native `<button>` attribute is forwarded to the toggle.",
         "jsDocTags": {
           "summary": [
             "Instant-effect on/off toggle built on Radix Switch"
@@ -11126,6 +11355,25 @@
                 "fileName": "src/switch/switch.tsx"
               }
             ]
+          },
+          "readOnly": {
+            "name": "readOnly",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Keeps the switch focusable and announced (`aria-readonly`) but stops a\nclick or a key from flipping it. Not a native `<button>` attribute,\nhence declared here. Inside a `FieldSwitch` it comes from the field.",
+            "defaultValue": null,
+            "parent": {
+              "name": "SwitchProps",
+              "fileName": "src/switch/switch.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/switch/switch.tsx"
+              }
+            ]
           }
         }
       },
@@ -11164,6 +11412,13 @@
           "name": "With Label",
           "snippet": "const WithLabel = () => (\n    <div className=\"flex items-center gap-6\">\n        <Switch id=\"with-label\" label=\"Email\" defaultChecked />\n        <Switch id=\"with-label-reverse\" label=\"SMS\" reverse />\n    </div>\n);",
           "description": "The built-in `label` prop renders an associated text label beside the toggle\n(wired via `htmlFor`/`id`); `reverse` places the label before the toggle."
+        },
+        {
+          "id": "components-switch--read-only",
+          "name": "Read Only",
+          "snippet": "const ReadOnly = () => <Switch id=\"read-only\" label=\"Instant appointments\" defaultChecked readOnly />;",
+          "description": "`readOnly` keeps the toggle focusable and announced as read-only, but\nneither a click nor a key flips it. Use it to show a setting the viewer\ncannot change; `disabled` takes it out of the tab order instead.",
+          "summary": "Focusable toggle that does not flip"
         },
         {
           "id": "components-switch--setting-row",
@@ -12912,6 +13167,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 3850
+    "durationMs": 3460
   }
 }
