@@ -346,6 +346,60 @@ export const InputPropsChaining: Story = {
 	}
 };
 
+type PolicyAmountsValues = {
+	annualPremium: string;
+	deductible: string;
+};
+
+/**
+ * Root props pass through: `orientation="horizontal"` lays the label and the
+ * input in a row, with the description under the control.
+ *
+ * @summary Horizontal orientation through the root props
+ */
+export const Horizontal: Story = {
+	render: () => {
+		const methods = useForm<PolicyAmountsValues>({
+			defaultValues: { annualPremium: '', deductible: '' }
+		});
+
+		return (
+			<Form.Root methods={methods} aria-label="Policy amounts" className="w-[40rem]">
+				<Field.Group>
+					<FormNumber
+						name="annualPremium"
+						label="Annual premium"
+						orientation="horizontal"
+						inputProps={{ thousandSeparator: true, className: 'w-72' }}
+					/>
+					<FormNumber
+						name="deductible"
+						label="Deductible"
+						description="Paid by the insured before coverage starts."
+						orientation="horizontal"
+						inputProps={{ thousandSeparator: true, className: 'w-72' }}
+						data-testid="deductible"
+					/>
+				</Field.Group>
+			</Form.Root>
+		);
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const rect = (element: Element) => element.getBoundingClientRect();
+
+		const field = canvas.getByTestId('deductible');
+		const input = canvas.getByRole('textbox', { name: 'Deductible' });
+		const description = field.querySelector('[data-slot=field-description]') as HTMLElement;
+
+		await expect(field).toHaveAttribute('data-orientation', 'horizontal');
+		await expect(input).toHaveClass('w-72');
+		await expect(rect(canvas.getByText('Deductible')).right).toBeLessThanOrEqual(rect(input).left);
+		await expect(rect(description).top).toBeGreaterThanOrEqual(rect(input).bottom);
+		await expect(input).toHaveAccessibleDescription('Paid by the insured before coverage starts.');
+	}
+};
+
 /**
  * `disabled` disables the input and marks the field, and the value still
  * reaches `onSubmit` — unlike react-hook-form's own `disabled` option, which
