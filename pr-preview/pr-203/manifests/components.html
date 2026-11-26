@@ -620,13 +620,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">45 components ok</span><a class="filter-pill" data-k="no-api" href="#filter-no-api">3/45 without API description</a><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/409 story errors</a></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">47 components ok</span><a class="filter-pill" data-k="no-api" href="#filter-no-api">3/47 without API description</a><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/431 story errors</a><a class="filter-pill info" data-k="story-warnings" href="#filter-story-warnings">4/431 incomplete snippets</a></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.9s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>4.3s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -3258,6 +3258,7 @@ and `data-disabled` on the child instead.</div>
     &lt;Row&gt;
         {VARIANTS.map(variant =&gt; (
             &lt;Button asChild key={variant} variant={variant} disabled&gt;
+                {/* oxlint-disable-next-line jsx-a11y/anchor-is-valid -- a disabled link has no href */}
                 &lt;a&gt;{TEXT}&lt;/a&gt;
             &lt;/Button&gt;
         ))}
@@ -3367,6 +3368,7 @@ variant.</div>
         &lt;Row&gt;
             {VARIANTS.map(variant =&gt; (
                 &lt;Button asChild key={variant} variant={variant} status=&quot;danger&quot; disabled&gt;
+                    {/* oxlint-disable-next-line jsx-a11y/anchor-is-valid -- a disabled link has no href */}
                     &lt;a&gt;
                         &lt;PlusIcon /&gt;
                         {TEXT}
@@ -4657,13 +4659,13 @@ virtualized?: boolean = false</code></pre>
               
               
               <pre><code>Expected render to be an arrow function or function expression
-  1172 |  */
-  1173 | export const InsidePopoverWithValue: Story = {
-&gt; 1174 | 	render: InsidePopover.render,
+  1174 |  */
+  1175 | export const InsidePopoverWithValue: Story = {
+&gt; 1176 | 	render: InsidePopover.render,
        | 	           ^^^^^^^^^^^^^^^^^^^^
-  1175 | 	play: async ({ canvasElement }) =&gt; {
-  1176 | 		const body = within(document.body);
-  1177 | 		const trigger = within(canvasElement).getByRole(&#39;button&#39;, { name: /filter by state/i });</code></pre>
+  1177 | 	play: async ({ canvasElement }) =&gt; {
+  1178 | 		const body = within(document.body);
+  1179 | 		const trigger = within(canvasElement).getByRole(&#39;button&#39;, { name: /filter by state/i });</code></pre>
             </div>
           
           
@@ -5085,6 +5087,7 @@ with no value if none was picked: mark the root `required` to block that.</div>
             &lt;/Combobox.Root&gt;
             &lt;div className=&quot;flex items-center gap-4&quot;&gt;
                 &lt;Button type=&quot;submit&quot;&gt;Save&lt;/Button&gt;
+                {/* oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- a live region on a paragraph, not a form &lt;output&gt; */}
                 &lt;p role=&quot;status&quot; className=&quot;text-sm text-text-default-base-secondary&quot;&gt;
                     {status}
                 &lt;/p&gt;
@@ -5124,6 +5127,7 @@ drops the typed query and submits the form. A highlighted row is still picked.</
             &lt;/Combobox.Root&gt;
             &lt;div className=&quot;flex items-center gap-4&quot;&gt;
                 &lt;Button type=&quot;submit&quot;&gt;Save&lt;/Button&gt;
+                {/* oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- a live region on a paragraph, not a form &lt;output&gt; */}
                 &lt;p role=&quot;status&quot; className=&quot;text-sm text-text-default-base-secondary&quot;&gt;
                     {status}
                 &lt;/p&gt;
@@ -6120,7 +6124,7 @@ import { Button, DataTable, DropdownMenu, Pagination, Table } from '@agentero/de
               <pre><code>const Playground = (args: ComponentProps&lt;typeof DataTable.Table&gt;) =&gt; &lt;div
     className={args.enclosed ? &#39;flex min-h-0 flex-1 flex-col p-4&#39; : &#39;contents&#39;}&gt;
     &lt;DataTable.Root data={LEADS} columns={columns}&gt;
-        &lt;DataTable.Table size=&quot;md&quot; embed enclosed={false} sticky=&quot;header&quot; /&gt;
+        &lt;DataTable.Table aria-label=&quot;Leads&quot; size=&quot;md&quot; embed enclosed={false} sticky=&quot;header&quot; /&gt;
     &lt;/DataTable.Root&gt;
 &lt;/div&gt;;</code></pre>
               
@@ -6166,7 +6170,7 @@ the toolbar, and pagination in the footer.</div>
                 &lt;/Button&gt;
             &lt;/DataTable.ToolBar&gt;
 
-            &lt;DataTable.Table /&gt;
+            &lt;DataTable.Table aria-label=&quot;Leads&quot; /&gt;
 
             &lt;DataTable.Footer&gt;
                 &lt;Pagination
@@ -6190,7 +6194,7 @@ the toolbar, and pagination in the footer.</div>
               <div class="hint">No rows: the table renders its default empty state instead of body rows.</div>
               <pre><code>const Empty = () =&gt; (
     &lt;DataTable.Root data={[] as Lead[]} columns={columns}&gt;
-        &lt;DataTable.Table /&gt;
+        &lt;DataTable.Table aria-label=&quot;Leads&quot; /&gt;
     &lt;/DataTable.Root&gt;
 );</code></pre>
               
@@ -6205,7 +6209,7 @@ the toolbar, and pagination in the footer.</div>
 in flight.</div>
               <pre><code>const Loading = () =&gt; (
     &lt;DataTable.Root data={[] as Lead[]} columns={columns} isLoading&gt;
-        &lt;DataTable.Table /&gt;
+        &lt;DataTable.Table aria-label=&quot;Leads&quot; /&gt;
     &lt;/DataTable.Root&gt;
 );</code></pre>
               
@@ -7283,6 +7287,7 @@ holds a `Command`.</div>
                         &lt;DropdownMenu.Portal&gt;
                             &lt;DropdownMenu.SubContent className=&quot;w-72&quot; onFocus={focusSearch}&gt;
                                 &lt;Command.Root label=&quot;Agencies&quot; onKeyDown={keepKeysInSearch}&gt;
+                                    {/* oxlint-disable-next-line jsx-a11y/no-autofocus -- opening the submenu moves focus to its search, as a menu does */}
                                     &lt;Command.Input ref={searchRef} autoFocus placeholder=&quot;Search agency...&quot; /&gt;
                                     &lt;Command.List aria-label=&quot;Agencies&quot;&gt;
                                         {agencies.map(agency =&gt; (
@@ -7896,6 +7901,348 @@ form library. `InputContext` extends the same way with `value`, `onChange`,
   </div>
 </article>
 <article
+  id="components-fieldswitch"
+  class="card 
+  no-error
+  no-info
+  no-story-error
+  no-story-warning
+  
+  no-doc-error"
+  role="listitem"
+  aria-label="FieldSwitch">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> FieldSwitch</h2>
+      <div class="badges">
+        <label for="c-16-components-fieldswitch-props" class="badge ok as-toggle">6 prop types</label>
+        
+        <label for="c-16-components-fieldswitch-stories" class="badge ok as-toggle">10 stories</label>
+        
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/field-switch/field-switch.stories.tsx">components-fieldswitch · ./src/field-switch/field-switch.stories.tsx</div>
+    <div>Field for an on/off toggle, wiring the Switch inside it</div>
+    <div class="hint">FieldSwitch is a `Field.Root` for an on/off toggle. It provides
+`SwitchContext`, so the `Switch` inside associates itself with the label and
+the messages and takes `invalid`, `required`, `disabled` and `readOnly` from
+the field — no `id`, `htmlFor` or `aria-describedby` written by hand. It
+defaults to one row, with the small toggle next to the text.
+
+It knows nothing about form libraries, and its contexts compose: a provider
+nested inside it can extend `SwitchContext` with `checked`,
+`onCheckedChange`, `onBlur` and `name`, and `FieldContext` with the errors,
+which is how `FormSwitch` will bind it.</div>
+    <div class="kv"><span class="chip">summary: Field for an on/off toggle, wiring the Switch inside it</span><span class="chip">example: &lt;FieldSwitch&gt;
+  &lt;Field.Content&gt;
+    &lt;Label&gt;Email notifications&lt;/Label&gt;
+    &lt;Field.Description&gt;Get an email when a quote is ready.&lt;/Field.Description&gt;
+  &lt;/Field.Content&gt;
+  &lt;Switch checked={enabled} onCheckedChange={setEnabled} /&gt;
+&lt;/FieldSwitch&gt;</span></div>
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-16-components-fieldswitch-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+  <input id="c-16-components-fieldswitch-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-component-meta)</small></span>
+              <span class="badge ok">6 prop types</span>
+            </div>
+            <pre><code>Component: src/field-switch/index.ts::FieldSwitch</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>/**
+ * `id` for the control. Generated when omitted. Set it here, not on the
+ * control, so the label and the messages keep pointing at the right element.
+ */
+controlId?: string
+
+/**
+ * Disables the control through its context and sets `data-disabled` on the root.
+ */
+disabled?: boolean
+
+/**
+ * Marks the field as failing validation: sets `data-invalid` on the root and
+ * `aria-invalid` on the control through its context, which drives the
+ * control&#39;s destructive border. The label keeps its color by design.
+ */
+invalid?: boolean
+
+/**
+ * `horizontal` (default) puts the label, or a `Field.Content` with the
+ * label, its description and its error, on one row with the toggle beside
+ * it; `vertical` stacks the toggle under the label.
+ */
+orientation?: &quot;vertical&quot; | &quot;horizontal&quot; = &#39;horizontal&#39;
+
+/**
+ * Makes the control read-only through its context (focusable and copyable,
+ * not editable, still submitted) and sets `data-readonly` on the root.
+ */
+readOnly?: boolean
+
+/**
+ * Single source of truth for a required field: the `Label` shows its
+ * asterisk and the control receives `required`, both through context.
+ */
+required?: boolean</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Field, FieldContext, FieldSwitch, Label, Switch, SwitchContext } from '@agentero/design-system';</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Label and Switch on one row, wired with no ids</div>
+              <div class="hint">The composition consumers write: a label and the design system&#39;s `Switch`.
+The label names the toggle through context, and clicking it flips the
+toggle like clicking the toggle itself.</div>
+              <pre><code>const Default = () =&gt; &lt;FieldSwitch
+    orientation=&quot;horizontal&quot;
+    invalid={false}
+    disabled={false}
+    readOnly={false}
+    required={false}&gt;
+    &lt;Label&gt;Auto-appointment requests&lt;/Label&gt;
+    &lt;Switch /&gt;
+&lt;/FieldSwitch&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Required</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Required field driven from the root alone</div>
+              <div class="hint">`required` on the field reaches both the label&#39;s asterisk and the toggle&#39;s
+`aria-required`.</div>
+              <pre><code>const Required = () =&gt; &lt;FieldSwitch
+    orientation=&quot;horizontal&quot;
+    invalid={false}
+    disabled={false}
+    readOnly={false}
+    required&gt;
+    &lt;Label&gt;Accept the carrier terms&lt;/Label&gt;
+    &lt;Switch /&gt;
+&lt;/FieldSwitch&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Disabled</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Disabled field driven from the root</div>
+              <div class="hint">`disabled` on the field disables the toggle through context.</div>
+              <pre><code>const Disabled = () =&gt; &lt;FieldSwitch
+    orientation=&quot;horizontal&quot;
+    invalid={false}
+    disabled
+    readOnly={false}
+    required={false}&gt;
+    &lt;Label&gt;Quote alerts by text&lt;/Label&gt;
+    &lt;Switch defaultChecked /&gt;
+&lt;/FieldSwitch&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Read Only</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Read-only field: focusable, but it does not flip</div>
+              <div class="hint">`readOnly` on the field keeps the toggle focusable and announced as
+read-only, but neither a click nor a key flips it.</div>
+              <pre><code>const ReadOnly = () =&gt; &lt;FieldSwitch
+    orientation=&quot;horizontal&quot;
+    invalid={false}
+    disabled={false}
+    readOnly
+    required={false}&gt;
+    &lt;Label&gt;Instant appointments&lt;/Label&gt;
+    &lt;Switch defaultChecked /&gt;
+&lt;/FieldSwitch&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Own Props Win</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Switch&#39;s own props merge with, and win over, the field&#39;s context</div>
+              <div class="hint">The context is a default, never an override: an extra `aria-describedby` is
+concatenated with the field&#39;s ids and `size=&quot;md&quot;` replaces the field&#39;s `sm`.</div>
+              <pre><code>const OwnPropsWin = () =&gt; &lt;div className=&quot;flex flex-col gap-2&quot;&gt;
+    &lt;FieldSwitch
+        orientation=&quot;horizontal&quot;
+        invalid={false}
+        disabled={false}
+        readOnly={false}
+        required={false}&gt;
+        &lt;Field.Content&gt;
+            &lt;Label&gt;Carrier news&lt;/Label&gt;
+            &lt;Field.Description&gt;Shown on the home page.&lt;/Field.Description&gt;
+        &lt;/Field.Content&gt;
+        &lt;Switch size=&quot;md&quot; aria-describedby=&quot;news-hint&quot; /&gt;
+    &lt;/FieldSwitch&gt;
+    &lt;p id=&quot;news-hint&quot; className=&quot;text-sm&quot;&gt;You can change it later.
+                    &lt;/p&gt;
+&lt;/div&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Description</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Label and description stacked beside the toggle</div>
+              <div class="hint">A `Field.Content` keeps the label and its description together, and the
+description is announced with the toggle. The toggle lines up with the
+label, not with the middle of the block.</div>
+              <pre><code>const WithDescription = () =&gt; &lt;FieldSwitch
+    orientation=&quot;horizontal&quot;
+    invalid={false}
+    disabled={false}
+    readOnly={false}
+    required={false}&gt;
+    &lt;Field.Content&gt;
+        &lt;Label&gt;Email notifications&lt;/Label&gt;
+        &lt;Field.Description&gt;Get an email when a carrier returns a quote.&lt;/Field.Description&gt;
+    &lt;/Field.Content&gt;
+    &lt;Switch defaultChecked /&gt;
+&lt;/FieldSwitch&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Switch First</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Toggle first, then the label and its description</div>
+              <div class="hint">The toggle can lead instead: write it before the `Field.Content`. Use this
+order in lists of settings, where the toggles line up on the left.</div>
+              <pre><code>const SwitchFirst = () =&gt; &lt;FieldSwitch
+    orientation=&quot;horizontal&quot;
+    invalid={false}
+    disabled={false}
+    readOnly={false}
+    required={false}&gt;
+    &lt;Switch /&gt;
+    &lt;Field.Content&gt;
+        &lt;Label&gt;Paperless billing&lt;/Label&gt;
+        &lt;Field.Description&gt;Invoices arrive by email only.&lt;/Field.Description&gt;
+    &lt;/Field.Content&gt;
+&lt;/FieldSwitch&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Tooltip</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Label with the optional suffix and an info tooltip</div>
+              <div class="hint">`Field.Label` takes `optional` and a `tooltip` here as in any field. The info
+button sits beside the label, outside it, so it has its own name and
+opening the hint never flips the toggle.</div>
+              <pre><code>const WithTooltip = () =&gt; &lt;FieldSwitch
+    orientation=&quot;horizontal&quot;
+    invalid={false}
+    disabled={false}
+    readOnly={false}
+    required={false}&gt;
+    &lt;Switch /&gt;
+    &lt;Field.Content&gt;
+        &lt;Field.Label optional tooltip=&quot;Policies stop printing once this is on.&quot;&gt;Paperless billing
+                            &lt;/Field.Label&gt;
+        &lt;Field.Description&gt;Invoices arrive by email only.&lt;/Field.Description&gt;
+    &lt;/Field.Content&gt;
+&lt;/FieldSwitch&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Vertical</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Label above the toggle</div>
+              <div class="hint">`orientation=&quot;vertical&quot;` stacks the label above the toggle, as in the other
+fields. Use it when the switch sits in a form column next to other fields.</div>
+              <pre><code>const Vertical = () =&gt; &lt;FieldSwitch
+    orientation=&quot;vertical&quot;
+    invalid={false}
+    disabled={false}
+    readOnly={false}
+    required={false}&gt;
+    &lt;Label&gt;Skip the one-year license check&lt;/Label&gt;
+    &lt;Switch /&gt;
+&lt;/FieldSwitch&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Controlled From Context</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Switch controlled and errors supplied from outside the field</div>
+              <div class="hint">The contexts are an extension point: a provider nested in the field adds
+`name`, `checked` and `onCheckedChange` to `SwitchContext`, so a bare
+`&lt;Switch /&gt;` becomes controlled, and the errors to `FieldContext`, so a
+bare `&lt;Field.Error /&gt;` renders them — here with `useState` and no form
+library. The switch&#39;s own `onCheckedChange` still runs, chained after the
+provider&#39;s.</div>
+              <pre><code>const ControlledFromContext = () =&gt; {
+    const [checked, setChecked] = useState(false);
+
+    const errors = checked ? undefined : [{ message: &#39;Turn it on to continue.&#39; }];
+
+    return (
+        &lt;FieldSwitch invalid={!!errors}&gt;
+            &lt;ContextExtension
+                switchProps={{ name: &#39;terms&#39;, checked, onCheckedChange: setChecked }}
+                errors={errors}&gt;
+                &lt;Field.Content&gt;
+                    &lt;Label&gt;I accept the terms&lt;/Label&gt;
+                    &lt;Field.Error /&gt;
+                &lt;/Field.Content&gt;
+                &lt;Switch onCheckedChange={onOwnCheckedChange} /&gt;
+            &lt;/ContextExtension&gt;
+        &lt;/FieldSwitch&gt;
+    );
+};</code></pre>
+              
+            </div>
+        </div>
+    
+    
+  </div>
+</article>
+<article
   id="components-fieldtext"
   class="card 
   no-error
@@ -7910,9 +8257,9 @@ form library. `InputContext` extends the same way with `value`, `onChange`,
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> FieldText</h2>
       <div class="badges">
-        <label for="c-16-components-fieldtext-props" class="badge ok as-toggle">6 prop types</label>
+        <label for="c-17-components-fieldtext-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-16-components-fieldtext-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-17-components-fieldtext-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -7939,10 +8286,10 @@ and `name`, and `FieldContext` with the errors, as the last story shows.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-16-components-fieldtext-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-17-components-fieldtext-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-16-components-fieldtext-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-17-components-fieldtext-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -8190,9 +8537,9 @@ The input&#39;s own `onChange` still runs, chained after the provider&#39;s.</di
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> FieldTextArea</h2>
       <div class="badges">
-        <label for="c-17-components-fieldtextarea-props" class="badge ok as-toggle">5 prop types</label>
+        <label for="c-18-components-fieldtextarea-props" class="badge ok as-toggle">5 prop types</label>
         
-        <label for="c-17-components-fieldtextarea-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-18-components-fieldtextarea-stories" class="badge ok as-toggle">10 stories</label>
         
         
       </div>
@@ -8220,10 +8567,10 @@ shows.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-17-components-fieldtextarea-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-18-components-fieldtextarea-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-17-components-fieldtextarea-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-18-components-fieldtextarea-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -8467,6 +8814,361 @@ provider&#39;s.</div>
   </div>
 </article>
 <article
+  id="components-filedrop"
+  class="card 
+  no-error
+  no-info
+  no-story-error
+  has-story-warning
+  
+  no-doc-error"
+  role="listitem"
+  aria-label="FileDrop">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> FileDrop</h2>
+      <div class="badges">
+        <label for="c-19-components-filedrop-props" class="badge ok as-toggle">11 prop types</label>
+        
+        <label for="c-19-components-filedrop-stories" class="badge ok as-toggle">10 stories · 4 incomplete</label>
+        
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/file-drop/file-drop.stories.tsx">components-filedrop · ./src/file-drop/file-drop.stories.tsx</div>
+    <div>Base single-file upload control: drop zone, picker and preview</div>
+    <div class="hint">FileDrop uploads one file: a dashed zone that takes a dropped file or opens
+the picker, and a preview with &quot;Replace file&quot; once there is one. It is
+controlled through `value`, `onFileChange` and `onFileReject`, and its real
+control is a hidden `&lt;input type=&quot;file&quot;&gt;` a `Label` names.</div>
+    <div class="kv"><span class="chip">summary: Base single-file upload control: drop zone, picker and preview</span><span class="chip">example: &lt;Label htmlFor=&quot;w9&quot;&gt;W-9&lt;/Label&gt;
+&lt;FileDrop
+  id=&quot;w9&quot;
+  accept=&quot;application/pdf&quot;
+  value={{ file }}
+  onFileChange={setFile}
+  onFileReject={() =&gt; setError(&#39;Only PDF files are accepted&#39;)}
+/&gt;</span></div>
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-19-components-filedrop-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+  <input id="c-19-components-filedrop-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-component-meta)</small></span>
+              <span class="badge ok">11 prop types</span>
+            </div>
+            <pre><code>Component: src/file-drop/file-drop.tsx::FileDrop</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>/**
+ * The formats the zone takes, as in the native attribute: MIME types,
+ * wildcards (`image/*`) and extensions (`.csv`), comma-separated. The
+ * picker filters by it and a dropped file is checked against it; empty
+ * allows anything. It also writes the &quot;Accepted formats&quot; line.
+ */
+accept?: string
+
+/**
+ * Paints the zone in the destructive tone. Point `aria-describedby` at the
+ * error message so it is read with the control.
+ */
+aria-invalid?: boolean | &quot;true&quot; | &quot;false&quot; | &quot;grammar&quot; | &quot;spelling&quot; | undefined
+
+/**
+ * Another way to supply the file, such as picking one from another
+ * record: rendered in the empty zone under an &quot;or&quot;, and gone once there is
+ * a file. Clicks inside it do not open the picker. With `disabled` it goes
+ * inert; pass `disabled` to its controls too, so they look it.
+ */
+children?: ReactNode
+
+/**
+ * Greys the zone out and disables the input: clicks and drops do nothing.
+ */
+disabled?: boolean
+
+/**
+ * Called with the file picked or dropped when `accept` allows it.
+ */
+onFileChange?: (file: File) =&gt; void
+
+/**
+ * Called with the file picked or dropped when `accept` rejects it.
+ */
+onFileReject?: (file: File) =&gt; void
+
+/**
+ * Adds a &quot;Remove&quot; button next to &quot;Replace file&quot; and is called when it is
+ * pressed; clear the `value` there to bring the drop zone back. Without it
+ * there is no button and a file can only be replaced.
+ */
+onFileRemove?: () =&gt; void
+
+/**
+ * Shows a placeholder in place of the preview while the stored file&#39;s
+ * `url` is on its way, instead of &quot;No preview available&quot;.
+ */
+previewLoading?: boolean
+
+/**
+ * Shows the file without &quot;Replace file&quot; or &quot;Remove&quot;, and takes no drop.
+ * With no file it renders nothing.
+ */
+readOnly?: boolean
+
+/**
+ * Lists the formats `accept` allows under the prompt. Defaults to `true`.
+ */
+showAcceptedFormats?: boolean = true
+
+/**
+ * The file to preview. Empty (no `file`, `url` or `name`) shows the drop
+ * zone. Any object with those keys fits, so a form&#39;s upload value can be
+ * passed as it is.
+ */
+value?: FileDropValue | null | undefined</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Button, DropdownMenu, FileDrop, Label } from '@agentero/design-system';
+import { ChevronDownIcon } from 'lucide-react';
+import { fn } from 'storybook/test';</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Empty drop zone that opens the picker</div>
+              <div class="hint">The empty zone, labelled by the `Label` through the hidden input, with the
+formats `accept` allows. Clicking anywhere on it opens the picker.</div>
+              <pre><code>const Default = () =&gt; &lt;ControlledFileDrop accept=&quot;application/pdf&quot; onFileChange={fn()} onFileReject={fn()} /&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Picked File</span>
+                <span class="badge info">incomplete example</span>
+              </div>
+              <div>Picked file previewed, with Replace file</div>
+              <div class="hint">Once the state holds the file, the box shows it: PDFs, plain text and
+images in a frame as tall as the zone was, under a &quot;Replace file&quot; button
+that opens the picker again. Focus moves to the button, since the input
+leaves the tab order; `required` stops holding, since the file never
+reaches the input; and a file dropped on the preview is swallowed instead of
+opening in place of the page.</div>
+              <pre><code>const PickedFile = () =&gt; &lt;ControlledFileDrop
+    accept=&quot;application/pdf&quot;
+    onFileChange={fn()}
+    onFileReject={fn()}
+    required
+    value={{ file: pdf(&#39;w9.pdf&#39;, &#39;Form W-9&#39;) }} /&gt;;</code></pre>
+              <div class="snippet-warning">Incomplete snippet: `pdf` could not be resolved statically.</div>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Removable</span>
+                <span class="badge info">incomplete example</span>
+              </div>
+              <div>Stored file with a Remove button</div>
+              <div class="hint">A file stored earlier comes in as `value.url` and previews from that
+address, so an edit form opens on the current document. `onFileRemove` adds
+a &quot;Remove&quot; button beside &quot;Replace file&quot;; clearing the value there brings the
+drop zone back, with focus on it.</div>
+              <pre><code>const Removable = () =&gt; &lt;ControlledFileDrop
+    accept=&quot;application/pdf&quot;
+    onFileChange={fn()}
+    onFileReject={fn()}
+    value={{ url: storedW9Url }}
+    onFileRemove={fn()} /&gt;;</code></pre>
+              <div class="snippet-warning">Incomplete snippet: `storedW9Url` could not be resolved statically.</div>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Preview Loading</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Placeholder while the stored file&#39;s URL loads</div>
+              <div class="hint">`previewLoading` holds a placeholder while the stored file&#39;s `url` is on its
+way (a signed URL fetched on demand, say), instead of &quot;No preview
+available&quot;. Until then the value carries only the file&#39;s `name`.</div>
+              <pre><code>const PreviewLoading = () =&gt; &lt;ControlledFileDrop
+    accept=&quot;application/pdf&quot;
+    onFileChange={fn()}
+    onFileReject={fn()}
+    value={{ name: &#39;w9-northside-insurance.pdf&#39; }}
+    previewLoading /&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Alternative Source</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Another way to supply the file inside the zone</div>
+              <div class="hint">`children` offer another way to supply the file, rendered in the empty zone
+under an &quot;or&quot;: here a menu of the files the agency already stored, as
+producerflow&#39;s &quot;Choose from agency&quot; does. Their clicks are their own: they
+never open the picker, and picking a file sets the value like a drop would,
+while browsing and dropping keep working. `showAcceptedFormats={false}`
+drops the formats line.</div>
+              <pre><code>const AlternativeSource = args =&gt; {
+    const [value, setValue] = useState&lt;FileDropValue | null&gt;(null);
+
+    return (
+        &lt;FileDrop
+            accept=&quot;application/pdf&quot;
+            onFileReject={fn()}
+            showAcceptedFormats={false}
+            value={value}
+            onFileChange={file =&gt; {
+                setValue({ file });
+                args.onFileChange?.(file);
+            }}
+            onFileRemove={() =&gt; setValue(null)}&gt;
+            &lt;DropdownMenu.Root&gt;
+                &lt;DropdownMenu.Trigger asChild&gt;
+                    &lt;Button type=&quot;button&quot; variant=&quot;secondary&quot; size=&quot;md&quot;&gt;Choose from agency
+                                                    &lt;ChevronDownIcon /&gt;
+                    &lt;/Button&gt;
+                &lt;/DropdownMenu.Trigger&gt;
+                &lt;DropdownMenu.Portal&gt;
+                    &lt;DropdownMenu.Content&gt;
+                        &lt;DropdownMenu.Item
+                            onSelect={() =&gt; setValue({ url: storedW9Url, name: &#39;w9-northside-insurance.pdf&#39; })}&gt;W-9 · Northside Insurance
+                                                        &lt;/DropdownMenu.Item&gt;
+                        &lt;DropdownMenu.Item
+                            onSelect={() =&gt; setValue({ url: storedW9Url, name: &#39;w9-lakeside-agency.pdf&#39; })}&gt;W-9 · Lakeside Agency
+                                                        &lt;/DropdownMenu.Item&gt;
+                    &lt;/DropdownMenu.Content&gt;
+                &lt;/DropdownMenu.Portal&gt;
+            &lt;/DropdownMenu.Root&gt;
+        &lt;/FileDrop&gt;
+    );
+};</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Without Preview</span>
+                <span class="badge info">incomplete example</span>
+              </div>
+              <div>File without a preview shows its name and a placeholder</div>
+              <div class="hint">A file the frame cannot show (a spreadsheet, an empty file, an image over
+10 MB, or HTML and SVG, whose scripts would run in the app) keeps the box
+with its name over a placeholder instead.</div>
+              <pre><code>const WithoutPreview = () =&gt; &lt;ControlledFileDrop
+    accept=&quot;.csv&quot;
+    onFileChange={fn()}
+    onFileReject={fn()}
+    value={{ file: csv() }} /&gt;;</code></pre>
+              <div class="snippet-warning">Incomplete snippet: `csv` could not be resolved statically.</div>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Invalid</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Invalid zone with its error message</div>
+              <div class="hint">`aria-invalid` paints the zone in the destructive tone; point
+`aria-describedby` at the message so it is read with the control. Here the
+error comes from `onFileReject`.</div>
+              <pre><code>const Invalid = args =&gt; {
+    const [error, setError] = useState(&#39;Upload the signed W-9.&#39;);
+
+    return (
+        &lt;&gt;
+            &lt;ControlledFileDrop
+                accept=&quot;application/pdf&quot;
+                aria-invalid={!!error}
+                aria-describedby=&quot;w9-error&quot;
+                onFileChange={file =&gt; {
+                    setError(&#39;&#39;);
+                    args.onFileChange?.(file);
+                }}
+                onFileReject={file =&gt; {
+                    setError(`${file.name} is not a PDF.`);
+                    args.onFileReject?.(file);
+                }} /&gt;
+            {error &amp;&amp; (
+                &lt;p id=&quot;w9-error&quot; role=&quot;alert&quot; className=&quot;text-sm text-text-input-destructive&quot;&gt;
+                    {error}
+                &lt;/p&gt;
+            )}
+        &lt;/&gt;
+    );
+};</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Disabled</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Disabled zone that takes no file</div>
+              <div class="hint">`disabled` greys the zone out and disables the input: clicks open nothing
+and drops are ignored.</div>
+              <pre><code>const Disabled = () =&gt; &lt;FileDrop accept=&quot;application/pdf&quot; onFileChange={fn()} onFileReject={fn()} disabled /&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Read Only</span>
+                <span class="badge info">incomplete example</span>
+              </div>
+              <div>Read-only preview without Replace file</div>
+              <div class="hint">`readOnly` shows the file with no &quot;Replace file&quot; button, and neither the
+label nor a drop changes it: a document to look at, not to edit.</div>
+              <pre><code>const ReadOnly = () =&gt; &lt;FileDrop
+    accept=&quot;application/pdf&quot;
+    onFileChange={fn()}
+    onFileReject={fn()}
+    readOnly
+    value={{ url: storedW9Url }} /&gt;;</code></pre>
+              <div class="snippet-warning">Incomplete snippet: `storedW9Url` could not be resolved statically.</div>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Custom Height</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Taller zone through className</div>
+              <div class="hint">`className` lands on the box, so setting `--file-drop-min-height` there
+resizes the zone and the preview alike, here to 300px for a longer document.</div>
+              <pre><code>const CustomHeight = () =&gt; &lt;ControlledFileDrop
+    accept=&quot;application/pdf&quot;
+    onFileChange={fn()}
+    onFileReject={fn()}
+    className=&quot;[--file-drop-min-height:18.75rem]&quot; /&gt;;</code></pre>
+              
+            </div>
+        </div>
+    
+    
+  </div>
+</article>
+<article
   id="components-form"
   class="card 
   no-error
@@ -8481,9 +9183,9 @@ provider&#39;s.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Form.Root</h2>
       <div class="badges">
-        <label for="c-18-components-form-props" class="badge ok as-toggle">3 prop types</label>
+        <label for="c-20-components-form-props" class="badge ok as-toggle">3 prop types</label>
         
-        <label for="c-18-components-form-stories" class="badge ok as-toggle">2 stories</label>
+        <label for="c-20-components-form-stories" class="badge ok as-toggle">2 stories</label>
         
         
       </div>
@@ -8512,10 +9214,10 @@ keep a single copy, since the provider and the fields share one context.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-18-components-form-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-20-components-form-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-18-components-form-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-20-components-form-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -8655,9 +9357,9 @@ Validation is react-hook-form&#39;s alone.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> FormText</h2>
       <div class="badges">
-        <label for="c-19-components-formtext-props" class="badge ok as-toggle">15 prop types</label>
+        <label for="c-21-components-formtext-props" class="badge ok as-toggle">15 prop types</label>
         
-        <label for="c-19-components-formtext-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-21-components-formtext-stories" class="badge ok as-toggle">10 stories</label>
         
         
       </div>
@@ -8687,10 +9389,10 @@ with the `FieldText`, `Label`, `Input` and `Field.*` primitives directly.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-19-components-formtext-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-21-components-formtext-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-19-components-formtext-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-21-components-formtext-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -8728,7 +9430,7 @@ description?: ReactNode
 
 /**
  * Disables the control through its context and sets `data-disabled` on the root.
- * Disables the input and marks the field. Unlike react-hook-form&#39;s own
+ * Disables the control and marks the field. Unlike react-hook-form&#39;s own
  * `disabled` option, the value stays in the submitted data: disabling a
  * field is a presentation decision, not a change to the form&#39;s values.
  */
@@ -8749,9 +9451,9 @@ label: ReactNode
 
 /**
  * Path of the value in the form, nested paths included (`&#39;agency.npn&#39;`).
- * Type it against the form&#39;s values with the generic
- * (`&lt;FormText&lt;Values&gt; name=&quot;agency.npn&quot; /&gt;`) or by passing `control`: the
- * path must then exist and hold a string (`FormTextPath`).
+ * Type it against the form&#39;s values by passing their type as the
+ * component&#39;s first generic, or by passing `control`: the path must then
+ * exist and hold a value of the field&#39;s type.
  */
 name: &quot;agencyName&quot;
 
@@ -8782,9 +9484,10 @@ readOnly?: boolean
  * Single source of truth for a required field: the `Label` shows its
  * asterisk and the control receives `required`, both through context.
  * Marks the field required: an asterisk on the label and the native
- * `required` attribute on the input, which assistive technology announces.
- * It does not validate — pair it with `rules.required` or a resolver — and it
- * never triggers the browser bubble, since `Form.Root` renders `noValidate`.
+ * `required` attribute on the control, which assistive technology
+ * announces. It does not validate — pair it with `rules.required` or a
+ * resolver — and it never triggers the browser bubble, since `Form.Root`
+ * renders `noValidate`.
  */
 required?: boolean
 
@@ -9165,9 +9868,9 @@ hand.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> FormTextArea</h2>
       <div class="badges">
-        <label for="c-20-components-formtextarea-props" class="badge ok as-toggle">14 prop types</label>
+        <label for="c-22-components-formtextarea-props" class="badge ok as-toggle">14 prop types</label>
         
-        <label for="c-20-components-formtextarea-stories" class="badge ok as-toggle">8 stories</label>
+        <label for="c-22-components-formtextarea-stories" class="badge ok as-toggle">8 stories</label>
         
         
       </div>
@@ -9196,10 +9899,10 @@ the `FieldTextArea`, `Label`, `TextArea` and `Field.*` primitives directly.</div
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-20-components-formtextarea-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-22-components-formtextarea-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-20-components-formtextarea-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-22-components-formtextarea-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -9237,7 +9940,7 @@ description?: ReactNode
 
 /**
  * Disables the control through its context and sets `data-disabled` on the root.
- * Disables the text area and marks the field. Unlike react-hook-form&#39;s own
+ * Disables the control and marks the field. Unlike react-hook-form&#39;s own
  * `disabled` option, the value stays in the submitted data: disabling a
  * field is a presentation decision, not a change to the form&#39;s values.
  */
@@ -9249,10 +9952,10 @@ disabled?: boolean
 label: ReactNode
 
 /**
- * Path of the value in the form, nested paths included (`&#39;appetite.notes&#39;`).
- * Type it against the form&#39;s values with the generic
- * (`&lt;FormTextArea&lt;Values&gt; name=&quot;appetite.notes&quot; /&gt;`) or by passing `control`:
- * the path must then exist and hold a string (`FormTextAreaPath`).
+ * Path of the value in the form, nested paths included (`&#39;agency.npn&#39;`).
+ * Type it against the form&#39;s values by passing their type as the
+ * component&#39;s first generic, or by passing `control`: the path must then
+ * exist and hold a value of the field&#39;s type.
  */
 name: &quot;reason&quot;
 
@@ -9272,7 +9975,7 @@ readOnly?: boolean
  * Single source of truth for a required field: the `Label` shows its
  * asterisk and the control receives `required`, both through context.
  * Marks the field required: an asterisk on the label and the native
- * `required` attribute on the text area, which assistive technology
+ * `required` attribute on the control, which assistive technology
  * announces. It does not validate — pair it with `rules.required` or a
  * resolver — and it never triggers the browser bubble, since `Form.Root`
  * renders `noValidate`.
@@ -9280,10 +9983,9 @@ readOnly?: boolean
 required?: boolean
 
 /**
- * react-hook-form validation rules for this field (`required`, `maxLength`,
+ * react-hook-form validation rules for this field (`required`, `pattern`,
  * `validate`…), same as `register`&#39;s. They only validate: `rules.required`
- * does not mark the field `required`, and `rules.maxLength` does not show
- * the count — set `limit` in `textAreaProps` for that.
+ * does not mark the field `required` — that is a separate, visible decision.
  */
 rules?: Omit&lt;RegisterOptions&lt;FieldValues, &quot;reason&quot;&gt;, &quot;disabled&quot; | &quot;valueAsNumber&quot; | &quot;valueAsDate&quot; | &quot;setValueAs&quot;&gt;
 
@@ -9601,9 +10303,9 @@ by hand.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> HoverCard.Root</h2>
       <div class="badges">
-        <label for="c-21-components-hovercard-props" class="badge ok as-toggle">6 prop types</label>
+        <label for="c-23-components-hovercard-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-21-components-hovercard-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-23-components-hovercard-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -9635,10 +10337,10 @@ import { HoverCard } from &#39;@agentero/design-system/hover-card&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-21-components-hovercard-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-23-components-hovercard-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-21-components-hovercard-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-23-components-hovercard-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -9895,9 +10597,9 @@ trigger-dense UIs where an instant preview reads as more responsive.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Input</h2>
       <div class="badges">
-        <label for="c-22-components-input-props" class="badge ok as-toggle">1 prop type</label>
+        <label for="c-24-components-input-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-22-components-input-stories" class="badge ok as-toggle">9 stories</label>
+        <label for="c-24-components-input-stories" class="badge ok as-toggle">9 stories</label>
         
         
       </div>
@@ -9920,10 +10622,10 @@ what assistive technology announces.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-22-components-input-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-24-components-input-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-22-components-input-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-24-components-input-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -10109,7 +10811,7 @@ they cannot change.</div>
       <div class="badges">
         <span class="badge">no API description</span>
         
-        <label for="c-23-components-inputgroup-stories" class="badge ok as-toggle">12 stories</label>
+        <label for="c-25-components-inputgroup-stories" class="badge ok as-toggle">12 stories</label>
         
         
       </div>
@@ -10132,7 +10834,7 @@ hands its state to the frame through `:has()`, so focus, `disabled`,
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-23-components-inputgroup-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-25-components-inputgroup-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
   
@@ -10420,9 +11122,9 @@ button&#39;s start corners with the frame.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> InputNumber</h2>
       <div class="badges">
-        <label for="c-24-components-inputnumber-props" class="badge ok as-toggle">7 prop types</label>
+        <label for="c-26-components-inputnumber-props" class="badge ok as-toggle">7 prop types</label>
         
-        <label for="c-24-components-inputnumber-stories" class="badge ok as-toggle">12 stories</label>
+        <label for="c-26-components-inputnumber-stories" class="badge ok as-toggle">12 stories</label>
         
         
       </div>
@@ -10444,10 +11146,10 @@ key. It is an `Input` driven by
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-24-components-inputnumber-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-26-components-inputnumber-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-24-components-inputnumber-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-26-components-inputnumber-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -10795,9 +11497,9 @@ plain `Input`.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> InputPassword</h2>
       <div class="badges">
-        <label for="c-25-components-inputpassword-props" class="badge ok as-toggle">1 prop type</label>
+        <label for="c-27-components-inputpassword-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-25-components-inputpassword-stories" class="badge ok as-toggle">5 stories</label>
+        <label for="c-27-components-inputpassword-stories" class="badge ok as-toggle">5 stories</label>
         
         
       </div>
@@ -10818,10 +11520,10 @@ rendered while the input is disabled.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-25-components-inputpassword-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-27-components-inputpassword-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-25-components-inputpassword-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-27-components-inputpassword-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -10971,9 +11673,9 @@ the field through the frame. A disabled field removes the toggle too.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> InputSearch</h2>
       <div class="badges">
-        <label for="c-26-components-inputsearch-props" class="badge ok as-toggle">3 prop types</label>
+        <label for="c-28-components-inputsearch-props" class="badge ok as-toggle">3 prop types</label>
         
-        <label for="c-26-components-inputsearch-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-28-components-inputsearch-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -10996,10 +11698,10 @@ once there is text. It is an `Input` of `type=&quot;search&quot;` inside an
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-26-components-inputsearch-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-28-components-inputsearch-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-26-components-inputsearch-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-28-components-inputsearch-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -11213,9 +11915,9 @@ several search fields does not read &quot;Clear search&quot; twice.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> InputTel</h2>
       <div class="badges">
-        <label for="c-27-components-inputtel-props" class="badge ok as-toggle">1 prop type</label>
+        <label for="c-29-components-inputtel-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-27-components-inputtel-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-29-components-inputtel-stories" class="badge ok as-toggle">11 stories</label>
         
         
       </div>
@@ -11236,10 +11938,10 @@ with the masked text already in `event.target.value`.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-27-components-inputtel-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-29-components-inputtel-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-27-components-inputtel-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-29-components-inputtel-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -11493,9 +12195,9 @@ with the input.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Label</h2>
       <div class="badges">
-        <label for="c-28-components-label-props" class="badge ok as-toggle">3 prop types</label>
+        <label for="c-30-components-label-props" class="badge ok as-toggle">3 prop types</label>
         
-        <label for="c-28-components-label-stories" class="badge ok as-toggle">5 stories</label>
+        <label for="c-30-components-label-stories" class="badge ok as-toggle">5 stories</label>
         
         
       </div>
@@ -11515,10 +12217,10 @@ still has to carry `required` / `aria-required`.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-28-components-label-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-30-components-label-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-28-components-label-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-30-components-label-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -11650,9 +12352,9 @@ field&#39;s control with no `htmlFor`. An explicit `htmlFor` still wins.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Loading</h2>
       <div class="badges">
-        <label for="c-29-components-loading-props" class="badge ok as-toggle">1 prop type</label>
+        <label for="c-31-components-loading-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-29-components-loading-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-31-components-loading-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -11669,10 +12371,10 @@ parent font size via `em`-based size variants (`sm`, `md`, `lg`).</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-29-components-loading-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-31-components-loading-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-29-components-loading-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-31-components-loading-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -11833,9 +12535,9 @@ against the dark background.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Modal.Root</h2>
       <div class="badges">
-        <label for="c-30-components-modal-props" class="badge ok as-toggle">5 prop types</label>
+        <label for="c-32-components-modal-props" class="badge ok as-toggle">5 prop types</label>
         
-        <label for="c-30-components-modal-stories" class="badge ok as-toggle">6 stories</label>
+        <label for="c-32-components-modal-stories" class="badge ok as-toggle">6 stories</label>
         
         
       </div>
@@ -11881,10 +12583,10 @@ import { Modal } from &#39;@agentero/design-system/modal&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-30-components-modal-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-32-components-modal-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-30-components-modal-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-32-components-modal-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -12113,9 +12815,9 @@ announced as an `alertdialog`. Only the footer actions close it.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Pagination</h2>
       <div class="badges">
-        <label for="c-31-components-pagination-props" class="badge ok as-toggle">5 prop types</label>
+        <label for="c-33-components-pagination-props" class="badge ok as-toggle">5 prop types</label>
         
-        <label for="c-31-components-pagination-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-33-components-pagination-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -12145,10 +12847,10 @@ const [page, setPage] = useState(1);
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-31-components-pagination-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-33-components-pagination-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-31-components-pagination-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-33-components-pagination-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -12314,9 +13016,9 @@ entries summary follow along.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Popover.Root</h2>
       <div class="badges">
-        <label for="c-32-components-popover-props" class="badge ok as-toggle">5 prop types</label>
+        <label for="c-34-components-popover-props" class="badge ok as-toggle">5 prop types</label>
         
-        <label for="c-32-components-popover-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-34-components-popover-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -12345,10 +13047,10 @@ import { Popover } from &#39;@agentero/design-system/popover&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-32-components-popover-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-34-components-popover-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-32-components-popover-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-34-components-popover-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -12613,9 +13315,9 @@ focus returning to its trigger once the modal closes.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Progress</h2>
       <div class="badges">
-        <label for="c-33-components-progress-props" class="badge ok as-toggle">4 prop types</label>
+        <label for="c-35-components-progress-props" class="badge ok as-toggle">4 prop types</label>
         
-        <label for="c-33-components-progress-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-35-components-progress-stories" class="badge ok as-toggle">4 stories</label>
         
         
       </div>
@@ -12634,10 +13336,10 @@ with `currentColor`, so recolor it with a plain text class — e.g.
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-33-components-progress-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-35-components-progress-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-33-components-progress-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-35-components-progress-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -12761,9 +13463,9 @@ percentage: number</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> RadioGroup.Root</h2>
       <div class="badges">
-        <label for="c-34-components-radiogroup-props" class="badge ok as-toggle">9 prop types</label>
+        <label for="c-36-components-radiogroup-props" class="badge ok as-toggle">9 prop types</label>
         
-        <label for="c-34-components-radiogroup-stories" class="badge ok as-toggle">12 stories</label>
+        <label for="c-36-components-radiogroup-stories" class="badge ok as-toggle">12 stories</label>
         
         
       </div>
@@ -12781,10 +13483,10 @@ percentage: number</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-34-components-radiogroup-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-36-components-radiogroup-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-34-components-radiogroup-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-36-components-radiogroup-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -13183,9 +13885,9 @@ enabled, disabled, invalid and read-only, each with one item selected.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Select.Root</h2>
       <div class="badges">
-        <label for="c-35-components-select-props" class="badge ok as-toggle">13 prop types</label>
+        <label for="c-37-components-select-props" class="badge ok as-toggle">13 prop types</label>
         
-        <label for="c-35-components-select-stories" class="badge ok as-toggle">13 stories</label>
+        <label for="c-37-components-select-stories" class="badge ok as-toggle">13 stories</label>
         
         
       </div>
@@ -13209,10 +13911,10 @@ value; `Trigger` is the closed field and `Content` the list of `Item`s.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-35-components-select-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-37-components-select-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-35-components-select-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-37-components-select-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -13702,7 +14404,7 @@ the picked option on top of it, instead of below.</div>
       <div class="badges">
         <span class="badge">no API description</span>
         
-        <label for="c-36-components-skeleton-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-38-components-skeleton-stories" class="badge ok as-toggle">4 stories</label>
         
         
       </div>
@@ -13719,7 +14421,7 @@ shape it with Tailwind classes to mirror the content it stands in for.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-36-components-skeleton-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-38-components-skeleton-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
   
@@ -13822,9 +14524,9 @@ shape it with Tailwind classes to mirror the content it stands in for.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Switch</h2>
       <div class="badges">
-        <label for="c-37-components-switch-props" class="badge ok as-toggle">8 prop types</label>
+        <label for="c-39-components-switch-props" class="badge ok as-toggle">9 prop types</label>
         
-        <label for="c-37-components-switch-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-39-components-switch-stories" class="badge ok as-toggle">8 stories</label>
         
         
       </div>
@@ -13840,10 +14542,10 @@ a Checkbox for a single boolean that applies instantly, and pair it with a
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-37-components-switch-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-39-components-switch-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-37-components-switch-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-39-components-switch-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -13853,7 +14555,7 @@ a Checkbox for a single boolean that applies instantly, and pair it with a
           <div class="note ok">
             <div class="row">
               <span class="ex-name">Prop types <small>(react-component-meta)</small></span>
-              <span class="badge ok">8 prop types</span>
+              <span class="badge ok">9 prop types</span>
             </div>
             <pre><code>Component: src/switch/switch.tsx::Switch</code></pre>
             <pre><code>Props:</code></pre>
@@ -13871,6 +14573,13 @@ defaultChecked?: boolean
 label?: string
 
 onCheckedChange?: (checked: boolean) =&gt; void
+
+/**
+ * Keeps the switch focusable and announced (`aria-readonly`) but stops a
+ * click or a key from flipping it. Not a native `&lt;button&gt;` attribute,
+ * hence declared here. Inside a `FieldSwitch` it comes from the field.
+ */
+readOnly?: boolean
 
 required?: boolean
 
@@ -13994,6 +14703,18 @@ size?: &quot;sm&quot; | &quot;md&quot;</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
+                <span class="ex-name">Read Only</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Focusable toggle that does not flip</div>
+              <div class="hint">`readOnly` keeps the toggle focusable and announced as read-only, but
+neither a click nor a key flips it. Use it to show a setting the viewer
+cannot change; `disabled` takes it out of the tab order instead.</div>
+              <pre><code>const ReadOnly = () =&gt; &lt;Switch id=&quot;read-only&quot; label=&quot;Instant appointments&quot; defaultChecked readOnly /&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
                 <span class="ex-name">Setting Row</span>
                 <span class="badge ok">story ok</span>
               </div>
@@ -14034,9 +14755,9 @@ size?: &quot;sm&quot; | &quot;md&quot;</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Table.Root</h2>
       <div class="badges">
-        <label for="c-38-components-table-props" class="badge ok as-toggle">6 prop types</label>
+        <label for="c-40-components-table-props" class="badge ok as-toggle">8 prop types</label>
         
-        <label for="c-38-components-table-stories" class="badge ok as-toggle">12 stories</label>
+        <label for="c-40-components-table-stories" class="badge ok as-toggle">12 stories</label>
         
         
       </div>
@@ -14067,10 +14788,10 @@ import { Table } from &#39;@agentero/design-system/table&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-38-components-table-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-40-components-table-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-38-components-table-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-40-components-table-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -14080,17 +14801,27 @@ import { Table } from &#39;@agentero/design-system/table&#39;;
           <div class="note ok">
             <div class="row">
               <span class="ex-name">Prop types <small>(react-component-meta)</small></span>
-              <span class="badge ok">6 prop types</span>
+              <span class="badge ok">8 prop types</span>
             </div>
             <pre><code>Component: src/table/index.ts::Table</code></pre>
             <pre><code>Props:</code></pre>
-            <pre><code>children?: ReactNode
+            <pre><code>/**
+ * Names the scroll region, which takes keyboard focus so the table can scroll by keyboard.
+ */
+aria-label?: string
+
+/**
+ * Id of a visible heading that names the scroll region. Prefer it over `aria-label`.
+ */
+aria-labelledby?: string
+
+children?: ReactNode
 
 embed?: boolean
 
 enclosed?: boolean
 
-ref?: Ref&lt;HTMLDivElement&gt; | undefined
+ref?: Ref&lt;HTMLElement&gt; | undefined
 
 size?: &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;
 
@@ -14203,7 +14934,7 @@ Radix keeps it while the Switch sits in a form, and on the server render
 before hydration. A cell holding a Switch is not a selection column, so it
 keeps its padding.</div>
               <pre><code>const WithSwitch = () =&gt; &lt;form&gt;
-    &lt;Table.Root size=&quot;md&quot; embed={false}&gt;
+    &lt;Table.Root size=&quot;md&quot; embed={false} aria-label=&quot;Team members&quot;&gt;
         &lt;Table.Body&gt;
             {ROWS.slice(0, 3).map(row =&gt; (
                 &lt;Table.Row key={row.id}&gt;
@@ -14238,7 +14969,7 @@ keeps its padding.</div>
 opened from one of those actions is open. The pointer leaves the row for the
 menu, so without it the actions would fade out under the open menu. Escape
 hands keyboard focus back to the action, so the row keeps that look.</div>
-              <pre><code>const WithRowActionsMenu = () =&gt; &lt;Table.Root size=&quot;md&quot; embed={false}&gt;
+              <pre><code>const WithRowActionsMenu = () =&gt; &lt;Table.Root size=&quot;md&quot; embed={false} aria-label=&quot;Team members&quot;&gt;
     &lt;Table.Head&gt;
         &lt;Table.Row&gt;
             &lt;Table.Header&gt;Name&lt;/Table.Header&gt;
@@ -14289,7 +15020,7 @@ hands keyboard focus back to the action, so the row keeps that look.</div>
               <div class="hint">The row stays highlighted while its menu is open even when the trigger turns
 `loading`, and with it disabled, because the menu item that started the work
 keeps the menu open.</div>
-              <pre><code>const WithLoadingRowActionsMenu = () =&gt; &lt;Table.Root size=&quot;md&quot; embed={false}&gt;
+              <pre><code>const WithLoadingRowActionsMenu = () =&gt; &lt;Table.Root size=&quot;md&quot; embed={false} aria-label=&quot;Team members&quot;&gt;
     &lt;Table.Head&gt;
         &lt;Table.Row&gt;
             &lt;Table.Header&gt;Name&lt;/Table.Header&gt;
@@ -14322,7 +15053,7 @@ keeps the menu open.</div>
     const [openId, setOpenId] = useState&lt;string | null&gt;(ROWS[0]!.id);
 
     return (
-        &lt;Table.Root size=&quot;md&quot; embed={false}&gt;
+        &lt;Table.Root size=&quot;md&quot; embed={false} aria-label=&quot;Team members&quot;&gt;
             &lt;Table.Head&gt;
                 &lt;Table.Row&gt;
                     &lt;Table.Header&gt;
@@ -14385,9 +15116,9 @@ keeps the menu open.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tabs.Root</h2>
       <div class="badges">
-        <label for="c-39-components-tabs-props" class="badge ok as-toggle">9 prop types</label>
+        <label for="c-41-components-tabs-props" class="badge ok as-toggle">9 prop types</label>
         
-        <label for="c-39-components-tabs-stories" class="badge ok as-toggle">8 stories</label>
+        <label for="c-41-components-tabs-stories" class="badge ok as-toggle">8 stories</label>
         
         
       </div>
@@ -14418,10 +15149,10 @@ import { Tabs } from &#39;@agentero/design-system/tabs&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-39-components-tabs-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-41-components-tabs-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-39-components-tabs-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-41-components-tabs-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -14653,9 +15384,9 @@ tablist role is announced.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tag</h2>
       <div class="badges">
-        <label for="c-40-components-tag-props" class="badge ok as-toggle">8 prop types</label>
+        <label for="c-42-components-tag-props" class="badge ok as-toggle">8 prop types</label>
         
-        <label for="c-40-components-tag-stories" class="badge ok as-toggle">13 stories</label>
+        <label for="c-42-components-tag-stories" class="badge ok as-toggle">13 stories</label>
         
         
       </div>
@@ -14674,10 +15405,10 @@ it an interactive link or button, which adds the pointer cursor and hover fill.<
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-40-components-tag-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-42-components-tag-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-40-components-tag-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-42-components-tag-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -14762,6 +15493,7 @@ visible.</div>
                         size={size}
                         color=&quot;informative&quot;
                         variant=&quot;secondary&quot;
+                        // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- an icon-only tag is named as an image; an &lt;img&gt; cannot hold the svg
                         role=&quot;img&quot;
                         aria-label={`${size} icon only`}&gt;
                         &lt;PlusIcon /&gt;
@@ -15105,6 +15837,7 @@ leading + trailing icons, and icon-only.</div>
                                 key={variant}
                                 color={color}
                                 variant={variant}
+                                // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- an icon-only tag is named as an image; an &lt;img&gt; cannot hold the svg
                                 role=&quot;img&quot;
                                 aria-label={`${color} ${variant}`}&gt;
                                 &lt;PlusIcon /&gt;
@@ -15138,9 +15871,9 @@ leading + trailing icons, and icon-only.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> TextArea</h2>
       <div class="badges">
-        <label for="c-41-components-textarea-props" class="badge ok as-toggle">2 prop types</label>
+        <label for="c-43-components-textarea-props" class="badge ok as-toggle">2 prop types</label>
         
-        <label for="c-41-components-textarea-stories" class="badge ok as-toggle">9 stories</label>
+        <label for="c-43-components-textarea-stories" class="badge ok as-toggle">9 stories</label>
         
         
       </div>
@@ -15157,10 +15890,10 @@ states. It wires nothing on its own: `id`, `aria-invalid` and
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-41-components-textarea-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-43-components-textarea-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-41-components-textarea-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-43-components-textarea-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -15355,9 +16088,9 @@ form&#39;s validation can reject it.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Toast</h2>
       <div class="badges">
-        <label for="c-42-components-toast-props" class="badge ok as-toggle">11 prop types</label>
+        <label for="c-44-components-toast-props" class="badge ok as-toggle">11 prop types</label>
         
-        <label for="c-42-components-toast-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-44-components-toast-stories" class="badge ok as-toggle">11 stories</label>
         
         
       </div>
@@ -15376,10 +16109,10 @@ common feedback patterns.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-42-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-44-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-42-components-toast-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-44-components-toast-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -15819,9 +16552,9 @@ action (e.g., a sync icon for a sync-in-progress toast).</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tooltip</h2>
       <div class="badges">
-        <label for="c-43-components-tooltip-props" class="badge ok as-toggle">12 prop types</label>
+        <label for="c-45-components-tooltip-props" class="badge ok as-toggle">12 prop types</label>
         
-        <label for="c-43-components-tooltip-stories" class="badge ok as-toggle">6 stories</label>
+        <label for="c-45-components-tooltip-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -15840,10 +16573,10 @@ on hover or focus.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-43-components-tooltip-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-45-components-tooltip-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-43-components-tooltip-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-45-components-tooltip-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -15864,6 +16597,7 @@ align?: &quot;center&quot; | &quot;start&quot; | &quot;end&quot;
 
 /**
  * Merge Radix&#39;s behavior onto an already-interactive child instead of wrapping it in a `&lt;button&gt;`. Defaults to `false`.
+ * The child keeps its own `type`, and `Button` has no default one, so inside a form give it `type=&quot;button&quot;` or it submits.
  */
 asChild?: boolean = false
 
@@ -16012,6 +16746,22 @@ import { Button } from '../button';</code></pre>
             </div>
             <div class="note ok">
               <div class="row">
+                <span class="ex-name">Inside A Form</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Without `asChild` the trigger is a `type=&quot;button&quot;`, so a tooltip inside a form never submits it.</div>
+              <pre><code>const InsideAForm = () =&gt; &lt;form onSubmit={onSubmit}&gt;
+    &lt;Tooltip side=&quot;top&quot; asChild={false} content=&quot;Rated through ITC&quot;&gt;
+        &lt;span
+            className=&quot;rounded-sm border border-border-default-base-primary px-1.5 text-xs&quot;&gt;RATER
+                            &lt;/span&gt;
+    &lt;/Tooltip&gt;
+&lt;/form&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
                 <span class="ex-name">Long Content</span>
                 <span class="badge ok">story ok</span>
               </div>
@@ -16045,9 +16795,9 @@ import { Button } from '../button';</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> ValidationList</h2>
       <div class="badges">
-        <label for="c-44-components-validationlist-props" class="badge ok as-toggle">2 prop types</label>
+        <label for="c-46-components-validationlist-props" class="badge ok as-toggle">2 prop types</label>
         
-        <label for="c-44-components-validationlist-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-46-components-validationlist-stories" class="badge ok as-toggle">4 stories</label>
         
         
       </div>
@@ -16068,10 +16818,10 @@ your form validation; it does not own the input or block submission.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-44-components-validationlist-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-46-components-validationlist-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-44-components-validationlist-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-46-components-validationlist-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
