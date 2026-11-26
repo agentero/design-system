@@ -2,6 +2,8 @@
 
 import { ReactNode } from 'react';
 
+import { tv } from 'tailwind-variants';
+
 import { cn } from '../../lib';
 import { Field, type FieldRootProps, useFieldContext } from '../field';
 import { SwitchContext, type SwitchContextValue } from '../switch';
@@ -26,13 +28,15 @@ const SwitchProvider = ({ children }: { children: ReactNode }) => {
 // far edge by the field's row, and centred on the label's 24px first line
 // however many lines the text below it takes. Stacked, the field stretches its
 // children (`w-full`), so the toggle is capped at its own width.
-const rowClassName = [
-	'data-[orientation=horizontal]:items-start data-[orientation=horizontal]:gap-4',
-	'data-[orientation=horizontal]:[&>:first-child]:flex-initial',
-	'data-[orientation=horizontal]:[&>[data-slot=switch][data-size=sm]]:mt-1',
-	'data-[orientation=vertical]:[&>[data-slot=switch][data-size=sm]]:max-w-7.5',
-	'data-[orientation=vertical]:[&>[data-slot=switch][data-size=md]]:max-w-12'
-];
+export const fieldSwitchRecipe = tv({
+	base: [
+		'data-[orientation=horizontal]:items-start data-[orientation=horizontal]:gap-4',
+		'data-[orientation=horizontal]:[&>:first-child]:flex-initial',
+		'data-[orientation=horizontal]:[&>[data-slot=switch][data-size=sm]]:mt-1',
+		'data-[orientation=vertical]:[&>[data-slot=switch][data-size=sm]]:max-w-7.5',
+		'data-[orientation=vertical]:[&>[data-slot=switch][data-size=md]]:max-w-12'
+	]
+});
 
 export type FieldSwitchProps = Omit<FieldRootProps, 'orientation'> & {
 	/**
@@ -48,7 +52,9 @@ export type FieldSwitchProps = Omit<FieldRootProps, 'orientation'> & {
  * `Switch` inside associates itself with the label and the messages and takes
  * `invalid`, `required`, `disabled` and `readOnly` from the field, plus the
  * `sm` size of the design. Every other part (`Label`, `Field.Content`,
- * `Field.Description`, `Field.Error`) works as in any field.
+ * `Field.Description`, `Field.Error`) works as in any field. `invalid` only
+ * sets `aria-invalid` on the toggle, which looks the same as in a valid field
+ * (the design draws no invalid switch): `Field.Error` is what shows the error.
  *
  * Unlike the other fields it defaults to `orientation="horizontal"`: the
  * label and the toggle read as one row, the toggle 16px after the text and
@@ -79,7 +85,7 @@ export const FieldSwitch = ({
 	children,
 	...props
 }: FieldSwitchProps) => (
-	<Field.Root orientation={orientation} className={cn(rowClassName, className)} {...props}>
+	<Field.Root orientation={orientation} className={cn(fieldSwitchRecipe(), className)} {...props}>
 		<SwitchProvider>{children}</SwitchProvider>
 	</Field.Root>
 );
