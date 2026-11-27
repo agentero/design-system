@@ -34,7 +34,7 @@ export const commandRecipe = tv({
 		// cmdk emits data-selected and data-disabled on every row ("false" when inactive), so both
 		// variants need the value.
 		item: [
-			'flex items-center rounded-md px-3 py-2 text-sm text-text-default-base-primary',
+			'flex items-center rounded-[calc(var(--radius-md)-5px)] px-3 py-2 text-sm text-text-default-base-primary',
 			'cursor-pointer hover:bg-bg-default-base-tertiary',
 			'data-[selected=true]:bg-bg-default-base-tertiary',
 			'data-[disabled=true]:cursor-default data-[disabled=true]:text-text-default-disable-primary',
