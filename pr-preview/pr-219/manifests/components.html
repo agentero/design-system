@@ -626,7 +626,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.4s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>6.0s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -10085,11 +10085,12 @@ drops it.</div>
     <div class="hint">FormPassword is a complete password field bound to one react-hook-form
 value: label, `InputPassword` with its show/hide toggle, helper text and
 validation error in the standard order, wired through `useController`. It
-renders inside a `Form.Root` and needs only a `name`.
+renders inside a `Form.Root` and needs a `name` and an
+`inputProps.autoComplete`.
 
 It is `FormText` with an `InputPassword` in place of the `Input`: same
 props, same layout, same wiring. Only `inputProps.type` is left out,
-because the toggle owns it.</div>
+because the toggle owns it, and `inputProps.autoComplete` is required.</div>
     <div class="kv"><span class="chip">summary: Label, InputPassword, description and error bound to one react-hook-form field</span><span class="chip">example: &lt;FormPassword
   name=&quot;password&quot;
   label=&quot;Password&quot;
@@ -10151,12 +10152,12 @@ disabled?: boolean
 
 /**
  * Everything else the `InputPassword` should receive: `autoComplete`,
- * `placeholder`, `maxLength`, `size`, `className` (which styles the
+ * which is required, `placeholder`, `maxLength`, `size`, `className` (which styles the
  * frame)… Handlers such as `onChange` and `onBlur` run after
  * react-hook-form&#39;s, which are already wired. `type` is not accepted:
  * the show/hide toggle owns it.
  */
-inputProps?: FormPasswordInputProps
+inputProps: FormPasswordInputProps
 
 /**
  * The caption, rendered as the field&#39;s label. Text in almost every case.
@@ -10265,8 +10266,8 @@ receives the text either way.</div>
             className=&quot;flex flex-col items-start gap-7&quot;&gt;
             &lt;FormPassword
                 rules={{ required: &#39;Enter your password.&#39; }}
-                inputProps={{ autoComplete: &#39;current-password&#39; }}
                 label=&quot;Password&quot;
+                inputProps={{ autoComplete: &#39;current-password&#39; }}
                 orientation=&quot;vertical&quot;
                 required
                 optional={false}
@@ -10413,7 +10414,12 @@ drops it.</div>
             onSubmit={onSubmit}
             aria-label=&quot;Sign in&quot;
             className=&quot;flex flex-col items-start gap-7&quot;&gt;
-            &lt;FormPassword name=&quot;password&quot; label=&quot;Password&quot; disabled /&gt;
+            &lt;FormPassword
+                name=&quot;password&quot;
+                label=&quot;Password&quot;
+                disabled
+                inputProps={{ autoComplete: &#39;current-password&#39; }}
+            /&gt;
             &lt;Button type=&quot;submit&quot;&gt;Save&lt;/Button&gt;
         &lt;/Form.Root&gt;
     );
