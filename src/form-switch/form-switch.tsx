@@ -3,9 +3,8 @@
 import { type FieldPathByValue, type FieldValues } from 'react-hook-form';
 
 import { mergeProps } from '../../lib';
-import { Field } from '../field';
 import { FieldSwitch, type FieldSwitchProps } from '../field-switch';
-import { type FormFieldProps, useFormField } from '../form/form-field';
+import { FormFieldContent, type FormFieldProps, useFormField } from '../form/form-field';
 import { Switch, type SwitchProps } from '../switch';
 
 /** Props `FormSwitch` forwards to its `Switch`: see `switchProps`. */
@@ -107,7 +106,6 @@ export const FormSwitch = <
 	...props
 }: FormSwitchProps<TFieldValues, TName, TTransformedValues>) => {
 	const { field, rootProps, shellProps } = useFormField(props);
-	const { label, description, tooltip, tooltipSide, optional, error } = shellProps;
 
 	// Only `true` turns the toggle on: an empty value reads as off, and `checked`
 	// stays a boolean so the toggle is controlled from the first render.
@@ -125,13 +123,7 @@ export const FormSwitch = <
 	return (
 		<FieldSwitch {...rootProps}>
 			{toggleFirst && toggle}
-			<Field.Content>
-				<Field.Label tooltip={tooltip} tooltipSide={tooltipSide} optional={optional}>
-					{label}
-				</Field.Label>
-				{description && <Field.Description>{description}</Field.Description>}
-				<Field.Error errors={error ? [error] : undefined} />
-			</Field.Content>
+			<FormFieldContent {...shellProps} />
 			{!toggleFirst && toggle}
 		</FieldSwitch>
 	);

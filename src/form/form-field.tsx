@@ -99,7 +99,8 @@ export type FormFieldProps<
  *   `field.value` and `field.onChange` onto its control,
  * - `rootProps` for the field root (`FieldText`, `FieldTextArea`…): every
  *   prop the shell does not own, plus `invalid` and `disabled`,
- * - `shellProps` for `FormFieldShell`.
+ * - `shellProps` for `FormFieldShell`, or for `FormFieldContent` in a field
+ *   whose control sits beside its text.
  */
 export const useFormField = <
 	TFieldValues extends FieldValues,
@@ -132,12 +133,30 @@ export const useFormField = <
 	};
 };
 
-export type FormFieldShellProps = Pick<
+type FormFieldPartsProps = Pick<
 	FormFieldProps,
 	'label' | 'description' | 'tooltip' | 'tooltipSide' | 'optional'
 > & {
 	/** The field's error, from `useController`'s `fieldState`. */
 	error?: FieldError;
+};
+
+// The label and the messages every `Form<X>` field renders, in one place so a
+// fix reaches the shell and `FormFieldContent` alike.
+const FormFieldLabel = ({ label, tooltip, tooltipSide, optional }: FormFieldPartsProps) => (
+	<Field.Label tooltip={tooltip} tooltipSide={tooltipSide} optional={optional}>
+		{label}
+	</Field.Label>
+);
+
+const FormFieldMessages = ({ description, error }: FormFieldPartsProps) => (
+	<>
+		{description && <Field.Description>{description}</Field.Description>}
+		<Field.Error errors={error ? [error] : undefined} />
+	</>
+);
+
+export type FormFieldShellProps = FormFieldPartsProps & {
 	/**
 	 * Groups the control with its messages in a `Field.Content`, for a field
 	 * root that takes an `orientation`: the messages then stay under the control
@@ -153,36 +172,39 @@ export type FormFieldShellProps = Pick<
  * label, control, description, error. Render it inside the field root, which
  * provides the context every part reads.
  *
- * It fits a field with a single control and its label above it. A group of
- * controls (radio group, checkbox group) is named by a title through
- * `aria-labelledby`, not by a `<label for>`, and a checkbox puts its label
- * beside the control: those entries lay out their own parts and use only
+ * It fits a field with a single control and its label above it. A field whose
+ * control sits beside its text (a switch, a checkbox) renders
+ * `FormFieldContent` next to the control instead. A group of controls (radio
+ * group, checkbox group) is named by a title through `aria-labelledby`, not by
+ * a `<label for>`: those entries lay out their own parts and use only
  * `useFormField`.
  */
-export const FormFieldShell = ({
-	label,
-	description,
-	tooltip,
-	tooltipSide,
-	optional,
-	error,
-	wrapContent,
-	children
-}: FormFieldShellProps) => {
+export const FormFieldShell = ({ wrapContent, children, ...parts }: FormFieldShellProps) => {
 	const body = (
 		<>
 			{children}
-			{description && <Field.Description>{description}</Field.Description>}
-			<Field.Error errors={error ? [error] : undefined} />
+			<FormFieldMessages {...parts} />
 		</>
 	);
 
 	return (
 		<>
-			<Field.Label tooltip={tooltip} tooltipSide={tooltipSide} optional={optional}>
-				{label}
-			</Field.Label>
+			<FormFieldLabel {...parts} />
 			{wrapContent ? <Field.Content>{body}</Field.Content> : body}
 		</>
 	);
 };
+
+export type FormFieldContentProps = FormFieldPartsProps;
+
+/**
+ * The text of a `Form<X>` field whose control sits beside it: the label, the
+ * description and the error stacked in a `Field.Content`. Render it inside the
+ * field root, before or after the control.
+ */
+export const FormFieldContent = (parts: FormFieldContentProps) => (
+	<Field.Content>
+		<FormFieldLabel {...parts} />
+		<FormFieldMessages {...parts} />
+	</Field.Content>
+);
