@@ -44,6 +44,7 @@
     "./file-drop": "./src/file-drop/index.ts",
     "./form": "./src/form/index.ts",
     "./form-number": "./src/form-number/index.ts",
+    "./form-password": "./src/form-password/index.ts",
     "./form-switch": "./src/form-switch/index.ts",
     "./form-tel": "./src/form-tel/index.ts",
     "./form-text": "./src/form-text/index.ts",

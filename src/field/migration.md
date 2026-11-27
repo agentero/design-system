@@ -16,13 +16,14 @@ new `Field<X>` is the presentational layer underneath, with no form library in
 it — reach for it only when the layout is not the standard one and you are
 wiring `useController` yourself.
 
-| Legacy                             | Here                                                    |
-| ---------------------------------- | ------------------------------------------------------- |
-| `Form.Root` (wraps `FormProvider`) | `Form.Root` from `@agentero/design-system/form`         |
-| `FieldText`                        | `FormText` from `@agentero/design-system/form-text`     |
-| `FieldPhoneNumber`                 | `FormTel` from `@agentero/design-system/form-tel`       |
-| `FieldNumber`                      | `FormNumber` from `@agentero/design-system/form-number` |
-| Other `Field<X>`                   | their `Form<X>`, as each control lands                  |
+| Legacy                             | Here                                                        |
+| ---------------------------------- | ----------------------------------------------------------- |
+| `Form.Root` (wraps `FormProvider`) | `Form.Root` from `@agentero/design-system/form`             |
+| `FieldText`                        | `FormText` from `@agentero/design-system/form-text`         |
+| `FieldPhoneNumber`                 | `FormTel` from `@agentero/design-system/form-tel`           |
+| `FieldNumber`                      | `FormNumber` from `@agentero/design-system/form-number`     |
+| `FieldPassword`                    | `FormPassword` from `@agentero/design-system/form-password` |
+| Other `Field<X>`                   | their `Form<X>`, as each control lands                      |
 
 ## Prop mapping for `FieldText` → `FormText`
 
@@ -192,3 +193,50 @@ amount: z.string()
   `inputProps.maxNumber` or with a `validate` rule that strips the commas:
   `validate: value => Number(value.replaceAll(',', '')) >= 100 || 'Enter at least 100.'`.
   A plain `Number(value)` is `NaN` on `"1,000"` too.
+
+## `FieldPassword` → `FormPassword`
+
+`FormPassword` is `FormText` with an `InputPassword` in place of the `Input`.
+What is specific to the password field:
+
+| Legacy                     | Here                      | Note                                                               |
+| -------------------------- | ------------------------- | ------------------------------------------------------------------ |
+| `autoComplete`             | `inputProps.autoComplete` | now required; see below                                            |
+| `autoFocus`, `placeholder` | `inputProps`              |                                                                    |
+| `size`                     | `inputProps.size`         | defaults to `md`; `agentero/mono`'s legacy field defaulted to `sm` |
+| `type`                     | —                         | the show/hide toggle owns it                                       |
+
+**`autoComplete`.** Required: a `FormPassword` without it does not compile.
+Pick the value by what the field holds:
+
+- `current-password` on sign-in, and for the current password in a
+  password-change form.
+- `new-password` where the user picks a password (sign-up, activation, the new
+  password in a change form) and for credentials of another service, such as
+  an integration's API key or a carrier login, so the browser does not fill
+  the user's own password there. `agentero/mono`'s carrier credentials form
+  already does this.
+
+**Stored value.** The text as typed, as before. The show/hide toggle only
+changes what the input displays.
+
+**A field that picks its control at runtime.** The carrier credentials forms
+in `agentero/mono` render `isHidden ? FieldPassword : FieldText`. The same
+switch works here, `isHidden ? FormPassword : FormText`: both take the same
+field props, and an `inputProps` with `autoComplete` and without `type` fits
+both. That holds for `CarrierCredentialsFormFields`, whose values are a flat
+`Record<string, string>`. `AgenteroCredentialsStateFields` does not compile
+yet: its values are nested, `Record<string, Record<string, string>>`, and the
+path type every `Form<X>` entry shares rejects any path into a nested record
+with string keys (``name={`${state}.${name}`}`` resolves to `never`), with
+`FormText` as well. Keep that call site on the legacy fields until the path
+type accepts it.
+
+**Password inputs wired by hand.** Besides `FieldPassword`, both monos spread
+`register` into a bare `InputPassword` next to their own `Label` and error
+message: the sign-in, activation and password-change forms in `agentero/mono`,
+and the sign-up `PasswordForm` in `producerflow/mono`. Each of those becomes
+one `FormPassword`. The sign-up form shows only the required error under the
+field and lists the strength rules in a separate checklist. The checklist can
+stay as it is, or the rules move into `rules.validate` with
+`criteriaMode: 'all'` and the field lists the ones that failed.
