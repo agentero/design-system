@@ -374,6 +374,34 @@ export const NarrowWithLongLabel: Story = {
 	}
 };
 
+/** With the toggle first, a long label wraps beside it and the toggle keeps its size. */
+export const SwitchFirstWithLongLabel: Story = {
+	tags: ['!dev', '!autodocs', '!manifest'],
+	render: args => (
+		<div className="w-56">
+			<FieldSwitch {...args}>
+				<Switch />
+				<Field.Content>
+					<Label>Paperless billing for every policy on this agency account</Label>
+					<Field.Description>Invoices arrive by email only.</Field.Description>
+				</Field.Content>
+			</FieldSwitch>
+		</div>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const box = canvas.getByRole('switch', { name: /Paperless billing/ }).getBoundingClientRect();
+		const label = canvas
+			.getByText(/Paperless billing/)
+			.closest('label')!
+			.getBoundingClientRect();
+
+		await expect(label.height).toBeGreaterThan(24);
+		await expect([box.width, box.height]).toEqual([30, 16]);
+		await expect(label.left - box.right).toBe(16);
+	}
+};
+
 /**
  * Extends `SwitchContext` and `FieldContext` under the field, so the state,
  * the handlers and the errors come from outside. Must sit inside
