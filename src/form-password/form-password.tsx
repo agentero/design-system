@@ -28,7 +28,17 @@ export type FormPasswordInputProps = Omit<
 	| 'required'
 	| 'readOnly'
 	| 'aria-invalid'
->;
+	| 'autoComplete'
+> & {
+	/**
+	 * Required: no value is safe for every password field. `current-password`
+	 * on sign-in and for the current password in a change form, `new-password`
+	 * when the user picks a password and for credentials of another service
+	 * (an API key, a carrier login), so the browser does not fill the user's
+	 * own password there.
+	 */
+	autoComplete: NonNullable<InputPasswordProps['autoComplete']>;
+};
 
 /**
  * The paths of a form's values a `FormPassword` can bind to: those holding a
@@ -49,33 +59,34 @@ export type FormPasswordProps<
 	FormFieldProps<TFieldValues, TName, TTransformedValues> & {
 		/**
 		 * Everything else the `InputPassword` should receive: `autoComplete`,
-		 * `placeholder`, `maxLength`, `size`, `className` (which styles the
+		 * which is required, `placeholder`, `maxLength`, `size`, `className` (which styles the
 		 * frame)… Handlers such as `onChange` and `onBlur` run after
 		 * react-hook-form's, which are already wired. `type` is not accepted:
 		 * the show/hide toggle owns it.
 		 */
-		inputProps?: FormPasswordInputProps;
+		inputProps: FormPasswordInputProps;
 	};
 
 /**
  * A complete password field bound to one react-hook-form value: label,
  * `InputPassword` with its show/hide toggle, helper text and validation
  * error, laid out in the standard order and wired through `useController`. It
- * renders inside a `Form.Root`, which provides the form, and needs only a
- * `name`, which on a typed form must point at a string (`FormPasswordPath`).
+ * renders inside a `Form.Root`, which provides the form, and needs a `name`,
+ * which on a typed form must point at a string (`FormPasswordPath`), and an
+ * `inputProps.autoComplete`.
  *
  * The form stores the text as typed; the toggle only changes what the input
- * shows. Set `inputProps.autoComplete` to `current-password` on sign-in and
- * `new-password` when the user picks one, so password managers fill the right
- * value. For the strength rules of a new password, put each one in
- * `rules.validate` and set `criteriaMode: 'all'` on the form: the field then
- * lists every rule that failed.
+ * shows. `inputProps.autoComplete` is required, so each field says which
+ * password it holds and password managers fill the right one. For the
+ * strength rules of a new password, put each one in `rules.validate` and set
+ * `criteriaMode: 'all'` on the form: the field then lists every rule that
+ * failed.
  *
  * It is [FormText](?path=/docs/components-formtext--docs) with an
  * [InputPassword](?path=/docs/components-inputpassword--docs) in place of the
  * `Input`: same props, same layout, the same `required`, `invalid` and error
- * wiring. The one difference is `inputProps.type`, which `FormText` accepts
- * and `FormPassword` does not, because the toggle owns it. Every root prop of
+ * wiring. Only `inputProps` differs: it does not take `type`, which the
+ * toggle owns, and it requires `autoComplete`. Every root prop of
  * [FieldText](?path=/docs/components-fieldtext--docs) is accepted and
  * forwarded, such as `orientation`, `className` or `controlId`.
  *
@@ -117,7 +128,7 @@ export const FormPassword = <
 	return (
 		<FieldText {...rootProps}>
 			<FormFieldShell {...shellProps} wrapContent>
-				<InputPassword {...mergeProps(controlProps, inputProps ?? {})} />
+				<InputPassword {...mergeProps(controlProps, inputProps)} />
 			</FormFieldShell>
 		</FieldText>
 	);

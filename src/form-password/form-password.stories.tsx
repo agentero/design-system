@@ -12,11 +12,12 @@ import { FormText } from '../form-text';
  * FormPassword is a complete password field bound to one react-hook-form
  * value: label, `InputPassword` with its show/hide toggle, helper text and
  * validation error in the standard order, wired through `useController`. It
- * renders inside a `Form.Root` and needs only a `name`.
+ * renders inside a `Form.Root` and needs a `name` and an
+ * `inputProps.autoComplete`.
  *
  * It is `FormText` with an `InputPassword` in place of the `Input`: same
  * props, same layout, same wiring. Only `inputProps.type` is left out,
- * because the toggle owns it.
+ * because the toggle owns it, and `inputProps.autoComplete` is required.
  */
 const meta = {
 	title: 'Components/FormPassword',
@@ -25,6 +26,7 @@ const meta = {
 	argTypes: {
 		// The form the story renders owns the path: changing it would unbind the field.
 		name: { control: false },
+		inputProps: { control: false },
 		orientation: {
 			control: 'radio',
 			options: ['vertical', 'horizontal', 'responsive']
@@ -40,6 +42,7 @@ const meta = {
 	args: {
 		name: 'password',
 		label: 'Password',
+		inputProps: { autoComplete: 'current-password' },
 		orientation: 'vertical',
 		required: true,
 		optional: false,
@@ -77,12 +80,7 @@ export const Default: Story = {
 				onSubmit={onSubmit}
 				aria-label="Sign in"
 				className="flex flex-col items-start gap-7">
-				<FormPassword
-					rules={{ required: 'Enter your password.' }}
-					inputProps={{ autoComplete: 'current-password' }}
-					{...args}
-					name="password"
-				/>
+				<FormPassword rules={{ required: 'Enter your password.' }} {...args} name="password" />
 				<Button type="submit">Sign in</Button>
 			</Form.Root>
 		);
@@ -329,7 +327,12 @@ export const Disabled: Story = {
 				onSubmit={onSubmit}
 				aria-label="Sign in"
 				className="flex flex-col items-start gap-7">
-				<FormPassword name="password" label="Password" disabled />
+				<FormPassword
+					name="password"
+					label="Password"
+					disabled
+					inputProps={{ autoComplete: 'current-password' }}
+				/>
 				<Button type="submit">Save</Button>
 			</Form.Root>
 		);

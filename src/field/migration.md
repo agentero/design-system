@@ -199,19 +199,38 @@ amount: z.string()
 `FormPassword` is `FormText` with an `InputPassword` in place of the `Input`.
 What is specific to the password field:
 
-| Legacy                                     | Here              | Note                                                               |
-| ------------------------------------------ | ----------------- | ------------------------------------------------------------------ |
-| `autoComplete`, `autoFocus`, `placeholder` | `inputProps`      | set `autoComplete` to `current-password` or `new-password`         |
-| `size`                                     | `inputProps.size` | defaults to `md`; `agentero/mono`'s legacy field defaulted to `sm` |
+| Legacy                     | Here                      | Note                                                               |
+| -------------------------- | ------------------------- | ------------------------------------------------------------------ |
+| `autoComplete`             | `inputProps.autoComplete` | now required; see below                                            |
+| `autoFocus`, `placeholder` | `inputProps`              |                                                                    |
+| `size`                     | `inputProps.size`         | defaults to `md`; `agentero/mono`'s legacy field defaulted to `sm` |
+| `type`                     | —                         | the show/hide toggle owns it                                       |
+
+**`autoComplete`.** Required: a `FormPassword` without it does not compile.
+Pick the value by what the field holds:
+
+- `current-password` on sign-in, and for the current password in a
+  password-change form.
+- `new-password` where the user picks a password (sign-up, activation, the new
+  password in a change form) and for credentials of another service, such as
+  an integration's API key or a carrier login, so the browser does not fill
+  the user's own password there. `agentero/mono`'s carrier credentials form
+  already does this.
 
 **Stored value.** The text as typed, as before. The show/hide toggle only
 changes what the input displays.
 
 **A field that picks its control at runtime.** The carrier credentials forms
 in `agentero/mono` render `isHidden ? FieldPassword : FieldText`. The same
-switch works here, `isHidden ? FormPassword : FormText`, since both take the
-same field props and `inputProps`; leave `type` out of `inputProps`, which
-`FormPassword` does not accept.
+switch works here, `isHidden ? FormPassword : FormText`: both take the same
+field props, and an `inputProps` with `autoComplete` and without `type` fits
+both. That holds for `CarrierCredentialsFormFields`, whose values are a flat
+`Record<string, string>`. `AgenteroCredentialsStateFields` does not compile
+yet: its values are nested, `Record<string, Record<string, string>>`, and the
+path type every `Form<X>` entry shares rejects any path into a nested record
+with string keys (``name={`${state}.${name}`}`` resolves to `never`), with
+`FormText` as well. Keep that call site on the legacy fields until the path
+type accepts it.
 
 **Password inputs wired by hand.** Besides `FieldPassword`, both monos spread
 `register` into a bare `InputPassword` next to their own `Label` and error
