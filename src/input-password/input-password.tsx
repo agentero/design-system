@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { EyeIcon, EyeOffIcon } from 'lucide-react';
+import { EyeIcon, EyeClosedIcon } from 'lucide-react';
 import { tv } from 'tailwind-variants';
 
 import { Button } from '../button';
@@ -89,7 +89,7 @@ export const InputPassword = ({ className, size, ...props }: InputPasswordProps)
 					aria-label={isHidden ? 'Show password' : 'Hide password'}
 					onMouseDown={event => event.preventDefault()}
 					onClick={() => setType(isHidden ? 'text' : 'password')}>
-					{isHidden ? <EyeIcon /> : <EyeOffIcon />}
+					{isHidden ? <EyeIcon /> : <EyeClosedIcon />}
 				</Button>
 			</InputGroup.Addon>
 		</InputGroup.Root>

@@ -12,7 +12,7 @@ import {
 	DownloadIcon,
 	EllipsisIcon,
 	EyeIcon,
-	EyeOffIcon,
+	EyeClosedIcon,
 	InfoIcon,
 	PlusIcon,
 	SearchIcon,
@@ -129,7 +129,7 @@ export const InComponents: Story = {
 					where: 'Combobox, InputSearch clear'
 				},
 				{ Icon: EyeIcon, name: 'EyeIcon', where: 'InputPassword' },
-				{ Icon: EyeOffIcon, name: 'EyeOffIcon', where: 'InputPassword' },
+				{ Icon: EyeClosedIcon, name: 'EyeClosedIcon', where: 'InputPassword' },
 				{ Icon: ArrowUpIcon, name: 'ArrowUpIcon', where: 'DataTable sorted' },
 				{ Icon: ArrowUpDownIcon, name: 'ArrowUpDownIcon', where: 'DataTable sortable' },
 				{ Icon: EllipsisIcon, name: 'EllipsisIcon', where: 'Pagination ellipsis' },
