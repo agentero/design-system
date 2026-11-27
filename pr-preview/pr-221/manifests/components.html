@@ -626,7 +626,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.1s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>3.1s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -9499,7 +9499,13 @@ switchPosition?: &quot;start&quot; | &quot;end&quot; = &#39;end&#39;
 /**
  * Everything else the `Switch` should receive: `size`, `className`,
  * `aria-*`… Handlers such as `onCheckedChange` and `onBlur` run after
- * react-hook-form&#39;s, which are already wired.
+ * react-hook-form&#39;s, which are already wired, and `aria-describedby` ids
+ * join the ones the field wires. The rest is owned elsewhere, so it is
+ * left out: the field sets `id` (choose it with `controlId`) and names
+ * the toggle with its `label`; react-hook-form sets `name` and `checked`
+ * (start it in `useForm`&#39;s `defaultValues`); `disabled`, `required` and
+ * `readOnly` are props of `FormSwitch`, so the label and the root follow
+ * them too.
  */
 switchProps?: FormSwitchSwitchProps
 
