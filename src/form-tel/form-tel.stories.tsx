@@ -142,7 +142,7 @@ type AgentValues = {
  */
 export const OptionalWithDescription: Story = {
 	render: () => {
-		const methods = useForm<AgentValues>({ defaultValues: { phone: '', mobile: '' } });
+		const methods = useForm<{ mobile: string }>({ defaultValues: { mobile: '' } });
 
 		return (
 			<Form.Root methods={methods} aria-label="Agent contact">

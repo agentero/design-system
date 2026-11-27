@@ -104,9 +104,7 @@ export const FormTel = <
 }: FormTelProps<TFieldValues, TName, TTransformedValues>) => {
 	const { field, rootProps, shellProps } = useFormField(props);
 
-	// The empty string keeps the input controlled before the form holds a value
-	// for `name`. `FormTelPath` guarantees a string once there; the cast only
-	// collapses the unresolved generic.
+	// Controlled from the first render, as in FormText.
 	const controlProps: Partial<InputTelProps> = {
 		name: field.name,
 		value: (field.value ?? '') as InputTelProps['value'],
