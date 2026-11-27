@@ -142,19 +142,19 @@ Schemas that validate the legacy value keep working unchanged.
 `FormNumber` is `FormText` with an `InputNumber` in place of the `Input`. What
 is specific to the numeric field:
 
-| Legacy                                                          | Here                        | Note                                                                                                 |
-| --------------------------------------------------------------- | --------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `registerOptions`                                               | `rules`                     | react-hook-form's rules, same shape                                                                  |
-| `defaultValue`                                                  | `useForm`'s `defaultValues` | the legacy prop set the input only, not the form                                                     |
-| `thousandSeparator`, `allowLeadingZeros`                        | `inputProps`                | `thousandSeparator` now defaults to `false`, see below                                               |
-| `placeholder`, `autoFocus`, `maxLength`, `onFocus`, `onKeyDown` | `inputProps`                |                                                                                                      |
-| `inputClassName` (`producerflow/mono`)                          | `inputProps.className`      |                                                                                                      |
-| `size`                                                          | `inputProps.size`           | defaults to `md`; `agentero/mono`'s legacy field defaulted to `sm`                                   |
-| `maxValue`                                                      | `inputProps.maxNumber`      | the legacy `max` attribute did nothing on a text input; `maxNumber` blocks the keystroke             |
-| `minValue`                                                      | `rules.validate`            | parse the text there; see below                                                                      |
-| `type`                                                          | —                           | drop it: `type` no longer picks the keypad (see below); keep `inputProps.type: 'password'` for a PIN |
-| `status` (`producerflow/mono`)                                  | —                           | the field's validation state drives the border                                                       |
-| `displayErrorMessage={false}`                                   | —                           | not in v1, as for `FormText`                                                                         |
+| Legacy                                                          | Here                        | Note                                                                                                    |
+| --------------------------------------------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `registerOptions`                                               | `rules`                     | react-hook-form's rules, without `valueAs*` or `setValueAs` ([Coercion](#coercion-gates-the-migration)) |
+| `defaultValue`                                                  | `useForm`'s `defaultValues` | the legacy prop set the input only, not the form                                                        |
+| `thousandSeparator`, `allowLeadingZeros`                        | `inputProps`                | `thousandSeparator` now defaults to `false`, see below                                                  |
+| `placeholder`, `autoFocus`, `maxLength`, `onFocus`, `onKeyDown` | `inputProps`                |                                                                                                         |
+| `inputClassName` (`producerflow/mono`)                          | `inputProps.className`      |                                                                                                         |
+| `size`                                                          | `inputProps.size`           | defaults to `md`; `agentero/mono`'s legacy field defaulted to `sm`                                      |
+| `maxValue`                                                      | `inputProps.maxNumber`      | the legacy `max` attribute did nothing on a text input; `maxNumber` blocks the keystroke                |
+| `minValue`                                                      | `rules.validate`            | parse the text there; see below                                                                         |
+| `type`                                                          | —                           | drop it: `type` no longer picks the keypad (see below); keep `inputProps.type: 'password'` for a PIN    |
+| `status` (`producerflow/mono`)                                  | —                           | the field's validation state drives the border                                                          |
+| `displayErrorMessage={false}`                                   | —                           | not in v1, as for `FormText`                                                                            |
 
 **Stored value.** The form holds the formatted text, as the legacy field did:
 `"1,234"` with a separator, `"001234"` for an identifier, `""` when empty.
