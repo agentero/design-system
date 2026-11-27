@@ -29,9 +29,9 @@ export type FormFieldProps<
 > = {
 	/**
 	 * Path of the value in the form, nested paths included (`'agency.npn'`).
-	 * Type it against the form's values with the generic
-	 * (`<FormText<Values> name="agency.npn" />`) or by passing `control`: the
-	 * path must then exist and hold a value of the field's type.
+	 * Type it against the form's values by passing their type as the
+	 * component's first generic, or by passing `control`: the path must then
+	 * exist and hold a value of the field's type.
 	 */
 	name: TName;
 	/**
