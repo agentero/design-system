@@ -620,13 +620,13 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">50 components ok</span><a class="filter-pill" data-k="no-api" href="#filter-no-api">3/50 without API description</a><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/451 story errors</a><a class="filter-pill info" data-k="story-warnings" href="#filter-story-warnings">4/451 incomplete snippets</a></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><span class="filter-pill ok" aria-disabled="true">53 components ok</span><a class="filter-pill" data-k="no-api" href="#filter-no-api">3/53 without API description</a><a class="filter-pill err" data-k="story-errors" href="#filter-story-errors">1/474 story errors</a><a class="filter-pill info" data-k="story-warnings" href="#filter-story-warnings">4/474 incomplete snippets</a></div>
   </div>
 </header>
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>4.1s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>5.5s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -3491,7 +3491,7 @@ and a disabled or loading trigger keeps its disabled look.</div>
       <div class="badges">
         <label for="c-6-components-checkbox-props" class="badge ok as-toggle">10 prop types</label>
         
-        <label for="c-6-components-checkbox-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-6-components-checkbox-stories" class="badge ok as-toggle">12 stories</label>
         
         
       </div>
@@ -3640,6 +3640,22 @@ governs a partially selected group.</div>
         &lt;Checkbox disabled aria-label=&quot;Disabled unchecked&quot; /&gt;
         &lt;Checkbox disabled defaultChecked aria-label=&quot;Disabled checked&quot; /&gt;
         &lt;Checkbox disabled checked=&quot;indeterminate&quot; aria-label=&quot;Disabled mixed&quot; /&gt;
+    &lt;/div&gt;
+);</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Read Only</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Read-only: focusable, but it does not toggle</div>
+              <div class="hint">`readOnly` keeps the box focusable and announced as read-only, but a click
+or Space leaves it as it was, and it does not darken on hover.</div>
+              <pre><code>const ReadOnly = () =&gt; (
+    &lt;div className=&quot;flex items-center gap-2&quot;&gt;
+        &lt;Checkbox id=&quot;instant-appointments&quot; defaultChecked readOnly /&gt;
+        &lt;Label htmlFor=&quot;instant-appointments&quot;&gt;Instant appointments&lt;/Label&gt;
     &lt;/div&gt;
 );</code></pre>
               
@@ -9806,6 +9822,894 @@ Validation is react-hook-form&#39;s alone.</div>
   </div>
 </article>
 <article
+  id="components-formnumber"
+  class="card 
+  no-error
+  no-info
+  no-story-error
+  no-story-warning
+  
+  no-doc-error"
+  role="listitem"
+  aria-label="FormNumber">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> FormNumber</h2>
+      <div class="badges">
+        <label for="c-23-components-formnumber-props" class="badge ok as-toggle">15 prop types</label>
+        
+        <label for="c-23-components-formnumber-stories" class="badge ok as-toggle">9 stories</label>
+        
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/form-number/form-number.stories.tsx">components-formnumber · ./src/form-number/form-number.stories.tsx</div>
+    <div>Label, InputNumber, description and error bound to one react-hook-form field</div>
+    <div class="hint">FormNumber is a complete numeric field bound to one react-hook-form value:
+label, `InputNumber`, helper text and validation error in the standard
+order, wired through `useController`. It renders inside a `Form.Root` and
+needs only a `name`. The form stores the text the field shows (`&quot;1,234&quot;`),
+not a number; parse it where the number is used.
+
+It is `FormText` with an `InputNumber` in place of the `Input`: same props,
+same layout, same wiring. The formatting goes in `inputProps`.</div>
+    <div class="kv"><span class="chip">summary: Label, InputNumber, description and error bound to one react-hook-form field</span><span class="chip">example: &lt;FormNumber
+  name=&quot;annualPremium&quot;
+  label=&quot;Annual premium&quot;
+  required
+  rules={{ required: &#39;Enter the annual premium.&#39; }}
+  inputProps={{ thousandSeparator: true, placeholder: &#39;0&#39; }}
+/&gt;</span></div>
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-23-components-formnumber-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+  <input id="c-23-components-formnumber-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-component-meta)</small></span>
+              <span class="badge ok">15 prop types</span>
+            </div>
+            <pre><code>Component: src/form-number/index.ts::FormNumber</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>/**
+ * The form&#39;s `control`, from `useForm()`. Defaults to the one the
+ * surrounding `Form.Root` provides; pass it explicitly to get `name`
+ * inference without writing the generic, or when the field renders outside
+ * a `Form.Root`. A `control` whose resolver transforms the values is
+ * accepted as is.
+ */
+control?: Control&lt;FieldValues, any, unknown&gt;
+
+/**
+ * `id` for the control. Generated when omitted. Set it here, not on the
+ * control, so the label and the messages keep pointing at the right element.
+ */
+controlId?: string
+
+/**
+ * Helper text shown under the control, above the error when there is one,
+ * and announced through its `aria-describedby`. Use it for guidance the
+ * user needs before typing; put details worth a click in `tooltip` instead.
+ */
+description?: ReactNode
+
+/**
+ * Disables the control through its context and sets `data-disabled` on the root.
+ * Disables the control and marks the field. Unlike react-hook-form&#39;s own
+ * `disabled` option, the value stays in the submitted data: disabling a
+ * field is a presentation decision, not a change to the form&#39;s values.
+ */
+disabled?: boolean
+
+/**
+ * Everything else the `InputNumber` should receive: the formatting
+ * (`thousandSeparator`, `allowLeadingZeros`, `maxNumber`), `inputMode`,
+ * `placeholder`, `size`, `className`… Handlers such as `onChange` and
+ * `onBlur` run after react-hook-form&#39;s, which are already wired, and
+ * read the formatted text.
+ */
+inputProps?: FormNumberInputProps
+
+/**
+ * The caption, rendered as the field&#39;s label. Text in almost every case.
+ */
+label: ReactNode
+
+/**
+ * Path of the value in the form, nested paths included (`&#39;agency.npn&#39;`).
+ * Type it against the form&#39;s values by passing their type as the
+ * component&#39;s first generic, or by passing `control`: the path must then
+ * exist and hold a value of the field&#39;s type.
+ */
+name: &quot;annualPremium&quot;
+
+/**
+ * Appends a muted &quot; (optional)&quot; to the label. The forms mark optional fields
+ * rather than required ones; ignored when `required` is set.
+ */
+optional?: boolean
+
+/**
+ * Layout of the field. `vertical` (default) stacks label, control and
+ * messages. `horizontal` is one row at every width: the first child fills it
+ * and the rest keep their natural width, aligned to the right, so the
+ * controls of stacked fields line up. `responsive` stacks below `28rem` and
+ * behaves like `horizontal` from there, measured on the field itself, so it
+ * needs no particular wrapper. In both, `Field.Content` groups a control with
+ * its messages, or a label with its description.
+ */
+orientation?: &quot;vertical&quot; | &quot;horizontal&quot; | &quot;responsive&quot;
+
+/**
+ * Makes the control read-only through its context (focusable and copyable,
+ * not editable, still submitted) and sets `data-readonly` on the root.
+ */
+readOnly?: boolean
+
+/**
+ * Single source of truth for a required field: the `Label` shows its
+ * asterisk and the control receives `required`, both through context.
+ * Marks the field required: an asterisk on the label and the native
+ * `required` attribute on the control, which assistive technology
+ * announces. It does not validate — pair it with `rules.required` or a
+ * resolver — and it never triggers the browser bubble, since `Form.Root`
+ * renders `noValidate`.
+ */
+required?: boolean
+
+/**
+ * react-hook-form validation rules for this field (`required`, `pattern`,
+ * `validate`…), same as `register`&#39;s. They only validate: `rules.required`
+ * does not mark the field `required` — that is a separate, visible decision.
+ */
+rules?: Omit&lt;RegisterOptions&lt;FieldValues, &quot;annualPremium&quot;&gt;, &quot;disabled&quot; | &quot;valueAsNumber&quot; | &quot;valueAsDate&quot; | &quot;setValueAs&quot;&gt;
+
+/**
+ * Drops the value from the form when the field unmounts, react-hook-form&#39;s
+ * `shouldUnregister`. Defaults to `false`: a field revealed by another one
+ * keeps its value while hidden.
+ */
+shouldUnregister?: boolean
+
+/**
+ * Content of an info tooltip rendered beside the label, for details that
+ * would clutter the description. The trigger is a sibling of the label, so
+ * the field&#39;s accessible name stays the label text.
+ */
+tooltip?: ReactNode
+
+/**
+ * Preferred side of the tooltip. Defaults to `&#39;top&#39;`.
+ */
+tooltipSide?: &quot;top&quot; | &quot;bottom&quot; | &quot;left&quot; | &quot;right&quot;</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Button, Field, Form, FormNumber } from '@agentero/design-system';</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Required amount field submitting the formatted text</div>
+              <div class="hint">An amount: `thousandSeparator` groups the digits as they are typed and the
+form receives the formatted text, `&quot;1,234,567&quot;`. Submitting empty fails the
+required rule.</div>
+              <pre><code>const Default = () =&gt; {
+    const methods = useForm&lt;PolicyValues&gt;({ defaultValues: { annualPremium: &#39;&#39; } });
+
+    return (
+        &lt;Form.Root
+            methods={methods}
+            onSubmit={onSubmit}
+            aria-label=&quot;Policy&quot;
+            className=&quot;flex flex-col items-start gap-7&quot;&gt;
+            &lt;FormNumber
+                rules={{ required: &#39;Enter the annual premium.&#39; }}
+                inputProps={{ thousandSeparator: true, placeholder: &#39;0&#39; }}
+                label=&quot;Annual premium&quot;
+                orientation=&quot;vertical&quot;
+                required
+                optional={false}
+                disabled={false}
+                readOnly={false}
+                name=&quot;annualPremium&quot; /&gt;
+            &lt;Button type=&quot;submit&quot;&gt;Save&lt;/Button&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Identifier</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Identifier keeping its leading zeros, on a nested path</div>
+              <div class="hint">An identifier: with no separator the field keeps the zeros typed in front,
+so `0012345` reaches the form as typed. `inputMode=&quot;numeric&quot;` brings up a
+digits-only keypad on mobile, and the rules validate the text.</div>
+              <pre><code>const Identifier = () =&gt; {
+    const methods = useForm&lt;LicenseValues&gt;({ defaultValues: { agency: { npn: &#39;&#39; } } });
+
+    return (
+        &lt;Form.Root
+            methods={methods}
+            onSubmit={onSubmit}
+            aria-label=&quot;License&quot;
+            className=&quot;flex flex-col items-start gap-7&quot;&gt;
+            &lt;FormNumber&lt;LicenseValues&gt;
+                name=&quot;agency.npn&quot;
+                label=&quot;NPN&quot;
+                description=&quot;6 to 10 digits, as on your license.&quot;
+                rules={{
+                    required: &#39;Enter your NPN.&#39;,
+                    pattern: { value: /^\d{6,10}$/, message: &#39;An NPN is 6 to 10 digits.&#39; }
+                }}
+                inputProps={{ inputMode: &#39;numeric&#39;, autoComplete: &#39;off&#39; }}
+            /&gt;
+            &lt;Button type=&quot;submit&quot;&gt;Save&lt;/Button&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Max Number</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Maximum enforced while typing</div>
+              <div class="hint">`maxNumber` drops a keystroke that would take the number above it, before
+it reaches the form: typing `150` with a maximum of 100 leaves `15`.</div>
+              <pre><code>const MaxNumber = () =&gt; {
+    const methods = useForm&lt;CoverageValues&gt;({ defaultValues: { coveragePercentage: &#39;&#39; } });
+
+    return (
+        &lt;Form.Root methods={methods} aria-label=&quot;Coverage&quot;&gt;
+            &lt;FormNumber
+                name=&quot;coveragePercentage&quot;
+                label=&quot;Coverage percentage&quot;
+                description=&quot;Up to 100.&quot;
+                inputProps={{ maxNumber: 100 }}
+            /&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Leading Zeros On Blur</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Leading zeros dropped on blur, in the field and in the form</div>
+              <div class="hint">With `thousandSeparator` the zeros typed in front are dropped once the field
+loses focus: `0001234` becomes `1,234`, in the field and in the form. The
+trimmed value reaches react-hook-form before its blur, so a rule run on
+blur (`mode: &#39;onBlur&#39;`) already reads `&quot;1,234&quot;`.</div>
+              <pre><code>const LeadingZerosOnBlur = () =&gt; {
+    const methods = useForm&lt;PolicyValues&gt;({
+        mode: &#39;onBlur&#39;,
+        defaultValues: { annualPremium: &#39;&#39; }
+    });
+
+    return (
+        &lt;Form.Root
+            methods={methods}
+            onSubmit={onSubmit}
+            aria-label=&quot;Policy&quot;
+            className=&quot;flex flex-col items-start gap-7&quot;&gt;
+            &lt;FormNumber
+                name=&quot;annualPremium&quot;
+                label=&quot;Annual premium&quot;
+                rules={{ validate: onValidate }}
+                inputProps={{ thousandSeparator: true }}
+            /&gt;
+            &lt;Button type=&quot;submit&quot;&gt;Save&lt;/Button&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Default Value</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Formatted default value and reset written by the form</div>
+              <div class="hint">A value the form writes — `defaultValues`, `reset`, `setValue` — is shown
+formatted. Write it in the shape the field stores, the formatted text, so
+the form holds the same value before and after the user edits it.</div>
+              <pre><code>const WithDefaultValue = () =&gt; {
+    const methods = useForm&lt;PolicyValues&gt;({ defaultValues: { annualPremium: &#39;12,500&#39; } });
+
+    return (
+        &lt;Form.Root methods={methods} aria-label=&quot;Policy&quot; className=&quot;flex flex-col items-start gap-7&quot;&gt;
+            &lt;FormNumber
+                name=&quot;annualPremium&quot;
+                label=&quot;Annual premium&quot;
+                inputProps={{ thousandSeparator: true }}
+            /&gt;
+            &lt;Button
+                type=&quot;button&quot;
+                variant=&quot;secondary&quot;
+                onClick={() =&gt; methods.reset({ annualPremium: &#39;8,250&#39; })}&gt;
+                Load last year
+            &lt;/Button&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Input Props Chaining</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Consumer onChange reading the formatted value</div>
+              <div class="hint">A consumer `onChange` in `inputProps` runs after react-hook-form&#39;s and reads
+the formatted text, both from the event and from `getValues`.</div>
+              <pre><code>const InputPropsChaining = () =&gt; {
+    const methods = useForm&lt;PolicyValues&gt;({ defaultValues: { annualPremium: &#39;&#39; } });
+
+    return (
+        &lt;Form.Root methods={methods} aria-label=&quot;Policy&quot;&gt;
+            &lt;FormNumber
+                name=&quot;annualPremium&quot;
+                label=&quot;Annual premium&quot;
+                inputProps={{
+                    thousandSeparator: true,
+                    size: &#39;lg&#39;,
+                    onChange: event =&gt; onOwnChange(methods.getValues(&#39;annualPremium&#39;), event.target.value)
+                }}
+            /&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Horizontal</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Horizontal orientation through the root props</div>
+              <div class="hint">Root props pass through: `orientation=&quot;horizontal&quot;` lays the label and the
+input in a row, with the description under the control.</div>
+              <pre><code>const Horizontal = () =&gt; {
+    const methods = useForm&lt;PolicyAmountsValues&gt;({
+        defaultValues: { annualPremium: &#39;&#39;, deductible: &#39;&#39; }
+    });
+
+    return (
+        &lt;Form.Root methods={methods} aria-label=&quot;Policy amounts&quot; className=&quot;w-[40rem]&quot;&gt;
+            &lt;Field.Group&gt;
+                &lt;FormNumber
+                    name=&quot;annualPremium&quot;
+                    label=&quot;Annual premium&quot;
+                    orientation=&quot;horizontal&quot;
+                    inputProps={{ thousandSeparator: true, className: &#39;w-72&#39; }}
+                /&gt;
+                &lt;FormNumber
+                    name=&quot;deductible&quot;
+                    label=&quot;Deductible&quot;
+                    description=&quot;Paid by the insured before coverage starts.&quot;
+                    orientation=&quot;horizontal&quot;
+                    inputProps={{ thousandSeparator: true, className: &#39;w-72&#39; }}
+                    data-testid=&quot;deductible&quot;
+                /&gt;
+            &lt;/Field.Group&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Disabled</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Disabled numeric field whose value is still submitted</div>
+              <div class="hint">`disabled` disables the input and marks the field, and the value still
+reaches `onSubmit` — unlike react-hook-form&#39;s own `disabled` option, which
+drops it.</div>
+              <pre><code>const Disabled = () =&gt; {
+    const methods = useForm&lt;PolicyValues&gt;({ defaultValues: { annualPremium: &#39;12,500&#39; } });
+
+    return (
+        &lt;Form.Root
+            methods={methods}
+            onSubmit={onSubmit}
+            aria-label=&quot;Policy&quot;
+            className=&quot;flex flex-col items-start gap-7&quot;&gt;
+            &lt;FormNumber
+                name=&quot;annualPremium&quot;
+                label=&quot;Annual premium&quot;
+                disabled
+                inputProps={{ thousandSeparator: true }}
+            /&gt;
+            &lt;Button type=&quot;submit&quot;&gt;Save&lt;/Button&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Focus On Error</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Focus on the first invalid field after submit</div>
+              <div class="hint">react-hook-form&#39;s `ref` reaches the `&lt;input&gt;` that `InputNumber` renders, so
+`setFocus` and the focus on the first invalid field after submit both work.</div>
+              <pre><code>const FocusOnError = () =&gt; {
+    const methods = useForm&lt;QuoteValues&gt;({
+        defaultValues: { annualPremium: &#39;12,500&#39;, deductible: &#39;&#39; }
+    });
+
+    return (
+        &lt;Form.Root
+            methods={methods}
+            onSubmit={onSubmit}
+            aria-label=&quot;Quote&quot;
+            className=&quot;flex flex-col items-start gap-7&quot;&gt;
+            &lt;Field.Group&gt;
+                &lt;FormNumber
+                    name=&quot;annualPremium&quot;
+                    label=&quot;Annual premium&quot;
+                    inputProps={{ thousandSeparator: true }}
+                /&gt;
+                &lt;FormNumber
+                    name=&quot;deductible&quot;
+                    label=&quot;Deductible&quot;
+                    required
+                    rules={{ required: &#39;Enter the deductible.&#39; }}
+                    inputProps={{ thousandSeparator: true }}
+                /&gt;
+            &lt;/Field.Group&gt;
+            &lt;Button type=&quot;submit&quot;&gt;Save&lt;/Button&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
+              
+            </div>
+        </div>
+    
+    
+  </div>
+</article>
+<article
+  id="components-formpassword"
+  class="card 
+  no-error
+  no-info
+  no-story-error
+  no-story-warning
+  
+  no-doc-error"
+  role="listitem"
+  aria-label="FormPassword">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> FormPassword</h2>
+      <div class="badges">
+        <label for="c-24-components-formpassword-props" class="badge ok as-toggle">15 prop types</label>
+        
+        <label for="c-24-components-formpassword-stories" class="badge ok as-toggle">6 stories</label>
+        
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/form-password/form-password.stories.tsx">components-formpassword · ./src/form-password/form-password.stories.tsx</div>
+    <div>Label, InputPassword, description and error bound to one react-hook-form field</div>
+    <div class="hint">FormPassword is a complete password field bound to one react-hook-form
+value: label, `InputPassword` with its show/hide toggle, helper text and
+validation error in the standard order, wired through `useController`. It
+renders inside a `Form.Root` and needs a `name` and an
+`inputProps.autoComplete`.
+
+It is `FormText` with an `InputPassword` in place of the `Input`: same
+props, same layout, same wiring. Only `inputProps.type` is left out,
+because the toggle owns it, and `inputProps.autoComplete` is required.</div>
+    <div class="kv"><span class="chip">summary: Label, InputPassword, description and error bound to one react-hook-form field</span><span class="chip">example: &lt;FormPassword
+  name=&quot;password&quot;
+  label=&quot;Password&quot;
+  required
+  rules={{ required: &#39;Enter your password.&#39; }}
+  inputProps={{ autoComplete: &#39;current-password&#39; }}
+/&gt;</span></div>
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-24-components-formpassword-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+  <input id="c-24-components-formpassword-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-component-meta)</small></span>
+              <span class="badge ok">15 prop types</span>
+            </div>
+            <pre><code>Component: src/form-password/index.ts::FormPassword</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>/**
+ * The form&#39;s `control`, from `useForm()`. Defaults to the one the
+ * surrounding `Form.Root` provides; pass it explicitly to get `name`
+ * inference without writing the generic, or when the field renders outside
+ * a `Form.Root`. A `control` whose resolver transforms the values is
+ * accepted as is.
+ */
+control?: Control&lt;FieldValues, any, unknown&gt;
+
+/**
+ * `id` for the control. Generated when omitted. Set it here, not on the
+ * control, so the label and the messages keep pointing at the right element.
+ */
+controlId?: string
+
+/**
+ * Helper text shown under the control, above the error when there is one,
+ * and announced through its `aria-describedby`. Use it for guidance the
+ * user needs before typing; put details worth a click in `tooltip` instead.
+ */
+description?: ReactNode
+
+/**
+ * Disables the control through its context and sets `data-disabled` on the root.
+ * Disables the control and marks the field. Unlike react-hook-form&#39;s own
+ * `disabled` option, the value stays in the submitted data: disabling a
+ * field is a presentation decision, not a change to the form&#39;s values.
+ */
+disabled?: boolean
+
+/**
+ * Everything else the `InputPassword` should receive: `autoComplete`,
+ * which is required, `placeholder`, `maxLength`, `size`, `className` (which styles the
+ * frame)… Handlers such as `onChange` and `onBlur` run after
+ * react-hook-form&#39;s, which are already wired. `type` is not accepted:
+ * the show/hide toggle owns it.
+ */
+inputProps: FormPasswordInputProps
+
+/**
+ * The caption, rendered as the field&#39;s label. Text in almost every case.
+ */
+label: ReactNode
+
+/**
+ * Path of the value in the form, nested paths included (`&#39;agency.npn&#39;`).
+ * Type it against the form&#39;s values by passing their type as the
+ * component&#39;s first generic, or by passing `control`: the path must then
+ * exist and hold a value of the field&#39;s type.
+ */
+name: &quot;password&quot;
+
+/**
+ * Appends a muted &quot; (optional)&quot; to the label. The forms mark optional fields
+ * rather than required ones; ignored when `required` is set.
+ */
+optional?: boolean
+
+/**
+ * Layout of the field. `vertical` (default) stacks label, control and
+ * messages. `horizontal` is one row at every width: the first child fills it
+ * and the rest keep their natural width, aligned to the right, so the
+ * controls of stacked fields line up. `responsive` stacks below `28rem` and
+ * behaves like `horizontal` from there, measured on the field itself, so it
+ * needs no particular wrapper. In both, `Field.Content` groups a control with
+ * its messages, or a label with its description.
+ */
+orientation?: &quot;vertical&quot; | &quot;horizontal&quot; | &quot;responsive&quot;
+
+/**
+ * Makes the control read-only through its context (focusable and copyable,
+ * not editable, still submitted) and sets `data-readonly` on the root.
+ */
+readOnly?: boolean
+
+/**
+ * Single source of truth for a required field: the `Label` shows its
+ * asterisk and the control receives `required`, both through context.
+ * Marks the field required: an asterisk on the label and the native
+ * `required` attribute on the control, which assistive technology
+ * announces. It does not validate — pair it with `rules.required` or a
+ * resolver — and it never triggers the browser bubble, since `Form.Root`
+ * renders `noValidate`.
+ */
+required?: boolean
+
+/**
+ * react-hook-form validation rules for this field (`required`, `pattern`,
+ * `validate`…), same as `register`&#39;s. They only validate: `rules.required`
+ * does not mark the field `required` — that is a separate, visible decision.
+ */
+rules?: Omit&lt;RegisterOptions&lt;FieldValues, &quot;password&quot;&gt;, &quot;disabled&quot; | &quot;valueAsNumber&quot; | &quot;valueAsDate&quot; | &quot;setValueAs&quot;&gt;
+
+/**
+ * Drops the value from the form when the field unmounts, react-hook-form&#39;s
+ * `shouldUnregister`. Defaults to `false`: a field revealed by another one
+ * keeps its value while hidden.
+ */
+shouldUnregister?: boolean
+
+/**
+ * Content of an info tooltip rendered beside the label, for details that
+ * would clutter the description. The trigger is a sibling of the label, so
+ * the field&#39;s accessible name stays the label text.
+ */
+tooltip?: ReactNode
+
+/**
+ * Preferred side of the tooltip. Defaults to `&#39;top&#39;`.
+ */
+tooltipSide?: &quot;top&quot; | &quot;bottom&quot; | &quot;left&quot; | &quot;right&quot;</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Button, Field, Form, FormPassword, FormText } from '@agentero/design-system';</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Required sign-in password with the show/hide toggle</div>
+              <div class="hint">A sign-in password: required, with `autoComplete=&quot;current-password&quot;` so
+password managers fill it. The toggle reveals what was typed and the form
+receives the text either way.</div>
+              <pre><code>const Default = () =&gt; {
+    const methods = useForm&lt;SignInValues&gt;({ defaultValues: { email: &#39;&#39;, password: &#39;&#39; } });
+
+    return (
+        &lt;Form.Root
+            methods={methods}
+            onSubmit={onSubmit}
+            aria-label=&quot;Sign in&quot;
+            className=&quot;flex flex-col items-start gap-7&quot;&gt;
+            &lt;FormPassword
+                rules={{ required: &#39;Enter your password.&#39; }}
+                label=&quot;Password&quot;
+                inputProps={{ autoComplete: &#39;current-password&#39; }}
+                orientation=&quot;vertical&quot;
+                required
+                optional={false}
+                disabled={false}
+                readOnly={false}
+                name=&quot;password&quot; /&gt;
+            &lt;Button type=&quot;submit&quot;&gt;Sign in&lt;/Button&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">New Password</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>New password listing every failed strength rule</div>
+              <div class="hint">A new password with strength rules: each rule is a `rules.validate` entry,
+and a form set to `criteriaMode: &#39;all&#39;` lists every rule that failed under
+the field, after the description.</div>
+              <pre><code>const NewPassword = () =&gt; {
+    const methods = useForm&lt;NewPasswordValues&gt;({
+        defaultValues: { newPassword: &#39;&#39; },
+        criteriaMode: &#39;all&#39;
+    });
+
+    return (
+        &lt;Form.Root
+            methods={methods}
+            onSubmit={onSubmit}
+            aria-label=&quot;Change password&quot;
+            className=&quot;flex flex-col items-start gap-7&quot;&gt;
+            &lt;FormPassword
+                name=&quot;newPassword&quot;
+                label=&quot;New password&quot;
+                description=&quot;At least 10 characters, with an uppercase letter and a number.&quot;
+                required
+                inputProps={{ autoComplete: &#39;new-password&#39; }}
+                rules={{
+                    required: &#39;Enter a password.&#39;,
+                    validate: {
+                        uppercase: value =&gt; /[A-Z]/.test(value) || &#39;At least one uppercase letter.&#39;,
+                        number: value =&gt; /[0-9]/.test(value) || &#39;At least one number.&#39;,
+                        length: value =&gt; value.length &gt;= 10 || &#39;At least 10 characters.&#39;
+                    }
+                }}
+            /&gt;
+            &lt;Button type=&quot;submit&quot;&gt;Save&lt;/Button&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Input Props Chaining</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Input attributes, chained handlers and an extra aria-describedby</div>
+              <div class="hint">`inputProps` carries the input&#39;s own attributes — `placeholder`,
+`autoComplete`, `size`… — and its handlers. A consumer `onChange` runs after
+react-hook-form&#39;s and reads the typed text, both from the event and from
+`getValues`; a consumer `onBlur` runs once the field is already touched. An
+`aria-describedby` of its own joins the field&#39;s description instead of
+replacing it.</div>
+              <pre><code>const InputPropsChaining = () =&gt; {
+    const methods = useForm&lt;SignInValues&gt;({ defaultValues: { email: &#39;&#39;, password: &#39;&#39; } });
+
+    return (
+        &lt;Form.Root methods={methods} aria-label=&quot;Sign in&quot; className=&quot;flex flex-col gap-2&quot;&gt;
+            &lt;FormPassword
+                name=&quot;password&quot;
+                label=&quot;Password&quot;
+                description=&quot;The one you set when you activated your account.&quot;
+                inputProps={{
+                    placeholder: &#39;Enter your password&#39;,
+                    autoComplete: &#39;current-password&#39;,
+                    size: &#39;lg&#39;,
+                    &#39;aria-describedby&#39;: &#39;password-reset&#39;,
+                    onChange: event =&gt; onOwnChange(methods.getValues(&#39;password&#39;), event.target.value),
+                    onBlur: () =&gt; onOwnBlur(methods.getFieldState(&#39;password&#39;).isTouched)
+                }}
+            /&gt;
+            &lt;p id=&quot;password-reset&quot;&gt;Forgot it? Ask your admin for a reset link.&lt;/p&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Horizontal</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Horizontal orientation through the root props</div>
+              <div class="hint">Root props pass through: `orientation=&quot;horizontal&quot;` lays the label and the
+password frame in a row, with the description under the control.</div>
+              <pre><code>const Horizontal = () =&gt; {
+    const methods = useForm&lt;ChangePasswordValues&gt;({
+        defaultValues: { currentPassword: &#39;&#39;, newPassword: &#39;&#39; }
+    });
+
+    return (
+        &lt;Form.Root methods={methods} aria-label=&quot;Change password&quot; className=&quot;w-[40rem]&quot;&gt;
+            &lt;Field.Group&gt;
+                &lt;FormPassword
+                    name=&quot;currentPassword&quot;
+                    label=&quot;Current password&quot;
+                    orientation=&quot;horizontal&quot;
+                    inputProps={{ autoComplete: &#39;current-password&#39;, className: &#39;w-72&#39; }}
+                /&gt;
+                &lt;FormPassword
+                    name=&quot;newPassword&quot;
+                    label=&quot;New password&quot;
+                    description=&quot;At least 10 characters.&quot;
+                    orientation=&quot;horizontal&quot;
+                    inputProps={{ autoComplete: &#39;new-password&#39;, className: &#39;w-72&#39; }}
+                    data-testid=&quot;new-password&quot;
+                /&gt;
+            &lt;/Field.Group&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Disabled</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Disabled password field, toggle hidden, value still submitted</div>
+              <div class="hint">`disabled` disables the input and hides the toggle, and the value still
+reaches `onSubmit` — unlike react-hook-form&#39;s own `disabled` option, which
+drops it.</div>
+              <pre><code>const Disabled = () =&gt; {
+    const methods = useForm&lt;SignInValues&gt;({
+        defaultValues: { email: &#39;ops@acme-insurance.com&#39;, password: &#39;Str0ngPassw0rd&#39; }
+    });
+
+    return (
+        &lt;Form.Root
+            methods={methods}
+            onSubmit={onSubmit}
+            aria-label=&quot;Sign in&quot;
+            className=&quot;flex flex-col items-start gap-7&quot;&gt;
+            &lt;FormPassword
+                name=&quot;password&quot;
+                label=&quot;Password&quot;
+                disabled
+                inputProps={{ autoComplete: &#39;current-password&#39; }}
+            /&gt;
+            &lt;Button type=&quot;submit&quot;&gt;Save&lt;/Button&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Focus On Error</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Focus on the first invalid field after submit</div>
+              <div class="hint">react-hook-form&#39;s `ref` reaches the `&lt;input&gt;` inside the password frame, so
+`setFocus` and the focus on the first invalid field after submit both work.</div>
+              <pre><code>const FocusOnError = () =&gt; {
+    const methods = useForm&lt;SignInValues&gt;({
+        defaultValues: { email: &#39;ops@acme-insurance.com&#39;, password: &#39;&#39; }
+    });
+
+    return (
+        &lt;Form.Root
+            methods={methods}
+            onSubmit={onSubmit}
+            aria-label=&quot;Sign in&quot;
+            className=&quot;flex flex-col items-start gap-7&quot;&gt;
+            &lt;Field.Group&gt;
+                &lt;FormText name=&quot;email&quot; label=&quot;Email&quot; inputProps={{ type: &#39;email&#39; }} /&gt;
+                &lt;FormPassword
+                    name=&quot;password&quot;
+                    label=&quot;Password&quot;
+                    required
+                    rules={{ required: &#39;Enter your password.&#39; }}
+                    inputProps={{ autoComplete: &#39;current-password&#39; }}
+                /&gt;
+            &lt;/Field.Group&gt;
+            &lt;Button type=&quot;submit&quot;&gt;Sign in&lt;/Button&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
+              
+            </div>
+        </div>
+    
+    
+  </div>
+</article>
+<article
   id="components-formswitch"
   class="card 
   no-error
@@ -9820,9 +10724,9 @@ Validation is react-hook-form&#39;s alone.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> FormSwitch</h2>
       <div class="badges">
-        <label for="c-23-components-formswitch-props" class="badge ok as-toggle">16 prop types</label>
+        <label for="c-25-components-formswitch-props" class="badge ok as-toggle">16 prop types</label>
         
-        <label for="c-23-components-formswitch-stories" class="badge ok as-toggle">6 stories</label>
+        <label for="c-25-components-formswitch-stories" class="badge ok as-toggle">6 stories</label>
         
         
       </div>
@@ -9848,10 +10752,10 @@ the `FieldSwitch`, `Label`, `Switch` and `Field.*` primitives directly.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-23-components-formswitch-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-25-components-formswitch-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-23-components-formswitch-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-25-components-formswitch-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -10115,6 +11019,414 @@ fires, `getValues` already returns the new value.</div>
   </div>
 </article>
 <article
+  id="components-formtel"
+  class="card 
+  no-error
+  no-info
+  no-story-error
+  no-story-warning
+  
+  no-doc-error"
+  role="listitem"
+  aria-label="FormTel">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> FormTel</h2>
+      <div class="badges">
+        <label for="c-26-components-formtel-props" class="badge ok as-toggle">15 prop types</label>
+        
+        <label for="c-26-components-formtel-stories" class="badge ok as-toggle">7 stories</label>
+        
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/form-tel/form-tel.stories.tsx">components-formtel · ./src/form-tel/form-tel.stories.tsx</div>
+    <div>Label, InputTel, description and error bound to one react-hook-form field</div>
+    <div class="hint">FormTel is a complete US phone number field bound to one react-hook-form
+value: label, `InputTel`, helper text and validation error in the standard
+order, wired through `useController`. It renders inside a `Form.Root` and
+needs only a `name`. The form stores the number masked, as the user sees
+it: `(555) 123-4567`.
+
+It is `FormText` with an `InputTel` in place of the `Input`: same props,
+same layout, same wiring.</div>
+    <div class="kv"><span class="chip">summary: Label, InputTel, description and error bound to one react-hook-form field</span><span class="chip">example: &lt;FormTel
+  name=&quot;phone&quot;
+  label=&quot;Phone number&quot;
+  required
+  rules={{
+    required: &#39;Enter a phone number.&#39;,
+    pattern: { value: /^\(\d{3}\) \d{3}-\d{4}$/, message: &#39;Enter a 10-digit phone number.&#39; }
+  }}
+  inputProps={{ autoComplete: &#39;tel-national&#39; }}
+/&gt;</span></div>
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-26-components-formtel-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+  <input id="c-26-components-formtel-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-component-meta)</small></span>
+              <span class="badge ok">15 prop types</span>
+            </div>
+            <pre><code>Component: src/form-tel/index.ts::FormTel</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>/**
+ * The form&#39;s `control`, from `useForm()`. Defaults to the one the
+ * surrounding `Form.Root` provides; pass it explicitly to get `name`
+ * inference without writing the generic, or when the field renders outside
+ * a `Form.Root`. A `control` whose resolver transforms the values is
+ * accepted as is.
+ */
+control?: Control&lt;FieldValues, any, unknown&gt;
+
+/**
+ * `id` for the control. Generated when omitted. Set it here, not on the
+ * control, so the label and the messages keep pointing at the right element.
+ */
+controlId?: string
+
+/**
+ * Helper text shown under the control, above the error when there is one,
+ * and announced through its `aria-describedby`. Use it for guidance the
+ * user needs before typing; put details worth a click in `tooltip` instead.
+ */
+description?: ReactNode
+
+/**
+ * Disables the control through its context and sets `data-disabled` on the root.
+ * Disables the control and marks the field. Unlike react-hook-form&#39;s own
+ * `disabled` option, the value stays in the submitted data: disabling a
+ * field is a presentation decision, not a change to the form&#39;s values.
+ */
+disabled?: boolean
+
+/**
+ * Everything else the `InputTel` should receive: `placeholder`,
+ * `autoComplete`, `size`, `className` (which styles the frame)…
+ * Handlers such as `onChange` and `onBlur` run after react-hook-form&#39;s,
+ * which are already wired, and read the masked value.
+ */
+inputProps?: FormTelInputProps
+
+/**
+ * The caption, rendered as the field&#39;s label. Text in almost every case.
+ */
+label: ReactNode
+
+/**
+ * Path of the value in the form, nested paths included (`&#39;agency.npn&#39;`).
+ * Type it against the form&#39;s values by passing their type as the
+ * component&#39;s first generic, or by passing `control`: the path must then
+ * exist and hold a value of the field&#39;s type.
+ */
+name: &quot;phone&quot;
+
+/**
+ * Appends a muted &quot; (optional)&quot; to the label. The forms mark optional fields
+ * rather than required ones; ignored when `required` is set.
+ */
+optional?: boolean
+
+/**
+ * Layout of the field. `vertical` (default) stacks label, control and
+ * messages. `horizontal` is one row at every width: the first child fills it
+ * and the rest keep their natural width, aligned to the right, so the
+ * controls of stacked fields line up. `responsive` stacks below `28rem` and
+ * behaves like `horizontal` from there, measured on the field itself, so it
+ * needs no particular wrapper. In both, `Field.Content` groups a control with
+ * its messages, or a label with its description.
+ */
+orientation?: &quot;vertical&quot; | &quot;horizontal&quot; | &quot;responsive&quot;
+
+/**
+ * Makes the control read-only through its context (focusable and copyable,
+ * not editable, still submitted) and sets `data-readonly` on the root.
+ */
+readOnly?: boolean
+
+/**
+ * Single source of truth for a required field: the `Label` shows its
+ * asterisk and the control receives `required`, both through context.
+ * Marks the field required: an asterisk on the label and the native
+ * `required` attribute on the control, which assistive technology
+ * announces. It does not validate — pair it with `rules.required` or a
+ * resolver — and it never triggers the browser bubble, since `Form.Root`
+ * renders `noValidate`.
+ */
+required?: boolean
+
+/**
+ * react-hook-form validation rules for this field (`required`, `pattern`,
+ * `validate`…), same as `register`&#39;s. They only validate: `rules.required`
+ * does not mark the field `required` — that is a separate, visible decision.
+ */
+rules?: Omit&lt;RegisterOptions&lt;FieldValues, &quot;phone&quot;&gt;, &quot;disabled&quot; | &quot;valueAsNumber&quot; | &quot;valueAsDate&quot; | &quot;setValueAs&quot;&gt;
+
+/**
+ * Drops the value from the form when the field unmounts, react-hook-form&#39;s
+ * `shouldUnregister`. Defaults to `false`: a field revealed by another one
+ * keeps its value while hidden.
+ */
+shouldUnregister?: boolean
+
+/**
+ * Content of an info tooltip rendered beside the label, for details that
+ * would clutter the description. The trigger is a sibling of the label, so
+ * the field&#39;s accessible name stays the label text.
+ */
+tooltip?: ReactNode
+
+/**
+ * Preferred side of the tooltip. Defaults to `&#39;top&#39;`.
+ */
+tooltipSide?: &quot;top&quot; | &quot;bottom&quot; | &quot;left&quot; | &quot;right&quot;</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Button, Field, Form, FormTel } from '@agentero/design-system';</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Required phone field submitting the masked number</div>
+              <div class="hint">A required phone field validating the full format. The digits are masked as
+they are typed, a partial number fails the `pattern` rule, and the form
+receives the masked text, never the bare digits.</div>
+              <pre><code>const Default = () =&gt; {
+    const methods = useForm&lt;ContactValues&gt;({ defaultValues: { phone: &#39;&#39; } });
+
+    return (
+        &lt;Form.Root
+            methods={methods}
+            onSubmit={onSubmit}
+            aria-label=&quot;Contact&quot;
+            className=&quot;flex flex-col items-start gap-7&quot;&gt;
+            &lt;FormTel
+                rules={{
+                    required: &#39;Enter a phone number.&#39;,
+                    pattern: { value: US_PHONE, message: &#39;Enter a 10-digit phone number.&#39; }
+                }}
+                inputProps={{ placeholder: &#39;(555) 000-0000&#39;, autoComplete: &#39;tel-national&#39; }}
+                label=&quot;Phone number&quot;
+                orientation=&quot;vertical&quot;
+                required
+                optional={false}
+                disabled={false}
+                readOnly={false}
+                name=&quot;phone&quot; /&gt;
+            &lt;Button type=&quot;submit&quot;&gt;Save&lt;/Button&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Optional With Description</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Optional phone field with helper text</div>
+              <div class="hint">`optional` appends a muted suffix to the label and leaves the input without
+the `required` attribute. `description` is announced with the input.</div>
+              <pre><code>const OptionalWithDescription = () =&gt; {
+    const methods = useForm&lt;{ mobile: string }&gt;({ defaultValues: { mobile: &#39;&#39; } });
+
+    return (
+        &lt;Form.Root methods={methods} aria-label=&quot;Agent contact&quot;&gt;
+            &lt;FormTel
+                name=&quot;mobile&quot;
+                label=&quot;Mobile number&quot;
+                optional
+                description=&quot;We text a code here when you sign in.&quot;
+            /&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Default Value</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Masked default value and reset written by the form</div>
+              <div class="hint">A value the form writes itself — `defaultValues`, `reset`, `setValue` — is
+shown as given, so it is written masked, in the same shape the field stores.
+Editing it masks the result as usual.</div>
+              <pre><code>const WithDefaultValue = () =&gt; {
+    const methods = useForm&lt;ContactValues&gt;({ defaultValues: { phone: &#39;(555) 123-4567&#39; } });
+
+    return (
+        &lt;Form.Root methods={methods} aria-label=&quot;Contact&quot; className=&quot;flex flex-col items-start gap-7&quot;&gt;
+            &lt;FormTel name=&quot;phone&quot; label=&quot;Phone number&quot; /&gt;
+            &lt;Button
+                type=&quot;button&quot;
+                variant=&quot;secondary&quot;
+                onClick={() =&gt; methods.reset({ phone: &#39;(555) 987-6543&#39; })}&gt;
+                Load saved number
+            &lt;/Button&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Input Props Chaining</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Input attributes, chained handlers and an extra aria-describedby</div>
+              <div class="hint">`inputProps` carries the input&#39;s own attributes — `placeholder`,
+`autoComplete`, `size`… — and its handlers. A consumer `onChange` runs after
+react-hook-form&#39;s and reads the masked value, both from the event and from
+`getValues`; a consumer `onBlur` runs once the field is already touched. An
+`aria-describedby` of its own joins the field&#39;s description instead of
+replacing it.</div>
+              <pre><code>const InputPropsChaining = () =&gt; {
+    const methods = useForm&lt;ContactValues&gt;({ defaultValues: { phone: &#39;&#39; } });
+
+    return (
+        &lt;Form.Root methods={methods} aria-label=&quot;Contact&quot; className=&quot;flex flex-col gap-2&quot;&gt;
+            &lt;FormTel
+                name=&quot;phone&quot;
+                label=&quot;Phone number&quot;
+                description=&quot;We call this number about your policy.&quot;
+                inputProps={{
+                    placeholder: &#39;(555) 000-0000&#39;,
+                    autoComplete: &#39;tel-national&#39;,
+                    size: &#39;lg&#39;,
+                    &#39;aria-describedby&#39;: &#39;phone-hours&#39;,
+                    onChange: event =&gt; onOwnChange(methods.getValues(&#39;phone&#39;), event.target.value),
+                    onBlur: () =&gt; onOwnBlur(methods.getFieldState(&#39;phone&#39;).isTouched)
+                }}
+            /&gt;
+            &lt;p id=&quot;phone-hours&quot;&gt;Calls go out on weekdays, 9am to 5pm.&lt;/p&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Horizontal</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Horizontal orientation through the root props</div>
+              <div class="hint">Root props pass through: `orientation=&quot;horizontal&quot;` lays the label and the
+phone frame in a row, with the description under the control.</div>
+              <pre><code>const Horizontal = () =&gt; {
+    const methods = useForm&lt;AgentValues&gt;({ defaultValues: { phone: &#39;&#39;, mobile: &#39;&#39; } });
+
+    return (
+        &lt;Form.Root methods={methods} aria-label=&quot;Agent contact&quot; className=&quot;w-[40rem]&quot;&gt;
+            &lt;Field.Group&gt;
+                &lt;FormTel
+                    name=&quot;phone&quot;
+                    label=&quot;Office phone&quot;
+                    orientation=&quot;horizontal&quot;
+                    inputProps={{ className: &#39;w-72&#39; }}
+                /&gt;
+                &lt;FormTel
+                    name=&quot;mobile&quot;
+                    label=&quot;Mobile&quot;
+                    description=&quot;Used for sign-in codes only.&quot;
+                    orientation=&quot;horizontal&quot;
+                    inputProps={{ className: &#39;w-72&#39; }}
+                    data-testid=&quot;mobile&quot;
+                /&gt;
+            &lt;/Field.Group&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Disabled</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Disabled phone field whose value is still submitted</div>
+              <div class="hint">`disabled` disables the input and marks the field, and the value still
+reaches `onSubmit` — unlike react-hook-form&#39;s own `disabled` option, which
+drops it.</div>
+              <pre><code>const Disabled = () =&gt; {
+    const methods = useForm&lt;ContactValues&gt;({ defaultValues: { phone: &#39;(555) 123-4567&#39; } });
+
+    return (
+        &lt;Form.Root
+            methods={methods}
+            onSubmit={onSubmit}
+            aria-label=&quot;Contact&quot;
+            className=&quot;flex flex-col items-start gap-7&quot;&gt;
+            &lt;FormTel name=&quot;phone&quot; label=&quot;Phone number&quot; disabled /&gt;
+            &lt;Button type=&quot;submit&quot;&gt;Save&lt;/Button&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Focus On Error</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Focus on the first invalid field after submit</div>
+              <div class="hint">react-hook-form&#39;s `ref` reaches the `&lt;input&gt;` inside the phone frame, so
+`setFocus` and the focus on the first invalid field after submit both work.</div>
+              <pre><code>const FocusOnError = () =&gt; {
+    const methods = useForm&lt;AgentValues&gt;({ defaultValues: { phone: &#39;&#39;, mobile: &#39;&#39; } });
+
+    return (
+        &lt;Form.Root
+            methods={methods}
+            onSubmit={onSubmit}
+            aria-label=&quot;Agent contact&quot;
+            className=&quot;flex flex-col items-start gap-7&quot;&gt;
+            &lt;Field.Group&gt;
+                &lt;FormTel name=&quot;phone&quot; label=&quot;Office phone&quot; /&gt;
+                &lt;FormTel
+                    name=&quot;mobile&quot;
+                    label=&quot;Mobile&quot;
+                    required
+                    rules={{ required: &#39;Enter a mobile number.&#39; }}
+                /&gt;
+            &lt;/Field.Group&gt;
+            &lt;Button type=&quot;submit&quot;&gt;Save&lt;/Button&gt;
+        &lt;/Form.Root&gt;
+    );
+};</code></pre>
+              
+            </div>
+        </div>
+    
+    
+  </div>
+</article>
+<article
   id="components-formtext"
   class="card 
   no-error
@@ -10129,9 +11441,9 @@ fires, `getValues` already returns the new value.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> FormText</h2>
       <div class="badges">
-        <label for="c-24-components-formtext-props" class="badge ok as-toggle">15 prop types</label>
+        <label for="c-27-components-formtext-props" class="badge ok as-toggle">15 prop types</label>
         
-        <label for="c-24-components-formtext-stories" class="badge ok as-toggle">10 stories</label>
+        <label for="c-27-components-formtext-stories" class="badge ok as-toggle">10 stories</label>
         
         
       </div>
@@ -10161,10 +11473,10 @@ with the `FieldText`, `Label`, `Input` and `Field.*` primitives directly.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-24-components-formtext-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-27-components-formtext-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-24-components-formtext-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-27-components-formtext-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -10640,9 +11952,9 @@ hand.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> FormTextArea</h2>
       <div class="badges">
-        <label for="c-25-components-formtextarea-props" class="badge ok as-toggle">14 prop types</label>
+        <label for="c-28-components-formtextarea-props" class="badge ok as-toggle">14 prop types</label>
         
-        <label for="c-25-components-formtextarea-stories" class="badge ok as-toggle">8 stories</label>
+        <label for="c-28-components-formtextarea-stories" class="badge ok as-toggle">8 stories</label>
         
         
       </div>
@@ -10671,10 +11983,10 @@ the `FieldTextArea`, `Label`, `TextArea` and `Field.*` primitives directly.</div
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-25-components-formtextarea-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-28-components-formtextarea-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-25-components-formtextarea-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-28-components-formtextarea-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -11078,9 +12390,9 @@ by hand.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> HoverCard.Root</h2>
       <div class="badges">
-        <label for="c-26-components-hovercard-props" class="badge ok as-toggle">6 prop types</label>
+        <label for="c-29-components-hovercard-props" class="badge ok as-toggle">6 prop types</label>
         
-        <label for="c-26-components-hovercard-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-29-components-hovercard-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -11112,10 +12424,10 @@ import { HoverCard } from &#39;@agentero/design-system/hover-card&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-26-components-hovercard-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-29-components-hovercard-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-26-components-hovercard-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-29-components-hovercard-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -11372,9 +12684,9 @@ trigger-dense UIs where an instant preview reads as more responsive.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Input</h2>
       <div class="badges">
-        <label for="c-27-components-input-props" class="badge ok as-toggle">1 prop type</label>
+        <label for="c-30-components-input-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-27-components-input-stories" class="badge ok as-toggle">9 stories</label>
+        <label for="c-30-components-input-stories" class="badge ok as-toggle">9 stories</label>
         
         
       </div>
@@ -11397,10 +12709,10 @@ what assistive technology announces.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-27-components-input-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-30-components-input-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-27-components-input-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-30-components-input-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -11586,7 +12898,7 @@ they cannot change.</div>
       <div class="badges">
         <span class="badge">no API description</span>
         
-        <label for="c-28-components-inputgroup-stories" class="badge ok as-toggle">12 stories</label>
+        <label for="c-31-components-inputgroup-stories" class="badge ok as-toggle">12 stories</label>
         
         
       </div>
@@ -11609,7 +12921,7 @@ hands its state to the frame through `:has()`, so focus, `disabled`,
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-28-components-inputgroup-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-31-components-inputgroup-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
   
@@ -11897,9 +13209,9 @@ button&#39;s start corners with the frame.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> InputNumber</h2>
       <div class="badges">
-        <label for="c-29-components-inputnumber-props" class="badge ok as-toggle">7 prop types</label>
+        <label for="c-32-components-inputnumber-props" class="badge ok as-toggle">7 prop types</label>
         
-        <label for="c-29-components-inputnumber-stories" class="badge ok as-toggle">12 stories</label>
+        <label for="c-32-components-inputnumber-stories" class="badge ok as-toggle">12 stories</label>
         
         
       </div>
@@ -11921,10 +13233,10 @@ key. It is an `Input` driven by
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-29-components-inputnumber-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-32-components-inputnumber-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-29-components-inputnumber-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-32-components-inputnumber-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -12272,9 +13584,9 @@ plain `Input`.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> InputPassword</h2>
       <div class="badges">
-        <label for="c-30-components-inputpassword-props" class="badge ok as-toggle">1 prop type</label>
+        <label for="c-33-components-inputpassword-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-30-components-inputpassword-stories" class="badge ok as-toggle">5 stories</label>
+        <label for="c-33-components-inputpassword-stories" class="badge ok as-toggle">5 stories</label>
         
         
       </div>
@@ -12295,10 +13607,10 @@ rendered while the input is disabled.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-30-components-inputpassword-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-33-components-inputpassword-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-30-components-inputpassword-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-33-components-inputpassword-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -12448,9 +13760,9 @@ the field through the frame. A disabled field removes the toggle too.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> InputSearch</h2>
       <div class="badges">
-        <label for="c-31-components-inputsearch-props" class="badge ok as-toggle">3 prop types</label>
+        <label for="c-34-components-inputsearch-props" class="badge ok as-toggle">3 prop types</label>
         
-        <label for="c-31-components-inputsearch-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-34-components-inputsearch-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -12473,10 +13785,10 @@ once there is text. It is an `Input` of `type=&quot;search&quot;` inside an
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-31-components-inputsearch-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-34-components-inputsearch-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-31-components-inputsearch-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-34-components-inputsearch-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -12690,9 +14002,9 @@ several search fields does not read &quot;Clear search&quot; twice.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> InputTel</h2>
       <div class="badges">
-        <label for="c-32-components-inputtel-props" class="badge ok as-toggle">1 prop type</label>
+        <label for="c-35-components-inputtel-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-32-components-inputtel-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-35-components-inputtel-stories" class="badge ok as-toggle">11 stories</label>
         
         
       </div>
@@ -12713,10 +14025,10 @@ with the masked text already in `event.target.value`.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-32-components-inputtel-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-35-components-inputtel-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-32-components-inputtel-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-35-components-inputtel-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -12970,9 +14282,9 @@ with the input.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Label</h2>
       <div class="badges">
-        <label for="c-33-components-label-props" class="badge ok as-toggle">3 prop types</label>
+        <label for="c-36-components-label-props" class="badge ok as-toggle">3 prop types</label>
         
-        <label for="c-33-components-label-stories" class="badge ok as-toggle">5 stories</label>
+        <label for="c-36-components-label-stories" class="badge ok as-toggle">5 stories</label>
         
         
       </div>
@@ -12992,10 +14304,10 @@ still has to carry `required` / `aria-required`.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-33-components-label-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-36-components-label-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-33-components-label-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-36-components-label-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -13127,9 +14439,9 @@ field&#39;s control with no `htmlFor`. An explicit `htmlFor` still wins.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Loading</h2>
       <div class="badges">
-        <label for="c-34-components-loading-props" class="badge ok as-toggle">1 prop type</label>
+        <label for="c-37-components-loading-props" class="badge ok as-toggle">1 prop type</label>
         
-        <label for="c-34-components-loading-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-37-components-loading-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -13146,10 +14458,10 @@ parent font size via `em`-based size variants (`sm`, `md`, `lg`).</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-34-components-loading-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-37-components-loading-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-34-components-loading-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-37-components-loading-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -13310,9 +14622,9 @@ against the dark background.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Modal.Root</h2>
       <div class="badges">
-        <label for="c-35-components-modal-props" class="badge ok as-toggle">5 prop types</label>
+        <label for="c-38-components-modal-props" class="badge ok as-toggle">5 prop types</label>
         
-        <label for="c-35-components-modal-stories" class="badge ok as-toggle">6 stories</label>
+        <label for="c-38-components-modal-stories" class="badge ok as-toggle">6 stories</label>
         
         
       </div>
@@ -13358,10 +14670,10 @@ import { Modal } from &#39;@agentero/design-system/modal&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-35-components-modal-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-38-components-modal-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-35-components-modal-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-38-components-modal-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -13590,9 +14902,9 @@ announced as an `alertdialog`. Only the footer actions close it.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Pagination</h2>
       <div class="badges">
-        <label for="c-36-components-pagination-props" class="badge ok as-toggle">5 prop types</label>
+        <label for="c-39-components-pagination-props" class="badge ok as-toggle">5 prop types</label>
         
-        <label for="c-36-components-pagination-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-39-components-pagination-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -13622,10 +14934,10 @@ const [page, setPage] = useState(1);
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-36-components-pagination-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-39-components-pagination-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-36-components-pagination-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-39-components-pagination-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -13791,9 +15103,9 @@ entries summary follow along.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Popover.Root</h2>
       <div class="badges">
-        <label for="c-37-components-popover-props" class="badge ok as-toggle">5 prop types</label>
+        <label for="c-40-components-popover-props" class="badge ok as-toggle">5 prop types</label>
         
-        <label for="c-37-components-popover-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-40-components-popover-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -13822,10 +15134,10 @@ import { Popover } from &#39;@agentero/design-system/popover&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-37-components-popover-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-40-components-popover-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-37-components-popover-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-40-components-popover-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -14090,9 +15402,9 @@ focus returning to its trigger once the modal closes.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Progress</h2>
       <div class="badges">
-        <label for="c-38-components-progress-props" class="badge ok as-toggle">4 prop types</label>
+        <label for="c-41-components-progress-props" class="badge ok as-toggle">4 prop types</label>
         
-        <label for="c-38-components-progress-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-41-components-progress-stories" class="badge ok as-toggle">4 stories</label>
         
         
       </div>
@@ -14111,10 +15423,10 @@ with `currentColor`, so recolor it with a plain text class — e.g.
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-38-components-progress-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-41-components-progress-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-38-components-progress-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-41-components-progress-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -14238,9 +15550,9 @@ percentage: number</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> RadioGroup.Root</h2>
       <div class="badges">
-        <label for="c-39-components-radiogroup-props" class="badge ok as-toggle">9 prop types</label>
+        <label for="c-42-components-radiogroup-props" class="badge ok as-toggle">9 prop types</label>
         
-        <label for="c-39-components-radiogroup-stories" class="badge ok as-toggle">12 stories</label>
+        <label for="c-42-components-radiogroup-stories" class="badge ok as-toggle">12 stories</label>
         
         
       </div>
@@ -14258,10 +15570,10 @@ percentage: number</code></pre>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-39-components-radiogroup-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-42-components-radiogroup-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-39-components-radiogroup-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-42-components-radiogroup-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -14660,9 +15972,9 @@ enabled, disabled, invalid and read-only, each with one item selected.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Select.Root</h2>
       <div class="badges">
-        <label for="c-40-components-select-props" class="badge ok as-toggle">13 prop types</label>
+        <label for="c-43-components-select-props" class="badge ok as-toggle">13 prop types</label>
         
-        <label for="c-40-components-select-stories" class="badge ok as-toggle">13 stories</label>
+        <label for="c-43-components-select-stories" class="badge ok as-toggle">13 stories</label>
         
         
       </div>
@@ -14686,10 +15998,10 @@ value; `Trigger` is the closed field and `Content` the list of `Item`s.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-40-components-select-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-43-components-select-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-40-components-select-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-43-components-select-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -15179,7 +16491,7 @@ the picked option on top of it, instead of below.</div>
       <div class="badges">
         <span class="badge">no API description</span>
         
-        <label for="c-41-components-skeleton-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-44-components-skeleton-stories" class="badge ok as-toggle">4 stories</label>
         
         
       </div>
@@ -15196,7 +16508,7 @@ shape it with Tailwind classes to mirror the content it stands in for.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-41-components-skeleton-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-44-components-skeleton-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
   
@@ -15299,9 +16611,9 @@ shape it with Tailwind classes to mirror the content it stands in for.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Switch</h2>
       <div class="badges">
-        <label for="c-42-components-switch-props" class="badge ok as-toggle">9 prop types</label>
+        <label for="c-45-components-switch-props" class="badge ok as-toggle">9 prop types</label>
         
-        <label for="c-42-components-switch-stories" class="badge ok as-toggle">8 stories</label>
+        <label for="c-45-components-switch-stories" class="badge ok as-toggle">8 stories</label>
         
         
       </div>
@@ -15317,10 +16629,10 @@ a Checkbox for a single boolean that applies instantly, and pair it with a
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-42-components-switch-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-45-components-switch-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-42-components-switch-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-45-components-switch-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -15530,9 +16842,9 @@ cannot change; `disabled` takes it out of the tab order instead.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Table.Root</h2>
       <div class="badges">
-        <label for="c-43-components-table-props" class="badge ok as-toggle">8 prop types</label>
+        <label for="c-46-components-table-props" class="badge ok as-toggle">8 prop types</label>
         
-        <label for="c-43-components-table-stories" class="badge ok as-toggle">12 stories</label>
+        <label for="c-46-components-table-stories" class="badge ok as-toggle">12 stories</label>
         
         
       </div>
@@ -15563,10 +16875,10 @@ import { Table } from &#39;@agentero/design-system/table&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-43-components-table-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-46-components-table-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-43-components-table-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-46-components-table-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -15891,9 +17203,9 @@ keeps the menu open.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tabs.Root</h2>
       <div class="badges">
-        <label for="c-44-components-tabs-props" class="badge ok as-toggle">9 prop types</label>
+        <label for="c-47-components-tabs-props" class="badge ok as-toggle">9 prop types</label>
         
-        <label for="c-44-components-tabs-stories" class="badge ok as-toggle">8 stories</label>
+        <label for="c-47-components-tabs-stories" class="badge ok as-toggle">8 stories</label>
         
         
       </div>
@@ -15924,10 +17236,10 @@ import { Tabs } from &#39;@agentero/design-system/tabs&#39;;
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-44-components-tabs-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-47-components-tabs-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-44-components-tabs-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-47-components-tabs-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -16159,9 +17471,9 @@ tablist role is announced.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tag</h2>
       <div class="badges">
-        <label for="c-45-components-tag-props" class="badge ok as-toggle">8 prop types</label>
+        <label for="c-48-components-tag-props" class="badge ok as-toggle">8 prop types</label>
         
-        <label for="c-45-components-tag-stories" class="badge ok as-toggle">13 stories</label>
+        <label for="c-48-components-tag-stories" class="badge ok as-toggle">13 stories</label>
         
         
       </div>
@@ -16180,10 +17492,10 @@ it an interactive link or button, which adds the pointer cursor and hover fill.<
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-45-components-tag-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-48-components-tag-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-45-components-tag-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-48-components-tag-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -16646,9 +17958,9 @@ leading + trailing icons, and icon-only.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> TextArea</h2>
       <div class="badges">
-        <label for="c-46-components-textarea-props" class="badge ok as-toggle">2 prop types</label>
+        <label for="c-49-components-textarea-props" class="badge ok as-toggle">2 prop types</label>
         
-        <label for="c-46-components-textarea-stories" class="badge ok as-toggle">9 stories</label>
+        <label for="c-49-components-textarea-stories" class="badge ok as-toggle">9 stories</label>
         
         
       </div>
@@ -16665,10 +17977,10 @@ states. It wires nothing on its own: `id`, `aria-invalid` and
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-46-components-textarea-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-49-components-textarea-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-46-components-textarea-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-49-components-textarea-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -16863,9 +18175,9 @@ form&#39;s validation can reject it.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Toast</h2>
       <div class="badges">
-        <label for="c-47-components-toast-props" class="badge ok as-toggle">11 prop types</label>
+        <label for="c-50-components-toast-props" class="badge ok as-toggle">11 prop types</label>
         
-        <label for="c-47-components-toast-stories" class="badge ok as-toggle">11 stories</label>
+        <label for="c-50-components-toast-stories" class="badge ok as-toggle">11 stories</label>
         
         
       </div>
@@ -16884,10 +18196,10 @@ common feedback patterns.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-47-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-50-components-toast-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-47-components-toast-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-50-components-toast-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -17327,9 +18639,9 @@ action (e.g., a sync icon for a sync-in-progress toast).</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> Tooltip</h2>
       <div class="badges">
-        <label for="c-48-components-tooltip-props" class="badge ok as-toggle">12 prop types</label>
+        <label for="c-51-components-tooltip-props" class="badge ok as-toggle">12 prop types</label>
         
-        <label for="c-48-components-tooltip-stories" class="badge ok as-toggle">7 stories</label>
+        <label for="c-51-components-tooltip-stories" class="badge ok as-toggle">7 stories</label>
         
         
       </div>
@@ -17348,10 +18660,10 @@ on hover or focus.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-48-components-tooltip-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-51-components-tooltip-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-48-components-tooltip-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-51-components-tooltip-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
@@ -17570,9 +18882,9 @@ import { Button } from '../button';</code></pre>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> ValidationList</h2>
       <div class="badges">
-        <label for="c-49-components-validationlist-props" class="badge ok as-toggle">2 prop types</label>
+        <label for="c-52-components-validationlist-props" class="badge ok as-toggle">2 prop types</label>
         
-        <label for="c-49-components-validationlist-stories" class="badge ok as-toggle">4 stories</label>
+        <label for="c-52-components-validationlist-stories" class="badge ok as-toggle">4 stories</label>
         
         
       </div>
@@ -17593,10 +18905,10 @@ your form validation; it does not own the input or block submission.</div>
   <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
   
   
-  <input id="c-49-components-validationlist-stories" class="tg tg-stories" type="checkbox" hidden />
+  <input id="c-52-components-validationlist-stories" class="tg tg-stories" type="checkbox" hidden />
   
   
-  <input id="c-49-components-validationlist-props" class="tg tg-props" type="checkbox" hidden />
+  <input id="c-52-components-validationlist-props" class="tg tg-props" type="checkbox" hidden />
 
   <div class="panels">
     
