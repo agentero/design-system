@@ -99,7 +99,8 @@ export type FormFieldProps<
  *   `field.value` and `field.onChange` onto its control,
  * - `rootProps` for the field root (`FieldText`, `FieldTextArea`…): every
  *   prop the shell does not own, plus `invalid` and `disabled`,
- * - `shellProps` for `FormFieldShell`.
+ * - `shellProps` for `FormFieldShell`, or for `FormFieldContent` in a field
+ *   whose control sits beside its text.
  */
 export const useFormField = <
 	TFieldValues extends FieldValues,
