@@ -13,12 +13,12 @@ import { tooltipRecipe } from './tooltip/tooltip';
 const surfaces: [name: string, classes: string, shadow: string, radius: string][] = [
 	['Tooltip', tooltipRecipe(), 'shadow-sm', 'rounded-sm'],
 	['Popover', popoverRecipe(), 'shadow-lg', 'rounded-md'],
-	['HoverCard', hoverCardRecipe(), 'shadow-xl', 'rounded-md'],
+	['HoverCard', hoverCardRecipe(), 'shadow-xl', 'rounded-lg'],
 	['Command.Root', commandRecipe().root(), 'shadow-xl', 'rounded-md'],
 	['Combobox list', comboboxRecipe().content(), 'shadow-xl', 'rounded-md'],
 	['Select list', selectRecipe().content(), 'shadow-xl', 'rounded-md'],
-	['DropdownMenu.Content', contentStyles(), 'shadow-xl', 'rounded-md'],
-	['DropdownMenu.SubContent', subContentStyles(), 'shadow-xl', 'rounded-md']
+	['DropdownMenu.Content', contentStyles(), 'shadow-xl', 'rounded-lg'],
+	['DropdownMenu.SubContent', subContentStyles(), 'shadow-xl', 'rounded-lg']
 ];
 
 it.each(surfaces)(

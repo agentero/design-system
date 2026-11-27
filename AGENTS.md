@@ -54,8 +54,9 @@ Study `src/avatar/avatar.tsx` before adding new components — it's the canonica
   | -- | -- | -- |
   | Tooltip | `shadow-sm` | `rounded-sm` |
   | Popover (`Popover.Content`) | `shadow-lg` | `rounded-md` |
-  | `HoverCard` | `shadow-xl` | `rounded-md` |
-  | Options list or menu (`Combobox`/`Autocomplete` list, `Select` list, `Command.Root`, `DropdownMenu` content and sub-content) | `shadow-xl` | `rounded-md` |
+  | `HoverCard` | `shadow-xl` | `rounded-lg` |
+  | `DropdownMenu` content and sub-content | `shadow-xl` | `rounded-lg` |
+  | Options list (`Combobox`/`Autocomplete` list, `Select` list, `Command.Root`) | `shadow-xl` | `rounded-md` |
 
   `Popover` and `DropdownMenu` hand their border, background, padding and shadow to a `Command` they wrap, so a `Command` inside either one shows only its own `Command.Root` row. A new anchored surface takes the row of the one it resembles instead of picking its own values. `src/elevation.test.ts` checks each row against its recipe: change the table and the test together. Toast and Modal are not on this scale: neither hangs from a trigger, and Modal sits on its own overlay without a border, so their recipes keep their own values.
 
