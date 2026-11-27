@@ -48,6 +48,17 @@ Study `src/avatar/avatar.tsx` before adding new components — it's the canonica
 - **`cn(...)` from `lib`** — always merge incoming `props.className` last: `cn(styles.root(), props.className)`. Never concatenate with template strings.
 - **Radix primitives** for behavior; Tailwind for styling. Prefer `ComponentPropsWithRef<typeof Primitive>` over hand-rolled prop types.
 - **Native attributes are inherited, not listed.** A props type that extends `ComponentPropsWithRef<'input'>` redeclares a native attribute only when its type differs here (`size` as an enum, behind an `Omit`). What the design system does with an attribute goes in the component JSDoc, which also states once that every native attribute is forwarded; docgen does not read the JSDoc above a type alias. See `src/input/input.tsx`.
+- **Anchored surfaces share one elevation scale.** Every surface that opens from a trigger and is positioned against it draws `border border-border-default-base-primary` on `bg-bg-default-base-primary`, and takes its shadow and radius from what it is:
+
+  | Surface | Shadow | Radius |
+  | -- | -- | -- |
+  | Tooltip | `shadow-sm` | `rounded-sm` |
+  | Popover (`Popover.Content`) | `shadow-lg` | `rounded-md` |
+  | `HoverCard` | `shadow-xl` | `rounded-lg` |
+  | `DropdownMenu` content and sub-content | `shadow-xl` | `rounded-lg` |
+  | Options list (`Combobox`/`Autocomplete` list, `Select` list, `Command.Root`) | `shadow-xl` | `rounded-md` |
+
+  `Popover` and `DropdownMenu` hand their border, background, padding and shadow to a `Command` they wrap, so a `Command` inside either one shows only its own `Command.Root` row. A new anchored surface takes the row of the one it resembles instead of picking its own values. `src/elevation.test.ts` checks each row against its recipe: change the table and the test together. Toast and Modal are not on this scale: neither hangs from a trigger, and Modal sits on its own overlay without a border, so their recipes keep their own values.
 
 JSDoc and stories are load-bearing here — `react-docgen-typescript` feeds both the Storybook docs page and the MCP manifests consumers rely on. Use the `/document-component <path>` skill for JSDoc and `/story-component <path>` for `.stories.tsx`; those skills encode the MCP-facing conventions (`@summary` tags, required stories, arg controls). Don't hand-roll either.
 
