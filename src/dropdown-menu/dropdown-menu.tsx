@@ -154,7 +154,7 @@ const commandChrome = [
  * Tailwind variant styles for the dropdown menu content.
  * Includes animations for slide-in/out based on the side from which the menu appears.
  */
-const contentStyles = tv({
+export const contentStyles = tv({
 	base: [
 		'z-(--z-index-top-layer) flex flex-col rounded-lg bg-bg-default-base-primary p-1 shadow-xl',
 		'border border-border-default-base-primary',
@@ -461,7 +461,7 @@ SubTrigger.displayName = 'DropdownMenu.SubTrigger';
  * Tailwind variant styles for the dropdown menu sub-content.
  * Similar to content styles but with different animation origins for nested menus.
  */
-const subContentStyles = tv({
+export const subContentStyles = tv({
 	base: [
 		'z-(--z-index-top-layer) flex flex-col rounded-lg bg-bg-default-base-primary p-1 shadow-xl',
 		'border border-border-default-base-primary',
