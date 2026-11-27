@@ -162,6 +162,17 @@ Parse it where the number is used. A form that types the path as `number` does
 not compile against `FormNumberPath`: type it as a string and parse it in the
 resolver or on submit.
 
+With `zodResolver`, the form's values take the schema's input type. Under zod 4
+`z.coerce.number()` and `z.preprocess(...)` take `unknown`, which does not
+compile either. Declare the field as a string and transform it, so the path
+binds and `onSubmit` still receives the number:
+
+```ts
+amount: z.string()
+	.transform(value => Number(value.replaceAll(',', '')))
+	.pipe(z.number().min(100));
+```
+
 **What changes.**
 
 - `thousandSeparator` defaults to `false`; the legacy default was `true`. An
@@ -175,6 +186,9 @@ resolver or on submit.
   default `type="tel"`; an identifier field that wants digits only passes
   `inputProps.inputMode: 'numeric'`. `agentero/mono` already renders the
   design-system `InputNumber`, so its keypad does not change.
-- react-hook-form's `min` and `max` rules read the text as a number and pass
-  silently on `"1,234"`, since the separator makes it `NaN`. Bound an amount
-  with `inputProps.maxNumber` or with a `validate` rule that strips the commas.
+- react-hook-form's `min` and `max` rules read the text as a number. They work
+  on `"1234"`, but with `thousandSeparator` set they pass silently on
+  `"1,234"`, which reads as `NaN`. Bound such an amount with
+  `inputProps.maxNumber` or with a `validate` rule that strips the commas:
+  `validate: value => Number(value.replaceAll(',', '')) >= 100 || 'Enter at least 100.'`.
+  A plain `Number(value)` is `NaN` on `"1,000"` too.

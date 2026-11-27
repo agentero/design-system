@@ -104,10 +104,8 @@ export const FormNumber = <
 }: FormNumberProps<TFieldValues, TName, TTransformedValues>) => {
 	const { field, rootProps, shellProps } = useFormField(props);
 
-	// `InputNumber` renders from `value`, so the field stays controlled: the
-	// empty string until the form holds a value for `name`. `FormNumberPath`
-	// guarantees a string once there; the cast only collapses the unresolved
-	// generic.
+	// `FormNumberPath` guarantees a string; the cast only collapses the
+	// unresolved generic. `?? ''` keeps the input controlled from the start.
 	const controlProps: Partial<InputNumberProps> = {
 		name: field.name,
 		value: (field.value ?? '') as InputNumberProps['value'],
