@@ -488,12 +488,8 @@ export const MultipleSelection: Story = {
 		await expect(colorado).toHaveAttribute('aria-selected', 'true');
 		await expect(input).toHaveValue('co');
 		await expect(canvas.getAllByRole('listitem')).toHaveLength(2);
-		// No clear button and no chevron here: Base UI's clear would wipe the selection, not the
-		// query, and a list that stays open between picks has nothing for a chevron to toggle.
+		// No clear button here: Base UI's clear would wipe the selection, not the query.
 		await expect(canvas.queryByRole('button', { name: /clear/i })).not.toBeInTheDocument();
-		await expect(
-			canvasElement.querySelector('[data-slot="combobox-trigger"]')
-		).not.toBeInTheDocument();
 
 		// Picking a selected row again clears it.
 		await userEvent.click(colorado);
@@ -503,6 +499,71 @@ export const MultipleSelection: Story = {
 
 		await userEvent.keyboard('{Escape}');
 		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+	}
+};
+
+/**
+ * `variant="select"` under a `multiple` root keeps the chevron: it marks the
+ * field as a dropdown, opens the list, and closes it once the user is done
+ * picking — the list itself stays open between picks. `showClear` is still
+ * ignored, so the chevron never gives way to a clear button.
+ *
+ * @summary Multi-select dropdown with a chevron that opens and closes the list
+ */
+export const MultipleSelect: Story = {
+	render: () => {
+		const [selected, setSelected] = useState<string[]>([]);
+
+		return (
+			<div className="flex flex-col gap-4">
+				<Combobox.Root items={STATES} multiple value={selected} onValueChange={setSelected}>
+					<Combobox.Input variant="select" placeholder="Choose states" aria-label="States" />
+					<Combobox.Content>
+						<Combobox.Empty>No matches found</Combobox.Empty>
+						<Combobox.List>
+							{(state: string) => (
+								<Combobox.Item key={state} value={state}>
+									{state}
+								</Combobox.Item>
+							)}
+						</Combobox.List>
+					</Combobox.Content>
+				</Combobox.Root>
+				{selected.length > 0 && (
+					<ul aria-label="Selected states" className="flex flex-wrap gap-2">
+						{selected.map(state => (
+							<li key={state}>
+								<Tag size="sm">{state}</Tag>
+							</li>
+						))}
+					</ul>
+				)}
+			</div>
+		);
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const body = within(document.body);
+		const trigger = canvas.getByRole('button', { name: 'Show options' });
+
+		await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+		await userEvent.click(trigger);
+		await waitFor(() => expect(body.getAllByRole('option')).toHaveLength(STATES.length));
+		await expect(trigger).toHaveAttribute('aria-expanded', 'true');
+
+		// Two picks: the list stays open and the chevron stays put.
+		await userEvent.click(body.getByRole('option', { name: 'Florida' }));
+		await userEvent.click(body.getByRole('option', { name: 'Texas' }));
+		await waitFor(() => expect(canvas.getAllByRole('listitem')).toHaveLength(2));
+		await expect(body.getByRole('listbox')).toBeInTheDocument();
+		await expect(canvas.queryByRole('button', { name: /clear/i })).not.toBeInTheDocument();
+		await expect(trigger).toBeVisible();
+
+		// The chevron closes the list and keeps the selection.
+		await userEvent.click(trigger);
+		await waitFor(() => expect(body.queryByRole('listbox')).not.toBeInTheDocument());
+		await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+		await expect(canvas.getAllByRole('listitem')).toHaveLength(2);
 	}
 };
 
