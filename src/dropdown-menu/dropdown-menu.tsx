@@ -154,7 +154,7 @@ const commandChrome = [
  * Tailwind variant styles for the dropdown menu content.
  * Includes animations for slide-in/out based on the side from which the menu appears.
  */
-const contentStyles = tv({
+export const contentStyles = tv({
 	base: [
 		'z-(--z-index-top-layer) flex flex-col rounded-md bg-bg-default-base-primary p-1 shadow-xl',
 		'border border-border-default-base-primary',
@@ -282,7 +282,7 @@ export const Item = ({ className, ...props }: ItemProps) => (
 		data-slot="dropdown-menu-item"
 		className={cn(
 			'flex items-center gap-2 bg-bg-default-base-primary px-3 py-1.75 text-sm text-text-default-base-primary',
-			'cursor-pointer rounded-md no-underline outline-none',
+			'cursor-pointer rounded-[calc(var(--radius-md)-5px)] no-underline outline-none',
 			'min-w-40',
 			'data-highlighted:bg-bg-default-base-primary-hover',
 			'data-disabled:pointer-events-none data-disabled:cursor-not-allowed',
@@ -439,7 +439,7 @@ export const SubTrigger = ({ className, children, ...props }: SubTriggerProps) =
 		data-slot="dropdown-menu-sub-trigger"
 		className={cn(
 			'flex items-center gap-2 bg-bg-default-base-primary px-3 py-1.75 text-sm text-text-default-base-primary',
-			'cursor-pointer rounded-md no-underline outline-none',
+			'cursor-pointer rounded-[calc(var(--radius-md)-5px)] no-underline outline-none',
 			'min-w-40',
 			'data-highlighted:bg-bg-default-base-primary-hover',
 			'data-[state=open]:bg-bg-default-base-primary-hover',
@@ -461,7 +461,7 @@ SubTrigger.displayName = 'DropdownMenu.SubTrigger';
  * Tailwind variant styles for the dropdown menu sub-content.
  * Similar to content styles but with different animation origins for nested menus.
  */
-const subContentStyles = tv({
+export const subContentStyles = tv({
 	base: [
 		'z-(--z-index-top-layer) flex flex-col rounded-md bg-bg-default-base-primary p-1 shadow-xl',
 		'border border-border-default-base-primary',
