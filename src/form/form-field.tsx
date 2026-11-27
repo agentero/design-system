@@ -46,6 +46,9 @@ export type FormFieldProps<
 	 * react-hook-form validation rules for this field (`required`, `pattern`,
 	 * `validate`…), same as `register`'s. They only validate: `rules.required`
 	 * does not mark the field `required` — that is a separate, visible decision.
+	 * They are skipped while the field is `disabled` or `readOnly`: the user
+	 * cannot change the value, so a failing rule would block the submit with
+	 * nothing to fix. A resolver's schema is not skipped; it decides on its own.
 	 */
 	rules?: UseControllerProps<TFieldValues, TName>['rules'];
 	/**
@@ -117,17 +120,30 @@ export const useFormField = <
 	tooltip,
 	tooltipSide,
 	optional,
+	readOnly,
 	...root
-}: FormFieldProps<TFieldValues, TName, TTransformedValues> & TRest) => {
+}: FormFieldProps<TFieldValues, TName, TTransformedValues> & TRest & { readOnly?: boolean }) => {
 	// `disabled` stays out of `useController` on purpose: react-hook-form drops
 	// a disabled field's value from the submitted data, and a disabled control
-	// here keeps submitting its value.
-	const { field, fieldState } = useController({ name, control, rules, shouldUnregister });
+	// here keeps submitting its value. A locked field skips its rules instead,
+	// re-registered without them on every render, so toggling the lock takes
+	// effect on the next validation.
+	const { field, fieldState } = useController({
+		name,
+		control,
+		rules: disabled || readOnly ? undefined : rules,
+		shouldUnregister
+	});
 
 	return {
 		field,
 		fieldState,
-		rootProps: { ...root, invalid: fieldState.invalid, disabled: disabled || field.disabled },
+		rootProps: {
+			...root,
+			readOnly,
+			invalid: fieldState.invalid,
+			disabled: disabled || field.disabled
+		},
 		shellProps: { label, description, tooltip, tooltipSide, optional, error: fieldState.error }
 	};
 };
