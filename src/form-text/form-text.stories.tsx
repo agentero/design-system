@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useForm } from 'react-hook-form';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
@@ -538,6 +540,67 @@ export const Disabled: Story = {
 				expect.anything()
 			)
 		);
+	}
+};
+
+/**
+ * A `disabled` or `readOnly` field skips its `rules`: the user cannot change
+ * the value, so a failing rule would block the submit with nothing to fix.
+ * Unlocking the field brings the rules back on the next validation.
+ */
+export const LockedFieldSkipsRules: Story = {
+	tags: ['!dev', '!autodocs', '!manifest'],
+	render: () => {
+		const [locked, setLocked] = useState(true);
+		const methods = useForm<{ agencyName: string; npn: string }>({
+			defaultValues: { agencyName: '', npn: '' }
+		});
+
+		return (
+			<Form.Root
+				methods={methods}
+				onSubmit={onSubmit}
+				aria-label="Agency"
+				className="flex flex-col items-start gap-7">
+				<Field.Group>
+					<FormText
+						name="agencyName"
+						label="Agency name"
+						disabled={locked}
+						rules={{ required: 'Enter the agency name.' }}
+					/>
+					<FormText name="npn" label="NPN" readOnly rules={{ required: 'Enter the NPN.' }} />
+				</Field.Group>
+				<Button type="button" variant="secondary" onClick={() => setLocked(!locked)}>
+					{locked ? 'Unlock' : 'Lock'}
+				</Button>
+				<Button type="submit">Save</Button>
+			</Form.Root>
+		);
+	},
+	play: async ({ canvasElement }) => {
+		onSubmit.mockClear();
+		const canvas = within(canvasElement);
+		const save = canvas.getByRole('button', { name: 'Save' });
+
+		await userEvent.click(save);
+		await waitFor(() =>
+			expect(onSubmit).toHaveBeenCalledWith({ agencyName: '', npn: '' }, expect.anything())
+		);
+
+		onSubmit.mockClear();
+		await userEvent.click(canvas.getByRole('button', { name: 'Unlock' }));
+		await userEvent.click(save);
+		await expect(await canvas.findByText('Enter the agency name.')).toBeVisible();
+		await expect(canvas.queryByText('Enter the NPN.')).toBeNull();
+		await expect(onSubmit).not.toHaveBeenCalled();
+
+		await userEvent.click(canvas.getByRole('button', { name: 'Lock' }));
+		await userEvent.click(save);
+		await waitFor(() =>
+			expect(onSubmit).toHaveBeenCalledWith({ agencyName: '', npn: '' }, expect.anything())
+		);
+		await expect(canvas.queryByText('Enter the agency name.')).toBeNull();
 	}
 };
 
