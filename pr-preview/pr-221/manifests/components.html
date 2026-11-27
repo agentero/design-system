@@ -626,7 +626,7 @@
 <main>
   <div class="wrap">
     <div class="note ok" style="margin-bottom: 16px;">
-              Using <code>react-component-meta</code>. Generation took <strong>3.9s</strong>.
+              Using <code>react-component-meta</code>. Generation took <strong>4.1s</strong>.
             </div>
     <h2 class="section-title">Components</h2>
     <div class="grid" role="list">
@@ -9357,7 +9357,7 @@ Validation is react-hook-form&#39;s alone.</div>
     <div class="title">
       <h2><span class="status-dot dot-ok"></span> FormSwitch</h2>
       <div class="badges">
-        <label for="c-21-components-formswitch-props" class="badge ok as-toggle">15 prop types</label>
+        <label for="c-21-components-formswitch-props" class="badge ok as-toggle">16 prop types</label>
         
         <label for="c-21-components-formswitch-stories" class="badge ok as-toggle">6 stories</label>
         
@@ -9398,7 +9398,7 @@ the `FieldSwitch`, `Label`, `Switch` and `Field.*` primitives directly.</div>
           <div class="note ok">
             <div class="row">
               <span class="ex-name">Prop types <small>(react-component-meta)</small></span>
-              <span class="badge ok">15 prop types</span>
+              <span class="badge ok">16 prop types</span>
             </div>
             <pre><code>Component: src/form-switch/index.ts::FormSwitch</code></pre>
             <pre><code>Props:</code></pre>
@@ -9490,6 +9490,13 @@ rules?: Omit&lt;RegisterOptions&lt;FieldValues, &quot;terms&quot;&gt;, &quot;dis
 shouldUnregister?: boolean
 
 /**
+ * Side of the toggle in a `horizontal` field: `end` (default) puts it
+ * after the label and its description, `start` before them. A `vertical`
+ * field always puts it under them.
+ */
+switchPosition?: &quot;start&quot; | &quot;end&quot; = &#39;end&#39;
+
+/**
  * Everything else the `Switch` should receive: `size`, `className`,
  * `aria-*`… Handlers such as `onCheckedChange` and `onBlur` run after
  * react-hook-form&#39;s, which are already wired.
@@ -9529,32 +9536,19 @@ tooltipSide?: &quot;top&quot; | &quot;bottom&quot; | &quot;left&quot; | &quot;ri
               </div>
               <div>Toggle the user must turn on, validating on submit</div>
               <div class="hint">The field consumers write: a `name`, a `label` and the validation rule.
-`rules.required` fails while the toggle is off, so submitting renders the
-error and marks the toggle invalid; turning it on clears both and `true`
-reaches `onSubmit`.</div>
-              <pre><code>const Default = () =&gt; {
-    const methods = useForm&lt;TermsValues&gt;({ defaultValues: { terms: false } });
-
-    return (
-        &lt;Form.Root
-            methods={methods}
-            onSubmit={onSubmit}
-            aria-label=&quot;Appointment request&quot;
-            className=&quot;flex max-w-120 flex-col items-start gap-7&quot;&gt;
-            &lt;FormSwitch
-                rules={{ required: &#39;Accept the terms to send the request.&#39; }}
-                label=&quot;I accept the carrier terms&quot;
-                description=&quot;The carrier reviews every request against them.&quot;
-                orientation=&quot;horizontal&quot;
-                required
-                optional={false}
-                disabled={false}
-                readOnly={false}
-                name=&quot;terms&quot; /&gt;
-            &lt;Button type=&quot;submit&quot;&gt;Send&lt;/Button&gt;
-        &lt;/Form.Root&gt;
-    );
-};</code></pre>
+`rules.required` fails while the toggle is off, so sending with it off
+renders the error and marks the toggle invalid; turning it on clears both
+and `true` reaches `onSubmit`.</div>
+              <pre><code>const Default = () =&gt; &lt;TermsForm
+    name=&quot;terms&quot;
+    label=&quot;I accept the carrier terms&quot;
+    description=&quot;The carrier reviews every request against them.&quot;
+    orientation=&quot;horizontal&quot;
+    switchPosition=&quot;end&quot;
+    required
+    optional={false}
+    disabled={false}
+    readOnly={false} /&gt;;</code></pre>
               
             </div>
             <div class="note ok">
@@ -9568,31 +9562,28 @@ generic. A value the form has not set yet (`undefined`, or `null`) reads as
 off, and the first flip stores a boolean. `tooltip` is an info button beside
 the label, a sibling of the `&lt;label&gt;`, so the accessible name stays the
 label text; `optional` appends a muted suffix to it.</div>
-              <pre><code>const NestedAndEmpty = () =&gt; {
-    const methods = useForm&lt;NotificationValues&gt;({
-        defaultValues: { notifications: { email: true } }
-    });
+              <pre><code>const NestedAndEmpty = () =&gt; &lt;NotificationsForm /&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Switch First</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              <div>Toggle first, then the label and its description</div>
+              <div class="hint">`switchPosition=&quot;start&quot;` puts the toggle before the label and its
+description, the same row in the other order.</div>
+              <pre><code>const SwitchFirst = () =&gt; {
+    const methods = useForm&lt;BillingValues&gt;({ defaultValues: { paperlessBilling: false } });
 
     return (
-        &lt;Form.Root
-            methods={methods}
-            onSubmit={onSubmit}
-            aria-label=&quot;Notifications&quot;
-            className=&quot;flex max-w-120 flex-col items-start gap-7&quot;&gt;
-            &lt;Field.Group&gt;
-                &lt;FormSwitch&lt;NotificationValues&gt;
-                    name=&quot;notifications.email&quot;
-                    label=&quot;Email notifications&quot;
-                    description=&quot;Get an email when a carrier returns a quote.&quot;
-                /&gt;
-                &lt;FormSwitch&lt;NotificationValues&gt;
-                    name=&quot;notifications.sms&quot;
-                    label=&quot;Text messages&quot;
-                    tooltip=&quot;Standard rates from your carrier apply.&quot;
-                    optional
-                /&gt;
-            &lt;/Field.Group&gt;
-            &lt;Button type=&quot;submit&quot;&gt;Save&lt;/Button&gt;
+        &lt;Form.Root methods={methods} aria-label=&quot;Billing&quot; className=&quot;max-w-120&quot;&gt;
+            &lt;FormSwitch
+                name=&quot;paperlessBilling&quot;
+                label=&quot;Paperless billing&quot;
+                description=&quot;Invoices arrive by email only.&quot;
+                switchPosition=&quot;start&quot;
+            /&gt;
         &lt;/Form.Root&gt;
     );
 };</code></pre>
@@ -9633,83 +9624,20 @@ fields.</div>
 reaches `onSubmit` — unlike react-hook-form&#39;s own `disabled` option, which
 drops it. `readOnly` keeps the toggle focusable and announced, but a click
 does not flip it.</div>
-              <pre><code>const DisabledAndReadOnly = () =&gt; {
-    const methods = useForm&lt;AgencyValues&gt;({
-        defaultValues: { instantAppointments: true, paperlessBilling: true }
-    });
-
-    return (
-        &lt;Form.Root
-            methods={methods}
-            onSubmit={onSubmit}
-            aria-label=&quot;Agency&quot;
-            className=&quot;flex max-w-120 flex-col items-start gap-7&quot;&gt;
-            &lt;Field.Group&gt;
-                &lt;FormSwitch name=&quot;instantAppointments&quot; label=&quot;Instant appointments&quot; readOnly /&gt;
-                &lt;FormSwitch name=&quot;paperlessBilling&quot; label=&quot;Paperless billing&quot; disabled /&gt;
-            &lt;/Field.Group&gt;
-            &lt;Button type=&quot;submit&quot;&gt;Save&lt;/Button&gt;
-        &lt;/Form.Root&gt;
-    );
-};</code></pre>
+              <pre><code>const DisabledAndReadOnly = () =&gt; &lt;AgencyForm /&gt;;</code></pre>
               
             </div>
             <div class="note ok">
               <div class="row">
-                <span class="ex-name">Switch Props Chaining</span>
+                <span class="ex-name">Switch Props</span>
                 <span class="badge ok">story ok</span>
               </div>
-              <div>Toggle props and a consumer onCheckedChange chained after the form&#39;s</div>
-              <div class="hint">`switchProps` carries the toggle&#39;s own props — `size`, `className`,
-`aria-*`… — and its handlers. A consumer `onCheckedChange` runs after
-react-hook-form&#39;s: by the time it fires, `getValues` already returns the new
-value.</div>
-              <pre><code>const SwitchPropsChaining = () =&gt; {
-    const methods = useForm&lt;MarketingValues&gt;({ defaultValues: { marketing: false } });
-
-    return (
-        &lt;Form.Root methods={methods} aria-label=&quot;Preferences&quot; className=&quot;max-w-120&quot;&gt;
-            &lt;FormSwitch
-                name=&quot;marketing&quot;
-                label=&quot;Product news&quot;
-                switchProps={{
-                    size: &#39;md&#39;,
-                    onCheckedChange: checked =&gt; onOwnCheckedChange(methods.getValues(&#39;marketing&#39;), checked)
-                }}
-            /&gt;
-        &lt;/Form.Root&gt;
-    );
-};</code></pre>
-              
-            </div>
-            <div class="note ok">
-              <div class="row">
-                <span class="ex-name">Set Focus</span>
-                <span class="badge ok">story ok</span>
-              </div>
-              <div>setFocus reaches the toggle through the merged ref</div>
-              <div class="hint">react-hook-form&#39;s `ref` reaches the toggle, so `setFocus` and the focus on
-the first invalid field after submit both work with no ref written by hand.</div>
-              <pre><code>const SetFocus = () =&gt; {
-    const methods = useForm&lt;TermsValues &amp; MarketingValues&gt;({
-        defaultValues: { terms: false, marketing: false }
-    });
-
-    return (
-        &lt;Form.Root
-            methods={methods}
-            aria-label=&quot;Preferences&quot;
-            className=&quot;flex max-w-120 flex-col items-start gap-7&quot;&gt;
-            &lt;Field.Group&gt;
-                &lt;FormSwitch name=&quot;terms&quot; label=&quot;I accept the carrier terms&quot; /&gt;
-                &lt;FormSwitch name=&quot;marketing&quot; label=&quot;Product news&quot; /&gt;
-            &lt;/Field.Group&gt;
-            &lt;Button type=&quot;button&quot; variant=&quot;secondary&quot; onClick={() =&gt; methods.setFocus(&#39;marketing&#39;)}&gt;
-                Focus product news
-            &lt;/Button&gt;
-        &lt;/Form.Root&gt;
-    );
-};</code></pre>
+              <div>Toggle props merged with the field&#39;s wiring</div>
+              <div class="hint">`switchProps` carries the toggle&#39;s own props — `aria-*`, `className`… — and
+its handlers. An `aria-describedby` joins the ids the field wires, and a
+consumer `onCheckedChange` runs after react-hook-form&#39;s: by the time it
+fires, `getValues` already returns the new value.</div>
+              <pre><code>const SwitchProps = () =&gt; &lt;MarketingForm /&gt;;</code></pre>
               
             </div>
         </div>

@@ -7692,7 +7692,7 @@
         "displayName": "FormSwitch",
         "exportName": "FormSwitch",
         "filePath": "/home/runner/work/design-system/design-system/src/form-switch/index.ts",
-        "description": "A complete on/off field bound to one boolean react-hook-form value: label,\n`Switch`, helper text and validation error, wired through `useController`.\nIt renders inside a `Form.Root`, which provides the form, and needs only a\n`name`, which on a typed form must point at a boolean (`FormSwitchPath`).\nThe `required`, `invalid` and error states reach the label, the toggle's\n`aria-*` attributes and the message with no ids written by hand.\n\nThe layout is [FieldSwitch](?path=/docs/components-fieldswitch--docs)'s:\nthe label, its description and its error stack together in a\n`Field.Content`, with the toggle beside them (`horizontal`, the default) or\nunder them (`vertical`). An empty value (`undefined`, `null`) reads as off,\nand flipping the toggle stores `true` or `false`. `rules.required` fails on\n`false`, so it is how a toggle the user must turn on is validated.\n\nUse it for the common case: a labelled toggle in a form. For another\nlayout, such as the toggle before its text, compose the primitives\nyourself: `useController` with `FieldSwitch`, `Field.Content`, `Label`,\n`Switch`, `Field.Description` and `Field.Error`. `FormSwitch` adds no\nbehaviour of its own over that composition.\n\nErrors come from `useController`'s per-field state, never from\n`formState.errors`, so the message stays fresh under the React Compiler.",
+        "description": "A complete on/off field bound to one boolean react-hook-form value: label,\n`Switch`, helper text and validation error, wired through `useController`.\nIt renders inside a `Form.Root`, which provides the form, and needs only a\n`name`, which on a typed form must point at a boolean (`FormSwitchPath`).\nThe `required`, `invalid` and error states reach the label, the toggle's\n`aria-*` attributes and the message with no ids written by hand.\n\nThe layout is [FieldSwitch](?path=/docs/components-fieldswitch--docs)'s:\nthe label, its description and its error stack together in a\n`Field.Content`, with the toggle beside them (`horizontal`, the default) or\nunder them (`vertical`); `switchPosition=\"start\"` moves it before the text\nin a row. An empty value (`undefined`, `null`) reads as off,\nand flipping the toggle stores `true` or `false`. `rules.required` fails on\n`false`, so it is how a toggle the user must turn on is validated.\n\nUse it for the common case: a labelled toggle in a form. For another\nlayout, compose the primitives yourself: `useController` with `FieldSwitch`, `Field.Content`, `Label`,\n`Switch`, `Field.Description` and `Field.Error`. `FormSwitch` adds no\nbehaviour of its own over that composition.\n\nErrors come from `useController`'s per-field state, never from\n`formState.errors`, so the message stays fresh under the React Compiler.",
         "jsDocTags": {
           "summary": [
             "Label, Switch, description and error bound to one boolean react-hook-form field"
@@ -8018,6 +8018,36 @@
                 "fileName": "src/form-switch/form-switch.tsx"
               }
             ]
+          },
+          "switchPosition": {
+            "name": "switchPosition",
+            "required": false,
+            "type": {
+              "name": "enum",
+              "raw": "\"start\" | \"end\"",
+              "value": [
+                {
+                  "value": "\"start\""
+                },
+                {
+                  "value": "\"end\""
+                }
+              ]
+            },
+            "description": "Side of the toggle in a `horizontal` field: `end` (default) puts it\nafter the label and its description, `start` before them. A `vertical`\nfield always puts it under them.",
+            "defaultValue": {
+              "value": "'end'"
+            },
+            "parent": {
+              "name": "FormSwitchProps",
+              "fileName": "src/form-switch/form-switch.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form-switch/form-switch.tsx"
+              }
+            ]
           }
         }
       },
@@ -8025,16 +8055,23 @@
         {
           "id": "components-formswitch--default",
           "name": "Default",
-          "snippet": "const Default = () => {\n    const methods = useForm<TermsValues>({ defaultValues: { terms: false } });\n\n    return (\n        <Form.Root\n            methods={methods}\n            onSubmit={onSubmit}\n            aria-label=\"Appointment request\"\n            className=\"flex max-w-120 flex-col items-start gap-7\">\n            <FormSwitch\n                rules={{ required: 'Accept the terms to send the request.' }}\n                label=\"I accept the carrier terms\"\n                description=\"The carrier reviews every request against them.\"\n                orientation=\"horizontal\"\n                required\n                optional={false}\n                disabled={false}\n                readOnly={false}\n                name=\"terms\" />\n            <Button type=\"submit\">Send</Button>\n        </Form.Root>\n    );\n};",
-          "description": "The field consumers write: a `name`, a `label` and the validation rule.\n`rules.required` fails while the toggle is off, so submitting renders the\nerror and marks the toggle invalid; turning it on clears both and `true`\nreaches `onSubmit`.",
+          "snippet": "const Default = () => <TermsForm\n    name=\"terms\"\n    label=\"I accept the carrier terms\"\n    description=\"The carrier reviews every request against them.\"\n    orientation=\"horizontal\"\n    switchPosition=\"end\"\n    required\n    optional={false}\n    disabled={false}\n    readOnly={false} />;",
+          "description": "The field consumers write: a `name`, a `label` and the validation rule.\n`rules.required` fails while the toggle is off, so sending with it off\nrenders the error and marks the toggle invalid; turning it on clears both\nand `true` reaches `onSubmit`.",
           "summary": "Toggle the user must turn on, validating on submit"
         },
         {
           "id": "components-formswitch--nested-and-empty",
           "name": "Nested And Empty",
-          "snippet": "const NestedAndEmpty = () => {\n    const methods = useForm<NotificationValues>({\n        defaultValues: { notifications: { email: true } }\n    });\n\n    return (\n        <Form.Root\n            methods={methods}\n            onSubmit={onSubmit}\n            aria-label=\"Notifications\"\n            className=\"flex max-w-120 flex-col items-start gap-7\">\n            <Field.Group>\n                <FormSwitch<NotificationValues>\n                    name=\"notifications.email\"\n                    label=\"Email notifications\"\n                    description=\"Get an email when a carrier returns a quote.\"\n                />\n                <FormSwitch<NotificationValues>\n                    name=\"notifications.sms\"\n                    label=\"Text messages\"\n                    tooltip=\"Standard rates from your carrier apply.\"\n                    optional\n                />\n            </Field.Group>\n            <Button type=\"submit\">Save</Button>\n        </Form.Root>\n    );\n};",
+          "snippet": "const NestedAndEmpty = () => <NotificationsForm />;",
           "description": "`name` accepts nested paths typed against the form's values through the\ngeneric. A value the form has not set yet (`undefined`, or `null`) reads as\noff, and the first flip stores a boolean. `tooltip` is an info button beside\nthe label, a sibling of the `<label>`, so the accessible name stays the\nlabel text; `optional` appends a muted suffix to it.",
           "summary": "Nested paths, an empty value read as off, and an info tooltip"
+        },
+        {
+          "id": "components-formswitch--switch-first",
+          "name": "Switch First",
+          "snippet": "const SwitchFirst = () => {\n    const methods = useForm<BillingValues>({ defaultValues: { paperlessBilling: false } });\n\n    return (\n        <Form.Root methods={methods} aria-label=\"Billing\" className=\"max-w-120\">\n            <FormSwitch\n                name=\"paperlessBilling\"\n                label=\"Paperless billing\"\n                description=\"Invoices arrive by email only.\"\n                switchPosition=\"start\"\n            />\n        </Form.Root>\n    );\n};",
+          "description": "`switchPosition=\"start\"` puts the toggle before the label and its\ndescription, the same row in the other order.",
+          "summary": "Toggle first, then the label and its description"
         },
         {
           "id": "components-formswitch--vertical",
@@ -8046,23 +8083,16 @@
         {
           "id": "components-formswitch--disabled-and-read-only",
           "name": "Disabled And Read Only",
-          "snippet": "const DisabledAndReadOnly = () => {\n    const methods = useForm<AgencyValues>({\n        defaultValues: { instantAppointments: true, paperlessBilling: true }\n    });\n\n    return (\n        <Form.Root\n            methods={methods}\n            onSubmit={onSubmit}\n            aria-label=\"Agency\"\n            className=\"flex max-w-120 flex-col items-start gap-7\">\n            <Field.Group>\n                <FormSwitch name=\"instantAppointments\" label=\"Instant appointments\" readOnly />\n                <FormSwitch name=\"paperlessBilling\" label=\"Paperless billing\" disabled />\n            </Field.Group>\n            <Button type=\"submit\">Save</Button>\n        </Form.Root>\n    );\n};",
+          "snippet": "const DisabledAndReadOnly = () => <AgencyForm />;",
           "description": "`disabled` disables the toggle and marks the field, and the value still\nreaches `onSubmit` — unlike react-hook-form's own `disabled` option, which\ndrops it. `readOnly` keeps the toggle focusable and announced, but a click\ndoes not flip it.",
           "summary": "Disabled and read-only toggles whose values are still submitted"
         },
         {
-          "id": "components-formswitch--switch-props-chaining",
-          "name": "Switch Props Chaining",
-          "snippet": "const SwitchPropsChaining = () => {\n    const methods = useForm<MarketingValues>({ defaultValues: { marketing: false } });\n\n    return (\n        <Form.Root methods={methods} aria-label=\"Preferences\" className=\"max-w-120\">\n            <FormSwitch\n                name=\"marketing\"\n                label=\"Product news\"\n                switchProps={{\n                    size: 'md',\n                    onCheckedChange: checked => onOwnCheckedChange(methods.getValues('marketing'), checked)\n                }}\n            />\n        </Form.Root>\n    );\n};",
-          "description": "`switchProps` carries the toggle's own props — `size`, `className`,\n`aria-*`… — and its handlers. A consumer `onCheckedChange` runs after\nreact-hook-form's: by the time it fires, `getValues` already returns the new\nvalue.",
-          "summary": "Toggle props and a consumer onCheckedChange chained after the form's"
-        },
-        {
-          "id": "components-formswitch--set-focus",
-          "name": "Set Focus",
-          "snippet": "const SetFocus = () => {\n    const methods = useForm<TermsValues & MarketingValues>({\n        defaultValues: { terms: false, marketing: false }\n    });\n\n    return (\n        <Form.Root\n            methods={methods}\n            aria-label=\"Preferences\"\n            className=\"flex max-w-120 flex-col items-start gap-7\">\n            <Field.Group>\n                <FormSwitch name=\"terms\" label=\"I accept the carrier terms\" />\n                <FormSwitch name=\"marketing\" label=\"Product news\" />\n            </Field.Group>\n            <Button type=\"button\" variant=\"secondary\" onClick={() => methods.setFocus('marketing')}>\n                Focus product news\n            </Button>\n        </Form.Root>\n    );\n};",
-          "description": "react-hook-form's `ref` reaches the toggle, so `setFocus` and the focus on\nthe first invalid field after submit both work with no ref written by hand.",
-          "summary": "setFocus reaches the toggle through the merged ref"
+          "id": "components-formswitch--switch-props",
+          "name": "Switch Props",
+          "snippet": "const SwitchProps = () => <MarketingForm />;",
+          "description": "`switchProps` carries the toggle's own props — `aria-*`, `className`… — and\nits handlers. An `aria-describedby` joins the ids the field wires, and a\nconsumer `onCheckedChange` runs after react-hook-form's: by the time it\nfires, `getValues` already returns the new value.",
+          "summary": "Toggle props merged with the field's wiring"
         }
       ],
       "import": "import { Button, Field, Form, FormSwitch } from '@agentero/design-system';"
@@ -13977,6 +14007,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 3905
+    "durationMs": 4059
   }
 }
