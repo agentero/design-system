@@ -6429,6 +6429,184 @@
       ],
       "import": "import { Button, Command, DropdownMenu } from '@agentero/design-system';\nimport { ChevronDownIcon, CopyIcon, FolderInputIcon, ShareIcon, Trash2Icon, UsersIcon } from 'lucide-react';"
     },
+    "components-fieldfiledrop": {
+      "id": "components-fieldfiledrop",
+      "name": "FieldFileDrop",
+      "path": "./src/field-file-drop/field-file-drop.stories.tsx",
+      "jsDocTags": {
+        "summary": [
+          "Field for a one-file upload, wiring the FileDrop inside it"
+        ],
+        "example": [
+          "<FieldFileDrop invalid={!!error} required>\n  <Label>W-9</Label>\n  <FileDrop\n    accept=\"application/pdf\"\n    value={value}\n    onFileChange={file => setValue({ file })}\n    onFileReject={() => setError({ message: 'Upload the W-9 as a PDF.' })}\n  />\n  <Field.Description>Signed in the last 12 months.</Field.Description>\n  <Field.Error errors={[error]} />\n</FieldFileDrop>"
+        ]
+      },
+      "description": "FieldFileDrop is a `Field.Root` for a one-file upload. It provides\n`FileDropContext`, so the `FileDrop` inside associates its input with the\nlabel and the messages and takes `invalid`, `required`, `disabled` and\n`readOnly` from the field — no `id`, `htmlFor`, `aria-describedby` or\n`aria-invalid` written by hand. The label sits over the box, as in the other\nvertical fields.\n\nIt knows nothing about form libraries: the stories keep the file and the\nerror in state, the way a form would.",
+      "summary": "Field for a one-file upload, wiring the FileDrop inside it",
+      "reactComponentMeta": {
+        "displayName": "FieldFileDrop",
+        "exportName": "FieldFileDrop",
+        "filePath": "/home/runner/work/design-system/design-system/src/field-file-drop/index.ts",
+        "description": "A `Field.Root` for a one-file upload: it provides `FileDropContext`, so the\n`FileDrop` inside associates its input with the label and the messages and\ntakes `invalid`, `required`, `disabled` and `readOnly` from the field. Every\nother part (`Label`, `Field.Description`, `Field.Error`) works as in any\nfield. The field is always vertical, the label over the box: the box is a\ndrop zone or a preview at least 200px tall, so there is no `orientation`.\n\nThe field's messages reach the zone and, once there is a file, \"Replace\nfile\", which keeps the focus. A file `accept` turns down arrives at the\n`FileDrop`'s `onFileReject`: set the field `invalid` and its error there,\nsince the field does not see the file. With `readOnly` and no file the box\nrenders nothing, so show the field only when there is a file to look at.\n\nForm-library agnostic, and its contexts compose: a provider nested inside it\ncan extend `FileDropContext` with `name`, `value`, `onFileChange`,\n`onFileReject`, `onFileRemove`, `onBlur` and `ref` to control the\n`FileDrop`, and `FieldContext` with the errors, on top of the wiring\n`FieldFileDrop` already set.",
+        "jsDocTags": {
+          "summary": [
+            "Field for a one-file upload, wiring the FileDrop inside it"
+          ],
+          "example": [
+            "<FieldFileDrop invalid={!!error} required>\n  <Label>W-9</Label>\n  <FileDrop\n    accept=\"application/pdf\"\n    value={value}\n    onFileChange={file => setValue({ file })}\n    onFileReject={() => setError({ message: 'Upload the W-9 as a PDF.' })}\n  />\n  <Field.Description>Signed in the last 12 months.</Field.Description>\n  <Field.Error errors={[error]} />\n</FieldFileDrop>"
+          ]
+        },
+        "props": {
+          "disabled": {
+            "name": "disabled",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Disables the control through its context and sets `data-disabled` on the root.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
+          "required": {
+            "name": "required",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Single source of truth for a required field: the `Label` shows its\nasterisk and the control receives `required`, both through context.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
+          "readOnly": {
+            "name": "readOnly",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Makes the control read-only through its context (focusable and copyable,\nnot editable, still submitted) and sets `data-readonly` on the root.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
+          "invalid": {
+            "name": "invalid",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Marks the field as failing validation: sets `data-invalid` on the root and\n`aria-invalid` on the control through its context, which drives the\ncontrol's destructive border. The label keeps its color by design.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
+          "controlId": {
+            "name": "controlId",
+            "required": false,
+            "type": {
+              "name": "string"
+            },
+            "description": "`id` for the control. Generated when omitted. Set it here, not on the\ncontrol, so the label and the messages keep pointing at the right element.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          }
+        }
+      },
+      "stories": [
+        {
+          "id": "components-fieldfiledrop--default",
+          "name": "Default",
+          "snippet": "const Default = () => <W9Field invalid={false} disabled={false} readOnly={false} required={false} />;",
+          "description": "The composition consumers write: a label, the design system's `FileDrop`\nand helper text. The label names the file input and the input is described\nby the text and the accepted formats, all through context. A file `accept`\nturns down sets the field's error from `onFileReject`.",
+          "summary": "Label, FileDrop and description wired with no ids"
+        },
+        {
+          "id": "components-fieldfiledrop--filled",
+          "name": "Filled",
+          "snippet": "const Filled = () => <W9Field initialValue={{ url: storedW9Url }} />;",
+          "description": "Once there is a file the preview replaces the zone, and the field's\nmessages move to \"Replace file\", the control that keeps the focus.\n`onFileRemove` on the `FileDrop` adds \"Remove\", which brings the zone back.",
+          "summary": "Stored file previewed under the label"
+        },
+        {
+          "id": "components-fieldfiledrop--invalid",
+          "name": "Invalid",
+          "snippet": "const Invalid = () => <W9Field initialError={rejectionError} />;",
+          "description": "`invalid` paints the zone in the destructive tone and `Field.Error` shows\nthe message under the description; both reach the input's\n`aria-describedby`. Here the error comes from a file `accept` turned down.",
+          "summary": "Rejected file: destructive zone and the error under it"
+        },
+        {
+          "id": "components-fieldfiledrop--required",
+          "name": "Required",
+          "snippet": "const Required = () => <W9Field required />;",
+          "description": "`required` on the field reaches both the label's asterisk and the input's\n`required`, which holds only while the zone is empty.",
+          "summary": "Required field driven from the root alone"
+        },
+        {
+          "id": "components-fieldfiledrop--alternative-source",
+          "name": "Alternative Source",
+          "snippet": "const AlternativeSource = function Render() {\n    const [value, setValue] = useState<FileDropValue | null>(null);\n\n    return (\n        <FieldFileDrop>\n            <Label>W-9</Label>\n            <FileDrop\n                accept=\"application/pdf\"\n                showAcceptedFormats={false}\n                value={value}\n                onFileChange={file => setValue({ file })}\n                onFileRemove={() => setValue(null)}>\n                <DropdownMenu.Root>\n                    <DropdownMenu.Trigger asChild>\n                        <Button type=\"button\" variant=\"secondary\" size=\"md\">\n                            Choose from agency\n                            <ChevronDownIcon />\n                        </Button>\n                    </DropdownMenu.Trigger>\n                    <DropdownMenu.Portal>\n                        <DropdownMenu.Content>\n                            <DropdownMenu.Item\n                                onSelect={() =>\n                                    setValue({ url: storedW9Url, name: 'w9-northside-insurance.pdf' })\n                                }>\n                                W-9 · Northside Insurance\n                            </DropdownMenu.Item>\n                            <DropdownMenu.Item\n                                onSelect={() => setValue({ url: storedW9Url, name: 'w9-lakeside-agency.pdf' })}>\n                                W-9 · Lakeside Agency\n                            </DropdownMenu.Item>\n                        </DropdownMenu.Content>\n                    </DropdownMenu.Portal>\n                </DropdownMenu.Root>\n            </FileDrop>\n        </FieldFileDrop>\n    );\n};",
+          "description": "Another way to supply the file, here picking the W-9 of another agency,\ngoes in the `FileDrop`'s `children`: it sits in the empty zone under an\n\"or\", and leaves with it once there is a file.",
+          "summary": "Another way to supply the file inside the zone"
+        },
+        {
+          "id": "components-fieldfiledrop--disabled",
+          "name": "Disabled",
+          "snippet": "const Disabled = () => <W9Field disabled />;",
+          "description": "`disabled` on the field greys the zone out and disables the input: clicks\nopen nothing and drops are ignored.",
+          "summary": "Disabled field driven from the root"
+        },
+        {
+          "id": "components-fieldfiledrop--read-only",
+          "name": "Read Only",
+          "snippet": "const ReadOnly = () => <W9Field readOnly initialValue={{ url: storedW9Url }} />;",
+          "description": "`readOnly` on the field shows the stored file without \"Replace file\" or\n\"Remove\". With no file the box renders nothing, so render the field only\nwhen there is one.",
+          "summary": "Read-only field showing the stored file"
+        }
+      ],
+      "import": "import { Button, DropdownMenu, Field, FieldFileDrop, FileDrop, Label } from '@agentero/design-system';\nimport { ChevronDownIcon } from 'lucide-react';"
+    },
     "components-fieldswitch": {
       "id": "components-fieldswitch",
       "name": "FieldSwitch",
@@ -6441,7 +6619,7 @@
           "<FieldSwitch>\n  <Field.Content>\n    <Label>Email notifications</Label>\n    <Field.Description>Get an email when a quote is ready.</Field.Description>\n  </Field.Content>\n  <Switch checked={enabled} onCheckedChange={setEnabled} />\n</FieldSwitch>"
         ]
       },
-      "description": "FieldSwitch is a `Field.Root` for an on/off toggle. It provides\n`SwitchContext`, so the `Switch` inside associates itself with the label and\nthe messages and takes `invalid`, `required`, `disabled` and `readOnly` from\nthe field — no `id`, `htmlFor` or `aria-describedby` written by hand. It\ndefaults to one row, with the small toggle next to the text.\n\nIt knows nothing about form libraries, and its contexts compose: a provider\nnested inside it can extend `SwitchContext` with `checked`,\n`onCheckedChange`, `onBlur` and `name`, and `FieldContext` with the errors,\nwhich is how `FormSwitch` will bind it.",
+      "description": "FieldSwitch is a `Field.Root` for an on/off toggle. It provides\n`SwitchContext`, so the `Switch` inside associates itself with the label and\nthe messages and takes `invalid`, `required`, `disabled` and `readOnly` from\nthe field — no `id`, `htmlFor` or `aria-describedby` written by hand. It\ndefaults to one row, with the small toggle next to the text.\n\nIt knows nothing about form libraries, and its contexts compose: a provider\nnested inside it can extend `SwitchContext` with `checked`,\n`onCheckedChange`, `onBlur` and `name`, and `FieldContext` with the errors,\nwhich is how a form library binds it. For react-hook-form, use `FormSwitch`.",
       "summary": "Field for an on/off toggle, wiring the Switch inside it",
       "reactComponentMeta": {
         "displayName": "FieldSwitch",
@@ -7673,6 +7851,429 @@
         }
       ],
       "import": "import { Button, DropdownMenu, FileDrop, Label } from '@agentero/design-system';\nimport { ChevronDownIcon } from 'lucide-react';\nimport { fn } from 'storybook/test';"
+    },
+    "components-formswitch": {
+      "id": "components-formswitch",
+      "name": "FormSwitch",
+      "path": "./src/form-switch/form-switch.stories.tsx",
+      "jsDocTags": {
+        "summary": [
+          "Label, Switch, description and error bound to one boolean react-hook-form field"
+        ],
+        "example": [
+          "<FormSwitch\n  name=\"emailNotifications\"\n  label=\"Email notifications\"\n  description=\"Get an email when a carrier returns a quote.\"\n/>"
+        ]
+      },
+      "description": "FormSwitch is a complete on/off field bound to one boolean react-hook-form\nvalue: label, `Switch`, helper text and validation error, laid out as in\n`FieldSwitch` and wired through `useController`. It renders inside a\n`Form.Root` and needs only a `name`; `required`, `invalid` and the error\nreach the label, the toggle's `aria-*` attributes and the message with no\nids written by hand.\n\nIt covers the common case. For another layout, compose `useController` with\nthe `FieldSwitch`, `Label`, `Switch` and `Field.*` primitives directly.",
+      "summary": "Label, Switch, description and error bound to one boolean react-hook-form field",
+      "reactComponentMeta": {
+        "displayName": "FormSwitch",
+        "exportName": "FormSwitch",
+        "filePath": "/home/runner/work/design-system/design-system/src/form-switch/index.ts",
+        "description": "A complete on/off field bound to one boolean react-hook-form value: label,\n`Switch`, helper text and validation error, wired through `useController`.\nIt renders inside a `Form.Root`, which provides the form, and needs only a\n`name`, which on a typed form must point at a boolean (`FormSwitchPath`).\nThe `required`, `invalid` and error states reach the label, the toggle's\n`aria-*` attributes and the message with no ids written by hand.\n\nThe layout is [FieldSwitch](?path=/docs/components-fieldswitch--docs)'s:\nthe label, its description and its error stack together in a\n`Field.Content`, with the toggle beside them (`horizontal`, the default) or\nunder them (`vertical`); `switchPosition=\"start\"` moves it before the text\nin a row. An empty value (`undefined`, `null`) reads as off,\nand flipping the toggle stores `true` or `false`. `rules.required` fails on\n`false`, so it is how a toggle the user must turn on is validated.\n\nUse it for the common case: a labelled toggle in a form. For another\nlayout, compose the primitives yourself: `useController` with\n`FieldSwitch`, `Field.Content`, `Label`, `Switch`, `Field.Description` and\n`Field.Error`. Over that composition `FormSwitch` adds one thing: it reads\nan empty value as off (`checked={field.value === true}`), where a `Switch`\ngiven the form's `undefined` starts uncontrolled.\n\nErrors come from `useController`'s per-field state, never from\n`formState.errors`, so the message stays fresh under the React Compiler.",
+        "jsDocTags": {
+          "summary": [
+            "Label, Switch, description and error bound to one boolean react-hook-form field"
+          ],
+          "example": [
+            "<FormSwitch\n  name=\"emailNotifications\"\n  label=\"Email notifications\"\n  description=\"Get an email when a carrier returns a quote.\"\n/>"
+          ]
+        },
+        "props": {
+          "disabled": {
+            "name": "disabled",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Disables the control through its context and sets `data-disabled` on the root.\nDisables the control and marks the field. Unlike react-hook-form's own\n`disabled` option, the value stays in the submitted data: disabling a\nfield is a presentation decision, not a change to the form's values.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              },
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form/form-field.tsx"
+              }
+            ]
+          },
+          "orientation": {
+            "name": "orientation",
+            "required": false,
+            "type": {
+              "name": "enum",
+              "raw": "\"vertical\" | \"horizontal\"",
+              "value": [
+                {
+                  "value": "\"vertical\""
+                },
+                {
+                  "value": "\"horizontal\""
+                }
+              ]
+            },
+            "description": "`horizontal` (default) puts the label, or a `Field.Content` with the\nlabel, its description and its error, on one row with the toggle beside\nit; `vertical` stacks the toggle under the label.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldSwitchProps",
+              "fileName": "src/field-switch/field-switch.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field-switch/field-switch.tsx"
+              }
+            ]
+          },
+          "required": {
+            "name": "required",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Single source of truth for a required field: the `Label` shows its\nasterisk and the control receives `required`, both through context.\nMarks the field required: an asterisk on the label and the native\n`required` attribute on the control, which assistive technology\nannounces. It does not validate — pair it with `rules.required` or a\nresolver — and it never triggers the browser bubble, since `Form.Root`\nrenders `noValidate`.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              },
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form/form-field.tsx"
+              }
+            ]
+          },
+          "readOnly": {
+            "name": "readOnly",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Makes the control read-only through its context (focusable and copyable,\nnot editable, still submitted) and sets `data-readonly` on the root.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
+          "controlId": {
+            "name": "controlId",
+            "required": false,
+            "type": {
+              "name": "string"
+            },
+            "description": "`id` for the control. Generated when omitted. Set it here, not on the\ncontrol, so the label and the messages keep pointing at the right element.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FieldRootProps",
+              "fileName": "src/field/field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/field/field.tsx"
+              }
+            ]
+          },
+          "name": {
+            "name": "name",
+            "required": true,
+            "type": {
+              "name": "\"terms\""
+            },
+            "description": "Path of the value in the form, nested paths included (`'agency.npn'`).\nType it against the form's values by passing their type as the\ncomponent's first generic, or by passing `control`: the path must then\nexist and hold a value of the field's type.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FormFieldProps",
+              "fileName": "src/form/form-field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form/form-field.tsx"
+              }
+            ]
+          },
+          "control": {
+            "name": "control",
+            "required": false,
+            "type": {
+              "name": "Control<FieldValues, any, unknown>"
+            },
+            "description": "The form's `control`, from `useForm()`. Defaults to the one the\nsurrounding `Form.Root` provides; pass it explicitly to get `name`\ninference without writing the generic, or when the field renders outside\na `Form.Root`. A `control` whose resolver transforms the values is\naccepted as is.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FormFieldProps",
+              "fileName": "src/form/form-field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form/form-field.tsx"
+              }
+            ]
+          },
+          "rules": {
+            "name": "rules",
+            "required": false,
+            "type": {
+              "name": "Omit<RegisterOptions<FieldValues, \"terms\">, \"disabled\" | \"valueAsNumber\" | \"valueAsDate\" | \"setValueAs\">"
+            },
+            "description": "react-hook-form validation rules for this field (`required`, `pattern`,\n`validate`…), same as `register`'s. They only validate: `rules.required`\ndoes not mark the field `required` — that is a separate, visible decision.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FormFieldProps",
+              "fileName": "src/form/form-field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form/form-field.tsx"
+              }
+            ]
+          },
+          "shouldUnregister": {
+            "name": "shouldUnregister",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Drops the value from the form when the field unmounts, react-hook-form's\n`shouldUnregister`. Defaults to `false`: a field revealed by another one\nkeeps its value while hidden.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FormFieldProps",
+              "fileName": "src/form/form-field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form/form-field.tsx"
+              }
+            ]
+          },
+          "label": {
+            "name": "label",
+            "required": true,
+            "type": {
+              "name": "ReactNode"
+            },
+            "description": "The caption, rendered as the field's label. Text in almost every case.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FormFieldProps",
+              "fileName": "src/form/form-field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form/form-field.tsx"
+              }
+            ]
+          },
+          "description": {
+            "name": "description",
+            "required": false,
+            "type": {
+              "name": "ReactNode"
+            },
+            "description": "Helper text shown under the control, above the error when there is one,\nand announced through its `aria-describedby`. Use it for guidance the\nuser needs before typing; put details worth a click in `tooltip` instead.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FormFieldProps",
+              "fileName": "src/form/form-field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form/form-field.tsx"
+              }
+            ]
+          },
+          "tooltip": {
+            "name": "tooltip",
+            "required": false,
+            "type": {
+              "name": "ReactNode"
+            },
+            "description": "Content of an info tooltip rendered beside the label, for details that\nwould clutter the description. The trigger is a sibling of the label, so\nthe field's accessible name stays the label text.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FormFieldProps",
+              "fileName": "src/form/form-field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form/form-field.tsx"
+              }
+            ]
+          },
+          "tooltipSide": {
+            "name": "tooltipSide",
+            "required": false,
+            "type": {
+              "name": "enum",
+              "raw": "\"top\" | \"bottom\" | \"left\" | \"right\"",
+              "value": [
+                {
+                  "value": "\"top\""
+                },
+                {
+                  "value": "\"bottom\""
+                },
+                {
+                  "value": "\"left\""
+                },
+                {
+                  "value": "\"right\""
+                }
+              ]
+            },
+            "description": "Preferred side of the tooltip. Defaults to `'top'`.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FormFieldProps",
+              "fileName": "src/form/form-field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form/form-field.tsx"
+              }
+            ]
+          },
+          "optional": {
+            "name": "optional",
+            "required": false,
+            "type": {
+              "name": "boolean"
+            },
+            "description": "Appends a muted \" (optional)\" to the label. The forms mark optional fields\nrather than required ones; ignored when `required` is set.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FormFieldProps",
+              "fileName": "src/form/form-field.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form/form-field.tsx"
+              }
+            ]
+          },
+          "switchProps": {
+            "name": "switchProps",
+            "required": false,
+            "type": {
+              "name": "FormSwitchSwitchProps"
+            },
+            "description": "Everything else the `Switch` should receive: `size`, `className`,\n`aria-*`… Handlers such as `onCheckedChange` and `onBlur` run after\nreact-hook-form's, which are already wired, and `aria-describedby` ids\njoin the ones the field wires. The rest is owned elsewhere, so it is\nleft out: the field sets `id` (choose it with `controlId`) and names\nthe toggle with its `label`; react-hook-form sets `name` and `checked`\n(start it in `useForm`'s `defaultValues`); `disabled`, `required` and\n`readOnly` are props of `FormSwitch`, so the label and the root follow\nthem too.",
+            "defaultValue": null,
+            "parent": {
+              "name": "FormSwitchProps",
+              "fileName": "src/form-switch/form-switch.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form-switch/form-switch.tsx"
+              }
+            ]
+          },
+          "switchPosition": {
+            "name": "switchPosition",
+            "required": false,
+            "type": {
+              "name": "enum",
+              "raw": "\"start\" | \"end\"",
+              "value": [
+                {
+                  "value": "\"start\""
+                },
+                {
+                  "value": "\"end\""
+                }
+              ]
+            },
+            "description": "Side of the toggle in a `horizontal` field: `end` (default) puts it\nafter the label and its description, `start` before them. A `vertical`\nfield always puts it under them.",
+            "defaultValue": {
+              "value": "'end'"
+            },
+            "parent": {
+              "name": "FormSwitchProps",
+              "fileName": "src/form-switch/form-switch.tsx"
+            },
+            "declarations": [
+              {
+                "name": "TypeLiteral",
+                "fileName": "src/form-switch/form-switch.tsx"
+              }
+            ]
+          }
+        }
+      },
+      "stories": [
+        {
+          "id": "components-formswitch--default",
+          "name": "Default",
+          "snippet": "const Default = () => <TermsForm\n    name=\"terms\"\n    label=\"I accept the carrier terms\"\n    description=\"The carrier reviews every request against them.\"\n    orientation=\"horizontal\"\n    switchPosition=\"end\"\n    required\n    optional={false}\n    disabled={false}\n    readOnly={false} />;",
+          "description": "The field consumers write: a `name`, a `label` and the validation rule.\n`rules.required` fails while the toggle is off, so sending with it off\nrenders the error and marks the toggle invalid; turning it on clears both\nand `true` reaches `onSubmit`.",
+          "summary": "Toggle the user must turn on, validating on submit"
+        },
+        {
+          "id": "components-formswitch--nested-and-empty",
+          "name": "Nested And Empty",
+          "snippet": "const NestedAndEmpty = () => <NotificationsForm />;",
+          "description": "`name` accepts nested paths typed against the form's values through the\ngeneric. A value the form has not set yet (`undefined`, or `null`) reads as\noff, and the first flip stores a boolean. `tooltip` is an info button beside\nthe label, a sibling of the `<label>`, so the accessible name stays the\nlabel text; `optional` appends a muted suffix to it.",
+          "summary": "Nested paths, an empty value read as off, and an info tooltip"
+        },
+        {
+          "id": "components-formswitch--switch-first",
+          "name": "Switch First",
+          "snippet": "const SwitchFirst = () => {\n    const methods = useForm<BillingValues>({ defaultValues: { paperlessBilling: false } });\n\n    return (\n        <Form.Root methods={methods} aria-label=\"Billing\" className=\"max-w-120\">\n            <FormSwitch\n                name=\"paperlessBilling\"\n                label=\"Paperless billing\"\n                description=\"Invoices arrive by email only.\"\n                switchPosition=\"start\"\n            />\n        </Form.Root>\n    );\n};",
+          "description": "`switchPosition=\"start\"` puts the toggle before the label and its\ndescription, the same row in the other order.",
+          "summary": "Toggle first, then the label and its description"
+        },
+        {
+          "id": "components-formswitch--vertical",
+          "name": "Vertical",
+          "snippet": "const Vertical = () => {\n    const methods = useForm<LicenseValues>({ defaultValues: { skipLicenseCheck: false } });\n\n    return (\n        <Form.Root methods={methods} aria-label=\"Qualification\" className=\"max-w-120\">\n            <FormSwitch\n                name=\"skipLicenseCheck\"\n                label=\"Skip the one-year license check\"\n                description=\"Only for agencies the carrier has approved by hand.\"\n                orientation=\"vertical\"\n            />\n        </Form.Root>\n    );\n};",
+          "description": "`orientation=\"vertical\"` stacks the toggle under the label, its\ndescription and its error, for a switch in a form column next to other\nfields.",
+          "summary": "Toggle under the label and its description"
+        },
+        {
+          "id": "components-formswitch--disabled-and-read-only",
+          "name": "Disabled And Read Only",
+          "snippet": "const DisabledAndReadOnly = () => <AgencyForm />;",
+          "description": "`disabled` disables the toggle and marks the field, and the value still\nreaches `onSubmit` — unlike react-hook-form's own `disabled` option, which\ndrops it. `readOnly` keeps the toggle focusable and announced, but a click\ndoes not flip it.",
+          "summary": "Disabled and read-only toggles whose values are still submitted"
+        },
+        {
+          "id": "components-formswitch--switch-props",
+          "name": "Switch Props",
+          "snippet": "const SwitchProps = () => <MarketingForm />;",
+          "description": "`switchProps` carries the toggle's own props — `aria-*`, `className`… — and\nits handlers. An `aria-describedby` joins the ids the field wires, and a\nconsumer `onCheckedChange` runs after react-hook-form's: by the time it\nfires, `getValues` already returns the new value.",
+          "summary": "Toggle props merged with the field's wiring"
+        }
+      ],
+      "import": "import { Button, Field, Form, FormSwitch } from '@agentero/design-system';"
     },
     "components-formtext": {
       "id": "components-formtext",
@@ -13584,6 +14185,6 @@
   },
   "meta": {
     "docgen": "react-component-meta",
-    "durationMs": 5041
+    "durationMs": 4646
   }
 }
