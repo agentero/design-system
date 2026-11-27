@@ -97,6 +97,51 @@ export const Disabled: Story = {
 	)
 };
 
+/**
+ * `readOnly` keeps the box focusable and announced as read-only, but a click
+ * or Space leaves it as it was, and it does not darken on hover.
+ *
+ * @summary Read-only: focusable, but it does not toggle
+ */
+export const ReadOnly: Story = {
+	render: () => (
+		<div className="flex items-center gap-2">
+			<Checkbox id="instant-appointments" defaultChecked readOnly />
+			<Label htmlFor="instant-appointments">Instant appointments</Label>
+		</div>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		const box = canvas.getByRole('checkbox', { name: 'Instant appointments' });
+
+		await expect(box).toHaveAttribute('aria-readonly', 'true');
+		await expect(box).not.toBeDisabled();
+		await expect(box).toBeChecked();
+	}
+};
+
+/** A click on the box or its label, or Space, leaves a read-only box as it was. */
+export const ReadOnlyIgnoresInput: Story = {
+	tags: ['!dev', '!autodocs', '!manifest'],
+	render: ReadOnly.render,
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		const box = canvas.getByRole('checkbox', { name: 'Instant appointments' });
+
+		await userEvent.click(box);
+		await expect(box).toBeChecked();
+
+		await userEvent.click(canvas.getByText('Instant appointments'));
+		await expect(box).toBeChecked();
+
+		await userEvent.keyboard(' ');
+		await expect(box).toHaveFocus();
+		await expect(box).toBeChecked();
+	}
+};
+
 /** @summary Failed validation, driven by aria-invalid */
 export const Invalid: Story = {
 	render: () => (

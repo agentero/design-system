@@ -16,10 +16,10 @@ export const checkboxRecipe = tv({
 			'group/checkbox relative box-border inline-flex size-4 shrink-0 appearance-none items-center justify-center rounded-sm',
 			'border-[1.5px] border-solid border-border-checkbox-default bg-bg-input-normal',
 			'cursor-pointer transition-colors duration-150 data-readonly:cursor-default',
-			// Only an enabled box lifts with the shadow, and only a valid one darkens on hover, so
-			// neither has to be undone by the disabled and invalid states below.
+			// Only an enabled box lifts with the shadow, and only a valid, editable one darkens on
+			// hover, so neither has to be undone by the disabled, invalid and read-only states below.
 			'enabled:data-[state=unchecked]:shadow-xs',
-			'enabled:not-aria-invalid:data-[state=unchecked]:hover:border-border-input-hover',
+			'enabled:not-aria-invalid:not-data-readonly:data-[state=unchecked]:hover:border-border-input-hover',
 			'data-[state=checked]:border-bg-checkbox-selected data-[state=checked]:bg-bg-checkbox-selected',
 			'data-[state=indeterminate]:border-bg-checkbox-selected data-[state=indeterminate]:bg-bg-checkbox-selected',
 			'outline-solid outline-2 outline-offset-2 outline-transparent',

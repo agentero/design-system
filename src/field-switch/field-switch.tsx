@@ -29,7 +29,8 @@ const SwitchProvider = ({ children }: { children: ReactNode }) => {
 // however many lines the text below it takes. In a row the first child stops
 // growing, and a toggle there never shrinks either, however long the text after
 // it. Stacked, the field stretches its children (`w-full`), so the toggle is
-// capped at its own width.
+// capped at its own width. The error sits flush under the label and its
+// description, as in FieldCheckbox.
 export const fieldSwitchRecipe = tv({
 	base: [
 		'data-[orientation=horizontal]:items-start data-[orientation=horizontal]:gap-4',
@@ -37,7 +38,8 @@ export const fieldSwitchRecipe = tv({
 		'data-[orientation=horizontal]:[&>[data-slot=switch]:first-child]:flex-none',
 		'data-[orientation=horizontal]:[&>[data-slot=switch][data-size=sm]]:mt-1',
 		'data-[orientation=vertical]:[&>[data-slot=switch][data-size=sm]]:max-w-7.5',
-		'data-[orientation=vertical]:[&>[data-slot=switch][data-size=md]]:max-w-12'
+		'data-[orientation=vertical]:[&>[data-slot=switch][data-size=md]]:max-w-12',
+		'[&>[data-slot=field-content]>[data-slot=field-error]]:-mt-2'
 	]
 });
 

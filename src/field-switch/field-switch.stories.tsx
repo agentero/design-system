@@ -429,6 +429,47 @@ const ContextExtension = ({
 const onOwnCheckedChange = fn();
 
 /**
+ * The label, its description and its error read as one block: each sits flush
+ * under the one before it, with or without a description.
+ */
+export const ErrorFlushUnderTheText: Story = {
+	tags: ['!dev', '!autodocs', '!manifest'],
+	render: () => (
+		<div className="flex flex-col gap-4">
+			<FieldSwitch invalid>
+				<Field.Content>
+					<Label>Email notifications</Label>
+					<Field.Description>Get an email when a carrier returns a quote.</Field.Description>
+					<Field.Error errors={[{ message: 'Turn on email notifications.' }]} />
+				</Field.Content>
+				<Switch />
+			</FieldSwitch>
+			<FieldSwitch invalid>
+				<Field.Content>
+					<Label>Quote alerts</Label>
+					<Field.Error errors={[{ message: 'Turn on quote alerts.' }]} />
+				</Field.Content>
+				<Switch />
+			</FieldSwitch>
+		</div>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const rect = (text: string) => canvas.getByText(text).getBoundingClientRect();
+		const label = (text: string) =>
+			canvas.getByText(text).closest('label')!.getBoundingClientRect();
+
+		await expect(rect('Get an email when a carrier returns a quote.').top).toBe(
+			label('Email notifications').bottom
+		);
+		await expect(rect('Turn on email notifications.').top).toBe(
+			rect('Get an email when a carrier returns a quote.').bottom
+		);
+		await expect(rect('Turn on quote alerts.').top).toBe(label('Quote alerts').bottom);
+	}
+};
+
+/**
  * The contexts are an extension point: a provider nested in the field adds
  * `name`, `checked` and `onCheckedChange` to `SwitchContext`, so a bare
  * `<Switch />` becomes controlled, and the errors to `FieldContext`, so a

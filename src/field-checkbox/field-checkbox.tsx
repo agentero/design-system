@@ -26,9 +26,15 @@ const CheckboxProvider = ({ children }: { children: ReactNode }) => {
 // Figma's Checkbox field: the 16px box centred in a 24px slot, the label 12px
 // after the slot, and the box on the label's first line however many lines the
 // text below it takes. The field's row stretches its first child, so the box
-// is kept to its own width.
+// is kept to its own width. The error joins the label and its description as
+// one block of text, flush under them like the description under the label.
 export const fieldCheckboxRecipe = tv({
-	base: ['items-start gap-3', '[&>:first-child]:flex-none', '[&>[data-slot=checkbox]]:m-1']
+	base: [
+		'items-start gap-3',
+		'[&>:first-child]:flex-none',
+		'[&>[data-slot=checkbox]]:m-1',
+		'[&>[data-slot=field-content]>[data-slot=field-error]]:-mt-2'
+	]
 });
 
 export type FieldCheckboxProps = Omit<FieldRootProps, 'orientation'>;

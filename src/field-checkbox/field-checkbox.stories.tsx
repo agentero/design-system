@@ -152,6 +152,43 @@ export const MatchesTheDesign: Story = {
 };
 
 /**
+ * The label, its description and its error read as one block: each sits flush
+ * under the one before it, with or without a description.
+ */
+export const ErrorFlushUnderTheText: Story = {
+	tags: testOnly,
+	render: () => (
+		<div className="flex flex-col gap-4">
+			<FieldCheckbox invalid>
+				<Checkbox />
+				<Field.Content>
+					<Label>Carrier terms</Label>
+					<Field.Description>We email you a copy.</Field.Description>
+					<Field.Error errors={[{ message: 'Accept the carrier terms.' }]} />
+				</Field.Content>
+			</FieldCheckbox>
+			<FieldCheckbox invalid>
+				<Checkbox />
+				<Field.Content>
+					<Label>Privacy policy</Label>
+					<Field.Error errors={[{ message: 'Accept the privacy policy.' }]} />
+				</Field.Content>
+			</FieldCheckbox>
+		</div>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const rect = (text: string) => canvas.getByText(text).getBoundingClientRect();
+		const label = (text: string) =>
+			canvas.getByText(text).closest('label')!.getBoundingClientRect();
+
+		await expect(rect('We email you a copy.').top).toBe(label('Carrier terms').bottom);
+		await expect(rect('Accept the carrier terms.').top).toBe(rect('We email you a copy.').bottom);
+		await expect(rect('Accept the privacy policy.').top).toBe(label('Privacy policy').bottom);
+	}
+};
+
+/**
  * `Field.Label` takes `optional` and a `tooltip` here as in any field. The
  * info button sits beside the label, outside it, so it has its own name and
  * opening the hint never toggles the box.
