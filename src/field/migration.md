@@ -16,11 +16,14 @@ new `Field<X>` is the presentational layer underneath, with no form library in
 it — reach for it only when the layout is not the standard one and you are
 wiring `useController` yourself.
 
-| Legacy                             | Here                                                |
-| ---------------------------------- | --------------------------------------------------- |
-| `Form.Root` (wraps `FormProvider`) | `Form.Root` from `@agentero/design-system/form`     |
-| `FieldText`                        | `FormText` from `@agentero/design-system/form-text` |
-| Other `Field<X>`                   | their `Form<X>`, as each control lands              |
+| Legacy                             | Here                                                        |
+| ---------------------------------- | ----------------------------------------------------------- |
+| `Form.Root` (wraps `FormProvider`) | `Form.Root` from `@agentero/design-system/form`             |
+| `FieldText`                        | `FormText` from `@agentero/design-system/form-text`         |
+| `FieldPhoneNumber`                 | `FormTel` from `@agentero/design-system/form-tel`           |
+| `FieldNumber`                      | `FormNumber` from `@agentero/design-system/form-number`     |
+| `FieldPassword`                    | `FormPassword` from `@agentero/design-system/form-password` |
+| Other `Field<X>`                   | their `Form<X>`, as each control lands                      |
 
 ## Prop mapping for `FieldText` → `FormText`
 
@@ -103,3 +106,137 @@ Two shapes are worth knowing:
   declared without a `path` that points at a leaf — lands on that path's
   `error.root` and belongs to no field, so no `FormText` renders it. Give the
   refinement a leaf `path`, or render a `Field.Error` where the group lives.
+
+## `FieldPhoneNumber` → `FormTel`
+
+`FormTel` is `FormText` with an `InputTel` in place of the `Input`, so the
+`FieldText` mapping above holds for every prop the two share. What is specific
+to the phone field:
+
+| Legacy                        | Here                        | Note                                                                                                    |
+| ----------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `registerOptions`             | `rules`                     | react-hook-form's rules, without `valueAs*` or `setValueAs` ([Coercion](#coercion-gates-the-migration)) |
+| `defaultValue`                | `useForm`'s `defaultValues` | written masked, `(555) 123-4567`                                                                        |
+| `placeholder`, `autoFocus`    | `inputProps`                |                                                                                                         |
+| `size`                        | `inputProps.size`           | defaults to `md`; `agentero/mono`'s legacy field defaulted to `sm`                                      |
+| `type`                        | —                           | `InputTel` owns it: always `tel`                                                                        |
+| `displayErrorMessage={false}` | —                           | not in v1, as for `FormText`                                                                            |
+
+**Stored value.** The form holds the masked text, `(555) 123-4567`, as the
+legacy field did. A partial number may end in a separator: typing leaves the
+one before the next digit (`(555) 123-`), deleting trims it (`(555) 123`).
+Schemas that validate the legacy value keep working unchanged.
+
+**What changes.**
+
+- The `+1` prefix is part of `InputTel`. Of the two legacy fields, only
+  `producerflow/mono`'s drew it, around its own input; `agentero/mono`'s
+  already rendered this `InputTel`. Nothing to do at the call site.
+- A value the form writes (`defaultValues`, `reset`, `setValue`) is shown as
+  given: the mask only runs on what the user types or pastes. The legacy field
+  behaved the same way, so a call site that loads bare digits from the API was
+  already showing them unmasked. Those digits look filled in but fail a
+  `pattern` rule for the masked format on submit, so mask them before writing.
+
+## `FieldNumber` → `FormNumber`
+
+`FormNumber` is `FormText` with an `InputNumber` in place of the `Input`. What
+is specific to the numeric field:
+
+| Legacy                                                          | Here                        | Note                                                                                                    |
+| --------------------------------------------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `registerOptions`                                               | `rules`                     | react-hook-form's rules, without `valueAs*` or `setValueAs` ([Coercion](#coercion-gates-the-migration)) |
+| `defaultValue`                                                  | `useForm`'s `defaultValues` | the legacy prop set the input only, not the form                                                        |
+| `thousandSeparator`, `allowLeadingZeros`                        | `inputProps`                | `thousandSeparator` now defaults to `false`, see below                                                  |
+| `placeholder`, `autoFocus`, `maxLength`, `onFocus`, `onKeyDown` | `inputProps`                |                                                                                                         |
+| `inputClassName` (`producerflow/mono`)                          | `inputProps.className`      |                                                                                                         |
+| `size`                                                          | `inputProps.size`           | defaults to `md`; `agentero/mono`'s legacy field defaulted to `sm`                                      |
+| `maxValue`                                                      | `inputProps.maxNumber`      | the legacy `max` attribute did nothing on a text input; `maxNumber` blocks the keystroke                |
+| `minValue`                                                      | `rules.validate`            | parse the text there; see below                                                                         |
+| `type`                                                          | —                           | drop it: `type` no longer picks the keypad (see below); keep `inputProps.type: 'password'` for a PIN    |
+| `status` (`producerflow/mono`)                                  | —                           | the field's validation state drives the border                                                          |
+| `displayErrorMessage={false}`                                   | —                           | not in v1, as for `FormText`                                                                            |
+
+**Stored value.** The form holds the formatted text, as the legacy field did:
+`"1,234"` with a separator, `"001234"` for an identifier, `""` when empty.
+Parse it where the number is used. A form that types the path as `number` does
+not compile against `FormNumberPath`: type it as a string and parse it in the
+resolver or on submit.
+
+With `zodResolver`, the form's values take the schema's input type. Under zod 4
+`z.coerce.number()` and `z.preprocess(...)` take `unknown`, which does not
+compile either. Declare the field as a string and transform it, so the path
+binds and `onSubmit` still receives the number:
+
+```ts
+amount: z.string()
+	.transform(value => Number(value.replaceAll(',', '')))
+	.pipe(z.number().min(100));
+```
+
+**What changes.**
+
+- `thousandSeparator` defaults to `false`; the legacy default was `true`. An
+  amount field that relied on it passes `inputProps={{ thousandSeparator: true }}`.
+  An identifier field (NPN, ZIP code) drops the `thousandSeparator={false}` it
+  had to pass.
+- With `thousandSeparator` set, leading zeros are dropped. The legacy field
+  showed `0,001,234`.
+- The keypad is decimal (`inputMode="decimal"`) whatever the `type`.
+  `producerflow/mono`'s legacy field showed the phone keypad, through its
+  default `type="tel"`; an identifier field that wants digits only passes
+  `inputProps.inputMode: 'numeric'`. `agentero/mono` already renders the
+  design-system `InputNumber`, so its keypad does not change.
+- react-hook-form's `min` and `max` rules read the text as a number. They work
+  on `"1234"`, but with `thousandSeparator` set they pass silently on
+  `"1,234"`, which reads as `NaN`. Bound such an amount with
+  `inputProps.maxNumber` or with a `validate` rule that strips the commas:
+  `validate: value => Number(value.replaceAll(',', '')) >= 100 || 'Enter at least 100.'`.
+  A plain `Number(value)` is `NaN` on `"1,000"` too.
+
+## `FieldPassword` → `FormPassword`
+
+`FormPassword` is `FormText` with an `InputPassword` in place of the `Input`.
+What is specific to the password field:
+
+| Legacy                     | Here                      | Note                                                               |
+| -------------------------- | ------------------------- | ------------------------------------------------------------------ |
+| `autoComplete`             | `inputProps.autoComplete` | now required; see below                                            |
+| `autoFocus`, `placeholder` | `inputProps`              |                                                                    |
+| `size`                     | `inputProps.size`         | defaults to `md`; `agentero/mono`'s legacy field defaulted to `sm` |
+| `type`                     | —                         | the show/hide toggle owns it                                       |
+
+**`autoComplete`.** Required: a `FormPassword` without it does not compile.
+Pick the value by what the field holds:
+
+- `current-password` on sign-in, and for the current password in a
+  password-change form.
+- `new-password` where the user picks a password (sign-up, activation, the new
+  password in a change form) and for credentials of another service, such as
+  an integration's API key or a carrier login, so the browser does not fill
+  the user's own password there. `agentero/mono`'s carrier credentials form
+  already does this.
+
+**Stored value.** The text as typed, as before. The show/hide toggle only
+changes what the input displays.
+
+**A field that picks its control at runtime.** The carrier credentials forms
+in `agentero/mono` render `isHidden ? FieldPassword : FieldText`. The same
+switch works here, `isHidden ? FormPassword : FormText`: both take the same
+field props, and an `inputProps` with `autoComplete` and without `type` fits
+both. That holds for `CarrierCredentialsFormFields`, whose values are a flat
+`Record<string, string>`. `AgenteroCredentialsStateFields` does not compile
+yet: its values are nested, `Record<string, Record<string, string>>`, and the
+path type every `Form<X>` entry shares rejects any path into a nested record
+with string keys (``name={`${state}.${name}`}`` resolves to `never`), with
+`FormText` as well. Keep that call site on the legacy fields until the path
+type accepts it.
+
+**Password inputs wired by hand.** Besides `FieldPassword`, both monos spread
+`register` into a bare `InputPassword` next to their own `Label` and error
+message: the sign-in, activation and password-change forms in `agentero/mono`,
+and the sign-up `PasswordForm` in `producerflow/mono`. Each of those becomes
+one `FormPassword`. The sign-up form shows only the required error under the
+field and lists the strength rules in a separate checklist. The checklist can
+stay as it is, or the rules move into `rules.validate` with
+`criteriaMode: 'all'` and the field lists the ones that failed.
