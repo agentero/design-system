@@ -138,6 +138,24 @@ Uses `@storybook/mcp` to expose three tools — `docs-list`, `docs-show`, `docs-
 - `publish.yml` auto-publishes to npm on push to `master` (patch/minor bumps driven by commits).
 - `publish-major.yml` is triggered manually; use the `/publish-major` slash command which dispatches the workflow and reports back the run URL.
 
+## Commits and pull requests
+
+**Commits**: `<type>(<scope>): <description>`, as the PR title below, with a body only when a reviewer needs the why. No attribution: `.claude/settings.json` turns off the `Co-Authored-By: Claude` trailer.
+
+**Title**: the conventional commit subject, `<type>(<scope>): <description>`, imperative and starting lowercase (component names keep their PascalCase), with the Linear id at the end when there is a ticket: `feat(file-drop): add FileDrop (ENG-1787)`, or the ids comma-separated when the PR closes more than one: `feat(select): add Select (ENG-1782, ENG-1991)`. The scope is the component directory (`file-drop`), or the directories comma-separated with no space when the change touches more than one component (`fix(table,modal)`). A change to something other than a component takes the area's name: `theme`, `icons`, `build`, `storybook`, `agents`, `deps`. Leave the scope out for a repo-wide change.
+
+**Description**: free-form and short enough to read in a few seconds. No template and no headers (`## Summary`, `## Changes`, `## Rationale`, `Why?`/`How?`).
+
+- `Related to <Linear issue URL>` on the first line when there is a ticket, one line per issue when there are several, then a blank line.
+- What the change does, in a sentence or a short paragraph: a fact about the resulting code, not the story of how you got there and not the ticket restated.
+- Implementation details only when a reviewer cannot see them in the diff and needs them: a deliberate tradeoff, a behaviour change that is not visible, something left out on purpose. A change to the public API or the manifest a consumer would notice goes here.
+- For a stacked PR, its place ("2 of 2, on top of #123").
+- For a defect, the steps that reproduce it and confirm the fix, as a short checklist.
+- Code formatting for identifiers. A GitHub alert (`> [!WARNING]`) only for what a reviewer must not miss, such as a breaking change or a manual step after merge.
+- Never a "Testing" section listing the tests you wrote, and no attribution: `.claude/settings.json` turns off the `Generated with Claude Code` line, and no session link.
+
+Write it in plain language.
+
 ## Tooling notes
 
 - **Formatter is `oxfmt`, not Prettier.** Config lives in `.oxfmtrc.json`. Tabs (width 2), single quotes, `bracketSameLine: true`, `trailingComma: none`, `arrowParens: 'avoid'`, and a custom import-sort order: `server-only` → `react` → `builtin` → `external` → `@agentero/*` → `lib/*`/`modules/*` → relative → style → unknown. Respect this — sorting or quoting the Prettier way will produce a diff CI rejects.
