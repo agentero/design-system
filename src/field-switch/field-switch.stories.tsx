@@ -18,7 +18,7 @@ import { Switch, SwitchContext, type SwitchContextValue } from '../switch';
  * It knows nothing about form libraries, and its contexts compose: a provider
  * nested inside it can extend `SwitchContext` with `checked`,
  * `onCheckedChange`, `onBlur` and `name`, and `FieldContext` with the errors,
- * which is how `FormSwitch` will bind it.
+ * which is how a form library binds it. For react-hook-form, use `FormSwitch`.
  */
 const meta = {
 	title: 'Components/FieldSwitch',
