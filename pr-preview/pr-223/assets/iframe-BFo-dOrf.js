@@ -1,1 +1,0 @@
-import{t as e}from"./iframe-BKFeyr_K.js";e();
