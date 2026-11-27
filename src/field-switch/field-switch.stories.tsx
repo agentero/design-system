@@ -374,6 +374,34 @@ export const NarrowWithLongLabel: Story = {
 	}
 };
 
+/** With the toggle first, a long label wraps beside it and the toggle keeps its size. */
+export const SwitchFirstWithLongLabel: Story = {
+	tags: ['!dev', '!autodocs', '!manifest'],
+	render: args => (
+		<div className="w-56">
+			<FieldSwitch {...args}>
+				<Switch />
+				<Field.Content>
+					<Label>Paperless billing for every policy on this agency account</Label>
+					<Field.Description>Invoices arrive by email only.</Field.Description>
+				</Field.Content>
+			</FieldSwitch>
+		</div>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const box = canvas.getByRole('switch', { name: /Paperless billing/ }).getBoundingClientRect();
+		const label = canvas
+			.getByText(/Paperless billing/)
+			.closest('label')!
+			.getBoundingClientRect();
+
+		await expect(label.height).toBeGreaterThan(24);
+		await expect([box.width, box.height]).toEqual([30, 16]);
+		await expect(label.left - box.right).toBe(16);
+	}
+};
+
 /**
  * Extends `SwitchContext` and `FieldContext` under the field, so the state,
  * the handlers and the errors come from outside. Must sit inside
@@ -399,6 +427,47 @@ const ContextExtension = ({
 };
 
 const onOwnCheckedChange = fn();
+
+/**
+ * The label, its description and its error read as one block: each sits flush
+ * under the one before it, with or without a description.
+ */
+export const ErrorFlushUnderTheText: Story = {
+	tags: ['!dev', '!autodocs', '!manifest'],
+	render: () => (
+		<div className="flex flex-col gap-4">
+			<FieldSwitch invalid>
+				<Field.Content>
+					<Label>Email notifications</Label>
+					<Field.Description>Get an email when a carrier returns a quote.</Field.Description>
+					<Field.Error errors={[{ message: 'Turn on email notifications.' }]} />
+				</Field.Content>
+				<Switch />
+			</FieldSwitch>
+			<FieldSwitch invalid>
+				<Field.Content>
+					<Label>Quote alerts</Label>
+					<Field.Error errors={[{ message: 'Turn on quote alerts.' }]} />
+				</Field.Content>
+				<Switch />
+			</FieldSwitch>
+		</div>
+	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const rect = (text: string) => canvas.getByText(text).getBoundingClientRect();
+		const label = (text: string) =>
+			canvas.getByText(text).closest('label')!.getBoundingClientRect();
+
+		await expect(rect('Get an email when a carrier returns a quote.').top).toBe(
+			label('Email notifications').bottom
+		);
+		await expect(rect('Turn on email notifications.').top).toBe(
+			rect('Get an email when a carrier returns a quote.').bottom
+		);
+		await expect(rect('Turn on quote alerts.').top).toBe(label('Quote alerts').bottom);
+	}
+};
 
 /**
  * The contexts are an extension point: a provider nested in the field adds
