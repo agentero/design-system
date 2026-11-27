@@ -8,7 +8,7 @@ import { FieldFileDrop } from '.';
 import { Button } from '../button';
 import { DropdownMenu } from '../dropdown-menu';
 import { Field, type FieldErrorLike } from '../field';
-import { FileDrop, type FileDropProps, type FileDropValue } from '../file-drop';
+import { FileDrop, type FileDropValue } from '../file-drop';
 import { Label } from '../label';
 
 /**
@@ -104,12 +104,10 @@ const W9Field = ({
 	initialValue = null,
 	initialError,
 	invalid,
-	fileDropProps,
 	...props
 }: Story['args'] & {
 	initialValue?: FileDropValue | null;
 	initialError?: FieldErrorLike;
-	fileDropProps?: Partial<FileDropProps>;
 }) => {
 	const [value, setValue] = useState(initialValue);
 	const [error, setError] = useState(initialError);
@@ -126,7 +124,6 @@ const W9Field = ({
 				}}
 				onFileReject={() => setError(rejectionError)}
 				onFileRemove={() => setValue(null)}
-				{...fileDropProps}
 			/>
 			<Field.Description>Signed in the last 12 months.</Field.Description>
 			<Field.Error errors={error ? [error] : undefined} />

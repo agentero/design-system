@@ -20,7 +20,6 @@ const FileDropProvider = ({ children }: { children: ReactNode }) => {
 	return <FileDropContext value={value}>{children}</FileDropContext>;
 };
 
-/** `Field.Root`'s props minus `orientation`: a file drop field is always vertical. */
 export type FieldFileDropProps = Omit<FieldRootProps, 'orientation'>;
 
 /**
