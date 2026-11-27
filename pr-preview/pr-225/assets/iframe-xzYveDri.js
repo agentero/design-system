@@ -1,0 +1,1 @@
+import{t as e}from"./iframe-Qnxa24Ni.js";e();
