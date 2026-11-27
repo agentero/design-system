@@ -1,9 +1,12 @@
+'use client';
+
 import { ComponentPropsWithRef } from 'react';
 
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import { tv } from 'tailwind-variants';
 
 import { cn } from '../../lib';
+import { useCheckboxContext } from './context';
 import { IconCheck, IconMinus } from './icons';
 
 /** Style recipe for Checkbox. Slots: `root` (the box), `indicator` (the glyph). */
@@ -12,7 +15,7 @@ export const checkboxRecipe = tv({
 		root: [
 			'group/checkbox relative box-border inline-flex size-4 shrink-0 appearance-none items-center justify-center rounded-sm',
 			'border-[1.5px] border-solid border-border-checkbox-default bg-bg-input-normal',
-			'cursor-pointer transition-colors duration-150',
+			'cursor-pointer transition-colors duration-150 data-readonly:cursor-default',
 			// Only an enabled box lifts with the shadow, and only a valid one darkens on hover, so
 			// neither has to be undone by the disabled and invalid states below.
 			'enabled:data-[state=unchecked]:shadow-xs',
@@ -54,6 +57,8 @@ export type CheckboxProps = Omit<
 	disabled?: boolean;
 	/** Marks the control required for the browser and assistive technology. */
 	required?: boolean;
+	/** Keeps the box focusable and announced but stops clicks and Space from toggling it. */
+	readOnly?: boolean;
 	/** Form field name. Needed for uncontrolled form usage. */
 	name?: string;
 	/** Value submitted when checked. Defaults to `'on'`. */
@@ -71,7 +76,10 @@ export type CheckboxProps = Omit<
  *
  * Headless like [Input](?path=/docs/components-input--docs): pair it with
  * [Label](?path=/docs/components-label--docs) and `htmlFor`, or give it an
- * `aria-label`. There is no `status` prop — set `aria-invalid`.
+ * `aria-label`. There is no `status` prop — set `aria-invalid`. Inside a
+ * container that provides `CheckboxContext`, such as `FieldCheckbox`, it takes
+ * its wiring (`id`, `aria-describedby`, `aria-invalid`, `required`,
+ * `disabled`, `readOnly`) from it; its own props always win.
  *
  * Use [Switch](?path=/docs/components-switch--docs) when the change applies
  * immediately, and [CheckList](?path=/docs/components-check-list--docs) for a
@@ -83,15 +91,24 @@ export type CheckboxProps = Omit<
  * <Label htmlFor="terms">I accept the terms</Label>
  * <Checkbox id="terms" name="terms" required />
  */
-export const Checkbox = ({ className, ref, ...props }: CheckboxProps) => {
+export const Checkbox = (props: CheckboxProps) => {
+	const { className, ref, readOnly, onClick, ...rest } = useCheckboxContext(props);
 	const styles = checkboxRecipe();
 
 	return (
 		<CheckboxPrimitive.Root
 			ref={ref}
 			data-slot="checkbox"
+			data-readonly={readOnly || undefined}
+			aria-readonly={readOnly || undefined}
 			className={cn(styles.root(), className)}
-			{...props}>
+			// A prevented click skips Radix's own handler, so the state does not flip;
+			// Space on the button arrives as a click too.
+			onClick={event => {
+				onClick?.(event);
+				if (readOnly) event.preventDefault();
+			}}
+			{...rest}>
 			<CheckboxPrimitive.Indicator data-slot="checkbox-indicator" className={styles.indicator()}>
 				<IconCheck className="hidden size-4 shrink-0 group-data-[state=checked]/checkbox:block" />
 				<IconMinus className="hidden size-4 shrink-0 group-data-[state=indeterminate]/checkbox:block" />

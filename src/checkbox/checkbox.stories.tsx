@@ -20,6 +20,7 @@ const meta = {
 		defaultChecked: { control: 'radio', options: [true, false, 'indeterminate'] },
 		disabled: { control: 'boolean' },
 		required: { control: 'boolean' },
+		readOnly: { control: 'boolean' },
 		'aria-invalid': { control: 'boolean' },
 		onCheckedChange: { action: 'checkedChange' }
 	},
